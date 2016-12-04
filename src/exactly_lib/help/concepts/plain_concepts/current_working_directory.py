@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.concepts.some_concept_names import PRESENT_WORKING_DIRECTORY_CONCEPT_NAME
+from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
@@ -13,9 +13,9 @@ from exactly_lib.util.description import Description, DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.structures import text
 
 
-class _PresentWorkingDirectoryConcept(PlainConceptDocumentation):
+class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(PRESENT_WORKING_DIRECTORY_CONCEPT_NAME)
+        super().__init__(CURRENT_WORKING_DIRECTORY_CONCEPT_NAME)
 
     def purpose(self) -> DescriptionWithSubSections:
         tp = TextParser({
@@ -23,7 +23,7 @@ class _PresentWorkingDirectoryConcept(PlainConceptDocumentation):
             'phase': phase_name_dictionary(),
             'act_dir': SUB_DIRECTORY__ACT,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'pwd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
+            'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
             'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'concept': self.name().singular,
         })
@@ -32,7 +32,7 @@ class _PresentWorkingDirectoryConcept(PlainConceptDocumentation):
                         tp.fnap(_DESCRIPTION_REST)))
 
 
-PRESENT_WORKING_DIRECTORY_CONCEPT = _PresentWorkingDirectoryConcept()
+CURRENT_WORKING_DIRECTORY_CONCEPT = _CurrentWorkingDirectoryConcept()
 
 _SINGLE_LINE_DESCRIPTION = """\
 The current directory of the environment in which an instruction is executed."""
@@ -49,7 +49,7 @@ and shell commands have the same {concept} as instructions.
 At the beginning, the {concept} is the {act_dir}/ subdirectory of the {sandbox}.
 
 
-It can be changed using the {pwd_instruction} instruction.
+It can be changed using the {cd_instruction} instruction.
 
 
 The {concept} at the end of one phase becomes

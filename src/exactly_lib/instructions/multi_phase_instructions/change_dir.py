@@ -1,7 +1,7 @@
 import os
 
 from exactly_lib.common.instruction_documentation import InvokationVariant
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path, ALL_OPTIONS
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
@@ -17,7 +17,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
-        self.pwd_concept_name = formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)
+        self.pwd_concept_name = formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)
         self.dir_arg = dt.DIR_ARGUMENT
         super().__init__(name, {
             'pwd_concept': self.pwd_concept_name,
@@ -54,7 +54,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         from exactly_lib.help.concepts.plain_concepts.sandbox import \
             SANDBOX_CONCEPT
         return [
-            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
+            CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
             SANDBOX_CONCEPT.cross_reference_target(),
         ]
 

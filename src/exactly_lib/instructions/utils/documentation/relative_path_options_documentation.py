@@ -1,8 +1,8 @@
 from exactly_lib.common.instruction_documentation import SyntaxElementDescription
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
@@ -107,7 +107,7 @@ class RelOptionRenderer:
             'PATH': path_name_in_description,
             'ENV_VAR_TMP': env.ENV_VAR_TMP,
             'ENV_VAR_ACT': env.ENV_VAR_ACT,
-            'pwd': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'pwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
@@ -165,9 +165,9 @@ _ALL = {
                                               _REL_ACT_DESCRIPTION,
                                               [ENVIRONMENT_VARIABLE_CONCEPT]),
     RelOptionType.REL_PWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
-                                              formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+                                              formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
                                               _REL_PWD_DESCRIPTION,
-                                              [PRESENT_WORKING_DIRECTORY_CONCEPT]),
+                                              [CURRENT_WORKING_DIRECTORY_CONCEPT]),
     RelOptionType.REL_HOME: _RelOptionTypeInfo(options.REL_HOME_OPTION_NAME,
                                                formatting.concept(
                                                    HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),

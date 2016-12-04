@@ -2,7 +2,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution.environment_variables import ENV_VAR_ACT
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import emphasis
@@ -14,7 +14,7 @@ from exactly_lib.util.textformat.structure import document as doc
 def execution_documentation(setup: Setup) -> doc.SectionContents:
     description_text = DESCRIPTION.format(phase=setup.phase_names,
                                           pwd=emphasis(CHANGE_DIR_INSTRUCTION_NAME),
-                                          PWD=formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+                                          PWD=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
                                           SANDBOX_ACT_DIR=ENV_VAR_ACT,
                                           act_subdir=SUB_DIRECTORY__ACT,
                                           cli_option_for_keeping_sandbox=OPTION_FOR_KEEPING_SANDBOX_DIRECTORY)
