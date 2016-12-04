@@ -32,6 +32,12 @@ class ValueAssertion:
               message_builder: MessageBuilder = MessageBuilder()):
         raise NotImplementedError()
 
+    def apply_with_message(self, put: unittest.TestCase, value, message: str):
+        """
+        Short cut to 'apply' when using a str message.
+        """
+        return self.apply(put, value, MessageBuilder(message))
+
 
 class OfCallable(ValueAssertion):
     def __init__(self,

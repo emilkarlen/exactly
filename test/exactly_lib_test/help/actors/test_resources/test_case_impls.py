@@ -44,7 +44,7 @@ class TestSingleLineDescriptionStr(WithActorDocumentationBase):
 class TestSingleLineDescription(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.single_line_description()
-        struct_check.is_text.apply(self, actual, va.MessageBuilder('single_line_description'))
+        struct_check.is_text.apply_with_message(self, actual, 'single_line_description')
 
 
 class TestNameAndSingleLineDescriptionStr(WithActorDocumentationBase):
@@ -56,7 +56,7 @@ class TestNameAndSingleLineDescriptionStr(WithActorDocumentationBase):
 class TestNameAndSingleLineDescription(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.name_and_single_line_description()
-        struct_check.is_text.apply(self, actual, va.MessageBuilder('name_and_single_line_description'))
+        struct_check.is_text.apply_with_message(self, actual, 'name_and_single_line_description')
 
 
 class TestActPhaseContents(WithActorDocumentationBase):
@@ -74,11 +74,11 @@ class TestActPhaseContentsSyntax(WithActorDocumentationBase):
 class TestSeeAlso(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.see_also()
-        va.is_list_of(xref_va.is_any).apply(self, actual, va.MessageBuilder('see_also'))
+        va.is_list_of(xref_va.is_any).apply_with_message(self, actual, 'see_also')
 
 
 class TestCrossReferenceTarget(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.cross_reference_target()
         assertion = xref_va.is_entity_for_type(ACTOR_ENTITY_TYPE_NAME)
-        assertion.apply(self, actual, va.MessageBuilder('cross_reference_target'))
+        assertion.apply_with_message(self, actual, 'cross_reference_target')
