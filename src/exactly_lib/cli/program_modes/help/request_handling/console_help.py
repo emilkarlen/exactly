@@ -78,7 +78,6 @@ class _HelpCommandLineGetterVisitor(cross_reference_id.CrossReferenceIdVisitor):
     def visit_test_case_phase_instruction(self, x: cross_reference_id.TestCasePhaseInstructionCrossReference):
         return _command_line_display_for_help_arguments(arguments_for.case_instruction_in_phase(x.phase_name,
                                                                                                 x.instruction_name))
-
     def visit_test_suite_section(self, x: cross_reference_id.TestSuiteSectionCrossReference):
         return _command_line_display_for_help_arguments(arguments_for.suite_section_for_name(x.section_name))
 
