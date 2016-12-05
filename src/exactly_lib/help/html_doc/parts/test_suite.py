@@ -28,10 +28,10 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         cli_syntax_target = cli_syntax_targets_factory.root('Command line syntax')
         cli_syntax_contents = self._cli_syntax_contents()
 
-        phases_targets_factory = cross_ref.sub_component_factory('sections', targets_factory)
-        phases_target = phases_targets_factory.root('Sections')
-        phases_sub_targets, phases_contents = self._sections_contents(phases_targets_factory,
-                                                                      self.test_suite_help.section_helps)
+        sections_targets_factory = cross_ref.sub_component_factory('sections', targets_factory)
+        sections_target = sections_targets_factory.root('Sections')
+        sections_sub_targets, sections_contents = self._sections_contents(sections_targets_factory,
+                                                                          self.test_suite_help.section_helps)
         reporters_targets_factory = cross_ref.sub_component_factory('reporters', targets_factory)
         reporters_target = reporters_targets_factory.root('Reporters')
         reporters_sub_targets, reporters_contents = self._reporters_contents(reporters_targets_factory)
@@ -47,8 +47,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
             [
                 doc.Section(specification_target.anchor_text(),
                             overview_contents),
-                doc.Section(phases_target.anchor_text(),
-                            phases_contents),
+                doc.Section(sections_target.anchor_text(),
+                            sections_contents),
                 doc.Section(reporters_target.anchor_text(),
                             reporters_contents),
                 doc.Section(cli_syntax_target.anchor_text(),
@@ -60,8 +60,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         ret_val_targets = [
             cross_ref.TargetInfoNode(specification_target,
                                      specification_sub_targets),
-            cross_ref.TargetInfoNode(phases_target,
-                                     phases_sub_targets),
+            cross_ref.TargetInfoNode(sections_target,
+                                     sections_sub_targets),
             cross_ref.TargetInfoNode(reporters_target,
                                      reporters_sub_targets),
             cross_ref.TargetInfoNode(cli_syntax_target, []),
@@ -85,8 +85,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         renderer = ProgramDocumentationSectionContentsRenderer(SuiteCliSyntaxDocumentation())
         return renderer.apply(self.rendering_environment)
 
-    def _section_cross_ref_target(self, phase):
-        return cross_ref.TestSuiteSectionCrossReference(phase.name.plain)
+    def _section_cross_ref_target(self, section):
+        return cross_ref.TestSuiteSectionCrossReference(section.name.plain)
 
     def _instruction_cross_ref_target(self, instruction_doc, section) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionInstructionCrossReference(
