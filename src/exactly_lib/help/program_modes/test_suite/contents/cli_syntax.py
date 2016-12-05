@@ -89,7 +89,7 @@ Runs the test suite in file {TEST_SUITE_FILE}.
 """
 
 _ACTOR_OPTION_DESCRIPTION = """\
-Specifies a default {interpreter_actor} to use for every test case in the suite.
+Specifies a default {interpreter_actor} {actor} to use for every test case in the suite.
 
 
 Note: An {actor} specified in the suite will have precedence over the {actor}

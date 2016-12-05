@@ -8,6 +8,7 @@ from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as 
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.help.utils import formatting
@@ -73,7 +74,9 @@ class _Parser:
                              metavar=case_opts.ACTOR_OPTION_ARGUMENT,
                              nargs=1,
                              help=_ACTOR_OPTION_DESCRIPTION.format(
-                                 INTERPRETER_ACTOR_TERM=INTERPRETER_ACTOR.singular_name
+                                 ARGUMENT=case_opts.ACTOR_OPTION_ARGUMENT,
+                                 INTERPRETER_ACTOR_TERM=formatting.entity(INTERPRETER_ACTOR.singular_name),
+                                 ACTOR_CONCEPT=ACTOR_CONCEPT.singular_name(),
                              ))
         return ret_val
 
@@ -94,4 +97,10 @@ Use "{help_option}" for more info.
 """
 
 _ACTOR_OPTION_DESCRIPTION = """\
-An {INTERPRETER_ACTOR_TERM} to use for every test case in the suite."""
+Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program that serves as the interpreter.
+
+{ARGUMENT} is an absolute path followed by optional arguments (using shell syntax).
+
+Note that an {ACTOR_CONCEPT} set in the test suite or test case has precedence over the
+{ACTOR_CONCEPT} given here.
+"""

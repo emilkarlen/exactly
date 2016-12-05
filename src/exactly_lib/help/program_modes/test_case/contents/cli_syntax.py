@@ -22,7 +22,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name),
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
             'phase': phase_name_dictionary(),
-            'actor_concept': ACTOR_CONCEPT.singular_name(),
+            'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
         })
         self.synopsis = synopsis()
 
