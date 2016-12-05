@@ -149,7 +149,10 @@ class Parser:
         name_to_lookup = ' '.join(arguments).lower()
         entities_help = ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER[entity_type_name](self.application_help)
         match = lookup_entity(entities_help, name_to_lookup)
-        return EntityHelpRequest(entity_type_name, EntityHelpItem.INDIVIDUAL_ENTITY, match.value)
+        return EntityHelpRequest(entity_type_name,
+                                 EntityHelpItem.INDIVIDUAL_ENTITY,
+                                 match.value,
+                                 not match.is_exact_match)
 
     @staticmethod
     def _parse_html_doc_help(arguments: list) -> HtmlDocHelpRequest:
