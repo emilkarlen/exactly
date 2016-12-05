@@ -25,6 +25,9 @@ NON_PASS_STATUSES = FAIL_STATUSES.union(ERROR_STATUSES)
 
 UNCONDITIONAL_EXIT_CODE = 0
 
+TEST_SUITE_ELEMENT_NAME = 'testsuite'
+TEST_SUITES_ELEMENT_NAME = 'testsuites'
+
 
 class JUnitRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
@@ -85,7 +88,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         def is_root_suite_and_should_skip_root_suite(reporter: reporting.SubSuiteReporter) -> bool:
             return reporter.suite is root_suite and (not root_suite.test_cases)
 
-        root = ET.Element('testsuites')
+        root = ET.Element(TEST_SUITES_ELEMENT_NAME)
         next_suite_id = 1
         for suite_reporter in suite_reporters:
             if not is_root_suite_and_should_skip_root_suite(suite_reporter):
@@ -109,7 +112,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         }
         if additional_attributes:
             attributes.update(additional_attributes)
-        root = ET.Element('testsuite', attributes)
+        root = ET.Element(TEST_SUITE_ELEMENT_NAME, attributes)
         ET.SubElement(root, 'properties')
         num_errors = 0
         num_failures = 0
