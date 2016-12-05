@@ -1,7 +1,7 @@
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution import exit_values as case_exit_values
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help.suite_reporters.names_and_cross_references import PROGRESS_REPORTER__NAME
+from exactly_lib.help.suite_reporters.names_and_cross_references import PROGRESS_REPORTER
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite.reporters import simple_progress_reporter as reporter
@@ -10,7 +10,7 @@ from exactly_lib.util.textformat.structure.structures import *
 
 class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
     def __init__(self):
-        super().__init__(PROGRESS_REPORTER__NAME)
+        super().__init__(PROGRESS_REPORTER)
         format_map = {
         }
         self._parser = TextParser(format_map)

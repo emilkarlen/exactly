@@ -1,5 +1,7 @@
 from exactly_lib.help.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
+from exactly_lib.help.suite_reporters.names_and_cross_references import suite_reporter_cross_ref
+from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReference
 
 
 class SuiteReporterDocTestImpl(SuiteReporterDocumentation):
@@ -7,7 +9,8 @@ class SuiteReporterDocTestImpl(SuiteReporterDocumentation):
                  main_description_rest: list = (),
                  syntax_of_output: list = (),
                  exit_code_description: list = ()):
-        super().__init__(singular_name)
+        super().__init__(SingularNameAndCrossReference(singular_name,
+                                                       suite_reporter_cross_ref(singular_name)))
         self._main_description_rest = list(main_description_rest)
         self._syntax_of_output = list(syntax_of_output)
         self._exit_code_description = list(exit_code_description)
