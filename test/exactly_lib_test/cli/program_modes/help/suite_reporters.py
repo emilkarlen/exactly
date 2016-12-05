@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help import suite_reporters as sut
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.help.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help, SuiteReporterDocumentation
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib_test.help.suite_reporters.test_resources.documentation import SuiteReporterDocTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check

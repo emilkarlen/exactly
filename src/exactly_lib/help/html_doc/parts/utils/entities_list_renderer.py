@@ -8,7 +8,7 @@ import types
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.utils.entity_documentation import sorted_entity_list, EntityDocumentation
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 

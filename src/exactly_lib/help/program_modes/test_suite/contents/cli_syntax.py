@@ -6,7 +6,7 @@ from exactly_lib.help.concepts.configuration_parameters import actor
 from exactly_lib.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
-from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.parser import SECTION_NAME__CONF
 from exactly_lib.util.cli_syntax.elements import argument as arg

@@ -1,6 +1,6 @@
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 

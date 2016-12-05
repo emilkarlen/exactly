@@ -7,7 +7,7 @@ from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTO
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
-from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_case.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.structure.structures import text

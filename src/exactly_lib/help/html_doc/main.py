@@ -9,7 +9,7 @@ from exactly_lib.help.html_doc.parts.test_case import HtmlDocGeneratorForTestCas
 from exactly_lib.help.html_doc.parts.test_suite import HtmlDocGeneratorForTestSuiteHelp
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.table_of_contents import toc_list
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text

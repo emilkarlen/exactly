@@ -1,5 +1,6 @@
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment, cross_reference_list
+from exactly_lib.help.utils.render import cross_reference_list
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \

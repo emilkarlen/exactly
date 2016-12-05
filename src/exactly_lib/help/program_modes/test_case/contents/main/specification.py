@@ -9,7 +9,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_proces
 from exactly_lib.help.program_modes.test_case.contents.main.test_outcome import test_outcome_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, TestCaseHelpRendererBase
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para
 

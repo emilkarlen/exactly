@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.utils.render import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
