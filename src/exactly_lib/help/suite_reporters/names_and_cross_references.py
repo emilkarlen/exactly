@@ -17,11 +17,9 @@ ALL_SUITE_REPORTERS = [
     JUNIT_REPORTER,
 ]
 
-ALL_SUITE_REPORTERS_DICT = {
-    PROGRESS_REPORTER.singular_name: PROGRESS_REPORTER,
-    JUNIT_REPORTER.singular_name: JUNIT_REPORTER,
-}
-
+# Bad to have definition of default value in help package.
+# But do not know where the best place to put it is,
+# so it remains here for some time ...
 DEFAULT_REPORTER = PROGRESS_REPORTER
 
 
