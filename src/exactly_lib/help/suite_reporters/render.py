@@ -1,4 +1,5 @@
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
+from exactly_lib.help.utils.doc_utils import append_sections_if_contents_is_non_empty
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
@@ -17,6 +18,13 @@ class IndividualSuiteReporterRenderer(SectionContentsRenderer):
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         self.rendering_environment = environment
-        initial_paragraphs = [docs.para(self.suite_reporter.single_line_description())]
+        srd = self.suite_reporter
+        initial_paragraphs = [docs.para(srd.single_line_description())]
+        initial_paragraphs.extend(srd.main_description_rest())
         sub_sections = []
+        names_and_contents = [
+            ('Output syntax', srd.syntax_of_output()),
+            ('Exit code', srd.exit_code_description()),
+        ]
+        append_sections_if_contents_is_non_empty(sub_sections, names_and_contents)
         return doc.SectionContents(initial_paragraphs, sub_sections)
