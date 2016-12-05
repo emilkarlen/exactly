@@ -23,6 +23,8 @@ ERROR_STATUSES = {FullResultStatus.VALIDATE,
 
 NON_PASS_STATUSES = FAIL_STATUSES.union(ERROR_STATUSES)
 
+UNCONDITIONAL_EXIT_CODE = 0
+
 
 class JUnitRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
@@ -77,7 +79,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
                   xml_declaration=True,
                   short_empty_elements=True)
         self._std_output_files.out.write(os.linesep)
-        return 0
+        return UNCONDITIONAL_EXIT_CODE
 
     def _xml_for_suites(self, root_suite: structure.TestSuite, suite_reporters: list) -> ET.Element:
         def is_root_suite_and_should_skip_root_suite(reporter: reporting.SubSuiteReporter) -> bool:
