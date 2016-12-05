@@ -3,7 +3,8 @@ from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, C
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment, cross_reference_list
+from exactly_lib.help.utils.render import cross_reference_list
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para, section, paras

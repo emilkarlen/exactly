@@ -4,7 +4,7 @@ from exactly_lib.help.program_modes.common import renderers as sut
 from exactly_lib.help.program_modes.test_case.contents.phase import act
 from exactly_lib.help.program_modes.test_case.contents.phase import \
     assert_, configuration, before_assert, cleanup, setup
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib_test.help.test_resources import section_instruction_set, \
     CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check

@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
 

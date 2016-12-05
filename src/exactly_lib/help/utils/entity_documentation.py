@@ -5,7 +5,7 @@ Makes it possible to reuse some code for generating documentation.
 """
 
 from exactly_lib.help.cross_reference_id import CrossReferenceId
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

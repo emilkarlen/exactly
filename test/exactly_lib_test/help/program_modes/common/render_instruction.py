@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.help.program_modes.common import render_instruction as sut
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure.structures import paras, text
 from exactly_lib_test.common.test_resources.instruction_documentation import InstructionDocumentationWithConstantValues
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
