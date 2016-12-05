@@ -4,8 +4,10 @@ import pathlib
 from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment import common_cli_options as common_opts
+from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as help_args
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
+from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
@@ -74,9 +76,12 @@ class _Parser:
         return ret_val
 
     def _reporter_option_description(self) -> str:
-        s = 'How to report the result of the suite. Options: {reporter_names}. Use {help_option} for more info.'
+        s = 'How to report the result of the suite. Options: {reporter_names}. Use "{help_option}" for more info.'
+        help_option = ' '.join(
+            help_args.complete_help_for(help_args.concept_single(SUITE_REPORTER_CONCEPT.singular_name())))
         return s.format(reporter_names=','.join(self.reporter_names),
-                        help_option='>help concept reporter')
+                        help_option=help_option)
+
 
 _ACTOR_OPTION_DESCRIPTION = """\
 An {INTERPRETER_ACTOR_TERM} to use for every test case in the suite."""

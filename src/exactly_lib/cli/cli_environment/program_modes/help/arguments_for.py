@@ -4,6 +4,10 @@ from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_case import phase_identifier
 
 
+def complete_help_for(help_arguments: list) -> list:
+    return [HELP] + help_arguments
+
+
 def program() -> list:
     return []
 
