@@ -50,7 +50,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                                                                    Path(),
                                                                    test_suites)
         # ASSERT #
-        self.assertEquals(0, actual.exit_code)
+        self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
         self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_that_passes(self):
@@ -81,7 +81,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     test_suites)
 
                 # ASSERT #
-                self.assertEquals(0, actual.exit_code)
+                self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
                 self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_with_error(self):
@@ -113,7 +113,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     test_suites)
 
                 # ASSERT #
-                self.assertEquals(0, actual.exit_code)
+                self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
                 self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_with_error_due_to_failure_to_execute(self):
@@ -148,7 +148,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     test_suites)
 
                 # ASSERT #
-                self.assertEquals(0, actual.exit_code)
+                self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
                 self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_with_failure(self):
@@ -179,7 +179,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     Path(),
                     test_suites)
                 # ASSERT #
-                self.assertEquals(0, actual.exit_code)
+                self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
                 self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
@@ -223,7 +223,7 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
             ]
         )
         expected_output = expected_output_from(expected_xml)
-        self.assertEquals(0, actual.exit_code)
+        self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
         self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
@@ -259,7 +259,7 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
             ),
         ])
         expected_output = expected_output_from(expected_xml)
-        self.assertEquals(0, actual.exit_code)
+        self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
         self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_suite_with_sub_suites_with_successful_and_non_successful_cases(self):
@@ -321,7 +321,7 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
             ),
         ])
         expected_output = expected_output_from(expected_xml)
-        self.assertEquals(0, actual.exit_code)
+        self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
         self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
@@ -367,7 +367,7 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
             ),
         ])
         expected_output = expected_output_from(expected_xml)
-        self.assertEquals(0, actual.exit_code)
+        self.assertEquals(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
         self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
