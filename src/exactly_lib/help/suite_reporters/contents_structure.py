@@ -32,6 +32,24 @@ class SuiteReporterDocumentation(EntityDocumentation):
     def single_line_description_str(self) -> str:
         raise NotImplementedError()
 
+    def main_description_rest(self) -> list:
+        """
+        :rtype [`ParagraphItem`]
+        """
+        return []
+
+    def syntax_of_output(self) -> list:
+        """
+        :rtype [`ParagraphItem`]
+        """
+        return []
+
+    def exit_code_description(self) -> list:
+        """
+        :rtype [`ParagraphItem`]
+        """
+        raise NotImplementedError()
+
     def see_also(self) -> list:
         """
         :rtype [`CrossReferenceTarget`]

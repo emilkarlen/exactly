@@ -16,6 +16,9 @@ def suite_for_suite_reporter_documentation(documentation: SuiteReporterDocumenta
         TestSingleLineDescription,
         TestNameAndSingleLineDescriptionStr,
         TestNameAndSingleLineDescription,
+        TestMainDescriptionRest,
+        TestSyntax,
+        TestExitCodeDescription,
         TestSeeAlso,
         TestCrossReferenceTarget,
     ])
@@ -55,6 +58,27 @@ class TestNameAndSingleLineDescription(WithSuiteReporterDocumentationBase):
     def runTest(self):
         actual = self.documentation.name_and_single_line_description()
         struct_check.is_text.apply(self, actual, va.MessageBuilder('name_and_single_line_description'))
+
+
+class TestMainDescriptionRest(WithSuiteReporterDocumentationBase):
+    def runTest(self):
+        actual = self.documentation.main_description_rest()
+        struct_check.is_paragraph_item_list().apply_with_message(self, actual,
+                                                                 'main_description_rest')
+
+
+class TestSyntax(WithSuiteReporterDocumentationBase):
+    def runTest(self):
+        actual = self.documentation.syntax_of_output()
+        struct_check.is_paragraph_item_list().apply_with_message(self, actual,
+                                                                 'syntax_of_output')
+
+
+class TestExitCodeDescription(WithSuiteReporterDocumentationBase):
+    def runTest(self):
+        actual = self.documentation.exit_code_description()
+        struct_check.is_paragraph_item_list().apply_with_message(self, actual,
+                                                                 'main_description_rest')
 
 
 class TestSeeAlso(WithSuiteReporterDocumentationBase):
