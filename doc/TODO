@@ -1,5 +1,9 @@
 -*- org -*-
 
+* TODO textformat/text for URL
+<2016-12-05 mån>
+URL à la "http://x.y.dom/p".
+Use for "https://windyroad.com.au/dl/Open Source/JUnit.xsd".
 * Default act phase setup should be able to treat "$ cmd" as a shell command
 <2016-11-27 sön>
 * TODO Preprocessor process should maybe have timeout
