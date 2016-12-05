@@ -3,9 +3,12 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.help.concepts.configuration_parameters import actor
+from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
+from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
+from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReference
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.parser import SECTION_NAME__CONF
@@ -22,6 +25,9 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             'actor': formatting.concept(actor.ACTOR_CONCEPT.name().singular),
             'interpreter_actor': formatting.term(case_opts.INTERPRETER_ACTOR_TERM),
             'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
+            'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
+            'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
+
         })
         self.synopsis = synopsis()
 
@@ -54,11 +60,10 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                             ])
 
     def _reporter_argument(self) -> cli_syntax.DescribedArgument:
-        extra_format_map = {
-            'junit_format': opts.REPORTER_OPTION__JUNIT,
-        }
         return cli_syntax.DescribedArgument(_REPORTER_OPTION,
-                                            self.parser.fnap(_REPORTER_OPTION_DESCRIPTION, extra_format_map)
+                                            self.parser.fnap(_REPORTER_OPTION_DESCRIPTION),
+                                            see_also=[SUITE_REPORTER_CONCEPT.cross_reference_target()] +
+                                                     reporters.all_suite_reporters_cross_refs()
                                             )
 
 
@@ -101,15 +106,15 @@ _REPORTER_OPTION = arg.option(long_name=opts.OPTION_FOR_REPORTER__LONG,
                               argument=opts.REPORTER_OPTION_ARGUMENT)
 
 _REPORTER_OPTION_DESCRIPTION = """\
-Specifies in which format to report the execution of the test suite.
+Specifies in which format to report the execution of the test suite
+(stdout, stderr, exitcode).
 
 
-The default is to report the progress of each test case, in a human readable format.
-The exit code of the program indicates weather all cases in the suite passed or not.
-
-
-The "{junit_format}" reporter outputs XML in JUnit format.
-The exit code of the program is 0, unless the test suite could not be read.
+Options: {reporter_name_list} (default {default_reporter_name}).
 """
 
 _FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)
+
+
+def _reporter_name(x: SingularNameAndCrossReference) -> str:
+    return formatting.cli_argument_option_string(x.singular_name)

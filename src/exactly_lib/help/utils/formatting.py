@@ -114,3 +114,7 @@ def concept(s: str) -> str:
 
 def program_name(name: str) -> str:
     return '"' + name + '"'
+
+
+def cli_argument_option_string(option: str) -> str:
+    return '"' + option + '"'
