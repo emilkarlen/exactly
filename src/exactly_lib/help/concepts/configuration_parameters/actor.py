@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
+from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs, INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import Name, \
     ConfigurationParameterDocumentation
@@ -27,7 +27,7 @@ class _ActorConcept(ConfigurationParameterDocumentation):
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'interpreter_actor': formatting.term(opt.INTERPRETER_ACTOR_TERM),
+            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name),
         })
         return DescriptionWithSubSections(parse.text(_SINGLE_LINE_DESCRIPTION),
                                           docs.SectionContents(
