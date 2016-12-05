@@ -13,5 +13,8 @@ class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
     def single_line_description_str(self) -> str:
         return self._parser.format('Print a single line per test case.')
 
+    def exit_code_description(self) -> list:
+        return self._parser.fnap('0 if all test cases passed.')
+
 
 DOCUMENTATION = SimpleProgressSuiteReporterDocumentation()
