@@ -1,5 +1,5 @@
 from exactly_lib.help import cross_reference_id as cross_ref
-from exactly_lib.help.actors.actor.all_actors import ALL_ACTORS
+from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
@@ -83,7 +83,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         return generator.target_info_hierarchy(), section_contents
 
     def _actors_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = HtmlDocGeneratorForEntitiesHelp(IndividualActorRenderer, ALL_ACTORS, self.rendering_environment)
+        generator = HtmlDocGeneratorForEntitiesHelp(IndividualActorRenderer, ALL_ACTOR_DOCS, self.rendering_environment)
         return generator.apply(targets_factory)
 
     def _cli_syntax_contents(self) -> doc.SectionContents:

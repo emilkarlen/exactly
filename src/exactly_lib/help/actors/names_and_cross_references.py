@@ -17,6 +17,11 @@ ALL_ACTORS = [
     SINGLE_COMMAND_LINE_ACTOR,
 ]
 
+# Bad to have definition of default value in help package.
+# But do not know where the best place to put it is,
+# so it remains here for some time ...
+DEFAULT_ACTOR = SINGLE_COMMAND_LINE_ACTOR
+
 
 def all_actor_cross_refs() -> list:
     return [x.cross_reference_target
