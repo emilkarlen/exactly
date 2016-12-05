@@ -1,4 +1,4 @@
-from exactly_lib.help.actors.actor.all_actors import ALL_ACTORS
+from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import concepts_help
@@ -64,7 +64,7 @@ class ApplicationHelp(tuple):
 def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            concepts_help(all_concepts()),
-                           actors_help(ALL_ACTORS),
+                           actors_help(ALL_ACTOR_DOCS),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            TestSuiteHelp([
                                ConfigurationSectionDocumentation(SECTION_NAME__CONF,

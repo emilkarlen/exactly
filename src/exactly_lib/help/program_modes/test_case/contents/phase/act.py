@@ -47,9 +47,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         return True
 
     def contents_description(self) -> list:
-        from exactly_lib.help.actors.default_actor import DEFAULT_ACTOR
+        from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
         return (self._parse(_CONTENTS_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
-                docs.paras(DEFAULT_ACTOR.name_and_single_line_description()) +
+                docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
                 self._parse(_CONTENTS_DESCRIPTION__AFTER_DEFAULT_ACTOR_DESCRIPTION)
                 )
 

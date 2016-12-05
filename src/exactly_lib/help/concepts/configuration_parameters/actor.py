@@ -40,8 +40,8 @@ class _ActorConcept(ConfigurationParameterDocumentation):
                                               ]))
 
     def default_value_str(self) -> str:
-        from exactly_lib.help.actors.default_actor import DEFAULT_ACTOR
-        return DEFAULT_ACTOR.name_and_single_line_description_str()
+        from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
+        return DEFAULT_ACTOR_DOC.name_and_single_line_description_str()
 
     def see_also(self) -> list:
         return (all_actor_cross_refs() +
