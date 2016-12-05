@@ -14,10 +14,12 @@ class TestSuiteHelpRequest(HelpRequest):
     def __init__(self,
                  item: TestSuiteHelpItem,
                  name: str,
-                 data):
+                 data,
+                 do_include_name_in_output: bool = False):
         self._item = item
         self._name = name
         self._data = data
+        self._do_include_name_in_output = do_include_name_in_output
 
     @property
     def item(self) -> TestSuiteHelpItem:
@@ -30,3 +32,7 @@ class TestSuiteHelpRequest(HelpRequest):
     @property
     def data(self):
         return self._data
+
+    @property
+    def do_include_name_in_output(self) -> bool:
+        return self._do_include_name_in_output
