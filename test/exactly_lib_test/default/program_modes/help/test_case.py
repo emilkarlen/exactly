@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_case import phase_identifier
