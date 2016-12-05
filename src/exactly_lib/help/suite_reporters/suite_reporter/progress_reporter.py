@@ -11,10 +11,14 @@ class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
         self._parser = TextParser(format_map)
 
     def single_line_description_str(self) -> str:
-        return self._parser.format('Print a single line per test case.')
+        return self._parser.format(_SINGLE_LINE_DESCRIPTION)
 
     def exit_code_description(self) -> list:
-        return self._parser.fnap('0 if all test cases passed.')
+        return self._parser.fnap(_EXIT_CODE_DESCRIPTION)
 
 
 DOCUMENTATION = SimpleProgressSuiteReporterDocumentation()
+
+_SINGLE_LINE_DESCRIPTION = 'Reports execution progress in a human readable form.'
+
+_EXIT_CODE_DESCRIPTION = '0 iff all test cases passed.'
