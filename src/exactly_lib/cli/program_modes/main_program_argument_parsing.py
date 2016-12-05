@@ -6,6 +6,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
+from exactly_lib.help.utils import formatting
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
@@ -74,14 +75,16 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         the output from the act phase script is emitted:
                         Output on stdout/stderr from the script is printed to stdout/stderr.
                         The exit code from the act script becomes the exit code from the program.""")
+    from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+    from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_ACTOR__LONG),
                          metavar=opt.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
-                         help="""\
-                        Executable that executes the script of the "act" phase.
-
-                        The executable is given a single command line argument, which is the file
-                        that contains the contents of the act phase.""")
+                         help=_ACTOR_OPTION_DESCRIPTION.format(
+                             ARGUMENT=opt.ACTOR_OPTION_ARGUMENT,
+                             INTERPRETER_ACTOR_TERM=formatting.entity(INTERPRETER_ACTOR.singular_name),
+                             ACTOR_CONCEPT=ACTOR_CONCEPT.singular_name(),
+                         ))
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_PREPROCESSOR__LONG),
                          metavar=opt.PREPROCESSOR_OPTION_ARGUMENT,
                          nargs=1,
@@ -106,3 +109,13 @@ def _parse_preprocessor(default_preprocessor: Preprocessor,
         return default_preprocessor
     else:
         return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument[0]))
+
+
+_ACTOR_OPTION_DESCRIPTION = """\
+Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program that serves as the interpreter.
+
+{ARGUMENT} is an absolute path followed by optional arguments (using shell syntax).
+
+Note that an {ACTOR_CONCEPT} set in the test case has precedence over the
+{ACTOR_CONCEPT} given here.
+"""
