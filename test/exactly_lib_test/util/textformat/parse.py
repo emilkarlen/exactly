@@ -2,7 +2,24 @@ import unittest
 
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat import parse as sut
+from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib_test.util.textformat.test_resources import parse as test_resource
+
+
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestParseEmpty))
+    ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithSingleText))
+    ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
+    ret_val.addTest(unittest.makeSuite(TestMultipleParagraphs))
+    ret_val.addTest(unittest.makeSuite(TestLiteral))
+
+    ret_val.addTest(unittest.makeSuite(TestNormalize))
+
+    ret_val.addTest(unittest.makeSuite(TestNormalizeAndParse))
+    return ret_val
 
 
 class TestNormalize(unittest.TestCase):
@@ -48,7 +65,7 @@ class TestParseEmpty(unittest.TestCase):
 class TestSingleParagraphWithSingleText(unittest.TestCase):
     def test_single_text_block_on_single_line(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('the text block')])],
+                            [Paragraph([StringText('the text block')])],
                             sut.parse(['the text block']))
 
     def test_single_text_block_on_multiple_lines(self):
@@ -57,20 +74,20 @@ class TestSingleParagraphWithSingleText(unittest.TestCase):
                        'block'
                        ]
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText(' '.join(input_lines))])],
+                            [Paragraph([StringText(' '.join(input_lines))])],
                             sut.parse(input_lines))
 
     def test_strip_text_strings(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('the text block')])],
+                            [Paragraph([StringText('the text block')])],
                             sut.parse(['  the text block   ']))
 
 
 class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
     def test_single_line_text_blocks(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('text 1'),
-                                            sut.StringText('text 2')])],
+                            [Paragraph([StringText('text 1'),
+                                        StringText('text 2')])],
                             sut.parse(['text 1'] +
                                       sut.TEXT_SEPARATOR_LINES +
                                       ['text 2']))
@@ -82,26 +99,26 @@ class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
                       ['text',
                        '2']
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('text 1'),
-                                            sut.StringText('text 2')])],
+                            [Paragraph([StringText('text 1'),
+                                        StringText('text 2')])],
                             sut.parse(input_lines))
 
 
 class TestMultipleParagraphs(unittest.TestCase):
     def test_single_line_text_blocks(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('text in para 1')]),
-                             sut.Paragraph([sut.StringText('text in para 2')])],
+                            [Paragraph([StringText('text in para 1')]),
+                             Paragraph([StringText('text in para 2')])],
                             sut.parse(['text in para 1'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
                                       ['text in para 2']))
 
-    def test_single_multiple_text_blocks(self):
+    def test_multiple_text_blocks(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('text 1 in para 1'),
-                                            sut.StringText('text 2 in para 1')]),
-                             sut.Paragraph([sut.StringText('text 1 in para 2'),
-                                            sut.StringText('text 2 in para 2')])],
+                            [Paragraph([StringText('text 1 in para 1'),
+                                        StringText('text 2 in para 1')]),
+                             Paragraph([StringText('text 1 in para 2'),
+                                        StringText('text 2 in para 2')])],
                             sut.parse(['text 1 in para 1'] +
                                       sut.TEXT_SEPARATOR_LINES +
                                       ['text 2 in para 1'] +
@@ -110,12 +127,10 @@ class TestMultipleParagraphs(unittest.TestCase):
                                       sut.TEXT_SEPARATOR_LINES +
                                       ['text 2 in para 2']))
 
-
-class TestMultipleParagraphsWithAlternateSeparator(unittest.TestCase):
     def test_larger_paragraph_separator(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('text in para 1')]),
-                             sut.Paragraph([sut.StringText('text in para 2')])],
+                            [Paragraph([StringText('text in para 1')]),
+                             Paragraph([StringText('text in para 2')])],
                             sut.parse(['text in para 1'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
@@ -147,14 +162,14 @@ class TestLiteral(unittest.TestCase):
 
     def test_escaping_markup_token_should_make_contents_be_treated_as_normal_paragraph(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('``` line')])],
+                            [Paragraph([StringText('``` line')])],
                             sut.parse(['\\```',
                                        'line',
                                        ]))
 
     def test_escaping_backslash(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('\\``` line')])],
+                            [Paragraph([StringText('\\``` line')])],
                             sut.parse(['\\\\```',
                                        'line',
                                        ]))
@@ -174,9 +189,9 @@ class TestLiteral(unittest.TestCase):
     def test_literal_block_between_paragraph_blocks(self):
         test_resource.check(self,
                             [
-                                sut.Paragraph([sut.StringText('para 1')]),
+                                Paragraph([StringText('para 1')]),
                                 sut.LiteralLayout(lines_content(['literal line'])),
-                                sut.Paragraph([sut.StringText('para 2')]),
+                                Paragraph([StringText('para 2')]),
                             ],
                             sut.parse(['para 1'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
@@ -185,6 +200,87 @@ class TestLiteral(unittest.TestCase):
                                        '```'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
                                       ['para 2']))
+
+
+class TestItemizedList(unittest.TestCase):
+    EXPECTED_LIST_FORMAT = lists.Format(lists.ListType.ITEMIZED_LIST,
+                                        custom_indent_spaces=sut.DEFAULT_LIST_SETTINGS.custom_indent_spaces,
+                                        custom_separations=sut.DEFAULT_LIST_SETTINGS.custom_separations)
+
+    def test_single_list_with_single_item(self):
+        expected = [lists.HeaderContentList([_list_item('item')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  * item'])
+        test_resource.check(self, expected, actual)
+
+    def test_single_list_with_multiple_items(self):
+        expected = [lists.HeaderContentList([_list_item('item 1'),
+                                             _list_item('item 2')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  * item 1',
+                            '  * item 2'])
+        test_resource.check(self, expected, actual)
+
+    def test_single_list_with_multiple_items_with_other_indentation_level(self):
+        expected = [lists.HeaderContentList([_list_item('item 1'),
+                                             _list_item('item 2')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['    * item 1',
+                            '    * item 2'])
+        test_resource.check(self, expected, actual)
+
+    def test_single_list_with_multiple_items_separated_by_empty_line(self):
+        expected = [lists.HeaderContentList([_list_item('item 1'),
+                                             _list_item('item 2')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  * item 1',
+                            '',
+                            '  * item 2'])
+        test_resource.check(self, expected, actual)
+
+    def test_spaces_around_header_string_SHOULD_not_appear_in_header(self):
+        expected = [lists.HeaderContentList([_list_item('item 1'),
+                                             _list_item('item 2')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  *   item 1',
+                            '  *  item 2   '])
+        test_resource.check(self, expected, actual)
+
+    def test_single_list_with_multiple_items_with_initial_blank_lines(self):
+        expected = [lists.HeaderContentList([_list_item('item 1'),
+                                             _list_item('item 2')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['',
+                            '  * item 1',
+                            '  * item 2'])
+        test_resource.check(self, expected, actual)
+
+    def test_single_list_with_multiple_items_with_trailing_blank_lines(self):
+        expected = [lists.HeaderContentList([_list_item('item 1'),
+                                             _list_item('item 2')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  * item 1',
+                            '  * item 2',
+                            ''])
+        test_resource.check(self, expected, actual)
+
+    def test_list_in_middle_of_paragraphs(self):
+        expected = [
+            Paragraph([StringText('first paragraph')]),
+            lists.HeaderContentList([_list_item('item 1'),
+                                     _list_item('item 2')],
+                                    self.EXPECTED_LIST_FORMAT),
+            Paragraph([StringText('last paragraph')]),
+        ]
+        actual = sut.parse(['first paragraph',
+                            '',
+                            '',
+                            '  * item 1',
+                            '  * item 2',
+                            '',
+                            '',
+                            'last paragraph'])
+        test_resource.check(self, expected, actual)
 
 
 class TestNormalizeAndParse(unittest.TestCase):
@@ -205,26 +301,18 @@ class TestNormalizeAndParse(unittest.TestCase):
         indented_lines = ['  ' + line for line in lines]
         actual = sut.normalize_and_parse(lines_content(indented_lines))
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('para 1 text 1')]),
-                             sut.Paragraph([sut.StringText('para 2 text 1'),
-                                            sut.StringText('para 2 text 2'),
-                                            sut.StringText('para 2 text 3')])],
+                            [Paragraph([StringText('para 1 text 1')]),
+                             Paragraph([StringText('para 2 text 1'),
+                                        StringText('para 2 text 2'),
+                                        StringText('para 2 text 3')])],
                             actual)
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParseEmpty))
-    ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithSingleText))
-    ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
-    ret_val.addTest(unittest.makeSuite(TestMultipleParagraphs))
-    ret_val.addTest(unittest.makeSuite(TestMultipleParagraphsWithAlternateSeparator))
-    ret_val.addTest(unittest.makeSuite(TestLiteral))
+_text = StringText
 
-    ret_val.addTest(unittest.makeSuite(TestNormalize))
 
-    ret_val.addTest(unittest.makeSuite(TestNormalizeAndParse))
-    return ret_val
+def _list_item(header: str) -> lists.HeaderContentListItem:
+    return lists.HeaderContentListItem(_text(header), [])
 
 
 if __name__ == '__main__':
