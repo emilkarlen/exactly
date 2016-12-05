@@ -1,11 +1,12 @@
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
+from exactly_lib.help.actors.names_and_cross_references import name_and_ref_target
 from exactly_lib.help.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.util.textformat.structure import structures as docs
 
 
 class ActorTestImpl(ActorDocumentation):
     def __init__(self, singular_name: str):
-        super().__init__(singular_name)
+        super().__init__(name_and_ref_target(singular_name))
 
     def single_line_description_str(self) -> str:
         return 'single_line_description_str'

@@ -1,7 +1,7 @@
-from exactly_lib.help.actors.names_and_cross_references import actor_cross_ref
-from exactly_lib.help.cross_reference_id import ActorCrossReferenceId, TestCasePhaseCrossReference
+from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference, CrossReferenceId
 from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
+from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReference
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text
 
@@ -11,14 +11,14 @@ class ActorDocumentation(EntityDocumentation):
     Abstract base class for concepts.
     """
 
-    def __init__(self, name: str):
-        self._name = name
+    def __init__(self, name_and_cross_ref_target: SingularNameAndCrossReference):
+        self._name_and_cross_ref_target = name_and_cross_ref_target
 
     def singular_name(self) -> str:
-        return self._name
+        return self._name_and_cross_ref_target.singular_name
 
-    def cross_reference_target(self) -> ActorCrossReferenceId:
-        return actor_cross_ref(self._name)
+    def cross_reference_target(self) -> CrossReferenceId:
+        return self._name_and_cross_ref_target.cross_reference_target
 
     def single_line_description(self) -> Text:
         return docs.text(self.single_line_description_str())
