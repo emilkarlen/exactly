@@ -1,7 +1,7 @@
 from exactly_lib.help.cross_reference_id import CrossReferenceId
 
 
-class SingularNameAndCrossReference(tuple):
+class SingularNameAndCrossReferenceId(tuple):
     def __new__(cls,
                 singular_name: str,
                 cross_reference_target: CrossReferenceId):

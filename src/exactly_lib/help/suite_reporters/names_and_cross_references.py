@@ -1,14 +1,14 @@
 from exactly_lib.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
-from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReference
+from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId
 
 
 def suite_reporter_cross_ref(reporter_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(SUITE_REPORTER_ENTITY_TYPE_NAME, reporter_name)
 
 
-def _name_and_ref(name: str) -> SingularNameAndCrossReference:
-    return SingularNameAndCrossReference(name, suite_reporter_cross_ref(name))
+def _name_and_ref(name: str) -> SingularNameAndCrossReferenceId:
+    return SingularNameAndCrossReferenceId(name, suite_reporter_cross_ref(name))
 
 
 PROGRESS_REPORTER = _name_and_ref('progress')
