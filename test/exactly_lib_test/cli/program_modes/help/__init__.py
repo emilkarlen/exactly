@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.cli.program_modes.help import argument_parsing, concepts, actors, suite_reporters
+from exactly_lib_test.cli.program_modes.help import argument_parsing, concepts, actors, suite_reporters, program_modes
 
 
 def suite() -> unittest.TestSuite:
@@ -9,6 +9,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(concepts.suite())
     ret_val.addTest(actors.suite())
     ret_val.addTest(suite_reporters.suite())
+    ret_val.addTest(program_modes.suite())
     return ret_val
 
 
