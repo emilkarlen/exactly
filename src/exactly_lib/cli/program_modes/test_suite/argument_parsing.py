@@ -6,6 +6,7 @@ from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phas
 from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
+from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -17,53 +18,65 @@ def parse(default: TestCaseHandlingSetup,
     """
     :raises ArgumentParsingError Invalid usage
     """
-    argument_parser = _new_argument_parser()
-    namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
-                                                                                   argv)
-    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
-                                                                     namespace.actor)
-    return TestSuiteExecutionSettings(_resolve_reporter_factory(vars(namespace)),
-                                      TestCaseHandlingSetup(act_phase_setup,
-                                                            default.preprocessor),
-                                      pathlib.Path(namespace.file).resolve())
+    return _Parser(default).parse(argv)
 
 
-def _resolve_reporter_factory(namespace: dict):
-    if opts.OPTION_FOR_REPORTER__LONG in namespace:
-        reporter_list = namespace[opts.OPTION_FOR_REPORTER__LONG]
-        if reporter_list is not None and len(reporter_list) == 1:
-            reporter = reporter_list[0]
-            if reporter == opts.REPORTER_OPTION__JUNIT:
-                from exactly_lib.test_suite.reporters.junit import JUnitRootSuiteReporterFactory
-                return JUnitRootSuiteReporterFactory()
-    from exactly_lib.test_suite.reporters.simple_progress_reporter import SimpleProgressRootSuiteReporterFactory
-    return SimpleProgressRootSuiteReporterFactory()
+class _Parser:
+    def __init__(self, default: TestCaseHandlingSetup):
+        self.default = default
+        from exactly_lib.test_suite.reporters.junit import JUnitRootSuiteReporterFactory
+        from exactly_lib.test_suite.reporters.simple_progress_reporter import SimpleProgressRootSuiteReporterFactory
+        self.reporter_name_2_factory = {
+            reporters.JUNIT_REPORTER.singular_name: JUnitRootSuiteReporterFactory,
+            reporters.PROGRESS_REPORTER.singular_name: SimpleProgressRootSuiteReporterFactory,
+        }
+        self.reporter_names = sorted(list(self.reporter_name_2_factory.keys()))
+        self.default_reporter_factory_constructor = SimpleProgressRootSuiteReporterFactory
 
+    def parse(self, argv: list) -> TestSuiteExecutionSettings:
+        argument_parser = self._new_argument_parser()
+        namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
+                                                                                       argv)
+        act_phase_setup = resolve_act_phase_setup_from_argparse_argument(self.default.default_act_phase_setup,
+                                                                         namespace.actor)
+        return TestSuiteExecutionSettings(self._resolve_reporter_factory(vars(namespace)),
+                                          TestCaseHandlingSetup(act_phase_setup,
+                                                                self.default.preprocessor),
+                                          pathlib.Path(namespace.file).resolve())
 
-def _new_argument_parser() -> argparse.ArgumentParser:
-    ret_val = argparse.ArgumentParser(description='Runs a test suite',
-                                      prog=program_info.PROGRAM_NAME + ' ' + common_opts.SUITE_COMMAND)
-    ret_val.add_argument('file',
-                         metavar=opts.TEST_SUITE_FILE_ARGUMENT,
-                         type=str,
-                         help='The test suite file.')
-    ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_REPORTER__LONG),
-                         metavar=opts.REPORTER_OPTION_ARGUMENT,
-                         nargs=1,
-                         choices=[opts.REPORTER_OPTION__JUNIT],
-                         help=_REPORTER_OPTION_DESCRIPTION.format(junit=opts.REPORTER_OPTION__JUNIT))
-    ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_ACTOR__LONG),
-                         metavar=case_opts.ACTOR_OPTION_ARGUMENT,
-                         nargs=1,
-                         help=_ACTOR_OPTION_DESCRIPTION.format(
-                             INTERPRETER_ACTOR_TERM=case_opts.INTERPRETER_ACTOR_TERM
-                         ))
-    return ret_val
+    def _resolve_reporter_factory(self,
+                                  namespace: dict):
+        if opts.OPTION_FOR_REPORTER__LONG in namespace:
+            reporter_list = namespace[opts.OPTION_FOR_REPORTER__LONG]
+            if reporter_list is not None and len(reporter_list) == 1:
+                reporter_name = reporter_list[0]
+                return self.reporter_name_2_factory[reporter_name]()
+        return self.default_reporter_factory_constructor()
 
+    def _new_argument_parser(self) -> argparse.ArgumentParser:
+        ret_val = argparse.ArgumentParser(description='Runs a test suite',
+                                          prog=program_info.PROGRAM_NAME + ' ' + common_opts.SUITE_COMMAND)
+        ret_val.add_argument('file',
+                             metavar=opts.TEST_SUITE_FILE_ARGUMENT,
+                             type=str,
+                             help='The test suite file.')
+        ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_REPORTER__LONG),
+                             metavar=opts.REPORTER_OPTION_ARGUMENT,
+                             nargs=1,
+                             choices=self.reporter_names,
+                             help=self._reporter_option_description())
+        ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_ACTOR__LONG),
+                             metavar=case_opts.ACTOR_OPTION_ARGUMENT,
+                             nargs=1,
+                             help=_ACTOR_OPTION_DESCRIPTION.format(
+                                 INTERPRETER_ACTOR_TERM=case_opts.INTERPRETER_ACTOR_TERM
+                             ))
+        return ret_val
+
+    def _reporter_option_description(self) -> str:
+        s = 'How to report the result of the suite. Options: {reporter_names}. Use {help_option} for more info.'
+        return s.format(reporter_names=','.join(self.reporter_names),
+                        help_option='>help concept reporter')
 
 _ACTOR_OPTION_DESCRIPTION = """\
 An {INTERPRETER_ACTOR_TERM} to use for every test case in the suite."""
-
-_REPORTER_OPTION_DESCRIPTION = """\
-Format of the report of the suite. "{junit}" will output JUnit XML, and exit with
-exit code 0, as long as the suite file is valid."""
