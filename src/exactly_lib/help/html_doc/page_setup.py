@@ -28,6 +28,11 @@ th {
   background-color: #f4f4f4;
   text-align: left;
   padding-right: 5px;
+  vertical-align: top;
+}
+
+td {
+  vertical-align: top;
 }
 
 a:link {
