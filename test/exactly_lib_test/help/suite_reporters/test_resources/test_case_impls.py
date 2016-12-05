@@ -45,7 +45,7 @@ class TestSingleLineDescriptionStr(WithSuiteReporterDocumentationBase):
 class TestSingleLineDescription(WithSuiteReporterDocumentationBase):
     def runTest(self):
         actual = self.documentation.single_line_description()
-        struct_check.is_text.apply(self, actual, va.MessageBuilder('single_line_description'))
+        struct_check.is_text.apply_with_message(self, actual, 'single_line_description')
 
 
 class TestNameAndSingleLineDescriptionStr(WithSuiteReporterDocumentationBase):
@@ -57,7 +57,7 @@ class TestNameAndSingleLineDescriptionStr(WithSuiteReporterDocumentationBase):
 class TestNameAndSingleLineDescription(WithSuiteReporterDocumentationBase):
     def runTest(self):
         actual = self.documentation.name_and_single_line_description()
-        struct_check.is_text.apply(self, actual, va.MessageBuilder('name_and_single_line_description'))
+        struct_check.is_text.apply_with_message(self, actual, 'name_and_single_line_description')
 
 
 class TestMainDescriptionRest(WithSuiteReporterDocumentationBase):
@@ -84,11 +84,11 @@ class TestExitCodeDescription(WithSuiteReporterDocumentationBase):
 class TestSeeAlso(WithSuiteReporterDocumentationBase):
     def runTest(self):
         actual = self.documentation.see_also()
-        va.is_list_of(xref_va.is_any).apply(self, actual, va.MessageBuilder('see_also'))
+        va.is_list_of(xref_va.is_any).apply_with_message(self, actual, 'see_also')
 
 
 class TestCrossReferenceTarget(WithSuiteReporterDocumentationBase):
     def runTest(self):
         actual = self.documentation.cross_reference_target()
         assertion = xref_va.is_entity_for_type(SUITE_REPORTER_ENTITY_TYPE_NAME)
-        assertion.apply(self, actual, va.MessageBuilder('cross_reference_target'))
+        assertion.apply_with_message(self, actual, 'cross_reference_target')
