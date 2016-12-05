@@ -1,6 +1,6 @@
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.suite_reporters.names_and_cross_references import JUNIT_REPORTER__NAME
-from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.help.utils.textformat_parser import TextParser
 
 
 class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):

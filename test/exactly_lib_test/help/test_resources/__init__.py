@@ -10,7 +10,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import Text

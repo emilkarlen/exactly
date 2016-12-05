@@ -3,7 +3,7 @@ import pathlib
 import unittest
 
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
