@@ -8,7 +8,7 @@ from exactly_lib.help.cross_reference_id import TestSuiteSectionInstructionCross
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
-from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReference
+from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.parser import SECTION_NAME__CONF
@@ -116,5 +116,5 @@ Options: {reporter_name_list} (default {default_reporter_name}).
 _FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)
 
 
-def _reporter_name(x: SingularNameAndCrossReference) -> str:
+def _reporter_name(x: SingularNameAndCrossReferenceId) -> str:
     return formatting.cli_argument_option_string(x.singular_name)
