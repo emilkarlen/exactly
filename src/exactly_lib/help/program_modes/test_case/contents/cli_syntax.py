@@ -1,6 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.help.concepts.configuration_parameters import actor
+from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils import formatting
@@ -16,10 +17,12 @@ from exactly_lib.util.textformat.structure import structures as docs
 class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
+        from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
         self.parser = TextParser({
-            'interpreter_actor': formatting.term(opt.INTERPRETER_ACTOR_TERM),
+            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name),
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
             'phase': phase_name_dictionary(),
+            'actor_concept': ACTOR_CONCEPT.singular_name(),
         })
         self.synopsis = synopsis()
 
@@ -97,7 +100,7 @@ _FILE_ARGUMENT = arg.Named(opt.TEST_CASE_FILE_ARGUMENT)
 _OPTION_PLACEHOLDER_ARGUMENT = arg.Named('OPTION')
 
 _ACTOR_OPTION_DESCRIPTION = """\
-Specifies an {interpreter_actor}, by giving the executable program that serves as the interpreter.
+Specifies an {interpreter_actor} {actor_concept}, by giving the executable program that serves as the interpreter.
 
 
 {interpreter_program} is an absolute path followed by optional arguments

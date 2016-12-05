@@ -7,6 +7,7 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as help_args
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
+from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.help.utils import formatting
@@ -72,7 +73,7 @@ class _Parser:
                              metavar=case_opts.ACTOR_OPTION_ARGUMENT,
                              nargs=1,
                              help=_ACTOR_OPTION_DESCRIPTION.format(
-                                 INTERPRETER_ACTOR_TERM=case_opts.INTERPRETER_ACTOR_TERM
+                                 INTERPRETER_ACTOR_TERM=INTERPRETER_ACTOR.singular_name
                              ))
         return ret_val
 
