@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
-from exactly_lib.cli.program_modes.help import argument_parsing as opt
-from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
+from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
@@ -22,8 +22,8 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def synopsises(self) -> list:
         return [
             _synopsis([], 'Brief description of the program.'),
-            _synopsis([_c(opt.HELP)], 'Displays this help.'),
-            _synopsis([_c(opt.HTML_DOCUMENTATION)],
+            _synopsis([_c(clo.HELP)], 'Displays this help.'),
+            _synopsis([_c(clo.HTML_DOCUMENTATION)],
                       'Generates a HTML version of all help information available in the program.'),
             _synopsis(_ns(arguments_for.case_cli_syntax()), 'Describes the test case command line syntax.'),
             _synopsis(_ns(arguments_for.case_specification()), 'Specification of the test case functionality.'),
@@ -38,11 +38,11 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             _synopsis(_ns(arguments_for.suite_section_for_name('SECTION')), 'Describes a test suite section.'),
             _synopsis(_ns(arguments_for.suite_instruction_in_section('SECTION', 'INSTRUCTION')),
                       'Describes an instruction in a suite section.'),
-            _entity_list_and_describe(opt.ACTOR, 'ACTOR',
+            _entity_list_and_describe(clo.ACTOR, 'ACTOR',
                                       'Lists all actors; or describes a given actor.'),
-            _entity_list_and_describe(opt.CONCEPT, 'CONCEPT',
+            _entity_list_and_describe(clo.CONCEPT, 'CONCEPT',
                                       'Lists all concepts; or describes a given concept.'),
-            _entity_list_and_describe(opt.SUITE_REPORTER, 'REPORTER',
+            _entity_list_and_describe(clo.SUITE_REPORTER, 'REPORTER',
                                       'Lists all suite reporters; or describes a given suite reporter.'),
         ]
 
@@ -52,7 +52,7 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
 def _synopsis(additional_arguments: list,
               single_line_description: str) -> cli_syntax.Synopsis:
-    arguments = [_c(opt.HELP)] + additional_arguments
+    arguments = [_c(clo.HELP)] + additional_arguments
     return cli_syntax.Synopsis(arg.CommandLine(list(map(_single_mandatory_arg, arguments))),
                                docs.text(single_line_description))
 
@@ -62,7 +62,7 @@ def _entity_list_and_describe(entity_type_name: str,
                               single_line_description: str) -> cli_syntax.Synopsis:
     arguments = [
         arg.Single(arg.Multiplicity.MANDATORY,
-                   _c(opt.HELP)),
+                   _c(clo.HELP)),
         arg.Single(arg.Multiplicity.MANDATORY,
                    _c(entity_type_name)),
         arg.Single(arg.Multiplicity.OPTIONAL,

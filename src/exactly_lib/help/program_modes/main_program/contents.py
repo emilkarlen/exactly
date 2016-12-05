@@ -1,6 +1,6 @@
 from exactly_lib import program_info
-from exactly_lib.cli.program_modes.help import argument_parsing as opt
-from exactly_lib.cli.program_modes.help import arguments_for as help_arguments
+from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as help_arguments
+from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as test_case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as test_suite_cli_syntax
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
@@ -53,7 +53,7 @@ def _simple_argument_synopsis() -> cli_syntax.Synopsis:
 
 def _help_synopsis(additional_mandatory_constant_arguments: list,
                    single_line_description: str) -> cli_syntax.Synopsis:
-    constants = [opt.HELP] + additional_mandatory_constant_arguments
+    constants = [clo.HELP] + additional_mandatory_constant_arguments
     return _synopsis_for_args(list(map(_single_mandatory_constant, constants)),
                               single_line_description)
 

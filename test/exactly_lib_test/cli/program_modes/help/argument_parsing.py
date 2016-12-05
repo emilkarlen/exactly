@@ -1,7 +1,8 @@
 import unittest
 
+from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
+from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.cli.program_modes.help import argument_parsing as sut
-from exactly_lib.cli.program_modes.help import arguments_for
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
@@ -43,7 +44,7 @@ class TestProgramHelp(unittest.TestCase):
 
     def test_help_help(self):
         actual = sut.parse(application_help_for([]),
-                           [sut.HELP])
+                           [clo.HELP])
         self.assertIsInstance(actual,
                               MainProgramHelpRequest,
                               'Expecting settings for MainProgram')
@@ -56,7 +57,7 @@ class TestProgramHelp(unittest.TestCase):
 class TestHtmlDocHelp(unittest.TestCase):
     def test_valid_usage(self):
         actual = sut.parse(application_help_for([]),
-                           [sut.HTML_DOCUMENTATION])
+                           [clo.HTML_DOCUMENTATION])
         self.assertIsInstance(actual,
                               HtmlDocHelpRequest,
                               'Expecting settings for XHTML')
@@ -64,7 +65,7 @@ class TestHtmlDocHelp(unittest.TestCase):
     def test_invalid_usage(self):
         with self.assertRaises(HelpError):
             sut.parse(application_help_for([]),
-                      [sut.HTML_DOCUMENTATION, 'superfluous argument'])
+                      [clo.HTML_DOCUMENTATION, 'superfluous argument'])
 
 
 class TestTestCasePhase(unittest.TestCase):

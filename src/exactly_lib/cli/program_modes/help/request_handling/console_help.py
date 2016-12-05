@@ -1,7 +1,8 @@
 import os
 import shutil
 
-from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
+from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.help import cross_reference_id
 from exactly_lib.help.contents_structure import ApplicationHelp
@@ -92,4 +93,4 @@ class _HelpCommandLineGetterVisitor(cross_reference_id.CrossReferenceIdVisitor):
 
 
 def _command_line_display_for_help_arguments(arguments: list) -> str:
-    return '>' + arguments_for.HELP + ' ' + ' '.join(arguments)
+    return '>' + clo.HELP + ' ' + ' '.join(arguments)

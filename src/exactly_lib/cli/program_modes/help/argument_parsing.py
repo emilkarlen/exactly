@@ -1,3 +1,5 @@
+from exactly_lib.cli.cli_environment.program_modes.help.command_line_options import HELP, INSTRUCTIONS, TEST_CASE, \
+    TEST_SUITE, SPECIFICATION, HTML_DOCUMENTATION
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
@@ -12,16 +14,6 @@ from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.test_case import phase_identifier
-
-HELP = 'help'
-INSTRUCTIONS = 'instructions'
-TEST_CASE = 'case'
-TEST_SUITE = 'suite'
-SPECIFICATION = 'spec'
-CONCEPT = CONCEPT_ENTITY_TYPE_NAME
-ACTOR = ACTOR_ENTITY_TYPE_NAME
-SUITE_REPORTER = SUITE_REPORTER_ENTITY_TYPE_NAME
-HTML_DOCUMENTATION = 'htmldoc'
 
 
 def parse(application_help: ApplicationHelp,
