@@ -3,7 +3,7 @@ from exactly_lib.help.actors.single_command_line_base import SingleCommandLineAc
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
-from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_case import sandbox_directory_structure as sds
 
 

@@ -2,7 +2,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
 from exactly_lib.help.suite_reporters.names_and_cross_references import ALL_SUITE_REPORTERS__CROSS_REFS
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.structure.structures import text
 
