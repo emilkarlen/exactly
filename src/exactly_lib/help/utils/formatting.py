@@ -100,6 +100,10 @@ def cli_option(s: str) -> str:
     return '"' + s + '"'
 
 
+def cli_argument_option_string(option: str) -> str:
+    return '"' + option + '"'
+
+
 def emphasis(s: str) -> str:
     return '"' + s + '"'
 
@@ -112,9 +116,9 @@ def concept(s: str) -> str:
     return '"' + s + '"'
 
 
-def program_name(name: str) -> str:
+def entity(name: str) -> str:
     return '"' + name + '"'
 
 
-def cli_argument_option_string(option: str) -> str:
-    return '"' + option + '"'
+def program_name(name: str) -> str:
+    return '"' + name + '"'
