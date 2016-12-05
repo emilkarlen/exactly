@@ -9,6 +9,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
+from exactly_lib.help.utils import formatting
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -33,7 +34,7 @@ class _Parser:
             reporters.PROGRESS_REPORTER.singular_name: SimpleProgressRootSuiteReporterFactory,
         }
         self.reporter_names = sorted(list(self.reporter_name_2_factory.keys()))
-        self.default_reporter_factory_constructor = SimpleProgressRootSuiteReporterFactory
+        self.default_reporter_name = reporters.DEFAULT_REPORTER.singular_name
 
     def parse(self, argv: list) -> TestSuiteExecutionSettings:
         argument_parser = self._new_argument_parser()
@@ -48,12 +49,12 @@ class _Parser:
 
     def _resolve_reporter_factory(self,
                                   namespace: dict):
+        reporter_name = self.default_reporter_name
         if opts.OPTION_FOR_REPORTER__LONG in namespace:
             reporter_list = namespace[opts.OPTION_FOR_REPORTER__LONG]
             if reporter_list is not None and len(reporter_list) == 1:
                 reporter_name = reporter_list[0]
-                return self.reporter_name_2_factory[reporter_name]()
-        return self.default_reporter_factory_constructor()
+        return self.reporter_name_2_factory[reporter_name]()
 
     def _new_argument_parser(self) -> argparse.ArgumentParser:
         ret_val = argparse.ArgumentParser(description='Runs a test suite',
@@ -76,12 +77,20 @@ class _Parser:
         return ret_val
 
     def _reporter_option_description(self) -> str:
-        s = 'How to report the result of the suite. Options: {reporter_names}. Use "{help_option}" for more info.'
+        formatted_names = [formatting.cli_argument_option_string(name)
+                           for name in self.reporter_names]
+        formatted_default_name = formatting.cli_argument_option_string(self.default_reporter_name)
         help_option = ' '.join(
             help_args.complete_help_for(help_args.concept_single(SUITE_REPORTER_CONCEPT.singular_name())))
-        return s.format(reporter_names=','.join(self.reporter_names),
-                        help_option=help_option)
+        return _REPORTER_OPTION_DESCRIPTION_TEMPLATE.format(reporter_names=','.join(formatted_names),
+                                                            default_reporter_name=formatted_default_name,
+                                                            help_option=help_option)
 
+
+_REPORTER_OPTION_DESCRIPTION_TEMPLATE = """\
+How to report the result of the suite. Options: {reporter_names} (default {default_reporter_name}).
+Use "{help_option}" for more info.
+"""
 
 _ACTOR_OPTION_DESCRIPTION = """\
 An {INTERPRETER_ACTOR_TERM} to use for every test case in the suite."""

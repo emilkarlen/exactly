@@ -1,8 +1,10 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib.help import cross_reference_id as cross_ref
+from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
@@ -16,6 +18,7 @@ class SpecificationRenderer(SectionContentsRenderer):
         self._format_map = {
             'program_name': program_info.PROGRAM_NAME,
             'suite_program_mode': SUITE_COMMAND,
+            'reporter_concept': formatting.concept(SUITE_REPORTER_CONCEPT.singular_name()),
         }
         if target_factory is None:
             target_factory = cross_ref.CustomTargetInfoFactory('')
@@ -62,6 +65,10 @@ _leaf = cross_ref.target_info_leaf
 
 _INTRODUCTION_SUMMARY = """\
 {program_name} has functionality for organizing test cases in test suites.
+A test suite can contain test cases as well as sub suites.
+
+
+The result of executing a test suite is reported by a {reporter_concept}.
 """
 
 _FILES_AND_EXECUTION_TEXT = """\
