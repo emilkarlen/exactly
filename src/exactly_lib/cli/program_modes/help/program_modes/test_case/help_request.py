@@ -17,10 +17,12 @@ class TestCaseHelpRequest(HelpRequest):
     def __init__(self,
                  item: TestCaseHelpItem,
                  name: str,
-                 value):
+                 value,
+                 do_include_name_in_output: bool = False):
         self._item = item
         self._name = name
         self._value = value
+        self._do_include_name_in_output = do_include_name_in_output
 
     @property
     def item(self) -> TestCaseHelpItem:
@@ -33,3 +35,7 @@ class TestCaseHelpRequest(HelpRequest):
     @property
     def data(self):
         return self._value
+
+    @property
+    def do_include_name_in_output(self) -> bool:
+        return self._do_include_name_in_output

@@ -1,0 +1,4 @@
+from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
+
+RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())

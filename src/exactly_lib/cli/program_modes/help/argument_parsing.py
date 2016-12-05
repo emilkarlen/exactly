@@ -124,7 +124,8 @@ class Parser:
                                                       test_case_phase_help.instruction_set.name_2_description)
         return TestCaseHelpRequest(TestCaseHelpItem.INSTRUCTION,
                                    match.key,
-                                   match.value)
+                                   match.value,
+                                   not match.is_exact_match)
 
     def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> TestCaseHelpRequest:
         phase_and_instr_descr_list = []
