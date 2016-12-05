@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help import actors as sut
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.help.actors.contents_structure import actors_help, ActorDocumentation
 from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib_test.help.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check

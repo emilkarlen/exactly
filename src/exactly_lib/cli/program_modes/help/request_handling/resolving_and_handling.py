@@ -14,7 +14,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.request_renderi
 from exactly_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.help.contents_structure import ApplicationHelp
-from exactly_lib.help.utils.render import SectionContentsRenderer
+from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer
 from exactly_lib.util.std import StdOutputFiles
 
 

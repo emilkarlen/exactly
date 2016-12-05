@@ -6,7 +6,7 @@ from exactly_lib.cli.program_modes.help.request_handling.request_handler import 
 from exactly_lib.help import cross_reference_id
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.textformat.formatting.text import section, paragraph_item
 from exactly_lib.util.textformat.formatting.text import text

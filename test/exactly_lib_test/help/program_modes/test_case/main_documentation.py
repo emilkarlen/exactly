@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.help.program_modes.test_case.contents.main.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.help.test_resources import section_documentation, CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_hierarchy

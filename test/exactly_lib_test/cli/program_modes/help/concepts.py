@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help import concepts as sut
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.help.concepts.contents_structure import concepts_help, ConceptDocumentation
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
-from exactly_lib.help.utils.render import SectionContentsRenderer
+from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer
 from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
 from exactly_lib_test.help.test_resources.rendering_environment import RENDERING_ENVIRONMENT
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
