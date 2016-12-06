@@ -1,6 +1,8 @@
 import pathlib
+import sys
 import unittest
 
+from exactly_lib.act_phase_setups.command_line import SHELL_COMMAND_MARKER
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -33,9 +35,9 @@ class TestFailingParseForAnyActor(unittest.TestCase):
             sut.Parser().apply(source)
 
 
-class TestFailingParseForShellCommand(unittest.TestCase):
+class TestFailingParseForCommandLine(unittest.TestCase):
     def test_fail_when_extra_unexpected_argument(self):
-        source = new_source2(actor_utils.SHELL_COMMAND_OPTION + ' extra-unexpected-argument')
+        source = new_source2(actor_utils.COMMAND_LINE_ACTOR_OPTION + ' extra-unexpected-argument')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
@@ -126,12 +128,33 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandInterpreterActor(
                     'arg1 arg2')
 
 
-class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.TestCase):
-    def test_act_phase_source_is_single_shell_command(self):
+class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutableFile(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        executable_file = sys.executable
+        os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+        arrangement = Arrangement(actor_utils.COMMAND_LINE_ACTOR_OPTION,
+                                  [executable_file],
+                                  act_phase_process_executor=os_process_executor)
+        expectation = Expectation()
+        # ACT #
+        _check(self, arrangement, expectation)
+        # ASSERT #
+        self.assertFalse(os_process_executor.command.shell,
+                         'Command should indicate executable file execution')
+        actual_cmd_and_args = os_process_executor.command.args
+        self.assertIsInstance(actual_cmd_and_args, list,
+                              'Arguments of command to execute should be a list')
+        self.assertListEqual([executable_file],
+                             actual_cmd_and_args)
+
+
+class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand(unittest.TestCase):
+    def runTest(self):
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = Arrangement(actor_utils.SHELL_COMMAND_OPTION,
-                                  ['act phase source'],
+        arrangement = Arrangement(actor_utils.COMMAND_LINE_ACTOR_OPTION,
+                                  [SHELL_COMMAND_MARKER + ' ' + 'act phase source'],
                                   act_phase_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #
@@ -148,9 +171,11 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
 
 class TestShellHandlingViaExecution(unittest.TestCase):
     def test_valid_shell_command(self):
+        act_phase_source_line = _act_source_for_shell_command(
+            shell_commands.command_that_prints_line_to_stdout('output on stdout'))
         _check(self,
-               Arrangement(actor_utils.SHELL_COMMAND_OPTION,
-                           [shell_commands.command_that_prints_line_to_stdout('output on stdout')]),
+               Arrangement(actor_utils.COMMAND_LINE_ACTOR_OPTION,
+                           [act_phase_source_line]),
                Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout',
                                                                                'expected output on stdout')))
                )
@@ -195,11 +220,12 @@ def _check(put: unittest.TestCase,
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParseForAnyActor),
-        unittest.makeSuite(TestFailingParseForShellCommand),
+        unittest.makeSuite(TestFailingParseForCommandLine),
         unittest.makeSuite(TestFailingParseForInterpreter),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForInterpreterActor),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForShellCommandInterpreterActor),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForShellCommandActor),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutableFile),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand),
         unittest.makeSuite(TestShellHandlingViaExecution),
         suite_for_instruction_documentation(sut.setup('instruction name').documentation),
     ])
@@ -216,6 +242,10 @@ class _ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorCo
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list):
         raise ValueError('the method should never be called')
+
+
+def _act_source_for_shell_command(command: str) -> str:
+    return SHELL_COMMAND_MARKER + ' ' + command
 
 
 if __name__ == '__main__':
