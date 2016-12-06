@@ -1,4 +1,5 @@
-from exactly_lib.common.instruction_documentation import InstructionDocumentation, SyntaxElementDescription
+from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.phase_names import ASSERT_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser

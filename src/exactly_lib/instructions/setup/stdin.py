@@ -1,5 +1,5 @@
-from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.syntax_contents_structure import InvokationVariant
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import file_ref

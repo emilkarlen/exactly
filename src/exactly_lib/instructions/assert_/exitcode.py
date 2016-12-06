@@ -1,8 +1,8 @@
 import operator
 import pathlib
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase

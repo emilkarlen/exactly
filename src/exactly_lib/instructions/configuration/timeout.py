@@ -1,5 +1,5 @@
-from exactly_lib.common.instruction_documentation import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.configuration_parameters.timeout import TIMEOUT_CONFIGURATION_PARAMETER, \
     WHAT_THE_TIMEOUT_APPLIES_TO
 from exactly_lib.help.utils.phase_names import phase_name_dictionary

@@ -1,8 +1,7 @@
 import types
 
-from exactly_lib.common.instruction_documentation import InstructionDocumentation, \
-    InvokationVariant, \
-    SyntaxElementDescription
+from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.utils.render import cross_reference_list
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc, paragraph, lists

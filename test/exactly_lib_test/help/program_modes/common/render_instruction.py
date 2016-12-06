@@ -1,7 +1,6 @@
 import unittest
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    SyntaxElementDescription
+from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.program_modes.common import render_instruction as sut
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure.structures import paras, text
