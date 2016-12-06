@@ -3,10 +3,11 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
     SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
-from exactly_lib.help.utils.render import cross_reference_list, transform_list_to_table
+from exactly_lib.help.utils.render import cross_reference_list
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 class TestSuiteSectionDocumentationBase(SectionDocumentation):

@@ -2,10 +2,10 @@ from exactly_lib.help.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.suite_reporters.names_and_cross_references import DEFAULT_REPORTER
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
-from exactly_lib.help.utils.render import append_sections_if_contents_is_non_empty
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
 
 
 def all_suite_reporters_list_renderer(all_suite_reporters: list) -> SectionContentsRenderer:
