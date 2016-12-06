@@ -1,5 +1,5 @@
-from exactly_lib.common.instruction_documentation import InstructionDocumentation
-from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.util.textformat import parse as text_parse
 from exactly_lib.util.textformat.structure import structures as docs
 

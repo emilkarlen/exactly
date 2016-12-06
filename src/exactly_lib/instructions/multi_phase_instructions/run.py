@@ -1,6 +1,6 @@
 import shlex
 
-from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file

@@ -1,4 +1,4 @@
-from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation

@@ -1,4 +1,4 @@
-from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
