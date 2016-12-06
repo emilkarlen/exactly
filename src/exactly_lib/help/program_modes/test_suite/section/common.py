@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
     SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
-from exactly_lib.help.utils.render import cross_reference_list
+from exactly_lib.help.utils.render import cross_reference_sections
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
@@ -56,9 +56,7 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
             output.append(docs.section('Instructions', [il]))
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
-        if self.see_also:
-            cross_ref_list = cross_reference_list(self.see_also, environment)
-            sections.append(docs.section('See also', [cross_ref_list]))
+        sections.extend(cross_reference_sections(self.see_also, environment))
 
     def _cross_ref_text(self, instr_name: str) -> docs.Text:
         return docs.cross_reference(instr_name,
