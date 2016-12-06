@@ -1,6 +1,6 @@
 import shlex
 
-from exactly_lib.act_phase_setups import shell_command
+from exactly_lib.act_phase_setups import command_line
 from exactly_lib.act_phase_setups.source_interpreter import shell_command_interpreter_setup as shell_cmd
 from exactly_lib.act_phase_setups.source_interpreter.interpreter_setup import new_for_script_language_handling
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
@@ -16,8 +16,8 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
-SHELL_COMMAND_OPTION_NAME = a.OptionName(long_name='shell')
-SHELL_COMMAND_OPTION = long_option_syntax(SHELL_COMMAND_OPTION_NAME.long)
+COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
+COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
 
 SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = '$'
 
@@ -46,7 +46,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._format(self.single_line_description_unformatted)
 
     def invokation_variants(self) -> list:
-        shell_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SHELL_COMMAND_OPTION_NAME))
+        shell_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
         interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Option(INTERPRETER_OPTION_NAME))
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
@@ -113,11 +113,11 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     arg = source.instruction_argument.strip()
     if arg == '':
         raise SingleInstructionInvalidArgumentException('An actor must be given')
-    if arg == SHELL_COMMAND_OPTION:
-        return shell_command.act_phase_setup()
+    if arg == COMMAND_LINE_ACTOR_OPTION:
+        return command_line.act_phase_setup()
     args = arg.split(maxsplit=1)
     if args:
-        if args[0] == SHELL_COMMAND_OPTION and len(args) > 1:
+        if args[0] == COMMAND_LINE_ACTOR_OPTION and len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments')
     if len(args) > 0 and args[0] == INTERPRETER_OPTION:
         if len(args) == 1:
