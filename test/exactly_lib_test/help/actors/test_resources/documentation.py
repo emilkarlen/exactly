@@ -2,6 +2,7 @@ from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.actors.names_and_cross_references import name_and_ref_target
 from exactly_lib.help.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class ActorTestImpl(ActorDocumentation):
@@ -11,11 +12,11 @@ class ActorTestImpl(ActorDocumentation):
     def single_line_description_str(self) -> str:
         return 'single_line_description_str'
 
-    def act_phase_contents(self) -> list:
-        return docs.paras('act_phase_contents')
+    def act_phase_contents(self) -> SectionContents:
+        return SectionContents(docs.paras('act_phase_contents'))
 
-    def act_phase_contents_syntax(self) -> list:
-        return docs.paras('act_phase_contents_syntax')
+    def act_phase_contents_syntax(self) -> SectionContents:
+        return SectionContents(docs.paras('act_phase_contents_syntax'))
 
     def _see_also_specific(self) -> list:
         return [CustomCrossReferenceId('custom-cross-reference-target')]

@@ -5,6 +5,7 @@ from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_case import sandbox_directory_structure as sds
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class ShellCommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
@@ -23,8 +24,8 @@ class ShellCommandLineActorDocumentation(SingleCommandLineActorDocumentationBase
     def single_line_description_str(self) -> str:
         return self._parser.format('Executes a shell command')
 
-    def act_phase_contents(self) -> list:
-        return self._parser.fnap(_ACT_PHASE_CONTENTS)
+    def act_phase_contents(self) -> SectionContents:
+        return SectionContents(self._parser.fnap(_ACT_PHASE_CONTENTS))
 
 
 DOCUMENTATION = ShellCommandLineActorDocumentation()
