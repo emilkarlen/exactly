@@ -1,4 +1,4 @@
-from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.util.textformat.structure import document as doc, paragraph, lists
 from exactly_lib.util.textformat.structure.structures import para, text
 

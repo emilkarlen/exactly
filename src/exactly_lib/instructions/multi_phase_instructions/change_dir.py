@@ -1,6 +1,6 @@
 import os
 
-from exactly_lib.common.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path, ALL_OPTIONS

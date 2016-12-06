@@ -9,7 +9,7 @@ from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelp
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
-from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.contents_structure import ActorDocumentation, actors_help
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
     concepts_help

@@ -1,4 +1,4 @@
-from exactly_lib.common.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT

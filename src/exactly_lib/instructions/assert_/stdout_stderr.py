@@ -2,8 +2,8 @@ import pathlib
 
 import exactly_lib.instructions.assert_.contents
 import exactly_lib.instructions.assert_.utils.contents_utils
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.common.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, \

@@ -1,4 +1,4 @@
-from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.concepts.contents_structure import concepts_help
 from exactly_lib.help.contents_structure import ApplicationHelp
