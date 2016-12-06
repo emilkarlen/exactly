@@ -3,6 +3,7 @@ from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCE
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
+from exactly_lib.help.utils.render import cross_reference_sections
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.textformat.structure import document as doc
@@ -34,6 +35,7 @@ class IndividualActorRenderer(SectionContentsRenderer):
             sub_sections,
             [(self._parser.format('{act_phase} phase contents'), self.actor.act_phase_contents()),
              (self._parser.format('Syntax of {act_phase} phase contents'), self.actor.act_phase_contents_syntax())])
+        sub_sections.extend(cross_reference_sections(self.actor.see_also(), environment))
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _default_reporter_info(self) -> list:

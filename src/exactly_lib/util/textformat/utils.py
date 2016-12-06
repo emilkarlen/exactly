@@ -5,7 +5,7 @@ from exactly_lib.util.textformat.structure.paragraph import Paragraph
 
 def append_section_if_contents_is_non_empty(output_list_of_sections: list,
                                             section_title_str_or_text,
-                                            initial_paragraphs_or_section_contents: SectionContents):
+                                            initial_paragraphs_or_section_contents):
     section_contents = initial_paragraphs_or_section_contents
     if isinstance(initial_paragraphs_or_section_contents, list):
         section_contents = SectionContents(initial_paragraphs_or_section_contents)

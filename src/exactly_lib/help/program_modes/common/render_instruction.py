@@ -2,7 +2,7 @@ import types
 
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
-from exactly_lib.help.utils.render import cross_reference_list
+from exactly_lib.help.utils.render import cross_reference_sections
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc, lists
 from exactly_lib.util.textformat.structure.structures import para, text, section
@@ -30,9 +30,7 @@ class InstructionManPageRenderer(SectionContentsRenderer):
             sub_sections.append(section('DESCRIPTION',
                                         main_description_rest))
         cross_references = documentation.see_also()
-        if cross_references:
-            cross_ref_list = cross_reference_list(cross_references, environment)
-            sub_sections.append(section('SEE ALSO', [cross_ref_list]))
+        sub_sections.extend(cross_reference_sections(cross_references, environment, uppercase_title=True))
         prelude_paragraphs = [para(documentation.single_line_description())]
         return doc.SectionContents(prelude_paragraphs,
                                    sub_sections)
