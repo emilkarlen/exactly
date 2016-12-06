@@ -40,7 +40,6 @@ class TestValidation(unittest.TestCase):
         self.home_dir_as_current_dir = pathlib.Path()
         self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir, dict(os.environ))
 
-
     def test_succeeds_when_there_is_exactly_one_statement_but_surrounded_by_empty_and_comment_lines(self):
         existing_file = abs_path_to_interpreter_quoted_for_exactly()
         act_phase_instructions = [instr(['',
@@ -95,11 +94,6 @@ class TestValidation(unittest.TestCase):
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
-
-    @staticmethod
-    def _new_environment() -> InstructionEnvironmentForPreSdsStep:
-        home_dir_path = pathlib.Path()
-        return InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
 
     def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
         executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)

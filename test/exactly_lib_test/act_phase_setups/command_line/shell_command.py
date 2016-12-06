@@ -3,7 +3,7 @@ import pathlib
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.act_phase_setups import shell_command as sut
+from exactly_lib.act_phase_setups import single_command_setup as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -43,11 +43,6 @@ class TestValidation(unittest.TestCase):
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
-
-    @staticmethod
-    def _new_environment() -> InstructionEnvironmentForPreSdsStep:
-        home_dir_path = pathlib.Path()
-        return InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
 
     def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
         executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
