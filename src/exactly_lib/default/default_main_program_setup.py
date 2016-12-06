@@ -1,6 +1,6 @@
 import sys
 
-from exactly_lib.act_phase_setups import single_command_setup
+from exactly_lib.act_phase_setups import command_line
 from exactly_lib.cli import main_program
 from exactly_lib.default.default_main_program import MainProgram
 from exactly_lib.default.program_modes.test_case import default_instructions_setup, \
@@ -14,7 +14,7 @@ def default_main_program() -> main_program.MainProgram:
     return MainProgram(StdOutputFiles(sys.stdout,
                                       sys.stderr), instruction_name_and_argument_splitter.splitter,
                        default_instructions_setup.INSTRUCTIONS_SETUP,
-                       TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
+                       TestCaseHandlingSetup(command_line.act_phase_setup(),
                                              IdentityPreprocessor()))
 
 

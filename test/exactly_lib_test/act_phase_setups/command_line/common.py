@@ -2,7 +2,7 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups import single_command_setup as sut
+from exactly_lib.act_phase_setups import command_line as sut
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
