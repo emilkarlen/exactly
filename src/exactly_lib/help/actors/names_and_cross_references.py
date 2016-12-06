@@ -11,12 +11,12 @@ def name_and_ref_target(name: str) -> SingularNameAndCrossReferenceId:
     return SingularNameAndCrossReferenceId(name, actor_cross_ref(name))
 
 
-SINGLE_COMMAND_LINE_ACTOR = name_and_ref_target('single command line')
+COMMAND_LINE_ACTOR = name_and_ref_target('command line')
 SHELL_COMMAND_LINE_ACTOR = name_and_ref_target('shell command line')
 INTERPRETER_ACTOR = name_and_ref_target('interpreter')
 
 ALL_ACTORS = [
-    SINGLE_COMMAND_LINE_ACTOR,
+    COMMAND_LINE_ACTOR,
     INTERPRETER_ACTOR,
     SHELL_COMMAND_LINE_ACTOR,
 ]
@@ -24,7 +24,7 @@ ALL_ACTORS = [
 # Bad to have definition of default value in help package.
 # But do not know where the best place to put it is,
 # so it remains here for some time ...
-DEFAULT_ACTOR = SINGLE_COMMAND_LINE_ACTOR
+DEFAULT_ACTOR = COMMAND_LINE_ACTOR
 
 
 def all_actor_cross_refs() -> list:

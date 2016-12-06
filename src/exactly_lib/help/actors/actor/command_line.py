@@ -1,4 +1,4 @@
-from exactly_lib.help.actors.names_and_cross_references import SINGLE_COMMAND_LINE_ACTOR
+from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
 from exactly_lib.help.actors.single_command_line_base import SingleCommandLineActorDocumentationBase
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -7,9 +7,9 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_case import sandbox_directory_structure as sds
 
 
-class SingleCommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
+class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
     def __init__(self):
-        super().__init__(SINGLE_COMMAND_LINE_ACTOR)
+        super().__init__(COMMAND_LINE_ACTOR)
         from exactly_lib.execution.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
@@ -28,7 +28,7 @@ class SingleCommandLineActorDocumentation(SingleCommandLineActorDocumentationBas
         return self._parser.fnap(_ACT_PHASE_CONTENTS)
 
 
-DOCUMENTATION = SingleCommandLineActorDocumentation()
+DOCUMENTATION = CommandLineActorDocumentation()
 
 _ACT_PHASE_CONTENTS = """\
 The command line uses shell syntax for quoting and separation of program file name and arguments.
