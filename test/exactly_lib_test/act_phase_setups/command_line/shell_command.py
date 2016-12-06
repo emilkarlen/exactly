@@ -31,12 +31,26 @@ class TestValidation(unittest.TestCase):
         self.home_dir_as_current_dir = pathlib.Path()
         self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir, dict(os.environ))
 
+    def test_fails_when_command_is_empty(self):
+        act_phase_instructions = [instr([_shell_command_source_line_for(''), ])]
+        actual = self._do_validate_pre_sds(act_phase_instructions)
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
+                      'Validation result')
+
+    def test_fails_when_command_is_only_space(self):
+        act_phase_instructions = [instr([_shell_command_source_line_for('    '), ])]
+        actual = self._do_validate_pre_sds(act_phase_instructions)
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
+                      'Validation result')
+
     def test_succeeds_when_there_is_exactly_one_statement_but_surrounded_by_empty_and_comment_lines(self):
         existing_file = abs_path_to_interpreter_quoted_for_exactly()
         act_phase_instructions = [instr(['',
                                          '             ',
                                          LINE_COMMENT_MARKER + ' line comment text',
-                                         existing_file,
+                                         _shell_command_source_line_for(existing_file),
                                          LINE_COMMENT_MARKER + ' line comment text',
                                          ''])]
         actual = self._do_validate_pre_sds(act_phase_instructions)
@@ -85,7 +99,11 @@ class TheConfiguration(Configuration):
 
     @staticmethod
     def _instruction_for(command: str) -> list:
-        return [SourceCodeInstruction(LineSequence(1, (command,)))]
+        return [SourceCodeInstruction(LineSequence(1, (_shell_command_source_line_for(command),)))]
+
+
+def _shell_command_source_line_for(command: str) -> str:
+    return sut.SHELL_COMMAND_MARKER + ' ' + command
 
 
 if __name__ == '__main__':
