@@ -11,6 +11,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
 
+SHELL_COMMAND_MARKER = '$'
+
 
 def act_phase_setup() -> ActPhaseSetup:
     return ActPhaseSetup(Constructor())
