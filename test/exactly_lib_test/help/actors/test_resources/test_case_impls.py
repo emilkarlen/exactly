@@ -62,13 +62,13 @@ class TestNameAndSingleLineDescription(WithActorDocumentationBase):
 class TestActPhaseContents(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.act_phase_contents()
-        struct_check.is_paragraph_item_list('act_phase_contents').apply(self, actual)
+        struct_check.is_section_contents.apply_with_message(self, actual, 'act_phase_contents')
 
 
 class TestActPhaseContentsSyntax(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.act_phase_contents_syntax()
-        struct_check.is_paragraph_item_list('act_phase_contents_syntax').apply(self, actual)
+        struct_check.is_section_contents.apply_with_message(self, actual, 'act_phase_contents_syntax')
 
 
 class TestSeeAlso(WithActorDocumentationBase):

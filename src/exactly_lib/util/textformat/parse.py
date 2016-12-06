@@ -51,6 +51,9 @@ def normalize_lines(text: str) -> list:
 
 def normalize_and_parse(text: str,
                         list_settings: ListSettings = DEFAULT_LIST_SETTINGS) -> list:
+    """
+    :rtype: [`ParagraphItem`]
+    """
     normalized_lines = normalize_lines(text)
     return _Parser(normalized_lines, list_settings).apply()
 

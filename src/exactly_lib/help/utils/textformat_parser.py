@@ -26,6 +26,7 @@ class TextParser:
         1. Text replacements according to `format_map` given to the constructor.
         2. normalize lines
         3. parse result
+        :rtype: [`ParagraphItem`]
         """
         return normalize_and_parse(self.format(s, extra))
 

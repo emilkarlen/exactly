@@ -4,6 +4,7 @@ from exactly_lib.help.utils.entity_documentation import EntityDocumentation, Ent
 from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class ActorDocumentation(EntityDocumentation):
@@ -32,16 +33,10 @@ class ActorDocumentation(EntityDocumentation):
     def single_line_description_str(self) -> str:
         raise NotImplementedError()
 
-    def act_phase_contents(self) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def act_phase_contents(self) -> SectionContents:
         raise NotImplementedError()
 
-    def act_phase_contents_syntax(self) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def act_phase_contents_syntax(self) -> SectionContents:
         raise NotImplementedError()
 
     def see_also(self) -> list:

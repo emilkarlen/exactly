@@ -4,12 +4,13 @@ from . import core
 class SectionContents(tuple):
     def __new__(cls,
                 initial_paragraphs: list,
-                sections: list):
+                sections: list = None):
         """
         :type initial_paragraphs: [core.ParagraphItem]
         :type sections: [Section]
         """
-        return tuple.__new__(cls, (initial_paragraphs, sections))
+        return tuple.__new__(cls, (initial_paragraphs,
+                                   [] if sections is None else sections))
 
     @property
     def initial_paragraphs(self) -> list:
