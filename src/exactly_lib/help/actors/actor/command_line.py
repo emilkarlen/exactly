@@ -1,3 +1,4 @@
+from exactly_lib.act_phase_setups import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
 from exactly_lib.help.actors.single_command_line_base import SingleCommandLineActorDocumentationBase
@@ -14,8 +15,6 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import text
-
-SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = '$'
 
 
 class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
@@ -78,14 +77,14 @@ class _ActPhaseSyntax:
     def invokation_variants(self) -> list:
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
-        shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
-                                              a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
+        shell_command_argument = a.Single(a.Multiplicity.MANDATORY,
+                                          a.Constant(actor.SHELL_COMMAND_MARKER))
         command_argument = a.Single(a.Multiplicity.MANDATORY, self.command)
         return [
             InvokationVariant(self._cl_syntax_for_args([executable_arg,
                                                         optional_arguments_arg]),
                               self._parser.fnap(_PROGRAM_WITH_ARGUMENTS_INVOKATION_VARIANT)),
-            InvokationVariant(self._cl_syntax_for_args([shell_interpreter_argument,
+            InvokationVariant(self._cl_syntax_for_args([shell_command_argument,
                                                         command_argument]),
                               self._parser.fnap(_SHELL_COMMAND_INVOKATION_VARIANT)),
         ]
@@ -125,7 +124,6 @@ class _ActPhaseSyntax:
 
 _SINGLE_LINE_DESCRIPTION = 'Executes a command line - either an executable file or a shell command'
 
-
 _ACT_PHASE_CONTENTS = """\
 A single command line.
 
@@ -143,7 +141,7 @@ Executes an executable file.
 """
 
 _SHELL_COMMAND_INVOKATION_VARIANT = """\
-Executes a shell command.
+Executes a shell command using the operating system's shell.
 """
 
 _EXECUTABLE_SYNTAX_ELEMENT = """\
