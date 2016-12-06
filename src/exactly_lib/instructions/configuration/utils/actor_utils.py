@@ -46,7 +46,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._format(self.single_line_description_unformatted)
 
     def invokation_variants(self) -> list:
-        shell_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
+        command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
         interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Option(INTERPRETER_OPTION_NAME))
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
@@ -54,8 +54,8 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                                               a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
         command_argument = a.Single(a.Multiplicity.MANDATORY, self.command)
         return [
-            InvokationVariant(self._cl_syntax_for_args([shell_arg]),
-                              self._description_of_shell()),
+            InvokationVariant(self._cl_syntax_for_args([command_line_actor_arg]),
+                              self._description_of_command_line()),
             InvokationVariant(self._cl_syntax_for_args([interpreter_arg,
                                                         executable_arg,
                                                         optional_arguments_arg]),
@@ -99,10 +99,10 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
             'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name)
         })
 
-    def _description_of_shell(self) -> list:
-        from exactly_lib.help.actors.names_and_cross_references import SHELL_COMMAND_LINE_ACTOR
+    def _description_of_command_line(self) -> list:
+        from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
         return self._paragraphs(_DESCRIPTION_OF_SHELL, {
-            'shell_command_actor': formatting.entity(SHELL_COMMAND_LINE_ACTOR.singular_name)
+            'command_line_actor': formatting.entity(COMMAND_LINE_ACTOR.singular_name)
         })
 
 
@@ -160,7 +160,7 @@ Sets the {interpreter_actor} {actor}, with a shell command as interpreter.
 """
 
 _DESCRIPTION_OF_SHELL = """\
-Sets the {shell_command_actor} {actor}.
+Sets the {command_line_actor} {actor}.
 """
 
 _DESCRIPTION_OF_EXECUTABLE = """\
