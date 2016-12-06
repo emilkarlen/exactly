@@ -1,4 +1,4 @@
-from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \

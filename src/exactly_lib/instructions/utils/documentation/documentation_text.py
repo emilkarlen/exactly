@@ -1,4 +1,4 @@
-from exactly_lib.common.instruction_documentation import SyntaxElementDescription
+from exactly_lib.common.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.utils import formatting
 from exactly_lib.util.cli_syntax.elements.argument import Named

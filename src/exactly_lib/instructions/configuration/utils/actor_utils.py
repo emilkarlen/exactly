@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.source_interpreter import shell_command_interp
 from exactly_lib.act_phase_setups.source_interpreter.interpreter_setup import new_for_script_language_handling
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
-from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
