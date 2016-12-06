@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups import single_command_setup
+from exactly_lib.act_phase_setups import command_line
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
 class SetupForSuccessfulExecution(Setup):
     def test_case_handling_setup(self) -> TestCaseHandlingSetup:
-        return TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
+        return TestCaseHandlingSetup(command_line.act_phase_setup(),
                                      IDENTITY_PREPROCESSOR)
 
     def assertions(self,

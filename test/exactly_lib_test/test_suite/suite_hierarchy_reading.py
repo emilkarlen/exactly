@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups import single_command_setup
+from exactly_lib.act_phase_setups import command_line
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
@@ -14,7 +14,7 @@ from exactly_lib_test.section_document.test_resources.assertions import assert_e
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_suite.test_resources import check_exception, check_structure
 
-T_C_H_S = TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
+T_C_H_S = TestCaseHandlingSetup(command_line.act_phase_setup(),
                                 IDENTITY_PREPROCESSOR)
 
 

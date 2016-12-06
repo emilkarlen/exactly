@@ -3,7 +3,7 @@ import pathlib
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.act_phase_setups import single_command_setup as sut
+from exactly_lib.act_phase_setups import command_line as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR

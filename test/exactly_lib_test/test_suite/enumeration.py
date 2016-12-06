@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups import single_command_setup
+from exactly_lib.act_phase_setups import command_line
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
-T_C_H_S = TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
+T_C_H_S = TestCaseHandlingSetup(command_line.act_phase_setup(),
                                 IDENTITY_PREPROCESSOR)
 
 
