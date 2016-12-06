@@ -7,7 +7,7 @@ from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironmen
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.utils import append_section_if_non_empty
+from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
 
 
 def all_actors_list_renderer(all_actors: list) -> SectionContentsRenderer:
@@ -30,12 +30,10 @@ class IndividualActorRenderer(SectionContentsRenderer):
         initial_paragraphs = [docs.para(self.actor.single_line_description())]
         initial_paragraphs.extend(self._default_reporter_info())
         sub_sections = []
-        append_section_if_non_empty(sub_sections,
-                                    self._parser.format('{act_phase} phase contents'),
-                                    self.actor.act_phase_contents())
-        append_section_if_non_empty(sub_sections,
-                                    self._parser.format('Syntax of {act_phase} phase contents'),
-                                    self.actor.act_phase_contents_syntax())
+        append_sections_if_contents_is_non_empty(
+            sub_sections,
+            [(self._parser.format('{act_phase} phase contents'), self.actor.act_phase_contents()),
+             (self._parser.format('Syntax of {act_phase} phase contents'), self.actor.act_phase_contents_syntax())])
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _default_reporter_info(self) -> list:

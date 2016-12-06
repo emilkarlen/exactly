@@ -12,7 +12,7 @@ SEPARATION_OF_HEADER_AND_CONTENTS = lists.Separations(1, 1)
 def section(header_str_or_text,
             paragraphs: list,
             sub_sections: list = None) -> Section:
-    return Section(_text_from_unknown(header_str_or_text),
+    return Section(text_from_unknown(header_str_or_text),
                    SectionContents(paragraphs,
                                    _empty_list_if_none(sub_sections)))
 
@@ -39,7 +39,7 @@ def simple_list_with_space_between_elements_and_content(items: iter,
 
 def list_item(header_str_or_text,
               content: list = None) -> lists.HeaderContentListItem:
-    return lists.HeaderContentListItem(_text_from_unknown(header_str_or_text),
+    return lists.HeaderContentListItem(text_from_unknown(header_str_or_text),
                                        _empty_list_if_none(content))
 
 
@@ -48,7 +48,7 @@ def header_only_item(header_str_or_text) -> lists.HeaderContentListItem:
 
 
 def para(str_or_text) -> ParagraphItem:
-    return Paragraph([_text_from_unknown(str_or_text)])
+    return Paragraph([text_from_unknown(str_or_text)])
 
 
 def paras(str_or_text) -> list:
@@ -100,7 +100,7 @@ def first_row_is_header_table(rows: list,
                        rows)
 
 
-def _text_from_unknown(str_or_text) -> Text:
+def text_from_unknown(str_or_text) -> Text:
     if isinstance(str_or_text, Text):
         return str_or_text
     else:
