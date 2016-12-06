@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.configuration.utils.actor_utils import SHELL_COMMAND_ACTOR_KEYWORD
+from exactly_lib.instructions.configuration.utils.actor_utils import SHELL_COMMAND_OPTION
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections.configuration import actor as sut
@@ -51,7 +51,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
     def test_act_phase_source_is_single_shell_command(self):
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        source = new_source2(SHELL_COMMAND_ACTOR_KEYWORD)
+        source = new_source2(SHELL_COMMAND_OPTION)
         instruction = sut.Parser().apply(source)
         environment = configuration_section_environment()
         # ACT #

@@ -3,7 +3,6 @@ import unittest
 
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.utils import actor_utils
-from exactly_lib.instructions.configuration.utils.actor_utils import SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor, \
@@ -36,14 +35,14 @@ class TestFailingParseForAnyActor(unittest.TestCase):
 
 class TestFailingParseForShellCommand(unittest.TestCase):
     def test_fail_when_extra_unexpected_argument(self):
-        source = new_source2(actor_utils.SHELL_COMMAND_ACTOR_KEYWORD + ' extra-unexpected-argument')
+        source = new_source2(actor_utils.SHELL_COMMAND_OPTION + ' extra-unexpected-argument')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
 
 class TestFailingParseForInterpreter(unittest.TestCase):
     def test_fail_when_missing_program_argument(self):
-        source = new_source2(actor_utils.INTERPRETER_ACTOR_KEYWORD)
+        source = new_source2(actor_utils.INTERPRETER_OPTION)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
@@ -82,8 +81,8 @@ class TestSuccessfulParseAndInstructionExecutionForInterpreterActor(unittest.Tes
         self._check("'executable with space' arg2 \"arg 3\"",
                     ['executable with space', 'arg2', 'arg 3'])
 
-    def test_with_interpreter_keyword(self):
-        self._check(actor_utils.INTERPRETER_ACTOR_KEYWORD + ' executable arg',
+    def test_with_interpreter_option(self):
+        self._check(actor_utils.INTERPRETER_OPTION + ' executable arg',
                     ['executable', 'arg'])
 
 
@@ -111,18 +110,18 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandInterpreterActor(
                          expected_command_except_final_file_name_part)
 
     def test_single_command(self):
-        self._check(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' arg', 'arg')
+        self._check(actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' arg', 'arg')
 
     def test_command_with_arguments(self):
-        self._check(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' arg arg1 --arg2',
+        self._check(actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' arg arg1 --arg2',
                     'arg arg1 --arg2')
 
     def test_quoting(self):
-        self._check(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + " 'arg with space' arg2 \"arg 3\"",
+        self._check(actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + " 'arg with space' arg2 \"arg 3\"",
                     "'arg with space' arg2 \"arg 3\"")
 
     def test_with_interpreter_keyword(self):
-        self._check(actor_utils.INTERPRETER_ACTOR_KEYWORD + ' ' + SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD +
+        self._check(actor_utils.INTERPRETER_OPTION + ' ' + actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD +
                     ' arg1 arg2',
                     'arg1 arg2')
 
@@ -131,7 +130,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
     def test_act_phase_source_is_single_shell_command(self):
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = Arrangement(actor_utils.SHELL_COMMAND_ACTOR_KEYWORD,
+        arrangement = Arrangement(actor_utils.SHELL_COMMAND_OPTION,
                                   ['act phase source'],
                                   act_phase_process_executor=os_process_executor)
         expectation = Expectation()
@@ -150,7 +149,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
 class TestShellHandlingViaExecution(unittest.TestCase):
     def test_valid_shell_command(self):
         _check(self,
-               Arrangement(actor_utils.SHELL_COMMAND_ACTOR_KEYWORD,
+               Arrangement(actor_utils.SHELL_COMMAND_OPTION,
                            [shell_commands.command_that_prints_line_to_stdout('output on stdout')]),
                Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout',
                                                                                'expected output on stdout')))
