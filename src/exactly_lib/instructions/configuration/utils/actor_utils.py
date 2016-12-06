@@ -14,12 +14,15 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
-SHELL_COMMAND_ACTOR_KEYWORD = 'shell'
+SHELL_COMMAND_OPTION_NAME = a.OptionName(long_name='shell')
+SHELL_COMMAND_OPTION = long_option_syntax(SHELL_COMMAND_OPTION_NAME.long)
 
 SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = '$'
 
-INTERPRETER_ACTOR_KEYWORD = 'interpreter'
+INTERPRETER_OPTION_NAME = a.OptionName(long_name='interpreter')
+INTERPRETER_OPTION = long_option_syntax(INTERPRETER_OPTION_NAME.long)
 
 
 class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -28,6 +31,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                  main_description_rest_unformatted: str = None):
         self.executable = a.Named('EXECUTABLE')
         self.argument = a.Named('ARGUMENT')
+        self.command = a.Constant('COMMAND')
         self.single_line_description_unformatted = single_line_description_unformatted
         self.main_description_rest_unformatted = main_description_rest_unformatted
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
@@ -42,10 +46,13 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._format(self.single_line_description_unformatted)
 
     def invokation_variants(self) -> list:
-        shell_arg = a.Single(a.Multiplicity.MANDATORY, a.Named(SHELL_COMMAND_ACTOR_KEYWORD))
-        interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Named(INTERPRETER_ACTOR_KEYWORD))
+        shell_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SHELL_COMMAND_OPTION_NAME))
+        interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Option(INTERPRETER_OPTION_NAME))
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
+        shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
+                                              a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
+        command_argument = a.Single(a.Multiplicity.MANDATORY, self.command)
         return [
             InvokationVariant(self._cl_syntax_for_args([shell_arg]),
                               self._description_of_shell()),
@@ -53,6 +60,10 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                                                         executable_arg,
                                                         optional_arguments_arg]),
                               self._description_of_interpreter()),
+            InvokationVariant(self._cl_syntax_for_args([interpreter_arg,
+                                                        shell_interpreter_argument,
+                                                        command_argument]),
+                              self._description_of_shell_command_interpreter()),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -60,7 +71,9 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
             SyntaxElementDescription(self.executable.name,
                                      self._paragraphs(_DESCRIPTION_OF_EXECUTABLE)),
             SyntaxElementDescription(self.argument.name,
-                                     self._paragraphs(_DESCRIPTION_OF_ARGUMENTS))
+                                     self._paragraphs(_DESCRIPTION_OF_ARGUMENTS)),
+            SyntaxElementDescription(self.command.name,
+                                     self._paragraphs(_DESCRIPTION_OF_COMMAND))
         ]
 
     def main_description_rest(self) -> list:
@@ -71,15 +84,26 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
 
     def see_also(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-        return [
-            ACTOR_CONCEPT.cross_reference_target(),
-        ]
+        from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
+        return [ACTOR_CONCEPT.cross_reference_target()] + all_actor_cross_refs()
 
     def _description_of_interpreter(self) -> list:
-        return self._paragraphs(_DESCRIPTION_OF_INTERPRETER)
+        from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+        return self._paragraphs(_DESCRIPTION_OF_INTERPRETER, {
+            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name)
+        })
+
+    def _description_of_shell_command_interpreter(self) -> list:
+        from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+        return self._paragraphs(_DESCRIPTION_OF_SHELL_COMMAND_INTERPRETER, {
+            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name)
+        })
 
     def _description_of_shell(self) -> list:
-        return self._paragraphs(_DESCRIPTION_OF_SHELL)
+        from exactly_lib.help.actors.names_and_cross_references import SHELL_COMMAND_LINE_ACTOR
+        return self._paragraphs(_DESCRIPTION_OF_SHELL, {
+            'shell_command_actor': formatting.entity(SHELL_COMMAND_LINE_ACTOR.singular_name)
+        })
 
 
 def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
@@ -88,14 +112,14 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     """
     arg = source.instruction_argument.strip()
     if arg == '':
-        raise SingleInstructionInvalidArgumentException('An actor must be given.')
-    if arg == SHELL_COMMAND_ACTOR_KEYWORD:
+        raise SingleInstructionInvalidArgumentException('An actor must be given')
+    if arg == SHELL_COMMAND_OPTION:
         return shell_command.act_phase_setup()
     args = arg.split(maxsplit=1)
     if args:
-        if args[0] == SHELL_COMMAND_ACTOR_KEYWORD and len(args) > 1:
-            raise SingleInstructionInvalidArgumentException('Superfluous argument to ' + SHELL_COMMAND_ACTOR_KEYWORD)
-    if len(args) > 0 and args[0] == INTERPRETER_ACTOR_KEYWORD:
+        if args[0] == SHELL_COMMAND_OPTION and len(args) > 1:
+            raise SingleInstructionInvalidArgumentException('Superfluous arguments')
+    if len(args) > 0 and args[0] == INTERPRETER_OPTION:
         if len(args) == 1:
             raise SingleInstructionInvalidArgumentException('Missing interpreter')
         return _parse_interpreter(args[1])
@@ -128,16 +152,15 @@ def _parse_interpreter(arg: str) -> ActPhaseHandling:
 
 
 _DESCRIPTION_OF_INTERPRETER = """\
-The {act_phase} phase is source code, to be interpreted by the given {EXECUTABLE}.
+Sets the {interpreter_actor} {actor}, with an executable program as interpreter.
+"""
 
-
-{EXECUTABLE} is an executable program which is given {ARGUMENT}, followed by the name of a file
-containing the contents of the {act_phase} phase, as arguments.
+_DESCRIPTION_OF_SHELL_COMMAND_INTERPRETER = """\
+Sets the {interpreter_actor} {actor}, with a shell command as interpreter.
 """
 
 _DESCRIPTION_OF_SHELL = """\
-The {act_phase} phase is a single command line, which is execute it via the
-systems' shell.
+Sets the {shell_command_actor} {actor}.
 """
 
 _DESCRIPTION_OF_EXECUTABLE = """\
@@ -145,6 +168,14 @@ The path of an existing executable file.
 
 
 Uses shell syntax.
+"""
+
+_DESCRIPTION_OF_COMMAND = """\
+A shell command line.
+
+
+Uses the syntax of the operating system's shell.
+(Which shell this is depends on the operating system).
 """
 
 _DESCRIPTION_OF_ARGUMENTS = """\
