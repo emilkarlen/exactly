@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib.act_phase_setups.command_line import SHELL_COMMAND_MARKER
 from exactly_lib.instructions.configuration.utils.actor_utils import COMMAND_LINE_ACTOR_OPTION
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections.configuration import actor as sut
+from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
@@ -58,7 +58,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
         # ACT #
         instruction.execute(environment)
         executor_constructor = environment.act_phase_setup.source_and_executor_constructor
-        act_phase_instructions = [instr([_act_source_for_shell_command('act phase source line')])]
+        act_phase_instructions = [instr([shell_command_source_line_for('act phase source line')])]
         act_phase_execution.check_execution(self,
                                             act_phase_execution.Arrangement(
                                                 executor_constructor=executor_constructor,
@@ -73,7 +73,3 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
                               'Arguments of command to execute should be a string')
         self.assertEqual(actual_cmd_and_args,
                          'act phase source line')
-
-
-def _act_source_for_shell_command(command: str) -> str:
-    return SHELL_COMMAND_MARKER + ' ' + command
