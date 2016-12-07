@@ -114,7 +114,7 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     if arg == '':
         raise SingleInstructionInvalidArgumentException('An actor must be given')
     if arg == COMMAND_LINE_ACTOR_OPTION:
-        return command_line.act_phase_setup()
+        return command_line.act_phase_handling()
     args = arg.split(maxsplit=1)
     if args:
         if args[0] == COMMAND_LINE_ACTOR_OPTION and len(args) > 1:
