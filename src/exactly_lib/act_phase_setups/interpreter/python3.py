@@ -1,8 +1,8 @@
 import sys
 
-from exactly_lib.act_phase_setups.source_interpreter import source_file_management
-from exactly_lib.act_phase_setups.source_interpreter.interpreter_setup import new_for_script_language_setup
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
+from exactly_lib.act_phase_setups.interpreter import source_file_management
+from exactly_lib.act_phase_setups.interpreter.executable_file import Constructor
+from exactly_lib.act_phase_setups.interpreter.source_file_management import StandardSourceFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
 
 
@@ -19,4 +19,4 @@ def _file_manager() -> source_file_management.SourceFileManager:
 
 
 def new_act_phase_setup() -> ActPhaseSetup:
-    return new_for_script_language_setup(script_language_setup())
+    return ActPhaseSetup(Constructor(script_language_setup()))

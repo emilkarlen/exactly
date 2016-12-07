@@ -2,8 +2,8 @@ import pathlib
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.act_phase_setups.source_interpreter import interpreter_setup as sut, python3
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceFileManager, \
+from exactly_lib.act_phase_setups.interpreter import executable_file as sut, python3
+from exactly_lib.act_phase_setups.interpreter.source_file_management import SourceFileManager, \
     SourceInterpreterSetup
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program

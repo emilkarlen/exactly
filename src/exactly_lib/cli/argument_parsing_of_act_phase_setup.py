@@ -1,7 +1,7 @@
-from exactly_lib.act_phase_setups.source_interpreter import python3
-from exactly_lib.act_phase_setups.source_interpreter import source_file_management
-from exactly_lib.act_phase_setups.source_interpreter.interpreter_setup import new_for_script_language_setup
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
+from exactly_lib.act_phase_setups.interpreter import python3
+from exactly_lib.act_phase_setups.interpreter import source_file_management
+from exactly_lib.act_phase_setups.interpreter.executable_file import new_for_script_language_setup
+from exactly_lib.act_phase_setups.interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.processing.act_phase import ActPhaseSetup
 
 INTERPRETER_FOR_TEST = 'test-language'

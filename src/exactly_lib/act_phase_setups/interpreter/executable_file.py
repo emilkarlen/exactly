@@ -1,20 +1,16 @@
 import pathlib
 
-from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor as pa
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
+from exactly_lib.act_phase_setups.interpreter import parser_and_executor as pa
+from exactly_lib.act_phase_setups.interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
 def new_for_script_language_setup(script_language_setup: SourceInterpreterSetup) -> ActPhaseSetup:
     return ActPhaseSetup(Constructor(script_language_setup))
-
-
-def new_for_script_language_handling(script_language_setup: SourceInterpreterSetup) -> ActPhaseHandling:
-    return ActPhaseHandling(Constructor(script_language_setup))
 
 
 class Constructor(parts.Constructor):

@@ -1,10 +1,7 @@
 import shlex
 
 from exactly_lib.act_phase_setups import command_line
-from exactly_lib.act_phase_setups.source_interpreter import shell_command_interpreter_setup as shell_cmd
-from exactly_lib.act_phase_setups.source_interpreter.interpreter_setup import new_for_script_language_handling
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
+from exactly_lib.act_phase_setups.interpreter import act_phase_handling
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
@@ -15,6 +12,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.process_execution.os_process_execution import Command
 
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
 COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
@@ -128,6 +126,10 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
 
 
 def _parse_interpreter(arg: str) -> ActPhaseHandling:
+    return act_phase_handling(_parse_interpreter_command(arg))
+
+
+def _parse_interpreter_command(arg: str) -> Command:
     args = arg.split(maxsplit=1)
     if not args:
         raise SingleInstructionInvalidArgumentException('Missing interpreter')
@@ -135,7 +137,7 @@ def _parse_interpreter(arg: str) -> ActPhaseHandling:
         if len(args) == 1:
             raise SingleInstructionInvalidArgumentException('Missing shell command for interpreter')
         else:
-            return shell_cmd.handling_for_interpreter_command(args[1])
+            return Command(args[1], shell=True)
     try:
         command_and_arguments = shlex.split(arg)
     except:
@@ -143,12 +145,7 @@ def _parse_interpreter(arg: str) -> ActPhaseHandling:
     if not command_and_arguments:
         raise SingleInstructionInvalidArgumentException('Missing interpreter')
 
-    act_phase_setup = new_for_script_language_handling(
-        SourceInterpreterSetup(StandardSourceFileManager(
-            'src',
-            command_and_arguments[0],
-            command_and_arguments[1:])))
-    return act_phase_setup
+    return Command(command_and_arguments, shell=False)
 
 
 _DESCRIPTION_OF_INTERPRETER = """\
