@@ -182,9 +182,9 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
     def runTest(self):
         var_name = 'TEST_VAR_' + str(random.getrandbits(32))
         var_value = str(random.getrandbits(32))
-        sub_process_result = SubProcessResult(exitcode=0,
-                                              stdout=var_value,
-                                              stderr='')
+        expected_sub_process_result = SubProcessResult(exitcode=0,
+                                                       stdout=var_value + '\n',
+                                                       stderr='')
         environ = {var_name: var_value}
         program = lines_content(py.write_value_of_environment_variable_to_stdout(var_name))
 
@@ -201,7 +201,7 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
             self.conf.arrangement(environ=environ),
             self.conf.expect_success_and_side_effects_on_files(_InstructionLogDirContainsOutFiles(self.conf.phase(),
                                                                                                   source_info,
-                                                                                                  sub_process_result)),
+                                                                                                  expected_sub_process_result)),
             instruction_name=instruction_name)
 
 

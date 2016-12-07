@@ -148,7 +148,7 @@ class TestStdoutIsConnectedToProgram(TestBase):
     def runTest(self):
         with self.test_setup.program_that_prints_to_stdout('expected output on stdout') as program:
             process_result = self._execute(program)
-            self.assertEqual('expected output on stdout',
+            self.assertEqual('expected output on stdout\n',
                              process_result.stdout,
                              'Contents of stdout')
 
@@ -157,7 +157,7 @@ class TestStderrIsConnectedToProgram(TestBase):
     def runTest(self):
         with self.test_setup.program_that_prints_to_stderr('expected output on stderr') as program:
             process_result = self._execute(program)
-            self.assertEqual('expected output on stderr',
+            self.assertEqual('expected output on stderr\n',
                              process_result.stderr,
                              'Contents of stderr')
 
@@ -189,7 +189,7 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
         environ[var_name] = var_value
         with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(var_name) as program:
             process_result = self._execute(program, environ=environ)
-            self.assertEqual(var_value,
+            self.assertEqual(var_value + '\n',
                              process_result.stdout,
                              'Contents of stdout should be value of environment variable')
 
@@ -230,7 +230,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                         sut)
                     process_result = capture_process_executor_result(process_executor,
                                                                      sds.result.root_dir)
-                    self.assertEqual(process_cwd,
+                    self.assertEqual(process_cwd + '\n',
                                      process_result.stdout,
                                      'Current Working Directory for program should be act-directory')
 
