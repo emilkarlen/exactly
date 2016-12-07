@@ -86,7 +86,7 @@ class TheConfiguration(Configuration):
 
     @contextmanager
     def program_that_prints_cwd_without_new_line_to_stdout(self) -> list:
-        yield self._instruction_for(shell_commands.command_that_prints_cwd_without_new_line_to_stdout())
+        yield self._instruction_for(shell_commands.command_that_prints_cwd_line_to_stdout())
 
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> list:

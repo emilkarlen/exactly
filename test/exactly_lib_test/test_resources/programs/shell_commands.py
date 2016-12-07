@@ -33,7 +33,7 @@ def command_that_exits_with_code(exit_code: int) -> str:
     return 'exit {}'.format(exit_code)
 
 
-def command_that_prints_cwd_without_new_line_to_stdout() -> str:
+def command_that_prints_cwd_line_to_stdout() -> str:
     if sys.platform == 'win32':
         return 'Write-Output %cd%'  # do not know how to suppress new-line
     else:

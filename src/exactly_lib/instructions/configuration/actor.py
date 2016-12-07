@@ -18,8 +18,8 @@ _SINGLE_LINE_DESCRIPTION_UNFORMATTED = 'Sets the {actor} that will execute the {
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> ConfigurationPhaseInstruction:
-        act_phase_setup = actor_utils.parse(source)
-        return Instruction(act_phase_setup)
+        act_phase_handling = actor_utils.parse(source)
+        return Instruction(act_phase_handling)
 
 
 class Instruction(ConfigurationPhaseInstruction):
