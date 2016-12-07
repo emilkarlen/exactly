@@ -176,7 +176,7 @@ class TestShellHandlingViaExecution(unittest.TestCase):
         _check(self,
                Arrangement(actor_utils.COMMAND_LINE_ACTOR_OPTION,
                            [act_phase_source_line]),
-               Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout',
+               Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout\n',
                                                                                'expected output on stdout')))
                )
 
