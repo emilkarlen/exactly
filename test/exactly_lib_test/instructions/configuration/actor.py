@@ -2,7 +2,6 @@ import pathlib
 import sys
 import unittest
 
-from exactly_lib.act_phase_setups.command_line import SHELL_COMMAND_MARKER
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -12,6 +11,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSource
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
@@ -154,7 +154,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = Arrangement(actor_utils.COMMAND_LINE_ACTOR_OPTION,
-                                  [SHELL_COMMAND_MARKER + ' ' + 'act phase source'],
+                                  [shell_command_source_line_for('act phase source')],
                                   act_phase_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #
@@ -171,7 +171,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
 
 class TestShellHandlingViaExecution(unittest.TestCase):
     def test_valid_shell_command(self):
-        act_phase_source_line = _act_source_for_shell_command(
+        act_phase_source_line = shell_command_source_line_for(
             shell_commands.command_that_prints_line_to_stdout('output on stdout'))
         _check(self,
                Arrangement(actor_utils.COMMAND_LINE_ACTOR_OPTION,
@@ -242,10 +242,6 @@ class _ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorCo
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list):
         raise ValueError('the method should never be called')
-
-
-def _act_source_for_shell_command(command: str) -> str:
-    return SHELL_COMMAND_MARKER + ' ' + command
 
 
 if __name__ == '__main__':

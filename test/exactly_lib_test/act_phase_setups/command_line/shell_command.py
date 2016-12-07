@@ -10,6 +10,7 @@ from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
+from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution
 from exactly_lib_test.test_resources.act_phase_instruction import instr
@@ -32,14 +33,14 @@ class TestValidation(unittest.TestCase):
         self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir, dict(os.environ))
 
     def test_fails_when_command_is_empty(self):
-        act_phase_instructions = [instr([_shell_command_source_line_for(''), ])]
+        act_phase_instructions = [instr([shell_command_source_line_for(''), ])]
         actual = self._do_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
 
     def test_fails_when_command_is_only_space(self):
-        act_phase_instructions = [instr([_shell_command_source_line_for('    '), ])]
+        act_phase_instructions = [instr([shell_command_source_line_for('    '), ])]
         actual = self._do_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
@@ -50,7 +51,7 @@ class TestValidation(unittest.TestCase):
         act_phase_instructions = [instr(['',
                                          '             ',
                                          LINE_COMMENT_MARKER + ' line comment text',
-                                         _shell_command_source_line_for(existing_file),
+                                         shell_command_source_line_for(existing_file),
                                          LINE_COMMENT_MARKER + ' line comment text',
                                          ''])]
         actual = self._do_validate_pre_sds(act_phase_instructions)
@@ -99,11 +100,7 @@ class TheConfiguration(Configuration):
 
     @staticmethod
     def _instruction_for(command: str) -> list:
-        return [SourceCodeInstruction(LineSequence(1, (_shell_command_source_line_for(command),)))]
-
-
-def _shell_command_source_line_for(command: str) -> str:
-    return sut.SHELL_COMMAND_MARKER + ' ' + command
+        return [SourceCodeInstruction(LineSequence(1, (shell_command_source_line_for(command),)))]
 
 
 if __name__ == '__main__':
