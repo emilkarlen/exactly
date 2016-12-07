@@ -12,11 +12,11 @@ def resolve_act_phase_setup_from_argparse_argument(default_setup: ActPhaseSetup,
     interpreter_argument = None
     if interpreter and len(interpreter) > 0:
         interpreter_argument = interpreter[0]
-    return resolve_act_phase_setup(default_setup, interpreter_argument)
+    return _resolve_act_phase_setup(default_setup, interpreter_argument)
 
 
-def resolve_act_phase_setup(default_setup: ActPhaseSetup,
-                            interpreter: str = None) -> ActPhaseSetup:
+def _resolve_act_phase_setup(default_setup: ActPhaseSetup,
+                             interpreter: str = None) -> ActPhaseSetup:
     if interpreter:
         if interpreter == INTERPRETER_FOR_TEST:
             return python3.new_act_phase_setup()
