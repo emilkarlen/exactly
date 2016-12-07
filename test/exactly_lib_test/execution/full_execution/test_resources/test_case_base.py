@@ -4,7 +4,7 @@ import shutil
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.act_phase_setups.source_interpreter import python3
+from exactly_lib.act_phase_setups.interpreter import python3
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
