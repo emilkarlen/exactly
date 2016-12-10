@@ -38,7 +38,7 @@ class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
         return doc.SectionContents(self._parser.fnap(_ACT_PHASE_CONTENTS))
 
     def act_phase_contents_syntax(self) -> doc.SectionContents:
-        documentation = _ActPhaseSyntax()
+        documentation = ActPhaseDocumentationSyntax()
         initial_paragraphs = self._parser.fnap(_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
         sub_sections = []
         synopsis_section = doc.Section(text('SYNOPSIS'),
@@ -49,13 +49,19 @@ class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _see_also_specific(self) -> list:
-        return super()._see_also_specific()
+        return see_also_targets()
+
+
+def see_also_targets() -> list:
+    return [
+        HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+    ]
 
 
 DOCUMENTATION = CommandLineActorDocumentation()
 
 
-class _ActPhaseSyntax:
+class ActPhaseDocumentationSyntax:
     CL_SYNTAX_RENDERER = cli_program_syntax.CommandLineSyntaxRenderer()
 
     ARG_SYNTAX_RENDERER = cli_program_syntax.ArgumentInArgumentDescriptionRenderer()
