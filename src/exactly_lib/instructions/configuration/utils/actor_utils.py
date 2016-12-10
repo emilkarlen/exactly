@@ -149,15 +149,15 @@ def _parse_interpreter_command(arg: str) -> Command:
 
 
 _DESCRIPTION_OF_INTERPRETER = """\
-Sets the {interpreter_actor} {actor}, with an executable program as interpreter.
+Specifies that the {interpreter_actor} {actor} should be used, with an executable program as interpreter.
 """
 
 _DESCRIPTION_OF_SHELL_COMMAND_INTERPRETER = """\
-Sets the {interpreter_actor} {actor}, with a shell command as interpreter.
+Specifies that the {interpreter_actor} {actor} should be used, with a shell command as interpreter.
 """
 
 _DESCRIPTION_OF_SHELL = """\
-Sets the {command_line_actor} {actor}.
+Specifies that the {command_line_actor} {actor} should be used.
 """
 
 _DESCRIPTION_OF_EXECUTABLE = """\

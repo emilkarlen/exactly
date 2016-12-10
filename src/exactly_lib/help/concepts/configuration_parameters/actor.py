@@ -57,13 +57,18 @@ class _ActorConcept(ConfigurationParameterDocumentation):
 ACTOR_CONCEPT = _ActorConcept()
 
 _SINGLE_LINE_DESCRIPTION = """\
-Responsible for reading the contents of the {phase[act]} phase,
-and executing it as part of the execution of the test case.
+Executes tha {phase[act]} phase - interprets the contents of the {phase[act]} phase,
+and executes it.
 """
 
 _AFTER_SINGLE_LINE_DESCRIPTION = """\
-The {actor_concept} may be specified, via the {actor_option} option,
-or the {actor_instruction} instruction.
+The {actor_concept} handles {phase[act]} phase - interprets the contents in the test case file,
+and executes it.
+
+
+The {actor_concept} may be specified, via the {actor_instruction} instruction
+(both in test cases and test suites),
+or the {actor_option} command line option.
 """
 
 _DEFAULT_DESCRIPTION_REST = """\
