@@ -138,9 +138,8 @@ class Parser:
     def _parse_entity_help(self, entity_type_name: str, arguments: list) -> EntityHelpRequest:
         if not arguments:
             return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
-        name_to_lookup = ' '.join(arguments).lower()
         entities_help = ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER[entity_type_name](self.application_help)
-        match = lookup_entity(entities_help, name_to_lookup)
+        match = lookup_entity(entities_help, arguments)
         return EntityHelpRequest(entity_type_name,
                                  EntityHelpItem.INDIVIDUAL_ENTITY,
                                  match.value,
@@ -157,9 +156,9 @@ def _is_name_of_phase(name: str):
     return name in map(lambda x: x.identifier, phase_identifier.ALL)
 
 
-def lookup_entity(entities: EntitiesHelp, name: str) -> argument_value_lookup.Match:
+def lookup_entity(entities: EntitiesHelp, arguments: list) -> argument_value_lookup.Match:
     return argument_value_lookup.lookup_argument(entities.entity_type_name,
-                                                 name,
+                                                 ' '.join(arguments).lower(),
                                                  argument_value_lookup.entities_key_value_iter(entities))
 
 
