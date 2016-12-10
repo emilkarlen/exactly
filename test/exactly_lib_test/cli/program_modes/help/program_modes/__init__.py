@@ -1,11 +1,12 @@
 import unittest
 
-from exactly_lib_test.cli.program_modes.help.program_modes import test_case, test_suite
+from exactly_lib_test.cli.program_modes.help.program_modes import test_case, test_suite, utils
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        test_case.suite(),
+        utils.suite(),
+        test_suite.suite(),
         test_suite.suite(),
     ])
 
