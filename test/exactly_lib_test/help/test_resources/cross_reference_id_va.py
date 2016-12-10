@@ -27,9 +27,6 @@ class _IsCrossReferenceIdAssertionGetter(CrossReferenceIdVisitor):
     def visit_concept(self, x: ConceptCrossReferenceId):
         return _assertion_on_properties_of(x, concept_is_valid)
 
-    def visit_actor(self, x: ActorCrossReferenceId):
-        return _assertion_on_properties_of(x, actor_is_valid)
-
     def visit_entity(self, x: EntityCrossReferenceId):
         return _assertion_on_properties_of(x, entity_is_valid)
 
@@ -59,10 +56,6 @@ concept_is_valid = _is_str('concept name', ConceptCrossReferenceId.concept_name.
 
 is_concept = va.is_instance_with(ConceptCrossReferenceId,
                                  concept_is_valid)
-
-actor_is_valid = _is_str('actor name', ActorCrossReferenceId.actor_name.fget)
-
-is_actor = va.is_instance_with(ActorCrossReferenceId, actor_is_valid)
 
 test_case_phase_is_valid = _is_str('phase name', TestCasePhaseCrossReference.phase_name.fget)
 

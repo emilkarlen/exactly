@@ -38,19 +38,6 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
                       returned,
                       'The object itself is expected to be returned by the visitor')
 
-    def test_visit_ActorCrossReferenceId(self):
-        # ARRANGE #
-        x = sut.ActorCrossReferenceId('actor name')
-        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
-        # ACT #
-        returned = visitor.visit(x)
-        # ASSERT #
-        self.assertEqual([sut.ActorCrossReferenceId],
-                         visitor.visited_classes)
-        self.assertIs(x,
-                      returned,
-                      'The object itself is expected to be returned by the visitor')
-
     def test_visit_TestCasePhaseCrossReference(self):
         # ARRANGE #
         x = sut.TestCasePhaseCrossReference('phase name')
@@ -135,10 +122,6 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
 
     def visit_entity(self, x: sut.EntityCrossReferenceId):
         self.visited_classes.append(sut.EntityCrossReferenceId)
-        return x
-
-    def visit_actor(self, x: sut.ActorCrossReferenceId):
-        self.visited_classes.append(sut.ActorCrossReferenceId)
         return x
 
     def visit_test_case_phase(self, x: sut.TestCasePhaseCrossReference):
