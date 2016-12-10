@@ -13,7 +13,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
                                                                        _SINGLE_LINE_DESCRIPTION_UNFORMATTED))
 
 
-_SINGLE_LINE_DESCRIPTION_UNFORMATTED = 'Sets the {actor} that will execute the {act_phase} phase'
+_SINGLE_LINE_DESCRIPTION_UNFORMATTED = 'Specifies the {actor} that will execute the {act_phase} phase'
 
 
 class Parser(SingleInstructionParser):

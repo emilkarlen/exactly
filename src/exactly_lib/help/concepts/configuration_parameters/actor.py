@@ -32,16 +32,13 @@ class _ActorConcept(ConfigurationParameterDocumentation):
         return DescriptionWithSubSections(parse.text(_SINGLE_LINE_DESCRIPTION),
                                           docs.SectionContents(
                                               parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION),
-                                              [
-                                                  docs.section(docs.text('Default actor'),
-                                                               parse.fnap(_DEFAULT_DESCRIPTION_REST)),
-                                                  docs.section(docs.text('Source code interpreter actor'),
-                                                               parse.fnap(_INTERPRETER_ACTOR_DESCRIPTION_REST)),
-                                              ]))
+                                              []))
 
     def default_value_str(self) -> str:
         from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
-        return DEFAULT_ACTOR_DOC.name_and_single_line_description_str()
+        return (formatting.entity(DEFAULT_ACTOR_DOC.singular_name()) +
+                ' - ' +
+                DEFAULT_ACTOR_DOC.single_line_description_str())
 
     def see_also(self) -> list:
         return (all_actor_cross_refs() +
@@ -57,33 +54,16 @@ class _ActorConcept(ConfigurationParameterDocumentation):
 ACTOR_CONCEPT = _ActorConcept()
 
 _SINGLE_LINE_DESCRIPTION = """\
-Responsible for reading the contents of the {phase[act]} phase,
-and executing it as part of the execution of the test case.
+Executes tha {phase[act]} phase - interprets the contents of the {phase[act]} phase,
+and executes it.
 """
 
 _AFTER_SINGLE_LINE_DESCRIPTION = """\
-The {actor_concept} may be specified, via the {actor_option} option,
-or the {actor_instruction} instruction.
-"""
-
-_DEFAULT_DESCRIPTION_REST = """\
-The default {actor_concept} executes a single command.
-
-It assumes that the {phase[act]} phase consists of a single command line,
-where the first element is the path of an executable program.
-
-This path is relative to the {home_directory} (if it is not an absolute path).
+The {actor_concept} handles {phase[act]} phase - interprets the contents in the test case file,
+and executes it.
 
 
-The command line uses shell syntax.
-"""
-
-_INTERPRETER_ACTOR_DESCRIPTION_REST = """\
-The {interpreter_actor} treats the contents of the {phase[act]} phase as source code
-to be executed by an interpreter.
-
-
-The interpreter is an executable program (with optional arguments) that
-{program_name} gives a single argument:
-the absolute path of a file containing the contents of the {phase[act]} phase.
+The {actor_concept} may be specified, via the {actor_instruction} instruction
+(both in test cases and test suites),
+or the {actor_option} command line option.
 """
