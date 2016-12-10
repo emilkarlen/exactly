@@ -12,19 +12,6 @@ if __name__ == '__main__':
 
 
 class CrossReferenceIdVisitorTest(unittest.TestCase):
-    def test_visit_ConceptCrossReferenceId(self):
-        # ARRANGE #
-        x = sut.ConceptCrossReferenceId('concept name')
-        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
-        # ACT #
-        returned = visitor.visit(x)
-        # ASSERT #
-        self.assertEqual([sut.ConceptCrossReferenceId],
-                         visitor.visited_classes)
-        self.assertIs(x,
-                      returned,
-                      'The object itself is expected to be returned by the visitor')
-
     def test_visit_EntityCrossReferenceId(self):
         # ARRANGE #
         x = sut.EntityCrossReferenceId('entity type name', 'entity name')
@@ -105,7 +92,7 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
 
     def test_visit_SHOULD_raise_exception_WHEN_an_unknown_class_is_visited(self):
         # ARRANGE #
-        x = sut.ProgramCrossReferenceId()
+        x = UnknownCrossReferenceId()
         visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
         # ACT & ASSERT#
         with self.assertRaises(TypeError):
@@ -115,10 +102,6 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
 class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReferenceIdVisitor):
     def __init__(self):
         self.visited_classes = []
-
-    def visit_concept(self, x: sut.ConceptCrossReferenceId):
-        self.visited_classes.append(sut.ConceptCrossReferenceId)
-        return x
 
     def visit_entity(self, x: sut.EntityCrossReferenceId):
         self.visited_classes.append(sut.EntityCrossReferenceId)
@@ -143,3 +126,7 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
     def visit_custom(self, x: sut.CustomCrossReferenceId):
         self.visited_classes.append(sut.CustomCrossReferenceId)
         return x
+
+
+class UnknownCrossReferenceId(sut.CrossReferenceId):
+    pass
