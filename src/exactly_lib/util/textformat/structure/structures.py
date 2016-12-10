@@ -17,6 +17,12 @@ def section(header_str_or_text,
                                    _empty_list_if_none(sub_sections)))
 
 
+def section_contents(initial_paragraphs: list,
+                     sub_sections: list = None) -> SectionContents:
+    return SectionContents(initial_paragraphs,
+                           _empty_list_if_none(sub_sections))
+
+
 def simple_header_only_list(str_or_text_headers: iter,
                             list_type: lists.ListType) -> lists.HeaderContentList:
     items = [header_only_item(header) for header in str_or_text_headers]
@@ -107,10 +113,6 @@ def text_from_unknown(str_or_text) -> Text:
         return StringText(str_or_text)
 
 
-def _empty_list_if_none(content) -> list:
-    return [] if content is None else content
-
-
 def cell(paragraph_items: list) -> list:
     """
     Currently, this function exists only to centralize construction of cell elements,
@@ -119,3 +121,7 @@ def cell(paragraph_items: list) -> list:
     :return:
     """
     return paragraph_items
+
+
+def _empty_list_if_none(content) -> list:
+    return [] if content is None else content
