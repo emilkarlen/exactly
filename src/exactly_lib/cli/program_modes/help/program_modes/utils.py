@@ -7,12 +7,12 @@ def with_or_without_name(do_include_name: bool,
                          name: str,
                          contents_renderer: SectionContentsRenderer) -> SectionContentsRenderer:
     if do_include_name:
-        return WithElementNameRenderer(text(name), contents_renderer)
+        return _WithElementNameRenderer(text(name), contents_renderer)
     else:
         return contents_renderer
 
 
-class WithElementNameRenderer(SectionContentsRenderer):
+class _WithElementNameRenderer(SectionContentsRenderer):
     def __init__(self,
                  header: Text,
                  contents_render: SectionContentsRenderer):
