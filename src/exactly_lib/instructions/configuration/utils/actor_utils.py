@@ -2,7 +2,8 @@ import shlex
 
 from exactly_lib.act_phase_setups import command_line
 from exactly_lib.act_phase_setups.interpreter import act_phase_handling
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.help.actors.actor import command_line as command_line_actor_help
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -27,15 +28,13 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
     def __init__(self, name: str,
                  single_line_description_unformatted: str,
                  main_description_rest_unformatted: str = None):
-        self.executable = a.Named('EXECUTABLE')
-        self.argument = a.Named('ARGUMENT')
-        self.command = a.Constant('COMMAND')
+        self.command_line_syntax = command_line_actor_help.ActPhaseDocumentationSyntax()
         self.single_line_description_unformatted = single_line_description_unformatted
         self.main_description_rest_unformatted = main_description_rest_unformatted
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         super().__init__(name, {
-            'EXECUTABLE': self.executable.name,
-            'ARGUMENT': self.argument.name,
+            'EXECUTABLE': self.command_line_syntax.executable.name,
+            'ARGUMENT': self.command_line_syntax.argument.name,
             'actor': formatting.concept(ACTOR_CONCEPT.name().singular),
             'act_phase': ACT_PHASE_NAME.emphasis,
         })
@@ -46,11 +45,11 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
     def invokation_variants(self) -> list:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
         interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Option(INTERPRETER_OPTION_NAME))
-        executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
-        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
+        executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
+        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
         shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                               a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
-        command_argument = a.Single(a.Multiplicity.MANDATORY, self.command)
+        command_argument = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.command)
         return [
             InvokationVariant(self._cl_syntax_for_args([command_line_actor_arg]),
                               self._description_of_command_line()),
@@ -65,14 +64,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return [
-            SyntaxElementDescription(self.executable.name,
-                                     self._paragraphs(_DESCRIPTION_OF_EXECUTABLE)),
-            SyntaxElementDescription(self.argument.name,
-                                     self._paragraphs(_DESCRIPTION_OF_ARGUMENTS)),
-            SyntaxElementDescription(self.command.name,
-                                     self._paragraphs(_DESCRIPTION_OF_COMMAND))
-        ]
+        return self.command_line_syntax.syntax_element_descriptions()
 
     def main_description_rest(self) -> list:
         if self.main_description_rest_unformatted:
@@ -83,7 +75,9 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
     def see_also(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
-        return [ACTOR_CONCEPT.cross_reference_target()] + all_actor_cross_refs()
+        return ([ACTOR_CONCEPT.cross_reference_target()] +
+                all_actor_cross_refs() +
+                command_line_actor_help.see_also_targets())
 
     def _description_of_interpreter(self) -> list:
         from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
@@ -158,26 +152,4 @@ Specifies that the {interpreter_actor} {actor} should be used, with a shell comm
 
 _DESCRIPTION_OF_SHELL = """\
 Specifies that the {command_line_actor} {actor} should be used.
-"""
-
-_DESCRIPTION_OF_EXECUTABLE = """\
-The path of an existing executable file.
-
-
-Uses shell syntax.
-"""
-
-_DESCRIPTION_OF_COMMAND = """\
-A shell command line.
-
-
-Uses the syntax of the operating system's shell.
-(Which shell this is depends on the operating system).
-"""
-
-_DESCRIPTION_OF_ARGUMENTS = """\
-Arguments given to {EXECUTABLE}.
-
-
-Uses shell syntax.
 """
