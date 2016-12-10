@@ -1,5 +1,5 @@
 from exactly_lib.help import cross_reference_id as cross_ref
-from exactly_lib.help.cross_reference_id import ActorCrossReferenceId, EntityCrossReferenceId
+from exactly_lib.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.structure import core as doc
 
@@ -10,9 +10,6 @@ class HtmlTargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor)
 
     def visit_entity(self, x: EntityCrossReferenceId):
         return 'entity' + '.' + x.entity_type_name + '.' + x.entity_name
-
-    def visit_actor(self, x: ActorCrossReferenceId):
-        return 'actor.' + x.actor_name
 
     def visit_concept(self, x: cross_ref.ConceptCrossReferenceId):
         return 'concept.' + x.concept_name

@@ -1,5 +1,5 @@
 from exactly_lib.help import cross_reference_id
-from exactly_lib.help.cross_reference_id import ActorCrossReferenceId, EntityCrossReferenceId
+from exactly_lib.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, phase_name_dict_key_for
 from exactly_lib.help.utils.suite_section_names import suite_section_name_dictionary, suite_section_name_dict_key_for
@@ -40,9 +40,6 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
 
     def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
         return 'Concept "' + x.concept_name + '"'
-
-    def visit_actor(self, x: ActorCrossReferenceId):
-        return 'Actor "' + x.actor_name + '"'
 
     def visit_entity(self, x: EntityCrossReferenceId):
         return x.entity_type_name.capitalize() + ' "' + x.entity_name + '"'
