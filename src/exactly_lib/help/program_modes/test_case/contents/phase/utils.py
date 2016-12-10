@@ -65,7 +65,7 @@ def sequence_info__succeeding_phase(phase_name_dictionary: dict,
 
 
 _SEQUENCE_INFO__SUCCEEDING_PHASE = """\
-If any of the instructions fail, the execution jumps to the {phase[cleanup]} phase,
+If any of the instructions fail, then execution jumps to the {phase[cleanup]} phase,
 and the test case halts with an error.
 
 Otherwise, the {following_phase} phase follows.

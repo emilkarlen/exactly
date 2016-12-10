@@ -27,12 +27,12 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
         self.command_arg = a.Named(_COMMAND_SYNTAX_ELEMENT)
 
     def single_line_description(self) -> str:
-        return "Executes a command using the current system's shell"
+        return "Executes a command using the current operating system's shell"
 
     def _main_description_rest_body(self) -> list:
         text = """\
         Which commands are available and the syntax of them depends
-        on the current system's shell and environment.
+        on the current operating system's shell and environment.
 
 
         The shell takes care of interpreting {COMMAND}, so all features of the
@@ -59,7 +59,7 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
 
     def syntax_element_descriptions(self) -> list:
         text = """\
-        Something that is understood by the current system's shell.
+        Something that is understood by the current operating system's shell.
         """
         return [
             SyntaxElementDescription(self.command_arg.name,
