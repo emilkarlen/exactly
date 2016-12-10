@@ -70,9 +70,6 @@ class _HelpCommandLineGetterVisitor(cross_reference_id.CrossReferenceIdVisitor):
     def visit_custom(self, x: cross_reference_id.CustomCrossReferenceId):
         raise ValueError('A Custom Cross Reference IDs cannot be displayed as a command line')
 
-    def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
-        return _command_line_display_for_help_arguments(arguments_for.concept_single(x.concept_name))
-
     def visit_entity(self, x: cross_reference_id.EntityCrossReferenceId):
         return _command_line_display_for_help_arguments(arguments_for.entity_single(x.entity_type_name,
                                                                                     x.entity_name))

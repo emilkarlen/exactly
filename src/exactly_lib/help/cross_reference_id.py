@@ -19,10 +19,6 @@ class CustomCrossReferenceId(CrossReferenceId):
         return self._target_name
 
 
-class ProgramCrossReferenceId(CrossReferenceId):
-    pass
-
-
 class TestCaseCrossReferenceId(CrossReferenceId):
     pass
 
@@ -81,15 +77,6 @@ class TestSuiteSectionInstructionCrossReference(TestSuiteSectionCrossReferenceBa
         return self._instruction_name
 
 
-class ConceptCrossReferenceId(CrossReferenceId):
-    def __init__(self, concept_name: str):
-        self._concept_name = concept_name
-
-    @property
-    def concept_name(self) -> str:
-        return self._concept_name
-
-
 class EntityCrossReferenceId(CrossReferenceId):
     def __init__(self,
                  entity_type_name: str,
@@ -118,16 +105,11 @@ class CrossReferenceIdVisitor:
             return self.visit_test_suite_section(x)
         if isinstance(x, TestSuiteSectionInstructionCrossReference):
             return self.visit_test_suite_section_instruction(x)
-        if isinstance(x, ConceptCrossReferenceId):
-            return self.visit_concept(x)
         if isinstance(x, EntityCrossReferenceId):
             return self.visit_entity(x)
         else:
             raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceId),
                                                        str(x)))
-
-    def visit_concept(self, x: ConceptCrossReferenceId):
-        raise NotImplementedError()
 
     def visit_entity(self, x: EntityCrossReferenceId):
         raise NotImplementedError()

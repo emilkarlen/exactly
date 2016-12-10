@@ -38,9 +38,6 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
             i=self.any_instruction[x.instruction_name],
             p=self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].syntax)
 
-    def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
-        return 'Concept "' + x.concept_name + '"'
-
     def visit_entity(self, x: EntityCrossReferenceId):
         return x.entity_type_name.capitalize() + ' "' + x.entity_name + '"'
 
