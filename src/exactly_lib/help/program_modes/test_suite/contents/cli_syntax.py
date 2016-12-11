@@ -92,12 +92,12 @@ _ACTOR_OPTION_DESCRIPTION = """\
 Specifies a default {interpreter_actor} {actor} to use for every test case in the suite.
 
 
-Note: An {actor} specified in the suite will have precedence over the {actor}
-specified by this option.
-
-
 {interpreter_program} is the absolute path of an executable program,
 followed by optional arguments (using shell syntax).
+
+
+Note: An {actor} specified in the test suite or individual test cases
+will have precedence over the {actor} specified by this option.
 """
 
 _ACTOR_OPTION = arg.option(long_name=opts.OPTION_FOR_ACTOR__LONG,

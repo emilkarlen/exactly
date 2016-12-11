@@ -105,6 +105,9 @@ Specifies an {interpreter_actor} {actor_concept}, by giving the executable progr
 
 {interpreter_program} is an absolute path followed by optional arguments
 (using shell syntax).
+
+
+Note: An {actor_concept} specified in the test case will have precedence over the {actor_concept} given here.
 """
 
 _ACTOR_OPTION = arg.option(long_name=opt.OPTION_FOR_ACTOR__LONG,
