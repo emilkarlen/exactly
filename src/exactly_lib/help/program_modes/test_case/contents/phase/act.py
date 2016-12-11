@@ -1,9 +1,12 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
-from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
+from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
+from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
+from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference
+from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference, TestCasePhaseInstructionCrossReference, \
+    TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
@@ -12,8 +15,9 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
 from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils import suite_section_names
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME, \
-    ASSERT_PHASE_NAME
+    ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
 from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -33,6 +37,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
             'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
+            'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
         }
 
     def purpose(self) -> Description:
@@ -53,7 +58,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
         return (self._parse(_CONTENTS_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
                 docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
-                self._parse(_CONTENTS_DESCRIPTION__AFTER_DEFAULT_ACTOR_DESCRIPTION)
+                self._parse(HOW_TO_SPECIFY_ACTOR)
                 )
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
@@ -64,14 +69,18 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     def see_also(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
-            ACTOR_CONCEPT.cross_reference_target(),
-            SANDBOX_CONCEPT.cross_reference_target(),
-            ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
-            HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
-            TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
-            TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
-            TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
-        ]
+                   ACTOR_CONCEPT.cross_reference_target(),
+                   SANDBOX_CONCEPT.cross_reference_target(),
+                   ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
+                   HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+                   TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
+                   TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
+                   TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
+                   TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+                                                          ACTOR_INSTRUCTION_NAME),
+                   TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
+                                                             ACTOR_INSTRUCTION_NAME),
+               ] + all_actor_cross_refs()
 
     def _parse(self, multi_line_string: str) -> list:
         return normalize_and_parse(multi_line_string.format_map(self.format_map))
@@ -91,8 +100,4 @@ The meaning and syntax of the {phase[act]} phase depends on which {actor_concept
 
 
 The default {actor_concept} is:
-"""
-
-_CONTENTS_DESCRIPTION__AFTER_DEFAULT_ACTOR_DESCRIPTION = """\
-The {actor_option} option can be used to specify a different {actor_concept}.
 """

@@ -29,10 +29,9 @@ class _ActorConcept(ConfigurationParameterDocumentation):
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name),
         })
+        contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION) + parse.fnap(HOW_TO_SPECIFY_ACTOR)
         return DescriptionWithSubSections(parse.text(_SINGLE_LINE_DESCRIPTION),
-                                          docs.SectionContents(
-                                              parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION),
-                                              []))
+                                          docs.section_contents(contents))
 
     def default_value_str(self) -> str:
         from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
@@ -54,15 +53,15 @@ class _ActorConcept(ConfigurationParameterDocumentation):
 ACTOR_CONCEPT = _ActorConcept()
 
 _SINGLE_LINE_DESCRIPTION = """\
-Executes tha {phase[act]} phase - interprets the contents of the {phase[act]} phase,
-and executes it.
+Interprets the contents of the {phase[act]} phase, and executes it.
 """
 
 _AFTER_SINGLE_LINE_DESCRIPTION = """\
 The {actor_concept} handles {phase[act]} phase - interprets the contents in the test case file,
 and executes it.
+"""
 
-
+HOW_TO_SPECIFY_ACTOR = """\
 The {actor_concept} may be specified, via the {actor_instruction} instruction
 (both in test cases and test suites),
 or the {actor_option} command line option.
