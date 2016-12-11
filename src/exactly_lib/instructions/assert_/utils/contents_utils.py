@@ -2,6 +2,7 @@ import difflib
 import filecmp
 import os
 import pathlib
+import re
 
 from exactly_lib import program_info
 from exactly_lib.cli.util.cli_argument_syntax import long_option_name
@@ -38,6 +39,7 @@ WITH_REPLACED_ENV_VARS_OPTION = long_option_name(WITH_REPLACED_ENV_VARS_OPTION_N
 EMPTY_ARGUMENT = 'empty'
 NOT_ARGUMENT = '!'
 EQUALS_ARGUMENT = 'equals'
+MATCHES_ARGUMENT = 'matches'
 
 
 def with_replaced_env_vars_help(checked_file: str) -> list:
@@ -171,6 +173,38 @@ class ContentCheckerInstruction(ContentCheckerInstructionBase):
         return actual_file_path
 
 
+class ContentMatcherInstructionBase(AssertPhaseInstruction):
+    def __init__(self,
+                 expected_reg_ex,
+                 actual_contents: ComparisonActualFile):
+        self._actual_value = actual_contents
+        self._expected_reg_ex = expected_reg_ex
+
+    def main(self,
+             environment: i.InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        actual_file_path = self._actual_value.file_path(environment)
+        failure_message = self._actual_value.file_check_failure(environment)
+        if failure_message is not None:
+            return pfh.new_pfh_fail(failure_message)
+
+        processed_actual_file_path = self._get_processed_actual_file_path(actual_file_path,
+                                                                          environment,
+                                                                          os_services)
+        actual_file_name = str(processed_actual_file_path)
+        with open(actual_file_name) as f:
+            for line in f:
+                if self._expected_reg_ex.search(line.rstrip('\n')):
+                    return pfh.new_pfh_pass()
+        return pfh.new_pfh_fail('No lines matching ' + str(self._expected_reg_ex))
+
+    def _get_processed_actual_file_path(self,
+                                        actual_file_path: pathlib.Path,
+                                        environment: i.InstructionEnvironmentForPostSdsStep,
+                                        os_services: OsServices) -> pathlib.Path:
+        return actual_file_path
+
+
 class ActualFileTransformer:
     def replace_env_vars(self,
                          environment: InstructionEnvironmentForPostSdsStep,
@@ -271,15 +305,38 @@ def try_parse_content(actual_file: ComparisonActualFile,
                                                        str(extra_arguments)))
         return EmptinessCheckerInstruction(False, actual)
 
+    def _parse_matches(with_replaced_env_vars: bool,
+                       actual: ComparisonActualFile,
+                       extra_arguments: list) -> AssertPhaseInstruction:
+        if not extra_arguments:
+            raise SingleInstructionInvalidArgumentException(
+                lines_content(['Missing regular expression argument']))
+        if len(extra_arguments) > 1:
+            raise SingleInstructionInvalidArgumentException(
+                lines_content(['Superfluous arguments: {}'.format(extra_arguments[1:])]))
+        reg_ex_argument = extra_arguments[0]
+        try:
+            reg_ex = re.compile(reg_ex_argument)
+        except Exception as ex:
+            raise SingleInstructionInvalidArgumentException(
+                lines_content(['Invalid regular expression: {}',
+                               str(ex)]))
+        return ContentMatcherInstructionBase(reg_ex, actual)
+
     def _parse_contents(actual: ComparisonActualFile,
                         extra_arguments: list) -> AssertPhaseInstruction:
         with_replaced_env_vars = False
         if extra_arguments and matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, extra_arguments[0]):
             with_replaced_env_vars = True
             del extra_arguments[0]
-        if not extra_arguments or extra_arguments[0] != EQUALS_ARGUMENT:
+        if not extra_arguments:
             raise SingleInstructionInvalidArgumentException(
-                lines_content(['Missing {}: {}'.format(EQUALS_ARGUMENT, extra_arguments)]))
+                lines_content(['Missing operator: {}'.format('|'.join([EQUALS_ARGUMENT, MATCHES_ARGUMENT]))]))
+        if extra_arguments[0] == MATCHES_ARGUMENT:
+            return _parse_matches(with_replaced_env_vars, actual, extra_arguments[1:])
+        if extra_arguments[0] != EQUALS_ARGUMENT:
+            raise SingleInstructionInvalidArgumentException(
+                lines_content(['Unknown operator: {}'.format(extra_arguments[0])]))
         del extra_arguments[0]
         (here_doc_or_file_ref_for_expected, remaining_arguments) = parse_here_doc_or_file_ref.parse(extra_arguments,
                                                                                                     source)
