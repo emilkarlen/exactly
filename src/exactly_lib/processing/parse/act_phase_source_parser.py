@@ -8,15 +8,45 @@ from exactly_lib.util.line_source import LineSequence
 
 class PlainSourceActPhaseParser(parse.SectionElementParser):
     def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
+        lines_read = []
+        lines_read.append(_unescape(source.first_line.text))
         while source.has_next():
             next_line = source.next_line()
             if syntax.is_section_header_line(next_line):
                 source.return_line()
                 break
-        line_sequence = source.build()
+            lines_read.append(_unescape(next_line))
+        line_sequence = LineSequence(source.first_line.line_number,
+                                     tuple(lines_read))
         return model.SectionContentElement(model.ElementType.INSTRUCTION,
                                            line_sequence,
                                            SourceCodeInstruction(line_sequence))
+
+
+def _unescape(s: str) -> str:
+    if not s:
+        return s
+    if s[0] != ' ':
+        return _un_escape_at_beginning_of_line(s)
+    space, non_space = _split_space(s)
+    if not non_space:
+        return space
+    return space + _un_escape_at_beginning_of_line(non_space)
+
+
+def _un_escape_at_beginning_of_line(s: str) -> str:
+    if s[:2] == '\\[':
+        return '[' + s[2:]
+    if s[:2] == '\\\\':
+        return '\\' + s[2:]
+    return s
+
+
+def _split_space(s: str) -> (str, str):
+    non_space_char_idx = 0
+    while s[non_space_char_idx] == ' ':
+        non_space_char_idx += 1
+    return s[:non_space_char_idx], s[non_space_char_idx:]
 
 
 class SourceCodeInstruction(ActPhaseInstruction):
