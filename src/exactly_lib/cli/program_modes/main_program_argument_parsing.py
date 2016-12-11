@@ -116,6 +116,6 @@ Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program th
 
 {ARGUMENT} is an absolute path followed by optional arguments (using shell syntax).
 
-Note that an {ACTOR_CONCEPT} set in the test case has precedence over the
+Note that an {ACTOR_CONCEPT} specified in the test case has precedence over the
 {ACTOR_CONCEPT} given here.
 """
