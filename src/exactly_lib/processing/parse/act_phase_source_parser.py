@@ -9,13 +9,13 @@ from exactly_lib.util.line_source import LineSequence
 class PlainSourceActPhaseParser(parse.SectionElementParser):
     def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
         lines_read = []
-        lines_read.append(_unescape(source.first_line.text))
+        lines_read.append(_un_escape(source.first_line.text))
         while source.has_next():
             next_line = source.next_line()
             if syntax.is_section_header_line(next_line):
                 source.return_line()
                 break
-            lines_read.append(_unescape(next_line))
+            lines_read.append(_un_escape(next_line))
         line_sequence = LineSequence(source.first_line.line_number,
                                      tuple(lines_read))
         return model.SectionContentElement(model.ElementType.INSTRUCTION,
@@ -23,10 +23,10 @@ class PlainSourceActPhaseParser(parse.SectionElementParser):
                                            SourceCodeInstruction(line_sequence))
 
 
-def _unescape(s: str) -> str:
+def _un_escape(s: str) -> str:
     if not s:
         return s
-    if s[0] != ' ':
+    if not s[0].isspace():
         return _un_escape_at_beginning_of_line(s)
     space, non_space = _split_space(s)
     if not non_space:
@@ -44,7 +44,7 @@ def _un_escape_at_beginning_of_line(s: str) -> str:
 
 def _split_space(s: str) -> (str, str):
     non_space_char_idx = 0
-    while s[non_space_char_idx] == ' ':
+    while s[non_space_char_idx].isspace():
         non_space_char_idx += 1
     return s[:non_space_char_idx], s[non_space_char_idx:]
 
