@@ -16,9 +16,6 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 _SINGLE_LINE_DESCRIPTION_UNFORMATTED = 'Sets an {actor} to use for each test case in the suite'
 _DESCRIPTION = """\
-The actor will treat the contents of the {act_phase} phase as source code
-to be interpreted by the given program.
-
 The {actor} may be overridden by configuration in test cases.
 
 The {actor} is only used for the test cases in the current suite -
