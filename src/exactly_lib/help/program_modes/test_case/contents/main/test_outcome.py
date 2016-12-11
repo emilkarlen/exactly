@@ -39,7 +39,7 @@ def test_outcome_documentation(setup: Setup) -> SectionContents:
 PREAMBLE = ''
 
 REPORTING = """\
-Outcome is reported either as an exit code, or as an exit code together with an identifier printed as a single
+Outcome is reported either as an exit code, or as an exit code together with an "exit identifier" printed as a single
 line on stdout.
 """
 

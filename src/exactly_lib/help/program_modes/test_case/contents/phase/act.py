@@ -1,4 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
+from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -10,6 +11,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
+from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME, \
     ASSERT_PHASE_NAME
 from exactly_lib.test_case import sandbox_directory_structure as sds
@@ -30,6 +32,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'sandbox': SANDBOX_CONCEPT.name().singular,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
+            'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
         }
 
     def purpose(self) -> Description:
@@ -84,12 +87,12 @@ in the {result_subdir}/ sub directory of the {sandbox}:
 """
 
 _CONTENTS_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION = """\
-The meaning and syntax of the {phase[act]} phase depends on which TODO actor_concept is used.
+The meaning and syntax of the {phase[act]} phase depends on which {actor_concept} is used.
 
 
-The default TODO actor_concept is:
+The default {actor_concept} is:
 """
 
 _CONTENTS_DESCRIPTION__AFTER_DEFAULT_ACTOR_DESCRIPTION = """\
-The {actor_option} option can be used to specify a different TODO actor_concept.
+The {actor_option} option can be used to specify a different {actor_concept}.
 """

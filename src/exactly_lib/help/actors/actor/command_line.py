@@ -31,9 +31,6 @@ class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
         }
         self._parser = TextParser(format_map)
 
-    def single_line_description_str(self) -> str:
-        return self._parser.format(_SINGLE_LINE_DESCRIPTION)
-
     def act_phase_contents(self) -> doc.SectionContents:
         return doc.SectionContents(self._parser.fnap(_ACT_PHASE_CONTENTS))
 
@@ -127,8 +124,6 @@ class ActPhaseDocumentationSyntax:
         """
         return self._parser.fnap(s, extra)
 
-
-_SINGLE_LINE_DESCRIPTION = 'Executes a command line - either an executable file or a shell command'
 
 _ACT_PHASE_CONTENTS = """\
 A single command line.

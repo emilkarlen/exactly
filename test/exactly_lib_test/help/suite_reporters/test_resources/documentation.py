@@ -10,6 +10,7 @@ class SuiteReporterDocTestImpl(SuiteReporterDocumentation):
                  syntax_of_output: list = (),
                  exit_code_description: list = ()):
         super().__init__(SingularNameAndCrossReferenceId(singular_name,
+                                                         'single line description of suite reporter',
                                                          suite_reporter_cross_ref(singular_name)))
         self._main_description_rest = list(main_description_rest)
         self._syntax_of_output = list(syntax_of_output)

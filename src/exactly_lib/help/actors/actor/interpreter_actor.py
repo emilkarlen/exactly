@@ -21,9 +21,6 @@ class InterpreterActorDocumentation(SingleCommandLineActorDocumentationBase):
         }
         self._parser = TextParser(format_map)
 
-    def single_line_description_str(self) -> str:
-        return self._parser.format('Treats the {phase[act]} phase as source code to be executed by an interpreter')
-
     def act_phase_contents(self) -> SectionContents:
         return SectionContents(self._parser.fnap(_ACT_PHASE_CONTENTS))
 
