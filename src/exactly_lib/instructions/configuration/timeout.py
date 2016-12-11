@@ -30,7 +30,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets a timeout for the execution of instructions and the {phase[act]} phase')
+        return self._format(_SINGLE_LINE_DESCRIPTION)
 
     def main_description_rest(self) -> list:
         return self._paragraphs(_MAIN_DESCRIPTION_REST)
@@ -77,6 +77,9 @@ class _Instruction(ConfigurationPhaseInstruction):
         configuration_builder.set_timeout_in_seconds(self.timeout)
         return sh.new_sh_success()
 
+
+_SINGLE_LINE_DESCRIPTION = """\
+Sets the timeout of sub processes executed by instructions and the {phase[act]} phase."""
 
 _MAIN_DESCRIPTION_REST = """\
 Default: {default_value_str}
