@@ -60,7 +60,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 
 _NO_DIR_ARG_MEANING = """\
-Omitting the {dir_argument} is the same as giving "." (TODO is this correct??).
+Omitting the {dir_argument} is the same as giving ".".
 """
 
 
