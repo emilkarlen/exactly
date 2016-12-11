@@ -37,6 +37,7 @@ WITH_REPLACED_ENV_VARS_OPTION = long_option_name(WITH_REPLACED_ENV_VARS_OPTION_N
 
 EMPTY_ARGUMENT = 'empty'
 NOT_ARGUMENT = '!'
+EQUALS_ARGUMENT = 'equals'
 
 
 def with_replaced_env_vars_help(checked_file: str) -> list:
@@ -276,6 +277,10 @@ def try_parse_content(actual_file: ComparisonActualFile,
         if extra_arguments and matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, extra_arguments[0]):
             with_replaced_env_vars = True
             del extra_arguments[0]
+        if not extra_arguments or extra_arguments[0] != EQUALS_ARGUMENT:
+            raise SingleInstructionInvalidArgumentException(
+                lines_content(['Missing {}: {}'.format(EQUALS_ARGUMENT, extra_arguments)]))
+        del extra_arguments[0]
         (here_doc_or_file_ref_for_expected, remaining_arguments) = parse_here_doc_or_file_ref.parse(extra_arguments,
                                                                                                     source)
         if remaining_arguments:
