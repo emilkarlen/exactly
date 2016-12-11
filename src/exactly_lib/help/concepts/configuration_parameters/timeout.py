@@ -31,7 +31,7 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
 TIMEOUT_CONFIGURATION_PARAMETER = _TimeoutConfigurationParameter()
 
 _SINGLE_LINE_DESCRIPTION = """\
-Timeout of instructions and the {phase[act]} phase, in seconds."""
+Timeout of sub processes executed by instructions and the {phase[act]} phase."""
 
 WHAT_THE_TIMEOUT_APPLIES_TO = """\
 The timeout is per instruction, and for the {phase[act]} phase.
