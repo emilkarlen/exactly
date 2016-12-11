@@ -9,6 +9,12 @@ class ActorDocumentation(EntityDocumentationBase):
     Documents an actor.
     """
 
+    def main_description_rest(self) -> list:
+        """
+        :rtype [`ParagraphItem`]
+        """
+        return []
+
     def act_phase_contents(self) -> SectionContents:
         raise NotImplementedError()
 
