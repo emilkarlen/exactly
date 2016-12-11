@@ -69,6 +69,52 @@ class TestParse(unittest.TestCase):
                          source.next_line(),
                          'All following lines should remain in in the source')
 
+    def test_parse_SHOULD_backslash_escape_sequences_at_beginning_of_line(self):
+        # ARRANGE #
+        following_lines = ListOfLines(['\\\\[second line',
+                                       '\\non-escape sequence',
+                                       '\\',
+                                       '[section-header]'])
+        source = LineSequenceSourceFromListOfLines(following_lines)
+        source_builder = line_source.LineSequenceBuilder(source, 1, '\\[first line]')
+        # ACT #
+        element = sut.PlainSourceActPhaseParser().apply(source_builder)
+        # ASSERT #
+        instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
+        self.assertEqual(list(instruction.source_code().lines),
+                         ['[first line]',
+                          '\\[second line',
+                          '\\non-escape sequence',
+                          '\\'])
+        self.assertTrue(source.has_next(),
+                        'There should be remaining lines in the source')
+        self.assertEqual('[section-header]',
+                         source.next_line(),
+                         'All following lines should remain in in the source')
+
+    def test_parse_SHOULD_backslash_escape_sequences_at_beginning_of_line__with_preceding_space(self):
+        # ARRANGE #
+        following_lines = ListOfLines(['  \\\\[second line',
+                                       '   \\non-escape sequence',
+                                       '    \\',
+                                       '[section-header]'])
+        source = LineSequenceSourceFromListOfLines(following_lines)
+        source_builder = line_source.LineSequenceBuilder(source, 1, ' \\[first line]')
+        # ACT #
+        element = sut.PlainSourceActPhaseParser().apply(source_builder)
+        # ASSERT #
+        instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
+        self.assertEqual(list(instruction.source_code().lines),
+                         [' [first line]',
+                          '  \\[second line',
+                          '   \\non-escape sequence',
+                          '    \\'])
+        self.assertTrue(source.has_next(),
+                        'There should be remaining lines in the source')
+        self.assertEqual('[section-header]',
+                         source.next_line(),
+                         'All following lines should remain in in the source')
+
     def _assert_is_instruction_element_with_correct_type_of_instruction(self,
                                                                         element) -> SourceCodeInstruction:
         self.assertIsInstance(element, model.SectionContentElement,

@@ -26,15 +26,15 @@ _DETECTABLE = (
 
 
 def is_empty_line(line: str) -> bool:
-    return EMPTY_LINE_RE.match(line)
+    return bool(EMPTY_LINE_RE.match(line))
 
 
 def is_comment_line(line: str) -> bool:
-    return COMMENT_LINE_RE.match(line)
+    return bool(COMMENT_LINE_RE.match(line))
 
 
 def is_section_header_line(line: str) -> bool:
-    return SECTION_LINE_RE.match(line)
+    return bool(SECTION_LINE_RE.match(line))
 
 
 def classify_line(line: str) -> int:
