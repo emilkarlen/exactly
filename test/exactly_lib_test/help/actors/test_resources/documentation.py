@@ -8,13 +8,11 @@ class ActorTestImpl(ActorDocumentation):
                  act_phase_contents: SectionContents = SectionContents([]),
                  act_phase_contents_syntax: SectionContents = SectionContents([]),
                  see_also_specific: list = None):
-        super().__init__(name_and_ref_target(singular_name))
+        super().__init__(name_and_ref_target(singular_name,
+                                             'single line description str'))
         self._act_phase_contents = act_phase_contents
         self._act_phase_contents_syntax = act_phase_contents_syntax
         self.__see_also_specific = [] if see_also_specific is None else see_also_specific
-
-    def single_line_description_str(self) -> str:
-        return 'single_line_description_str'
 
     def act_phase_contents(self) -> SectionContents:
         return self._act_phase_contents

@@ -7,12 +7,17 @@ def suite_reporter_cross_ref(reporter_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(SUITE_REPORTER_ENTITY_TYPE_NAME, reporter_name)
 
 
-def _name_and_ref(name: str) -> SingularNameAndCrossReferenceId:
-    return SingularNameAndCrossReferenceId(name, suite_reporter_cross_ref(name))
+def _name_and_ref(name: str,
+                  single_line_description_str: str) -> SingularNameAndCrossReferenceId:
+    return SingularNameAndCrossReferenceId(name,
+                                           single_line_description_str,
+                                           suite_reporter_cross_ref(name))
 
 
-PROGRESS_REPORTER = _name_and_ref('progress')
-JUNIT_REPORTER = _name_and_ref('junit')
+PROGRESS_REPORTER = _name_and_ref('progress',
+                                  'Reports execution progress in a human readable form.')
+JUNIT_REPORTER = _name_and_ref('junit',
+                               'Outputs JUnit XML.')
 
 ALL_SUITE_REPORTERS = [
     PROGRESS_REPORTER,

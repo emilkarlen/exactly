@@ -63,10 +63,13 @@ Sets up the environment that the system under test
 """
 
 REST_OF_DESCRIPTION = """\
-E.g. populating the PWD with files and directories,
-setting the contents of stdin,
-setting environment variables,
-or populating external resources such as databases.
+E.g.
+
+
+ * populating the current directory with files and directories
+ * setting the contents of stdin
+ * setting environment variables
+ * sets up external resources such as databases.
 """
 
 INSTRUCTION_PURPOSE_DESCRIPTION = """\

@@ -15,9 +15,6 @@ class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
         }
         self._parser = TextParser(format_map)
 
-    def single_line_description_str(self) -> str:
-        return self._parser.format(_SINGLE_LINE_DESCRIPTION)
-
     def syntax_of_output(self) -> list:
         return self._parser.fnap(_SYNTAX_OF_OUTPUT)
 
@@ -45,8 +42,6 @@ class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
 
 
 DOCUMENTATION = SimpleProgressSuiteReporterDocumentation()
-
-_SINGLE_LINE_DESCRIPTION = 'Reports execution progress in a human readable form.'
 
 _SYNTAX_OF_OUTPUT = """\
 Reports one event per line:

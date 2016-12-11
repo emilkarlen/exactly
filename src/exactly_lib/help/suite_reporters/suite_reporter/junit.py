@@ -14,9 +14,6 @@ class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):
         }
         self._parser = TextParser(format_map)
 
-    def single_line_description_str(self) -> str:
-        return self._parser.format('Outputs JUnit XML.')
-
     def syntax_of_output(self) -> list:
         return self._parser.fnap(_SYNTAX_OF_OUTPUT)
 
