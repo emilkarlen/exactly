@@ -21,6 +21,7 @@ from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHAS
 from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -41,9 +42,15 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         }
 
     def purpose(self) -> Description:
+        from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
+        actor_info = (self._parse(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
+                      docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
+                      self._parse(HOW_TO_SPECIFY_ACTOR)
+                      )
         return Description(docs.text(ONE_LINE_DESCRIPTION.format_map(self.format_map)),
                            self._parse(REST_OF_DESCRIPTION) +
-                           [result_sub_dir_files_table()])
+                           [result_sub_dir_files_table()] +
+                           actor_info)
 
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo(sequence_info__preceding_phase(SETUP_PHASE_NAME),
@@ -54,12 +61,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     def is_mandatory(self) -> bool:
         return True
 
-    def contents_description(self) -> list:
-        from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
-        return (self._parse(_CONTENTS_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
-                docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
-                self._parse(HOW_TO_SPECIFY_ACTOR)
-                )
+    def contents_description(self) -> doc.SectionContents:
+        initial_paragraphs = self._parse(_CONTENTS_DESCRIPTION) + [_escape_sequence_table()]
+        return docs.section_contents(initial_paragraphs)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_non_first_phases(),
@@ -95,9 +99,35 @@ The program specified by the {phase[act]} phase is executed and its result is st
 in the {result_subdir}/ sub directory of the {sandbox}:
 """
 
-_CONTENTS_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION = """\
+_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION = """\
 The meaning and syntax of the {phase[act]} phase depends on which {actor_concept} is used.
 
 
 The default {actor_concept} is:
 """
+
+_CONTENTS_DESCRIPTION = """\
+Some escape sequences exist to make it possible to have contents that would otherwise be treated as
+phase headers.
+
+The escape sequences are only recognized at the first non-space characters of a line.
+"""
+
+
+def _escape_sequence_table() -> docs.ParagraphItem:
+    def _row(escape_sequence: str, translation: str) -> list:
+        return [docs.paras(escape_sequence),
+                docs.paras(translation),
+                ]
+
+    return docs.first_row_is_header_table(
+        [
+            [
+                docs.paras('Source'),
+                docs.paras('Translation')
+            ]] +
+        [
+            _row('\\[', '['),
+            _row('\\\\', '\\'),
+        ],
+        '  ')

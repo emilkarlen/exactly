@@ -86,10 +86,7 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
     def sequence_info(self) -> PhaseSequenceInfo:
         raise NotImplementedError()
 
-    def contents_description(self) -> list:
-        """
-        :return: [`ParagraphItem`]
-        """
+    def contents_description(self) -> doc.SectionContents:
         raise NotImplementedError()
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
@@ -115,8 +112,10 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
                                                         'mandatory' if self.is_mandatory() else 'optional'))
 
     def _add_section_for_contents_description(self, sections: list):
+        section_contents = self.contents_description()
         sections.append(docs.section('Contents',
-                                     self.contents_description()))
+                                     section_contents.initial_paragraphs,
+                                     section_contents.sections))
 
     def _add_section_for_phase_sequence_description(self, sections: list):
         si = self.sequence_info()
@@ -177,8 +176,9 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
     def instruction_set(self) -> SectionInstructionSet:
         return self._instruction_set
 
-    def contents_description(self) -> list:
-        return [docs.para('Consists of zero or more instructions.')] + self.instruction_purpose_description()
+    def contents_description(self) -> doc.SectionContents:
+        return docs.section_contents([docs.para('Consists of zero or more instructions.')] +
+                                     self.instruction_purpose_description())
 
     def instruction_purpose_description(self) -> list:
         """
