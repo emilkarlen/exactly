@@ -164,6 +164,26 @@ class TestSuccessfulScenarios(TestCaseBase):
                                            post_action_check=CwdIs(lambda sds: sds.tmp.user_dir / 'sub1' / 'sub2')
                                            ))
 
+    def test_no_argument_should_have_no_effect(self):
+        self._test_argument('',
+                            sds_test.Check(pre_action_action=ChangeDirTo(lambda sds: sds.act_dir / 'sub-dir'),
+                                           expected_action_result=is_success(),
+                                           sds_contents_before=act_dir_contents(DirContents([
+                                               empty_dir('sub-dir')
+                                           ])),
+                                           post_action_check=CwdIs(lambda sds: sds.act_dir / 'sub-dir')
+                                           ))
+
+    def test_single_dot_argument_should_have_no_effect(self):
+        self._test_argument('.',
+                            sds_test.Check(pre_action_action=ChangeDirTo(lambda sds: sds.act_dir / 'sub-dir'),
+                                           expected_action_result=is_success(),
+                                           sds_contents_before=act_dir_contents(DirContents([
+                                               empty_dir('sub-dir')
+                                           ])),
+                                           post_action_check=CwdIs(lambda sds: sds.act_dir / 'sub-dir')
+                                           ))
+
     def test_act_root_option_should_change_to_act_dir(self):
         self._test_argument('--rel-act',
                             sds_test.Check(expected_action_result=is_success(),
@@ -171,8 +191,21 @@ class TestSuccessfulScenarios(TestCaseBase):
                                            post_action_check=CwdIs(lambda sds: sds.act_dir)
                                            ))
 
+    def test_act_root_option_should_change_to_act_dir__dot_arg(self):
+        self._test_argument('--rel-act .',
+                            sds_test.Check(expected_action_result=is_success(),
+                                           pre_action_action=ChangeDirTo(lambda sds: sds.root_dir),
+                                           post_action_check=CwdIs(lambda sds: sds.act_dir)
+                                           ))
+
     def test_relative_tmp__without_argument(self):
         self._test_argument('--rel-tmp',
+                            sds_test.Check(expected_action_result=is_success(),
+                                           post_action_check=CwdIs(lambda sds: sds.tmp.user_dir)
+                                           ))
+
+    def test_relative_tmp__without_argument__dot_arg(self):
+        self._test_argument('--rel-tmp .',
                             sds_test.Check(expected_action_result=is_success(),
                                            post_action_check=CwdIs(lambda sds: sds.tmp.user_dir)
                                            ))
