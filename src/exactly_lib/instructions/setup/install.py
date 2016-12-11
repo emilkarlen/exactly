@@ -70,7 +70,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 a.Single(a.Multiplicity.MANDATORY, dt.DIR_ARGUMENT),
                 dst_arg_usage,
             ]),
-                paras("Installs the directory and its contents.")),
+                paras("Installs a directory and its contents.")),
         ]
 
     def syntax_element_descriptions(self) -> list:
