@@ -30,6 +30,7 @@ class IndividualActorRenderer(SectionContentsRenderer):
         self.rendering_environment = environment
         initial_paragraphs = [docs.para(self.actor.single_line_description())]
         initial_paragraphs.extend(self._default_reporter_info())
+        initial_paragraphs.extend(self.actor.main_description_rest())
         sub_sections = []
         append_sections_if_contents_is_non_empty(
             sub_sections,
