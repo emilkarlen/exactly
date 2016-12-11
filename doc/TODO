@@ -8,36 +8,6 @@ Use for "https://windyroad.com.au/dl/Open Source/JUnit.xsd".
 <2016-11-27 sön>
 * TODO Preprocessor process should maybe have timeout
 <2016-11-27 sön>
-* TODO env instruction should not set global environment variables
-<2016-11-02 ons>
-Need to determine what parts of the program should get access to the
-environment set by the "env" instruction.
-One option is to just let it be available to the act phase.
-Another option is to make it available to all instructions.
-The second approach is a bit problematic in the cases where you want to test a
-program under an environment which is so strange that it may prohibit some
-instructions from executing normaly (e.g. deleteing the PATH variable will
-make it impossible for the "shell" instruction to operate normally.)
-
-
-The env instruction sets environment variables via OsServices.
-The default OsServices modifies the whole process' environment variables.
-So the problem is not the "env" instruction, but the OsServices object,
-and how act-phase executors set the variables - today they use
-the process' variables.  They should instead give them explicitly by
-passing the dictionary used by OsServices.
-To accomplish this, ActSourceAndExecutorConstructor must be passed
-these environment variables (probably by beeing passed an OsServices object).
-
-** Alternatives
-*** non-act phases and act phase have identical environment
-Modifications of env (by "env" instruction) affects all instructions and the
-act phase.
-*** non-act phases have original env, act-phase has env set by "env" instr
-Modifications of env does only affect act-phase.
-All other phases have the original env.
-*** Ability to configure if env should be shared between act and other phases
-
 * TODO Act phase
 ** TODO Name of act-phase actor for error messages
 Since the actor (of the act phase) is configurable, it would be informative to the user
