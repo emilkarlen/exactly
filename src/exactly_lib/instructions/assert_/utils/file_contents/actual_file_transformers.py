@@ -14,6 +14,14 @@ class ActualFileTransformer:
         raise NotImplementedError()
 
 
+class IdentityFileTransformer(ActualFileTransformer):
+    def transform(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  os_services: OsServices,
+                  actual_file_path: pathlib.Path) -> pathlib.Path:
+        return actual_file_path
+
+
 class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,

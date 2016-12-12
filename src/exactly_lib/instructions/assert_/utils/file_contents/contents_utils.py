@@ -8,6 +8,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.util.cli_argument_syntax import long_option_name
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformers
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
@@ -59,12 +60,14 @@ def with_replaced_env_vars_help(checked_file: str) -> list:
     return normalize_and_parse(header_text) + variables_list
 
 
-class ContentCheckerInstructionBase(AssertPhaseInstruction):
+class ContentCheckerInstruction(AssertPhaseInstruction):
     def __init__(self,
                  expected_contents: HereDocOrFileRef,
-                 actual_contents: ComparisonActualFile):
+                 actual_contents: ComparisonActualFile,
+                 actual_file_transformer: ActualFileTransformer):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
+        self._actual_file_transformer = actual_file_transformer
         self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
             FileRefCheckValidator(self._file_ref_check_for_expected())
 
@@ -89,9 +92,9 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
 
         display_actual_file_name = str(actual_file_path)
         expected_file_name = str(expected_file_path)
-        processed_actual_file_path = self._get_processed_actual_file_path(actual_file_path,
-                                                                          environment,
-                                                                          os_services)
+        processed_actual_file_path = self._actual_file_transformer.transform(environment,
+                                                                             os_services,
+                                                                             actual_file_path)
         actual_file_name = str(processed_actual_file_path)
         if not filecmp.cmp(actual_file_name, expected_file_name, shallow=False):
             diff_description = _file_diff_description(processed_actual_file_path,
@@ -114,27 +117,32 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
         return FileRefCheck(self._expected_contents.file_reference,
                             must_exist_as(FileType.REGULAR))
 
-    def _get_processed_actual_file_path(self,
-                                        actual_file_path: pathlib.Path,
-                                        environment: i.InstructionEnvironmentForPostSdsStep,
-                                        os_services: OsServices) -> pathlib.Path:
-        raise NotImplementedError()
 
-
-class ContentCheckerInstruction(ContentCheckerInstructionBase):
+class EmptinessCheckerInstruction(AssertPhaseInstruction):
     def __init__(self,
-                 expected_contents: HereDocOrFileRef,
-                 actual_contents: ComparisonActualFile):
-        super().__init__(expected_contents, actual_contents)
+                 expect_empty: bool,
+                 actual_file: ComparisonActualFile):
+        self.actual_file = actual_file
+        self.expect_empty = expect_empty
 
-    def _get_processed_actual_file_path(self,
-                                        actual_file_path: pathlib.Path,
-                                        environment: i.InstructionEnvironmentForPostSdsStep,
-                                        os_services: OsServices) -> pathlib.Path:
-        return actual_file_path
+    def main(self,
+             environment: i.InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        failure_message = self.actual_file.file_check_failure(environment)
+        if failure_message:
+            return pfh.new_pfh_fail(failure_message)
+
+        size = self.actual_file.file_path(environment).stat().st_size
+        if self.expect_empty:
+            if size != 0:
+                return pfh.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
+        else:
+            if size == 0:
+                return pfh.new_pfh_fail('File is empty')
+        return pfh.new_pfh_pass()
 
 
-class ContentMatcherInstructionBase(AssertPhaseInstruction):
+class ContentMatcherInstruction(AssertPhaseInstruction):
     def __init__(self,
                  expected_reg_ex,
                  actual_contents: ComparisonActualFile):
@@ -166,49 +174,8 @@ class ContentMatcherInstructionBase(AssertPhaseInstruction):
         return actual_file_path
 
 
-class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase):
-    def __init__(self,
-                 expected_contents: HereDocOrFileRef,
-                 actual_contents: ComparisonActualFile,
-                 actual_file_transformer: ActualFileTransformer):
-        super().__init__(expected_contents, actual_contents)
-        self.actual_file_transformer = actual_file_transformer
-
-    def _get_processed_actual_file_path(self,
-                                        actual_file_path: pathlib.Path,
-                                        environment: i.InstructionEnvironmentForPostSdsStep,
-                                        os_services: OsServices) -> pathlib.Path:
-        return self.actual_file_transformer.transform(environment,
-                                                      os_services,
-                                                      actual_file_path)
-
-
-class EmptinessCheckerInstruction(AssertPhaseInstruction):
-    def __init__(self,
-                 expect_empty: bool,
-                 actual_file: ComparisonActualFile):
-        self.actual_file = actual_file
-        self.expect_empty = expect_empty
-
-    def main(self,
-             environment: i.InstructionEnvironmentForPostSdsStep,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        failure_message = self.actual_file.file_check_failure(environment)
-        if failure_message:
-            return pfh.new_pfh_fail(failure_message)
-
-        size = self.actual_file.file_path(environment).stat().st_size
-        if self.expect_empty:
-            if size != 0:
-                return pfh.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
-        else:
-            if size == 0:
-                return pfh.new_pfh_fail('File is empty')
-        return pfh.new_pfh_pass()
-
-
 def try_parse_content(actual_file: ComparisonActualFile,
-                      actual_file_transformer: ActualFileTransformer,
+                      actual_file_transformer_for_replace_env_vars: ActualFileTransformer,
                       arguments: list,
                       source: SingleInstructionParserSource) -> AssertPhaseInstruction:
     def _parse_empty(actual: ComparisonActualFile,
@@ -227,7 +194,7 @@ def try_parse_content(actual_file: ComparisonActualFile,
                                                        str(extra_arguments)))
         return EmptinessCheckerInstruction(False, actual)
 
-    def _parse_matches(with_replaced_env_vars: bool,
+    def _parse_matches(actual_file_transformer: ActualFileTransformer,
                        actual: ComparisonActualFile,
                        extra_arguments: list) -> AssertPhaseInstruction:
         if not extra_arguments:
@@ -243,7 +210,7 @@ def try_parse_content(actual_file: ComparisonActualFile,
             raise SingleInstructionInvalidArgumentException(
                 lines_content(['Invalid regular expression: {}',
                                str(ex)]))
-        return ContentMatcherInstructionBase(reg_ex, actual)
+        return ContentMatcherInstruction(reg_ex, actual)
 
     def _parse_contents(actual: ComparisonActualFile,
                         extra_arguments: list) -> AssertPhaseInstruction:
@@ -251,11 +218,14 @@ def try_parse_content(actual_file: ComparisonActualFile,
         if extra_arguments and matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, extra_arguments[0]):
             with_replaced_env_vars = True
             del extra_arguments[0]
+        actual_file_transformer = actual_file_transformers.IdentityFileTransformer()
+        if with_replaced_env_vars:
+            actual_file_transformer = actual_file_transformer_for_replace_env_vars
         if not extra_arguments:
             raise SingleInstructionInvalidArgumentException(
                 lines_content(['Missing operator: {}'.format('|'.join([EQUALS_ARGUMENT, MATCHES_ARGUMENT]))]))
         if extra_arguments[0] == MATCHES_ARGUMENT:
-            return _parse_matches(with_replaced_env_vars, actual, extra_arguments[1:])
+            return _parse_matches(actual_file_transformer, actual, extra_arguments[1:])
         if extra_arguments[0] != EQUALS_ARGUMENT:
             raise SingleInstructionInvalidArgumentException(
                 lines_content(['Unknown operator: {}'.format(extra_arguments[0])]))
@@ -266,12 +236,7 @@ def try_parse_content(actual_file: ComparisonActualFile,
             raise SingleInstructionInvalidArgumentException(
                 lines_content(['Superfluous arguments: {}'.format(remaining_arguments)]))
 
-        if with_replaced_env_vars:
-            return ContentCheckerWithTransformationInstruction(here_doc_or_file_ref_for_expected,
-                                                               actual,
-                                                               actual_file_transformer)
-        else:
-            return ContentCheckerInstruction(here_doc_or_file_ref_for_expected, actual)
+        return ContentCheckerInstruction(here_doc_or_file_ref_for_expected, actual, actual_file_transformer)
 
     if arguments[0] == EMPTY_ARGUMENT:
         return _parse_empty(actual_file, arguments[1:])
