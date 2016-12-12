@@ -28,7 +28,7 @@ A test case is written as a plain text file::
 
     exitcode 0
 
-    stdout <<EOF
+    stdout equals <<EOF
     expected@email.org
     EOF
 
@@ -108,9 +108,11 @@ it just displays some of ``exactly``'s functionality.)
 
     exitcode != 0
 
-    stdout <<EOF
+    stdout equals <<EOF
     This is the expected output from the-system-under-test
     EOF
+
+    stdout --with-replaced-env-vars contains 'EXACTLY_ACT:[0-9]+'
 
     stderr empty
 
@@ -118,7 +120,9 @@ it just displays some of ``exactly``'s functionality.)
 
     contents a-second-file.txt ! empty
 
-    contents another-file.txt --with-replaced-env-vars expected-content.txt
+    contents another-file.txt --with-replaced-env-vars equals expected-content.txt
+
+    contents file.txt contains 'my .* reg ex'
 
     type actual-file directory
 
