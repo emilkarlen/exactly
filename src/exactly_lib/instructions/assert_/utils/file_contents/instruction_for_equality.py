@@ -1,0 +1,89 @@
+import difflib
+import filecmp
+import os
+import pathlib
+
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
+from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import HereDocOrFileRef
+from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
+from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
+    PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
+from exactly_lib.test_case.phases.result import svh, pfh
+from exactly_lib.util import file_utils
+from exactly_lib.util.file_utils import tmp_text_file_containing
+from exactly_lib.util.string import lines_content
+
+
+class EqualsAssertionInstruction(AssertPhaseInstruction):
+    def __init__(self,
+                 expected_contents: HereDocOrFileRef,
+                 actual_contents: ComparisonActualFile,
+                 actual_file_transformer: ActualFileTransformer):
+        self._actual_value = actual_contents
+        self._expected_contents = expected_contents
+        self._actual_file_transformer = actual_file_transformer
+        self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
+            FileRefCheckValidator(self._file_ref_check_for_expected())
+
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        validator = PreOrPostSdsSvhValidationErrorValidator(self.validator_of_expected)
+        return validator.validate_pre_sds_if_applicable(environment.home_directory)
+
+    def main(self,
+             environment: i.InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        if not self._expected_contents.is_here_document:
+            failure_message = self.validator_of_expected.validate_post_sds_if_applicable(environment.home_and_sds.sds)
+            if failure_message:
+                return pfh.new_pfh_fail(failure_message)
+        expected_file_path = self._file_path_for_file_with_expected_contents(environment.home_and_sds)
+
+        actual_file_path = self._actual_value.file_path(environment)
+        failure_message = self._actual_value.file_check_failure(environment)
+        if failure_message is not None:
+            return pfh.new_pfh_fail(failure_message)
+
+        display_actual_file_name = str(actual_file_path)
+        expected_file_name = str(expected_file_path)
+        processed_actual_file_path = self._actual_file_transformer.transform(environment,
+                                                                             os_services,
+                                                                             actual_file_path)
+        actual_file_name = str(processed_actual_file_path)
+        if not filecmp.cmp(actual_file_name, expected_file_name, shallow=False):
+            diff_description = _file_diff_description(processed_actual_file_path,
+                                                      expected_file_path)
+            return pfh.new_pfh_fail('Unexpected content in file: ' + display_actual_file_name +
+                                    diff_description)
+        return pfh.new_pfh_pass()
+
+    def _file_path_for_file_with_expected_contents(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        if self._expected_contents.is_here_document:
+            contents = lines_content(self._expected_contents.here_document)
+            return tmp_text_file_containing(contents,
+                                            prefix='contents-',
+                                            suffix='.txt',
+                                            directory=str(home_and_sds.sds.tmp.internal_dir))
+        else:
+            return self._expected_contents.file_reference.file_path_pre_or_post_sds(home_and_sds)
+
+    def _file_ref_check_for_expected(self) -> FileRefCheck:
+        return FileRefCheck(self._expected_contents.file_reference,
+                            must_exist_as(FileType.REGULAR))
+
+
+def _file_diff_description(actual_file_path: pathlib.Path,
+                           expected_file_path: pathlib.Path) -> str:
+    expected_lines = file_utils.lines_of(expected_file_path)
+    actual_lines = file_utils.lines_of(actual_file_path)
+    diff = difflib.unified_diff(expected_lines,
+                                actual_lines,
+                                fromfile='Expected',
+                                tofile='Actual')
+    return os.linesep + ''.join(list(diff))
