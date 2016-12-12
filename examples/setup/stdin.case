@@ -20,6 +20,6 @@ copy-stdin-to-stdout
 [assert]
 
 
-stdout <<EOF
+stdout equals <<EOF
 The contents of stdin.
 EOF

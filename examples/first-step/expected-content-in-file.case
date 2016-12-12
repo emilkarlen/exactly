@@ -9,4 +9,4 @@ exitcode 0
 #
 # Expected output can be located in a file.
 #
-stdout hello-world-output.txt
+stdout equals hello-world-output.txt

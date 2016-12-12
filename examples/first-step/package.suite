@@ -2,6 +2,8 @@
 
 exitcode-and-output.case
 
+output-contains-line-matching-regex.case
+
 invalid-usage.case
 
 expected-content-in-file.case

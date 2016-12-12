@@ -1,0 +1,7 @@
+[act]
+
+hello-world
+
+[assert]
+
+stdout contains H.*W

@@ -27,4 +27,4 @@ bin/do-something-good-with test-file.txt
 [assert]
 
 
-contents test-file.txt expectation/expected.txt
+contents test-file.txt equals expectation/expected.txt

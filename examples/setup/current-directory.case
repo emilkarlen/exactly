@@ -24,7 +24,7 @@ list-files-under-current-directory
 [assert]
 
 
-stdout <<EOF
+stdout equals <<EOF
 in-execution-dir.txt
 EOF
 

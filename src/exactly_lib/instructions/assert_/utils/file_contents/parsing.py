@@ -23,7 +23,7 @@ WITH_REPLACED_ENV_VARS_OPTION = long_option_name(WITH_REPLACED_ENV_VARS_OPTION_N
 EMPTY_ARGUMENT = 'empty'
 NOT_ARGUMENT = '!'
 EQUALS_ARGUMENT = 'equals'
-CONTAINS_ARGUMENT = 'matches'
+CONTAINS_ARGUMENT = 'contains'
 
 
 def with_replaced_env_vars_help(checked_file: str) -> list:

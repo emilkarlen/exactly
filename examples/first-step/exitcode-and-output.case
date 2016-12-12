@@ -6,6 +6,6 @@ hello-world
 
 exitcode 0
 
-stdout <<EOF
+stdout equals <<EOF
 Hello, World!
 EOF
