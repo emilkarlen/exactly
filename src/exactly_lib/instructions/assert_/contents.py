@@ -147,10 +147,10 @@ class Parser(SingleInstructionParser):
         if not arguments:
             raise SingleInstructionInvalidArgumentException('At least one argument expected (FILE)')
         (comparison_target, remaining_arguments) = parse_actual_file_argument(arguments)
-        instruction = parsing.try_parse_content(comparison_target,
-                                                _ActualFileTransformerForEnvVarsReplacement(),
-                                                remaining_arguments,
-                                                source)
+        instruction = parsing.parse_comparison_operation(comparison_target,
+                                                         _ActualFileTransformerForEnvVarsReplacement(),
+                                                         remaining_arguments,
+                                                         source)
         return instruction
 
 
