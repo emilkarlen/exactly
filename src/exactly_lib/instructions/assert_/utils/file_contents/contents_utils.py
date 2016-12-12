@@ -8,6 +8,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.util.cli_argument_syntax import long_option_name
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import HereDocOrFileRef
@@ -21,14 +22,14 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, HomeAndSds, \
+from exactly_lib.test_case.phases.common import HomeAndSds, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import file_utils
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
-from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
+from exactly_lib.util.file_utils import tmp_text_file_containing
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
@@ -163,45 +164,6 @@ class ContentMatcherInstructionBase(AssertPhaseInstruction):
                                         environment: i.InstructionEnvironmentForPostSdsStep,
                                         os_services: OsServices) -> pathlib.Path:
         return actual_file_path
-
-
-class ActualFileTransformer:
-    def replace_env_vars(self,
-                         environment: InstructionEnvironmentForPostSdsStep,
-                         os_services: OsServices,
-                         actual_file_path: pathlib.Path) -> pathlib.Path:
-        src_file_path = actual_file_path
-        dst_file_path = self._dst_file_path(environment, src_file_path)
-        if dst_file_path.exists():
-            return dst_file_path
-        env_vars_to_replace = environment_variables.replaced(environment.home_directory,
-                                                             environment.sds)
-        self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
-                                                       src_file_path,
-                                                       dst_file_path)
-        return dst_file_path
-
-    def _dst_file_path(self,
-                       environment: InstructionEnvironmentForPostSdsStep,
-                       src_file_path: pathlib.Path) -> pathlib.Path:
-        """
-        :return: An absolute path that does/should store the transformed version of
-        the src file.
-        """
-        raise NotImplementedError()
-
-    @staticmethod
-    def _replace_env_vars_and_write_result_to_dst(env_vars_to_replace: dict,
-                                                  src_file_path: pathlib.Path,
-                                                  dst_file_path: pathlib.Path):
-        with src_file_path.open() as src_file:
-            # TODO Handle reading/replacing in chunks, if file is too large to be read in one chunk
-            contents = src_file.read()
-        for var_name, var_value in env_vars_to_replace.items():
-            contents = contents.replace(var_value, var_name)
-        ensure_parent_directory_does_exist(dst_file_path)
-        with open(str(dst_file_path), 'w') as dst_file:
-            dst_file.write(contents)
 
 
 class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase):
