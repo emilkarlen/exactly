@@ -6,14 +6,14 @@ E.g. /usr/bin/python.
 The examples need some executable test programs to be generated first.
 Generate them using:
 
->python3 make-executables.py all
+> python3 make-executables.py all
 
 
 Remove them using:
 
->python3 make-executables.py clean
+> python3 make-executables.py clean
 
 
 All examples can be run using:
 
->exactly suite examples.suite
+> exactly suite examples.suite
