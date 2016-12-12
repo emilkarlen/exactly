@@ -4,7 +4,10 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, with_replaced_env_vars_help, \
+from exactly_lib.instructions.assert_.utils.file_contents import contents_utils
+from exactly_lib.instructions.assert_.utils.file_contents import contents_utils_for_instr_doc as doc_utils
+from exactly_lib.instructions.assert_.utils.file_contents.contents_utils import ActualFileTransformer, \
+    with_replaced_env_vars_help, \
     ActComparisonActualFileForFileRef, ComparisonActualFile
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
@@ -22,8 +25,6 @@ from exactly_lib.test_case.sandbox_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
 from exactly_lib.util.cli_syntax.elements import argument as a
-from .utils import contents_utils
-from .utils import contents_utils_for_instr_doc as doc_utils
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
