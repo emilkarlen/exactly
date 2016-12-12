@@ -5,9 +5,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
-    arrangement, Expectation, is_pass
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, Expectation, is_pass
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution import utils
@@ -69,140 +68,140 @@ class TestCaseBaseForParser(instruction_check.TestCaseBase):
 class TestParseAndExecute(TestCaseBaseForParser):
     def test_that__when__actual_value_is_as_expected__then__pass_is_returned(self):
         self._run(
-                new_source2(' 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
         self._run(
-                new_source2('72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=0))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2('72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=0))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
 
 class TestParseAndExecuteTwoArgumentsEq(TestCaseBaseForParser):
     def test_pass(self):
         self._run(
-                new_source2(' = 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(),
+            new_source2(' = 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(),
         )
 
     def test_fail(self):
         self._run(
-                new_source2(' = 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=0))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2(' = 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=0))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
 
 class TestParseAndExecuteTwoArgumentsNe(TestCaseBaseForParser):
     def test_pass(self):
         self._run(
-                new_source2(' ! 73'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' ! 73'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_fail(self):
         self._run(
-                new_source2(' ! 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(main_result=pfh_check.is_fail())
+            new_source2(' ! 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(main_result=pfh_check.is_fail())
         )
 
 
 class TestParseAndExecuteTwoArgumentsLt(TestCaseBaseForParser):
     def test_pass(self):
         self._run(
-                new_source2(' < 87'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' < 87'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_fail_equal(self):
         self._run(
-                new_source2(' < 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2(' < 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail_unequal(self):
         self._run(
-                new_source2(' < 28'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2(' < 28'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
 
 class TestParseAndExecuteTwoArgumentsLe(TestCaseBaseForParser):
     def test_pass(self):
         self._run(
-                new_source2(' <= 87'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' <= 87'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_pass_equal(self):
         self._run(
-                new_source2(' <= 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' <= 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_fail_unequal(self):
         self._run(
-                new_source2(' <= 28'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2(' <= 28'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
 
 class TestParseAndExecuteTwoArgumentsGt(TestCaseBaseForParser):
     def test_pass(self):
         self._run(
-                new_source2(' > 28'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' > 28'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_fail_equal(self):
         self._run(
-                new_source2(' > 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2(' > 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail_unequal(self):
         self._run(
-                new_source2(' > 87'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2(' > 87'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
 
 class TestParseAndExecuteTwoArgumentsGe(TestCaseBaseForParser):
     def test_pass(self):
         self._run(
-                new_source2(' >= 28'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' >= 28'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_pass_equal(self):
         self._run(
-                new_source2(' >= 72'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                is_pass(),
+            new_source2(' >= 72'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            is_pass(),
         )
 
     def test_fail_unequal(self):
         self._run(
-                new_source2(' >= 87'),
-                arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(main_result=pfh_check.is_fail()),
+            new_source2(' >= 87'),
+            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
 

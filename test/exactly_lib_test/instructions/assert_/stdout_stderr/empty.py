@@ -4,8 +4,8 @@ from exactly_lib.instructions.assert_ import stdout_stderr as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser
 from exactly_lib_test.instructions.assert_.stdout_stderr.test_resources import TestWithParserBase
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
-    arrangement, Expectation, is_pass
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, Expectation, is_pass
+from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.parse import new_source2, argument_list_source
@@ -56,14 +56,14 @@ class FileContentsEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_non_empty(self, act_result: ActResult):
         self._run(
             new_source2('empty'),
-            arrangement(act_result_producer=ActResultProducer(act_result)),
+            arrangement(act_result_producer=ActResultProducerFromActResult(act_result)),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__file_exists_and_is_empty(self, act_result: ActResult):
         self._run(
             new_source2('empty'),
-            arrangement(act_result_producer=ActResultProducer(act_result)),
+            arrangement(act_result_producer=ActResultProducerFromActResult(act_result)),
             is_pass(),
         )
 
@@ -132,14 +132,14 @@ class FileContentsNonEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_empty(self, act_result: ActResult):
         self._run(
             new_source2('! empty'),
-            arrangement(act_result_producer=ActResultProducer(act_result)),
+            arrangement(act_result_producer=ActResultProducerFromActResult(act_result)),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__file_exists_and_is_non_empty(self, act_result: ActResult):
         self._run(
             new_source2('! empty'),
-            arrangement(act_result_producer=ActResultProducer(act_result)),
+            arrangement(act_result_producer=ActResultProducerFromActResult(act_result)),
             is_pass(),
         )
 

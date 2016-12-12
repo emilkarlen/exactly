@@ -84,7 +84,7 @@ def try_parse_content(actual_file: ComparisonActualFile,
                                str(ex)]))
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_contains import \
             ContainsAssertionInstruction
-        return ContainsAssertionInstruction(reg_ex, actual)
+        return ContainsAssertionInstruction(reg_ex, actual, actual_file_transformer)
 
     def _parse_contents(actual: ComparisonActualFile,
                         extra_arguments: list) -> AssertPhaseInstruction:
