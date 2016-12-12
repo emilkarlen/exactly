@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import stdout_stderr as sut
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import MATCHES_ARGUMENT
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import CONTAINS_ARGUMENT
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib.util.string import lines_content
@@ -72,21 +72,21 @@ class TestParseMatchesWithMissingRegExArgument(TestWithConfigurationBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
-                self.configuration.source_for(args('{matches}')))
+                self.configuration.source_for(args('{contains}')))
 
 
 class TestParseMatchesWithSuperfluousArgument(TestWithConfigurationBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
-                self.configuration.source_for(args('{matches} abc superfluous')))
+                self.configuration.source_for(args('{contains} abc superfluous')))
 
 
 class TestParseMatchesWithInvalidRegEx(TestWithConfigurationBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
-                self.configuration.source_for('{matches} **'))
+                self.configuration.source_for('{contains} **'))
 
 
 class TestMatchesShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationBase):
@@ -96,7 +96,7 @@ class TestMatchesShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationBase):
                                          'not match'])
         reg_ex = '123'
         self._check(
-            self.configuration.source_for(args("{matches} '{reg_ex}'", reg_ex)),
+            self.configuration.source_for(args("{contains} '{reg_ex}'", reg_ex)),
             self.configuration.arrangement_for_contents(actual_contents),
             Expectation(main_result=pfh_check.is_fail()),
         )
@@ -109,7 +109,7 @@ class TestMatchesShouldPassWhenALineMatchesRegEx(TestWithConfigurationBase):
                                          'not match'])
         reg_ex = 'ATC'
         self._check(
-            self.configuration.source_for(args("{matches} '{reg_ex}'", reg_ex)),
+            self.configuration.source_for(args("{contains} '{reg_ex}'", reg_ex)),
             self.configuration.arrangement_for_contents(actual_contents),
             Expectation(main_result=pfh_check.is_pass()),
         )
@@ -122,7 +122,7 @@ class TestMatchesShouldPassWhenAWholeLineMatchesRegEx(TestWithConfigurationBase)
                                          'not match'])
         reg_ex = '^MATCH$'
         self._check(
-            self.configuration.source_for(args("{matches} '{reg_ex}'", reg_ex)),
+            self.configuration.source_for(args("{contains} '{reg_ex}'", reg_ex)),
             self.configuration.arrangement_for_contents(actual_contents),
             Expectation(main_result=pfh_check.is_pass()),
         )
@@ -149,9 +149,9 @@ def suite() -> unittest.TestSuite:
 
 def args(pattern: str, reg_ex: str = None) -> str:
     if reg_ex is None:
-        return pattern.format(matches=MATCHES_ARGUMENT)
+        return pattern.format(contains=CONTAINS_ARGUMENT)
     else:
-        return pattern.format(matches=MATCHES_ARGUMENT,
+        return pattern.format(contains=CONTAINS_ARGUMENT,
                               reg_ex=reg_ex)
 
 
