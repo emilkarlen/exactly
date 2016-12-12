@@ -7,8 +7,8 @@ from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.instructions.assert_.utils.file_contents import contents_utils
 from exactly_lib.instructions.assert_.utils.file_contents import contents_utils_for_instr_doc as doc_utils
-from exactly_lib.instructions.assert_.utils.file_contents.contents_utils import ActualFileTransformer, \
-    with_replaced_env_vars_help
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
+from exactly_lib.instructions.assert_.utils.file_contents.contents_utils import with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
