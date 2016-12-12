@@ -4,13 +4,13 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.instructions.assert_.utils.file_contents import contents_utils
 from exactly_lib.instructions.assert_.utils.file_contents import contents_utils_for_instr_doc as doc_utils
+from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
     ActualFileTransformerForEnvVarsReplacementBase
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ActComparisonActualFileForFileRef
-from exactly_lib.instructions.assert_.utils.file_contents.contents_utils import with_replaced_env_vars_help
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
@@ -43,7 +43,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'checked_file': self.actual_file_arg.name,
             'EXPECTED_FILE_ARG': self.expected_file_arg.name,
         })
-        self.with_replaced_env_vars_option = a.Option(contents_utils.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+        self.with_replaced_env_vars_option = a.Option(parsing.WITH_REPLACED_ENV_VARS_OPTION_NAME)
         self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                                a.Named('ACTUAL-REL'))
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
@@ -147,10 +147,10 @@ class Parser(SingleInstructionParser):
         if not arguments:
             raise SingleInstructionInvalidArgumentException('At least one argument expected (FILE)')
         (comparison_target, remaining_arguments) = parse_actual_file_argument(arguments)
-        instruction = contents_utils.try_parse_content(comparison_target,
-                                                       _ActualFileTransformerForEnvVarsReplacement(),
-                                                       remaining_arguments,
-                                                       source)
+        instruction = parsing.try_parse_content(comparison_target,
+                                                _ActualFileTransformerForEnvVarsReplacement(),
+                                                remaining_arguments,
+                                                source)
         return instruction
 
 
