@@ -1,5 +1,6 @@
 import pathlib
 
+import exactly_lib.instructions.assert_.utils.file_contents.actual_files
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
@@ -107,7 +108,7 @@ _WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
 
 class ParserForContentsForActualValue(SingleInstructionParser):
     def __init__(self,
-                 comparison_actual_value: contents_utils.ComparisonActualFile,
+                 comparison_actual_value: exactly_lib.instructions.assert_.utils.file_contents.actual_files.ComparisonActualFile,
                  actual_value_transformer: ActualFileTransformer):
         self.comparison_actual_value = comparison_actual_value
         self.target_transformer = actual_value_transformer
@@ -125,13 +126,13 @@ class ParserForContentsForActualValue(SingleInstructionParser):
 
 class ParserForContentsForStdout(ParserForContentsForActualValue):
     def __init__(self):
-        super().__init__(contents_utils.StdoutComparisonTarget(),
+        super().__init__(exactly_lib.instructions.assert_.utils.file_contents.actual_files.StdoutComparisonActualFile(),
                          _StdXActualFileTransformerBase())
 
 
 class ParserForContentsForStderr(ParserForContentsForActualValue):
     def __init__(self):
-        super().__init__(contents_utils.StderrComparisonTarget(),
+        super().__init__(exactly_lib.instructions.assert_.utils.file_contents.actual_files.StderrComparisonActualFile(),
                          _StdXActualFileTransformerBase())
 
 

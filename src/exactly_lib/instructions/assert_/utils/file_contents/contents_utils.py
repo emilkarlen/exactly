@@ -8,12 +8,12 @@ from exactly_lib import program_info
 from exactly_lib.cli.util.cli_argument_syntax import long_option_name
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
-from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck, \
-    pre_or_post_sds_failure_message_or_none, FileRefCheckValidator
+    FileRefCheckValidator
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -56,46 +56,6 @@ def with_replaced_env_vars_help(checked_file: str) -> list:
     variables_list = [docs.simple_header_only_list(sorted(environment_variables.ALL_REPLACED_ENV_VARS),
                                                    docs.lists.ListType.VARIABLE_LIST)]
     return normalize_and_parse(header_text) + variables_list
-
-
-class ComparisonActualFile:
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        """
-        :return: None iff there is no failure.
-        """
-        raise NotImplementedError()
-
-    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        raise NotImplementedError()
-
-
-class ActComparisonActualFileForFileRef(ComparisonActualFile):
-    def __init__(self,
-                 file_ref: FileRef):
-        self.file_ref = file_ref
-
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        return pre_or_post_sds_failure_message_or_none(FileRefCheck(self.file_ref,
-                                                                    must_exist_as(FileType.REGULAR)),
-                                                       environment.home_and_sds)
-
-    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return self.file_ref.file_path_pre_or_post_sds(environment.home_and_sds)
-
-
-class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        return None
-
-
-class StdoutComparisonTarget(ActComparisonActualFileForStdFileBase):
-    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return environment.sds.result.stdout_file
-
-
-class StderrComparisonTarget(ActComparisonActualFileForStdFileBase):
-    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return environment.sds.result.stderr_file
 
 
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
