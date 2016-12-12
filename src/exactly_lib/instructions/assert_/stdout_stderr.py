@@ -117,10 +117,10 @@ class ParserForContentsForActualValue(SingleInstructionParser):
 
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
         arguments = split_arguments_list_string(source.instruction_argument)
-        content_instruction = parsing.try_parse_content(self.comparison_actual_value,
-                                                        self.target_transformer,
-                                                        arguments,
-                                                        source)
+        content_instruction = parsing.parse_comparison_operation(self.comparison_actual_value,
+                                                                 self.target_transformer,
+                                                                 arguments,
+                                                                 source)
         if content_instruction is None:
             raise SingleInstructionInvalidArgumentException(str(arguments))
         return content_instruction

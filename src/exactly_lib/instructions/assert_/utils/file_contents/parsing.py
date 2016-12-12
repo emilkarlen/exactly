@@ -42,10 +42,10 @@ def with_replaced_env_vars_help(checked_file: str) -> list:
     return normalize_and_parse(header_text) + variables_list
 
 
-def try_parse_content(actual_file: ComparisonActualFile,
-                      actual_file_transformer_for_replace_env_vars: ActualFileTransformer,
-                      arguments: list,
-                      source: SingleInstructionParserSource) -> AssertPhaseInstruction:
+def parse_comparison_operation(actual_file: ComparisonActualFile,
+                               actual_file_transformer_for_replace_env_vars: ActualFileTransformer,
+                               arguments: list,
+                               source: SingleInstructionParserSource) -> AssertPhaseInstruction:
     def _parse_empty(actual: ComparisonActualFile,
                      extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
