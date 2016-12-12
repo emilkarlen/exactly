@@ -74,7 +74,6 @@ class ActResultProducerForContentsWithAllReplacedEnvVars(ActResultProducer):
                  act_result_contents_setup: ActResultContentsSetup,
                  source_file_writer: FileWriter,
                  source_should_contain_expected_value: bool):
-        super().__init__()
         self._act_result_contents_setup = act_result_contents_setup
         self._source_file_writer = source_file_writer
         self._source_should_contain_expected_value = source_should_contain_expected_value

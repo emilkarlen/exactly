@@ -10,8 +10,8 @@ from exactly_lib_test.instructions.assert_.stdout_stderr.test_resources import T
 from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
     OutputContentsToStdout, WriteFileToHomeDir, ActResultContentsSetup, OutputContentsToStderr, WriteFileToCurrentDir
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
-    arrangement, Expectation, is_pass
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, Expectation, is_pass
+from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.execution.utils import ActResult
@@ -40,7 +40,7 @@ class FileContentsFileRelHome(TestWithParserBase):
                                     expected_contents: str):
         self._run(
             new_source2('%s %s f.txt' % (EQUALS_ARGUMENT, REL_HOME_OPTION)),
-            arrangement(act_result_producer=ActResultProducer(act_result),
+            arrangement(act_result_producer=ActResultProducerFromActResult(act_result),
                         home_dir_contents=DirContents(
                             [File('f.txt', expected_contents)])),
             Expectation(main_result=pfh_check.is_fail()),
@@ -52,7 +52,7 @@ class FileContentsFileRelHome(TestWithParserBase):
         self._run(
             new_source2('%s %s f.txt' % (EQUALS_ARGUMENT, REL_HOME_OPTION)),
             arrangement(home_dir_contents=DirContents([File('f.txt', expected_contents)]),
-                        act_result_producer=ActResultProducer(act_result)),
+                        act_result_producer=ActResultProducerFromActResult(act_result)),
             is_pass(),
         )
 
@@ -123,7 +123,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
             arrangement(
                 sds_contents_before_main=act_dir_contents(DirContents(
                     [File('f.txt', expected_contents)])),
-                act_result_producer=ActResultProducer(act_result)),
+                act_result_producer=ActResultProducerFromActResult(act_result)),
             Expectation(
                 main_result=pfh_check.is_fail()),
         )
@@ -136,7 +136,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
             arrangement(
                 sds_contents_before_main=act_dir_contents(DirContents(
                     [File('f.txt', expected_contents)])),
-                act_result_producer=ActResultProducer(act_result)),
+                act_result_producer=ActResultProducerFromActResult(act_result)),
             is_pass(),
         )
 
@@ -160,7 +160,7 @@ class FileContentsFileRelTmp(TestWithParserBase):
             arrangement(
                 sds_contents_before_main=tmp_user_dir_contents(DirContents(
                     [File('f.txt', 'expected contents')])),
-                act_result_producer=ActResultProducer(
+                act_result_producer=ActResultProducerFromActResult(
                     self._act_result_with_contents('expected contents'))),
             is_pass(),
         )
@@ -177,7 +177,7 @@ class FileContentsHereDoc(TestWithParserBase):
             argument_list_source([EQUALS_ARGUMENT, '<<EOF'],
                                  ['single line',
                                   'EOF']),
-            arrangement(act_result_producer=ActResultProducer(
+            arrangement(act_result_producer=ActResultProducerFromActResult(
                 self._act_result_with_contents(lines_content(['single line'])))),
             is_pass(),
         )

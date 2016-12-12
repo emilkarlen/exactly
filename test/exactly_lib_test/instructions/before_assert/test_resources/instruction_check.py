@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
-    ActEnvironment
+    ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
@@ -24,7 +24,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                act_result_producer: ActResultProducer = ActResultProducer(),
+                act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
                 environ: dict = None,
                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
