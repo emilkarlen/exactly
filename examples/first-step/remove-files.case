@@ -12,6 +12,6 @@ remove-all-files-in-the-current-directory
 
 exitcode 0
 
-stdout <<EOF
+stdout equals <<EOF
 All files in current directory removed successfully!
 EOF

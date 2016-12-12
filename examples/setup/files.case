@@ -29,7 +29,7 @@ list-files-under-current-directory
 [assert]
 
 
-stdout <<EOF
+stdout equals <<EOF
 empty-file.txt
 file name with spaces.txt
 new-directory/
@@ -38,7 +38,7 @@ new-directory/empty-file2.txt
 non-empty-file.txt
 EOF
 
-contents non-empty-file.txt <<EOF
+contents non-empty-file.txt equals <<EOF
 Some contents.
 EOF
 

@@ -11,6 +11,6 @@ hello-world -o output.txt
 
 exitcode 0
 
-contents output.txt <<EOF
+contents output.txt equals <<EOF
 Hello, World!
 EOF
