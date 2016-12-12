@@ -178,9 +178,9 @@ class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase)
                                         actual_file_path: pathlib.Path,
                                         environment: i.InstructionEnvironmentForPostSdsStep,
                                         os_services: OsServices) -> pathlib.Path:
-        return self.actual_file_transformer.replace_env_vars(environment,
-                                                             os_services,
-                                                             actual_file_path)
+        return self.actual_file_transformer.transform(environment,
+                                                      os_services,
+                                                      actual_file_path)
 
 
 class EmptinessCheckerInstruction(AssertPhaseInstruction):
