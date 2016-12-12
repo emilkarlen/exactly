@@ -1,12 +1,12 @@
 import pathlib
 
-import exactly_lib.instructions.assert_.contents
-import exactly_lib.instructions.assert_.utils.contents_utils
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, \
+from exactly_lib.instructions.assert_.utils.file_contents import contents_utils
+from exactly_lib.instructions.assert_.utils.file_contents import contents_utils_for_instr_doc as doc_utils
+from exactly_lib.instructions.assert_.utils.file_contents.contents_utils import ActualFileTransformer, \
     with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
@@ -20,8 +20,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.cli_syntax.elements import argument as a
-from .utils import contents_utils
-from .utils import contents_utils_for_instr_doc as doc_utils
 
 
 def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
@@ -109,7 +107,7 @@ _WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
 
 class ParserForContentsForActualValue(SingleInstructionParser):
     def __init__(self,
-                 comparison_actual_value: exactly_lib.instructions.assert_.utils.contents_utils.ComparisonActualFile,
+                 comparison_actual_value: contents_utils.ComparisonActualFile,
                  actual_value_transformer: ActualFileTransformer):
         self.comparison_actual_value = comparison_actual_value
         self.target_transformer = actual_value_transformer
