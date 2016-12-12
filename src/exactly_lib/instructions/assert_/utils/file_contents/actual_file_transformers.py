@@ -7,10 +7,18 @@ from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 
 class ActualFileTransformer:
-    def replace_env_vars(self,
-                         environment: InstructionEnvironmentForPostSdsStep,
-                         os_services: OsServices,
-                         actual_file_path: pathlib.Path) -> pathlib.Path:
+    def transform(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  os_services: OsServices,
+                  actual_file_path: pathlib.Path) -> pathlib.Path:
+        raise NotImplementedError()
+
+
+class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
+    def transform(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  os_services: OsServices,
+                  actual_file_path: pathlib.Path) -> pathlib.Path:
         src_file_path = actual_file_path
         dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():

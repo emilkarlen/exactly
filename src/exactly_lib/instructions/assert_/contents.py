@@ -6,7 +6,8 @@ from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.instructions.assert_.utils.file_contents import contents_utils
 from exactly_lib.instructions.assert_.utils.file_contents import contents_utils_for_instr_doc as doc_utils
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
+    ActualFileTransformerForEnvVarsReplacementBase
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils import with_replaced_env_vars_help
@@ -147,13 +148,13 @@ class Parser(SingleInstructionParser):
             raise SingleInstructionInvalidArgumentException('At least one argument expected (FILE)')
         (comparison_target, remaining_arguments) = parse_actual_file_argument(arguments)
         instruction = contents_utils.try_parse_content(comparison_target,
-                                                       _ActualFileTransformer(),
+                                                       _ActualFileTransformerForEnvVarsReplacement(),
                                                        remaining_arguments,
                                                        source)
         return instruction
 
 
-class _ActualFileTransformer(ActualFileTransformer):
+class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVarsReplacementBase):
     def _dst_file_path(self,
                        environment: InstructionEnvironmentForPostSdsStep,
                        src_file_path: pathlib.Path) -> pathlib.Path:
