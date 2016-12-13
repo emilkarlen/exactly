@@ -24,6 +24,10 @@ class TextSeeAlsoItem(SeeAlsoItem):
         return self._text
 
 
+def see_also_items_from_cross_refs(cross_refs: list) -> list:
+    return [CrossReferenceIdSeeAlsoItem(x) for x in cross_refs]
+
+
 class SeeAlsoItemVisitor:
     def visit(self, x: SeeAlsoItem):
         """

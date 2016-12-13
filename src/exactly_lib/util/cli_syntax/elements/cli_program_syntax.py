@@ -6,14 +6,14 @@ class DescribedArgument:
     def __init__(self,
                  argument: arg.Argument,
                  description: list,
-                 see_also: list = ()):
+                 see_also_items: list = ()):
         """
         :type description: [`ParagraphItem`]
-        :type see_also: [`CrossReferenceTarget`]
+        :type see_also_items: [`SeeAlsoItem`]
         """
         self.argument = argument
         self.description = description
-        self.see_also = list(see_also)
+        self.see_also_items = list(see_also_items)
 
 
 class Synopsis(tuple):

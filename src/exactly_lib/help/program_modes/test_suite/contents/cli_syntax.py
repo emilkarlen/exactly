@@ -3,6 +3,7 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
+from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters import actor
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
@@ -54,18 +55,19 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         }
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
-                                            see_also=[
+                                            see_also_items=see_also_items_from_cross_refs([
                                                 actor.ACTOR_CONCEPT.cross_reference_target(),
                                                 TestSuiteSectionInstructionCrossReference(SECTION_NAME__CONF,
                                                                                           INSTRUCTION_NAME__ACTOR),
-                                            ])
+                                            ]))
 
     def _reporter_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(_REPORTER_OPTION,
                                             self.parser.fnap(_REPORTER_OPTION_DESCRIPTION),
-                                            see_also=[SUITE_REPORTER_CONCEPT.cross_reference_target()] +
-                                                     reporters.all_suite_reporters_cross_refs()
-                                            )
+                                            see_also_items=see_also_items_from_cross_refs(
+                                                [SUITE_REPORTER_CONCEPT.cross_reference_target()] +
+                                                reporters.all_suite_reporters_cross_refs()
+                                            ))
 
 
 def synopsis() -> cli_syntax.Synopsis:
