@@ -44,7 +44,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                      [execution_modes_list()])
         ]
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return [EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 

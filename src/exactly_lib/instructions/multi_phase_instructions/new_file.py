@@ -49,7 +49,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                         dt.HERE_DOCUMENT),
         ]
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(ALL_OPTIONS)
         if CURRENT_WORKING_DIRECTORY_CONCEPT not in concepts:
             concepts.append(CURRENT_WORKING_DIRECTORY_CONCEPT)

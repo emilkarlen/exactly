@@ -96,7 +96,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                      [])
         ]
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return [
             CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]

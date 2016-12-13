@@ -142,7 +142,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                                PARSE_FILE_REF_CONFIGURATION.accepted_options),
         ]
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.accepted_options)
         return [concept.cross_reference_target() for concept in concepts]
 

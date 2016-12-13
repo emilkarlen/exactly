@@ -51,7 +51,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def main_description_rest(self) -> list:
         return self._paragraphs(_DESCRIPTION)
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return [
             PREPROCESSOR_CONCEPT.cross_reference_target(),
         ]
