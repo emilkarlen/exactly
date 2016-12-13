@@ -102,14 +102,14 @@ class TestFileContentsFileRelHomeFORStderr(FileContentsFileRelHome):
 class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__comparison_file_does_not_exist(self):
         self._run(
-            new_source2('%s --rel-cwd f.txt' % EQUALS_ARGUMENT),
+            new_source2('%s --rel-cd f.txt' % EQUALS_ARGUMENT),
             arrangement(),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
     def fail__when__comparison_file_is_a_directory(self):
         self._run(
-            new_source2('%s --rel-cwd dir' % EQUALS_ARGUMENT),
+            new_source2('%s --rel-cd dir' % EQUALS_ARGUMENT),
             arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                 [empty_dir('dir')]))),
             Expectation(main_result=pfh_check.is_fail()),
@@ -119,7 +119,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
                                     act_result: ActResult,
                                     expected_contents: str):
         self._run(
-            new_source2('%s --rel-cwd f.txt' % EQUALS_ARGUMENT),
+            new_source2('%s --rel-cd f.txt' % EQUALS_ARGUMENT),
             arrangement(
                 sds_contents_before_main=act_dir_contents(DirContents(
                     [File('f.txt', expected_contents)])),
@@ -132,7 +132,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
                                     act_result: ActResult,
                                     expected_contents: str):
         self._run(
-            new_source2('%s --rel-cwd f.txt' % EQUALS_ARGUMENT),
+            new_source2('%s --rel-cd f.txt' % EQUALS_ARGUMENT),
             arrangement(
                 sds_contents_before_main=act_dir_contents(DirContents(
                     [File('f.txt', expected_contents)])),
@@ -327,8 +327,8 @@ class ReplacedEnvVars(TestWithParserBase):
             source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
             source_should_contain_expected_value=True)
         self._run(
-            new_source2('--with-replaced-env-vars {} --rel-cwd {}'.format(EQUALS_ARGUMENT,
-                                                                          self.SOURCE_FILE_NAME)),
+            new_source2('--with-replaced-env-vars {} --rel-cd {}'.format(EQUALS_ARGUMENT,
+                                                                         self.SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             is_pass(),
         )
@@ -339,8 +339,8 @@ class ReplacedEnvVars(TestWithParserBase):
             source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
             source_should_contain_expected_value=False)
         self._run(
-            new_source2('--with-replaced-env-vars {} --rel-cwd {}'.format(EQUALS_ARGUMENT,
-                                                                          self.SOURCE_FILE_NAME)),
+            new_source2('--with-replaced-env-vars {} --rel-cd {}'.format(EQUALS_ARGUMENT,
+                                                                         self.SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             Expectation(main_result=pfh_check.is_fail()),
         )

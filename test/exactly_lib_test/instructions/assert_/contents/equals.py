@@ -70,7 +70,7 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
 class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_fail__when__comparison_file_does_not_exist(self):
         self._run(
-            new_source2('target %s --rel-cwd comparison' % EQUALS_ARGUMENT),
+            new_source2('target %s --rel-cd comparison' % EQUALS_ARGUMENT),
             arrangement(sds_contents_before_main=act_dir_contents(
                 DirContents([empty_file('target')]))),
             Expectation(main_result=pfh_check.is_fail()),
@@ -78,7 +78,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
 
     def test_fail__when__target_file_does_not_exist(self):
         self._run(
-            new_source2('target %s --rel-cwd comparison' % EQUALS_ARGUMENT),
+            new_source2('target %s --rel-cd comparison' % EQUALS_ARGUMENT),
             arrangement(sds_contents_before_main=act_dir_contents(
                 DirContents([empty_file('comparison')]))),
             Expectation(main_result=pfh_check.is_fail()),
@@ -86,7 +86,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
         self._run(
-            new_source2('target %s --rel-cwd comparison' % EQUALS_ARGUMENT),
+            new_source2('target %s --rel-cd comparison' % EQUALS_ARGUMENT),
             arrangement(sds_contents_before_main=act_dir_contents(
                 DirContents([empty_file('target'),
                              empty_dir('comparison')]))),
@@ -95,7 +95,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
 
     def test_validation_error__when__target_file_is_a_directory(self):
         self._run(
-            new_source2('target %s --rel-cwd comparison' % EQUALS_ARGUMENT),
+            new_source2('target %s --rel-cd comparison' % EQUALS_ARGUMENT),
             arrangement(sds_contents_before_main=act_dir_contents(
                 DirContents([empty_dir('target'),
                              empty_file('comparison')]))),
@@ -104,7 +104,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
 
     def test_fail__when__contents_is_different(self):
         self._run(
-            new_source2('target %s --rel-cwd comparison' % EQUALS_ARGUMENT),
+            new_source2('target %s --rel-cd comparison' % EQUALS_ARGUMENT),
             arrangement(sds_contents_before_main=act_dir_contents(
                 DirContents([File('target', 'target-contents'),
                              File('comparison', 'cmp-contents')]))),
@@ -113,7 +113,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
 
     def test_pass__when__contents_is_equal(self):
         self._run(
-            new_source2('target %s --rel-cwd comparison' % EQUALS_ARGUMENT),
+            new_source2('target %s --rel-cd comparison' % EQUALS_ARGUMENT),
             arrangement(sds_contents_before_main=act_dir_contents(
                 DirContents([File('target', 'contents'),
                              File('comparison', 'contents')]))),
@@ -211,9 +211,9 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
             source_file_writer=WriteFileToCurrentDir(self.COMPARISON_SOURCE_FILE_NAME),
             source_should_contain_expected_value=True)
         self._run(
-            new_source2('{} --with-replaced-env-vars {} --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                             EQUALS_ARGUMENT,
-                                                                             self.COMPARISON_SOURCE_FILE_NAME)),
+            new_source2('{} --with-replaced-env-vars {} --rel-cd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
+                                                                            EQUALS_ARGUMENT,
+                                                                            self.COMPARISON_SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             is_pass(),
         )
@@ -224,9 +224,9 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
             source_file_writer=WriteFileToCurrentDir(self.COMPARISON_SOURCE_FILE_NAME),
             source_should_contain_expected_value=False)
         self._run(
-            new_source2('{} --with-replaced-env-vars {} --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                             EQUALS_ARGUMENT,
-                                                                             self.COMPARISON_SOURCE_FILE_NAME)),
+            new_source2('{} --with-replaced-env-vars {} --rel-cd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
+                                                                            EQUALS_ARGUMENT,
+                                                                            self.COMPARISON_SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             Expectation(main_result=pfh_check.is_fail()),
         )
