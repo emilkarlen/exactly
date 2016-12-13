@@ -1,0 +1,19 @@
+[setup]
+
+$ echo setup
+
+[act]
+
+$ echo act
+
+[before-assert]
+
+$ echo beforeAssert
+
+[assert]
+
+$ echo assert
+
+[cleanup]
+
+$ echo cleanup

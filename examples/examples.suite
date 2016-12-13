@@ -7,6 +7,12 @@
 first-step/package.suite
 
 #
+# Shell examples.
+#
+
+shell/package.suite
+
+#
 # Setup using the "setup" phase.
 #
 

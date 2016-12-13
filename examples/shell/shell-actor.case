@@ -1,0 +1,7 @@
+$ echo Hello
+
+[assert]
+
+stdout equals <<EOF
+Hello
+EOF
