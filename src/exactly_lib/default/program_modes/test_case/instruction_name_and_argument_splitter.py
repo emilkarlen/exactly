@@ -2,8 +2,7 @@ import re
 
 
 class SkipInitialWhiteSpaceAndIdentifyNameByRegEx:
-    def __init__(self,
-                 reg_ex):
+    def __init__(self, reg_ex):
         self._reg_ex = reg_ex
 
     def __call__(self, line: str):
