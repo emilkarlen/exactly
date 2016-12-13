@@ -1,18 +1,9 @@
-import re
-
-
-class SkipInitialWhiteSpaceAndIdentifyNameByRegEx:
-    def __init__(self, reg_ex):
-        self._reg_ex = reg_ex
-
-    def __call__(self, line: str):
-        s = line.lstrip()
-        match = self._reg_ex.match(s)
-        if match is None:
-            raise ValueError('Cannot find instruction name')
-        return s[:match.end()], s[match.end():]
-
-
-INSTRUCTION_NAME_REG_EX = re.compile(r"[_a-zA-Z0-9.-]+")
-
-splitter = SkipInitialWhiteSpaceAndIdentifyNameByRegEx(INSTRUCTION_NAME_REG_EX)
+def splitter(line: str) -> (str, str):
+    s = line.lstrip()
+    if not s:
+        raise ValueError('Line contains no instruction name')
+    idx = 1
+    l = len(s)
+    while idx < l and not s[idx].isspace():
+        idx += 1
+    return s[:idx], s[idx:]

@@ -13,29 +13,29 @@ class TestCase(unittest.TestCase):
                     '')
 
     def test_valid_name_characters(self):
-        self._check('abczABCZ01239.- argument',
-                    'abczABCZ01239.-',
+        self._check('abczABCZ01239.-$ argument',
+                    'abczABCZ01239.-$',
                     ' argument')
 
-    def test_colon_separates(self):
-        self._check('name:argument',
-                    'name',
-                    ':argument')
-
     def test_skip_initial_space(self):
-        self._check('   name:argument',
+        self._check('   name argument',
                     'name',
-                    ':argument')
+                    ' argument')
 
     def test_do_not_skip_trailing_space(self):
-        self._check('name:argument  ',
+        self._check('name :argument  ',
                     'name',
-                    ':argument  ')
+                    ' :argument  ')
 
     def test_under_score(self):
         self._check('a_b c',
                     'a_b',
                     ' c')
+
+    def test_dollar(self):
+        self._check('$ command and args',
+                    '$',
+                    ' command and args')
 
     def _check(self,
                line: str,
