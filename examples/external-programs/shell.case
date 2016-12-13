@@ -1,9 +1,9 @@
 #
-# The "shell" instruction can be used in all phases except "act".
+# The "$" instruction can be used in all phases except "act".
 #
 # It executes a command using the OS's shell.
 #
-# Which OS shell is used depends on the OS.  So tests that uses "shell"
+# Which OS shell is used depends on the OS.  So tests that uses "$"
 # only works on platforms that has a shall that supports the features
 # and commands that are used in the test.
 #
@@ -12,9 +12,9 @@
 [setup]
 
 
-shell touch empty-file.txt
+$ touch empty-file.txt
 
-shell cp ${EXACTLY_HOME}/shell.case .
+$ cp ${EXACTLY_HOME}/shell.case .
 
 
 [act]
@@ -30,8 +30,8 @@ system-under-test
 # Assertion passes if exit code from the shell is 0.
 #
 
-shell [ -f empty-file.txt ]
+$ [ -f empty-file.txt ]
 
-shell [ 0 = `wc -l < empty-file.txt` ]
+$ [ 0 = `wc -l < empty-file.txt` ]
 
-shell [ -f shell.case ]
+$ [ -f shell.case ]
