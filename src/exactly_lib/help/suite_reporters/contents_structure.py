@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 
@@ -24,6 +25,12 @@ class SuiteReporterDocumentation(EntityDocumentationBase):
         :rtype [`ParagraphItem`]
         """
         raise NotImplementedError()
+
+    def see_also_items(self) -> list:
+        """
+        :rtype: [`SeeAlsoItem`]
+        """
+        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also()]
 
     def see_also(self) -> list:
         """

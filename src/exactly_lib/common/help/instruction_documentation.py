@@ -1,3 +1,6 @@
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
+
+
 class InstructionDocumentation:
     """
     Reference documentation about an instruction,
@@ -32,8 +35,14 @@ class InstructionDocumentation:
         """
         return []
 
+    def see_also_items(self) -> list:
+        """
+        :rtype: [`SeeAlsoItem`]
+        """
+        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also()]
+
     def see_also(self) -> list:
         """
-        :rtype [`CrossReference`]
+        :rtype [`CrossReferenceId`]
         """
         return []

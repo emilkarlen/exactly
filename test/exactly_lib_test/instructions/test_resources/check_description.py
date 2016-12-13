@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.common.help.cross_reference_id import CrossReferenceId
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib_test.common.help.test_resources.see_also import is_see_also_item
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
@@ -20,7 +20,7 @@ def suite_for_instruction_documentation(documentation: InstructionDocumentation)
         TestMainDescriptionRest,
         TestInvokationVariants,
         TestSyntaxElementDescriptions,
-        TestCrossReferences,
+        TestSeeAlsoItems,
     ])
 
 
@@ -42,10 +42,10 @@ class TestInstructionName(WithDescriptionBase):
         self.assertIsInstance(actual, str)
 
 
-class TestCrossReferences(WithDescriptionBase):
+class TestSeeAlsoItems(WithDescriptionBase):
     def runTest(self):
-        actual = self.description.see_also()
-        va.every_element('cross references', va.IsInstance(CrossReferenceId)).apply(self, actual)
+        actual = self.description.see_also_items()
+        va.every_element('see also items', is_see_also_item).apply(self, actual)
 
 
 class TestSingleLineDescription(WithDescriptionBase):

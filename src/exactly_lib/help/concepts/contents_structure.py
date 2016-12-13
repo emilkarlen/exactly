@@ -1,4 +1,5 @@
 from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.concepts.cross_reference import concept_cross_ref
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
@@ -51,6 +52,12 @@ class ConceptDocumentation(EntityDocumentation):
         :rtype: [`ParagraphItem`]
         """
         return [para(self.purpose().single_line_description)]
+
+    def see_also_items(self) -> list:
+        """
+        :rtype: [`SeeAlsoItem`]
+        """
+        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also()]
 
     def see_also(self) -> list:
         """
