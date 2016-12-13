@@ -39,7 +39,7 @@ class _ActorConcept(ConfigurationParameterDocumentation):
                 ' - ' +
                 DEFAULT_ACTOR_DOC.single_line_description_str())
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return (all_actor_cross_refs() +
                 [
                     HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),

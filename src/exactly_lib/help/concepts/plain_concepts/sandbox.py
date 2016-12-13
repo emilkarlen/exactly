@@ -30,7 +30,7 @@ class _Sandbox(PlainConceptDocumentation):
         return DescriptionWithSubSections(docs.text(_SANDBOX_SINGLE_LINE_DESCRIPTION),
                                           SectionContents(rest_paragraphs, sub_sections))
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return [
             TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME.plain,
                                                    CHANGE_DIR_INSTRUCTION_NAME),

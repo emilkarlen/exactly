@@ -57,9 +57,9 @@ class ConceptDocumentation(EntityDocumentation):
         """
         :rtype: [`SeeAlsoItem`]
         """
-        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also()]
+        return [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         """
         :rtype [`CrossReferenceTarget`]
         """

@@ -23,7 +23,7 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return [
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    HOME_DIRECTORY_INSTRUCTION_NAME),
