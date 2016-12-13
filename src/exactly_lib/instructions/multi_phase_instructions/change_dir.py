@@ -50,7 +50,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                                                                       ALL_OPTIONS),
         ]
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         from exactly_lib.help.concepts.plain_concepts.sandbox import \
             SANDBOX_CONCEPT
         return [

@@ -81,7 +81,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
         return additional_syntax_element_descriptions + self._help_parts.syntax_element_descriptions()
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return self._help_parts.see_also()
 
 
