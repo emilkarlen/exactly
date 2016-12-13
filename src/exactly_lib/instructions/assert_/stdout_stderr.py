@@ -1,20 +1,14 @@
 import pathlib
 
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
-from exactly_lib.instructions.assert_.utils.file_contents import contents_utils_for_instr_doc as doc_utils
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
     ActualFileTransformerForEnvVarsReplacementBase, \
     ActualFileTransformer
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help
+from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -41,6 +35,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str,
                  name_of_checked_file: str):
         self.file_arg = a.Named(parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name)
+        self._help_parts = FileContentsHelpParts(name,
+                                                 name_of_checked_file,
+                                                 [])
+
         super().__init__(name, {
             'checked_file': name_of_checked_file,
             'FILE_ARG': self.file_arg.name,
@@ -52,57 +50,16 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._format('Tests the contents of {checked_file}')
 
     def main_description_rest(self) -> list:
-        return rel_opts.default_relativity_for_rel_opt_type(self.file_arg.name,
-                                                            parse_here_doc_or_file_ref.CONFIGURATION.default_option)
+        return []
 
     def invokation_variants(self) -> list:
-        mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
-                                       doc_utils.EMPTY_ARGUMENT_CONSTANT)
-        mandatory_not_arg = a.Single(a.Multiplicity.MANDATORY,
-                                     doc_utils.NOT_ARGUMENT_CONSTANT)
-        mandatory_file_arg = a.Single(a.Multiplicity.MANDATORY,
-                                      self.file_arg)
-        optional_replace_env_vars_option = a.Single(a.Multiplicity.OPTIONAL,
-                                                    self.with_replaced_env_vars_option)
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
-
-        return [
-            InvokationVariant(self._cl_syntax_for_args([mandatory_empty_arg]),
-                              self._paragraphs('Asserts that {checked_file} is empty.')),
-            InvokationVariant(self._cl_syntax_for_args([mandatory_not_arg, mandatory_empty_arg]),
-                              self._paragraphs('Asserts that {checked_file} is not empty.')),
-            InvokationVariant(self._cl_syntax_for_args([optional_replace_env_vars_option,
-                                                        here_doc_arg,
-                                                        ]),
-                              self._paragraphs("""\
-                              Asserts that the contents of {checked_file} is equal to
-                              the contents of a "here document".
-                              """)),
-            InvokationVariant(self._cl_syntax_for_args([optional_replace_env_vars_option,
-                                                        rel_opts.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-                                                        mandatory_file_arg,
-                                                        ]),
-                              self._paragraphs("""\
-                              Asserts that the contents of {checked_file} is equal to the contents of {FILE_ARG}.
-                              """)),
-        ]
+        return self._help_parts.invokation_variants()
 
     def syntax_element_descriptions(self) -> list:
-        return [
-            rel_opts.relativity_syntax_element_description(self.file_arg,
-                                                           parse_here_doc_or_file_ref.CONFIGURATION.accepted_options,
-                                                           rel_opts.RELATIVITY_ARGUMENT),
-            self._cli_argument_syntax_element_description(self.with_replaced_env_vars_option,
-                                                          with_replaced_env_vars_help(self.checked_file)),
-            dt.here_document_syntax_element_description(self.instruction_name(),
-                                                        dt.HERE_DOCUMENT),
-        ]
+        return self._help_parts.syntax_element_descriptions()
 
     def see_also(self) -> list:
-        concepts = rel_opts.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.accepted_options)
-        if ENVIRONMENT_VARIABLE_CONCEPT not in concepts:
-            concepts.append(ENVIRONMENT_VARIABLE_CONCEPT)
-        return list(map(ConceptDocumentation.cross_reference_target, concepts))
+        return self._help_parts.see_also()
 
 
 _WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
