@@ -58,8 +58,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         return self._help_parts.syntax_element_descriptions()
 
-    def _see_also_cross_refs(self) -> list:
-        return self._help_parts.see_also()
+    def see_also_items(self) -> list:
+        return self._help_parts.see_also_items()
 
 
 _WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
