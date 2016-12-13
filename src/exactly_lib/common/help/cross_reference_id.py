@@ -1,5 +1,5 @@
 from exactly_lib.util.textformat.structure import core
-from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
+from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, UrlCrossReferenceTarget
 from exactly_lib.util.textformat.structure.structures import text, anchor_text
 
 
@@ -94,7 +94,7 @@ class EntityCrossReferenceId(CrossReferenceId):
 
 
 class CrossReferenceIdVisitor:
-    def visit(self, x: CrossReferenceId):
+    def visit(self, x: CrossReferenceTarget):
         if isinstance(x, CustomCrossReferenceId):
             return self.visit_custom(x)
         if isinstance(x, TestCasePhaseCrossReference):
@@ -107,6 +107,8 @@ class CrossReferenceIdVisitor:
             return self.visit_test_suite_section_instruction(x)
         if isinstance(x, EntityCrossReferenceId):
             return self.visit_entity(x)
+        if isinstance(x, UrlCrossReferenceTarget):
+            return self.visit_url(x)
         else:
             raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceId),
                                                        str(x)))
@@ -127,6 +129,9 @@ class CrossReferenceIdVisitor:
         raise NotImplementedError()
 
     def visit_custom(self, x: CustomCrossReferenceId):
+        raise NotImplementedError()
+
+    def visit_url(self, x: UrlCrossReferenceTarget):
         raise NotImplementedError()
 
 

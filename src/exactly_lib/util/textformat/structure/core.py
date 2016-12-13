@@ -25,6 +25,19 @@ class CrossReferenceTarget:
     pass
 
 
+class UrlCrossReferenceTarget(CrossReferenceTarget):
+    """
+    A target that is an URL.
+    """
+
+    def __init__(self, url: str):
+        self._url = url
+
+    @property
+    def url(self) -> str:
+        return self._url
+
+
 class CrossReferenceText(ConcreteText):
     def __init__(self,
                  title: str,

@@ -3,7 +3,7 @@ from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, phase_name_dict_key_for
 from exactly_lib.help.utils.suite_section_names import suite_section_name_dictionary, suite_section_name_dict_key_for
-from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText
+from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget
 
 
 class CrossReferenceTextConstructor(object):
@@ -20,6 +20,10 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
     def visit_custom(self, x: cross_reference_id.CustomCrossReferenceId):
         raise ValueError('Rendering of custom cross references is not supported ("%s")' %
                          x.target_name)
+
+    def visit_url(self, x: UrlCrossReferenceTarget):
+        raise ValueError('Rendering of url cross references is not supported ("%s")' %
+                         x.url)
 
     def visit_test_case_phase(self, x: cross_reference_id.TestCasePhaseCrossReference):
         return 'Phase %s' % self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].syntax
