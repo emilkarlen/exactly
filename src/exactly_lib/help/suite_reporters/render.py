@@ -3,6 +3,7 @@ from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDoc
 from exactly_lib.help.suite_reporters.names_and_cross_references import DEFAULT_REPORTER
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.see_also_section import see_also_sections
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
@@ -30,6 +31,7 @@ class IndividualSuiteReporterRenderer(SectionContentsRenderer):
             ('Exit code', srd.exit_code_description()),
         ]
         append_sections_if_contents_is_non_empty(sub_sections, names_and_contents)
+        sub_sections.extend(see_also_sections(srd.see_also_items(), environment))
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _default_reporter_info(self) -> list:

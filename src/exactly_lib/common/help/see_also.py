@@ -1,5 +1,5 @@
 from exactly_lib.common.help.cross_reference_id import CrossReferenceId
-from exactly_lib.util.textformat.structure.core import Text
+from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget
 
 
 class SeeAlsoItem:
@@ -22,6 +22,14 @@ class TextSeeAlsoItem(SeeAlsoItem):
     @property
     def text(self) -> Text:
         return self._text
+
+
+def see_also_url(title: str, url: str) -> SeeAlsoItem:
+    return TextSeeAlsoItem(
+        CrossReferenceText(title,
+                           UrlCrossReferenceTarget(url),
+                           target_is_id_in_same_document=False,
+                           allow_rendering_of_visible_extra_target_text=True))
 
 
 def see_also_items_from_cross_refs(cross_refs: list) -> list:

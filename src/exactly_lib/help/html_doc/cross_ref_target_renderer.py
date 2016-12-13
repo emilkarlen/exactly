@@ -2,6 +2,7 @@ from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.structure import core as doc
+from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget
 
 
 class HtmlTargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor):
@@ -25,3 +26,6 @@ class HtmlTargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor)
 
     def visit_custom(self, x: cross_ref.CustomCrossReferenceId):
         return 'custom.' + x.target_name
+
+    def visit_url(self, x: UrlCrossReferenceTarget):
+        return x.url

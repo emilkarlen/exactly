@@ -14,6 +14,7 @@ from exactly_lib.util.textformat.formatting.text import text
 from exactly_lib.util.textformat.formatting.text.lists import list_formats_with
 from exactly_lib.util.textformat.formatting.text.wrapper import Wrapper
 from exactly_lib.util.textformat.structure import core
+from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget
 
 
 class ConsoleHelpRequestHandler(RequestHandler):
@@ -48,9 +49,6 @@ class HelpCrossReferenceFormatter(text.CrossReferenceFormatter):
 
     def apply(self, cross_reference: core.CrossReferenceText) -> str:
         if cross_reference.allow_rendering_of_visible_extra_target_text:
-            if not isinstance(cross_reference.target, cross_reference_id.CrossReferenceId):
-                raise TypeError('Encountered a cross-reference that is not an instance of ' +
-                                str(cross_reference_id.CrossReferenceId))
             command_line = self.command_line_getter.visit(cross_reference.target)
             return cross_reference.title + ' (' + command_line + ')'
         else:
@@ -68,6 +66,9 @@ def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:
 class _HelpCommandLineGetterVisitor(cross_reference_id.CrossReferenceIdVisitor):
     def visit_custom(self, x: cross_reference_id.CustomCrossReferenceId):
         raise ValueError('A Custom Cross Reference IDs cannot be displayed as a command line')
+
+    def visit_url(self, x: UrlCrossReferenceTarget):
+        return x.url
 
     def visit_entity(self, x: cross_reference_id.EntityCrossReferenceId):
         return _command_line_display_for_help_arguments(arguments_for.entity_single(x.entity_type_name,

@@ -42,6 +42,9 @@ class _IsCrossReferenceIdAssertionGetter(CrossReferenceIdVisitor):
     def visit_custom(self, x: CustomCrossReferenceId):
         return _assertion_on_properties_of(x, custom_is_valid)
 
+    def visit_url(self, x: UrlCrossReferenceTarget):
+        return _assertion_on_properties_of(x, url_is_valid)
+
 
 def _is_str(component_name: str, component_getter: types.FunctionType) -> va.ValueAssertion:
     return va.sub_component(component_name, component_getter, va.IsInstance(str))
@@ -81,6 +84,8 @@ test_suite_section_instruction_is_valid = va.And([
 ])
 
 custom_is_valid = _is_str('target name', CustomCrossReferenceId.target_name.fget)
+
+url_is_valid = _is_str('url', UrlCrossReferenceTarget.url.fget)
 
 
 def _assertion_on_properties_of(x, properties_assertion: va.ValueAssertion) -> va.ValueAssertion:
