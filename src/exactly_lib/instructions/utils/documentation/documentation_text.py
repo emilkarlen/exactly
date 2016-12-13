@@ -52,6 +52,8 @@ DIR_ARGUMENT = a.Named('DIR')
 
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 
+REG_EX = a.Named('REG-EX')
+
 _HERE_DOCUMENT_DESCRIPTION = """\
 A sequence of lines, given using the shell "here document" syntax.
 

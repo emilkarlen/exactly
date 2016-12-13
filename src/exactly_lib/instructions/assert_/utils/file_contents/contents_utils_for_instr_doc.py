@@ -43,6 +43,10 @@ class FileContentsHelpParts:
                                      NOT_ARGUMENT_CONSTANT)
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(parsing.EQUALS_ARGUMENT))
+        contains_arg = a.Single(a.Multiplicity.MANDATORY,
+                                a.Constant(parsing.CONTAINS_ARGUMENT))
+        reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
+                              dt.REG_EX)
         expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
                                      self.expected_file_arg)
         optional_replace_env_vars_option = a.Single(a.Multiplicity.OPTIONAL,
@@ -67,7 +71,15 @@ class FileContentsHelpParts:
                                          ]),
                               self._paragraphs("""\
                               Asserts that the contents of {checked_file}
-                              is equal to the contents of {expected_file_arg}.
+                              is equal to the contents of a file.
+                              """)),
+            InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         contains_arg,
+                                         reg_ex_arg,
+                                         ]),
+                              self._paragraphs("""\
+                              Asserts that the contents of {checked_file}
+                              contains a line matching a regular expression.
                               """)),
         ]
 
@@ -91,6 +103,8 @@ class FileContentsHelpParts:
             rel_opts.relativity_syntax_element_description(dt.FILE_ARGUMENT,
                                                            parse_here_doc_or_file_ref.CONFIGURATION.accepted_options,
                                                            relativity_of_expected_arg),
+            SyntaxElementDescription(dt.REG_EX.name,
+                                     self._parser.fnap('A Python regular expression.')),
             self.clr.cli_argument_syntax_element_description(
                 self.with_replaced_env_vars_option,
                 with_replaced_env_vars_help(self._parser.format('the contents of {checked_file}'))),
