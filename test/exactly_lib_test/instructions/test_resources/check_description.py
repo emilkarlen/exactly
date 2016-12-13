@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib_test.common.help.test_resources.see_also import is_see_also_item
+from exactly_lib_test.common.help.test_resources.see_also_va import is_see_also_item
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
