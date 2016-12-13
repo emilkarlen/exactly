@@ -23,8 +23,7 @@ class ConsoleHelpRequestHandler(RequestHandler):
         self.application_help = application_help
         self.section_contents_renderer = section_contents_renderer
 
-    def handle(self,
-               output: StdOutputFiles):
+    def handle(self, output: StdOutputFiles):
         page_width = shutil.get_terminal_size().columns
         formatter = _formatter(page_width)
         environment = RenderingEnvironment(_cross_ref_text_constructor())
