@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help import cross_reference_id as sut
+from exactly_lib.common.help import cross_reference_id as sut
 
 
 def suite() -> unittest.TestSuite:

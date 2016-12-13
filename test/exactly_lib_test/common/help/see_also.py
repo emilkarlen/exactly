@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.common.help import see_also as sut
-from exactly_lib.help.cross_reference_id import CustomCrossReferenceId
+from exactly_lib.common.help.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.util.textformat.structure.core import StringText
 
 

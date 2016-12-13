@@ -1,5 +1,5 @@
-from exactly_lib.help import cross_reference_id as cross_ref
-from exactly_lib.help.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.common.help import cross_reference_id as cross_ref
+from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.structure import core as doc
 

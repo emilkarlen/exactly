@@ -1,4 +1,4 @@
-from exactly_lib.help.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME

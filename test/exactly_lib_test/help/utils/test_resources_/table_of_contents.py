@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.cross_reference_id import TargetInfoNode, TargetInfo
+from exactly_lib.common.help.cross_reference_id import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import core
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 

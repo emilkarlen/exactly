@@ -1,4 +1,4 @@
-from exactly_lib.help.cross_reference_id import CustomCrossReferenceId
+from exactly_lib.common.help.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.suite_reporters.names_and_cross_references import suite_reporter_cross_ref
 from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId

@@ -1,4 +1,4 @@
-from exactly_lib.help.cross_reference_id import CrossReferenceId
+from exactly_lib.common.help.cross_reference_id import CrossReferenceId
 
 
 class SingularNameAndCrossReferenceId(tuple):

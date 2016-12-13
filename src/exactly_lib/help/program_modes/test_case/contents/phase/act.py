@@ -1,12 +1,13 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
+from exactly_lib.common.help.cross_reference_id import TestCasePhaseCrossReference, \
+    TestCasePhaseInstructionCrossReference, \
+    TestSuiteSectionInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference, TestCasePhaseInstructionCrossReference, \
-    TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \

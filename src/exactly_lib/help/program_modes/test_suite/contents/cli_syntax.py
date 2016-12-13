@@ -2,10 +2,10 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
+from exactly_lib.common.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters import actor
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
-from exactly_lib.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation

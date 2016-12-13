@@ -1,7 +1,7 @@
-from exactly_lib.help import cross_reference_id as cross_ref
+from exactly_lib.common.help import cross_reference_id as cross_ref
+from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.concepts.render import IndividualConceptRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp
-from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from exactly_lib.help.html_doc.parts.help import HtmlDocGeneratorForHelpHelp

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation, Name
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib_test.help.test_resources import cross_reference_id_va as xref_va
+from exactly_lib_test.common.help.test_resources import cross_reference_id_va as xref_va
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
