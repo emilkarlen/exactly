@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib_test import act_phase_setups
+from exactly_lib_test import common
 from exactly_lib_test import default
 from exactly_lib_test import execution
 from exactly_lib_test import help
@@ -27,6 +28,7 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(test_resources.suite())
     ret_val.addTest(util.suite())
     ret_val.addTest(section_document.suite())
+    ret_val.addTest(common.suite())
     ret_val.addTest(test_case.suite())
     ret_val.addTest(execution.suite())
     ret_val.addTest(processing.suite())
