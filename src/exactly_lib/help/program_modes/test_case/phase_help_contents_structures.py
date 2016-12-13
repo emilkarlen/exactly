@@ -3,8 +3,8 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
     SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
-from exactly_lib.help.utils.render import cross_reference_sections
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.see_also_section import see_also_sections
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -155,7 +155,7 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
             sections.append(docs.section('Instructions', [il]))
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
-        sections.extend(cross_reference_sections(self.see_also, environment))
+        sections.extend(see_also_sections(self.see_also_items, environment))
 
 
 class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentationBase):

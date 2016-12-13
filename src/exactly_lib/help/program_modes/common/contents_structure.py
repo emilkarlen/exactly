@@ -1,4 +1,5 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.description import Description
@@ -32,6 +33,7 @@ class SectionDocumentation:
     """
     Documentation about a section in a "section document".
     """
+
     def __init__(self,
                  name: str):
         self._name_formats = formatting.SectionName(name)
@@ -56,6 +58,13 @@ class SectionDocumentation:
         :return: None if this phase does not have instructions.
         """
         raise NotImplementedError()
+
+    @property
+    def see_also_items(self) -> list:
+        """
+        :rtype: [`SeeAlsoItem`]
+        """
+        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also]
 
     @property
     def see_also(self) -> list:

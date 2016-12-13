@@ -1,4 +1,5 @@
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseCrossReference
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -20,6 +21,12 @@ class ActorDocumentation(EntityDocumentationBase):
 
     def act_phase_contents_syntax(self) -> SectionContents:
         raise NotImplementedError()
+
+    def see_also_items(self) -> list:
+        """
+        :rtype: [`SeeAlsoItem`]
+        """
+        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also()]
 
     def see_also(self) -> list:
         """
