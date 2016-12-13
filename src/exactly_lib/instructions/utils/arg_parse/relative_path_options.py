@@ -13,7 +13,7 @@ class RelOptionType(enum.Enum):
 
 REL_TMP_OPTION_NAME = argument.OptionName(long_name='rel-tmp')
 REL_ACT_OPTION_NAME = argument.OptionName(long_name='rel-act')
-REL_CWD_OPTION_NAME = argument.OptionName(long_name='rel-cwd')
+REL_CWD_OPTION_NAME = argument.OptionName(long_name='rel-cd')
 REL_HOME_OPTION_NAME = argument.OptionName(long_name='rel-home')
 
 REL_OPTIONS_MAP = {

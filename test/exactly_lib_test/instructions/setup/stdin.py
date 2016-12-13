@@ -32,7 +32,7 @@ class TestParseSet(unittest.TestCase):
         sut.Parser().apply(source)
 
     def test_succeed_when_syntax_is_correct__rel_cwd(self):
-        source = new_source2('--rel-cwd file')
+        source = new_source2('--rel-cd file')
         sut.Parser().apply(source)
 
     def test_succeed_when_syntax_is_correct__rel_tmp(self):
