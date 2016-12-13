@@ -8,8 +8,7 @@ from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText
 
 class CrossReferenceTextConstructor(object):
     def apply(self, x: cross_reference_id.CrossReferenceId) -> Text:
-        return CrossReferenceText(_TITLE_RENDERER.visit(x),
-                                  x)
+        return CrossReferenceText(_TITLE_RENDERER.visit(x), x)
 
 
 class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
