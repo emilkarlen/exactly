@@ -12,7 +12,8 @@ from exactly_lib.util.std import StdOutputFiles
 
 def default_main_program() -> main_program.MainProgram:
     return MainProgram(StdOutputFiles(sys.stdout,
-                                      sys.stderr), instruction_name_and_argument_splitter.splitter,
+                                      sys.stderr),
+                       instruction_name_and_argument_splitter.splitter,
                        default_instructions_setup.INSTRUCTIONS_SETUP,
                        TestCaseHandlingSetup(command_line.act_phase_setup(),
                                              IdentityPreprocessor()))
