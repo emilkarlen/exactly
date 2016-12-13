@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import see_also_url
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.suite_reporters.names_and_cross_references import JUNIT_REPORTER
 from exactly_lib.help.utils.textformat_parser import TextParser
@@ -11,6 +12,7 @@ class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):
             'EXIT_CODE': str(junit.UNCONDITIONAL_EXIT_CODE),
             'test_suite_element': junit.TEST_SUITE_ELEMENT_NAME,
             'test_suites_element': junit.TEST_SUITES_ELEMENT_NAME,
+            'url': _URL,
         }
         self._parser = TextParser(format_map)
 
@@ -20,9 +22,16 @@ class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):
     def exit_code_description(self) -> list:
         return self._parser.fnap(_EXIT_CODE_DESCRIPTION)
 
+    def see_also_items(self) -> list:
+        from_super = super().see_also_items()
+        schema_url = see_also_url('Windy Road JUnit XSD', _URL)
+        return from_super + [schema_url]
+
+
+_URL = 'https://github.com/windyroad/JUnit-Schema/'
 
 _SYNTAX_OF_OUTPUT = """\
-https://windyroad.com.au/dl/Open Source/JUnit.xsd
+{url}
 
 as of 2016-11-14.
 
