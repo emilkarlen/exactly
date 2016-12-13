@@ -12,13 +12,11 @@ ALL_SETUP = (SETUP__VALIDATE_PRE_SDS,
 
 ACT__VALIDATE_PRE_SDS = phase_step.ACT__VALIDATE_PRE_SDS.simple
 ACT__VALIDATE_POST_SETUP = phase_step.ACT__VALIDATE_POST_SETUP.simple
-ACT__MAIN = phase_step.ACT__MAIN.simple
 ACT__PREPARE = phase_step.ACT__PREPARE.simple
 ACT__EXECUTE = phase_step.ACT__EXECUTE.simple
 
 ALL_ACT = (ACT__VALIDATE_PRE_SDS,
            ACT__VALIDATE_POST_SETUP,
-           ACT__MAIN,
            ACT__PREPARE,
            ACT__EXECUTE)
 
