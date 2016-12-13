@@ -1,11 +1,11 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
+from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
+    TestSuiteSectionInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
-    TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils import suite_section_names
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME

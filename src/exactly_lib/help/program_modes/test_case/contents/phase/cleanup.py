@@ -1,9 +1,10 @@
+from exactly_lib.common.help.cross_reference_id import TestCasePhaseCrossReference, \
+    TestCasePhaseInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
 from exactly_lib.execution.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference, TestCasePhaseInstructionCrossReference
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip

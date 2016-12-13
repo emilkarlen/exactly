@@ -1,7 +1,7 @@
+from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import HOME_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.execution.environment_variables import ENV_VAR_HOME
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation, Name
-from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.parse import normalize_and_parse

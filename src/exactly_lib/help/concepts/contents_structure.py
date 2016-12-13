@@ -1,5 +1,5 @@
+from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help.concepts.cross_reference import concept_cross_ref
-from exactly_lib.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
 from exactly_lib.util.description import DescriptionWithSubSections

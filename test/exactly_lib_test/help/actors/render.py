@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.common.help.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.help.actors import render as sut
-from exactly_lib.help.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.actors.test_resources.documentation import ActorTestImpl

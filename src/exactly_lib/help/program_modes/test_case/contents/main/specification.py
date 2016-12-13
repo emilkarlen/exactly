@@ -1,4 +1,4 @@
-from exactly_lib.help import cross_reference_id as cross_ref
+from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.help.program_modes.test_case.contents.main.intro_environment import execution_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.intro_intro import intro_intro_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.intro_phases import phases_documentation
