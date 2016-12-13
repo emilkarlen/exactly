@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib_test.common.help.test_resources import cross_reference_id_va as xref_va
-from exactly_lib_test.common.help.test_resources import see_also
+from exactly_lib_test.common.help.test_resources import see_also_va
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
@@ -75,7 +75,7 @@ class TestActPhaseContentsSyntax(WithActorDocumentationBase):
 class TestSeeAlso(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.see_also_items()
-        va.is_list_of(see_also.is_see_also_item).apply_with_message(self, actual, 'see_also_items')
+        va.is_list_of(see_also_va.is_see_also_item).apply_with_message(self, actual, 'see_also_items')
 
 
 class TestCrossReferenceTarget(WithActorDocumentationBase):
