@@ -1,5 +1,4 @@
 import exactly_lib.help.program_modes.common.renderers
-import exactly_lib.help.utils.render
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpItem, \
     TestCaseHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name

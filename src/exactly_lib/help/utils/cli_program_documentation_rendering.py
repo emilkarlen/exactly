@@ -1,6 +1,6 @@
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
-from exactly_lib.help.utils.render import cross_reference_list_paragraph
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \
@@ -57,9 +57,9 @@ class _ProgramDocumentationRenderer:
     def _arg_description_list_item_contents(self, argument: DescribedArgument) -> list:
         ret_val = []
         ret_val.extend(argument.description)
-        if argument.see_also:
-            ret_val.append(docs.para('See also'))
-            ret_val.append(cross_reference_list_paragraph(argument.see_also, self.environment))
+        if argument.see_also_items:
+            ret_val.append(docs.para(SEE_ALSO_TITLE))
+            ret_val.append(see_also_items_paragraph(argument.see_also_items, self.environment))
         return ret_val
 
     def _synopsis_list_item(self, synopsis: Synopsis) -> lists.HeaderContentListItem:

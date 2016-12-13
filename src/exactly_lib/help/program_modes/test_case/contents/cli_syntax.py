@@ -1,5 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.concepts.configuration_parameters import actor
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
@@ -50,8 +51,9 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         }
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
-                                            see_also=[
-                                                actor.ACTOR_CONCEPT.cross_reference_target(),
+                                            see_also_items=[
+                                                CrossReferenceIdSeeAlsoItem(
+                                                    actor.ACTOR_CONCEPT.cross_reference_target()),
                                             ])
 
     def _keep_sandbox_argument(self) -> cli_syntax.DescribedArgument:
@@ -60,8 +62,8 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         }
         return cli_syntax.DescribedArgument(_KEEP_SANDBOX_OPTION,
                                             self.parser.fnap(_KEEPING_SANDBOX_OPTION_DESCRIPTION, extra_format_map),
-                                            see_also=[
-                                                SANDBOX_CONCEPT.cross_reference_target(),
+                                            see_also_items=[
+                                                CrossReferenceIdSeeAlsoItem(SANDBOX_CONCEPT.cross_reference_target()),
                                             ])
 
     def _execute_act_phase_argument(self) -> cli_syntax.DescribedArgument:
@@ -75,8 +77,9 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         }
         return cli_syntax.DescribedArgument(_PREPROCESSOR_OPTION,
                                             self.parser.fnap(_PREPROCESSOR_OPTION_DESCRIPTION, extra_format_map),
-                                            see_also=[
-                                                PREPROCESSOR_CONCEPT.cross_reference_target(),
+                                            see_also_items=[
+                                                CrossReferenceIdSeeAlsoItem(
+                                                    PREPROCESSOR_CONCEPT.cross_reference_target()),
                                             ])
 
 
