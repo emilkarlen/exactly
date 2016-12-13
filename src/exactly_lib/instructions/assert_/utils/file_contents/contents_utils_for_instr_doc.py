@@ -41,6 +41,8 @@ class FileContentsHelpParts:
                                        EMPTY_ARGUMENT_CONSTANT)
         mandatory_not_arg = a.Single(a.Multiplicity.MANDATORY,
                                      NOT_ARGUMENT_CONSTANT)
+        equals_arg = a.Single(a.Multiplicity.MANDATORY,
+                              a.Constant(parsing.EQUALS_ARGUMENT))
         expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
                                      self.expected_file_arg)
         optional_replace_env_vars_option = a.Single(a.Multiplicity.OPTIONAL,
@@ -52,6 +54,7 @@ class FileContentsHelpParts:
             InvokationVariant(self._cls([mandatory_not_arg, mandatory_empty_arg]),
                               self._paragraphs('Asserts that {checked_file} is non-empty.')),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         equals_arg,
                                          here_doc_arg,
                                          ]),
                               self._paragraphs("""\
@@ -59,7 +62,7 @@ class FileContentsHelpParts:
                               is equal to the contents of a "here document".
                               """)),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
-                                         # rel_opts.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+                                         equals_arg,
                                          expected_file_arg,
                                          ]),
                               self._paragraphs("""\
