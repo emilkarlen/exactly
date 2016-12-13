@@ -21,7 +21,7 @@ class _SuiteReporterConcept(PlainConceptDocumentation):
             Description(text(_SINGLE_LINE_DESCRIPTION),
                         tp.fnap(_DESCRIPTION_REST)))
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return all_suite_reporters_cross_refs()
 
 

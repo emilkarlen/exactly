@@ -21,7 +21,7 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
     def default_value_str(self) -> str:
         return 'No timeout.'
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return [
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    TIMEOUT_INSTRUCTION_NAME),

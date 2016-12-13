@@ -31,7 +31,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
                             [self._variables_from_setup(),
                              self._variables_from_before_assert()]))
 
-    def see_also(self) -> list:
+    def _see_also_cross_refs(self) -> list:
         return [
             SANDBOX_CONCEPT.cross_reference_target(),
             HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
