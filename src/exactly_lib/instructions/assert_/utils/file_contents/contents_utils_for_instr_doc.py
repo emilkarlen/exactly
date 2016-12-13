@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
@@ -112,7 +113,14 @@ class FileContentsHelpParts:
                                                         dt.HERE_DOCUMENT),
         ]
 
-    def see_also(self) -> list:
+    def see_also_items(self) -> list:
+        cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
+        reg_ex_url = see_also_url('Python regular expressions',
+                                  'https://docs.python.org/3/library/re.html#regular-expression-syntax')
+        return cross_refs + [reg_ex_url]
+
+    @staticmethod
+    def _see_also_cross_refs() -> list:
         concepts = rel_opts.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.accepted_options)
         if ENVIRONMENT_VARIABLE_CONCEPT not in concepts:
             concepts.append(ENVIRONMENT_VARIABLE_CONCEPT)
