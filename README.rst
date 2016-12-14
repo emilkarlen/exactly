@@ -148,7 +148,7 @@ it just displays some of ``exactly``'s functionality.)
 The following is a valid test case,
 and if run by ``exactly``, it won't remove anything (since it is executed inside a temporary sandbox directory)::
 
-    /bin/rm -rf *
+    $ rm -rf *
 
 
 Print output from the tested program
