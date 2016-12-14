@@ -65,7 +65,7 @@ class _TestParseMatchesWithInvalidRegEx(TestWithConfigurationBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
-                self.configuration.source_for('{contains} **'))
+                self.configuration.source_for(args('{contains} **')))
 
 
 class _TestMatchesShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationBase):
