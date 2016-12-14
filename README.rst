@@ -100,7 +100,7 @@ it just displays some of ``exactly``'s functionality.)
     cd ..
     # Moves back to the original current directory.
 
-    shell sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
+    $ sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
 
 
     [assert]
@@ -134,7 +134,7 @@ it just displays some of ``exactly``'s functionality.)
     [cleanup]
 
 
-    shell umount my-test-mount-point
+    $ umount my-test-mount-point
 
     run my-prog-that-removes-database 'my test database'
 
