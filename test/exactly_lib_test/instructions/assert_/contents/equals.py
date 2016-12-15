@@ -19,11 +19,11 @@ from exactly_lib_test.test_resources.parse import new_source2
 
 
 class TestFileExpectedFileRelHome(TestCaseBaseForParser):
-    def test_validation_error__when__actual_file_does_not_exist(self):
+    def test_fail__when__actual_file_does_not_exist(self):
         self._run(
             new_source2(args('name-of-non-existing-file {equals} {rel_home_option} expected.txt')),
-            arrangement(),
-            Expectation(validation_pre_sds=svh_check.is_validation_error()),
+            arrangement(home_dir_contents=DirContents([empty_file('expected.txt')])),
+            Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_validation_error__when__actual_file_is_a_directory(self):
@@ -39,11 +39,11 @@ class TestFileExpectedFileRelCwd(TestCaseBaseForParser):
         self._run(
             new_source2(args('target {equals} {rel_cwd_option} expected.txt')),
             arrangement(sds_contents_before_main=act_dir_contents(
-                DirContents([empty_file('target')]))),
+                DirContents([empty_file('expected.txt')]))),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
-    def test_validation_error__when__actual_file_is_a_directory(self):
+    def test_fail__when__actual_file_is_a_directory(self):
         self._run(
             new_source2(args('target {equals} {rel_cwd_option} expected.txt')),
             arrangement(sds_contents_before_main=act_dir_contents(
@@ -54,7 +54,7 @@ class TestFileExpectedFileRelCwd(TestCaseBaseForParser):
 
 
 class TestFileExpectedFileRelTmp(TestCaseBaseForParser):
-    def test_fail__when__expected_file_does_not_exist(self):
+    def test_fail__when__actual_file_does_not_exist(self):
         self._run(
             new_source2(args('target {equals} {rel_tmp_option} expected.txt')),
             arrangement(sds_contents_before_main=tmp_user_dir_contents(
