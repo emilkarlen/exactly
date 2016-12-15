@@ -133,6 +133,17 @@ class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRel
         return HomeOrSdsPopulatorForSdsContents(tmp_user_dir_contents(contents))
 
 
+class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfiguration):
+    def __init__(self):
+        super().__init__('')
+
+    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+        return HomeOrSdsPopulatorForHomeContents(contents)
+
+    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+        return Expectation(validation_pre_sds=svh_check.is_validation_error())
+
+
 class _ValidationErrorWhenComparisonFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
@@ -163,12 +174,12 @@ class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} {relativity_option} f.txt',
+                args('{equals} {relativity_option} expected.txt',
                      relativity_option=self.option_configuration.cli_option)),
             self.configuration.arrangement_for_actual_and_expected(
                 'actual',
                 self.option_configuration.contents_at_option_relativity_root(
-                    DirContents([File('f.txt', 'expected')])),
+                    DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=_MkSubDirOfActAndChangeToIt()),
             Expectation(main_result=pfh_check.is_fail()),
         )
@@ -178,12 +189,12 @@ class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} {relativity_option} f.txt',
+                args('{equals} {relativity_option} expected.txt',
                      relativity_option=self.option_configuration.cli_option)),
             self.configuration.arrangement_for_actual_and_expected(
                 'expected',
                 self.option_configuration.contents_at_option_relativity_root(
-                    DirContents([File('f.txt', 'expected')])),
+                    DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=_MkSubDirOfActAndChangeToIt()),
             Expectation(main_result=pfh_check.is_pass()),
         )
@@ -194,4 +205,5 @@ _RELATIVITY_OPTION_CONFIGURATIONS = [
     RelativityOptionConfigurationForRelCwd(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
+    RelativityOptionConfigurationForDefaultRelativity(),
 ]
