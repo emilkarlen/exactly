@@ -2,7 +2,7 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult
 
 
@@ -45,9 +45,11 @@ class ArrangementWithSds(ArrangementBase):
                  os_services: OsServices = new_default(),
                  environ: dict = None,
                  process_execution_settings=with_no_timeout(),
+                 home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                  ):
         super().__init__(home_contents, environ)
         self.sds_contents = sds_contents
+        self.home_or_sds_contents = home_or_sds_contents
         self.os_services = os_services
         self.process_execution_settings = process_execution_settings
 
@@ -60,6 +62,12 @@ class ArrangementPostAct(ArrangementWithSds):
                  os_services: OsServices = new_default(),
                  environ: dict = None,
                  process_execution_settings=with_no_timeout(),
+                 home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                  ):
-        super().__init__(home_contents, sds_contents, os_services, environ, process_execution_settings)
+        super().__init__(home_contents,
+                         sds_contents,
+                         os_services,
+                         environ,
+                         process_execution_settings,
+                         home_or_sds_contents)
         self.act_result_producer = act_result_producer

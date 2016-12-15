@@ -20,7 +20,7 @@ class Action:
         return None
 
 
-class Check:
+class Check:  # TODO Replace this class with Arrangement+Expectation
     def __init__(self,
                  home_dir_contents_before: DirContents = empty_dir_contents(),
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
