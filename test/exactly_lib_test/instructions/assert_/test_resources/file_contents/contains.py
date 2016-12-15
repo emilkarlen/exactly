@@ -3,31 +3,19 @@ import unittest
 from exactly_lib.execution import environment_variables
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParser, SingleInstructionParserSource
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
+    TestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
     Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
-
-
-class TestConfiguration:
-    def new_parser(self) -> SingleInstructionParser:
-        raise NotImplementedError()
-
-    def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
-        raise NotImplementedError()
-
-    def arrangement_for_contents(self, actual_contents: str) -> instruction_check.ArrangementPostAct:
-        raise NotImplementedError()
-
-    def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:
-        raise NotImplementedError()
 
 
 class TestWithConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):

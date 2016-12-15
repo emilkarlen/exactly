@@ -5,6 +5,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
+    TestConfiguration
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult
@@ -12,7 +14,7 @@ from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.parse import new_source2
 
 
-class _TestConfiguration(test_resources.TestConfiguration):
+class _TestConfiguration(TestConfiguration):
     FILE_NAME = 'actual.txt'
 
     def new_parser(self) -> SingleInstructionParser:

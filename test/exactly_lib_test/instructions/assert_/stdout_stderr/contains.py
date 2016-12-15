@@ -5,13 +5,15 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
+    TestConfiguration
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment, \
     ActResultProducerFromActResult
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.parse import new_source2
 
 
-class _TestConfigurationForStdFile(test_resources.TestConfiguration):
+class _TestConfigurationForStdFile(TestConfiguration):
     def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
         return new_source2(argument_tail)
 
