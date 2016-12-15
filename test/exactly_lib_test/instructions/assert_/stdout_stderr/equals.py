@@ -1,104 +1,66 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import stdout_stderr as sut
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import EQUALS_ARGUMENT, \
-    WITH_REPLACED_ENV_VARS_OPTION_NAME
-from exactly_lib.instructions.utils.arg_parse import relative_path_options
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import EQUALS_ARGUMENT
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.instructions.assert_.stdout_stderr.test_resources import TestWithParserBase
+from exactly_lib_test.instructions.assert_.stdout_stderr.test_resources import TestWithParserBase, \
+    TestConfigurationForStdout, TestConfigurationForStderr
 from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
     OutputContentsToStdout, WriteFileToHomeDir, ActResultContentsSetup, OutputContentsToStderr, WriteFileToCurrentDir
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.contains import TestWithConfigurationBase
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
+    TestConfiguration, args
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, Expectation, is_pass
 from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
+from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulatorForHomeContents
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.parse import new_source2, argument_list_source
 
 
-class FileContentsFileRelHome(TestWithParserBase):
-    def validation_error__when__comparison_file_does_not_exist(self):
-        self._run(
-            new_source2(args('{equals} {rel_home_option} f.txt')),
+class _TestFileContentsFileRelHome_validation_error__when__comparison_file_does_not_exist(TestWithConfigurationBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(args('{equals} {rel_home_option} non-existing-file.txt')),
             arrangement(),
             Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
-    def validation_error__when__comparison_file_is_a_directory(self):
-        self._run(
-            new_source2(args('{equals} {rel_home_option} dir')),
-            arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                [empty_dir('dir')]))),
+
+class _TestFileContentsFileRelHome_validation_error__when__comparison_file_is_a_directory(TestWithConfigurationBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(args('{equals} {rel_home_option} dir')),
+            arrangement(home_dir_contents=DirContents([empty_dir('dir')])),
             Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
-    def fail__when__contents_differ(self,
-                                    act_result: ActResult,
-                                    expected_contents: str):
-        self._run(
-            new_source2(args('{equals} {rel_home_option} f.txt')),
-            arrangement(act_result_producer=ActResultProducerFromActResult(act_result),
-                        home_dir_contents=DirContents(
-                            [File('f.txt', expected_contents)])),
+
+class _TestFileContentsFileRelHome_fail__when__contents_differ(TestWithConfigurationBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(args('{equals} {rel_home_option} f.txt')),
+            self.configuration.arrangement_for_actual_and_expected(
+                'actual',
+                HomeOrSdsPopulatorForHomeContents(DirContents([File('f.txt', 'expected')]))),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
-    def pass__when__contents_equals(self,
-                                    act_result: ActResult,
-                                    expected_contents: str):
-        self._run(
-            new_source2(args('{equals} {rel_home_option} f.txt')),
-            arrangement(home_dir_contents=DirContents([File('f.txt', expected_contents)]),
-                        act_result_producer=ActResultProducerFromActResult(act_result)),
-            is_pass(),
+
+class _TestFileContentsFileRelHome_pass__when__contents_equals(TestWithConfigurationBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(args('{equals} {rel_home_option} f.txt')),
+            self.configuration.arrangement_for_actual_and_expected(
+                'expected',
+                HomeOrSdsPopulatorForHomeContents(DirContents([File('f.txt', 'expected')]))),
+            Expectation(main_result=pfh_check.is_pass()),
         )
-
-
-class TestFileContentsFileRelHomeFORStdout(FileContentsFileRelHome):
-    def _new_parser(self) -> SingleInstructionParser:
-        return sut.ParserForContentsForStdout()
-
-    def test_validation_error__when__comparison_file_does_not_exist(self):
-        self.validation_error__when__comparison_file_does_not_exist()
-
-    def test_validation_error__when__comparison_file_is_a_directory(self):
-        self.validation_error__when__comparison_file_is_a_directory()
-
-    def test_fail__when__contents_differ(self):
-        self.fail__when__contents_differ(ActResult(stdout_contents='un-expected',
-                                                   stderr_contents='expected'),
-                                         'expected')
-
-    def test_pass__when__contents_equals(self):
-        self.pass__when__contents_equals(ActResult(stdout_contents='expected',
-                                                   stderr_contents='un-expected'),
-                                         'expected')
-
-
-class TestFileContentsFileRelHomeFORStderr(FileContentsFileRelHome):
-    def _new_parser(self) -> SingleInstructionParser:
-        return sut.ParserForContentsForStderr()
-
-    def test_validation_error__when__comparison_file_does_not_exist(self):
-        self.validation_error__when__comparison_file_does_not_exist()
-
-    def test_validation_error__when__comparison_file_is_a_directory(self):
-        self.validation_error__when__comparison_file_is_a_directory()
-
-    def test_fail__when__contents_differ(self):
-        self.fail__when__contents_differ(ActResult(stdout_contents='expected',
-                                                   stderr_contents='un-expected'),
-                                         'expected')
-
-    def test_pass__when__contents_equals(self):
-        self.pass__when__contents_equals(ActResult(stdout_contents='un-expected',
-                                                   stderr_contents='expected'),
-                                         'expected')
 
 
 class FileContentsFileRelCwd(TestWithParserBase):
@@ -388,11 +350,18 @@ class TestReplacedEnvVarsFORStderr(ReplacedEnvVars):
         return sut.ParserForContentsForStderr()
 
 
+def suite_for(configuration: TestConfiguration) -> unittest.TestSuite:
+    test_cases = [
+        _TestFileContentsFileRelHome_validation_error__when__comparison_file_does_not_exist,
+        _TestFileContentsFileRelHome_validation_error__when__comparison_file_is_a_directory,
+        _TestFileContentsFileRelHome_fail__when__contents_differ,
+        _TestFileContentsFileRelHome_pass__when__contents_equals,
+    ]
+    return unittest.TestSuite([tc(configuration) for tc in test_cases])
+
+
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFileContentsFileRelHomeFORStdout),
-        unittest.makeSuite(TestFileContentsFileRelHomeFORStderr),
-
         unittest.makeSuite(TestFileContentsFileRelCwdFORStdout),
         unittest.makeSuite(TestFileContentsFileRelCwdFORStderr),
 
@@ -404,23 +373,10 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestFileContentsFileRelTmpFORStdout),
         unittest.makeSuite(TestFileContentsFileRelTmpFORStderr),
+        suite_for(TestConfigurationForStdout()),
+        suite_for(TestConfigurationForStderr()),
     ])
 
-
-def args(arg_str: str, **kwargs) -> str:
-    if kwargs:
-        format_map = dict(list(_FORMAT_MAP.items()) + list(kwargs.items()))
-        return arg_str.format_map(format_map)
-    return arg_str.format_map(_FORMAT_MAP)
-
-
-_FORMAT_MAP = {
-    'equals': EQUALS_ARGUMENT,
-    'rel_home_option': relative_path_options.REL_HOME_OPTION,
-    'rel_cwd_option': relative_path_options.REL_CWD_OPTION,
-    'rel_tmp_option': relative_path_options.REL_TMP_OPTION,
-    'replace_env_vars_option': long_option_syntax(WITH_REPLACED_ENV_VARS_OPTION_NAME.long)
-}
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
