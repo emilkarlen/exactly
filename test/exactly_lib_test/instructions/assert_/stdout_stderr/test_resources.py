@@ -3,8 +3,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    TestConfiguration
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
+    InstructionTestConfigurationForEquals
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment, \
     ActResultProducerFromActResult
@@ -26,7 +26,7 @@ class TestWithParserBase(instruction_check.TestCaseBase):
         self._check(self._new_parser(), source, arrangement, expectation)
 
 
-class TestConfigurationForStdFile(TestConfiguration):
+class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
         return new_source2(argument_tail)
 
