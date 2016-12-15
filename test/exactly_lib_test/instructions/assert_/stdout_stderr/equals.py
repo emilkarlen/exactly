@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.instructions.assert_ import stdout_stderr as sut
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import EQUALS_ARGUMENT
+from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
 from exactly_lib.util.string import lines_content
@@ -14,51 +15,88 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.contains
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestConfiguration, args
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, Expectation, is_pass
-from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
+from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult, ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
-from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulatorForHomeContents
+from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulatorForHomeContents, \
+    HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.parse import new_source2, argument_list_source
 
 
-class _TestFileContentsFileRelHome_validation_error__when__comparison_file_does_not_exist(TestWithConfigurationBase):
+class RelativityOptionConfiguration:
+    def __init__(self, cli_option: str):
+        self.cli_option = cli_option
+
+    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+        raise NotImplementedError()
+
+
+class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
+    def __init__(self,
+                 instruction_configuration: TestConfiguration,
+                 option_configuration: RelativityOptionConfiguration):
+        super().__init__(instruction_configuration)
+        self.option_configuration = option_configuration
+
+
+class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
+    def __init__(self):
+        super().__init__(relative_path_options.REL_HOME_OPTION)
+
+    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+        return HomeOrSdsPopulatorForHomeContents(contents)
+
+
+class _ValidationErrorWhenComparisonFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
-            self.configuration.source_for(args('{equals} {rel_home_option} non-existing-file.txt')),
-            arrangement(),
+            self.configuration.source_for(
+                args('{equals} {relativity_option} non-existing-file.txt',
+                     relativity_option=self.option_configuration.cli_option)),
+            ArrangementPostAct(),
             Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
 
-class _TestFileContentsFileRelHome_validation_error__when__comparison_file_is_a_directory(TestWithConfigurationBase):
+class _ValidationErrorWhenComparisonFileIsADirectory(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
-            self.configuration.source_for(args('{equals} {rel_home_option} dir')),
-            arrangement(home_dir_contents=DirContents([empty_dir('dir')])),
+            self.configuration.source_for(
+                args('{equals} {relativity_option} dir',
+                     relativity_option=self.option_configuration.cli_option)),
+            ArrangementPostAct(
+                home_or_sds_contents=self.option_configuration.contents_at_option_relativity_root(
+                    DirContents([empty_dir('dir')]))),
             Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
 
-class _TestFileContentsFileRelHome_fail__when__contents_differ(TestWithConfigurationBase):
+class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
-            self.configuration.source_for(args('{equals} {rel_home_option} f.txt')),
+            self.configuration.source_for(
+                args('{equals} {relativity_option} f.txt',
+                     relativity_option=self.option_configuration.cli_option)),
             self.configuration.arrangement_for_actual_and_expected(
                 'actual',
-                HomeOrSdsPopulatorForHomeContents(DirContents([File('f.txt', 'expected')]))),
+                self.option_configuration.contents_at_option_relativity_root(
+                    DirContents([File('f.txt', 'expected')]))),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
 
-class _TestFileContentsFileRelHome_pass__when__contents_equals(TestWithConfigurationBase):
+class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
-            self.configuration.source_for(args('{equals} {rel_home_option} f.txt')),
+            self.configuration.source_for(
+                args('{equals} {relativity_option} f.txt',
+                     relativity_option=self.option_configuration.cli_option)),
             self.configuration.arrangement_for_actual_and_expected(
                 'expected',
-                HomeOrSdsPopulatorForHomeContents(DirContents([File('f.txt', 'expected')]))),
+                self.option_configuration.contents_at_option_relativity_root(
+                    DirContents([File('f.txt', 'expected')]))),
             Expectation(main_result=pfh_check.is_pass()),
         )
 
@@ -350,14 +388,20 @@ class TestReplacedEnvVarsFORStderr(ReplacedEnvVars):
         return sut.ParserForContentsForStderr()
 
 
-def suite_for(configuration: TestConfiguration) -> unittest.TestSuite:
-    test_cases = [
-        _TestFileContentsFileRelHome_validation_error__when__comparison_file_does_not_exist,
-        _TestFileContentsFileRelHome_validation_error__when__comparison_file_is_a_directory,
-        _TestFileContentsFileRelHome_fail__when__contents_differ,
-        _TestFileContentsFileRelHome_pass__when__contents_equals,
-    ]
-    return unittest.TestSuite([tc(configuration) for tc in test_cases])
+def suite_for(instruction_configuration: TestConfiguration) -> unittest.TestSuite:
+    def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
+        test_cases = [
+            _ValidationErrorWhenComparisonFileDoesNotExist,
+            _ValidationErrorWhenComparisonFileIsADirectory,
+            _FaiWhenContentsDiffer,
+            _PassWhenContentsEquals,
+        ]
+        return unittest.TestSuite([tc(instruction_configuration, option_configuration)
+                                   for tc in test_cases])
+
+    return unittest.TestSuite([
+        suite_for_option(RelativityOptionConfigurationForRelHome())
+    ])
 
 
 def suite() -> unittest.TestSuite:
