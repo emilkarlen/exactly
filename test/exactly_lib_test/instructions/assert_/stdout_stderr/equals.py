@@ -61,15 +61,33 @@ class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
         return Expectation(validation_pre_sds=svh_check.is_validation_error())
 
 
-class RelativityOptionConfigurationForRelCwd(RelativityOptionConfiguration):
+class RelativityOptionConfigurationForRelSdsBase(RelativityOptionConfiguration):
+    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+        return Expectation(main_result=pfh_check.is_fail())
+
+
+class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRelSdsBase):
     def __init__(self):
         super().__init__(relative_path_options.REL_CWD_OPTION)
 
     def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForSdsContents(act_dir_contents(contents))
 
-    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
-        return Expectation(main_result=pfh_check.is_fail())
+
+class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRelSdsBase):
+    def __init__(self):
+        super().__init__(relative_path_options.REL_ACT_OPTION)
+
+    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+        return HomeOrSdsPopulatorForSdsContents(act_dir_contents(contents))
+
+
+class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRelSdsBase):
+    def __init__(self):
+        super().__init__(relative_path_options.REL_TMP_OPTION)
+
+    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+        return HomeOrSdsPopulatorForSdsContents(tmp_user_dir_contents(contents))
 
 
 class _ValidationErrorWhenComparisonFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
@@ -124,31 +142,6 @@ class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
         )
 
 
-class FileContentsFileRelTmp(TestWithParserBase):
-    def _act_result_with_contents(self,
-                                  contents_on_tested_channel: str,
-                                  contents_on_other_channel: str = '') -> ActResult:
-        raise NotImplementedError()
-
-    def fail__when__comparison_file_does_not_exist(self):
-        self._run(
-            new_source2(args('{equals} {rel_tmp_option}  f.txt')),
-            arrangement(),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-    def pass__when__contents_equals(self):
-        self._run(
-            new_source2(args('{equals} {rel_tmp_option}  f.txt')),
-            arrangement(
-                sds_contents_before_main=tmp_user_dir_contents(DirContents(
-                    [File('f.txt', 'expected contents')])),
-                act_result_producer=ActResultProducerFromActResult(
-                    self._act_result_with_contents('expected contents'))),
-            is_pass(),
-        )
-
-
 class FileContentsHereDoc(TestWithParserBase):
     def _act_result_with_contents(self,
                                   contents_on_tested_channel: str,
@@ -164,40 +157,6 @@ class FileContentsHereDoc(TestWithParserBase):
                 self._act_result_with_contents(lines_content(['single line'])))),
             is_pass(),
         )
-
-
-class TestFileContentsFileRelTmpFORStdout(FileContentsFileRelTmp):
-    def test_fail__when__comparison_file_does_not_exist(self):
-        self.fail__when__comparison_file_does_not_exist()
-
-    def test_pass__when__contents_equals(self):
-        self.pass__when__contents_equals()
-
-    def _new_parser(self) -> SingleInstructionParser:
-        return sut.ParserForContentsForStdout()
-
-    def _act_result_with_contents(self,
-                                  contents_on_tested_channel: str,
-                                  contents_on_other_channel: str = '') -> ActResult:
-        return ActResult(stdout_contents=contents_on_tested_channel,
-                         stderr_contents=contents_on_other_channel)
-
-
-class TestFileContentsFileRelTmpFORStderr(FileContentsFileRelTmp):
-    def test_fail__when__comparison_file_does_not_exist(self):
-        self.fail__when__comparison_file_does_not_exist()
-
-    def test_pass__when__contents_equals(self):
-        self.pass__when__contents_equals()
-
-    def _new_parser(self) -> SingleInstructionParser:
-        return sut.ParserForContentsForStderr()
-
-    def _act_result_with_contents(self,
-                                  contents_on_tested_channel: str,
-                                  contents_on_other_channel: str = '') -> ActResult:
-        return ActResult(stderr_contents=contents_on_tested_channel,
-                         stdout_contents=contents_on_other_channel)
 
 
 class FileContentsHereDocFORStdout(FileContentsHereDoc):
@@ -327,6 +286,14 @@ class TestReplacedEnvVarsFORStderr(ReplacedEnvVars):
         return sut.ParserForContentsForStderr()
 
 
+_RELATIVITY_OPTION_CONFIGURATIONS = [
+    RelativityOptionConfigurationForRelHome(),
+    RelativityOptionConfigurationForRelCwd(),
+    RelativityOptionConfigurationForRelAct(),
+    RelativityOptionConfigurationForRelTmp(),
+]
+
+
 def suite_for(instruction_configuration: TestConfiguration) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
         test_cases = [
@@ -338,10 +305,8 @@ def suite_for(instruction_configuration: TestConfiguration) -> unittest.TestSuit
         return unittest.TestSuite([tc(instruction_configuration, option_configuration)
                                    for tc in test_cases])
 
-    return unittest.TestSuite([
-        suite_for_option(RelativityOptionConfigurationForRelHome()),
-        suite_for_option(RelativityOptionConfigurationForRelCwd()),
-    ])
+    return unittest.TestSuite([suite_for_option(relativity_option_configuration)
+                               for relativity_option_configuration in _RELATIVITY_OPTION_CONFIGURATIONS])
 
 
 def suite() -> unittest.TestSuite:
@@ -352,8 +317,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestReplacedEnvVarsFORStdout),
         unittest.makeSuite(TestReplacedEnvVarsFORStderr),
 
-        unittest.makeSuite(TestFileContentsFileRelTmpFORStdout),
-        unittest.makeSuite(TestFileContentsFileRelTmpFORStderr),
         suite_for(TestConfigurationForStdout()),
         suite_for(TestConfigurationForStderr()),
     ])
