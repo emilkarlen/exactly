@@ -11,6 +11,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import ActEnviron
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import ActResult
+from exactly_lib_test.test_resources.home_and_sds_test import Action
 from exactly_lib_test.test_resources.parse import new_source2
 
 
@@ -36,10 +37,13 @@ class TestConfigurationForStdFile(TestConfiguration):
 
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
-                                            expected: HomeOrSdsPopulator) -> instruction_check.ArrangementPostAct:
+                                            expected: HomeOrSdsPopulator,
+                                            post_sds_population_action: Action = Action(),
+                                            ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=(self._act_result_producer(actual_contents)),
-            home_or_sds_contents=expected
+            home_or_sds_contents=expected,
+            post_sds_population_action=post_sds_population_action,
         )
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:

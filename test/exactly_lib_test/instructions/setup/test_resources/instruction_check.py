@@ -11,7 +11,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -125,6 +125,7 @@ class Executor:
                         timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
                     self.arrangement.sds_contents.apply(sds)
                     self.arrangement.home_or_sds_contents.write_to(sds)
+                    self.arrangement.post_sds_population_action.apply(HomeAndSds(home_dir_path, sds))
                     main_result = self._execute_main(sds, global_environment_with_sds, instruction)
                     if not main_result.is_success:
                         return

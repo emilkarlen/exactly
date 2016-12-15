@@ -7,6 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_resources.home_and_sds_test import Action
 
 
 class TestConfiguration:
@@ -24,7 +25,9 @@ class TestConfiguration:
 
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
-                                            expected: HomeOrSdsPopulator) -> instruction_check.ArrangementPostAct:
+                                            expected: HomeOrSdsPopulator,
+                                            post_sds_population_action: Action = Action(),
+                                            ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:
