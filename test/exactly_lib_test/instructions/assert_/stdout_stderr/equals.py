@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult, ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulatorForHomeContents, \
-    HomeOrSdsPopulator
+    HomeOrSdsPopulator, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
@@ -32,6 +32,9 @@ class RelativityOptionConfiguration:
     def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         raise NotImplementedError()
 
+    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+        raise NotImplementedError()
+
 
 class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
     def __init__(self,
@@ -39,6 +42,12 @@ class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
                  option_configuration: RelativityOptionConfiguration):
         super().__init__(instruction_configuration)
         self.option_configuration = option_configuration
+
+    def shortDescription(self):
+        return (str(type(self)) + ' / ' +
+                str(type(self.configuration)) + ' / ' +
+                str(type(self.option_configuration))
+                )
 
 
 class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
@@ -48,6 +57,20 @@ class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
     def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForHomeContents(contents)
 
+    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+        return Expectation(validation_pre_sds=svh_check.is_validation_error())
+
+
+class RelativityOptionConfigurationForRelCwd(RelativityOptionConfiguration):
+    def __init__(self):
+        super().__init__(relative_path_options.REL_CWD_OPTION)
+
+    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+        return HomeOrSdsPopulatorForSdsContents(act_dir_contents(contents))
+
+    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+        return Expectation(main_result=pfh_check.is_fail())
+
 
 class _ValidationErrorWhenComparisonFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
@@ -56,7 +79,7 @@ class _ValidationErrorWhenComparisonFileDoesNotExist(TestWithConfigurationAndRel
                 args('{equals} {relativity_option} non-existing-file.txt',
                      relativity_option=self.option_configuration.cli_option)),
             ArrangementPostAct(),
-            Expectation(validation_pre_sds=svh_check.is_validation_error()),
+            self.option_configuration.expect_file_for_expected_contents_is_invalid(),
         )
 
 
@@ -69,7 +92,7 @@ class _ValidationErrorWhenComparisonFileIsADirectory(TestWithConfigurationAndRel
             ArrangementPostAct(
                 home_or_sds_contents=self.option_configuration.contents_at_option_relativity_root(
                     DirContents([empty_dir('dir')]))),
-            Expectation(validation_pre_sds=svh_check.is_validation_error()),
+            self.option_configuration.expect_file_for_expected_contents_is_invalid(),
         )
 
 
@@ -98,48 +121,6 @@ class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
                 self.option_configuration.contents_at_option_relativity_root(
                     DirContents([File('f.txt', 'expected')]))),
             Expectation(main_result=pfh_check.is_pass()),
-        )
-
-
-class FileContentsFileRelCwd(TestWithParserBase):
-    def fail__when__comparison_file_does_not_exist(self):
-        self._run(
-            new_source2(args('{equals} {rel_cwd_option} f.txt')),
-            arrangement(),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-    def fail__when__comparison_file_is_a_directory(self):
-        self._run(
-            new_source2(args('{equals} {rel_cwd_option} dir')),
-            arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                [empty_dir('dir')]))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-    def fail__when__contents_differ(self,
-                                    act_result: ActResult,
-                                    expected_contents: str):
-        self._run(
-            new_source2(args('{equals} {rel_cwd_option} f.txt')),
-            arrangement(
-                sds_contents_before_main=act_dir_contents(DirContents(
-                    [File('f.txt', expected_contents)])),
-                act_result_producer=ActResultProducerFromActResult(act_result)),
-            Expectation(
-                main_result=pfh_check.is_fail()),
-        )
-
-    def pass__when__contents_equals(self,
-                                    act_result: ActResult,
-                                    expected_contents: str):
-        self._run(
-            new_source2(args('{equals} {rel_cwd_option} f.txt')),
-            arrangement(
-                sds_contents_before_main=act_dir_contents(DirContents(
-                    [File('f.txt', expected_contents)])),
-                act_result_producer=ActResultProducerFromActResult(act_result)),
-            is_pass(),
         )
 
 
@@ -183,48 +164,6 @@ class FileContentsHereDoc(TestWithParserBase):
                 self._act_result_with_contents(lines_content(['single line'])))),
             is_pass(),
         )
-
-
-class TestFileContentsFileRelCwdFORStdout(FileContentsFileRelCwd):
-    def _new_parser(self) -> SingleInstructionParser:
-        return sut.ParserForContentsForStdout()
-
-    def test_fail__when__comparison_file_does_not_exist(self):
-        self.fail__when__comparison_file_does_not_exist()
-
-    def test_fail__when__comparison_file_is_a_directory(self):
-        self.fail__when__comparison_file_is_a_directory()
-
-    def test_fail__when__contents_differ(self):
-        self.fail__when__contents_differ(ActResult(stdout_contents='un-expected',
-                                                   stderr_contents='expected'),
-                                         'expected')
-
-    def test_pass__when__contents_equals(self):
-        self.pass__when__contents_equals(ActResult(stdout_contents='expected',
-                                                   stderr_contents='un-expected'),
-                                         'expected')
-
-
-class TestFileContentsFileRelCwdFORStderr(FileContentsFileRelCwd):
-    def _new_parser(self) -> SingleInstructionParser:
-        return sut.ParserForContentsForStderr()
-
-    def test_validation_error__when__comparison_file_does_not_exist(self):
-        self.fail__when__comparison_file_does_not_exist()
-
-    def test_validation_error__when__comparison_file_is_a_directory(self):
-        self.fail__when__comparison_file_is_a_directory()
-
-    def test_fail__when__contents_differ(self):
-        self.fail__when__contents_differ(ActResult(stdout_contents='expected',
-                                                   stderr_contents='un-expected'),
-                                         'expected')
-
-    def test_pass__when__contents_equals(self):
-        self.pass__when__contents_equals(ActResult(stdout_contents='un-expected',
-                                                   stderr_contents='expected'),
-                                         'expected')
 
 
 class TestFileContentsFileRelTmpFORStdout(FileContentsFileRelTmp):
@@ -400,15 +339,13 @@ def suite_for(instruction_configuration: TestConfiguration) -> unittest.TestSuit
                                    for tc in test_cases])
 
     return unittest.TestSuite([
-        suite_for_option(RelativityOptionConfigurationForRelHome())
+        suite_for_option(RelativityOptionConfigurationForRelHome()),
+        suite_for_option(RelativityOptionConfigurationForRelCwd()),
     ])
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFileContentsFileRelCwdFORStdout),
-        unittest.makeSuite(TestFileContentsFileRelCwdFORStderr),
-
         unittest.makeSuite(FileContentsHereDocFORStdout),
         unittest.makeSuite(FileContentsHereDocFORStderr),
 
