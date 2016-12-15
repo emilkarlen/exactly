@@ -99,6 +99,7 @@ class Executor(InstructionExecutionBase):
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
+            self.arrangement.post_sds_population_action.apply(home_and_sds)
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, self.arrangement.environ)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:

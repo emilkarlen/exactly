@@ -1,7 +1,11 @@
+import os
+
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
 from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources import home_and_sds_test
 from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult
 
@@ -46,10 +50,12 @@ class ArrangementWithSds(ArrangementBase):
                  environ: dict = None,
                  process_execution_settings=with_no_timeout(),
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                 post_sds_population_action: home_and_sds_test.Action = home_and_sds_test.Action(),
                  ):
         super().__init__(home_contents, environ)
         self.sds_contents = sds_contents
         self.home_or_sds_contents = home_or_sds_contents
+        self.post_sds_population_action = post_sds_population_action
         self.os_services = os_services
         self.process_execution_settings = process_execution_settings
 
@@ -63,11 +69,20 @@ class ArrangementPostAct(ArrangementWithSds):
                  environ: dict = None,
                  process_execution_settings=with_no_timeout(),
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                 post_sds_population_action: home_and_sds_test.Action = home_and_sds_test.Action(),
                  ):
         super().__init__(home_contents,
                          sds_contents,
                          os_services,
                          environ,
                          process_execution_settings,
-                         home_or_sds_contents)
+                         home_or_sds_contents,
+                         post_sds_population_action)
         self.act_result_producer = act_result_producer
+
+
+def change_dir_if_specified_in_arrangement(arrangement: ArrangementWithSds,
+                                           home_and_sds: HomeAndSds):
+    if arrangement.sds_2_current_working_directory_path:
+        cwd_path = arrangement.sds_2_current_working_directory_path(home_and_sds.sds)
+        os.chdir(str(cwd_path))

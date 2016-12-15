@@ -95,6 +95,7 @@ class Executor:
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
+            self.arrangement.post_sds_population_action.apply(home_and_sds)
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
             # TODO Execution of validate/pre-sds should be done before act-result is written.
