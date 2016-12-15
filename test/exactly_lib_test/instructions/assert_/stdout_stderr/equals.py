@@ -1,10 +1,12 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import stdout_stderr as sut
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import EQUALS_ARGUMENT
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_HOME_OPTION
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import EQUALS_ARGUMENT, \
+    WITH_REPLACED_ENV_VARS_OPTION_NAME
+from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.stdout_stderr.test_resources import TestWithParserBase
 from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
@@ -22,14 +24,14 @@ from exactly_lib_test.test_resources.parse import new_source2, argument_list_sou
 class FileContentsFileRelHome(TestWithParserBase):
     def validation_error__when__comparison_file_does_not_exist(self):
         self._run(
-            new_source2('%s %s f.txt' % (EQUALS_ARGUMENT, REL_HOME_OPTION)),
+            new_source2(args('{equals} {rel_home_option} f.txt')),
             arrangement(),
             Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
     def validation_error__when__comparison_file_is_a_directory(self):
         self._run(
-            new_source2('%s %s dir' % (EQUALS_ARGUMENT, REL_HOME_OPTION)),
+            new_source2(args('{equals} {rel_home_option} dir')),
             arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                 [empty_dir('dir')]))),
             Expectation(validation_pre_sds=svh_check.is_validation_error()),
@@ -39,7 +41,7 @@ class FileContentsFileRelHome(TestWithParserBase):
                                     act_result: ActResult,
                                     expected_contents: str):
         self._run(
-            new_source2('%s %s f.txt' % (EQUALS_ARGUMENT, REL_HOME_OPTION)),
+            new_source2(args('{equals} {rel_home_option} f.txt')),
             arrangement(act_result_producer=ActResultProducerFromActResult(act_result),
                         home_dir_contents=DirContents(
                             [File('f.txt', expected_contents)])),
@@ -50,7 +52,7 @@ class FileContentsFileRelHome(TestWithParserBase):
                                     act_result: ActResult,
                                     expected_contents: str):
         self._run(
-            new_source2('%s %s f.txt' % (EQUALS_ARGUMENT, REL_HOME_OPTION)),
+            new_source2(args('{equals} {rel_home_option} f.txt')),
             arrangement(home_dir_contents=DirContents([File('f.txt', expected_contents)]),
                         act_result_producer=ActResultProducerFromActResult(act_result)),
             is_pass(),
@@ -102,14 +104,14 @@ class TestFileContentsFileRelHomeFORStderr(FileContentsFileRelHome):
 class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__comparison_file_does_not_exist(self):
         self._run(
-            new_source2('%s --rel-cd f.txt' % EQUALS_ARGUMENT),
+            new_source2(args('{equals} {rel_cwd_option} f.txt')),
             arrangement(),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
     def fail__when__comparison_file_is_a_directory(self):
         self._run(
-            new_source2('%s --rel-cd dir' % EQUALS_ARGUMENT),
+            new_source2(args('{equals} {rel_cwd_option} dir')),
             arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                 [empty_dir('dir')]))),
             Expectation(main_result=pfh_check.is_fail()),
@@ -119,7 +121,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
                                     act_result: ActResult,
                                     expected_contents: str):
         self._run(
-            new_source2('%s --rel-cd f.txt' % EQUALS_ARGUMENT),
+            new_source2(args('{equals} {rel_cwd_option} f.txt')),
             arrangement(
                 sds_contents_before_main=act_dir_contents(DirContents(
                     [File('f.txt', expected_contents)])),
@@ -132,7 +134,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
                                     act_result: ActResult,
                                     expected_contents: str):
         self._run(
-            new_source2('%s --rel-cd f.txt' % EQUALS_ARGUMENT),
+            new_source2(args('{equals} {rel_cwd_option} f.txt')),
             arrangement(
                 sds_contents_before_main=act_dir_contents(DirContents(
                     [File('f.txt', expected_contents)])),
@@ -149,14 +151,14 @@ class FileContentsFileRelTmp(TestWithParserBase):
 
     def fail__when__comparison_file_does_not_exist(self):
         self._run(
-            new_source2('%s --rel-tmp f.txt' % EQUALS_ARGUMENT),
+            new_source2(args('{equals} {rel_tmp_option}  f.txt')),
             arrangement(),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__contents_equals(self):
         self._run(
-            new_source2('%s --rel-tmp f.txt' % EQUALS_ARGUMENT),
+            new_source2(args('{equals} {rel_tmp_option}  f.txt')),
             arrangement(
                 sds_contents_before_main=tmp_user_dir_contents(DirContents(
                     [File('f.txt', 'expected contents')])),
@@ -302,8 +304,8 @@ class ReplacedEnvVars(TestWithParserBase):
             source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
             source_should_contain_expected_value=True)
         self._run(
-            new_source2('--with-replaced-env-vars {} --rel-home {}'.format(EQUALS_ARGUMENT,
-                                                                           self.SOURCE_FILE_NAME)),
+            new_source2(args('{replace_env_vars_option} {equals} {rel_home_option} {file}',
+                             file=self.SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             is_pass(),
 
@@ -315,8 +317,8 @@ class ReplacedEnvVars(TestWithParserBase):
             source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
             source_should_contain_expected_value=False)
         self._run(
-            new_source2('--with-replaced-env-vars {} --rel-home {}'.format(EQUALS_ARGUMENT,
-                                                                           self.SOURCE_FILE_NAME)),
+            new_source2(args('{replace_env_vars_option} {equals} {rel_home_option} {file}',
+                             file=self.SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             Expectation(main_result=pfh_check.is_fail()),
         )
@@ -327,8 +329,8 @@ class ReplacedEnvVars(TestWithParserBase):
             source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
             source_should_contain_expected_value=True)
         self._run(
-            new_source2('--with-replaced-env-vars {} --rel-cd {}'.format(EQUALS_ARGUMENT,
-                                                                         self.SOURCE_FILE_NAME)),
+            new_source2(args('{replace_env_vars_option} {equals} {rel_cwd_option} {file}',
+                             file=self.SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             is_pass(),
         )
@@ -339,8 +341,8 @@ class ReplacedEnvVars(TestWithParserBase):
             source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
             source_should_contain_expected_value=False)
         self._run(
-            new_source2('--with-replaced-env-vars {} --rel-cd {}'.format(EQUALS_ARGUMENT,
-                                                                         self.SOURCE_FILE_NAME)),
+            new_source2(args('{replace_env_vars_option} {equals} {rel_cwd_option} {file}',
+                             file=self.SOURCE_FILE_NAME)),
             arrangement(act_result_producer=act_result_producer),
             Expectation(main_result=pfh_check.is_fail()),
         )
@@ -404,6 +406,21 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFileContentsFileRelTmpFORStderr),
     ])
 
+
+def args(arg_str: str, **kwargs) -> str:
+    if kwargs:
+        format_map = dict(list(_FORMAT_MAP.items()) + list(kwargs.items()))
+        return arg_str.format_map(format_map)
+    return arg_str.format_map(_FORMAT_MAP)
+
+
+_FORMAT_MAP = {
+    'equals': EQUALS_ARGUMENT,
+    'rel_home_option': relative_path_options.REL_HOME_OPTION,
+    'rel_cwd_option': relative_path_options.REL_CWD_OPTION,
+    'rel_tmp_option': relative_path_options.REL_TMP_OPTION,
+    'replace_env_vars_option': long_option_syntax(WITH_REPLACED_ENV_VARS_OPTION_NAME.long)
+}
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
