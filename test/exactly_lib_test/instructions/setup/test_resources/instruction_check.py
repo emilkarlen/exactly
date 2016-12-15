@@ -22,7 +22,7 @@ from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -33,8 +33,15 @@ class Arrangement(ArrangementWithSds):
                  environ: dict = None,
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                 initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
-        super().__init__(home_dir_contents, sds_contents_before_main, os_services, environ, process_execution_settings)
+                 initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
+                 home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                 ):
+        super().__init__(home_dir_contents,
+                         sds_contents_before_main,
+                         os_services,
+                         environ,
+                         process_execution_settings,
+                         home_or_sds_contents)
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -116,6 +123,8 @@ class Executor:
                         sds,
                         phase_identifier.SETUP.identifier,
                         timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
+                    self.arrangement.sds_contents.apply(sds)
+                    self.arrangement.home_or_sds_contents.write_to(sds)
                     main_result = self._execute_main(sds, global_environment_with_sds, instruction)
                     if not main_result.is_success:
                         return
@@ -140,7 +149,6 @@ class Executor:
                       sds: SandboxDirectoryStructure,
                       global_environment_with_sds: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
-        self.arrangement.sds_contents.apply(sds)
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
         main_result = instruction.main(global_environment_with_sds,

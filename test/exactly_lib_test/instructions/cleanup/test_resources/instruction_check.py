@@ -17,7 +17,7 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, utils
+from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator, utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -28,12 +28,15 @@ class Arrangement(ArrangementWithSds):
                  os_services: OsServices = new_default(),
                  environ: dict = None,
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
-                 previous_phase: PreviousPhase = PreviousPhase.ASSERT):
+                 previous_phase: PreviousPhase = PreviousPhase.ASSERT,
+                 home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                 ):
         super().__init__(home_dir_contents,
                          sds_contents_before_main,
                          os_services,
                          environ,
-                         process_execution_settings)
+                         process_execution_settings,
+                         home_or_sds_contents)
         self.previous_phase = previous_phase
 
 
@@ -91,7 +94,8 @@ class Executor(InstructionExecutionBase):
         assert isinstance(instruction, CleanupPhaseInstruction)
         with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
-                sds_contents=self.arrangement.sds_contents) as home_and_sds:
+                sds_contents=self.arrangement.sds_contents,
+                home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, self.arrangement.environ)
             result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)
             if not result_of_validate_pre_sds.is_success:

@@ -8,7 +8,7 @@ from exactly_lib.test_case import sandbox_directory_structure as sds_module
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, resolved_path
-from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.file_utils import write_file
 
@@ -61,7 +61,8 @@ class HomeAndSdsContents(tuple):
 @contextmanager
 def home_and_sds_and_test_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
-        sds_contents: sds_populator.SdsPopulator = sds_populator.empty()) -> HomeAndSds:
+        sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
+        home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty()) -> HomeAndSds:
     cwd_before = os.getcwd()
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
@@ -69,9 +70,11 @@ def home_and_sds_and_test_as_curr_dir(
         home_dir_contents.write_to(home_dir_path)
         with sandbox_directory_structure(prefix=prefix + "-sds-",
                                          contents=sds_contents) as sds:
+            ret_val = HomeAndSds(home_dir_path, sds)
+            home_or_sds_contents.write_to(ret_val)
             try:
                 os.chdir(str(sds.act_dir))
-                yield HomeAndSds(home_dir_path, sds)
+                yield ret_val
             finally:
                 os.chdir(cwd_before)
 

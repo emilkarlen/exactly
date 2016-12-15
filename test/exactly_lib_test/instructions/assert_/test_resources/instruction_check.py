@@ -15,16 +15,17 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
     ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, utils
+from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator, utils
 from exactly_lib_test.test_resources.execution.utils import write_act_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                home_or_sds_contents_before_main: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
-                environ: dict = None,
+                environ: dict = None,  # TODO remove, since now part of proc-exec-settings
                 process_execution_settings=with_no_timeout(),
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(home_dir_contents,
@@ -32,7 +33,8 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
                               act_result_producer,
                               os_services,
                               environ,
-                              process_execution_settings)
+                              process_execution_settings,
+                              home_or_sds_contents_before_main)
 
 
 class Expectation:
@@ -91,7 +93,8 @@ class Executor:
         assert isinstance(instruction, AssertPhaseInstruction)
         with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
-                sds_contents=self.arrangement.sds_contents) as home_and_sds:
+                sds_contents=self.arrangement.sds_contents,
+                home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
             # TODO Execution of validate/pre-sds should be done before act-result is written.
