@@ -1,40 +1,12 @@
+from exactly_lib.instructions.assert_.utils.file_contents import parsing
+from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.test_case.phases.common import HomeAndSds
+    SingleInstructionParser
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator
-
-
-class HomeOrSdsPopulator:
-    def __init__(self, populator):
-        self.populator = populator
-
-    def apply(self, home_and_sds: HomeAndSds):
-        if isinstance(self.populator, file_structure.DirContents):
-            self.populator.write_to(home_and_sds.home_dir_path)
-        if isinstance(self.populator, sds_populator.SdsPopulator):
-            self.populator.apply(home_and_sds.sds)
-
-    @property
-    def home_populator(self) -> file_structure.DirContents:
-        """"
-        :return None iff populator is not an `DirContents`
-        """
-        if isinstance(self.populator, file_structure.DirContents):
-            return self.populator
-        else:
-            return None
-
-    @property
-    def sds_populator(self) -> sds_populator.SdsPopulator:
-        """"
-        :return None iff populator is not an `SdsPopulator`
-        """
-        if isinstance(self.populator, sds_populator.SdsPopulator):
-            return self.populator
-        else:
-            return None
+from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 
 
 class TestConfiguration:
@@ -57,3 +29,20 @@ class TestConfiguration:
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
+
+
+def args(arg_str: str, **kwargs) -> str:
+    if kwargs:
+        format_map = dict(list(_FORMAT_MAP.items()) + list(kwargs.items()))
+        return arg_str.format_map(format_map)
+    return arg_str.format_map(_FORMAT_MAP)
+
+
+_FORMAT_MAP = {
+    'contains': parsing.CONTAINS_ARGUMENT,
+    'equals': parsing.EQUALS_ARGUMENT,
+    'replace_env_vars_option': long_option_syntax(parsing.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
+    'rel_home_option': relative_path_options.REL_HOME_OPTION,
+    'rel_cwd_option': relative_path_options.REL_CWD_OPTION,
+    'rel_tmp_option': relative_path_options.REL_TMP_OPTION,
+}
