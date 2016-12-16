@@ -20,38 +20,45 @@ class Action:
         return None
 
 
-class Check:  # TODO Replace this class with Arrangement+Expectation
+class Arrangement:
     def __init__(self,
                  home_dir_contents_before: DirContents = empty_dir_contents(),
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
-                 expected_action_result: ValueAssertion = anything_goes(),
-                 expected_sds_contents_after: va.ValueAssertion = va.anything_goes(),
-                 pre_action_action: Action = Action(),
-                 post_action_check: PostActionCheck = PostActionCheck()):
+                 pre_action_action: Action = Action()):
         self.home_dir_contents_before = home_dir_contents_before
         self.sds_contents_before = sds_contents_before
+        self.pre_action_action = pre_action_action
+
+
+class Expectation:
+    def __init__(self,
+                 expected_action_result: ValueAssertion = anything_goes(),
+                 expected_sds_contents_after: va.ValueAssertion = va.anything_goes(),
+                 post_action_check: PostActionCheck = PostActionCheck()):
         self.expected_action_result = expected_action_result
         self.expected_sds_contents_after = expected_sds_contents_after
-        self.pre_action_action = pre_action_action
         self.post_action_check = post_action_check
 
 
 class TestCaseBase(unittest.TestCase):
-    def _check_action(self,
-                      action: Action,
-                      check: Check):
-        execute(self,
-                action,
-                check)
+    def _check(self,
+               action: Action,
+               arrangement: Arrangement,
+               expectation: Expectation):
+        check(self,
+              action,
+              arrangement,
+              expectation)
 
 
-def execute(put: unittest.TestCase,
-            action: Action,
-            check: Check):
-    with home_and_sds_and_test_as_curr_dir(home_dir_contents=check.home_dir_contents_before,
-                                           sds_contents=check.sds_contents_before) as home_and_sds:
-        check.pre_action_action.apply(home_and_sds)
+def check(put: unittest.TestCase,
+          action: Action,
+          arrangement: Arrangement,
+          expectation: Expectation):
+    with home_and_sds_and_test_as_curr_dir(home_dir_contents=arrangement.home_dir_contents_before,
+                                           sds_contents=arrangement.sds_contents_before) as home_and_sds:
+        arrangement.pre_action_action.apply(home_and_sds)
         result = action.apply(home_and_sds)
-        check.expected_action_result.apply(put, result)
-        check.expected_sds_contents_after.apply(put, home_and_sds.sds)
-        check.post_action_check.apply(put, home_and_sds.sds)
+        expectation.expected_action_result.apply(put, result)
+        expectation.expected_sds_contents_after.apply(put, home_and_sds.sds)
+        expectation.post_action_check.apply(put, home_and_sds.sds)
