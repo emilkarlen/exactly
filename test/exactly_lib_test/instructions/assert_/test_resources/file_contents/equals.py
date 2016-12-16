@@ -31,8 +31,8 @@ class InstructionTestConfigurationForEquals(InstructionTestConfiguration):
 def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
         test_cases = [
-            _ValidationErrorWhenComparisonFileDoesNotExist,
-            _ValidationErrorWhenComparisonFileIsADirectory,
+            _ErrorWhenExpectedFileDoesNotExist,
+            _ErrorWhenExpectedFileIsADirectory,
             _FaiWhenContentsDiffer,
             _PassWhenContentsEquals,
         ]
@@ -43,17 +43,10 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
                                for relativity_option_configuration in _RELATIVITY_OPTION_CONFIGURATIONS])
 
 
-_SUB_DIR_OF_ACT_THAT_IS_CWD = 'test-cwd'
+_SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
 
-def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
-    ret_val = sds.act_dir / _SUB_DIR_OF_ACT_THAT_IS_CWD
-    if not ret_val.exists():
-        os.mkdir(str(ret_val))
-    return ret_val
-
-
-class _MkSubDirOfActAndChangeToIt(home_and_sds_test.Action):
+class _MkSubDirOfActAndMakeItCurrentDirectory(home_and_sds_test.Action):
     def apply(self, home_and_sds: HomeAndSds):
         sub_dir = _get_cwd_path_and_make_dir_if_not_exists(home_and_sds.sds)
         os.chdir(str(sub_dir))
@@ -70,12 +63,16 @@ class _CwdPopulator(HomeOrSdsPopulator):
 
 class RelativityOptionConfiguration:
     def __init__(self, cli_option: str):
-        self.cli_option = cli_option
+        self._cli_option = cli_option
 
-    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+    @property
+    def option_string(self) -> str:
+        return self._cli_option
+
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         raise NotImplementedError()
 
-    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         raise NotImplementedError()
 
 
@@ -97,15 +94,15 @@ class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
     def __init__(self):
         super().__init__(relative_path_options.REL_HOME_OPTION)
 
-    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForHomeContents(contents)
 
-    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         return Expectation(validation_pre_sds=svh_check.is_validation_error())
 
 
 class RelativityOptionConfigurationForRelSdsBase(RelativityOptionConfiguration):
-    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         return Expectation(main_result=pfh_check.is_fail())
 
 
@@ -113,7 +110,7 @@ class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRel
     def __init__(self):
         super().__init__(relative_path_options.REL_CWD_OPTION)
 
-    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return _CwdPopulator(contents)
 
 
@@ -121,7 +118,7 @@ class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRel
     def __init__(self):
         super().__init__(relative_path_options.REL_ACT_OPTION)
 
-    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForSdsContents(act_dir_contents(contents))
 
 
@@ -129,7 +126,7 @@ class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRel
     def __init__(self):
         super().__init__(relative_path_options.REL_TMP_OPTION)
 
-    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForSdsContents(tmp_user_dir_contents(contents))
 
 
@@ -137,67 +134,11 @@ class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfigur
     def __init__(self):
         super().__init__('')
 
-    def contents_at_option_relativity_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForHomeContents(contents)
 
-    def expect_file_for_expected_contents_is_invalid(self) -> Expectation:
+    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         return Expectation(validation_pre_sds=svh_check.is_validation_error())
-
-
-class _ValidationErrorWhenComparisonFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
-    def runTest(self):
-        self._check(
-            self.configuration.source_for(
-                args('{equals} {relativity_option} non-existing-file.txt',
-                     relativity_option=self.option_configuration.cli_option)),
-            ArrangementPostAct(post_sds_population_action=_MkSubDirOfActAndChangeToIt()),
-            self.option_configuration.expect_file_for_expected_contents_is_invalid(),
-        )
-
-
-class _ValidationErrorWhenComparisonFileIsADirectory(TestWithConfigurationAndRelativityOptionBase):
-    def runTest(self):
-        self._check(
-            self.configuration.source_for(
-                args('{equals} {relativity_option} dir',
-                     relativity_option=self.option_configuration.cli_option)),
-            ArrangementPostAct(
-                home_or_sds_contents=self.option_configuration.contents_at_option_relativity_root(
-                    DirContents([empty_dir('dir')])),
-                post_sds_population_action=_MkSubDirOfActAndChangeToIt()
-            ),
-            self.option_configuration.expect_file_for_expected_contents_is_invalid(),
-        )
-
-
-class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionBase):
-    def runTest(self):
-        self._check(
-            self.configuration.source_for(
-                args('{equals} {relativity_option} expected.txt',
-                     relativity_option=self.option_configuration.cli_option)),
-            self.configuration.arrangement_for_actual_and_expected(
-                'actual',
-                self.option_configuration.contents_at_option_relativity_root(
-                    DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=_MkSubDirOfActAndChangeToIt()),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
-    def runTest(self):
-        self._check(
-            self.configuration.source_for(
-                args('{equals} {relativity_option} expected.txt',
-                     relativity_option=self.option_configuration.cli_option)),
-            self.configuration.arrangement_for_actual_and_expected(
-                'expected',
-                self.option_configuration.contents_at_option_relativity_root(
-                    DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=_MkSubDirOfActAndChangeToIt()),
-            Expectation(main_result=pfh_check.is_pass()),
-        )
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS = [
@@ -207,3 +148,66 @@ _RELATIVITY_OPTION_CONFIGURATIONS = [
     RelativityOptionConfigurationForRelTmp(),
     RelativityOptionConfigurationForDefaultRelativity(),
 ]
+
+
+class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(
+                args('{equals} {relativity_option} non-existing-file.txt',
+                     relativity_option=self.option_configuration.option_string)),
+            ArrangementPostAct(post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()),
+            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+        )
+
+
+class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(
+                args('{equals} {relativity_option} dir',
+                     relativity_option=self.option_configuration.option_string)),
+            ArrangementPostAct(
+                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                    DirContents([empty_dir('dir')])),
+                post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()
+            ),
+            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+        )
+
+
+class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(
+                args('{equals} {relativity_option} expected.txt',
+                     relativity_option=self.option_configuration.option_string)),
+            self.configuration.arrangement_for_actual_and_expected(
+                'actual',
+                self.option_configuration.populator_for_relativity_option_root(
+                    DirContents([File('expected.txt', 'expected')])),
+                post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()),
+            Expectation(main_result=pfh_check.is_fail()),
+        )
+
+
+class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(
+                args('{equals} {relativity_option} expected.txt',
+                     relativity_option=self.option_configuration.option_string)),
+            self.configuration.arrangement_for_actual_and_expected(
+                'expected',
+                self.option_configuration.populator_for_relativity_option_root(
+                    DirContents([File('expected.txt', 'expected')])),
+                post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()),
+            Expectation(main_result=pfh_check.is_pass()),
+        )
+
+
+def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
+    ret_val = sds.act_dir / _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD
+    if not ret_val.exists():
+        os.mkdir(str(ret_val))
+    return ret_val
