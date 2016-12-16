@@ -21,28 +21,28 @@ class ActResultProducerFromHomeAndSds2Str(ActResultProducer):
         self.home_and_sds_2_str = home_and_sds_2_str
 
 
-class _TestParseMatchesWithMissingRegExArgument(TestWithConfigurationBase):
+class _TestParseWithMissingRegExArgument(TestWithConfigurationBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
                 self.configuration.source_for(args('{contains}')))
 
 
-class _TestParseMatchesWithSuperfluousArgument(TestWithConfigurationBase):
+class _TestParseWithSuperfluousArgument(TestWithConfigurationBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
                 self.configuration.source_for(args('{contains} abc superfluous')))
 
 
-class _TestParseMatchesWithInvalidRegEx(TestWithConfigurationBase):
+class _TestParseWithInvalidRegEx(TestWithConfigurationBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
                 self.configuration.source_for(args('{contains} **')))
 
 
-class _TestMatchesShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationBase):
+class _TestShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationBase):
     def runTest(self):
         actual_contents = lines_content(['no match',
                                          'NO MATCH',
@@ -57,7 +57,7 @@ class _TestMatchesShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationBase):
         )
 
 
-class _TestMatchesShouldPassWhenALineMatchesRegEx(TestWithConfigurationBase):
+class _TestShouldPassWhenALineMatchesRegEx(TestWithConfigurationBase):
     def runTest(self):
         actual_contents = lines_content(['no match',
                                          'MATCH',
@@ -72,7 +72,7 @@ class _TestMatchesShouldPassWhenALineMatchesRegEx(TestWithConfigurationBase):
         )
 
 
-class _TestMatchesShouldPassWhenAWholeLineMatchesRegEx(TestWithConfigurationBase):
+class _TestShouldPassWhenAWholeLineMatchesRegEx(TestWithConfigurationBase):
     def runTest(self):
         actual_contents = lines_content(['no match',
                                          'MATCH',
@@ -87,7 +87,7 @@ class _TestMatchesShouldPassWhenAWholeLineMatchesRegEx(TestWithConfigurationBase
         )
 
 
-class _TestMatchesShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationBase):
+class _TestShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.home_dir_path)
@@ -103,7 +103,7 @@ class _TestMatchesShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationBas
         )
 
 
-class _TestMatchesShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationBase):
+class _TestShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.home_dir_path)
@@ -121,16 +121,16 @@ class _TestMatchesShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurat
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
     test_cases = [
-        _TestParseMatchesWithMissingRegExArgument,
-        _TestParseMatchesWithSuperfluousArgument,
+        _TestParseWithMissingRegExArgument,
+        _TestParseWithSuperfluousArgument,
 
-        _TestParseMatchesWithInvalidRegEx,
-        _TestMatchesShouldFailWhenNoLineMatchesRegEx,
-        _TestMatchesShouldPassWhenALineMatchesRegEx,
-        _TestMatchesShouldPassWhenAWholeLineMatchesRegEx,
+        _TestParseWithInvalidRegEx,
+        _TestShouldFailWhenNoLineMatchesRegEx,
+        _TestShouldPassWhenALineMatchesRegEx,
+        _TestShouldPassWhenAWholeLineMatchesRegEx,
 
-        _TestMatchesShouldReplaceEnvVarsWhenOptionIsGiven,
-        _TestMatchesShouldNotReplaceEnvVarsWhenOptionIsNotGiven,
+        _TestShouldReplaceEnvVarsWhenOptionIsGiven,
+        _TestShouldNotReplaceEnvVarsWhenOptionIsNotGiven,
     ]
     return unittest.TestSuite([tc(configuration) for tc in test_cases])
 
