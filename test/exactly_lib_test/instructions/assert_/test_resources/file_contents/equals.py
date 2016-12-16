@@ -2,9 +2,10 @@ import unittest
 
 from exactly_lib.execution import environment_variables
 from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    args, InstructionTestConfigurationForContentsOrEquals
+    args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationBase
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     RelativityOptionConfiguration, TestWithConfigurationAndRelativityOptionBase, \
     RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelCwd, \
@@ -41,8 +42,22 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
         return unittest.TestSuite([tc(instruction_configuration, option_configuration)
                                    for tc in test_cases])
 
-    return unittest.TestSuite([suite_for_option(relativity_option_configuration)
-                               for relativity_option_configuration in _RELATIVITY_OPTION_CONFIGURATIONS])
+    def suite_for_no_relativity_option() -> unittest.TestSuite:
+        test_cases = [
+            _PassWhenContentsEqualsAHereDocument,
+            _FailWhenContentsDoNotEqualAHereDocument,
+        ]
+        return unittest.TestSuite([tc(instruction_configuration)
+                                   for tc in test_cases])
+
+    suite_for_relativity_options = unittest.TestSuite([suite_for_option(relativity_option_configuration)
+                                                       for relativity_option_configuration in
+                                                       _RELATIVITY_OPTION_CONFIGURATIONS])
+
+    return unittest.TestSuite([
+        suite_for_relativity_options,
+        suite_for_no_relativity_option(),
+    ])
 
 
 class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(RelativityOptionConfiguration):
@@ -154,6 +169,34 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(TestWithC
                 home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', environment_variables.ENV_VAR_HOME)])
                 ),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+            Expectation(main_result=pfh_check.is_fail()),
+        )
+
+
+class _PassWhenContentsEqualsAHereDocument(TestWithConfigurationBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(
+                args('{equals} <<EOF'),
+                ['expected content line',
+                 'EOF']),
+            self.configuration.arrangement_for_contents(
+                lines_content(['expected content line']),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+            Expectation(main_result=pfh_check.is_pass()),
+        )
+
+
+class _FailWhenContentsDoNotEqualAHereDocument(TestWithConfigurationBase):
+    def runTest(self):
+        self._check(
+            self.configuration.source_for(
+                args('{equals} <<EOF'),
+                ['expected content line',
+                 'EOF']),
+            self.configuration.arrangement_for_contents(
+                lines_content(['actual contents that is not equal to expected contents']),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_fail()),
         )
