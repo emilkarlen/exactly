@@ -8,6 +8,7 @@ from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds
 from exactly_lib_test.test_resources.home_and_sds_test import Action
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -29,6 +30,7 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
         raise NotImplementedError()
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
+                                          home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
                                           post_sds_population_action: Action = Action(),
                                           ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()

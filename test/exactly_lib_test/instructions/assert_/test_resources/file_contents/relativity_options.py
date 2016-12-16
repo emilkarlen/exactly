@@ -7,6 +7,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
+from exactly_lib_test.test_resources import home_and_sds_test
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
@@ -98,3 +99,9 @@ def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
     if not ret_val.exists():
         os.mkdir(str(ret_val))
     return ret_val
+
+
+class MkSubDirOfActAndMakeItCurrentDirectory(home_and_sds_test.Action):
+    def apply(self, home_and_sds: HomeAndSds):
+        sub_dir = _get_cwd_path_and_make_dir_if_not_exists(home_and_sds.sds)
+        os.chdir(str(sub_dir))
