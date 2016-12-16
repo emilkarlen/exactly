@@ -72,7 +72,7 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
     def pass_if_not_negated_else_fail(self) -> va.ValueAssertion:
         return pfh_check.is_fail() if self.is_negated else pfh_check.is_pass()
 
-    def fail_if_not_negated_else_pass(self) -> va.ValueAssertion:
+    def fail_if_un_negated_else_pass(self) -> va.ValueAssertion:
         return pfh_check.is_pass() if self.is_negated else pfh_check.is_fail()
 
     def shortDescription(self):
@@ -83,9 +83,9 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
                 )
 
 
-def suite_for_conf__rel_opts__negations(instruction_configuration: InstructionTestConfiguration,
-                                        relativity_options: list,
-                                        test_cases: list) -> unittest.TestSuite:
+def suite_for__conf__rel_opts__negations(instruction_configuration: InstructionTestConfiguration,
+                                         relativity_options: list,
+                                         test_cases: list) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
         not_negated = [tc(instruction_configuration, option_configuration, False)
                        for tc in test_cases]
