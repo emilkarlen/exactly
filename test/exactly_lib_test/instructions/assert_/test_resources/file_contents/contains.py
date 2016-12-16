@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    InstructionTestConfiguration, TestWithConfigurationBase
+    TestWithConfigurationBase, InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
     Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
@@ -107,7 +107,7 @@ class _TestMatchesShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurat
         )
 
 
-def suite_for(configuration: InstructionTestConfiguration) -> unittest.TestSuite:
+def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
     test_cases = [
         _TestParseMatchesWithMissingRegExArgument,
         _TestParseMatchesWithSuperfluousArgument,

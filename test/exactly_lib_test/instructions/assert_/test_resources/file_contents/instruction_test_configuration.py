@@ -16,11 +16,10 @@ class InstructionTestConfiguration:
     def new_parser(self) -> SingleInstructionParser:
         raise NotImplementedError()
 
+
+class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
     def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
         raise NotImplementedError()
-
-    def empty_arrangement(self) -> instruction_check.ArrangementPostAct:
-        return instruction_check.ArrangementPostAct()
 
     def arrangement_for_contents(self, actual_contents: str) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
