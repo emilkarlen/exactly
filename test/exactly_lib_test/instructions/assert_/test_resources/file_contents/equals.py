@@ -50,7 +50,7 @@ class MkSubDirOfActAndMakeItCurrentDirectory(home_and_sds_test.Action):
         os.chdir(str(sub_dir))
 
 
-class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfiguration):
+class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(RelativityOptionConfiguration):
     def __init__(self):
         super().__init__('')
 
@@ -66,7 +66,7 @@ _RELATIVITY_OPTION_CONFIGURATIONS = [
     RelativityOptionConfigurationForRelCwd(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
-    RelativityOptionConfigurationForDefaultRelativity(),
+    RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(),
 ]
 
 
