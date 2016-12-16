@@ -18,15 +18,15 @@ class InstructionTestConfiguration:
     def new_parser(self) -> SingleInstructionParser:
         raise NotImplementedError()
 
-
-class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
-    def source_for(self, argument_tail: str, following_lines=()) -> SingleInstructionParserSource:
-        raise NotImplementedError()
-
     def arrangement_for_contents(self,
                                  actual_contents: str,
                                  post_sds_population_action: Action = Action(),
                                  ) -> instruction_check.ArrangementPostAct:
+        raise NotImplementedError()
+
+
+class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
+    def source_for(self, argument_tail: str, following_lines=()) -> SingleInstructionParserSource:
         raise NotImplementedError()
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
@@ -57,7 +57,9 @@ def args(arg_str: str, **kwargs) -> str:
 
 _FORMAT_MAP = {
     'contains': parsing.CONTAINS_ARGUMENT,
+    'empty': parsing.EMPTY_ARGUMENT,
     'equals': parsing.EQUALS_ARGUMENT,
+    'not': parsing.NOT_ARGUMENT,
     'replace_env_vars_option': long_option_syntax(parsing.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
     'rel_home_option': relative_path_options.REL_HOME_OPTION,
     'rel_cwd_option': relative_path_options.REL_CWD_OPTION,
