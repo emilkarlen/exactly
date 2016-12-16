@@ -20,7 +20,7 @@ from . import equals_with_relativity_option_for_actual_file
 
 
 def suite() -> unittest.TestSuite:
-    test_configuration_for_file = TestConfigurationForFile('actual.txt', '../actual.txt')
+    test_configuration_for_file = TestConfigurationForFile()
     return unittest.TestSuite([
         unittest.makeSuite(TestReplacedEnvVars),
         equals.suite_for(test_configuration_for_file),
