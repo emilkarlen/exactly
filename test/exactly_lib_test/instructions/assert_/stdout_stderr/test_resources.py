@@ -30,9 +30,12 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
         return new_source2(argument_tail)
 
-    def arrangement_for_contents(self, actual_contents: str) -> instruction_check.ArrangementPostAct:
+    def arrangement_for_contents(self, actual_contents: str,
+                                 post_sds_population_action: Action = Action(),
+                                 ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
-            act_result_producer=(self._act_result_producer(actual_contents))
+            act_result_producer=(self._act_result_producer(actual_contents)),
+            post_sds_population_action=post_sds_population_action,
         )
 
     def arrangement_for_actual_and_expected(self,
@@ -45,9 +48,6 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
             home_or_sds_contents=expected,
             post_sds_population_action=post_sds_population_action,
         )
-
-    def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:
-        raise NotImplementedError()
 
     def act_result(self, contents_of_tested_file: str) -> ActResult:
         raise NotImplementedError()
@@ -71,8 +71,13 @@ class TestConfigurationForStdout(TestConfigurationForStdFile):
     def new_parser(self) -> SingleInstructionParser:
         return sut.ParserForContentsForStdout()
 
-    def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:
-        return instruction_check.ArrangementPostAct(act_result_producer=ActResultProducerForStdout(home_and_sds_2_str))
+    def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
+                                          post_sds_population_action: Action = Action(),
+                                          ) -> instruction_check.ArrangementPostAct:
+        return instruction_check.ArrangementPostAct(
+            act_result_producer=ActResultProducerForStdout(home_and_sds_2_str),
+            post_sds_population_action=post_sds_population_action,
+        )
 
     def act_result(self, contents_of_tested_file: str) -> ActResult:
         return ActResult(stdout_contents=contents_of_tested_file)
@@ -82,8 +87,14 @@ class TestConfigurationForStderr(TestConfigurationForStdFile):
     def new_parser(self) -> SingleInstructionParser:
         return sut.ParserForContentsForStderr()
 
-    def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:
-        return instruction_check.ArrangementPostAct(act_result_producer=ActResultProducerForStderr(home_and_sds_2_str))
+    def arrangement_for_contents_from_fun(self,
+                                          home_and_sds_2_str,
+                                          post_sds_population_action: Action = Action(),
+                                          ) -> instruction_check.ArrangementPostAct:
+        return instruction_check.ArrangementPostAct(
+            act_result_producer=ActResultProducerForStderr(home_and_sds_2_str),
+            post_sds_population_action=post_sds_population_action,
+        )
 
     def act_result(self, contents_of_tested_file: str) -> ActResult:
         return ActResult(stderr_contents=contents_of_tested_file)

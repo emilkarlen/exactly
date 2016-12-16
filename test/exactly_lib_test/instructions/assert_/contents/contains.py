@@ -5,7 +5,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents import c
 
 
 def suite() -> unittest.TestSuite:
-    return test_resources.suite_for(TestConfigurationForFile('actual.txt', 'actual.txt'))
+    return test_resources.suite_for(TestConfigurationForFile())
 
 
 if __name__ == '__main__':

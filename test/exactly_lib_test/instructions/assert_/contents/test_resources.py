@@ -17,24 +17,32 @@ from exactly_lib_test.test_resources.parse import new_source2
 
 
 class TestConfigurationForFile(InstructionTestConfigurationForEquals):
-    def __init__(self,
-                 file_name_rel_act: str,
-                 file_name_rel_cwd: str):
-        self.file_name_rel_act = file_name_rel_act
-        self.file_name_rel_cwd = file_name_rel_cwd
+    FILE_NAME_REL_ACT = 'actual.txt'
+    FILE_NAME_REL_CWD = '../actual.txt'
 
     def new_parser(self) -> SingleInstructionParser:
         return sut.Parser()
 
     def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
-        return new_source2(self.file_name_rel_cwd + ' ' + argument_tail)
+        return new_source2(self.FILE_NAME_REL_CWD + ' ' + argument_tail)
 
-    def arrangement_for_contents(self, actual_contents: str) -> instruction_check.ArrangementPostAct:
-        return instruction_check.ArrangementPostAct(sds_contents=self._populator_for_actual(actual_contents))
+    def arrangement_for_contents(self, actual_contents: str,
+                                 post_sds_population_action: Action = Action(),
+                                 ) -> instruction_check.ArrangementPostAct:
+        return instruction_check.ArrangementPostAct(
+            sds_contents=self._populator_for_actual(actual_contents),
+            post_sds_population_action=post_sds_population_action,
+        )
 
-    def arrangement_for_contents_from_fun(self, home_and_sds_2_str) -> instruction_check.ArrangementPostAct:
-        act_result_producer = _ActResultProducer(home_and_sds_2_str, self.file_name_rel_act)
-        return instruction_check.ArrangementPostAct(act_result_producer=act_result_producer)
+    def arrangement_for_contents_from_fun(self,
+                                          home_and_sds_2_str,
+                                          post_sds_population_action: Action = Action(),
+                                          ) -> instruction_check.ArrangementPostAct:
+        act_result_producer = _ActResultProducer(home_and_sds_2_str, self.FILE_NAME_REL_ACT)
+        return instruction_check.ArrangementPostAct(
+            act_result_producer=act_result_producer,
+            post_sds_population_action=post_sds_population_action,
+        )
 
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
@@ -49,7 +57,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def _populator_for_actual(self, actual_contents) -> sds_populator.SdsPopulator:
         return sds_populator.act_dir_contents(
             DirContents([
-                File(self.file_name_rel_act, actual_contents)
+                File(self.FILE_NAME_REL_ACT, actual_contents)
             ]))
 
 

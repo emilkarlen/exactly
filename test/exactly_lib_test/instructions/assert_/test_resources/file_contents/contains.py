@@ -7,6 +7,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
+    MkSubDirOfActAndMakeItCurrentDirectory
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
@@ -48,7 +50,9 @@ class _TestMatchesShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationBase):
         reg_ex = '123'
         self._check(
             self.configuration.source_for(args("{contains} '{reg_ex}'", reg_ex)),
-            self.configuration.arrangement_for_contents(actual_contents),
+            self.configuration.arrangement_for_contents(
+                actual_contents,
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
@@ -61,7 +65,9 @@ class _TestMatchesShouldPassWhenALineMatchesRegEx(TestWithConfigurationBase):
         reg_ex = 'ATC'
         self._check(
             self.configuration.source_for(args("{contains} '{reg_ex}'", reg_ex)),
-            self.configuration.arrangement_for_contents(actual_contents),
+            self.configuration.arrangement_for_contents(
+                actual_contents,
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_pass()),
         )
 
@@ -74,7 +80,9 @@ class _TestMatchesShouldPassWhenAWholeLineMatchesRegEx(TestWithConfigurationBase
         reg_ex = '^MATCH$'
         self._check(
             self.configuration.source_for(args("{contains} '{reg_ex}'", reg_ex)),
-            self.configuration.arrangement_for_contents(actual_contents),
+            self.configuration.arrangement_for_contents(
+                actual_contents,
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_pass()),
         )
 
@@ -88,7 +96,9 @@ class _TestMatchesShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationBas
 
         self._check(
             self.configuration.source_for(args("{replace_env_vars_option} {contains} '{reg_ex}'", reg_ex)),
-            self.configuration.arrangement_for_contents_from_fun(home_dir_path_name),
+            self.configuration.arrangement_for_contents_from_fun(
+                home_dir_path_name,
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_pass()),
         )
 
@@ -102,7 +112,9 @@ class _TestMatchesShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurat
 
         self._check(
             self.configuration.source_for(args("{contains} '{reg_ex}'", reg_ex)),
-            self.configuration.arrangement_for_contents_from_fun(home_dir_path_name),
+            self.configuration.arrangement_for_contents_from_fun(
+                home_dir_path_name,
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
