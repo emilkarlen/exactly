@@ -20,7 +20,7 @@ class InstructionTestConfiguration:
 
 
 class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
-    def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
+    def source_for(self, argument_tail: str, following_lines=()) -> SingleInstructionParserSource:
         raise NotImplementedError()
 
     def arrangement_for_contents(self,

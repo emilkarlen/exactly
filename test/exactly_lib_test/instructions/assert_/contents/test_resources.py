@@ -24,8 +24,11 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def new_parser(self) -> SingleInstructionParser:
         return sut.Parser()
 
-    def source_for(self, argument_tail: str) -> SingleInstructionParserSource:
-        return new_source2(self.FILE_NAME_REL_CWD + ' ' + argument_tail)
+    def source_for(self,
+                   argument_tail: str,
+                   following_lines=()) -> SingleInstructionParserSource:
+        return new_source2(self.FILE_NAME_REL_CWD + ' ' + argument_tail,
+                           following_lines)
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: Action = Action(),
