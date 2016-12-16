@@ -20,41 +20,48 @@ class Action:
         return None
 
 
-class Check:
+class Arrangement:
     def __init__(self,
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
+                 pre_action_action: Action = Action()):
+        self.sds_contents_before = sds_contents_before
+        self.pre_action_action = pre_action_action
+
+
+class Expectation:
+    def __init__(self,
                  expected_action_result: va.ValueAssertion = va.anything_goes(),
                  expected_sds_contents_after: va.ValueAssertion = va.anything_goes(),
-                 pre_action_action: Action = Action(),
                  post_action_check: PostActionCheck = PostActionCheck()):
-        self.sds_contents_before = sds_contents_before
         self.expected_action_result = expected_action_result
         self.expected_sds_contents_after = expected_sds_contents_after
-        self.pre_action_action = pre_action_action
         self.post_action_check = post_action_check
 
 
 class TestCaseBase(unittest.TestCase):
-    def _check_action(self,
-                      action: Action,
-                      check: Check):
-        execute(self,
-                action,
-                check)
+    def _check(self,
+               action: Action,
+               arrangement: Arrangement,
+               expectation: Expectation):
+        check(self,
+              action,
+              arrangement,
+              expectation)
 
 
-def execute(put: unittest.TestCase,
-            action: Action,
-            check: Check):
+def check(put: unittest.TestCase,
+          action: Action,
+          arrangement: Arrangement,
+          expectation: Expectation):
     original_cwd = os.getcwd()
-    with sandbox_directory_structure(check.sds_contents_before) as sds:
+    with sandbox_directory_structure(arrangement.sds_contents_before) as sds:
         os.chdir(str(sds.act_dir))
         try:
-            check.pre_action_action.apply(sds)
+            arrangement.pre_action_action.apply(sds)
             result = action.apply(sds)
-            check.expected_action_result.apply(put, result)
-            check.expected_sds_contents_after.apply(put, sds)
-            check.post_action_check.apply(put, sds)
+            expectation.expected_action_result.apply(put, result)
+            expectation.expected_sds_contents_after.apply(put, sds)
+            expectation.post_action_check.apply(put, sds)
         finally:
             os.chdir(original_cwd)
 

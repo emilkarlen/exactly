@@ -96,12 +96,14 @@ class ParseAndCreateFileAction(sds_test.Action):
 
 
 class TestCaseBase(sds_test.TestCaseBase):
-    def _test_argument(self,
-                       source: SingleInstructionParserSource,
-                       setup: sds_test.Check):
+    def _check_argument(self,
+                        source: SingleInstructionParserSource,
+                        arrangement: sds_test.Arrangement,
+                        expectation: sds_test.Expectation):
         action = ParseAndCreateFileAction(source)
-        self._check_action(action,
-                           setup)
+        self._check(action,
+                    arrangement,
+                    expectation)
 
 
 def is_success() -> ValueAssertion:
@@ -114,42 +116,46 @@ def is_failure() -> ValueAssertion:
 
 class TestSuccessfulScenariosNoContent(TestCaseBase):
     def test_file_relative_pwd(self):
-        self._test_argument(single_line_source('file-name.txt'),
-                            sds_test.Check(expected_action_result=is_success(),
-                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
-                                               empty_file('file-name.txt')
-                                           ])),
-                                           ))
+        self._check_argument(single_line_source('file-name.txt'),
+                             sds_test.Arrangement(),
+                             sds_test.Expectation(expected_action_result=is_success(),
+                                                  expected_sds_contents_after=act_dir_contains_exactly(DirContents([
+                                                      empty_file('file-name.txt')
+                                                  ])),
+                                                  ))
 
     def test_file_in_sub_dir__sub_dir_exists(self):
-        self._test_argument(single_line_source('existing-directory/file-name.txt'),
-                            sds_test.Check(expected_action_result=is_success(),
-                                           sds_contents_before=act_dir_contents(DirContents([
-                                               empty_dir('existing-directory')
-                                           ])),
-                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
-                                               Dir('existing-directory', [
-                                                   empty_file('file-name.txt')])
-                                           ])),
-                                           ))
+        self._check_argument(single_line_source('existing-directory/file-name.txt'),
+                             sds_test.Arrangement(sds_contents_before=act_dir_contents(DirContents([
+                                 empty_dir('existing-directory')
+                             ]))),
+                             sds_test.Expectation(expected_action_result=is_success(),
+                                                  expected_sds_contents_after=act_dir_contains_exactly(DirContents([
+                                                      Dir('existing-directory', [
+                                                          empty_file('file-name.txt')])
+                                                  ])),
+                                                  ))
 
     def test_file_in_sub_dir__sub_dir_does_not_exist(self):
-        self._test_argument(single_line_source('existing-directory/file-name.txt'),
-                            sds_test.Check(expected_action_result=is_success(),
-                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
-                                               Dir('existing-directory', [
-                                                   empty_file('file-name.txt')])
-                                           ])),
-                                           ))
+        self._check_argument(single_line_source('existing-directory/file-name.txt'),
+                             sds_test.Arrangement(),
+                             sds_test.Expectation(expected_action_result=is_success(),
+                                                  expected_sds_contents_after=act_dir_contains_exactly(DirContents([
+                                                      Dir('existing-directory', [
+                                                          empty_file('file-name.txt')])
+                                                  ])),
+                                                  ))
 
     def test_file_in_sub_dir__sub_dir_does_not_exist__rel_tmp(self):
-        self._test_argument(single_line_source('--rel-tmp existing-directory/file-name.txt'),
-                            sds_test.Check(expected_action_result=is_success(),
-                                           expected_sds_contents_after=tmp_user_dir_contains_exactly(DirContents([
-                                               Dir('existing-directory', [
-                                                   empty_file('file-name.txt')])
-                                           ])),
-                                           ))
+        self._check_argument(single_line_source('--rel-tmp existing-directory/file-name.txt'),
+                             sds_test.Arrangement(),
+                             sds_test.Expectation(expected_action_result=is_success(),
+                                                  expected_sds_contents_after=tmp_user_dir_contains_exactly(
+                                                      DirContents([
+                                                          Dir('existing-directory', [
+                                                              empty_file('file-name.txt')])
+                                                      ])),
+                                                  ))
 
 
 class TestSuccessfulScenariosWithContent(TestCaseBase):
@@ -157,33 +163,35 @@ class TestSuccessfulScenariosWithContent(TestCaseBase):
         source = argument_list_source(['file-name.txt', '<<MARKER'],
                                       ['single line',
                                        'MARKER'])
-        self._test_argument(source,
-                            sds_test.Check(expected_action_result=is_success(),
-                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
-                                               File('file-name.txt',
-                                                    lines_content(['single line']))
-                                           ])),
-                                           ))
+        self._check_argument(source,
+                             sds_test.Arrangement(),
+                             sds_test.Expectation(expected_action_result=is_success(),
+                                                  expected_sds_contents_after=act_dir_contains_exactly(DirContents([
+                                                      File('file-name.txt',
+                                                           lines_content(['single line']))
+                                                  ])),
+                                                  ))
 
 
 class TestFailingScenarios(TestCaseBase):
     def test_argument_is_existing_file(self):
-        self._test_argument(single_line_source('existing-file'),
-                            sds_test.Check(expected_action_result=is_failure(),
-                                           sds_contents_before=act_dir_contents(DirContents([
-                                               empty_file('existing-file')
-                                           ])),
-                                           ))
+        self._check_argument(single_line_source('existing-file'),
+                             sds_test.Arrangement(
+                                 sds_contents_before=act_dir_contents(DirContents([
+                                     empty_file('existing-file')
+                                 ]))),
+                             sds_test.Expectation(expected_action_result=is_failure(),
+                                                  ))
 
     def test_argument_is_under_path_that_contains_a_component_that_is_an_existing_file(self):
-        self._test_argument(single_line_source('existing-directory/existing-file/directory/file-name.txt'),
-                            sds_test.Check(expected_action_result=is_failure(),
-                                           sds_contents_before=act_dir_contents(DirContents([
-                                               Dir('existing-directory', [
-                                                   empty_file('existing-file')
-                                               ])
-                                           ])),
-                                           ))
+        self._check_argument(single_line_source('existing-directory/existing-file/directory/file-name.txt'),
+                             sds_test.Arrangement(sds_contents_before=act_dir_contents(DirContents([
+                                 Dir('existing-directory', [
+                                     empty_file('existing-file')
+                                 ])
+                             ]))),
+                             sds_test.Expectation(expected_action_result=is_failure(),
+                                                  ))
 
 
 def suite() -> unittest.TestSuite:
@@ -198,4 +206,4 @@ def suite() -> unittest.TestSuite:
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())
