@@ -46,7 +46,7 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
 
-class _MkSubDirOfActAndMakeItCurrentDirectory(home_and_sds_test.Action):
+class MkSubDirOfActAndMakeItCurrentDirectory(home_and_sds_test.Action):
     def apply(self, home_and_sds: HomeAndSds):
         sub_dir = _get_cwd_path_and_make_dir_if_not_exists(home_and_sds.sds)
         os.chdir(str(sub_dir))
@@ -84,8 +84,8 @@ class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
         self.option_configuration = option_configuration
 
     def shortDescription(self):
-        return (str(type(self)) + ' / ' +
-                str(type(self.configuration)) + ' / ' +
+        return (str(type(self)) + ' /\n' +
+                str(type(self.configuration)) + ' /\n' +
                 str(type(self.option_configuration))
                 )
 
@@ -156,7 +156,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
             self.configuration.source_for(
                 args('{equals} {relativity_option} non-existing-file.txt',
                      relativity_option=self.option_configuration.option_string)),
-            ArrangementPostAct(post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()),
+            ArrangementPostAct(post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
@@ -170,7 +170,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
             ArrangementPostAct(
                 home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
-                post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()
             ),
             self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
         )
@@ -186,7 +186,7 @@ class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionBase):
                 'actual',
                 self.option_configuration.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
@@ -201,7 +201,7 @@ class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
                 'expected',
                 self.option_configuration.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=_MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_pass()),
         )
 

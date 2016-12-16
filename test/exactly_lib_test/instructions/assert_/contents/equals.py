@@ -9,75 +9,109 @@ from exactly_lib_test.instructions.assert_.test_resources.contents_resources imp
     StoreContentsInFileInCurrentDir, WriteFileToHomeDir, WriteFileToCurrentDir, \
     StoreContentsInFileInParentDirOfCwd
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import equals
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import args
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
+    InstructionTestConfigurationForEquals, RelativityOptionConfiguration, RelativityOptionConfigurationForRelCwd, \
+    RelativityOptionConfigurationForRelAct, \
+    RelativityOptionConfigurationForRelTmp, TestWithConfigurationAndRelativityOptionBase, \
+    MkSubDirOfActAndMakeItCurrentDirectory
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
+    args
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, \
-    Expectation, is_pass
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
-from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, File
+    is_pass
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.parse import new_source2
 
 
-class TestFileExpectedFileRelHome(TestCaseBaseForParser):
-    def test_fail__when__actual_file_does_not_exist(self):
-        self._run(
-            new_source2(args('name-of-non-existing-file {equals} {rel_home_option} expected.txt')),
-            arrangement(home_dir_contents=DirContents([empty_file('expected.txt')])),
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestReplacedEnvVars),
+        equals.suite_for(TestConfigurationForFile('actual.txt', '../actual.txt')),
+        suite_for(TestConfigurationForFile('actual.txt', '../actual.txt')),
+    ])
+
+
+def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
+    def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
+        test_cases = [
+            _ErrorWhenExpectedFileDoesNotExist,
+            _ErrorWhenExpectedFileIsADirectory,
+            _FaiWhenContentsDiffer,
+            _PassWhenContentsEquals,
+        ]
+        return unittest.TestSuite([tc(instruction_configuration, option_configuration)
+                                   for tc in test_cases])
+
+    return unittest.TestSuite([suite_for_option(relativity_option_configuration)
+                               for relativity_option_configuration in _RELATIVITY_OPTION_CONFIGURATIONS])
+
+
+_RELATIVITY_OPTION_CONFIGURATIONS = [
+    RelativityOptionConfigurationForRelCwd(),
+    RelativityOptionConfigurationForRelAct(),
+    RelativityOptionConfigurationForRelTmp(),
+    # Test of default relativity is done by "generic" tests of equals -
+    # i.e. code in the test resources that are used for all content-checking instructions.
+]
+
+
+class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            new_source2(
+                args('{relativity_option} actual.txt {equals} {rel_home_option} expected.txt',
+                     relativity_option=self.option_configuration.option_string)),
+            ArrangementPostAct(
+                home_contents=DirContents([empty_file('expected.txt')]),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+        )
+
+
+class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            new_source2(
+                args('{relativity_option} actual-dir {equals} {rel_home_option} expected.txt',
+                     relativity_option=self.option_configuration.option_string)),
+            ArrangementPostAct(
+                home_contents=DirContents([File('expected.txt', 'expected contents')]),
+                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                    DirContents([empty_dir('actual-dir')])),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+        )
+
+
+class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            new_source2(
+                args('{relativity_option} actual.txt {equals} {rel_home_option} expected.txt',
+                     relativity_option=self.option_configuration.option_string)),
+            ArrangementPostAct(
+                home_contents=DirContents([File('expected.txt', 'expected contents')]),
+                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                    DirContents([File('actual.txt', 'not equal to expected contents')])),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_fail()),
         )
 
-    def test_validation_error__when__actual_file_is_a_directory(self):
-        self._run(
-            new_source2(args('name-of-non-existing-file {equals} {rel_home_option} dir')),
-            arrangement(home_dir_contents=DirContents([empty_dir('dir')])),
-            Expectation(validation_pre_sds=svh_check.is_validation_error()),
-        )
 
-
-class TestFileExpectedFileRelCwd(TestCaseBaseForParser):
-    def test_fail__when__actual_file_does_not_exist(self):
-        self._run(
-            new_source2(args('target {equals} {rel_cwd_option} expected.txt')),
-            arrangement(sds_contents_before_main=act_dir_contents(
-                DirContents([empty_file('expected.txt')]))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-    def test_fail__when__actual_file_is_a_directory(self):
-        self._run(
-            new_source2(args('target {equals} {rel_cwd_option} expected.txt')),
-            arrangement(sds_contents_before_main=act_dir_contents(
-                DirContents([empty_dir('target'),
-                             empty_file('expected.txt')]))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-class TestFileExpectedFileRelTmp(TestCaseBaseForParser):
-    def test_fail__when__actual_file_does_not_exist(self):
-        self._run(
-            new_source2(args('target {equals} {rel_tmp_option} expected.txt')),
-            arrangement(sds_contents_before_main=tmp_user_dir_contents(
-                DirContents([empty_file('expected.txt')]))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-class TestExpectedFileRelTmp(TestCaseBaseForParser):
-    def test_fail__when__actual_file_does_not_exist(self):
-        self._run(
-            new_source2(args('{rel_tmp_option} actual.txt {equals} {rel_home_option} expected.txt')),
-            arrangement(home_dir_contents=DirContents([empty_file('expected.txt')])),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-    def test_pass__when__contents_is_equal(self):
-        self._run(
-            new_source2(args('{rel_tmp_option} actual.txt {equals} {rel_home_option} expected.txt')),
-            arrangement(home_dir_contents=DirContents([File('expected.txt', 'contents')]),
-                        sds_contents_before_main=tmp_user_dir_contents(
-                            DirContents([File('actual.txt', 'contents')]))),
-            is_pass(),
+class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
+    def runTest(self):
+        self._check(
+            new_source2(
+                args('{relativity_option} actual.txt {equals} {rel_home_option} expected.txt',
+                     relativity_option=self.option_configuration.option_string)),
+            ArrangementPostAct(
+                home_contents=DirContents([File('expected.txt', 'expected contents')]),
+                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                    DirContents([File('actual.txt', 'expected contents')])),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+            Expectation(main_result=pfh_check.is_pass()),
         )
 
 
@@ -149,17 +183,6 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
             arrangement(act_result_producer=act_result_producer),
             is_pass(),
         )
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestFileExpectedFileRelHome),
-        unittest.makeSuite(TestFileExpectedFileRelCwd),
-        unittest.makeSuite(TestFileExpectedFileRelTmp),
-        unittest.makeSuite(TestExpectedFileRelTmp),
-        unittest.makeSuite(TestReplacedEnvVars),
-        equals.suite_for(TestConfigurationForFile('actual.txt', '../actual.txt'))
-    ])
 
 
 if __name__ == '__main__':
