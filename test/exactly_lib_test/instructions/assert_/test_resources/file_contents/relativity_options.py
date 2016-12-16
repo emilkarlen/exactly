@@ -1,5 +1,7 @@
 import os
+import unittest
 
+from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -12,6 +14,7 @@ from exactly_lib_test.test_resources.execution.home_or_sds_populator import Home
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
@@ -52,6 +55,47 @@ class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
                 str(type(self.configuration)) + ' /\n' +
                 str(type(self.option_configuration))
                 )
+
+
+class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurationBase):
+    def __init__(self,
+                 instruction_configuration: InstructionTestConfiguration,
+                 option_configuration: RelativityOptionConfiguration,
+                 is_negated: bool):
+        super().__init__(instruction_configuration)
+        self.option_configuration = option_configuration
+        self.is_negated = is_negated
+
+    def not_option_if_is_negated_else_empty(self) -> str:
+        return parsing.NOT_ARGUMENT if self.is_negated else ''
+
+    def pass_if_not_negated_else_fail(self) -> va.ValueAssertion:
+        return pfh_check.is_fail() if self.is_negated else pfh_check.is_pass()
+
+    def fail_if_not_negated_else_pass(self) -> va.ValueAssertion:
+        return pfh_check.is_pass() if self.is_negated else pfh_check.is_fail()
+
+    def shortDescription(self):
+        return (str(type(self)) + ' /\n' +
+                str(type(self.configuration)) + ' /\n' +
+                str(type(self.option_configuration)) + ' /\n' +
+                'is_negated=' + str(self.is_negated)
+                )
+
+
+def suite_for_conf__rel_opts__negations(instruction_configuration: InstructionTestConfiguration,
+                                        relativity_options: list,
+                                        test_cases: list) -> unittest.TestSuite:
+    def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
+        not_negated = [tc(instruction_configuration, option_configuration, False)
+                       for tc in test_cases]
+        negated = [tc(instruction_configuration, option_configuration, True)
+                   for tc in test_cases]
+        return unittest.TestSuite(not_negated + negated)
+
+    return unittest.TestSuite([suite_for_option(relativity_option)
+                               for relativity_option in relativity_options
+                               ])
 
 
 class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
