@@ -1,10 +1,11 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents as sut
-from exactly_lib_test.instructions.assert_.contents import contains_with_relativity_option_for_actual_file
-from exactly_lib_test.instructions.assert_.contents import empty_with_relativity_option_for_actual_file
-from exactly_lib_test.instructions.assert_.contents import equals_with_relativity_option_for_actual_file
 from exactly_lib_test.instructions.assert_.contents import parse
+from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file import \
+    contains as contains_with_relative_actual, \
+    empty as empty_with_relative_actual, \
+    equals as equals_with_relative_actual
 from exactly_lib_test.instructions.assert_.contents.test_resources import TestConfigurationForFile
 from exactly_lib_test.instructions.assert_.contents.test_resources import TestConfigurationForFile
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains
@@ -18,11 +19,11 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         parse.suite(),
         empty.suite_for(configuration),
-        empty_with_relativity_option_for_actual_file.suite_for(configuration),
+        empty_with_relative_actual.suite_for(configuration),
         equals.suite_for(configuration),
-        equals_with_relativity_option_for_actual_file.suite_for(configuration),
+        equals_with_relative_actual.suite_for(configuration),
         contains.suite_for(configuration),
-        contains_with_relativity_option_for_actual_file.suite_for(configuration),
+        contains_with_relative_actual.suite_for(configuration),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 

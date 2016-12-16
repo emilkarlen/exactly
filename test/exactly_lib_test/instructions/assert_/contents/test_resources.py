@@ -5,9 +5,6 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfigurationForRelCwd, RelativityOptionConfigurationForRelAct, \
-    RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds
 from exactly_lib_test.test_resources.execution import sds_populator
@@ -81,12 +78,3 @@ class _ActResultProducer(test_resources.ActResultProducer):
             ]))
         sds_pop.apply(act_environment.home_and_sds.sds)
         return ActResult()
-
-
-RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE = [
-    RelativityOptionConfigurationForRelCwd(),
-    RelativityOptionConfigurationForRelAct(),
-    RelativityOptionConfigurationForRelTmp(),
-    # Test of default relativity is done by "generic" tests of equals -
-    # i.e. code in the test resources that are used for all content-checking instructions.
-]
