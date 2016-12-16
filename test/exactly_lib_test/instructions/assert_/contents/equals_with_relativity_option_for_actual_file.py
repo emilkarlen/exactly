@@ -16,8 +16,8 @@ from exactly_lib_test.test_resources.parse import new_source2
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
         test_cases = [
-            _ErrorWhenExpectedFileDoesNotExist,
-            _ErrorWhenExpectedFileIsADirectory,
+            _ErrorWhenActualFileDoesNotExist,
+            _ErrorWhenActualFileIsADirectory,
             _FaiWhenContentsDiffer,
             _PassWhenContentsEquals,
         ]
@@ -37,7 +37,7 @@ _RELATIVITY_OPTION_CONFIGURATIONS = [
 ]
 
 
-class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
+class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
             new_source2(
@@ -50,7 +50,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
         )
 
 
-class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptionBase):
+class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionBase):
     def runTest(self):
         self._check(
             new_source2(
