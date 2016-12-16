@@ -1,12 +1,12 @@
 import os
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
 from exactly_lib_test.test_resources import home_and_sds_test
@@ -14,7 +14,6 @@ from exactly_lib_test.test_resources.execution.home_or_sds_populator import Home
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
@@ -64,22 +63,13 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
                  is_negated: bool):
         super().__init__(instruction_configuration)
         self.option_configuration = option_configuration
-        self.is_negated = is_negated
-
-    def not_option_if_is_negated_else_empty(self) -> str:
-        return parsing.NOT_ARGUMENT if self.is_negated else ''
-
-    def pass_if_not_negated_else_fail(self) -> va.ValueAssertion:
-        return pfh_check.is_fail() if self.is_negated else pfh_check.is_pass()
-
-    def fail_if_un_negated_else_pass(self) -> va.ValueAssertion:
-        return pfh_check.is_pass() if self.is_negated else pfh_check.is_fail()
+        self.maybe_not = NotOperatorInfo(is_negated)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
                 str(type(self.configuration)) + ' /\n' +
                 str(type(self.option_configuration)) + ' /\n' +
-                'is_negated=' + str(self.is_negated)
+                'is_negated=' + str(self.maybe_not.is_negated)
                 )
 
 
