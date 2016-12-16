@@ -16,6 +16,28 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 
 
+def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
+    test_cases = [
+        _TestParseWithMissingRegExArgument,
+        _TestParseWithSuperfluousArgument,
+
+        _TestParseWithInvalidRegEx,
+        _TestShouldFailWhenNoLineMatchesRegEx,
+        _TestShouldPassWhenALineMatchesRegEx,
+        _TestShouldPassWhenAWholeLineMatchesRegEx,
+
+        _TestShouldReplaceEnvVarsWhenOptionIsGiven,
+        _TestShouldNotReplaceEnvVarsWhenOptionIsNotGiven,
+    ]
+    return unittest.TestSuite([tc(configuration) for tc in test_cases])
+
+
+def args(pattern: str, reg_ex: str = None) -> str:
+    return pattern.format(contains=parsing.CONTAINS_ARGUMENT,
+                          replace_env_vars_option=_WITH_REPLACED_ENV_VARS_OPTION,
+                          reg_ex=reg_ex)
+
+
 class ActResultProducerFromHomeAndSds2Str(ActResultProducer):
     def __init__(self, home_and_sds_2_str):
         self.home_and_sds_2_str = home_and_sds_2_str
@@ -117,28 +139,6 @@ class _TestShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationBase
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=pfh_check.is_fail()),
         )
-
-
-def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
-    test_cases = [
-        _TestParseWithMissingRegExArgument,
-        _TestParseWithSuperfluousArgument,
-
-        _TestParseWithInvalidRegEx,
-        _TestShouldFailWhenNoLineMatchesRegEx,
-        _TestShouldPassWhenALineMatchesRegEx,
-        _TestShouldPassWhenAWholeLineMatchesRegEx,
-
-        _TestShouldReplaceEnvVarsWhenOptionIsGiven,
-        _TestShouldNotReplaceEnvVarsWhenOptionIsNotGiven,
-    ]
-    return unittest.TestSuite([tc(configuration) for tc in test_cases])
-
-
-def args(pattern: str, reg_ex: str = None) -> str:
-    return pattern.format(contains=parsing.CONTAINS_ARGUMENT,
-                          replace_env_vars_option=_WITH_REPLACED_ENV_VARS_OPTION,
-                          reg_ex=reg_ex)
 
 
 _WITH_REPLACED_ENV_VARS_OPTION = long_option_syntax(parsing.WITH_REPLACED_ENV_VARS_OPTION_NAME.long)
