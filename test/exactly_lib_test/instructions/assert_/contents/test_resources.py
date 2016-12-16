@@ -5,9 +5,7 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
@@ -80,11 +78,3 @@ class _ActResultProducer(test_resources.ActResultProducer):
             ]))
         sds_pop.apply(act_environment.home_and_sds.sds)
         return ActResult()
-
-
-class TestCaseBaseForParser(instruction_check.TestCaseBase):
-    def _run(self,
-             source: SingleInstructionParserSource,
-             arrangement: ArrangementPostAct,
-             expectation: Expectation):
-        self._check(sut.Parser(), source, arrangement, expectation)
