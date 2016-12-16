@@ -1,12 +1,11 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
-    MkSubDirOfActAndMakeItCurrentDirectory
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     RelativityOptionConfiguration, TestWithConfigurationAndRelativityOptionBase, RelativityOptionConfigurationForRelCwd, \
-    RelativityOptionConfigurationForRelAct, RelativityOptionConfigurationForRelTmp
+    RelativityOptionConfigurationForRelAct, RelativityOptionConfigurationForRelTmp, \
+    MkSubDirOfActAndMakeItCurrentDirectory
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
