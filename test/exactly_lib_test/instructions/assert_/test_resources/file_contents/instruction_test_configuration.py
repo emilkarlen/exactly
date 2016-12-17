@@ -1,3 +1,5 @@
+import unittest
+
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -6,6 +8,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds
@@ -46,6 +49,26 @@ class TestWithConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAn
                arrangement: ArrangementPostAct,
                expectation: Expectation):
         instruction_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
+
+
+class TestWithConfigurationAndNegationArgumentBase(TestWithConfigurationBase):
+    def __init__(self,
+                 configuration: InstructionTestConfiguration,
+                 is_negated: bool):
+        super().__init__(configuration)
+        self.maybe_not = NotOperatorInfo(is_negated)
+
+    def shortDescription(self):
+        return (str(type(self)) + ' /\n' +
+                str(type(self.configuration)) + ' /\n' +
+                'is_negated=' + str(self.maybe_not.is_negated)
+                )
+
+
+def suite_for__conf__not_argument(configuration: InstructionTestConfiguration,
+                                  test_cases: list) -> unittest.TestSuite:
+    return unittest.TestSuite([tc(configuration, False) for tc in test_cases] +
+                              [tc(configuration, True) for tc in test_cases])
 
 
 def args(arg_str: str, **kwargs) -> str:
