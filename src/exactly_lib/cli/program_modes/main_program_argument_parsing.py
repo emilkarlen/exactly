@@ -77,6 +77,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         The exit code from the act script becomes the exit code from the program.""")
     from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
     from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
+    from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_ACTOR__LONG),
                          metavar=opt.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
@@ -84,6 +85,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                              ARGUMENT=opt.ACTOR_OPTION_ARGUMENT,
                              INTERPRETER_ACTOR_TERM=formatting.entity(INTERPRETER_ACTOR.singular_name),
                              ACTOR_CONCEPT=ACTOR_CONCEPT.singular_name(),
+                             shell_syntax_concept=formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
                          ))
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_PREPROCESSOR__LONG),
                          metavar=opt.PREPROCESSOR_OPTION_ARGUMENT,
@@ -95,11 +97,13 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
 
                         The command should output the processed test case on stdout.
 
-                        {preprocessor} is parsed according to shell syntax.
+                        {preprocessor} is parsed according to {shell_syntax_concept}.
 
                         If the exit code from the preprocessor is non-zero,
                         then processing is considered to have failed.
-                        """.format(preprocessor=opt.PREPROCESSOR_OPTION_ARGUMENT))
+                        """.format(preprocessor=opt.PREPROCESSOR_OPTION_ARGUMENT,
+                                   shell_syntax_concept=formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+                                   ))
     return ret_val
 
 
@@ -114,7 +118,7 @@ def _parse_preprocessor(default_preprocessor: Preprocessor,
 _ACTOR_OPTION_DESCRIPTION = """\
 Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program that serves as the interpreter.
 
-{ARGUMENT} is an absolute path followed by optional arguments (using shell syntax).
+{ARGUMENT} is an absolute path followed by optional arguments (using {shell_syntax_concept}).
 
 Note that an {ACTOR_CONCEPT} specified in the test case has precedence over the
 {ACTOR_CONCEPT} given here.

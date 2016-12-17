@@ -1,10 +1,11 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
 from exactly_lib.help.concepts.configuration_parameters import actor
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
@@ -24,6 +25,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
             'phase': phase_name_dictionary(),
             'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
         })
         self.synopsis = synopsis()
 
@@ -51,10 +53,11 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         }
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
-                                            see_also_items=[
-                                                CrossReferenceIdSeeAlsoItem(
-                                                    actor.ACTOR_CONCEPT.cross_reference_target()),
-                                            ])
+                                            see_also_items=see_also_items_from_cross_refs([
+                                                actor.ACTOR_CONCEPT.cross_reference_target(),
+                                                SHELL_SYNTAX_CONCEPT.cross_reference_target()
+                                            ]),
+                                            )
 
     def _keep_sandbox_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
@@ -77,10 +80,11 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         }
         return cli_syntax.DescribedArgument(_PREPROCESSOR_OPTION,
                                             self.parser.fnap(_PREPROCESSOR_OPTION_DESCRIPTION, extra_format_map),
-                                            see_also_items=[
-                                                CrossReferenceIdSeeAlsoItem(
-                                                    PREPROCESSOR_CONCEPT.cross_reference_target()),
-                                            ])
+                                            see_also_items=see_also_items_from_cross_refs([
+                                                PREPROCESSOR_CONCEPT.cross_reference_target(),
+                                                SHELL_SYNTAX_CONCEPT.cross_reference_target()
+                                            ]
+                                            ))
 
 
 def synopsis() -> cli_syntax.Synopsis:
@@ -107,7 +111,7 @@ Specifies an {interpreter_actor} {actor_concept}, by giving the executable progr
 
 
 {interpreter_program} is an absolute path followed by optional arguments
-(using shell syntax).
+(using {shell_syntax_concept}).
 
 
 Note: An {actor_concept} specified in the test case will have precedence over the {actor_concept} given here.
@@ -138,7 +142,7 @@ A program that transforms the test case file as the first step in the processing
 
 
 {preprocessor} is an executable program, together with optional command line arguments
-(unix shell syntax).
+(unix {shell_syntax_concept}).
 
 
 When executed, it is given a single (additional) argument: the name of the test case file to preprocess.
