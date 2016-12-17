@@ -6,6 +6,7 @@ from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
@@ -57,7 +58,9 @@ class SpecificationRenderer(SectionContentsRenderer):
     def _suite_structure(self) -> list:
         ret_val = []
         ret_val.extend(self._parse(_STRUCTURE_INTRO))
-        ret_val.append(sections_short_list(self._suite_help.section_helps))
+        ret_val.append(sections_short_list(self._suite_help.section_helps,
+                                           default_section_name=DEFAULT_SECTION_NAME,
+                                           section_concept_name='section'))
         return ret_val
 
 
