@@ -1,6 +1,7 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib import program_info
+from exactly_lib.help.utils import formatting
 from exactly_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
 
 PAGE_TITLE = 'Reference Manual for %s' % program_info.PROGRAM_NAME.capitalize()
@@ -79,7 +80,7 @@ class DivWithTextAndStylePopulator(ElementPopulator):
 class VersionPopulator(ElementPopulator):
     def apply(self, parent: Element):
         version = SubElement(parent, 'p')
-        version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
+        version.text = formatting.program_name(program_info.PROGRAM_NAME) + ' version ' + program_info.VERSION
         SubElement(parent, 'hr')
 
 
