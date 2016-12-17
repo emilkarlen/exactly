@@ -6,6 +6,7 @@ from exactly_lib.common.help.cross_reference_id import TestSuiteSectionInstructi
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters import actor
+from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
 from exactly_lib.help.utils import formatting
@@ -52,11 +53,13 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
             'interpreter_program': _ACTOR_OPTION.argument,
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
         }
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=see_also_items_from_cross_refs([
                                                 actor.ACTOR_CONCEPT.cross_reference_target(),
+                                                SHELL_SYNTAX_CONCEPT.cross_reference_target(),
                                                 TestSuiteSectionInstructionCrossReference(SECTION_NAME__CONF,
                                                                                           INSTRUCTION_NAME__ACTOR),
                                             ]))
@@ -95,7 +98,7 @@ Specifies a default {interpreter_actor} {actor} to use for every test case in th
 
 
 {interpreter_program} is the absolute path of an executable program,
-followed by optional arguments (using shell syntax).
+followed by optional arguments (using {shell_syntax_concept}).
 
 
 Note: An {actor} specified in the test suite or individual test cases
