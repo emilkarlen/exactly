@@ -47,6 +47,9 @@ class SectionDocumentation:
     def purpose(self) -> Description:
         raise NotImplementedError()
 
+    def is_mandatory(self) -> bool:
+        raise NotImplementedError()
+
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         raise NotImplementedError()
 
@@ -80,6 +83,12 @@ class SectionDocumentation:
         if self.name.plain == default_section_name:
             ret_val.append(default_section_para(self._section_concept_name))
         return ret_val
+
+    def _mandatory_info_para(self):
+        mandatory_or_optional = 'mandatory' if self.is_mandatory() else 'optional'
+        return docs.para('The {} {} is {}.'.format(self.name,
+                                                   self._section_concept_name,
+                                                   mandatory_or_optional))
 
 
 def default_section_para(section_concept_name: str = 'section') -> docs.ParagraphItem:

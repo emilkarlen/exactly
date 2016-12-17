@@ -80,9 +80,6 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
         super().__init__(name, SECTION_CONCEPT_NAME)
         self._phase_name = SectionName(name)
 
-    def is_mandatory(self) -> bool:
-        raise NotImplementedError()
-
     def sequence_info(self) -> PhaseSequenceInfo:
         raise NotImplementedError()
 
@@ -107,10 +104,6 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
         self._add_section_for_instructions(environment, sections)
 
         return doc.SectionContents(paras, sections)
-
-    def _mandatory_info_para(self):
-        return docs.para('The {0} phase is {1}.'.format(self.name,
-                                                        'mandatory' if self.is_mandatory() else 'optional'))
 
     def _add_section_for_contents_description(self, sections: list):
         section_contents = self.contents_description()
