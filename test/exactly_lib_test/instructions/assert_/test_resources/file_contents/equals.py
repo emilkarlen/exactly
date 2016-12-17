@@ -5,15 +5,16 @@ from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationBase
+    args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
+    suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfiguration, TestWithConfigurationAndRelativityOptionBase, \
-    RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelCwd, \
+    RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelCwd, \
     RelativityOptionConfigurationForRelAct, RelativityOptionConfigurationForRelTmp, \
-    MkSubDirOfActAndMakeItCurrentDirectory
+    MkSubDirOfActAndMakeItCurrentDirectory, TestWithConfigurationAndRelativityOptionAndNegationBase, \
+    suite_for__conf__rel_opts__negations
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulatorForHomeContents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
@@ -30,33 +31,26 @@ class InstructionTestConfigurationForEquals(InstructionTestConfigurationForConte
 
 
 def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
-    def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
-        test_cases = [
-            _ErrorWhenExpectedFileDoesNotExist,
-            _ErrorWhenExpectedFileIsADirectory,
-            _FaiWhenContentsDiffer,
-            _PassWhenContentsEquals,
-            _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced,
-            _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced,
-        ]
-        return unittest.TestSuite([tc(instruction_configuration, option_configuration)
-                                   for tc in test_cases])
+    test_cases_for_rel_opts = [
+        _ErrorWhenExpectedFileDoesNotExist,
+        _ErrorWhenExpectedFileIsADirectory,
+        _FaiWhenContentsDiffer,
+        _PassWhenContentsEquals,
+        _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced,
+        _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced,
+    ]
 
-    def suite_for_no_relativity_option() -> unittest.TestSuite:
-        test_cases = [
-            _PassWhenContentsEqualsAHereDocument,
-            _FailWhenContentsDoNotEqualAHereDocument,
-        ]
-        return unittest.TestSuite([tc(instruction_configuration)
-                                   for tc in test_cases])
-
-    suite_for_relativity_options = unittest.TestSuite([suite_for_option(relativity_option_configuration)
-                                                       for relativity_option_configuration in
-                                                       _RELATIVITY_OPTION_CONFIGURATIONS])
+    test_cases_without_rel_opts = [
+        _PassWhenContentsEqualsAHereDocument,
+        _FailWhenContentsDoNotEqualAHereDocument,
+    ]
 
     return unittest.TestSuite([
-        suite_for_relativity_options,
-        suite_for_no_relativity_option(),
+        suite_for__conf__rel_opts__negations(instruction_configuration,
+                                             _RELATIVITY_OPTION_CONFIGURATIONS,
+                                             test_cases_for_rel_opts),
+        suite_for__conf__not_argument(instruction_configuration,
+                                      test_cases_without_rel_opts),
     ])
 
 
@@ -80,22 +74,24 @@ _RELATIVITY_OPTION_CONFIGURATIONS = [
 ]
 
 
-class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptionBase):
+class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} {relativity_option} non-existing-file.txt',
+                args('{maybe_not} {equals} {relativity_option} non-existing-file.txt',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
                      relativity_option=self.option_configuration.option_string)),
             ArrangementPostAct(post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
 
-class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptionBase):
+class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} {relativity_option} dir',
+                args('{maybe_not} {equals} {relativity_option} dir',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
                      relativity_option=self.option_configuration.option_string)),
             ArrangementPostAct(
                 home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
@@ -106,44 +102,48 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
         )
 
 
-class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionBase):
+class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} {relativity_option} expected.txt',
+                args('{maybe_not} {equals} {relativity_option} expected.txt',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
                      relativity_option=self.option_configuration.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
                 'actual',
                 self.option_configuration.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=pfh_check.is_fail()),
+            Expectation(main_result=self.maybe_not.fail_if_un_negated_else_pass()),
         )
 
 
-class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionBase):
+class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} {relativity_option} expected.txt',
+                args('{maybe_not} {equals} {relativity_option} expected.txt',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
                      relativity_option=self.option_configuration.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
                 'expected',
                 self.option_configuration.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=pfh_check.is_pass()),
+            Expectation(main_result=self.maybe_not.pass_if_not_negated_else_fail()),
         )
 
 
-class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(TestWithConfigurationAndRelativityOptionBase):
+class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
+    TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.home_dir_path)
 
         self._check(
             self.configuration.source_for(
-                args('{replace_env_vars_option} {equals} {relativity_option} expected.txt',
+                args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
                      relativity_option=self.option_configuration.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
@@ -151,18 +151,20 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(TestWithConfigu
                     DirContents([File('expected.txt', environment_variables.ENV_VAR_HOME)])
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=pfh_check.is_pass()),
+            Expectation(main_result=self.maybe_not.pass_if_not_negated_else_fail()),
         )
 
 
-class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(TestWithConfigurationAndRelativityOptionBase):
+class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
+    TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.home_dir_path)
 
         self._check(
             self.configuration.source_for(
-                args('{equals} {relativity_option} expected.txt',
+                args('{maybe_not} {equals} {relativity_option} expected.txt',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
                      relativity_option=self.option_configuration.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
@@ -170,33 +172,35 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(TestWithC
                     DirContents([File('expected.txt', environment_variables.ENV_VAR_HOME)])
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=pfh_check.is_fail()),
+            Expectation(main_result=self.maybe_not.fail_if_un_negated_else_pass()),
         )
 
 
-class _PassWhenContentsEqualsAHereDocument(TestWithConfigurationBase):
+class _PassWhenContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} <<EOF'),
+                args('{maybe_not} {equals} <<EOF',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option()),
                 ['expected content line',
                  'EOF']),
             self.configuration.arrangement_for_contents(
                 lines_content(['expected content line']),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=pfh_check.is_pass()),
+            Expectation(main_result=self.maybe_not.pass_if_not_negated_else_fail()),
         )
 
 
-class _FailWhenContentsDoNotEqualAHereDocument(TestWithConfigurationBase):
+class _FailWhenContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
-                args('{equals} <<EOF'),
+                args('{maybe_not} {equals} <<EOF',
+                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option()),
                 ['expected content line',
                  'EOF']),
             self.configuration.arrangement_for_contents(
                 lines_content(['actual contents that is not equal to expected contents']),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=pfh_check.is_fail()),
+            Expectation(main_result=self.maybe_not.fail_if_un_negated_else_pass()),
         )
