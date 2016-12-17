@@ -1,6 +1,15 @@
 -*- org -*-
 
-* "fixture" som alt till "setup" + "cleanup"
+* Use other dir than "home" for referencing the SUT
+<2016-12-17 lör>
+Currently, "home" dir is used both for referencing test resources and the
+executable sut file.
+But test resources are related to test cases, but the sut is the same for many
+test cases.  Thus it is probable that these will be located in different
+places.
+This means that a new configuration parameter for the path of the sut, should
+be introduced.
+* "fixture" as an alternative to "setup" + "cleanup"
 <2016-03-22 tis>
 Ett "fixture" består av en setup-action och en cleanup-action.
 
