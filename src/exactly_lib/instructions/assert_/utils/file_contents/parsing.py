@@ -1,7 +1,6 @@
 import re
 
 from exactly_lib import program_info
-from exactly_lib.cli.util.cli_argument_syntax import long_option_name
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformers
@@ -13,11 +12,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
 WITH_REPLACED_ENV_VARS_OPTION_NAME = a.OptionName(long_name='with-replaced-env-vars')
-WITH_REPLACED_ENV_VARS_OPTION = long_option_name(WITH_REPLACED_ENV_VARS_OPTION_NAME.long)
+WITH_REPLACED_ENV_VARS_OPTION = long_option_syntax(WITH_REPLACED_ENV_VARS_OPTION_NAME.long)
 
 NOT_ARGUMENT = '!'
 EMPTY_ARGUMENT = 'empty'
