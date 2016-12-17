@@ -16,9 +16,6 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
         super().__init__(name, 'section')
         self._section_name = SectionName(name)
 
-    def is_mandatory(self) -> bool:
-        raise NotImplementedError()
-
     def contents_description(self) -> list:
         """
         :return: [`ParagraphItem`]
@@ -38,10 +35,6 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
         self._add_section_for_instructions(environment, sections)
 
         return doc.SectionContents(paras, sections)
-
-    def _mandatory_info_para(self):
-        return docs.para('The {0} section is {1}.'.format(self.name,
-                                                          'mandatory' if self.is_mandatory() else 'optional'))
 
     def _add_section_for_contents_description(self, output: list):
         output.append(docs.section('Contents',
