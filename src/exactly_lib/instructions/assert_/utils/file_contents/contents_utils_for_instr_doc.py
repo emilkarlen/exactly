@@ -60,11 +60,13 @@ class FileContentsHelpParts:
                                          mandatory_empty_arg]),
                               self._paragraphs(_DESCRIPTION_OF_EMPTY)),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         optional_not_arg,
                                          equals_arg,
                                          here_doc_arg,
                                          ]),
                               self._paragraphs(_DESCRIPTION_OF_EQUALS_HERE_DOC)),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         optional_not_arg,
                                          equals_arg,
                                          expected_file_arg,
                                          ]),
@@ -136,11 +138,11 @@ Asserts that {checked_file} is empty.
 
 _DESCRIPTION_OF_EQUALS_HERE_DOC = """\
 Asserts that the contents of {checked_file} is equal to the contents of a "here document".
-"""
+""" + _DESCRIPTION_TAL_FOR_NEGATION
 
 _DESCRIPTION_OF_EQUALS_FILE = """\
 Asserts that the contents of {checked_file} is equal to the contents of a file.
-"""
+""" + _DESCRIPTION_TAL_FOR_NEGATION
 
 _DESCRIPTION_OF_CONTAINS = """\
 Asserts that the contents of {checked_file} contains a line matching a regular expression.
