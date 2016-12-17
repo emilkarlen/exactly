@@ -25,7 +25,6 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
                 home_or_sds_contents_before_main: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
-                environ: dict = None,  # TODO remove, since now part of proc-exec-settings
                 process_execution_settings=with_no_timeout(),
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(home_contents=home_dir_contents,
