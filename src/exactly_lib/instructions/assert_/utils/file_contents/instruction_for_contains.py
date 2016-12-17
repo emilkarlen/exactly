@@ -30,4 +30,4 @@ class ContainsAssertionInstruction(AssertPhaseInstruction):
             for line in f:
                 if self._expected_reg_ex.search(line.rstrip('\n')):
                     return pfh.new_pfh_pass()
-        return pfh.new_pfh_fail('No lines matching ' + str(self._expected_reg_ex))
+        return pfh.new_pfh_fail("No lines matching reg exp '{}'".format(self._expected_reg_ex.pattern))
