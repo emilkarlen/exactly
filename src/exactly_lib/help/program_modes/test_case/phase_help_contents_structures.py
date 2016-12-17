@@ -5,6 +5,7 @@ from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.see_also_section import see_also_sections
+from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE, SECTION_CONCEPT_NAME
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -75,9 +76,8 @@ class ExecutionEnvironmentInfo(tuple):
 
 
 class TestCasePhaseDocumentationBase(SectionDocumentation):
-    def __init__(self,
-                 name: str):
-        super().__init__(name)
+    def __init__(self, name: str):
+        super().__init__(name, SECTION_CONCEPT_NAME)
         self._phase_name = SectionName(name)
 
     def is_mandatory(self) -> bool:
@@ -97,7 +97,8 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
         mandatory_info = self._mandatory_info_para()
         paras = ([docs.para(purpose.single_line_description)] +
                  purpose.rest +
-                 [mandatory_info])
+                 [mandatory_info] +
+                 self._default_section_info(DEFAULT_PHASE.section_name))
         sections = []
         self._add_section_for_contents_description(sections)
         self._add_section_for_phase_sequence_description(sections)

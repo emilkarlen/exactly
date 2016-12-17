@@ -69,9 +69,8 @@ def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp
 
 
 class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumentation):
-    def __init__(self,
-                 name: str):
-        super().__init__(name)
+    def __init__(self, name: str):
+        super().__init__(name, 'section-concept-name')
 
     def purpose(self) -> Description:
         return Description(text('Single line purpose for phase ' + self.name.syntax),
@@ -94,7 +93,7 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet):
-        super().__init__(name)
+        super().__init__(name, 'section-concept-name')
         self._instruction_set = instruction_set
 
     def purpose(self) -> Description:

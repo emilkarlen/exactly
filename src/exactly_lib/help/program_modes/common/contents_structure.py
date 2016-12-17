@@ -3,7 +3,7 @@ from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure import document as doc, structures as docs
 
 
 class SectionInstructionSet(tuple):
@@ -35,8 +35,10 @@ class SectionDocumentation:
     """
 
     def __init__(self,
-                 name: str):
+                 name: str,
+                 section_concept_name: str):
         self._name_formats = formatting.SectionName(name)
+        self._section_concept_name = section_concept_name
 
     @property
     def name(self) -> formatting.SectionName:
@@ -72,3 +74,16 @@ class SectionDocumentation:
         :rtype [`CrossReferenceTarget`]
         """
         return []
+
+    def _default_section_info(self, default_section_name: str) -> list:
+        ret_val = []
+        if self.name.plain == default_section_name:
+            ret_val.append(default_section_para(self._section_concept_name))
+        return ret_val
+
+
+def default_section_para(section_concept_name: str = 'section') -> docs.ParagraphItem:
+    return docs.para(_DEFAULT_SECTION_STRING.format(section_concept_name=section_concept_name))
+
+
+_DEFAULT_SECTION_STRING = """This is the default {section_concept_name}."""
