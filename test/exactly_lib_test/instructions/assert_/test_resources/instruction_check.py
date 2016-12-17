@@ -28,13 +28,12 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
                 environ: dict = None,  # TODO remove, since now part of proc-exec-settings
                 process_execution_settings=with_no_timeout(),
                 ) -> ArrangementPostAct:
-    return ArrangementPostAct(home_dir_contents,
-                              sds_contents_before_main,
-                              act_result_producer,
-                              os_services,
-                              environ,
-                              process_execution_settings,
-                              home_or_sds_contents_before_main)
+    return ArrangementPostAct(home_contents=home_dir_contents,
+                              sds_contents=sds_contents_before_main,
+                              act_result_producer=act_result_producer,
+                              os_services=os_services,
+                              process_execution_settings=process_execution_settings,
+                              home_or_sds_contents=home_or_sds_contents_before_main)
 
 
 class Expectation:
@@ -102,7 +101,7 @@ class Executor:
             # But cannot do this for the moment, since many tests write home-dir contents
             # as part of the act-result.
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
-                                                                self.arrangement.environ)
+                                                                self.arrangement.process_execution_settings.environ)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return

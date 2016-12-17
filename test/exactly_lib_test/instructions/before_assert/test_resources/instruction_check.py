@@ -26,14 +26,12 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
-                environ: dict = None,
                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(home_dir_contents,
                               sds_contents_before_main,
                               act_result_producer,
                               os_services,
-                              environ,
                               process_execution_settings)
 
 
@@ -100,7 +98,8 @@ class Executor(InstructionExecutionBase):
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
             self.arrangement.post_sds_population_action.apply(home_and_sds)
-            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, self.arrangement.environ)
+            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
+                                                                self.arrangement.process_execution_settings.environ)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return

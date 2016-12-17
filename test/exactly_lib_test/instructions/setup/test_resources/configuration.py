@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_environ
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources import instruction_check as ic
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
@@ -37,7 +37,7 @@ class SetupConfigurationBase(ConfigurationBase):
                     environ: dict = None,
                     os_services: OsServices = new_default()):
         return ic.arrangement(sds_contents_before_main=sds_contents_before_main,
-                              environ=environ,
+                              process_execution_settings=with_environ(environ),
                               os_services=os_services)
 
     def arrangement_with_timeout(self, timeout_in_seconds: int):

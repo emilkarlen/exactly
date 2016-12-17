@@ -16,36 +16,36 @@ from exactly_lib_test.instructions.test_resources import test_of_test_framework_
 class TestCases(sut.TestCaseBase):
     def test_successful_flow(self):
         self._check(
-                test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                test_misc.single_line_source(),
-                sut.Arrangement(),
-                sut.Expectation(),
+            test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+            test_misc.single_line_source(),
+            sut.Arrangement(),
+            sut.Expectation(),
         )
 
     def test_fail_due_to_unexpected_result_from_main(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                    test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                    test_misc.single_line_source(),
-                    sut.Arrangement(),
+                test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                test_misc.single_line_source(),
+                sut.Arrangement(),
                 sut.Expectation(main_result=test_misc.RaisesTestError()),
             )
 
     def test_fail_due_to_unexpected_result_from_validate_pre_sds(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                    test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                    test_misc.single_line_source(),
-                    sut.Arrangement(),
+                test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                test_misc.single_line_source(),
+                sut.Arrangement(),
                 sut.Expectation(validate_pre_sds_result=test_misc.RaisesTestError()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                    test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                    test_misc.single_line_source(),
-                    sut.Arrangement(),
+                test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                test_misc.single_line_source(),
+                sut.Arrangement(),
                 sut.Expectation(main_side_effects_on_files=test_misc.RaisesTestError()),
             )
 

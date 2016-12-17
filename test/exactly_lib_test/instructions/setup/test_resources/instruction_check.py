@@ -30,18 +30,16 @@ class Arrangement(ArrangementWithSds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
-                 environ: dict = None,
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                  ):
-        super().__init__(home_dir_contents,
-                         sds_contents_before_main,
-                         os_services,
-                         environ,
-                         process_execution_settings,
-                         home_or_sds_contents)
+        super().__init__(home_contents=home_dir_contents,
+                         sds_contents=sds_contents_before_main,
+                         os_services=os_services,
+                         process_execution_settings=process_execution_settings,
+                         home_or_sds_contents=home_or_sds_contents)
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -110,7 +108,8 @@ class Executor:
             with tempfile.TemporaryDirectory(prefix=prefix + '-home-') as home_dir_name:
                 home_dir_path = pathlib.Path(home_dir_name).resolve()
                 self.arrangement.home_contents.write_to(home_dir_path)
-                environment = InstructionEnvironmentForPreSdsStep(home_dir_path, self.arrangement.environ)
+                environment = InstructionEnvironmentForPreSdsStep(home_dir_path,
+                                                                  self.arrangement.process_execution_settings.environ)
                 pre_validate_result = self._execute_pre_validate(environment, instruction)
                 if not pre_validate_result.is_success:
                     return
