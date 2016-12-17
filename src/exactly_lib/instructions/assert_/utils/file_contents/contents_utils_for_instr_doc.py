@@ -31,6 +31,7 @@ class FileContentsHelpParts:
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,
             'expected_file_arg': self.expected_file_arg.name,
+            'not_option': NOT_ARGUMENT,
         }
         self._parser = TextParser(format_map)
 
@@ -40,8 +41,9 @@ class FileContentsHelpParts:
     def invokation_variants(self) -> list:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
-        mandatory_not_arg = a.Single(a.Multiplicity.MANDATORY,
-                                     NOT_ARGUMENT_CONSTANT)
+
+        optional_not_arg = a.Single(a.Multiplicity.OPTIONAL,
+                                    NOT_ARGUMENT_CONSTANT)
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(parsing.EQUALS_ARGUMENT))
         contains_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -54,34 +56,25 @@ class FileContentsHelpParts:
                                                     self.with_replaced_env_vars_option)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
-            InvokationVariant(self._cls([mandatory_empty_arg]),
-                              self._paragraphs('Asserts that {checked_file} is empty.')),
-            InvokationVariant(self._cls([mandatory_not_arg, mandatory_empty_arg]),
-                              self._paragraphs('Asserts that {checked_file} is non-empty.')),
+            InvokationVariant(self._cls([optional_not_arg,
+                                         mandatory_empty_arg]),
+                              self._paragraphs(_DESCRIPTION_OF_EMPTY)),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
                                          equals_arg,
                                          here_doc_arg,
                                          ]),
-                              self._paragraphs("""\
-                              Asserts that the contents of {checked_file}
-                              is equal to the contents of a "here document".
-                              """)),
+                              self._paragraphs(_DESCRIPTION_OF_EQUALS_HERE_DOC)),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
                                          equals_arg,
                                          expected_file_arg,
                                          ]),
-                              self._paragraphs("""\
-                              Asserts that the contents of {checked_file}
-                              is equal to the contents of a file.
-                              """)),
+                              self._paragraphs(_DESCRIPTION_OF_EQUALS_FILE)),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         optional_not_arg,
                                          contains_arg,
                                          reg_ex_arg,
                                          ]),
-                              self._paragraphs("""\
-                              Asserts that the contents of {checked_file}
-                              contains a line matching a regular expression.
-                              """)),
+                              self._paragraphs(_DESCRIPTION_OF_CONTAINS)),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -131,3 +124,24 @@ class FileContentsHelpParts:
         :rtype: [`ParagraphItem`]
         """
         return self._parser.fnap(s, extra)
+
+
+_DESCRIPTION_TAL_FOR_NEGATION = """\
+
+If {not_option} is given, the assertion is negated."""
+
+_DESCRIPTION_OF_EMPTY = """\
+Asserts that {checked_file} is empty.
+""" + _DESCRIPTION_TAL_FOR_NEGATION
+
+_DESCRIPTION_OF_EQUALS_HERE_DOC = """\
+Asserts that the contents of {checked_file} is equal to the contents of a "here document".
+"""
+
+_DESCRIPTION_OF_EQUALS_FILE = """\
+Asserts that the contents of {checked_file} is equal to the contents of a file.
+"""
+
+_DESCRIPTION_OF_CONTAINS = """\
+Asserts that the contents of {checked_file} contains a line matching a regular expression.
+""" + _DESCRIPTION_TAL_FOR_NEGATION
