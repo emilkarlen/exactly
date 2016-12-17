@@ -4,7 +4,8 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.phases.result import sh
@@ -19,7 +20,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return 'Manipulates environment variables'
 
     def _main_description_rest_body(self) -> list:
-        return []
+        return self._paragraphs(_MAIN_DESCRIPTION_REST_BODY)
 
     def invokation_variants(self) -> list:
         return [
@@ -79,3 +80,8 @@ class _UnsetExecutor(Executor):
             del environ[self.name]
         except KeyError:
             pass
+
+
+_MAIN_DESCRIPTION_REST_BODY = """\
+The manipulation affects all following phases.
+"""
