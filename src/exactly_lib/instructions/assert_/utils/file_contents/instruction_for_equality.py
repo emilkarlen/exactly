@@ -22,12 +22,14 @@ from exactly_lib.util.string import lines_content
 
 class EqualsAssertionInstruction(AssertPhaseInstruction):
     def __init__(self,
+                 negated: bool,
                  expected_contents: HereDocOrFileRef,
                  actual_contents: ComparisonActualFile,
                  actual_file_transformer: ActualFileTransformer):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
         self._actual_file_transformer = actual_file_transformer
+        self._file_checker = _FileCheckerForNotEquals() if negated else _FileCheckerForEquals()
         self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
             FileRefCheckValidator(self._file_ref_check_for_expected())
 
@@ -51,17 +53,13 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
             return pfh.new_pfh_fail(failure_message)
 
         display_actual_file_name = str(actual_file_path)
-        expected_file_name = str(expected_file_path)
         processed_actual_file_path = self._actual_file_transformer.transform(environment,
                                                                              os_services,
                                                                              actual_file_path)
-        actual_file_name = str(processed_actual_file_path)
-        if not filecmp.cmp(actual_file_name, expected_file_name, shallow=False):
-            diff_description = _file_diff_description(processed_actual_file_path,
-                                                      expected_file_path)
-            return pfh.new_pfh_fail('Unexpected content in file: ' + display_actual_file_name +
-                                    diff_description)
-        return pfh.new_pfh_pass()
+        return self._file_checker.apply(actual_file_path,
+                                        expected_file_path,
+                                        processed_actual_file_path,
+                                        display_actual_file_name)
 
     def _file_path_for_file_with_expected_contents(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self._expected_contents.is_here_document:
@@ -87,3 +85,41 @@ def _file_diff_description(actual_file_path: pathlib.Path,
                                 fromfile='Expected',
                                 tofile='Actual')
     return os.linesep + ''.join(list(diff))
+
+
+class _FileChecker:
+    def apply(self,
+              actual_file_path: pathlib.Path,
+              expected_file_path: pathlib.Path,
+              processed_actual_file_path: pathlib.Path,
+              display_actual_file_name: str) -> pfh.PassOrFailOrHardError:
+        raise NotImplementedError()
+
+
+class _FileCheckerForEquals(_FileChecker):
+    def apply(self,
+              actual_file_path: pathlib.Path,
+              expected_file_path: pathlib.Path,
+              processed_actual_file_path: pathlib.Path,
+              display_actual_file_name: str) -> pfh.PassOrFailOrHardError:
+        actual_file_name = str(processed_actual_file_path)
+        expected_file_name = str(expected_file_path)
+        if not filecmp.cmp(actual_file_name, expected_file_name, shallow=False):
+            diff_description = _file_diff_description(processed_actual_file_path,
+                                                      expected_file_path)
+            return pfh.new_pfh_fail('Unexpected content in file: ' + display_actual_file_name +
+                                    diff_description)
+        return pfh.new_pfh_pass()
+
+
+class _FileCheckerForNotEquals(_FileChecker):
+    def apply(self,
+              actual_file_path: pathlib.Path,
+              expected_file_path: pathlib.Path,
+              processed_actual_file_path: pathlib.Path,
+              display_actual_file_name: str) -> pfh.PassOrFailOrHardError:
+        actual_file_name = str(processed_actual_file_path)
+        expected_file_name = str(expected_file_path)
+        if filecmp.cmp(actual_file_name, expected_file_name, shallow=False):
+            return pfh.new_pfh_fail('Contents are equal.')
+        return pfh.new_pfh_pass()
