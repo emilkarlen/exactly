@@ -31,7 +31,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
             new_source2(
                 args('{relativity_option} actual.txt {maybe_not} {empty}',
                      relativity_option=self.rel_opt.option_string,
-                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
+                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option())),
             ArrangementPostAct(
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
@@ -44,7 +44,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
             new_source2(
                 args('{relativity_option} actual-dir {maybe_not} {empty}',
                      relativity_option=self.rel_opt.option_string,
-                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
+                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option())),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
@@ -59,12 +59,12 @@ class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationBas
             new_source2(
                 args('{relativity_option} actual.txt {maybe_not} {empty}',
                      relativity_option=self.rel_opt.option_string,
-                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
+                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option())),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'not empty contents')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail_if_un_negated_else_pass()),
+            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass()),
         )
 
 
@@ -74,10 +74,10 @@ class _ContentsIsEmpty(TestWithConfigurationAndRelativityOptionAndNegationBase):
             new_source2(
                 args('{relativity_option} actual.txt {maybe_not} {empty}',
                      relativity_option=self.rel_opt.option_string,
-                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
+                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option())),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', '')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass_if_not_negated_else_fail()),
+            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail()),
         )
