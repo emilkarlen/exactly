@@ -1,6 +1,8 @@
 import shlex
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
+from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file
@@ -22,7 +24,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-
 
 def instruction_parser(
         instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> SingleInstructionParser:
@@ -53,7 +54,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                  description_rest_text: str = None):
         self.description_rest_text = description_rest_text
         self.executable_arg = a.Named('EXECUTABLE')
-        format_map = {'EXECUTABLE': self.executable_arg.name}
+        format_map = {
+            'EXECUTABLE': self.executable_arg.name,
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+        }
         if additional_format_map:
             format_map.update(additional_format_map)
         super().__init__(name, format_map)
@@ -88,7 +92,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                     """\
                     Executes the given executable with the given command line arguments.
 
-                    The arguments are splitted according to shell syntax.
+                    The arguments are splitted according to {shell_syntax_concept}.
                     """)),
             InvokationVariant(self._cl_syntax_for_args([
                 self.mandatory_executable,
@@ -101,7 +105,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                     """\
                     Interprets the given file using {EXECUTABLE}.
 
-                    Arguments are splitted according to shell syntax.
+                    Arguments are splitted according to {shell_syntax_concept}.
                     """)),
             InvokationVariant(self._cl_syntax_for_args([
                 self.mandatory_executable,
@@ -128,8 +132,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             SyntaxElementDescription(
                 self.executable_arg.name,
-                self._paragraphs('Specifies a program by giving the path to an executable file, '
-                                 'and optionally also arguments to the program.'),
+                self._paragraphs(_DESCRIPTION_OF_EXECUTABLE_ARG),
                 [
                     InvokationVariant(self._cl_syntax_for_args(executable_path_arguments),
                                       default_relativity_desc),
@@ -144,6 +147,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.accepted_options)
+        concepts.append(SHELL_SYNTAX_CONCEPT)
         return [concept.cross_reference_target() for concept in concepts]
 
 
@@ -229,3 +233,12 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
             raise SingleInstructionInvalidArgumentException(msg)
         cmd_resolver = CmdAndArgsResolverForSource(exe_file, remaining_arguments_str)
         return exe_file.validator, cmd_resolver
+
+
+_DESCRIPTION_OF_EXECUTABLE_ARG = """\
+Specifies a program by giving the path to an executable file,
+and optionally also arguments to the program.
+
+
+Elements are parsed using {shell_syntax_concept}.
+"""
