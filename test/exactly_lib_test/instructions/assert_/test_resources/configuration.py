@@ -4,6 +4,7 @@ from exactly_lib.instructions.utils.sub_process_execution import ProcessExecutio
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
+from exactly_lib.util.process_execution.os_process_execution import with_environ
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, check, is_pass, \
     Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
@@ -41,7 +42,7 @@ class AssertConfigurationBase(ConfigurationBase):
                     environ: dict = None,
                     os_services: OsServices = new_default()):
         return arrangement(sds_contents_before_main=sds_contents_before_main,
-                           environ=environ,
+                           process_execution_settings=with_environ(environ),
                            os_services=os_services)
 
     def expect_success_and_side_effects_on_files(self,

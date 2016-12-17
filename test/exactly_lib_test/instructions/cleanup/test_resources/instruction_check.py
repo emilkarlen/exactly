@@ -26,17 +26,15 @@ class Arrangement(ArrangementWithSds):
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
-                 environ: dict = None,
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT,
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                  ):
-        super().__init__(home_dir_contents,
-                         sds_contents_before_main,
-                         os_services,
-                         environ,
-                         process_execution_settings,
-                         home_or_sds_contents)
+        super().__init__(home_contents=home_dir_contents,
+                         sds_contents=sds_contents_before_main,
+                         os_services=os_services,
+                         process_execution_settings=process_execution_settings,
+                         home_or_sds_contents=home_or_sds_contents)
         self.previous_phase = previous_phase
 
 
@@ -97,7 +95,8 @@ class Executor(InstructionExecutionBase):
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
             self.arrangement.post_sds_population_action.apply(home_and_sds)
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, self.arrangement.environ)
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
+                                                              self.arrangement.process_execution_settings.environ)
             result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)
             if not result_of_validate_pre_sds.is_success:
                 return

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
-from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_environ
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, is_success, \
     Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
@@ -38,7 +38,7 @@ class CleanupConfigurationBase(ConfigurationBase):
                     environ: dict = None,
                     os_services: OsServices = new_default()):
         return Arrangement(sds_contents_before_main=sds_contents_before_main,
-                           environ=environ,
+                           process_execution_settings=with_environ(environ),
                            os_services=os_services)
 
     def arrangement_with_timeout(self, timeout_in_seconds: int):

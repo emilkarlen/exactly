@@ -23,6 +23,10 @@ def with_no_timeout() -> ProcessExecutionSettings:
     return ProcessExecutionSettings()
 
 
+def with_environ(environ: dict) -> ProcessExecutionSettings:
+    return ProcessExecutionSettings(environ=environ)
+
+
 class Command(tuple):
     def __new__(cls,
                 args,
