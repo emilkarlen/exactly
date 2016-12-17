@@ -33,6 +33,28 @@ class TestParse(unittest.TestCase):
         self.assertFalse(source.has_next(),
                          'There should be no remaining lines in the source')
 
+    def test_parse_empty_lines_source(self):
+        test_cases = [
+            ('', []),
+            ('  ', []),
+            ('', ['']),
+            ('  ', ['  ']),
+        ]
+        for first_src_line, following_src_lines in test_cases:
+            with self.subTest(first_line=first_src_line, following_lines=following_src_lines):
+                # ARRANGE #
+                following_lines = ListOfLines(following_src_lines)
+                source = LineSequenceSourceFromListOfLines(following_lines)
+                source_builder = line_source.LineSequenceBuilder(source, 1, first_src_line)
+                # ACT #
+                element = sut.PlainSourceActPhaseParser().apply(source_builder)
+                # ASSERT #
+                instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
+                self.assertEqual(list(instruction.source_code().lines),
+                                 [first_src_line] + following_src_lines)
+                self.assertFalse(source.has_next(),
+                                 'There should be no remaining lines in the source')
+
     def test_parse_SHOULD_read_all_remaining_lines_if_no_section_header_line_follows(self):
         # ARRANGE #
         following_lines = ListOfLines(['second line',

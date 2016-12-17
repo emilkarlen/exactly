@@ -44,7 +44,7 @@ def _un_escape_at_beginning_of_line(s: str) -> str:
 
 def _split_space(s: str) -> (str, str):
     non_space_char_idx = 0
-    while s[non_space_char_idx].isspace():
+    while non_space_char_idx < len(s) and s[non_space_char_idx].isspace():
         non_space_char_idx += 1
     return s[:non_space_char_idx], s[non_space_char_idx:]
 

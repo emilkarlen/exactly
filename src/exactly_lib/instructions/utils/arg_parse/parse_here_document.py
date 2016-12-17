@@ -27,7 +27,7 @@ def parse(first_line_arguments: list,
         if line == marker:
             return here_doc, first_line_arguments[1:]
         here_doc.append(line)
-    raise HereDocumentContentsParsingException('End Of File reached without finding Marker: {}'.format(marker))
+    raise HereDocumentContentsParsingException("End Of File reached without finding Marker: '{}'".format(marker))
 
 
 def parse_as_last_argument(here_document_is_mandatory: bool,
