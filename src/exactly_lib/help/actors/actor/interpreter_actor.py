@@ -6,6 +6,7 @@ from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils import suite_section_names
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
@@ -27,6 +28,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
         }
         self._parser = TextParser(format_map)
 
@@ -41,6 +43,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
 
     def _see_also_specific(self) -> list:
         return [
+            SHELL_SYNTAX_CONCEPT.cross_reference_target(),
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    ACTOR_INSTRUCTION_NAME),
             TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
@@ -54,7 +57,7 @@ _MAIN_DESCRIPTION_REST = """\
 The contents of the {phase[act]} phase is stored in a file, and the name of this file is given as
 the last argument to the given interpreter.
 
-If the interpreter is a shell command, then the quoted file name (according to shell syntax) is appended
+If the interpreter is a shell command, then the quoted file name (according to {shell_syntax_concept}) is appended
 to the end of the command string.
 
 
