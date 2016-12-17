@@ -3,6 +3,7 @@ import shlex
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -26,7 +27,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
-            'preprocessor': formatting.concept(PREPROCESSOR_CONCEPT.name().singular),
+            'preprocessor': formatting.concept(PREPROCESSOR_CONCEPT.singular_name()),
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
         })
 
     def single_line_description(self) -> str:
@@ -54,6 +56,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _see_also_cross_refs(self) -> list:
         return [
             PREPROCESSOR_CONCEPT.cross_reference_target(),
+            SHELL_SYNTAX_CONCEPT.cross_reference_target(),
         ]
 
 
@@ -65,7 +68,7 @@ The {preprocessor} is only used for the test cases in the current suite -
 not in sub suites.
 
 
-{EXECUTABLE} and {ARGUMENT} uses shell syntax.
+{EXECUTABLE} and {ARGUMENT} uses {shell_syntax_concept}.
 """
 
 
