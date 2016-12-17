@@ -47,12 +47,12 @@ class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
                  instruction_configuration: InstructionTestConfiguration,
                  option_configuration: RelativityOptionConfiguration):
         super().__init__(instruction_configuration)
-        self.option_configuration = option_configuration
+        self.rel_opt = option_configuration
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
                 str(type(self.configuration)) + ' /\n' +
-                str(type(self.option_configuration))
+                str(type(self.rel_opt))
                 )
 
 
@@ -62,14 +62,14 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
                  option_configuration: RelativityOptionConfiguration,
                  is_negated: bool):
         super().__init__(instruction_configuration)
-        self.option_configuration = option_configuration
-        self.maybe_not = NotOperatorInfo(is_negated)
+        self.rel_opt = option_configuration
+        self.not_opt = NotOperatorInfo(is_negated)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
                 str(type(self.configuration)) + ' /\n' +
-                str(type(self.option_configuration)) + ' /\n' +
-                'is_negated=' + str(self.maybe_not.is_negated)
+                str(type(self.rel_opt)) + ' /\n' +
+                'is_negated=' + str(self.not_opt.is_negated)
                 )
 
 

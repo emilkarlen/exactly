@@ -79,10 +79,10 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} {relativity_option} non-existing-file.txt',
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
-                     relativity_option=self.option_configuration.option_string)),
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option(),
+                     relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
 
@@ -91,14 +91,14 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} {relativity_option} dir',
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
-                     relativity_option=self.option_configuration.option_string)),
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option(),
+                     relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(
-                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()
             ),
-            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
 
@@ -107,14 +107,14 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
-                     relativity_option=self.option_configuration.option_string)),
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option(),
+                     relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
                 'actual',
-                self.option_configuration.populator_for_relativity_option_root(
+                self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.fail_if_un_negated_else_pass()),
+            Expectation(main_result=self.not_opt.fail_if_un_negated_else_pass()),
         )
 
 
@@ -123,14 +123,14 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
-                     relativity_option=self.option_configuration.option_string)),
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option(),
+                     relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
                 'expected',
-                self.option_configuration.populator_for_relativity_option_root(
+                self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.pass_if_not_negated_else_fail()),
+            Expectation(main_result=self.not_opt.pass_if_not_negated_else_fail()),
         )
 
 
@@ -143,15 +143,15 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
         self._check(
             self.configuration.source_for(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
-                     relativity_option=self.option_configuration.option_string)),
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option(),
+                     relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
-                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', environment_variables.ENV_VAR_HOME)])
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.pass_if_not_negated_else_fail()),
+            Expectation(main_result=self.not_opt.pass_if_not_negated_else_fail()),
         )
 
 
@@ -164,15 +164,15 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option(),
-                     relativity_option=self.option_configuration.option_string)),
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option(),
+                     relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
-                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', environment_variables.ENV_VAR_HOME)])
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.fail_if_un_negated_else_pass()),
+            Expectation(main_result=self.not_opt.fail_if_un_negated_else_pass()),
         )
 
 
