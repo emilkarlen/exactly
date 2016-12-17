@@ -1,9 +1,11 @@
+from exactly_lib import program_info
 from exactly_lib.act_phase_setups import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
 from exactly_lib.help.actors.single_command_line_base import SingleCommandLineActorDocumentationBase
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
@@ -52,6 +54,7 @@ class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
 def see_also_targets() -> list:
     return [
         HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+        SHELL_SYNTAX_CONCEPT.cross_reference_target(),
     ]
 
 
@@ -73,7 +76,9 @@ class ActPhaseDocumentationSyntax:
             'ARGUMENT': self.argument.name,
             'actor': formatting.concept(ACTOR_CONCEPT.name().singular),
             'act_phase': ACT_PHASE_NAME.emphasis,
-            'home_directory_concept': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular)
+            'home_directory_concept': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.name().singular),
+            'program_name': formatting.program_name(program_info.PROGRAM_NAME),
         }
         self._parser = TextParser(fm)
 
@@ -152,20 +157,21 @@ The path of an existing executable file.
 If the path is not absolute, then it is relative the {home_directory_concept}.
 
 
-Uses shell syntax.
+Uses {shell_syntax_concept}.
 """
 
 _COMMAND_SYNTAX_ELEMENT = """\
 A shell command line.
 
 
-Uses the syntax of the operating system's shell.
-(Which shell this is depends on the operating system).
+Uses the syntax of the current operating system's shell.
+
+Note that this is not the same as the {shell_syntax_concept} built into {program_name}.
 """
 
 _ARGUMENT_SYNTAX_ELEMENT = """\
 A command line argument.
 
 
-Uses shell syntax.
+Uses {shell_syntax_concept}.
 """
