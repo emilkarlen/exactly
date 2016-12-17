@@ -5,8 +5,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case import test_case_doc, phase_identifier
 from exactly_lib.util import line_source
 
-DEFAULT_PHASE = phase_identifier.ACT
-
 
 class Parser:
     def __init__(self,
@@ -48,7 +46,7 @@ def new_parser(split_line_into_name_and_argument_function,
             parse.SectionConfiguration(phase_identifier.CLEANUP.section_name,
                                        dict_parser(instructions_setup.cleanup_instruction_set)),
         ),
-        default_section_name=DEFAULT_PHASE.section_name,
-        section_element_name_for_error_messages='phase',
+        default_section_name=phase_identifier.DEFAULT_PHASE.section_name,
+        section_element_name_for_error_messages=phase_identifier.SECTION_CONCEPT_NAME,
     )
     return Parser(parse.new_parser_for(configuration))

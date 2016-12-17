@@ -1,8 +1,8 @@
-from exactly_lib.default.program_modes.test_case.test_case_parser import DEFAULT_PHASE
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.section_document.syntax import section_header
+from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import structures as docs
 
 

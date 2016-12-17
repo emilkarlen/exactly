@@ -1,6 +1,7 @@
 import types
 
-from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet, \
+    default_section_para
 from exactly_lib.help.program_modes.common.render_instruction import instruction_set_list_item
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc, lists
@@ -56,10 +57,3 @@ def sections_short_list(sections: list,
     return docs.simple_list_with_space_between_elements_and_content(
         items,
         lists.ListType.VARIABLE_LIST)
-
-
-def default_section_para(section_concept_name: str = 'section') -> docs.ParagraphItem:
-    return docs.para(_DEFAULT_SECTION_STRING.format(section_concept_name=section_concept_name))
-
-
-_DEFAULT_SECTION_STRING = """This is the default {section_concept_name}."""

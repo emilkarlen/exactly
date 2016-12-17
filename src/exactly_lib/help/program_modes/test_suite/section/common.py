@@ -1,7 +1,7 @@
 from exactly_lib.common.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
-from exactly_lib.help.program_modes.common.renderers import instruction_set_list, default_section_para
+from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.see_also_section import see_also_sections
@@ -12,9 +12,8 @@ from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 class TestSuiteSectionDocumentationBase(SectionDocumentation):
-    def __init__(self,
-                 name: str):
-        super().__init__(name)
+    def __init__(self, name: str):
+        super().__init__(name, 'section')
         self._section_name = SectionName(name)
 
     def is_mandatory(self) -> bool:
@@ -32,7 +31,7 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
         paras = ([docs.para(purpose.single_line_description)] +
                  purpose.rest +
                  [mandatory_info] +
-                 self._default_section_info())
+                 self._default_section_info(DEFAULT_SECTION_NAME))
         sections = []
         self._add_section_for_contents_description(sections)
         self._add_section_for_see_also(environment, sections)
@@ -65,12 +64,6 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
                                     TestSuiteSectionInstructionCrossReference(self._section_name.plain,
                                                                               instr_name),
                                     allow_rendering_of_visible_extra_target_text=False)
-
-    def _default_section_info(self) -> list:
-        ret_val = []
-        if self.name.plain == DEFAULT_SECTION_NAME:
-            ret_val.append(default_section_para('section'))
-        return ret_val
 
 
 class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentationBase):
