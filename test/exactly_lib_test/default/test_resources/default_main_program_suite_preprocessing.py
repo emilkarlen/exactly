@@ -20,9 +20,11 @@ import os
 
 basename = os.path.basename(sys.argv[1])
 if basename == 'pass':
-    print('{section_header_for_phase_with_instructions}' + os.linesep + '# valid empty test case that PASS')
+    print('{section_header_for_phase_with_instructions}' + os.linesep +
+          '# valid empty test case that PASS')
 else:
-    print('{section_header_for_phase_with_instructions}' + os.linesep + 'invalid test case that will cause PARSER-ERROR')
+    print('{section_header_for_phase_with_instructions}' + os.linesep +
+          'invalid test case that will cause PARSER-ERROR')
 """.format(section_header_for_phase_with_instructions=section_header(phase_identifier.SETUP.section_name))
 
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
@@ -38,7 +40,8 @@ else:
                                   quoting.file_name(preprocessor_source_file_name))
         return DirContents([
             File('main.suite',
-                 lines_content(['preprocessor ' + preprocessor,
+                 lines_content(['[conf]',
+                                'preprocessor ' + preprocessor,
                                 '[cases]',
                                 'pass',
                                 'syntax-error'])),
