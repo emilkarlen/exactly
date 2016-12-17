@@ -1,17 +1,12 @@
 import unittest
 
-from exactly_lib.help.concepts.plain_concepts import all_plain_concepts as sut
+from exactly_lib.help.concepts.plain_concepts.all_plain_concepts import all_plain_concepts
 from exactly_lib_test.help.concepts.test_resources.test_case_impls import suite_for_plain_concept_documentation
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        suite_for_plain_concept_documentation(sut.SANDBOX_CONCEPT),
-        suite_for_plain_concept_documentation(sut.CONFIGURATION_PARAMETER_CONCEPT),
-        suite_for_plain_concept_documentation(sut.ENVIRONMENT_VARIABLE_CONCEPT),
-        suite_for_plain_concept_documentation(sut.PREPROCESSOR_CONCEPT),
-        suite_for_plain_concept_documentation(sut.CURRENT_WORKING_DIRECTORY_CONCEPT),
-    ])
+    return unittest.TestSuite([suite_for_plain_concept_documentation(plain_concept)
+                               for plain_concept in all_plain_concepts()])
 
 
 if __name__ == '__main__':
