@@ -36,12 +36,30 @@ def instruction_set_list(instruction_set: SectionInstructionSet,
                                                 custom_indent_spaces=0))
 
 
-def sections_short_list(sections: list) -> ParagraphItem:
+def sections_short_list(sections: list,
+                        default_section_name: str = '',
+                        section_concept_name: str = 'section') -> ParagraphItem:
+    """
+    :param sections: List[`SectionDocumentation`]
+    """
+
+    def add_default_info(section: SectionDocumentation, output: list):
+        if section.name.plain == default_section_name:
+            output.append(default_section_para(section_concept_name))
+
     items = []
     for section in sections:
         assert isinstance(section, SectionDocumentation)
-        items.append(docs.list_item(section.name.syntax,
-                                    [docs.para(section.purpose().single_line_description)]))
+        paras = [docs.para(section.purpose().single_line_description)]
+        add_default_info(section, paras)
+        items.append(docs.list_item(section.name.syntax, paras))
     return docs.simple_list_with_space_between_elements_and_content(
         items,
         lists.ListType.VARIABLE_LIST)
+
+
+def default_section_para(section_concept_name: str = 'section') -> docs.ParagraphItem:
+    return docs.para(_DEFAULT_SECTION_STRING.format(section_concept_name=section_concept_name))
+
+
+_DEFAULT_SECTION_STRING = """This is the default {section_concept_name}."""
