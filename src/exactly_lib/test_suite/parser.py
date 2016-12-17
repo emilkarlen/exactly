@@ -3,7 +3,8 @@ from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.instruction_set.sections import cases
 from exactly_lib.test_suite.instruction_set.sections import suites
 from exactly_lib.test_suite.instruction_set.sections.configuration import instruction_set
-from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
+from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES, \
+    DEFAULT_SECTION_NAME
 from exactly_lib.util import line_source
 
 PARSER_CONFIGURATION = parse.SectionsConfiguration(
@@ -12,7 +13,7 @@ PARSER_CONFIGURATION = parse.SectionsConfiguration(
         parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
         parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
     ),
-    default_section_name=SECTION_NAME__CONF
+    default_section_name=DEFAULT_SECTION_NAME
 )
 
 
