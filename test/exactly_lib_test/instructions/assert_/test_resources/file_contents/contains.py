@@ -41,24 +41,27 @@ class _ParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumentBas
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
-                self.configuration.source_for(args('{maybe_not} {contains}',
-                                                   maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())))
+                self.configuration.source_for(
+                    args('{maybe_not} {contains}',
+                         maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
 
 
 class _ParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
-                self.configuration.source_for(args('{maybe_not} {contains} abc superfluous',
-                                                   maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())))
+                self.configuration.source_for(
+                    args('{maybe_not} {contains} abc superfluous',
+                         maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
 
 
 class _ParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
-                self.configuration.source_for(args('{maybe_not} {contains} **',
-                                                   maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())))
+                self.configuration.source_for(
+                    args('{maybe_not} {contains} **',
+                         maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
 
 
 class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
@@ -68,13 +71,14 @@ class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                                          'not match'])
         reg_ex = '123'
         self._check(
-            self.configuration.source_for(args("{maybe_not} {contains} '{reg_ex}'",
-                                               reg_ex=reg_ex,
-                                               maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())),
+            self.configuration.source_for(
+                args("{maybe_not} {contains} '{reg_ex}'",
+                     reg_ex=reg_ex,
+                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass()),
+            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
         )
 
 
@@ -85,13 +89,14 @@ class _ALineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                                          'not match'])
         reg_ex = 'ATC'
         self._check(
-            self.configuration.source_for(args("{maybe_not} {contains} '{reg_ex}'",
-                                               reg_ex=reg_ex,
-                                               maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())),
+            self.configuration.source_for(
+                args("{maybe_not} {contains} '{reg_ex}'",
+                     reg_ex=reg_ex,
+                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail()),
+            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
         )
 
 
@@ -102,13 +107,14 @@ class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                                          'not match'])
         reg_ex = '^MATCH$'
         self._check(
-            self.configuration.source_for(args("{maybe_not} {contains} '{reg_ex}'",
-                                               reg_ex=reg_ex,
-                                               maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())),
+            self.configuration.source_for(
+                args("{maybe_not} {contains} '{reg_ex}'",
+                     reg_ex=reg_ex,
+                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail()),
+            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
         )
 
 
@@ -120,13 +126,14 @@ class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArg
         reg_ex = environment_variables.ENV_VAR_HOME
 
         self._check(
-            self.configuration.source_for(args("{replace_env_vars_option} {maybe_not} {contains} '{reg_ex}'",
-                                               reg_ex=reg_ex,
-                                               maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())),
+            self.configuration.source_for(
+                args("{replace_env_vars_option} {maybe_not} {contains} '{reg_ex}'",
+                     reg_ex=reg_ex,
+                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail()),
+            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
         )
 
 
@@ -138,13 +145,14 @@ class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegat
         reg_ex = environment_variables.ENV_VAR_HOME
 
         self._check(
-            self.configuration.source_for(args("{maybe_not} {contains} '{reg_ex}'",
-                                               reg_ex=reg_ex,
-                                               maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option())),
+            self.configuration.source_for(
+                args("{maybe_not} {contains} '{reg_ex}'",
+                     reg_ex=reg_ex,
+                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass()),
+            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
         )
 
 
