@@ -1,4 +1,5 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.utils import formatting
 from exactly_lib.program_info import PROGRAM_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
@@ -8,6 +9,7 @@ def intro_intro_documentation(setup: Setup) -> doc.SectionContents:
     format_values = {
         'test_case_file': 'helloworld.case',
         'EXECUTABLE_PROGRAM': PROGRAM_NAME,
+        'program_name': formatting.program_name(PROGRAM_NAME),
         'action_to_check': 'helloworld',
         'phase': setup.phase_names
     }
@@ -35,7 +37,7 @@ EOF
 
 
 If the file '{test_case_file}' contains this test case,
-then {EXECUTABLE_PROGRAM} can execute it:
+then {program_name} can execute it:
 
 
 ```
