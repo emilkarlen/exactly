@@ -18,16 +18,16 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
     test_cases = [
-        _TestParseWithMissingRegExArgument,
-        _TestParseWithSuperfluousArgument,
+        _ParseWithMissingRegExArgument,
+        _ParseWithSuperfluousArgument,
 
-        _TestParseWithInvalidRegEx,
-        _TestShouldFailWhenNoLineMatchesRegEx,
-        _TestShouldPassWhenALineMatchesRegEx,
-        _TestShouldPassWhenAWholeLineMatchesRegEx,
+        _ParseWithInvalidRegEx,
+        _NoLineMatchesRegEx,
+        _ALineMatchesRegEx,
+        _AWholeLineMatchesRegEx,
 
-        _TestShouldReplaceEnvVarsWhenOptionIsGiven,
-        _TestShouldNotReplaceEnvVarsWhenOptionIsNotGiven,
+        _ShouldReplaceEnvVarsWhenOptionIsGiven,
+        _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven,
     ]
     return suite_for__conf__not_argument(configuration, test_cases)
 
@@ -37,7 +37,7 @@ class ActResultProducerFromHomeAndSds2Str(ActResultProducer):
         self.home_and_sds_2_str = home_and_sds_2_str
 
 
-class _TestParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumentBase):
+class _ParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
@@ -45,7 +45,7 @@ class _TestParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumen
                                                    maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option())))
 
 
-class _TestParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase):
+class _ParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
@@ -53,7 +53,7 @@ class _TestParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgument
                                                    maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option())))
 
 
-class _TestParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
+class _ParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().apply(
@@ -61,7 +61,7 @@ class _TestParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
                                                    maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option())))
 
 
-class _TestShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
+class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         actual_contents = lines_content(['no match',
                                          'NO MATCH',
@@ -78,7 +78,7 @@ class _TestShouldFailWhenNoLineMatchesRegEx(TestWithConfigurationAndNegationArgu
         )
 
 
-class _TestShouldPassWhenALineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
+class _ALineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         actual_contents = lines_content(['no match',
                                          'MATCH',
@@ -95,7 +95,7 @@ class _TestShouldPassWhenALineMatchesRegEx(TestWithConfigurationAndNegationArgum
         )
 
 
-class _TestShouldPassWhenAWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
+class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         actual_contents = lines_content(['no match',
                                          'MATCH',
@@ -112,7 +112,7 @@ class _TestShouldPassWhenAWholeLineMatchesRegEx(TestWithConfigurationAndNegation
         )
 
 
-class _TestShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArgumentBase):
+class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.home_dir_path)
@@ -130,7 +130,7 @@ class _TestShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegatio
         )
 
 
-class _TestShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegationArgumentBase):
+class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.home_dir_path)

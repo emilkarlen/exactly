@@ -34,15 +34,15 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
     test_cases_for_rel_opts = [
         _ErrorWhenExpectedFileDoesNotExist,
         _ErrorWhenExpectedFileIsADirectory,
-        _FaiWhenContentsDiffer,
-        _PassWhenContentsEquals,
+        _ContentsDiffer,
+        _ContentsEquals,
         _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced,
         _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced,
     ]
 
     test_cases_without_rel_opts = [
-        _PassWhenContentsEqualsAHereDocument,
-        _FailWhenContentsDoNotEqualAHereDocument,
+        _ContentsEqualsAHereDocument,
+        _ContentsDoNotEqualAHereDocument,
     ]
 
     return unittest.TestSuite([
@@ -102,7 +102,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
         )
 
 
-class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
@@ -118,7 +118,7 @@ class _FaiWhenContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegation
         )
 
 
-class _PassWhenContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
@@ -176,7 +176,7 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
         )
 
 
-class _PassWhenContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase):
+class _ContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
@@ -191,7 +191,7 @@ class _PassWhenContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgum
         )
 
 
-class _FailWhenContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentBase):
+class _ContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
