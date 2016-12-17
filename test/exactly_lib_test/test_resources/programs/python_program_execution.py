@@ -3,6 +3,7 @@ import pathlib
 import sys
 import unittest
 
+from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os
 
 
@@ -59,7 +60,7 @@ def assert_interpreter_is_available(puc: unittest.TestCase):
 
 
 def abs_path_to_interpreter_quoted_for_exactly() -> str:
-    return '"' + sys.executable + '"'
+    return quoting.file_name(sys.executable)
 
 
 def abs_path_to_interpreter() -> str:

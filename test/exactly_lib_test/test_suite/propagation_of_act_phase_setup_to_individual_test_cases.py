@@ -98,9 +98,7 @@ class ActorIsNotPropagatedToSubSuites(SetupForSuccessfulExecution):
             File('in-sub-suite-that-is-expected-to-have-default-actor.case',
                  lines_content([
                      '[act]',
-                     py_executable,
-                     # TODO want a quoted path here, so that it works on Windows.
-                     # But ExecutableFileInstruction doesn't handle quoted paths for the moment.
+                     abs_path_to_interpreter_quoted_for_exactly(),
                  ])),
         ])
 
