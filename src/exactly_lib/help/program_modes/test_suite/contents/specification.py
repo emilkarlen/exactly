@@ -17,7 +17,8 @@ class SpecificationRenderer(SectionContentsRenderer):
                  target_factory: cross_ref.CustomTargetInfoFactory = None):
         self._suite_help = suite_help
         self._format_map = {
-            'program_name': program_info.PROGRAM_NAME,
+            'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+            'executable_name': program_info.PROGRAM_NAME,
             'suite_program_mode': SUITE_COMMAND,
             'reporter_concept': formatting.concept(SUITE_REPORTER_CONCEPT.singular_name()),
         }
@@ -95,7 +96,7 @@ If the file 'example.suite' contains this text, then {program_name} can execute 
 
 
 ```
-> {program_name} {suite_program_mode} example.suite
+> {executable_name} {suite_program_mode} example.suite
 ...
 OK
 ```

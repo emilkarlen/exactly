@@ -7,6 +7,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_proces
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
+from exactly_lib.help.utils import formatting
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 
@@ -217,7 +218,11 @@ def _failure_condition_of_hard_error(setup: Setup) -> ParagraphItem:
 
 
 def _failure_condition_of_implementation_error(setup: Setup) -> ParagraphItem:
-    return para("""An error in the implementation of %s is detected.""" % program_info.PROGRAM_NAME)
+    return para("""An error in the implementation of %s is detected.""" % _program_name())
+
+
+def _program_name():
+    return formatting.program_name(program_info.PROGRAM_NAME)
 
 
 OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = (
@@ -227,7 +232,7 @@ OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = (
 
 def _other_errors(setup: Setup) -> list:
     ret_val = []
-    ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(program_name=program_info.PROGRAM_NAME,
+    ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(program_name=_program_name(),
                                                                  EXIT_CODE=EXIT_CODE_FROM_ARGUMENT_PARSER)))
     ret_val.extend(normalize_and_parse(_OTHER_NON_CLI_ERRORS))
     ret_val.append(_other_non_cli_errors(setup))

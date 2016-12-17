@@ -121,4 +121,4 @@ def entity(name: str) -> str:
 
 
 def program_name(name: str) -> str:
-    return '"' + name + '"'
+    return name.capitalize()
