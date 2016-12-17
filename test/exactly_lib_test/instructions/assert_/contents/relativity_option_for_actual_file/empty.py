@@ -30,11 +30,11 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
         self._check(
             new_source2(
                 args('{relativity_option} actual.txt {maybe_not} {empty}',
-                     relativity_option=self.option_configuration.option_string,
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option())),
+                     relativity_option=self.rel_opt.option_string,
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
             ArrangementPostAct(
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
 
@@ -43,13 +43,13 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
         self._check(
             new_source2(
                 args('{relativity_option} actual-dir {maybe_not} {empty}',
-                     relativity_option=self.option_configuration.option_string,
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option())),
+                     relativity_option=self.rel_opt.option_string,
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
             ArrangementPostAct(
-                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            self.option_configuration.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
 
@@ -58,13 +58,13 @@ class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationBas
         self._check(
             new_source2(
                 args('{relativity_option} actual.txt {maybe_not} {empty}',
-                     relativity_option=self.option_configuration.option_string,
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option())),
+                     relativity_option=self.rel_opt.option_string,
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
             ArrangementPostAct(
-                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'not empty contents')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.fail_if_un_negated_else_pass()),
+            Expectation(main_result=self.not_opt.fail_if_un_negated_else_pass()),
         )
 
 
@@ -73,11 +73,11 @@ class _ContentsIsEmpty(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check(
             new_source2(
                 args('{relativity_option} actual.txt {maybe_not} {empty}',
-                     relativity_option=self.option_configuration.option_string,
-                     maybe_not=self.maybe_not.nothing_if_un_negated_else_not_option())),
+                     relativity_option=self.rel_opt.option_string,
+                     maybe_not=self.not_opt.nothing_if_un_negated_else_not_option())),
             ArrangementPostAct(
-                home_or_sds_contents=self.option_configuration.populator_for_relativity_option_root(
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', '')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.pass_if_not_negated_else_fail()),
+            Expectation(main_result=self.not_opt.pass_if_not_negated_else_fail()),
         )
