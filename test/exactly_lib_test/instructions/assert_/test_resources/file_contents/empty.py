@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationBase, InstructionTestConfiguration
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
+    args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
+    suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     MkSubDirOfActAndMakeItCurrentDirectory
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -17,25 +17,10 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
         ActualFileIsEmpty,
         ActualFileIsNonEmpty,
     ]
-    return unittest.TestSuite([tc(configuration, False) for tc in test_cases] +
-                              [tc(configuration, True) for tc in test_cases])
+    return suite_for__conf__not_argument(configuration, test_cases)
 
 
-class TestBase(TestWithConfigurationBase):
-    def __init__(self,
-                 configuration: InstructionTestConfiguration,
-                 is_negated: bool):
-        super().__init__(configuration)
-        self.maybe_not = NotOperatorInfo(is_negated)
-
-    def shortDescription(self):
-        return (str(type(self)) + ' /\n' +
-                str(type(self.configuration)) + ' /\n' +
-                'is_negated=' + str(self.maybe_not.is_negated)
-                )
-
-
-class ParseShouldFailWhenThereAreSuperfluousArguments(TestBase):
+class ParseShouldFailWhenThereAreSuperfluousArguments(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         parser = self.configuration.new_parser()
         source = self.configuration.source_for(
@@ -45,7 +30,8 @@ class ParseShouldFailWhenThereAreSuperfluousArguments(TestBase):
             parser.apply(source)
 
 
-class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(TestBase):
+class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
+    TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         parser = self.configuration.new_parser()
         source = self.configuration.source_for(
@@ -57,7 +43,7 @@ class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(T
             parser.apply(source)
 
 
-class ActualFileIsEmpty(TestBase):
+class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
@@ -70,7 +56,7 @@ class ActualFileIsEmpty(TestBase):
         )
 
 
-class ActualFileIsNonEmpty(TestBase):
+class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         self._check(
             self.configuration.source_for(
