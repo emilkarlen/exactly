@@ -63,7 +63,10 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
 
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_equality import \
             EqualsAssertionInstruction
-        return EqualsAssertionInstruction(here_doc_or_file_ref_for_expected, actual, actual_file_transformer)
+        return EqualsAssertionInstruction(negated,
+                                          here_doc_or_file_ref_for_expected,
+                                          actual,
+                                          actual_file_transformer)
 
     def _parse_contains(negated: bool,
                         actual_file_transformer: ActualFileTransformer,
