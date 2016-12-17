@@ -7,11 +7,14 @@ class NotOperatorInfo:
     def __init__(self, is_negated: bool):
         self.is_negated = is_negated
 
-    def nothing__if_un_negated_else__not_option(self) -> str:  # TODO make to prop
+    @property
+    def nothing__if_un_negated_else__not_option(self) -> str:
         return parsing.NOT_ARGUMENT if self.is_negated else ''
 
+    @property
     def pass__if_un_negated_else__fail(self) -> va.ValueAssertion:
         return pfh_check.is_fail() if self.is_negated else pfh_check.is_pass()
 
+    @property
     def fail__if_un_negated_else__pass(self) -> va.ValueAssertion:
         return pfh_check.is_pass() if self.is_negated else pfh_check.is_fail()
