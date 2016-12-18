@@ -176,6 +176,8 @@ If the file ``mysuite.suite`` contains this text, then Exactly can run it::
   OK
 
 
+The result of a suite can also be reported as JUnit XML, by using ``--reporter junit``.
+
 
 HELP
 ====
