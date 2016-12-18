@@ -1,6 +1,7 @@
 import os
 import pathlib
 import tempfile
+from contextlib import contextmanager
 
 
 def resolved_path(existing_path: str) -> pathlib.Path:
@@ -70,3 +71,12 @@ def tmp_text_file_containing(contents: str,
     fo.write(contents)
     fo.close()
     return pathlib.Path(absolute_file_path)
+
+
+@contextmanager
+def preserved_cwd():
+    cwd_to_preserve = os.getcwd()
+    try:
+        yield
+    finally:
+        os.chdir(cwd_to_preserve)

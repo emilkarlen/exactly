@@ -8,7 +8,7 @@ from exactly_lib.execution import partial_execution
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
-from exactly_lib_test.test_resources.file_structure_utils import preserved_cwd
+from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from .basic import Result
 

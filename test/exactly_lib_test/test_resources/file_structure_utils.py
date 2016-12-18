@@ -3,17 +3,8 @@ import pathlib
 import tempfile
 from contextlib import contextmanager
 
-from exactly_lib.util.file_utils import resolved_path
+from exactly_lib.util.file_utils import resolved_path, preserved_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents, FileSystemElement
-
-
-@contextmanager
-def preserved_cwd():
-    cwd_to_preserve = os.getcwd()
-    try:
-        yield
-    finally:
-        os.chdir(cwd_to_preserve)
 
 
 @contextmanager
