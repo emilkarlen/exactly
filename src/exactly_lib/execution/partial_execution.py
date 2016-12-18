@@ -24,7 +24,7 @@ from exactly_lib.test_case.sandbox_directory_structure import construct_at, Sand
     stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
-from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
+from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name, preserved_cwd
 from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import result
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
@@ -158,22 +158,19 @@ def execute(act_phase_handling: ActPhaseHandling,
     The responsibility of this method is not the most natural!!
     Please refactor if a more natural responsibility evolves!
     """
-    cwd_before = None
     ret_val = None
     try:
-        cwd_before = os.getcwd()
-        exe_configuration = _ExecutionConfiguration(configuration,
-                                                    execution_directory_root_name_prefix)
+        with preserved_cwd():
+            exe_configuration = _ExecutionConfiguration(configuration,
+                                                        execution_directory_root_name_prefix)
 
-        test_case_execution = _PartialExecutor(exe_configuration,
-                                               act_phase_handling,
-                                               test_case,
-                                               initial_setup_settings)
-        ret_val = test_case_execution.execute()
-        return ret_val
+            test_case_execution = _PartialExecutor(exe_configuration,
+                                                   act_phase_handling,
+                                                   test_case,
+                                                   initial_setup_settings)
+            ret_val = test_case_execution.execute()
+            return ret_val
     finally:
-        if cwd_before is not None:
-            os.chdir(cwd_before)
         if not is_keep_execution_directory_root:
             if ret_val is not None and ret_val.has_sandbox_directory_structure:
                 shutil.rmtree(str(ret_val.sandbox_directory_structure.root_dir))
