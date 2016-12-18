@@ -18,7 +18,7 @@ A test case is written as a plain text file::
 
     [setup]
 
-    stdin a-test-address-book.txt
+    stdin an-address-book.txt
 
     [act]
 
@@ -33,110 +33,32 @@ A test case is written as a plain text file::
     EOF
 
 
-If the file 'addressbook.case' contains this test case, then ``exactly`` can execute it::
+If the file 'addressbook.case' contains this test case, then Exactly can execute it:
 
 
-    $ exactly addressbook.case
+    > exactly addressbook.case
     PASS
 
 
-``PASS`` means that the two assertions were satisfied.
+"PASS" means that the two assertions were satisfied.
 
-It also means that the prerequisites for running the test were satisfied:
+This test assumes that
+* the system under test - the `addressbook` program - is is found in the same directory as the test case file
+* the file "an-address-book.txt" (that is referenced from the test case) is found in the same directory as the test case file
 
-- the system under test - the ``addressbook`` program - is found in the same directory as the test case file
-- the test input file ``a-test-address-book.txt`` is found in the same directory as the test case file
-
-
-The following test case displays a potpurri of functionality. (Be aware that this test case does not make sense -
-it just displays some of ``exactly``'s functionality.)
-
-::
-
-    [conf]
+The `home` instruction can be used to change where Exactly looks for files referenced from the test case.
 
 
-    mode SKIP
-    # This will cause the test case to not be executed.
+Using shell commands
+--------------------
 
+Shell commands can be used both as the sut (system under test), and as assertions::
 
-    [setup]
-
-
-    install this-is-an-existing-file-in-same-dir-as-test-case.txt
-
-    dir first/second/third
-
-    file in/a/dir/file-name.txt <<EOF
-    contents of the file
-    EOF
-
-    dir root-dir-for-act-phase
-
-    cd root-dir-for-act-phase
-    # This will be current directory for the "act" phase. 
-
-    stdin <<EOF
-    this will be stdin for the program in the "act" phase
-    EOF
-    # (It is also possible to have stdin redirected to an existing file.)
-
-    env MY_VAR = 'value of my environment variable'
-
-    env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
-
-    run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
-
-
-    [act]
-
-
-    the-system-under-test
-
-
-    [before-assert]
-
-
-    cd ..
-    # Moves back to the original current directory.
-
-    $ sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
-
+    $ echo ${PATH}
 
     [assert]
 
-
-    exitcode != 0
-
-    stdout equals <<EOF
-    This is the expected output from the-system-under-test
-    EOF
-
-    stdout --with-replaced-env-vars contains 'EXACTLY_ACT:[0-9]+'
-
-    stderr empty
-
-    contents a-file.txt empty
-
-    contents a-second-file.txt ! empty
-
-    contents another-file.txt --with-replaced-env-vars equals expected-content.txt
-
-    contents file.txt contains 'my .* reg ex'
-
-    type actual-file directory
-
-    cd this-dir-is-where-we-should-be-for-the-following-assertions
-
-    run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
-
-
-    [cleanup]
-
-
-    $ umount my-test-mount-point
-
-    run my-prog-that-removes-database 'my test database'
+    $ < ../result/stdout tr ':' '\n' | grep '^/usr/local/bin$'
 
 
 [act] is the default phase
@@ -146,7 +68,7 @@ it just displays some of ``exactly``'s functionality.)
 ``[act]`` is not needed to indicate what is being checked, since the "act" phase is the default phase.
  
 The following is a valid test case,
-and if run by ``exactly``, it won't remove anything (since it is executed inside a temporary sandbox directory)::
+and if run by Exactly, it won't remove anything (since it is executed inside a temporary sandbox directory)::
 
     $ rm -rf *
 
@@ -158,8 +80,24 @@ Print output from the tested program
 If ``--act`` is used, the output of the tested program (the "act" phase) will become the output of ``exactly`` -
 stdout, stderr and exit code.
 
-The test case is executed in a sandbox, as usual.
+The test case is executed in a sandbox, as usual::
 
+
+    $ echo Hello World
+
+    [assert]
+
+    stdout contains Hello
+
+
+Then::
+
+
+    > exactly --act hello-world.case
+    Hello World
+
+
+The test case is executed in the sandbox, as usual.
 
 Keeping the sandbox directory for later inspection
 --------------------------------------------------
@@ -167,8 +105,40 @@ Keeping the sandbox directory for later inspection
 
 If ``--keep`` is used, the sandbox directory will not be deleted, and its name will be printed.
 
-This can be used to inspect the outcome of the "setup" phase, e.g.
+This can be used to inspect the outcome of the "setup" phase, e.g::
 
+    [setup]
+
+    file my-file.txt
+
+    [act]
+
+    my-prog my-file
+
+    [assert]
+
+    exitcode 0
+
+
+The ``act`` directory is the current directory when the test runs.
+The ``file`` instruction has put the file `my-file` there::
+
+    > exactly --keep my-test.case
+    /tmp/exactly-8fe6wbagmm0wutlt
+
+    > find /tmp/exactly-8fe6wbagmm0wutlt
+    /tmp/exactly-8fe6wbagmm0wutlt
+    /tmp/exactly-8fe6wbagmm0wutlt/tmp
+    /tmp/exactly-8fe6wbagmm0wutlt/tmp/user
+    /tmp/exactly-8fe6wbagmm0wutlt/tmp/internal
+    /tmp/exactly-8fe6wbagmm0wutlt/testcase
+    /tmp/exactly-8fe6wbagmm0wutlt/act
+    /tmp/exactly-8fe6wbagmm0wutlt/act/my-file.txt
+    /tmp/exactly-8fe6wbagmm0wutlt/result
+    /tmp/exactly-8fe6wbagmm0wutlt/result/exitcode
+    /tmp/exactly-8fe6wbagmm0wutlt/result/stderr
+    /tmp/exactly-8fe6wbagmm0wutlt/result/stdout
+    /tmp/exactly-8fe6wbagmm0wutlt/log
 
 TEST SUITES
 ===========
@@ -192,7 +162,7 @@ Tests can be grouped in suites::
     **/*.suite
 
 
-If the file ``mysuite.suite`` contains this text, then ``exactly`` can run it::
+If the file ``mysuite.suite`` contains this text, then Exactly can run it::
 
   $ exactly suite mysuite.suite
 
@@ -221,13 +191,17 @@ INSTALLING
 ==========
 
 
-``exactly`` is written entirely in Python and does not require any external libraries.
+Exactly is written entirely in Python and does not require any external libraries.
 
-``exactly`` requires Python >= 3.4 (not tested on earlier version of Python 3).
+Exactly requires Python >= 3.5 (not tested on earlier version of Python 3).
 
-Use ``pip`` to install::
+Use ``pip`` or ``pip3`` to install::
 
     $ pip install exactly
+
+or::
+
+    $ pip3 install exactly
 
 The program can also be run from a source distribution::
 
@@ -250,3 +224,11 @@ AUTHOR
 Emil Karlén
 
 emil@member.fsf.org
+
+
+DEDICATIONS
+===========
+
+
+Aron Karlén
+Tommy Karlsson
