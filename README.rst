@@ -52,7 +52,11 @@ The `home` instruction can be used to change where Exactly looks for files refer
 Using shell commands
 --------------------
 
-Shell commands can be used both as the sut (system under test), and as assertions::
+Shell commands can be used both as the sut (system under test), and in other phases.
+
+A shell command in the "assert" phase becomes an assertion that depends on the exit code
+from the command::
+
 
     $ echo ${PATH}
 
