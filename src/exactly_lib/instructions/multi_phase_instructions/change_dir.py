@@ -31,7 +31,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def _main_description_rest_body(self) -> list:
         return (relative_path_options_documentation.default_relativity_for_rel_opt_type(
             self.dir_arg.name,
-            relative_path_options_documentation.RelOptionType.REL_PWD) +
+            relative_path_options_documentation.RelOptionType.REL_CWD) +
                 self._paragraphs(_NO_DIR_ARG_MEANING) +
                 dt.paths_uses_posix_syntax())
 

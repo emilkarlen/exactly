@@ -115,7 +115,7 @@ def is_failure() -> ValueAssertion:
 
 
 class TestSuccessfulScenariosNoContent(TestCaseBase):
-    def test_file_relative_pwd(self):
+    def test_file_relative_cwd(self):
         self._check_argument(single_line_source('file-name.txt'),
                              sds_test.Arrangement(),
                              sds_test.Expectation(expected_action_result=is_success(),
@@ -159,7 +159,7 @@ class TestSuccessfulScenariosNoContent(TestCaseBase):
 
 
 class TestSuccessfulScenariosWithContent(TestCaseBase):
-    def test_file_relative_pwd(self):
+    def test_file_relative_cwd(self):
         source = argument_list_source(['file-name.txt', '<<MARKER'],
                                       ['single line',
                                        'MARKER'])

@@ -146,7 +146,7 @@ _REL_ACT_DESCRIPTION = """\
 {PATH} is relative the {ENV_VAR_ACT} directory.
 """
 
-_REL_PWD_DESCRIPTION = """\
+_REL_CWD_DESCRIPTION = """\
 {PATH} is relative the {pwd}.
 """
 
@@ -164,9 +164,9 @@ _ALL = {
                                               env.ENV_VAR_ACT,
                                               _REL_ACT_DESCRIPTION,
                                               [ENVIRONMENT_VARIABLE_CONCEPT]),
-    RelOptionType.REL_PWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
+    RelOptionType.REL_CWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
                                               formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-                                              _REL_PWD_DESCRIPTION,
+                                              _REL_CWD_DESCRIPTION,
                                               [CURRENT_WORKING_DIRECTORY_CONCEPT]),
     RelOptionType.REL_HOME: _RelOptionTypeInfo(options.REL_HOME_OPTION_NAME,
                                                formatting.concept(

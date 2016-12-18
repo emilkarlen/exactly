@@ -27,7 +27,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def main_description_rest(self) -> list:
         return (
             rel_path_doc.default_relativity_for_rel_opt_type(self.path_arg.name,
-                                                             rel_path_doc.RelOptionType.REL_PWD) +
+                                                             rel_path_doc.RelOptionType.REL_CWD) +
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:

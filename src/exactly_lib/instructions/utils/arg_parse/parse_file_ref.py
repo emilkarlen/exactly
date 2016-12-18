@@ -10,7 +10,7 @@ from exactly_lib.util.cli_syntax import option_parsing
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
     rel_opts.RelOptionType.REL_HOME: file_ref.rel_home,
-    rel_opts.RelOptionType.REL_PWD: file_ref.rel_cwd,
+    rel_opts.RelOptionType.REL_CWD: file_ref.rel_cwd,
     rel_opts.RelOptionType.REL_ACT: file_ref.rel_act,
     rel_opts.RelOptionType.REL_TMP: file_ref.rel_tmp_user,
 }
@@ -61,7 +61,7 @@ DEFAULT_CONFIG = ALL_REL_OPTIONS_CONFIG
 
 def non_home_config(argument_syntax_name: str) -> Configuration:
     return Configuration(ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME},
-                         rel_opts.RelOptionType.REL_PWD,
+                         rel_opts.RelOptionType.REL_CWD,
                          argument_syntax_name)
 
 
