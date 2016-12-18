@@ -1,6 +1,5 @@
 import pathlib
 
-from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
@@ -17,18 +16,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.cli_syntax.elements import argument as a
-
-
-def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(
-        ParserForContentsForStdout(),
-        TheInstructionDocumentation(instruction_name, 'stdout'))
-
-
-def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(
-        ParserForContentsForStderr(),
-        TheInstructionDocumentation(instruction_name, 'stderr'))
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -81,18 +68,6 @@ class ParserForContentsForActualValue(SingleInstructionParser):
         if content_instruction is None:
             raise SingleInstructionInvalidArgumentException(str(arguments))
         return content_instruction
-
-
-class ParserForContentsForStdout(ParserForContentsForActualValue):
-    def __init__(self):
-        super().__init__(actual_files.StdoutComparisonActualFile(),
-                         _StdXActualFileTransformerForEnvVarsReplacementBase())
-
-
-class ParserForContentsForStderr(ParserForContentsForActualValue):
-    def __init__(self):
-        super().__init__(actual_files.StderrComparisonActualFile(),
-                         _StdXActualFileTransformerForEnvVarsReplacementBase())
 
 
 class _StdXActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformerForEnvVarsReplacementBase):
