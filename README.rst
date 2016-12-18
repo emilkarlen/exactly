@@ -121,7 +121,9 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 
 
 The ``act`` directory is the current directory when the test runs.
-The ``file`` instruction has put the file ``my-file.txt`` there::
+The ``file`` instruction has put the file ``my-file.txt`` there.
+
+The result of the "act" phase is saved in the ``result/`` directory::
 
     > exactly --keep my-test.case
     /tmp/exactly-8fe6wbagmm0wutlt
