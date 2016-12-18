@@ -2,8 +2,6 @@ import unittest
 
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
-    ReplacedEnvVarsFileContentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
@@ -12,6 +10,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     RelativityOptionConfigurationForRelAct, RelativityOptionConfigurationForRelTmp, \
     MkSubDirOfActAndMakeItCurrentDirectory, TestWithConfigurationAndRelativityOptionAndNegationBase, \
     suite_for__conf__rel_opts__negations
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
+    ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
@@ -137,7 +137,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
 class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_generator = ReplacedEnvVarsFileContentsConstructor()
+        contents_generator = ReplacedEnvVarsFileContentsGenerator()
         self._check(
             self.configuration.source_for(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
@@ -157,7 +157,7 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
 class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_generator = ReplacedEnvVarsFileContentsConstructor()
+        contents_generator = ReplacedEnvVarsFileContentsGenerator()
 
         self._check(
             self.configuration.source_for(
