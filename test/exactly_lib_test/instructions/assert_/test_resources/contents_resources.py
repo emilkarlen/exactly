@@ -2,45 +2,45 @@ import os
 import pathlib
 
 from exactly_lib.execution import environment_variables
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util import file_utils
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActEnvironment, \
     ActResultProducer
 from exactly_lib_test.test_resources.execution.utils import ActResult
 
 
-class _ReplacedEnvVarsFileContentsConstructor:
+class ReplacedEnvVarsFileContentsConstructor:
     def __init__(self):
         self.sorted_env_var_keys = sorted(environment_variables.ALL_REPLACED_ENV_VARS)
 
-    def contents_before_replacement(self,
-                                    act_environment: ActEnvironment) -> str:
-        home_and_sds = act_environment.home_and_sds
+    def contents_before_replacement(self, home_and_sds: HomeAndSds) -> str:
         env_vars_dict = environment_variables.replaced(home_and_sds.home_dir_path,
                                                        home_and_sds.sds)
         values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
         return self.content_from_values(values_in_determined_order,
-                                        act_environment)
+                                        home_and_sds)
 
-    def expected_contents_after_replacement(self,
-                                            act_environment: ActEnvironment) -> str:
+    def expected_contents_after_replacement(self, home_and_sds: HomeAndSds) -> str:
         return self.content_from_values(self.sorted_env_var_keys,
-                                        act_environment)
+                                        home_and_sds)
 
-    def unexpected_contents_after_replacement(self,
-                                              act_environment: ActEnvironment) -> str:
+    def unexpected_contents_after_replacement(self, home_and_sds: HomeAndSds) -> str:
         """
         :return: Gives a variation of the expected result, that is not equal to the expected result.
         """
         return self.content_from_values(tuple(reversed(self.sorted_env_var_keys)),
-                                        act_environment)
+                                        home_and_sds)
 
     @staticmethod
     def content_from_values(values_in_determined_order: iter,
-                            act_environment: ActEnvironment) -> str:
+                            home_and_sds: HomeAndSds) -> str:
+        """
+        Generates a string with a combination of values that should, and should not, be replaced.
+        """
         all_values_concatenated = ''.join(values_in_determined_order)
         all_values_on_separate_lines = os.linesep.join(values_in_determined_order)
         all_values_concatenated_in_reverse_order = ''.join(reversed(values_in_determined_order))
-        sds = act_environment.home_and_sds.sds
+        sds = home_and_sds.sds
         should_not_be_replaced_values = os.linesep.join([str(sds.root_dir),
                                                          str(sds.result.root_dir)])
         return os.linesep.join([all_values_concatenated,
@@ -77,18 +77,18 @@ class ActResultProducerForContentsWithAllReplacedEnvVars(ActResultProducer):
         self._act_result_contents_setup = act_result_contents_setup
         self._source_file_writer = source_file_writer
         self._source_should_contain_expected_value = source_should_contain_expected_value
-        self._contents_constructor = _ReplacedEnvVarsFileContentsConstructor()
+        self._contents_constructor = ReplacedEnvVarsFileContentsConstructor()
 
     def apply(self, act_environment: ActEnvironment) -> ActResult:
         self._write_source_file(act_environment)
-        contents = self._contents_constructor.contents_before_replacement(act_environment)
+        contents = self._contents_constructor.contents_before_replacement(act_environment.home_and_sds)
         return self._act_result_contents_setup.result_for(contents)
 
     def _write_source_file(self, act_environment: ActEnvironment):
         if self._source_should_contain_expected_value:
-            contents = self._contents_constructor.expected_contents_after_replacement(act_environment)
+            contents = self._contents_constructor.expected_contents_after_replacement(act_environment.home_and_sds)
         else:
-            contents = self._contents_constructor.unexpected_contents_after_replacement(act_environment)
+            contents = self._contents_constructor.unexpected_contents_after_replacement(act_environment.home_and_sds)
         self._source_file_writer.write(act_environment, contents)
 
 
