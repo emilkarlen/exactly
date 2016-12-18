@@ -80,7 +80,7 @@ def _result_dir_description_paragraphs(instruction: AnyInstructionNameDictionary
         _RESULT_DIR_DESCRIPTION.format(phase=phase,
                                        instruction=instruction)))
     ret_val.append(docs.simple_header_only_list(sds.RESULT_FILE_ALL,
-                                                lists.ListType.VARIABLE_LIST))
+                                                lists.ListType.ITEMIZED_LIST))
     ret_val.extend(_result_dir_environment_variables(phase))
     return ret_val
 
@@ -129,4 +129,4 @@ def _directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
             sub_dirs_items = [_directory_structure_list(dir_wsd.sub_dirs)]
         items.append(lists.HeaderContentListItem(docs.text(dir_wsd.name + '/'), sub_dirs_items))
     return lists.HeaderContentList(items,
-                                   lists.Format(lists.ListType.VARIABLE_LIST))
+                                   lists.Format(lists.ListType.ITEMIZED_LIST))
