@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
-from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
-    ReplacedEnvVarsFileContentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     TestWithConfigurationAndRelativityOptionAndNegationBase, suite_for__conf__rel_opts__negations, \
     MkSubDirOfActAndMakeItCurrentDirectory, RelativityOptionConfigurationForRelTmp
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
+    ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import multiple
@@ -27,14 +27,14 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
 
 class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_constructor = ReplacedEnvVarsFileContentsConstructor()
+        contents_generator = ReplacedEnvVarsFileContentsGenerator()
         rel_tmp_opt = RelativityOptionConfigurationForRelTmp()
         populator_of_expected = rel_tmp_opt.populator_for_relativity_option_root_for_contents_from_fun(
             'expected.txt',
-            contents_constructor.expected_contents_after_replacement)
+            contents_generator.expected_contents_after_replacement)
         populator_of_actual = self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
             'actual.txt',
-            contents_constructor.contents_before_replacement)
+            contents_generator.contents_before_replacement)
         home_or_sds_populator = multiple([populator_of_expected, populator_of_actual])
         self._check(
             new_source2(
@@ -51,14 +51,14 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
 
 class _ContentsNotEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_constructor = ReplacedEnvVarsFileContentsConstructor()
+        contents_generator = ReplacedEnvVarsFileContentsGenerator()
         rel_tmp_opt = RelativityOptionConfigurationForRelTmp()
         populator_of_expected = rel_tmp_opt.populator_for_relativity_option_root_for_contents_from_fun(
             'expected.txt',
-            contents_constructor.unexpected_contents_after_replacement)
+            contents_generator.unexpected_contents_after_replacement)
         populator_of_actual = self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
             'actual.txt',
-            contents_constructor.contents_before_replacement)
+            contents_generator.contents_before_replacement)
         home_or_sds_populator = multiple([populator_of_expected, populator_of_actual])
         self._check(
             new_source2(
