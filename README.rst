@@ -130,21 +130,21 @@ The ``file`` instruction has put the file ``my-file.txt`` there.
 The result of the "act" phase is saved in the ``result/`` directory::
 
     > exactly --keep my-test.case
-    /tmp/exactly-8fe6wbagmm0wutlt
+    /tmp/exactly-1strbro1
 
-    > find /tmp/exactly-8fe6wbagmm0wutlt
-    /tmp/exactly-8fe6wbagmm0wutlt
-    /tmp/exactly-8fe6wbagmm0wutlt/tmp
-    /tmp/exactly-8fe6wbagmm0wutlt/tmp/user
-    /tmp/exactly-8fe6wbagmm0wutlt/tmp/internal
-    /tmp/exactly-8fe6wbagmm0wutlt/testcase
-    /tmp/exactly-8fe6wbagmm0wutlt/act
-    /tmp/exactly-8fe6wbagmm0wutlt/act/my-file.txt
-    /tmp/exactly-8fe6wbagmm0wutlt/result
-    /tmp/exactly-8fe6wbagmm0wutlt/result/exitcode
-    /tmp/exactly-8fe6wbagmm0wutlt/result/stderr
-    /tmp/exactly-8fe6wbagmm0wutlt/result/stdout
-    /tmp/exactly-8fe6wbagmm0wutlt/log
+    > find /tmp/exactly-1strbro1
+    /tmp/exactly-1strbro1
+    /tmp/exactly-1strbro1/tmp
+    /tmp/exactly-1strbro1/tmp/user
+    /tmp/exactly-1strbro1/tmp/internal
+    /tmp/exactly-1strbro1/testcase
+    /tmp/exactly-1strbro1/act
+    /tmp/exactly-1strbro1/act/my-file.txt
+    /tmp/exactly-1strbro1/result
+    /tmp/exactly-1strbro1/result/exitcode
+    /tmp/exactly-1strbro1/result/stderr
+    /tmp/exactly-1strbro1/result/stdout
+    /tmp/exactly-1strbro1/log
 
 TEST SUITES
 ===========
