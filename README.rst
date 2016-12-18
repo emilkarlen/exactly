@@ -183,8 +183,97 @@ Use ``exactly --help`` or ``exactly help`` to get brief help.
 EXAMPLES
 ========
 
-
 The ``examples/`` directory of the source distribution contains examples.
+
+
+The following test case displays a potpurri of functionality. (Beware that this test case does not make sense! -
+it just displays some of Exactly's functionality.)
+::
+
+    [conf]
+
+
+    mode SKIP
+    # This will cause the test case to not be executed.
+
+
+    [setup]
+
+
+    install this-is-an-existing-file-in-same-dir-as-test-case.txt
+
+    dir first/second/third
+
+    file in/a/dir/file-name.txt <<EOF
+    contents of the file
+    EOF
+
+    dir root-dir-for-act-phase
+
+    cd root-dir-for-act-phase
+    # This will be current directory for the "act" phase.
+
+    stdin <<EOF
+    this will be stdin for the program in the "act" phase
+    EOF
+    # (It is also possible to have stdin redirected to an existing file.)
+
+    env MY_VAR = 'value of my environment variable'
+
+    env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
+
+    run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
+
+
+    [act]
+
+
+    the-system-under-test
+
+
+    [before-assert]
+
+
+    cd ..
+    # Moves back to the original current directory.
+
+    $ sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
+
+
+    [assert]
+
+
+    exitcode != 0
+
+    stdout equals <<EOF
+    This is the expected output from the-system-under-test
+    EOF
+
+    stdout --with-replaced-env-vars contains 'EXACTLY_ACT:[0-9]+'
+
+    stderr empty
+
+    contents a-file.txt empty
+
+    contents a-second-file.txt ! empty
+
+    contents another-file.txt --with-replaced-env-vars equals expected-content.txt
+
+    contents file.txt contains 'my .* reg ex'
+
+    type actual-file directory
+
+    cd this-dir-is-where-we-should-be-for-the-following-assertions
+
+    run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
+
+
+    [cleanup]
+
+
+    $ umount my-test-mount-point
+
+    run my-prog-that-removes-database 'my test database'
 
 
 INSTALLING
