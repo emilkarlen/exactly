@@ -8,7 +8,7 @@ class HomeOrSdsPopulator:
         raise NotImplementedError()
 
 
-class HomeOrSdsPopulatorForHomeContents:
+class HomeOrSdsPopulatorForHomeContents(HomeOrSdsPopulator):
     def __init__(self, home_dir_contents: file_structure.DirContents):
         self.home_dir_contents = home_dir_contents
 
@@ -16,7 +16,7 @@ class HomeOrSdsPopulatorForHomeContents:
         self.home_dir_contents.write_to(home_and_sds.home_dir_path)
 
 
-class HomeOrSdsPopulatorForSdsContents:
+class HomeOrSdsPopulatorForSdsContents(HomeOrSdsPopulator):
     def __init__(self, sds_contents: sds_populator.SdsPopulator):
         self.sds_contents = sds_contents
 
