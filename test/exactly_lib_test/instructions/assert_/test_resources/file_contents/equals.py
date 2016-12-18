@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.execution import environment_variables
-from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
+    ReplacedEnvVarsFileContentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
@@ -137,18 +137,17 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
 class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        def home_dir_path_name(home_and_sds: HomeAndSds):
-            return str(home_and_sds.home_dir_path)
-
+        contents_generator = ReplacedEnvVarsFileContentsConstructor()
         self._check(
             self.configuration.source_for(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
-                home_dir_path_name,
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
-                    DirContents([File('expected.txt', environment_variables.ENV_VAR_HOME)])
+                contents_generator.contents_before_replacement,
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
+                    'expected.txt',
+                    contents_generator.expected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
@@ -158,18 +157,18 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
 class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        def home_dir_path_name(home_and_sds: HomeAndSds):
-            return str(home_and_sds.home_dir_path)
+        contents_generator = ReplacedEnvVarsFileContentsConstructor()
 
         self._check(
             self.configuration.source_for(
-                args('{maybe_not} {equals} {relativity_option} expected.txt',
+                args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
-                home_dir_path_name,
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
-                    DirContents([File('expected.txt', environment_variables.ENV_VAR_HOME)])
+                contents_generator.contents_before_replacement,
+                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
+                    'expected.txt',
+                    contents_generator.unexpected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
             Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
