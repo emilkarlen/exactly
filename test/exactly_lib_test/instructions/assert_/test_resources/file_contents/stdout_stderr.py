@@ -1,6 +1,9 @@
+import unittest
+
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, contains
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
 from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
@@ -43,3 +46,10 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
         return ActResultProducerFromActResult(act_result)
 
 
+def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
+    return unittest.TestSuite([
+        empty.suite_for(configuration),
+        equals.suite_for(configuration),
+        contains.suite_for(configuration),
+
+    ])

@@ -1,10 +1,10 @@
 import unittest
 
+import exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr
 from exactly_lib.instructions.assert_ import stderr as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import suite_for_std_file
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.contains import \
     ActResultProducerFromHomeAndSds2Str
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr import TestConfigurationForStdFile
@@ -17,7 +17,8 @@ from exactly_lib_test.test_resources.home_and_sds_test import Action
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        suite_for_std_file.suite_for(TestConfigurationForStderr()),
+        exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr.suite_for(
+            TestConfigurationForStderr()),
         suite_for_instruction_documentation(sut.setup_for_stderr('instruction name').documentation),
     ])
 
