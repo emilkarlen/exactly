@@ -33,7 +33,7 @@ A test case is written as a plain text file::
     EOF
 
 
-If the file 'addressbook.case' contains this test case, then Exactly can execute it:
+If the file 'addressbook.case' contains this test case, then Exactly can execute it::
 
 
     > exactly addressbook.case
@@ -121,7 +121,7 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 
 
 The ``act`` directory is the current directory when the test runs.
-The ``file`` instruction has put the file `my-file` there::
+The ``file`` instruction has put the file ``my-file.txt`` there::
 
     > exactly --keep my-test.case
     /tmp/exactly-8fe6wbagmm0wutlt
@@ -231,4 +231,5 @@ DEDICATIONS
 
 
 Aron Karlén
+
 Tommy Karlsson
