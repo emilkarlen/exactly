@@ -17,6 +17,7 @@ from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironme
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
@@ -24,7 +25,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
     ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
-from exactly_lib_test.test_resources.file_structure_utils import tmp_dir, preserved_cwd
+from exactly_lib_test.test_resources.file_structure_utils import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
