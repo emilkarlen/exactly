@@ -149,6 +149,11 @@ TEST SUITES
 Tests can be grouped in suites::
 
 
+    first.case
+    second.case
+
+or::
+
     [cases]
 
     helloworld.case
@@ -167,6 +172,9 @@ Tests can be grouped in suites::
 If the file ``mysuite.suite`` contains this text, then Exactly can run it::
 
   $ exactly suite mysuite.suite
+  ...
+  OK
+
 
 
 HELP
