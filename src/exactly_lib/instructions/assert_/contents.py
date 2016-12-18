@@ -126,7 +126,7 @@ class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVar
 
 _ACTUAL_RELATIVITY_CONFIGURATION = parse_file_ref.Configuration(
     parse_file_ref.ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
-    rel_opts.RelOptionType.REL_PWD,
+    rel_opts.RelOptionType.REL_CWD,
     'PATH')
 
 

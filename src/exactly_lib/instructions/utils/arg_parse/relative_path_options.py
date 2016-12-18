@@ -7,7 +7,7 @@ from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 class RelOptionType(enum.Enum):
     REL_ACT = 0
     REL_TMP = 1
-    REL_PWD = 2
+    REL_CWD = 2
     REL_HOME = 3
 
 
@@ -18,7 +18,7 @@ REL_HOME_OPTION_NAME = argument.OptionName(long_name='rel-home')
 
 REL_OPTIONS_MAP = {
     RelOptionType.REL_HOME: REL_HOME_OPTION_NAME,
-    RelOptionType.REL_PWD: REL_CWD_OPTION_NAME,
+    RelOptionType.REL_CWD: REL_CWD_OPTION_NAME,
     RelOptionType.REL_ACT: REL_ACT_OPTION_NAME,
     RelOptionType.REL_TMP: REL_TMP_OPTION_NAME,
 }
