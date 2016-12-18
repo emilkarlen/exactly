@@ -179,11 +179,6 @@ def execute(act_phase_handling: ActPhaseHandling,
                 shutil.rmtree(str(ret_val.sandbox_directory_structure.root_dir))
 
 
-def construct_sds(execution_directory_root_name_prefix: str) -> SandboxDirectoryStructure:
-    sds_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
-    return construct_at(resolved_path_name(sds_structure_root))
-
-
 class _PartialExecutor:
     def __init__(self,
                  exe_configuration: _ExecutionConfiguration,
@@ -405,8 +400,8 @@ class _PartialExecutor:
         os.chdir(str(self._sds.act_dir))
 
     def __construct_and_set_sds(self) -> SandboxDirectoryStructure:
-        sds_structure_root = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
-        self.__sandbox_directory_structure = construct_sds(sds_structure_root)
+        sds_root_dir_name = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
+        self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
 
     def __post_sds_environment(self,
                                phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
