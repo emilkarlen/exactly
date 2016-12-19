@@ -1,0 +1,28 @@
+#
+# Since the python interpreter is available on all systems that
+# Exactly runs on, there is special syntax for using it.
+# (to avoid being dependent on paths).
+#
+
+[setup]
+
+
+run --python --interpret my-py-setup-helper.py 'with argument'
+
+run ( --python -c ) --source print('This does some setup!')
+
+
+[act]
+
+
+system-under-test
+
+
+[assert]
+
+
+#
+# Assertion passes if exit code from the program is 0.
+#
+
+run ( --python -c ) --source print('Unconditionally success!'); exit(0)
