@@ -5,6 +5,27 @@ from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsVa
 from exactly_lib.test_case.phases.common import HomeAndSds
 
 
+class Expectation:
+    def __init__(self,
+                 passes_pre_sds: bool = True,
+                 passes_post_sds: bool = True):
+        self.passes_pre_sds = passes_pre_sds
+        self.passes_post_sds = passes_post_sds
+
+
+def expect_passes_all_validations() -> Expectation:
+    return Expectation(True, True)
+
+
+def check2(put: unittest.TestCase,
+           validator: PreOrPostSdsValidator,
+           home_and_sds: HomeAndSds,
+           expectation: Expectation):
+    check(put, validator, home_and_sds,
+          expectation.passes_pre_sds,
+          expectation.passes_post_sds)
+
+
 def check(put: unittest.TestCase,
           validator: PreOrPostSdsValidator,
           home_and_sds: HomeAndSds,
