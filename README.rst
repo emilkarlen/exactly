@@ -43,10 +43,10 @@ If the file 'addressbook.case' contains this test case, then Exactly can execute
 "PASS" means that the two assertions were satisfied.
 
 This test assumes that
-* the system under test - the `addressbook` program - is is found in the same directory as the test case file
-* the file "an-address-book.txt" (that is referenced from the test case) is found in the same directory as the test case file
+ * the system under test - the `addressbook` program - is is found in the same directory as the test case file
+ * the file "an-address-book.txt" (that is referenced from the test case) is found in the same directory as the test case file
 
-The `home` instruction can be used to change where Exactly looks for files referenced from the test case.
+The ``home`` instruction can be used to change the directory where Exactly looks for files referenced from the test case.
 
 
 Using shell commands
@@ -81,11 +81,9 @@ Print output from the tested program
 ------------------------------------
 
 
-If ``--act`` is used, the output of the tested program (the "act" phase) will become the output of ``exactly`` -
+If ``--act`` is used, the output of the "act" phase (the tested program) will become the output of ``exactly`` -
 stdout, stderr and exit code.
-
-The test case is executed in a sandbox, as usual::
-
+::
 
     $ echo Hello World
 
@@ -93,9 +91,7 @@ The test case is executed in a sandbox, as usual::
 
     stdout contains Hello
 
-
-Then::
-
+::
 
     > exactly --act hello-world.case
     Hello World
@@ -113,21 +109,18 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 
     [setup]
 
+    dir  my-dir
     file my-file.txt
 
     [act]
 
-    my-prog my-file
+    my-prog my-file.txt
 
     [assert]
 
     exitcode 0
 
-
-The ``act`` directory is the current directory when the test runs.
-The ``file`` instruction has put the file ``my-file.txt`` there.
-
-The result of the "act" phase is saved in the ``result/`` directory::
+::
 
     > exactly --keep my-test.case
     /tmp/exactly-1strbro1
@@ -139,12 +132,18 @@ The result of the "act" phase is saved in the ``result/`` directory::
     /tmp/exactly-1strbro1/tmp/internal
     /tmp/exactly-1strbro1/testcase
     /tmp/exactly-1strbro1/act
+    /tmp/exactly-1strbro1/act/my-dir
     /tmp/exactly-1strbro1/act/my-file.txt
     /tmp/exactly-1strbro1/result
     /tmp/exactly-1strbro1/result/exitcode
     /tmp/exactly-1strbro1/result/stderr
     /tmp/exactly-1strbro1/result/stdout
     /tmp/exactly-1strbro1/log
+
+The ``act/`` directory is the current directory when the test starts.
+The ``file`` instruction has put the file ``my-file.txt`` there.
+
+The result of the "act" phase is saved in the ``result/`` directory.
 
 TEST SUITES
 ===========
@@ -175,7 +174,7 @@ or::
 
 If the file ``mysuite.suite`` contains this text, then Exactly can run it::
 
-  $ exactly suite mysuite.suite
+  > exactly suite mysuite.suite
   ...
   OK
 
@@ -201,9 +200,11 @@ EXAMPLES
 
 The ``examples/`` directory of the source distribution contains examples.
 
+A complex example
+-----------------
 
-The following test case displays a potpurri of functionality. (Beware that this test case does not make sense! -
-it just displays some of Exactly's functionality.)
+The following test case displays a potpurri of features. (Beware that this test case does not make sense! -
+it just displays some of Exactly's features.)
 ::
 
     [conf]
@@ -239,6 +240,8 @@ it just displays some of Exactly's functionality.)
     env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
+
+    run --python --interpret custom-setup.py 'with an argument'
 
     run ( --python -c ) --source print('Setting up things...')
 
@@ -285,7 +288,15 @@ it just displays some of Exactly's functionality.)
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
 
-    run ( --python -c ) --source print('Make test fail, since exit code is non-zero:'); exit(1)
+    run --python --interpret custom-assertion.py
+
+
+    cd --rel-act .
+    cd ../result
+    $ sed '1,10d' stdout > modified-stdout.txt
+    contents modified-stdout.txt equals <<EOF
+    this should be the single line of modified-stdout.txt
+    EOF
 
 
     [cleanup]
@@ -306,22 +317,22 @@ Exactly requires Python >= 3.5 (not tested on earlier version of Python 3).
 
 Use ``pip`` or ``pip3`` to install::
 
-    $ pip install exactly
+    > pip install exactly
 
 or::
 
-    $ pip3 install exactly
+    > pip3 install exactly
 
 The program can also be run from a source distribution::
 
-    $ python3 src/default-main-program-runner.py
+    > python3 src/default-main-program-runner.py
 
 
 DEVELOPMENT STATUS
 ==================
 
 
-Current version is fully functional, but syntax of test cases and instructions are experimental.
+Current version is fully functional, but syntax and semantics are experimental.
 
 Comments are welcome!
 
@@ -335,8 +346,8 @@ Emil Karlén
 emil@member.fsf.org
 
 
-DEDICATIONS
-===========
+DEDICATION
+==========
 
 
 Aron Karlén
