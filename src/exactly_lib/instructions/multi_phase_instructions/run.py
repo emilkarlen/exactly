@@ -7,7 +7,8 @@ from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
-from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION
+from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
+    PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -24,6 +25,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+
 
 def instruction_parser(
         instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> SingleInstructionParser:
@@ -122,13 +124,22 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         executable_path_arguments = [self.optional_relativity,
                                      self.mandatory_path]
-        executable_in_parenthesis_arguments = ([a.Single(a.Multiplicity.MANDATORY, a.Constant('('))] +
+        left_parenthesis = a.Single(a.Multiplicity.MANDATORY, a.Constant('('))
+        right_parenthesis = a.Single(a.Multiplicity.MANDATORY, a.Constant(')'))
+        executable_in_parenthesis_arguments = ([left_parenthesis] +
                                                executable_path_arguments +
                                                [self.zero_or_more_generic_args,
-                                                a.Single(a.Multiplicity.MANDATORY, a.Constant(')'))])
+                                                right_parenthesis])
         default_relativity_desc = rel_path_doc.default_relativity_for_rel_opt_type(
             dt.PATH_ARGUMENT.name,
             PARSE_FILE_REF_CONFIGURATION.default_option)
+        python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
+                                               a.Option(PYTHON_EXECUTABLE_OPTION_NAME))
+        python_interpreter_arguments = [python_interpreter_argument]
+        python_interpreter_in_parenthesis_arguments = [left_parenthesis,
+                                                       python_interpreter_argument,
+                                                       self.zero_or_more_generic_args,
+                                                       right_parenthesis]
         return [
             SyntaxElementDescription(
                 self.executable_arg.name,
@@ -140,6 +151,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                       self._paragraphs('An executable program with arguments. '
                                                        '(Must be inside parentheses.)') +
                                       default_relativity_desc),
+                    InvokationVariant(self._cl_syntax_for_args(python_interpreter_arguments),
+                                      self._paragraphs('The Python 3 interpreter.')),
+                    InvokationVariant(self._cl_syntax_for_args(python_interpreter_in_parenthesis_arguments),
+                                      self._paragraphs('The Python 3 interpreter. '
+                                                       '(Must be inside parentheses.)')),
                 ]),
             rel_path_doc.relativity_syntax_element_description(self.relativity_arg_path,
                                                                PARSE_FILE_REF_CONFIGURATION.accepted_options),
