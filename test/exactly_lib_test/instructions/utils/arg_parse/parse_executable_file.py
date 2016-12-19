@@ -12,6 +12,8 @@ from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validat
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
 from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator, \
+    HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
@@ -148,13 +150,26 @@ class TestParseInvalidSyntax(unittest.TestCase):
             sut.parse(TokenStream('--invalid-option FILE'))
 
 
+class TestParsePythonInterpreter(unittest.TestCase):
+    def test_executable_no_parentheses__and_no_following_arguments_on_command_line(self):
+        self.fail('todo')
+
+    def test_executable_no_parentheses__and_following_arguments_on_command_line(self):
+        self.fail('todo')
+
+    def test_executable_in_parentheses__and_no_following_arguments_on_command_line(self):
+        self.fail('todo')
+
+    def test_executable_in_parentheses__and_following_arguments_on_command_line(self):
+        self.fail('todo')
+
+
 class RelHomeConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_HOME_OPTION, True)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
-        return (DirContents([file]),
-                sds_populator.empty())
+    def file_installation(self, file: File) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForHomeContents(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -166,9 +181,8 @@ class DefaultConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__('', True)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
-        return (DirContents([file]),
-                sds_populator.empty())
+    def file_installation(self, file: File) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForHomeContents(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -180,9 +194,9 @@ class RelActConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_ACT_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
-        return (DirContents([]),
-                sds_populator.act_dir_contents(DirContents([file])))
+    def file_installation(self, file: File) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForSdsContents(
+            sds_populator.act_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
@@ -194,9 +208,9 @@ class RelTmpConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_TMP_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
-        return (DirContents([]),
-                sds_populator.tmp_user_dir_contents(DirContents([file])))
+    def file_installation(self, file: File) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForSdsContents(
+            sds_populator.tmp_user_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
@@ -208,9 +222,9 @@ class RelCwdConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_CWD_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
-        return (DirContents([]),
-                sds_populator.act_dir_contents(DirContents([file])))
+    def file_installation(self, file: File) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForSdsContents(
+            sds_populator.act_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
@@ -265,13 +279,14 @@ class TestParseAbsolutePath(unittest.TestCase):
                                  passes_pre_sds=False)
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithoutArguments))
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
+    ret_val.addTest(unittest.makeSuite(TestParsePythonInterpreter))
     ret_val.addTests(suite_for(conf)
                      for conf in configurations())
     return ret_val

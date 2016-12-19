@@ -6,9 +6,9 @@ from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
-from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
-from exactly_lib_test.test_resources.file_structure import File, DirContents, executable_file, empty_file
+from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file
 
 
 class RelativityConfiguration:
@@ -18,7 +18,7 @@ class RelativityConfiguration:
         self.option = option
         self.exists_pre_sds = exists_pre_sds
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
+    def file_installation(self, file: File) -> HomeOrSdsPopulator:
         raise NotImplementedError()
 
     def installed_file_path(self,
@@ -44,9 +44,7 @@ class CheckBase(unittest.TestCase):
 
     def _home_and_sds_and_test_as_curr_dir(self, file: File) -> HomeAndSds:
         contents = self.configuration.file_installation(file)
-        return home_and_sds_and_test_as_curr_dir(
-            home_dir_contents=contents[0],
-            sds_contents=contents[1])
+        return home_and_sds_and_test_as_curr_dir(home_or_sds_contents=contents)
 
     def _assert_passes_validation(self, actual: sut.ExecutableFile, home_and_sds: HomeAndSds):
         validator_util.check(self, actual.validator, home_and_sds)
