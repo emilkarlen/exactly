@@ -43,6 +43,7 @@ If the file 'addressbook.case' contains this test case, then Exactly can execute
 "PASS" means that the two assertions were satisfied.
 
 This test assumes that
+
  * the system under test - the `addressbook` program - is is found in the same directory as the test case file
  * the file "an-address-book.txt" (that is referenced from the test case) is found in the same directory as the test case file
 
@@ -52,11 +53,9 @@ The ``home`` instruction can be used to change the directory where Exactly looks
 Using shell commands
 --------------------
 
-Shell commands can be used both as the sut (system under test), and in other phases.
+Shell commands can be used both in the "act" phase (the system under test), and in other phases.
 
-A shell command in the "assert" phase becomes an assertion that depends on the exit code
-from the command::
-
+::
 
     [act]
 
@@ -65,6 +64,10 @@ from the command::
     [assert]
 
     $ < ../result/stdout tr ':' '\n' | grep '^/usr/local/bin$'
+
+
+A shell command in the "assert" phase becomes an assertion that depends on the exit code
+from the command.
 
 
 [act] is the default phase
@@ -146,6 +149,8 @@ The ``act/`` directory is the current directory when the test starts.
 The ``file`` instruction has put the file ``my-file.txt`` there.
 
 The result of the "act" phase is saved in the ``result/`` directory.
+
+``tmp/user/`` is a directory where the test can put temporary files.
 
 TEST SUITES
 ===========
