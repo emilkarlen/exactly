@@ -58,6 +58,8 @@ A shell command in the "assert" phase becomes an assertion that depends on the e
 from the command::
 
 
+    [act]
+
     $ echo ${PATH}
 
     [assert]
