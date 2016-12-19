@@ -155,13 +155,16 @@ class TestParseInvalidSyntax(unittest.TestCase):
 
 
 class TestCaseConfiguration:
-    def __init__(self, executable: str):
+    def __init__(self,
+                 executable: str,
+                 file_ref_type_exists_pre_eds: bool):
         self.executable = executable
+        self.file_ref_type_exists_pre_eds = file_ref_type_exists_pre_eds
 
 
 class TestCaseConfigurationForPythonExecutable(TestCaseConfiguration):
     def __init__(self):
-        super().__init__(sut.PYTHON_EXECUTABLE_OPTION_STRING)
+        super().__init__(sut.PYTHON_EXECUTABLE_OPTION_STRING, True)
 
 
 class ExecutableTestBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
@@ -179,7 +182,7 @@ class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
         utils.check(self,
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(exists_pre_eds=True,
+                    utils.Expectation(exists_pre_eds=self.configuration.file_ref_type_exists_pre_eds,
                                       remaining_argument=utils.token_stream_is_null,
                                       validation_result=validator_util.expect_passes_all_validations(),
                                       arguments_of_exe_file_ref=[]))
@@ -191,7 +194,7 @@ class NoParenthesesAndFollowingArguments(ExecutableTestBase):
         utils.check(self,
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(exists_pre_eds=True,
+                    utils.Expectation(exists_pre_eds=self.configuration.file_ref_type_exists_pre_eds,
                                       remaining_argument=utils.token_stream_is('arg1 -arg2'),
                                       validation_result=validator_util.expect_passes_all_validations(),
                                       arguments_of_exe_file_ref=[]))
@@ -203,7 +206,7 @@ class ParenthesesWithNoArgumentsInsideAndNoFollowingArguments(ExecutableTestBase
         utils.check(self,
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(exists_pre_eds=True,
+                    utils.Expectation(exists_pre_eds=self.configuration.file_ref_type_exists_pre_eds,
                                       remaining_argument=utils.token_stream_is_null,
                                       validation_result=validator_util.expect_passes_all_validations(),
                                       arguments_of_exe_file_ref=[]))
@@ -215,7 +218,7 @@ class ParenthesesWithNoArgumentsInsideAndFollowingArguments(ExecutableTestBase):
         utils.check(self,
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(exists_pre_eds=True,
+                    utils.Expectation(exists_pre_eds=self.configuration.file_ref_type_exists_pre_eds,
                                       remaining_argument=utils.token_stream_is('arg1 -arg2'),
                                       validation_result=validator_util.expect_passes_all_validations(),
                                       arguments_of_exe_file_ref=[]))
@@ -227,7 +230,7 @@ class ParenthesesWithArgumentsInsideAndNoFollowingArguments(ExecutableTestBase):
         utils.check(self,
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(exists_pre_eds=True,
+                    utils.Expectation(exists_pre_eds=self.configuration.file_ref_type_exists_pre_eds,
                                       remaining_argument=utils.token_stream_is_null,
                                       validation_result=validator_util.expect_passes_all_validations(),
                                       arguments_of_exe_file_ref=['inside1', '--inside2']))
