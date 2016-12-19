@@ -44,7 +44,7 @@ If the file 'addressbook.case' contains this test case, then Exactly can execute
 
 This test assumes that
 
- * the system under test - the `addressbook` program - is is found in the same directory as the test case file
+ * the system under test - the ``addressbook`` program - is is found in the same directory as the test case file
  * the file "an-address-book.txt" (that is referenced from the test case) is found in the same directory as the test case file
 
 The ``home`` instruction can be used to change the directory where Exactly looks for files referenced from the test case.
@@ -77,7 +77,7 @@ from the command.
 ``[act]`` is not needed to indicate what is being checked, since the "act" phase is the default phase.
  
 The following is a valid test case,
-and if run by Exactly, it won't remove anything (since it is executed inside a temporary sandbox directory)::
+and if run by Exactly, it won't remove anything, since it is executed inside a temporary sandbox directory::
 
     $ rm -rf *
 
