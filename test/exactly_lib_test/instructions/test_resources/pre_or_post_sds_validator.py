@@ -17,6 +17,10 @@ def expect_passes_all_validations() -> Expectation:
     return Expectation(True, True)
 
 
+def expect_validation_pre_eds(result: bool) -> Expectation:
+    return Expectation(result, True)
+
+
 def check2(put: unittest.TestCase,
            validator: PreOrPostSdsValidator,
            home_and_sds: HomeAndSds,
