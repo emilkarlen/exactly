@@ -9,7 +9,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
-from exactly_lib_test.instructions.test_resources.executable_file_test_utils import Configuration, suite_for
+from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
@@ -146,7 +146,7 @@ class TestParseInvalidSyntax(unittest.TestCase):
             sut.parse(TokenStream('--invalid-option FILE'))
 
 
-class RelHomeConfiguration(Configuration):
+class RelHomeConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_HOME_OPTION, True)
 
@@ -160,7 +160,7 @@ class RelHomeConfiguration(Configuration):
         return home_and_sds.home_dir_path / file_name
 
 
-class DefaultConfiguration(Configuration):
+class DefaultConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__('', True)
 
@@ -174,7 +174,7 @@ class DefaultConfiguration(Configuration):
         return home_and_sds.home_dir_path / file_name
 
 
-class RelActConfiguration(Configuration):
+class RelActConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_ACT_OPTION, False)
 
@@ -188,7 +188,7 @@ class RelActConfiguration(Configuration):
         return home_and_sds.sds.act_dir / file_name
 
 
-class RelTmpConfiguration(Configuration):
+class RelTmpConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_TMP_OPTION, False)
 
@@ -202,7 +202,7 @@ class RelTmpConfiguration(Configuration):
         return home_and_sds.sds.tmp.user_dir / file_name
 
 
-class RelCwdConfiguration(Configuration):
+class RelCwdConfiguration(RelativityConfiguration):
     def __init__(self):
         super().__init__(option.REL_CWD_OPTION, False)
 

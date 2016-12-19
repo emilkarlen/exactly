@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_tes
 from exactly_lib_test.test_resources.file_structure import File, DirContents, executable_file, empty_file
 
 
-class Configuration:
+class RelativityConfiguration:
     def __init__(self,
                  option: str,
                  exists_pre_sds: bool):
@@ -28,7 +28,7 @@ class Configuration:
 
 
 class CheckBase(unittest.TestCase):
-    def __init__(self, configuration: Configuration):
+    def __init__(self, configuration: RelativityConfiguration):
         super().__init__()
         self.configuration = configuration
 
@@ -60,7 +60,7 @@ class CheckBase(unittest.TestCase):
 
 
 class CheckExistingFile(CheckBase):
-    def __init__(self, configuration: Configuration):
+    def __init__(self, configuration: RelativityConfiguration):
         super().__init__(configuration)
 
     def runTest(self):
@@ -78,7 +78,7 @@ class CheckExistingFile(CheckBase):
 
 
 class CheckExistingFileWithArguments(CheckBase):
-    def __init__(self, configuration: Configuration):
+    def __init__(self, configuration: RelativityConfiguration):
         super().__init__(configuration)
 
     def runTest(self):
@@ -99,7 +99,7 @@ class CheckExistingFileWithArguments(CheckBase):
 
 
 class CheckExistingButNonExecutableFile(CheckBase):
-    def __init__(self, configuration: Configuration):
+    def __init__(self, configuration: RelativityConfiguration):
         super().__init__(configuration)
 
     def runTest(self):
@@ -112,7 +112,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
 
 
 class CheckNonExistingFile(CheckBase):
-    def __init__(self, configuration: Configuration):
+    def __init__(self, configuration: RelativityConfiguration):
         super().__init__(configuration)
 
     def runTest(self):
@@ -129,7 +129,7 @@ class CheckNonExistingFile(CheckBase):
             self._assert_does_not_pass_validation(exe_file, home_and_sds)
 
 
-def suite_for(configuration: Configuration) -> list:
+def suite_for(configuration: RelativityConfiguration) -> list:
     ret_val = unittest.TestSuite()
     ret_val.addTests([CheckExistingFile(configuration),
                       CheckExistingFileWithArguments(configuration),
