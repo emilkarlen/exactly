@@ -49,9 +49,6 @@ class FileRefRelSds(FileRef):
         """
         raise ValueError('This file does not exist before SDS is constructed')
 
-    def file_path_rel_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
     def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.file_path_post_sds(sds)
 
