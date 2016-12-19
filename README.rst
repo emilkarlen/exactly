@@ -240,6 +240,8 @@ it just displays some of Exactly's functionality.)
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
 
+    run ( --python -c ) --source print('Setting up things...')
+
 
     [act]
 
@@ -282,6 +284,8 @@ it just displays some of Exactly's functionality.)
     cd this-dir-is-where-we-should-be-for-the-following-assertions
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
+
+    run ( --python -c ) --source print('Make test fail, since exit code is non-zero:'); exit(1)
 
 
     [cleanup]
