@@ -167,6 +167,11 @@ class TestCaseConfigurationForPythonExecutable(TestCaseConfiguration):
         super().__init__(sut.PYTHON_EXECUTABLE_OPTION_STRING, True)
 
 
+class TestCaseConfigurationForAbsolutePathOfExistingExecutableFile(TestCaseConfiguration):
+    def __init__(self):
+        super().__init__(quoting.file_name(sys.executable), True)
+
+
 class ExecutableTestBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
     def __init__(self, configuration: TestCaseConfiguration):
         super().__init__(configuration)
@@ -379,13 +384,18 @@ class TestParseAbsolutePath(unittest.TestCase):
 
 
 def suite() -> unittest.TestSuite:
+    test_case_configurations = [
+        TestCaseConfigurationForPythonExecutable(),
+        TestCaseConfigurationForAbsolutePathOfExistingExecutableFile(),
+    ]
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithoutArguments))
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
-    ret_val.addTests(suite_for_test_case_configuration(TestCaseConfigurationForPythonExecutable()))
+    for tc_conf in test_case_configurations:
+        ret_val.addTests(suite_for_test_case_configuration(tc_conf))
     ret_val.addTests(suite_for(conf)
                      for conf in configurations())
     return ret_val
