@@ -8,9 +8,11 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
 from exactly_lib_test.test_resources import quoting
+from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds_pop
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
@@ -18,6 +20,8 @@ from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_tes
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
+from exactly_lib_test.test_resources.test_case_base_with_short_description import \
+    TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
 
 class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
@@ -150,18 +154,110 @@ class TestParseInvalidSyntax(unittest.TestCase):
             sut.parse(TokenStream('--invalid-option FILE'))
 
 
-class TestParsePythonInterpreter(unittest.TestCase):
-    def test_executable_no_parentheses__and_no_following_arguments_on_command_line(self):
-        self.fail('todo')
+class TestCaseConfiguration:
+    def __init__(self, executable: str):
+        self.executable = executable
 
-    def test_executable_no_parentheses__and_following_arguments_on_command_line(self):
-        self.fail('todo')
 
-    def test_executable_in_parentheses__and_no_following_arguments_on_command_line(self):
-        self.fail('todo')
+class TestCaseConfigurationForPythonExecutable(TestCaseConfiguration):
+    def __init__(self):
+        super().__init__(sut.PYTHON_EXECUTABLE_OPTION_STRING)
 
-    def test_executable_in_parentheses__and_following_arguments_on_command_line(self):
-        self.fail('todo')
+
+class ExecutableTestBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
+    def __init__(self, configuration: TestCaseConfiguration):
+        super().__init__(configuration)
+        self.configuration = configuration
+
+    def _arg(self, template: str) -> str:
+        return template.format(executable=self.configuration.executable)
+
+
+class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
+    def runTest(self):
+        instruction_argument = self._arg('{executable}')
+        utils.check(self,
+                    instruction_argument,
+                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Expectation(exists_pre_eds=True,
+                                      remaining_argument=utils.token_stream_is_null,
+                                      validation_result=validator_util.expect_passes_all_validations(),
+                                      arguments_of_exe_file_ref=[]))
+
+
+class NoParenthesesAndFollowingArguments(ExecutableTestBase):
+    def runTest(self):
+        instruction_argument = self._arg('{executable} arg1 -arg2')
+        utils.check(self,
+                    instruction_argument,
+                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Expectation(exists_pre_eds=True,
+                                      remaining_argument=utils.token_stream_is('arg1 -arg2'),
+                                      validation_result=validator_util.expect_passes_all_validations(),
+                                      arguments_of_exe_file_ref=[]))
+
+
+class ParenthesesWithNoArgumentsInsideAndNoFollowingArguments(ExecutableTestBase):
+    def runTest(self):
+        instruction_argument = self._arg('( {executable} )')
+        utils.check(self,
+                    instruction_argument,
+                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Expectation(exists_pre_eds=True,
+                                      remaining_argument=utils.token_stream_is_null,
+                                      validation_result=validator_util.expect_passes_all_validations(),
+                                      arguments_of_exe_file_ref=[]))
+
+
+class ParenthesesWithNoArgumentsInsideAndFollowingArguments(ExecutableTestBase):
+    def runTest(self):
+        instruction_argument = self._arg('( {executable} ) arg1 -arg2')
+        utils.check(self,
+                    instruction_argument,
+                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Expectation(exists_pre_eds=True,
+                                      remaining_argument=utils.token_stream_is('arg1 -arg2'),
+                                      validation_result=validator_util.expect_passes_all_validations(),
+                                      arguments_of_exe_file_ref=[]))
+
+
+class ParenthesesWithArgumentsInsideAndNoFollowingArguments(ExecutableTestBase):
+    def runTest(self):
+        instruction_argument = self._arg('( {executable} inside1 --inside2 )')
+        utils.check(self,
+                    instruction_argument,
+                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Expectation(exists_pre_eds=True,
+                                      remaining_argument=utils.token_stream_is_null,
+                                      validation_result=validator_util.expect_passes_all_validations(),
+                                      arguments_of_exe_file_ref=['inside1', '--inside2']))
+
+
+class ParenthesesWithArgumentsInsideAndWithFollowingArguments(ExecutableTestBase):
+    def runTest(self):
+        instruction_argument = self._arg('( {executable} inside ) --outside1 outside2')
+        utils.check(self,
+                    instruction_argument,
+                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Expectation(exists_pre_eds=True,
+                                      remaining_argument=utils.token_stream_is('--outside1 outside2'),
+                                      validation_result=validator_util.expect_passes_all_validations(),
+                                      arguments_of_exe_file_ref=['inside']))
+
+
+def suite_for_test_case_configuration(configuration: TestCaseConfiguration) -> unittest.TestSuite:
+    cases = [
+        NoParenthesesAndNoFollowingArguments,
+        NoParenthesesAndFollowingArguments,
+        ParenthesesWithNoArgumentsInsideAndNoFollowingArguments,
+        ParenthesesWithNoArgumentsInsideAndFollowingArguments,
+        ParenthesesWithArgumentsInsideAndNoFollowingArguments,
+        ParenthesesWithArgumentsInsideAndWithFollowingArguments,
+    ]
+    return unittest.TestSuite([
+                                  tc(configuration)
+                                  for tc in cases
+                                  ])
 
 
 class RelHomeConfiguration(RelativityConfiguration):
@@ -286,7 +382,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
-    ret_val.addTest(unittest.makeSuite(TestParsePythonInterpreter))
+    ret_val.addTests(suite_for_test_case_configuration(TestCaseConfigurationForPythonExecutable()))
     ret_val.addTests(suite_for(conf)
                      for conf in configurations())
     return ret_val
