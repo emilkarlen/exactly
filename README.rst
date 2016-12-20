@@ -103,7 +103,8 @@ stdout, stderr and exit code.
     Hello World
 
 
-The test case is executed in the sandbox, as usual.
+The test case is executed in a sandbox, as usual.
+And all phases are executed, not just the "act" phase.
 
 Keeping the sandbox directory for later inspection
 --------------------------------------------------
