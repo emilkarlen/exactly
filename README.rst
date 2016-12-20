@@ -298,8 +298,9 @@ it just displays some of Exactly's features.)
     run --python --interpret custom-assertion.py
 
 
-    cd --rel-act .
-    cd ../result
+    cd --rel-result
+    # Changes to the directory where the result of the act phase is stored (exitcode, stdout, stderr)
+
     $ sed '1,10d' stdout > modified-stdout.txt
     contents modified-stdout.txt equals <<EOF
     this should be the single line of modified-stdout.txt

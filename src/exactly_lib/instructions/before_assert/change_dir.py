@@ -11,12 +11,12 @@ from exactly_lib.test_case.phases.result import sh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
-        cd_utils.TheInstructionDocumentation(instruction_name))
+        cd_utils.TheInstructionDocumentation(instruction_name, is_after_act_phase=True))
 
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> BeforeAssertPhaseInstruction:
-        destination_directory = cd_utils.parse(source.instruction_argument)
+        destination_directory = cd_utils.parse(source.instruction_argument, is_after_act_phase=True)
         return _Instruction(destination_directory)
 
 
