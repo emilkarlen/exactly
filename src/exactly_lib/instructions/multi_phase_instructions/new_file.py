@@ -1,8 +1,9 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path, ALL_OPTIONS
+from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path
 from exactly_lib.instructions.utils.arg_parse.parse_here_document import parse_as_last_argument
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -20,20 +21,19 @@ from exactly_lib.util.textformat.structure import structures as docs
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {})
-        self.path_arg = dt.PATH_ARGUMENT
 
     def single_line_description(self) -> str:
         return 'Creates a file'
 
     def main_description_rest(self) -> list:
         return (
-            rel_path_doc.default_relativity_for_rel_opt_type(self.path_arg.name,
+            rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
                                                              rel_path_doc.RelOptionType.REL_CWD) +
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
         arguments = [rel_path_doc.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-                     a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
+                     a.Single(a.Multiplicity.MANDATORY, _PATH_ARGUMENT), ]
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
@@ -44,16 +44,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         return [
-            rel_path_doc.relativity_syntax_element_description(self.path_arg,
-                                                               ALL_OPTIONS),
+            rel_path_doc.relativity_syntax_element_description(_PATH_ARGUMENT,
+                                                               _RELATIVITY_OPTIONS.options.accepted_options),
             dt.here_document_syntax_element_description(self.instruction_name(),
                                                         dt.HERE_DOCUMENT),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(ALL_OPTIONS)
-        if CURRENT_WORKING_DIRECTORY_CONCEPT not in concepts:
-            concepts.append(CURRENT_WORKING_DIRECTORY_CONCEPT)
+        concepts = rel_path_doc.see_also_concepts(_RELATIVITY_OPTIONS.options.accepted_options)
+        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT])
         return [concept.cross_reference_target() for concept in concepts]
 
 
@@ -75,7 +74,7 @@ class FileInfo(tuple):
 def parse(source: SingleInstructionParserSource) -> FileInfo:
     arguments = split_arguments_list_string(source.instruction_argument)
 
-    (destination_path, remaining_arguments) = parse_destination_path(DestinationType.REL_CWD, True, arguments)
+    (destination_path, remaining_arguments) = parse_destination_path(_RELATIVITY_OPTIONS, True, arguments)
     contents = ''
     if remaining_arguments:
         lines = parse_as_last_argument(False, remaining_arguments, source)
@@ -88,7 +87,7 @@ def create_file(file_info: FileInfo,
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.destination_path.resolved_path(sds)
+    file_path = file_info.destination_path.resolved_path_if_not_rel_home(sds)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)
@@ -102,3 +101,8 @@ def create_file(file_info: FileInfo,
     except IOError:
         return 'Cannot create file: {}'.format(file_path)
     return None
+
+
+_PATH_ARGUMENT = dt.PATH_ARGUMENT
+
+_RELATIVITY_OPTIONS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)

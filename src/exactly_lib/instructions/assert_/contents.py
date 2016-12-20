@@ -9,6 +9,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
     ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse import rel_opts_configuration
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
@@ -73,10 +74,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                           mandatory_path]),
                                          rel_opts.default_relativity_for_rel_opt_type(
                                              dt.PATH_ARGUMENT.name,
-                                             _ACTUAL_RELATIVITY_CONFIGURATION.default_option))]
+                                             _ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
                                      ),
             rel_opts.relativity_syntax_element_description(dt.PATH_ARGUMENT,
-                                                           _ACTUAL_RELATIVITY_CONFIGURATION.accepted_options,
+                                                           _ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_options,
                                                            relativity_of_actual_arg),
         ]
         return additional_syntax_element_descriptions + self._help_parts.syntax_element_descriptions()
@@ -124,9 +125,9 @@ class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVar
                 *absolute_src_file_path.parts[1:])
 
 
-_ACTUAL_RELATIVITY_CONFIGURATION = parse_file_ref.Configuration(
-    parse_file_ref.ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
-    rel_opts.RelOptionType.REL_CWD,
+_ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
+    rel_opts_configuration.RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
+                                                   rel_opts.RelOptionType.REL_CWD),
     'PATH')
 
 

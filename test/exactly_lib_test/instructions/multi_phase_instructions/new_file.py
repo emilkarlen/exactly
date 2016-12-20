@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -29,7 +30,7 @@ class TestParseWithNoContents(unittest.TestCase):
     def test_when_no_option_path_should_be_relative_cwd(self):
         arguments = 'single-argument'
         actual = sut.parse(single_line_source(arguments))
-        self.assertIs(sut.DestinationType.REL_CWD,
+        self.assertIs(RelOptionType.REL_CWD,
                       actual.destination_path.destination_type)
         self.assertEqual('single-argument',
                          str(actual.destination_path.path_argument))
@@ -60,7 +61,7 @@ class TestParseWithContents(unittest.TestCase):
                                       ['single line',
                                        'MARKER'])
         actual = sut.parse(source)
-        self.assertIs(sut.DestinationType.REL_CWD,
+        self.assertIs(RelOptionType.REL_CWD,
                       actual.destination_path.destination_type)
         self.assertEqual('file name',
                          str(actual.destination_path.path_argument))
@@ -74,7 +75,7 @@ class TestParseWithContents(unittest.TestCase):
                                        'MARKER',
                                        'following line'])
         actual = sut.parse(source)
-        self.assertIs(sut.DestinationType.REL_TMP_DIR,
+        self.assertIs(RelOptionType.REL_TMP,
                       actual.destination_path.destination_type)
         self.assertEqual('file name',
                          str(actual.destination_path.path_argument))

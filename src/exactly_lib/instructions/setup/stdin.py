@@ -39,8 +39,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def main_description_rest(self) -> list:
         return (
-            rel_path_doc.default_relativity_for_rel_opt_type(self.path_arg.name,
-                                                             parse_here_doc_or_file_ref.CONFIGURATION.default_option) +
+            rel_path_doc.default_relativity_for_rel_opt_type(
+                self.path_arg.name,
+                parse_here_doc_or_file_ref.CONFIGURATION.options.default_option) +
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
@@ -58,13 +59,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             rel_path_doc.relativity_syntax_element_description(
                 self.path_arg,
-                parse_here_doc_or_file_ref.CONFIGURATION.accepted_options),
+                parse_here_doc_or_file_ref.CONFIGURATION.options.accepted_options),
             dt.here_document_syntax_element_description(self.instruction_name(),
                                                         dt.HERE_DOCUMENT),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options.accepted_options)
         return [concept.cross_reference_target() for concept in concepts]
 
 

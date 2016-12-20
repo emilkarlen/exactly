@@ -46,6 +46,13 @@ def see_also_concepts(iter_of_rel_option_type: iter) -> list:
     return ret_val
 
 
+def add_concepts_if_not_listed(output: list,
+                               concepts_to_add: list):
+    for concept in concepts_to_add:
+        if concept not in output:
+            output.append(concept)
+
+
 class _RelOptionInfo(tuple):
     def __new__(cls,
                 name: a.Option,
