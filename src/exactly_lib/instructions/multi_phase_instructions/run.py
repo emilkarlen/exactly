@@ -132,7 +132,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                 right_parenthesis])
         default_relativity_desc = rel_path_doc.default_relativity_for_rel_opt_type(
             dt.PATH_ARGUMENT.name,
-            PARSE_FILE_REF_CONFIGURATION.default_option)
+            PARSE_FILE_REF_CONFIGURATION.options.default_option)
         python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                                a.Option(PYTHON_EXECUTABLE_OPTION_NAME))
         python_interpreter_arguments = [python_interpreter_argument]
@@ -158,11 +158,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                        '(Must be inside parentheses.)')),
                 ]),
             rel_path_doc.relativity_syntax_element_description(self.relativity_arg_path,
-                                                               PARSE_FILE_REF_CONFIGURATION.accepted_options),
+                                                               PARSE_FILE_REF_CONFIGURATION.options.accepted_options),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.options.accepted_options)
         concepts.append(SHELL_SYNTAX_CONCEPT)
         return [concept.cross_reference_target() for concept in concepts]
 

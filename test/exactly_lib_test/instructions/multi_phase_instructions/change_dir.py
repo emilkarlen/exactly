@@ -18,13 +18,13 @@ class TestParseSet(unittest.TestCase):
     def test_no_argument_should_denote_act_dir(self):
         arguments = '--rel-act'
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.REL_ACT_DIR,
+        self.assertIs(sut.RelOptionType.REL_ACT,
                       actual.destination_type)
 
     def test_no_relativity_option_should_use_default_option(self):
         arguments = 'single-argument'
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.REL_CWD,
+        self.assertIs(sut.RelOptionType.REL_CWD,
                       actual.destination_type)
         self.assertEqual('single-argument',
                          str(actual.path_argument))
@@ -32,7 +32,7 @@ class TestParseSet(unittest.TestCase):
     def test_no_arguments_is_rel_default_option(self):
         arguments = ''
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.REL_CWD,
+        self.assertIs(sut.RelOptionType.REL_CWD,
                       actual.destination_type)
         self.assertEqual(str(pathlib.PurePath()),
                          str(actual.path_argument))
@@ -45,7 +45,7 @@ class TestParseSet(unittest.TestCase):
     def test_strip_trailing_space(self):
         arguments = '  expected-argument  '
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.REL_CWD,
+        self.assertIs(sut.RelOptionType.REL_CWD,
                       actual.destination_type)
         self.assertEqual('expected-argument',
                          str(actual.path_argument))
@@ -53,7 +53,7 @@ class TestParseSet(unittest.TestCase):
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.REL_CWD,
+        self.assertIs(sut.RelOptionType.REL_CWD,
                       actual.destination_type)
         self.assertEqual('expected argument',
                          str(actual.path_argument))
@@ -61,7 +61,7 @@ class TestParseSet(unittest.TestCase):
     def test_rel_tmp_without_argument(self):
         arguments = '--rel-tmp'
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.REL_TMP_DIR,
+        self.assertIs(sut.RelOptionType.REL_TMP,
                       actual.destination_type)
         self.assertEqual(str(pathlib.PurePosixPath()),
                          str(actual.path_argument))
@@ -69,7 +69,7 @@ class TestParseSet(unittest.TestCase):
     def test_rel_tmp_with_argument(self):
         arguments = '--rel-tmp subdir'
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.REL_TMP_DIR,
+        self.assertIs(sut.RelOptionType.REL_TMP,
                       actual.destination_type)
         self.assertEqual('subdir',
                          str(actual.path_argument))

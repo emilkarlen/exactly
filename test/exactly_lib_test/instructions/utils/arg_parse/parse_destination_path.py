@@ -2,6 +2,8 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_destination_path as sut
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType, REL_OPTIONS_MAP
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -90,9 +92,10 @@ class Expectation:
 def test(put: unittest.TestCase,
          arrangement: Arrangement,
          expectation: Expectation):
-    actual_path, actual_remaining_arguments = sut.parse_destination_path(arrangement.default_rel_type,
-                                                                         arrangement.path_argument_is_mandatory,
-                                                                         arrangement.arguments)
+    actual_path, actual_remaining_arguments = sut.parse_destination_path(
+        _with_all_options_acceptable(arrangement.default_rel_type),
+        arrangement.path_argument_is_mandatory,
+        arrangement.arguments)
     put.assertIs(expectation.rel_option_type,
                  actual_path.destination_type,
                  'actual destination type')
@@ -123,7 +126,7 @@ def _home_and_sds() -> HomeAndSds:
 def _expected_resolve_path(rel_option_type: RelOptionType,
                            path_argument: str,
                            home_and_sds: HomeAndSds) -> pathlib.Path:
-    ret_val = REL_OPTIONS_MAP[rel_option_type].home_and_sds_2_path(home_and_sds)
+    ret_val = REL_OPTIONS_MAP[rel_option_type].root_resolver.from_home_and_sds(home_and_sds)
     if path_argument:
         ret_val /= path_argument
     return ret_val
@@ -145,7 +148,7 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
 class TestDefaultOptionWithoutArgumentButArgumentIsRequired(TestCaseBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_destination_path(self.configuration.default_rel_option_type,
+            sut.parse_destination_path(_with_all_options_acceptable(self.configuration.default_rel_option_type),
                                        True,
                                        [])
 
@@ -250,23 +253,12 @@ class TestParseShouldFailWhenRelativityOptionIsNotInSetOfAcceptedOptions(TestCas
             with self.subTest(accepted_type=accepted_type,
                               unaccepted_type=unaccepted_type):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_destination_path(accepted_type,
+                    sut.parse_destination_path(_for(accepted_type, [accepted_type]),
                                                self.path_argument_is_mandatory,
                                                [
                                                    arg_syntax_for(unaccepted_type),
                                                    'path-arg',
-                                               ],
-                                               [accepted_type])
-
-    @staticmethod
-    def _accepted_and_unaccepted_parts_for_all_options() -> list:
-        ret_val = []
-        for option in RelOptionType:
-            if option is RelOptionType.REL_TMP:
-                ret_val.append((option, RelOptionType.REL_HOME))
-            else:
-                ret_val.append((option, RelOptionType.REL_TMP))
-        return ret_val
+                                               ])
 
 
 def arg_syntax_for(rel_option_type: RelOptionType) -> str:
@@ -282,3 +274,12 @@ def _other_option_type_than(option_type: RelOptionType) -> RelOptionType:
         return RelOptionType.REL_TMP
     else:
         return RelOptionType.REL_ACT
+
+
+def _with_all_options_acceptable(default: RelOptionType) -> RelOptionArgumentConfiguration:
+    return _for(default, RelOptionType)
+
+
+def _for(default: RelOptionType, acceptable_options: iter) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(RelOptionsConfiguration(acceptable_options, default),
+                                          'SYNTAXELEMENT')

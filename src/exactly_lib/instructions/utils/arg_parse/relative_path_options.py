@@ -3,6 +3,7 @@ import pathlib
 import types
 
 from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
@@ -14,35 +15,108 @@ class RelOptionType(enum.Enum):
     REL_HOME = 3
 
 
+class RelRootResolver:
+    def from_cwd(self) -> pathlib.Path:
+        """
+        Precondition: `is_rel_cwd`
+        """
+        raise ValueError('Root is not relative the cwd')
+
+    def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        """
+        Precondition: `is_rel_home`
+        """
+        raise ValueError('Root is not relative the home directory')
+
+    def from_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        """
+        Precondition: `is_rel_sds`
+        """
+        raise ValueError('Root is not relative the SDS')
+
+    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        if self.is_rel_cwd:
+            return self.from_cwd()
+        else:
+            return self.from_sds(sds)
+
+    @property
+    def is_rel_cwd(self) -> bool:
+        return False
+
+    @property
+    def is_rel_home(self) -> bool:
+        return False
+
+    @property
+    def is_rel_sds(self) -> bool:
+        return False
+
+
 class RelOptionInfo(tuple):
     def __new__(cls,
                 option_name: argument.OptionName,
-                home_and_sds_2_path: types.FunctionType):
-        return tuple.__new__(cls, (option_name, home_and_sds_2_path))
+                root_resolver: RelRootResolver):
+        return tuple.__new__(cls, (option_name, root_resolver))
 
     @property
     def option_name(self) -> argument.OptionName:
         return self[0]
 
     @property
-    def home_and_sds_2_path(self) -> types.FunctionType:
+    def root_resolver(self) -> RelRootResolver:
         return self[1]
 
 
-def home_and_sds_2_act(home_and_sds: HomeAndSds) -> pathlib.Path:
-    return home_and_sds.sds.act_dir
+class _RelPathResolverRelHome(RelRootResolver):
+    @property
+    def is_rel_home(self) -> bool:
+        return True
+
+    def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        return home_dir_path
+
+    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return self.from_home(home_and_sds.home_dir_path)
 
 
-def home_and_sds_2_tmp_user(home_and_sds: HomeAndSds) -> pathlib.Path:
-    return home_and_sds.sds.tmp.user_dir
+class _RelPathResolverRelCwd(RelRootResolver):
+    @property
+    def is_rel_cwd(self) -> bool:
+        return True
+
+    def from_cwd(self) -> pathlib.Path:
+        return pathlib.Path().cwd()
+
+    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return self.from_cwd()
 
 
-def home_and_sds_2_cwd(home_and_sds: HomeAndSds) -> pathlib.Path:
-    return pathlib.Path().cwd()
+class _RelRootResolverForRelSds(RelRootResolver):
+    def __init__(self, sds_2_root_fun: types.FunctionType):
+        self._sds_2_root_fun = sds_2_root_fun
+
+    @property
+    def is_rel_sds(self) -> bool:
+        return True
+
+    def from_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self._sds_2_root_fun(sds)
+
+    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return self.from_sds(home_and_sds.sds)
 
 
-def home_and_sds_2_home(home_and_sds: HomeAndSds) -> pathlib.Path:
-    return home_and_sds.home_dir_path
+resolver_for_act = _RelRootResolverForRelSds(lambda sds: sds.act_dir)
+
+resolver_for_tmp_user = _RelRootResolverForRelSds(lambda sds: sds.tmp.user_dir)
+
+resolver_for_cwd = _RelPathResolverRelCwd()
+
+resolver_for_home = _RelPathResolverRelHome()
 
 
 REL_TMP_OPTION_NAME = argument.OptionName(long_name='rel-tmp')
@@ -51,10 +125,10 @@ REL_CWD_OPTION_NAME = argument.OptionName(long_name='rel-cd')
 REL_HOME_OPTION_NAME = argument.OptionName(long_name='rel-home')
 
 REL_OPTIONS_MAP = {
-    RelOptionType.REL_HOME: RelOptionInfo(REL_HOME_OPTION_NAME, home_and_sds_2_home),
-    RelOptionType.REL_CWD: RelOptionInfo(REL_CWD_OPTION_NAME, home_and_sds_2_cwd),
-    RelOptionType.REL_ACT: RelOptionInfo(REL_ACT_OPTION_NAME, home_and_sds_2_act),
-    RelOptionType.REL_TMP: RelOptionInfo(REL_TMP_OPTION_NAME, home_and_sds_2_tmp_user),
+    RelOptionType.REL_HOME: RelOptionInfo(REL_HOME_OPTION_NAME, resolver_for_home),
+    RelOptionType.REL_CWD: RelOptionInfo(REL_CWD_OPTION_NAME, resolver_for_cwd),
+    RelOptionType.REL_ACT: RelOptionInfo(REL_ACT_OPTION_NAME, resolver_for_act),
+    RelOptionType.REL_TMP: RelOptionInfo(REL_TMP_OPTION_NAME, resolver_for_tmp_user),
 }
 
 REL_TMP_OPTION = long_option_syntax(REL_TMP_OPTION_NAME.long)
