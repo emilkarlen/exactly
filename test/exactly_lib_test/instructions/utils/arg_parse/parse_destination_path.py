@@ -7,31 +7,36 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, short_option_syntax
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
 
 class Configuration:
     def __init__(self,
-                 default_rel_option_type: RelOptionType):
+                 default_rel_option_type: RelOptionType,
+                 other_than_default_rel_option_type: RelOptionType):
         self.default_rel_option_type = default_rel_option_type
+        self.other_than_default_rel_option_type = other_than_default_rel_option_type
 
 
 def suite() -> unittest.TestSuite:
     configurations = [
-        Configuration(rel_option_type)
+        Configuration(rel_option_type, _other_option_type_than(rel_option_type))
         for rel_option_type in RelOptionType
         ]
     return unittest.TestSuite([suite_for(configuration)
                                for configuration in configurations] +
                               [suite_for_configuration_and_boolean(configuration)
-                               for configuration in configurations])
+                               for configuration in configurations] +
+                              [suite_for_boolean()])
 
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
     test_cases = [
         TestDefaultOptionWithoutArgumentButArgumentIsRequired,
         TestDefaultRelativityOptionPathArgumentNOTMandatoryWithoutArgument,
+
     ]
     return unittest.TestSuite([tc(configuration) for tc in test_cases])
 
@@ -40,11 +45,25 @@ def suite_for_configuration_and_boolean(configuration: Configuration) -> unittes
     test_cases = [
         TestDefaultRelativityOptionWithSingleArgument,
         TestDefaultRelativityOptionWithMultipleArguments,
+
+        TestNonDefaultRelativityOptionWithSingleArgument,
+        TestNonDefaultRelativityOptionWithMultipleArguments,
     ]
     generated_test_cases = []
     for tc in test_cases:
         for argument_is_mandatory in [False, True]:
             generated_test_cases.append(tc(configuration, argument_is_mandatory))
+    return unittest.TestSuite(generated_test_cases)
+
+
+def suite_for_boolean() -> unittest.TestSuite:
+    test_cases = [
+        TestParseShouldFailWhenRelativityOptionIsNotInSetOfAcceptedOptions,
+    ]
+    generated_test_cases = []
+    for tc in test_cases:
+        for argument_is_mandatory in [False, True]:
+            generated_test_cases.append(tc(argument_is_mandatory))
     return unittest.TestSuite(generated_test_cases)
 
 
@@ -184,3 +203,82 @@ class TestDefaultRelativityOptionWithMultipleArguments(TestCaseWithPathArgumentM
                         path_argument='arg1',
                         rel_option_type=self.configuration.default_rel_option_type),
         )
+
+
+class TestNonDefaultRelativityOptionWithSingleArgument(TestCaseWithPathArgumentMandatoryValueBase):
+    def runTest(self):
+        test(
+            self,
+            Arrangement(self.configuration.default_rel_option_type,
+                        self.path_argument_is_mandatory,
+                        [arg_syntax_for(self.configuration.other_than_default_rel_option_type),
+                         'arg']),
+            Expectation(remaining_arguments=[],
+                        path_argument='arg',
+                        rel_option_type=self.configuration.other_than_default_rel_option_type),
+        )
+
+
+class TestNonDefaultRelativityOptionWithMultipleArguments(TestCaseWithPathArgumentMandatoryValueBase):
+    def runTest(self):
+        test(
+            self,
+            Arrangement(self.configuration.default_rel_option_type,
+                        self.path_argument_is_mandatory,
+                        [arg_syntax_for(self.configuration.other_than_default_rel_option_type),
+                         'arg1', 'arg2']),
+            Expectation(remaining_arguments=['arg2'],
+                        path_argument='arg1',
+                        rel_option_type=self.configuration.other_than_default_rel_option_type),
+        )
+
+
+class TestCaseWithBooleanBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
+    def __init__(self, path_argument_is_mandatory: bool):
+        super().__init__(path_argument_is_mandatory)
+        self.path_argument_is_mandatory = path_argument_is_mandatory
+
+
+class TestParseShouldFailWhenRelativityOptionIsNotInSetOfAcceptedOptions(TestCaseWithBooleanBase):
+    def runTest(self):
+        option_infos = [
+            (rel_option_type, _other_option_type_than(rel_option_type))
+            for rel_option_type in RelOptionType
+            ]
+
+        for accepted_type, unaccepted_type in option_infos:
+            with self.subTest(accepted_type=accepted_type,
+                              unaccepted_type=unaccepted_type):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_destination_path(accepted_type,
+                                               self.path_argument_is_mandatory,
+                                               [
+                                                   arg_syntax_for(unaccepted_type),
+                                                   'path-arg',
+                                               ],
+                                               [accepted_type])
+
+    @staticmethod
+    def _accepted_and_unaccepted_parts_for_all_options() -> list:
+        ret_val = []
+        for option in RelOptionType:
+            if option is RelOptionType.REL_TMP:
+                ret_val.append((option, RelOptionType.REL_HOME))
+            else:
+                ret_val.append((option, RelOptionType.REL_TMP))
+        return ret_val
+
+
+def arg_syntax_for(rel_option_type: RelOptionType) -> str:
+    option = REL_OPTIONS_MAP[rel_option_type].option_name
+    if option.long:
+        return long_option_syntax(option.long)
+    else:
+        return short_option_syntax(option.short)
+
+
+def _other_option_type_than(option_type: RelOptionType) -> RelOptionType:
+    if option_type is RelOptionType.REL_ACT:
+        return RelOptionType.REL_TMP
+    else:
+        return RelOptionType.REL_ACT
