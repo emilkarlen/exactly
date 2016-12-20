@@ -16,77 +16,102 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 class TestParseSet(unittest.TestCase):
     def test_no_argument_should_denote_act_dir(self):
-        arguments = '--rel-act'
-        actual = sut.parse(arguments)
-        self.assertIs(sut.RelOptionType.REL_ACT,
-                      actual.destination_type)
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = '--rel-act'
+                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                self.assertIs(sut.RelOptionType.REL_ACT,
+                              actual.destination_type)
 
     def test_no_relativity_option_should_use_default_option(self):
-        arguments = 'single-argument'
-        actual = sut.parse(arguments)
-        self.assertIs(sut.RelOptionType.REL_CWD,
-                      actual.destination_type)
-        self.assertEqual('single-argument',
-                         str(actual.path_argument))
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = 'single-argument'
+                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                self.assertIs(sut.RelOptionType.REL_CWD,
+                              actual.destination_type)
+                self.assertEqual('single-argument',
+                                 str(actual.path_argument))
 
     def test_no_arguments_is_rel_default_option(self):
-        arguments = ''
-        actual = sut.parse(arguments)
-        self.assertIs(sut.RelOptionType.REL_CWD,
-                      actual.destination_type)
-        self.assertEqual(str(pathlib.PurePath()),
-                         str(actual.path_argument))
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = ''
+                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                self.assertIs(sut.RelOptionType.REL_CWD,
+                              actual.destination_type)
+                self.assertEqual(str(pathlib.PurePath()),
+                                 str(actual.path_argument))
 
     def test_fail_when_superfluous_arguments(self):
-        arguments = 'expected-argument superfluous-argument'
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(arguments)
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = 'expected-argument superfluous-argument'
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse(arguments, is_after_act_phase=is_after_act_phase)
 
     def test_strip_trailing_space(self):
-        arguments = '  expected-argument  '
-        actual = sut.parse(arguments)
-        self.assertIs(sut.RelOptionType.REL_CWD,
-                      actual.destination_type)
-        self.assertEqual('expected-argument',
-                         str(actual.path_argument))
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = '  expected-argument  '
+                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                self.assertIs(sut.RelOptionType.REL_CWD,
+                              actual.destination_type)
+                self.assertEqual('expected-argument',
+                                 str(actual.path_argument))
 
     def test_success_when_correct_number_of_arguments__escaped(self):
-        arguments = '"expected argument"'
-        actual = sut.parse(arguments)
-        self.assertIs(sut.RelOptionType.REL_CWD,
-                      actual.destination_type)
-        self.assertEqual('expected argument',
-                         str(actual.path_argument))
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = '"expected argument"'
+                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                self.assertIs(sut.RelOptionType.REL_CWD,
+                              actual.destination_type)
+                self.assertEqual('expected argument',
+                                 str(actual.path_argument))
 
     def test_rel_tmp_without_argument(self):
-        arguments = '--rel-tmp'
-        actual = sut.parse(arguments)
-        self.assertIs(sut.RelOptionType.REL_TMP,
-                      actual.destination_type)
-        self.assertEqual(str(pathlib.PurePosixPath()),
-                         str(actual.path_argument))
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = '--rel-tmp'
+                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                self.assertIs(sut.RelOptionType.REL_TMP,
+                              actual.destination_type)
+                self.assertEqual(str(pathlib.PurePosixPath()),
+                                 str(actual.path_argument))
 
     def test_rel_tmp_with_argument(self):
-        arguments = '--rel-tmp subdir'
-        actual = sut.parse(arguments)
-        self.assertIs(sut.RelOptionType.REL_TMP,
-                      actual.destination_type)
-        self.assertEqual('subdir',
-                         str(actual.path_argument))
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = '--rel-tmp subdir'
+                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                self.assertIs(sut.RelOptionType.REL_TMP,
+                              actual.destination_type)
+                self.assertEqual('subdir',
+                                 str(actual.path_argument))
 
     def test_rel_tmp_with_superfluous_argument(self):
         arguments = '--rel-tmp subdir superfluous'
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+
+    def test_rel_result_should_not_be_available_pre_act_phase(self):
+        arguments = '--rel-result'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(arguments)
+            sut.parse(arguments, is_after_act_phase=False)
 
 
 class ParseAndChangeDirAction(sds_test.Action):
     def __init__(self,
-                 arguments: str):
+                 arguments: str,
+                 is_after_act_phase: bool):
         self.arguments = arguments
+        self.is_after_act_phase = is_after_act_phase
 
     def apply(self, sds: SandboxDirectoryStructure):
-        destination_directory = sut.parse(self.arguments)
+        destination_directory = sut.parse(self.arguments, self.is_after_act_phase)
         return sut.change_dir(destination_directory, sds)
 
 
@@ -95,7 +120,19 @@ class TestCaseBase(sds_test.TestCaseBase):
                         arguments: str,
                         arrangement: sds_test.Arrangement,
                         expectation: sds_test.Expectation):
-        action = ParseAndChangeDirAction(arguments)
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                self._check_argument_for_single_case(is_after_act_phase,
+                                                     arguments,
+                                                     arrangement,
+                                                     expectation)
+
+    def _check_argument_for_single_case(self,
+                                        is_after_act_phase: bool,
+                                        arguments: str,
+                                        arrangement: sds_test.Arrangement,
+                                        expectation: sds_test.Expectation):
+        action = ParseAndChangeDirAction(arguments, is_after_act_phase)
         self._check(action,
                     arrangement,
                     expectation)
@@ -230,6 +267,15 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                       lambda sds: sds.tmp.user_dir / 'sub1' / 'sub2')
                                                   ))
 
+    def test_relative_result__after_act_phase(self):
+        self._check_argument_for_single_case(
+            True,
+            '--rel-result',
+            sds_test.Arrangement(),
+            sds_test.Expectation(expected_action_result=is_success(),
+                                 post_action_check=CwdIs(lambda sds: sds.result.root_dir)
+                                 ))
+
 
 class TestFailingScenarios(TestCaseBase):
     def test_argument_is_file(self):
@@ -245,7 +291,15 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseSet),
         unittest.makeSuite(TestSuccessfulScenarios),
         unittest.makeSuite(TestFailingScenarios),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
+                                                                            is_after_act_phase=False,
+                                                                            is_in_assert_phase=False)),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
+                                                                            is_after_act_phase=True,
+                                                                            is_in_assert_phase=False)),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
+                                                                            is_after_act_phase=True,
+                                                                            is_in_assert_phase=True)),
     ])
 
 

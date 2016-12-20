@@ -12,12 +12,12 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         Parser(),
-        cd_utils.TheInstructionDocumentation(instruction_name))
+        cd_utils.TheInstructionDocumentation(instruction_name, is_after_act_phase=False))
 
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        destination_directory = cd_utils.parse(source.instruction_argument)
+        destination_directory = cd_utils.parse(source.instruction_argument, is_after_act_phase=False)
         return _Instruction(destination_directory)
 
 
