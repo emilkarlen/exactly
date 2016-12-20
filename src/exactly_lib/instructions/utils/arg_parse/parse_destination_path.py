@@ -13,8 +13,11 @@ ALL_OPTIONS = (rel_opts.RelOptionType.REL_ACT,
 
 def parse_destination_path(default_type: rel_opts.RelOptionType,
                            path_argument_is_mandatory: bool,
-                           arguments: list) -> (DestinationPath, list):
-    (destination_type, remaining_arguments) = _parse_destination_type(default_type, arguments)
+                           arguments: list,
+                           accepted_rel_option_types: iter = rel_opts.RelOptionType) -> (DestinationPath, list):
+    (destination_type, remaining_arguments) = _parse_destination_type(default_type,
+                                                                      arguments,
+                                                                      accepted_rel_option_types)
     if not remaining_arguments:
         if path_argument_is_mandatory:
             raise SingleInstructionInvalidArgumentException('Missing PATH argument: {}'.format(arguments))
@@ -27,15 +30,22 @@ def parse_destination_path(default_type: rel_opts.RelOptionType,
 
 
 def _parse_destination_type(default_type: rel_opts.RelOptionType,
-                            arguments: list) -> (DestinationType, list):
-    path_type = default_type
+                            arguments: list,
+                            accepted_rel_option_types: iter) -> (DestinationType, list):
+    rel_option_type = default_type
     if arguments and is_option_argument(arguments[0]):
         option_argument = arguments[0]
-        if matches(rel_opts.REL_ACT_OPTION_NAME, option_argument):
-            path_type = rel_opts.RelOptionType.REL_ACT
-        elif matches(rel_opts.REL_TMP_OPTION_NAME, option_argument):
-            path_type = rel_opts.RelOptionType.REL_ACT
-        else:
-            raise SingleInstructionInvalidArgumentException('Invalid option: {}'.format(option_argument))
-        return path_type, arguments[1:]
-    return path_type, arguments
+        rel_option_type = _resolve_relativity_option_type(option_argument)
+        if rel_option_type not in accepted_rel_option_types:
+            msg = 'Option cannot be used in this context: {}'.format(option_argument)
+            raise SingleInstructionInvalidArgumentException(msg)
+        return rel_option_type, arguments[1:]
+    return rel_option_type, arguments
+
+
+def _resolve_relativity_option_type(option_argument: str) -> DestinationType:
+    for option_type in rel_opts.REL_OPTIONS_MAP:
+        option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
+        if matches(option_name, option_argument):
+            return option_type
+    raise SingleInstructionInvalidArgumentException('Invalid option: {}'.format(option_argument))
