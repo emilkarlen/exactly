@@ -17,7 +17,7 @@ _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
     rel_opts.RelOptionType.REL_TMP: file_ref.rel_tmp_user,
 }
 
-ALL_REL_OPTIONS = _REL_OPTION_2_FILE_REF_CONSTRUCTOR.keys()
+ALL_REL_OPTIONS = set(rel_opts.RelOptionType) - {rel_opts.RelOptionType.REL_RESULT}
 
 ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME}
 

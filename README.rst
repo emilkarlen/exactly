@@ -63,11 +63,12 @@ Shell commands can be used both in the "act" phase (the system under test), and 
 
     [assert]
 
-    $ < ../result/stdout tr ':' '\n' | grep '^/usr/local/bin$'
+    cd --rel-result
+    $ tr ':' '\n' < stdout | grep '^/usr/local/bin$'
 
 
 A shell command in the "assert" phase becomes an assertion that depends on the exit code
-from the command.
+of the command.
 
 
 [act] is the default phase
@@ -298,8 +299,9 @@ it just displays some of Exactly's features.)
     run --python --interpret custom-assertion.py
 
 
-    cd --rel-act .
-    cd ../result
+    cd --rel-result
+    # Changes to the directory where the result of the act phase is stored (exitcode, stdout, stderr)
+
     $ sed '1,10d' stdout > modified-stdout.txt
     contents modified-stdout.txt equals <<EOF
     this should be the single line of modified-stdout.txt

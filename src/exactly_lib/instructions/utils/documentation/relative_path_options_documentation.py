@@ -114,6 +114,7 @@ class RelOptionRenderer:
             'PATH': path_name_in_description,
             'ENV_VAR_TMP': env.ENV_VAR_TMP,
             'ENV_VAR_ACT': env.ENV_VAR_ACT,
+            'ENV_VAR_RESULT': env.ENV_VAR_RESULT,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
         })
@@ -153,6 +154,10 @@ _REL_ACT_DESCRIPTION = """\
 {PATH} is relative the {ENV_VAR_ACT} directory.
 """
 
+_REL_RESULT_DESCRIPTION = """\
+{PATH} is relative the {ENV_VAR_RESULT} directory.
+"""
+
 _REL_CWD_DESCRIPTION = """\
 {PATH} is relative the {cwd}.
 """
@@ -171,6 +176,10 @@ _ALL = {
                                               env.ENV_VAR_ACT,
                                               _REL_ACT_DESCRIPTION,
                                               [ENVIRONMENT_VARIABLE_CONCEPT]),
+    RelOptionType.REL_RESULT: _RelOptionTypeInfo(options.REL_RESULT_OPTION_NAME,
+                                                 env.ENV_VAR_RESULT,
+                                                 _REL_RESULT_DESCRIPTION,
+                                                 [ENVIRONMENT_VARIABLE_CONCEPT]),
     RelOptionType.REL_CWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
                                               formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
                                               _REL_CWD_DESCRIPTION,
