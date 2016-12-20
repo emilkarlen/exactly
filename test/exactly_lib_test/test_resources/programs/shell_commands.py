@@ -24,7 +24,7 @@ def command_that_prints_to_stdout(string_to_print: str) -> str:
 
 def command_that_prints_line_to_stdout(line_contents: str) -> str:
     if sys.platform == 'win32':
-        return 'Write-Output "{}"'.format(line_contents)  # do not know how to suppress new-line
+        return 'Write-Output "{}"'.format(line_contents)
     else:
         return "echo '{}'".format(line_contents)
 
@@ -35,7 +35,7 @@ def command_that_exits_with_code(exit_code: int) -> str:
 
 def command_that_prints_cwd_line_to_stdout() -> str:
     if sys.platform == 'win32':
-        return 'Write-Output %cd%'  # do not know how to suppress new-line
+        return 'Write-Output %cd%'
     else:
         return 'echo $PWD'
 
