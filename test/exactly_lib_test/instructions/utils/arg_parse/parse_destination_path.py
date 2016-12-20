@@ -3,7 +3,6 @@ import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_destination_path as sut
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType, REL_OPTIONS_MAP
-from exactly_lib.instructions.utils.destination_path import DestinationType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import HomeAndSds
@@ -14,16 +13,15 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 
 class Configuration:
     def __init__(self,
-                 default_type: DestinationType,
-                 rel_option_type: RelOptionType):
-        self.default_type = default_type
-        self.rel_option_type = rel_option_type
+                 default_rel_option_type: RelOptionType):
+        self.default_rel_option_type = default_rel_option_type
 
 
 def suite() -> unittest.TestSuite:
     configurations = [
-        Configuration(DestinationType.REL_ACT_DIR, RelOptionType.REL_ACT)
-    ]
+        Configuration(rel_option_type)
+        for rel_option_type in RelOptionType
+        ]
     return unittest.TestSuite([suite_for(configuration)
                                for configuration in configurations] +
                               [suite_for_configuration_and_boolean(configuration)
@@ -52,34 +50,31 @@ def suite_for_configuration_and_boolean(configuration: Configuration) -> unittes
 
 class Arrangement:
     def __init__(self,
-                 default_type: DestinationType,
+                 default_type: RelOptionType,
                  path_argument_is_mandatory: bool,
                  arguments: list):
         self.arguments = arguments
-        self.default_type = default_type
+        self.default_rel_type = default_type
         self.path_argument_is_mandatory = path_argument_is_mandatory
 
 
 class Expectation:
     def __init__(self,
-                 relativity: DestinationType,
                  remaining_arguments: list,
                  path_argument,
-                 rel_option_type: RelOptionType,
-                 ):
+                 rel_option_type: RelOptionType):
         self.path_argument = path_argument
         self.remaining_arguments = remaining_arguments
-        self.relativity = relativity
         self.rel_option_type = rel_option_type
 
 
 def test(put: unittest.TestCase,
          arrangement: Arrangement,
          expectation: Expectation):
-    actual_path, actual_remaining_arguments = sut.parse_destination_path(arrangement.default_type,
+    actual_path, actual_remaining_arguments = sut.parse_destination_path(arrangement.default_rel_type,
                                                                          arrangement.path_argument_is_mandatory,
                                                                          arrangement.arguments)
-    put.assertIs(expectation.relativity,
+    put.assertIs(expectation.rel_option_type,
                  actual_path.destination_type,
                  'actual destination type')
     put.assertListEqual(expectation.remaining_arguments,
@@ -90,7 +85,7 @@ def test(put: unittest.TestCase,
                     actual_path.path_argument,
                     'path argument')
     home_and_sds = _home_and_sds()
-    actual_resolved_path = actual_path.resolved_path(home_and_sds.sds)
+    actual_resolved_path = actual_path.resolved_path(home_and_sds)
     expected_resolved_path = _expected_resolve_path(expectation.rel_option_type,
                                                     expectation.path_argument,
                                                     home_and_sds)
@@ -131,7 +126,7 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
 class TestDefaultOptionWithoutArgumentButArgumentIsRequired(TestCaseBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_destination_path(self.configuration.default_type,
+            sut.parse_destination_path(self.configuration.default_rel_option_type,
                                        True,
                                        [])
 
@@ -140,13 +135,12 @@ class TestDefaultRelativityOptionPathArgumentNOTMandatoryWithoutArgument(TestCas
     def runTest(self):
         test(
             self,
-            Arrangement(self.configuration.default_type,
+            Arrangement(self.configuration.default_rel_option_type,
                         False,
                         []),
-            Expectation(relativity=self.configuration.default_type,
-                        remaining_arguments=[],
+            Expectation(remaining_arguments=[],
                         path_argument=None,
-                        rel_option_type=self.configuration.rel_option_type),
+                        rel_option_type=self.configuration.default_rel_option_type),
         )
 
 
@@ -170,13 +164,12 @@ class TestDefaultRelativityOptionWithSingleArgument(TestCaseWithPathArgumentMand
     def runTest(self):
         test(
             self,
-            Arrangement(self.configuration.default_type,
+            Arrangement(self.configuration.default_rel_option_type,
                         self.path_argument_is_mandatory,
                         ['arg']),
-            Expectation(relativity=self.configuration.default_type,
-                        remaining_arguments=[],
+            Expectation(remaining_arguments=[],
                         path_argument='arg',
-                        rel_option_type=self.configuration.rel_option_type),
+                        rel_option_type=self.configuration.default_rel_option_type),
         )
 
 
@@ -184,11 +177,10 @@ class TestDefaultRelativityOptionWithMultipleArguments(TestCaseWithPathArgumentM
     def runTest(self):
         test(
             self,
-            Arrangement(self.configuration.default_type,
+            Arrangement(self.configuration.default_rel_option_type,
                         self.path_argument_is_mandatory,
                         ['arg1', 'arg2']),
-            Expectation(relativity=self.configuration.default_type,
-                        remaining_arguments=['arg2'],
+            Expectation(remaining_arguments=['arg2'],
                         path_argument='arg1',
-                        rel_option_type=self.configuration.rel_option_type),
+                        rel_option_type=self.configuration.default_rel_option_type),
         )
