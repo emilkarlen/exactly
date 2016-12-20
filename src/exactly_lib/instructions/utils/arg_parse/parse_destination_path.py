@@ -11,7 +11,7 @@ ALL_OPTIONS = (rel_opts.RelOptionType.REL_ACT,
                rel_opts.RelOptionType.REL_TMP)
 
 
-def parse_destination_path(default_type: DestinationType,
+def parse_destination_path(default_type: rel_opts.RelOptionType,
                            path_argument_is_mandatory: bool,
                            arguments: list) -> (DestinationPath, list):
     (destination_type, remaining_arguments) = _parse_destination_type(default_type, arguments)
@@ -26,15 +26,15 @@ def parse_destination_path(default_type: DestinationType,
         return DestinationPath(destination_type, path_argument), remaining_arguments[1:]
 
 
-def _parse_destination_type(default_type: DestinationType,
+def _parse_destination_type(default_type: rel_opts.RelOptionType,
                             arguments: list) -> (DestinationType, list):
     path_type = default_type
     if arguments and is_option_argument(arguments[0]):
         option_argument = arguments[0]
         if matches(rel_opts.REL_ACT_OPTION_NAME, option_argument):
-            path_type = DestinationType.REL_ACT_DIR
+            path_type = rel_opts.RelOptionType.REL_ACT
         elif matches(rel_opts.REL_TMP_OPTION_NAME, option_argument):
-            path_type = DestinationType.REL_TMP_DIR
+            path_type = rel_opts.RelOptionType.REL_ACT
         else:
             raise SingleInstructionInvalidArgumentException('Invalid option: {}'.format(option_argument))
         return path_type, arguments[1:]

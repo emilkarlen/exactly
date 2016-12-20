@@ -1,7 +1,8 @@
 import enum
 import pathlib
 
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType, REL_OPTIONS_MAP
+from exactly_lib.test_case.phases.common import HomeAndSds
 
 
 class DestinationType(enum.Enum):
@@ -12,25 +13,20 @@ class DestinationType(enum.Enum):
 
 class DestinationPath(tuple):
     def __new__(cls,
-                destination_type: DestinationType,
+                destination_type: RelOptionType,
                 path_argument: pathlib.PurePath):
         return tuple.__new__(cls, (destination_type, path_argument))
 
     @property
-    def destination_type(self) -> DestinationType:
+    def destination_type(self) -> RelOptionType:
         return self[0]
 
     @property
     def path_argument(self) -> pathlib.PurePath:
         return self[1]
 
-    def root_path(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        if self.destination_type is DestinationType.REL_ACT_DIR:
-            return sds.act_dir
-        elif self.destination_type is DestinationType.REL_TMP_DIR:
-            return sds.tmp.user_dir
-        else:
-            return pathlib.Path.cwd()
+    def root_path(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return REL_OPTIONS_MAP[self.destination_type].home_and_sds_2_path(home_and_sds)
 
-    def resolved_path(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return self.root_path(sds) / self.path_argument
+    def resolved_path(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return self.root_path(home_and_sds) / self.path_argument
