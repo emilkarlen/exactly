@@ -20,15 +20,15 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
-        self.pwd_concept_name = formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)
+        self.cwd_concept_name = formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)
         super().__init__(name, {
-            'pwd_concept': self.pwd_concept_name,
+            'cwd_concept': self.cwd_concept_name,
             'dir_argument': _DIR_ARGUMENT.name,
         },
                          is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {pwd_concept}')
+        return self._format('Sets the {cwd_concept}')
 
     def _main_description_rest_body(self) -> list:
         return (relative_path_options_documentation.default_relativity_for_rel_opt_type(

@@ -5,7 +5,7 @@ from exactly_lib.help.concepts.configuration_parameters.execution_mode import EX
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
-    pwd_at_start_of_phase_for_configuration_phase, \
+    cwd_at_start_of_phase_for_configuration_phase, \
     env_vars_for_configuration_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
@@ -46,7 +46,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
                 ]
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_configuration_phase(),
+        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_configuration_phase(),
                                         env_vars_for_configuration_phase())
 
     @property

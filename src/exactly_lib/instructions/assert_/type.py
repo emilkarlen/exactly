@@ -48,7 +48,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.path_argument = dt.PATH_ARGUMENT
         super().__init__(name, {
             'PATH': self.path_argument.name,
-            'pwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
         })
 
     def single_line_description(self) -> str:
@@ -59,7 +59,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         PASS if, and only if, {PATH} exists, and is a file of the given type.
 
 
-        {PATH} is relative the {pwd}.
+        {PATH} is relative the {cwd}.
         """
         return self._paragraphs(text)
 

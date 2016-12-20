@@ -69,7 +69,7 @@ def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, p
     ret_val.extend(normalize_and_parse(
         _ACT_DIR_DESCRIPTION.format(phase=phase,
                                     instruction=instruction,
-                                    pwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT_NAME.singular))))
+                                    cwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT_NAME.singular))))
     ret_val.extend(_act_dir_environment_variables(phase=phase))
     return ret_val
 
@@ -86,14 +86,14 @@ def _result_dir_description_paragraphs(instruction: AnyInstructionNameDictionary
 
 
 _ACT_DIR_DESCRIPTION = """\
-This directory is the {pwd} when the {phase[setup]} phase begin.
+This directory is the {cwd} when the {phase[setup]} phase begin.
 
 
-If it is not changed, it will also be the {pwd} for the {phase[act]} phase (hence its name).
+If it is not changed, it will also be the {cwd} for the {phase[act]} phase (hence its name).
 
 
 (Files and directories that {phase[setup]:syntax} creates
-are installed into the {pwd}, if no instruction options are used to change this.)
+are installed into the {cwd}, if no instruction options are used to change this.)
 """
 _RESULT_DIR_DESCRIPTION = """\
 This directory is initially empty.

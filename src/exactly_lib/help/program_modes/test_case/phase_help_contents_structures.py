@@ -40,19 +40,19 @@ class PhaseSequenceInfo(tuple):
 
 class ExecutionEnvironmentInfo(tuple):
     def __new__(cls,
-                pwd_at_start_of_phase: list,
+                cwd_at_start_of_phase: list,
                 environment_variables: list,
                 prologue: iter = ()):
         """
-        :param pwd_at_start_of_phase: [ParagraphItem]
+        :param cwd_at_start_of_phase: [ParagraphItem]
         :param environment_variables: [str]
         """
-        return tuple.__new__(cls, (pwd_at_start_of_phase,
+        return tuple.__new__(cls, (cwd_at_start_of_phase,
                                    environment_variables,
                                    list(prologue)))
 
     @property
-    def pwd_at_start_of_phase(self) -> list:
+    def cwd_at_start_of_phase(self) -> list:
         """
         Description of the Present Working Directory, at the start of the phase.
         :rtype: [ParagraphItem]
@@ -119,8 +119,8 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
     def _add_section_for_environment(self, sections: list):
         eei = self.execution_environment_info()
         paragraphs = []
-        if eei.pwd_at_start_of_phase:
-            paragraphs.extend(eei.pwd_at_start_of_phase)
+        if eei.cwd_at_start_of_phase:
+            paragraphs.extend(eei.cwd_at_start_of_phase)
         if eei.environment_variables:
             paragraphs.extend([docs.para('The following environment variables are set:'),
                                self._environment_variables_list(eei.environment_variables)])

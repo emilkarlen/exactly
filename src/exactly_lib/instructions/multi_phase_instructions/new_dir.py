@@ -17,7 +17,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, additional_format_map: dict = None, is_in_assert_phase: bool = False):
         format_map = {
-            'pwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
         }
         if additional_format_map is not None:
             format_map.update(additional_format_map)
@@ -25,7 +25,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         self.path_arg = dt.PATH_ARGUMENT
 
     def single_line_description(self) -> str:
-        return self._format('Creates a directory in the {pwd}')
+        return self._format('Creates a directory in the {cwd}')
 
     def _main_description_rest_body(self) -> list:
         text = """\
