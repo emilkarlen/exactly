@@ -114,7 +114,7 @@ class RelOptionRenderer:
             'PATH': path_name_in_description,
             'ENV_VAR_TMP': env.ENV_VAR_TMP,
             'ENV_VAR_ACT': env.ENV_VAR_ACT,
-            'pwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
@@ -154,7 +154,7 @@ _REL_ACT_DESCRIPTION = """\
 """
 
 _REL_CWD_DESCRIPTION = """\
-{PATH} is relative the {pwd}.
+{PATH} is relative the {cwd}.
 """
 
 _REL_HOME_DESCRIPTION = """\

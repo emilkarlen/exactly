@@ -10,7 +10,7 @@ from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
-    pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
+    cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
     sequence_info__not_executed_if_execution_mode_is_skip, result_sub_dir_files_table
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
@@ -67,7 +67,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         return docs.section_contents(initial_paragraphs)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_non_first_phases(),
+        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_non_first_phases(),
                                         env_vars_up_to_act())
 
     @property

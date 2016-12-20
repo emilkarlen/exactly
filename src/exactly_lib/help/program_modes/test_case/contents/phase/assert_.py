@@ -5,7 +5,7 @@ from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
-    pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
+    cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
@@ -47,7 +47,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         return self._parse(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_non_first_phases(),
+        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_non_first_phases(),
                                         EXISTS_AT_BEFORE_ASSERT_MAIN,
                                         prologue=execution_environment_prologue_for_post_act_phase())
 

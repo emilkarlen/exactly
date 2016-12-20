@@ -13,8 +13,8 @@ from exactly_lib.util.textformat.structure import document as doc
 
 def execution_documentation(setup: Setup) -> doc.SectionContents:
     description_text = DESCRIPTION.format(phase=setup.phase_names,
-                                          pwd=emphasis(CHANGE_DIR_INSTRUCTION_NAME),
-                                          PWD=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+                                          cwd=emphasis(CHANGE_DIR_INSTRUCTION_NAME),
+                                          CWD=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
                                           SANDBOX_ACT_DIR=ENV_VAR_ACT,
                                           act_subdir=SUB_DIRECTORY__ACT,
                                           cli_option_for_keeping_sandbox=OPTION_FOR_KEEPING_SANDBOX_DIRECTORY)
@@ -29,10 +29,10 @@ This sandbox is automatically removed after the execution
 
 
 The sandbox directory contains a sub directory {act_subdir}/, which
-is the {PWD} at the start of the test case.
+is the {CWD} at the start of the test case.
 
 
-This is the {PWD} for all phases, unless it is changed by the {pwd} instruction.
+This is the {CWD} for all phases, unless it is changed by the {cwd} instruction.
 
-A change of {PWD} will stay in effect for all following instructions and phases.
+A change of {CWD} will stay in effect for all following instructions and phases.
 """

@@ -11,32 +11,32 @@ from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs, table
 
 
-def pwd_at_start_of_phase_for_configuration_phase() -> list:
+def cwd_at_start_of_phase_for_configuration_phase() -> list:
     return []
 
 
-def pwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
+def cwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
     text = """\
-    At the beginning of the phase, the {pwd}
+    At the beginning of the phase, the {cwd}
     is the {act_dir}/ sub directory of the sandbox.
     """
     return normalize_and_parse(text.format(act_dir=sds.SUB_DIRECTORY__ACT,
-                                           pwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)))
+                                           cwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)))
 
 
-def pwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> list:
+def cwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> list:
     text = """\
-    The {pwd} is the same as at the end of the {previous}.
+    The {cwd} is the same as at the end of the {previous}.
 
     (which is the {act_dir}/ sub directory of the sandbox, if it has not been changed.)
     """
     return normalize_and_parse(text.format(act_dir=sds.SUB_DIRECTORY__ACT,
-                                           pwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+                                           cwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
                                            previous=previous))
 
 
-def pwd_at_start_of_phase_for_non_first_phases() -> list:
-    return pwd_at_start_of_phase_is_same_as_at_end_of_the('previous phase')
+def cwd_at_start_of_phase_for_non_first_phases() -> list:
+    return cwd_at_start_of_phase_is_same_as_at_end_of_the('previous phase')
 
 
 def env_vars_for_configuration_phase() -> list:
