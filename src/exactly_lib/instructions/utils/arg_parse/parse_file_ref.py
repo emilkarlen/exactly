@@ -134,7 +134,7 @@ def _read_absolute_or_default_file_ref(argument: str,
 def _get_file_ref_constructor(option_argument: str,
                               conf: Configuration) -> types.FunctionType:
     for relativity_type in conf.accepted_options:
-        option_name = rel_opts.REL_OPTIONS_MAP[relativity_type]
+        option_name = rel_opts.REL_OPTIONS_MAP[relativity_type].option_name
         if option_parsing.matches(option_name, option_argument):
             return _REL_OPTION_2_FILE_REF_CONSTRUCTOR[relativity_type]
     msg = 'Invalid option for reference to %s: %s' % (conf.argument_syntax_name, option_argument)

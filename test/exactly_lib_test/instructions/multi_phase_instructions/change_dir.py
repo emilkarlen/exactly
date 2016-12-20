@@ -21,7 +21,7 @@ class TestParseSet(unittest.TestCase):
         self.assertIs(sut.DestinationType.REL_ACT_DIR,
                       actual.destination_type)
 
-    def test_no_option_should_use_default_option(self):
+    def test_no_relativity_option_should_use_default_option(self):
         arguments = 'single-argument'
         actual = sut.parse(arguments)
         self.assertIs(sut.DestinationType.REL_CWD,

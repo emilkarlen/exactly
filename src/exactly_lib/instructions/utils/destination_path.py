@@ -13,8 +13,8 @@ class DestinationType(enum.Enum):
 class DestinationPath(tuple):
     def __new__(cls,
                 destination_type: DestinationType,
-                directory_argument: pathlib.PurePath):
-        return tuple.__new__(cls, (destination_type, directory_argument))
+                path_argument: pathlib.PurePath):
+        return tuple.__new__(cls, (destination_type, path_argument))
 
     @property
     def destination_type(self) -> DestinationType:
