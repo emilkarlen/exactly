@@ -11,6 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
+from exactly_lib_test.act_phase_setups.test_resources import test_validation_for_single_line_source as common_validation
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -20,8 +21,10 @@ from exactly_lib_test.test_resources.programs.python_program_execution import ab
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
+    configuration = TheConfiguration()
+    ret_val.addTest(common_validation.suite_for(configuration))
     ret_val.addTest(unittest.makeSuite(TestValidation))
-    ret_val.addTest(suite_for_execution(TheConfiguration()))
+    ret_val.addTest(suite_for_execution(configuration))
     return ret_val
 
 

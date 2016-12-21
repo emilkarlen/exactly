@@ -1,12 +1,11 @@
 import unittest
 
-from exactly_lib_test.act_phase_setups.command_line import executable_file, shell_command
+from exactly_lib_test.act_phase_setups.file_interpreter import act_phase_contents
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(executable_file.suite())
-    ret_val.addTest(shell_command.suite())
+    ret_val.addTest(act_phase_contents.suite())
     return ret_val
 
 
