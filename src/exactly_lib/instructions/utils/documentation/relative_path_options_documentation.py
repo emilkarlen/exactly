@@ -17,6 +17,13 @@ OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
                                               RELATIVITY_ARGUMENT)
 
 
+def mandatory_path_with_optional_relativity(path_argument: a.Named) -> list:
+    return [
+        OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+        a.Single(a.Multiplicity.MANDATORY, path_argument),
+    ]
+
+
 def default_relativity_for_rel_opt_type(path_arg_name: str,
                                         default_relativity_type: options.RelOptionType) -> list:
     return docs.paras(_DEFAULT_RELATIVITY
