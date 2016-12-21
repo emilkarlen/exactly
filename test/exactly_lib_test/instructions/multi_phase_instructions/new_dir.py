@@ -5,10 +5,10 @@ from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfigurationForRelSdsBase, RelativityOptionConfigurationForRelAct, \
-    RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.relativity_options import \
+    RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
+    RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution import sds_test
@@ -87,7 +87,7 @@ def is_failure() -> va.ValueAssertion:
 
 
 class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):
-    def __init__(self, relativity_option: RelativityOptionConfigurationForRelSdsBase):
+    def __init__(self, relativity_option: RelativityOptionConfigurationForRelSds):
         super().__init__()
         self.relativity_option = relativity_option
 
@@ -109,7 +109,7 @@ class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):
         raise NotImplementedError()
 
 
-class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfigurationForRelSdsBase):
+class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfigurationForRelSds):
     def __init__(self):
         super().__init__('')
 
@@ -132,7 +132,7 @@ def suite_for_relativity_options() -> unittest.TestSuite:
                                for relativity_option in RELATIVITY_OPTIONS])
 
 
-def suite_for_relativity_option(relativity_option: RelativityOptionConfigurationForRelSdsBase) -> unittest.TestSuite:
+def suite_for_relativity_option(relativity_option: RelativityOptionConfigurationForRelSds) -> unittest.TestSuite:
     test_cases = [
         test_creation_of_directory_with_single_path_component,
         test_creation_of_directory_with_multiple_path_components,

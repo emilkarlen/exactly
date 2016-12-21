@@ -3,8 +3,10 @@ import unittest
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfiguration, RelativityOptionConfigurationForRelCwdForTestCwdDir
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
+    RelativityOptionConfigurationForRelCwdForTestCwdDir
+from exactly_lib_test.instructions.test_resources.relativity_options import \
+    RelativityOptionConfiguration
+from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
 
