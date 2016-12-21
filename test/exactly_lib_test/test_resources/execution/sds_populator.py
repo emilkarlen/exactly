@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.file_structure import DirContents
 
@@ -26,6 +28,10 @@ def tmp_user_dir_contents(contents: DirContents) -> SdsPopulator:
 
 def tmp_internal_dir_contents(contents: DirContents) -> SdsPopulator:
     return _FilesInTmpInternalDir(contents)
+
+
+def cwd_contents(contents: DirContents) -> SdsPopulator:
+    return _FilesInCwd(contents)
 
 
 class _Empty(SdsPopulator):
@@ -67,3 +73,13 @@ class _FilesInTmpInternalDir(SdsPopulator):
 
     def apply(self, sds: SandboxDirectoryStructure):
         self.test_root_contents.write_to(sds.tmp.internal_dir)
+
+
+class _FilesInCwd(SdsPopulator):
+    def __init__(self,
+                 contents: DirContents):
+        self.test_root_contents = contents
+
+    def apply(self, sds: SandboxDirectoryStructure):
+        cwd = pathlib.Path().cwd()
+        self.test_root_contents.write_to(cwd)

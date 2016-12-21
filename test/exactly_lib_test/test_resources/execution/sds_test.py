@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.execution import sds_populator
-from exactly_lib_test.test_resources.execution.utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.execution.utils import sds_with_act_as_curr_dir, SdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -14,15 +14,12 @@ class PostActionCheck:
         pass
 
 
-class Action:
-    def apply(self, sds: SandboxDirectoryStructure):
-        return None
-
-
 class Arrangement:
     def __init__(self,
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
-                 pre_action_action: Action = Action()):
+                 pre_contents_population_action: SdsAction = SdsAction(),
+                 pre_action_action: SdsAction = SdsAction()):
+        self.pre_contents_population_action = pre_contents_population_action
         self.sds_contents_before = sds_contents_before
         self.pre_action_action = pre_action_action
 
@@ -39,7 +36,7 @@ class Expectation:
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               action: Action,
+               action: SdsAction,
                arrangement: Arrangement,
                expectation: Expectation):
         check(self,
@@ -49,10 +46,11 @@ class TestCaseBase(unittest.TestCase):
 
 
 def check(put: unittest.TestCase,
-          action: Action,
+          action: SdsAction,
           arrangement: Arrangement,
           expectation: Expectation):
-    with sds_with_act_as_curr_dir(arrangement.sds_contents_before) as sds:
+    with sds_with_act_as_curr_dir(contents=arrangement.sds_contents_before,
+                                  pre_contents_population_action=arrangement.pre_contents_population_action) as sds:
         arrangement.pre_action_action.apply(sds)
         result = action.apply(sds)
         expectation.expected_action_result.apply(put, result)

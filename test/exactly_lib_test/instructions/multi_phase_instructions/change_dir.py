@@ -2,6 +2,7 @@ import os
 import pathlib
 import unittest
 
+import exactly_lib_test.test_resources.execution.utils
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -103,7 +104,7 @@ class TestParseSet(unittest.TestCase):
             sut.parse(arguments, is_after_act_phase=False)
 
 
-class ParseAndChangeDirAction(sds_test.Action):
+class ParseAndChangeDirAction(exactly_lib_test.test_resources.execution.utils.SdsAction):
     def __init__(self,
                  arguments: str,
                  is_after_act_phase: bool):
@@ -146,7 +147,7 @@ def is_failure() -> ValueAssertion:
     return ValueIsNotNone()
 
 
-class ChangeDirTo(sds_test.Action):
+class ChangeDirTo(exactly_lib_test.test_resources.execution.utils.SdsAction):
     def __init__(self, sds2dir_fun):
         self.sds2dir_fun = sds2dir_fun
 
