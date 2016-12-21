@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
@@ -31,4 +33,10 @@ def tmp_internal_dir_contains_exactly(expected_contents: file_structure.DirConte
 def result_dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
     return va.sub_component('result dir',
                             lambda sds: sds.result.root_dir,
+                            _DirContainsExactly(expected_contents))
+
+
+def cwd_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
+    return va.sub_component('result dir',
+                            lambda sds: pathlib.Path().cwd(),
                             _DirContainsExactly(expected_contents))

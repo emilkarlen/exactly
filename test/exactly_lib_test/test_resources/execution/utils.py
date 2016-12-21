@@ -42,6 +42,25 @@ def write_act_result(sds: SandboxDirectoryStructure,
     write_file(sds.result.stderr_file, result.stderr_contents)
 
 
+class SdsAction:
+    def apply(self, sds: SandboxDirectoryStructure):
+        pass
+
+
+class MkDirIfNotExistsAndChangeToIt(SdsAction):
+    def __init__(self, sds_2_dir_path):
+        self.sds_2_dir_path = sds_2_dir_path
+
+    def apply(self, sds: SandboxDirectoryStructure):
+        dir_path = self.sds_2_dir_path(sds)
+        dir_path.mkdir(parents=True, exist_ok=True)
+        os.chdir(str(dir_path))
+
+
+def mk_sub_dir_of_act_and_change_to_it(sub_dir_name: str) -> SdsAction:
+    return MkDirIfNotExistsAndChangeToIt(lambda sds: sds.act_dir / sub_dir_name)
+
+
 class HomeAndSdsContents(tuple):
     def __new__(cls,
                 home_dir_contents: DirContents = empty_dir_contents(),
@@ -77,12 +96,14 @@ def home_with_sds_and_act_as_curr_dir(
 
 
 @contextmanager
-def sds_with_act_as_curr_dir(contents: sds_populator.SdsPopulator = sds_populator.empty()
+def sds_with_act_as_curr_dir(contents: sds_populator.SdsPopulator = sds_populator.empty(),
+                             pre_contents_population_action: SdsAction = SdsAction(),
                              ) -> sds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-sds-') as sds_root_dir:
         with preserved_cwd():
             sds = sds_module.construct_at(resolved_path_name(sds_root_dir))
             os.chdir(str(sds.act_dir))
+            pre_contents_population_action.apply(sds)
             contents.apply(sds)
             yield sds
 

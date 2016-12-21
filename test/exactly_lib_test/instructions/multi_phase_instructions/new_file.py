@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib_test.test_resources.execution.utils
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -92,7 +93,7 @@ class TestParseWithContents(unittest.TestCase):
                          source.line_sequence.next_line())
 
 
-class ParseAndCreateFileAction(sds_test.Action):
+class ParseAndCreateFileAction(exactly_lib_test.test_resources.execution.utils.SdsAction):
     def __init__(self,
                  source: SingleInstructionParserSource):
         self.source = source
