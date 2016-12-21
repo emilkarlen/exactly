@@ -78,20 +78,20 @@ class HomeAndSdsContents(tuple):
 
 
 @contextmanager
-def home_with_sds_and_act_as_curr_dir(
+def home_and_sds_with_act_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
         sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
         home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty()) -> HomeAndSds:
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = resolved_path(home_dir)
-        home_dir_contents.write_to(home_dir_path)
         with sandbox_directory_structure(prefix=prefix + "-sds-",
                                          contents=sds_contents) as sds:
+            ret_val = HomeAndSds(home_dir_path, sds)
             with preserved_cwd():
-                ret_val = HomeAndSds(home_dir_path, sds)
-                home_or_sds_contents.write_to(ret_val)
                 os.chdir(str(sds.act_dir))
+                home_dir_contents.write_to(home_dir_path)
+                home_or_sds_contents.write_to(ret_val)
                 yield ret_val
 
 
@@ -100,8 +100,8 @@ def sds_with_act_as_curr_dir(contents: sds_populator.SdsPopulator = sds_populato
                              pre_contents_population_action: SdsAction = SdsAction(),
                              ) -> sds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-sds-') as sds_root_dir:
+        sds = sds_module.construct_at(resolved_path_name(sds_root_dir))
         with preserved_cwd():
-            sds = sds_module.construct_at(resolved_path_name(sds_root_dir))
             os.chdir(str(sds.act_dir))
             pre_contents_population_action.apply(sds)
             contents.apply(sds)
