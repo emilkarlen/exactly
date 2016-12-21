@@ -17,7 +17,7 @@ def dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.Va
     """
     Assumes that the actual value is a pathlib.Path
     """
-    return _DirContainsExactly(expected_contents)
+    return DirContainsExactly(expected_contents)
 
 
 def dir_contains_at_least(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
@@ -62,7 +62,7 @@ class _PathIsFileWithContents(PathAssertionBase):
         file_checker.assert_file_contents(value, self.expected_contents)
 
 
-class _DirContainsExactly(PathAssertionBase):
+class DirContainsExactly(PathAssertionBase):
     def __init__(self,
                  expected_contents: file_structure.DirContents):
         self.expected_contents = expected_contents
