@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.execution import home_or_sds_populator as h
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
-from exactly_lib_test.test_resources.execution.utils import home_with_sds_and_act_as_curr_dir
+from exactly_lib_test.test_resources.execution.utils import home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -370,7 +370,7 @@ class TestParseAbsolutePath(unittest.TestCase):
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_sds,
                         'File is expected to exist pre SDS')
-        with home_with_sds_and_act_as_curr_dir(
+        with home_and_sds_with_act_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(sys.executable,
                              exe_file.path_string(home_and_sds),
@@ -388,7 +388,7 @@ class TestParseAbsolutePath(unittest.TestCase):
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_sds,
                         'File is expected to exist pre SDS')
-        with home_with_sds_and_act_as_curr_dir(
+        with home_and_sds_with_act_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(non_existing_file_path_str,
                              exe_file.path_string(home_and_sds),

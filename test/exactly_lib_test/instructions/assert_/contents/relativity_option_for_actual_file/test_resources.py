@@ -3,13 +3,13 @@ import unittest
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfiguration
+    RelativityOptionConfiguration, RelativityOptionConfigurationForRelCwdForTestCwdDir
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfigurationForRelCwd, RelativityOptionConfigurationForRelAct, \
+    RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
 
 RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE = [
-    RelativityOptionConfigurationForRelCwd(),
+    RelativityOptionConfigurationForRelCwdForTestCwdDir(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
     # Test of default relativity is done by "generic" tests of equals -

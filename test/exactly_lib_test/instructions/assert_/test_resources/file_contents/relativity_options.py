@@ -1,4 +1,5 @@
 import os
+import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
@@ -12,18 +13,19 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import svh_che
 from exactly_lib_test.test_resources import home_and_sds_test
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
-from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents, \
+    SdsPopulator, SdsPopulatorForFileWithContentsThatDependOnSds, cwd_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
 
-class _CwdPopulator(HomeOrSdsPopulator):
+class _CwdPopulator(SdsPopulator):
     def __init__(self, contents: DirContents):
         self.contents = contents
 
-    def write_to(self, home_and_sds: HomeAndSds):
-        sub_dir = _get_cwd_path_and_make_dir_if_not_exists(home_and_sds.sds)
+    def apply(self, sds: SandboxDirectoryStructure):
+        sub_dir = _get_cwd_path_and_make_dir_if_not_exists(sds)
         self.contents.write_to(sub_dir)
 
 
@@ -108,6 +110,23 @@ class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
 
 
 class RelativityOptionConfigurationForRelSdsBase(RelativityOptionConfiguration):
+    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
+        raise NotImplementedError()
+
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForSdsContents(self.populator_for_relativity_option_root__sds(contents))
+
+    def populator_for_relativity_option_root_for_contents_from_sds_fun(self,
+                                                                       file_name: str,
+                                                                       sds_2_file_contents_str
+                                                                       ) -> SdsPopulator:
+        return SdsPopulatorForFileWithContentsThatDependOnSds(file_name,
+                                                              sds_2_file_contents_str,
+                                                              self.populator_for_relativity_option_root__sds)
+
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         return Expectation(main_result=pfh_check.is_fail())
 
@@ -116,7 +135,21 @@ class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRel
     def __init__(self):
         super().__init__(relative_path_options.REL_CWD_OPTION)
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
+    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return pathlib.Path().cwd()
+
+    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
+        return cwd_contents(contents)
+
+
+class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfigurationForRelSdsBase):
+    def __init__(self):
+        super().__init__(relative_path_options.REL_CWD_OPTION)
+
+    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return _test_cwd_dir(sds)
+
+    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
         return _CwdPopulator(contents)
 
 
@@ -124,20 +157,26 @@ class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRel
     def __init__(self):
         super().__init__(relative_path_options.REL_ACT_OPTION)
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
-        return HomeOrSdsPopulatorForSdsContents(act_dir_contents(contents))
+    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return sds.act_dir
+
+    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
+        return act_dir_contents(contents)
 
 
 class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRelSdsBase):
     def __init__(self):
         super().__init__(relative_path_options.REL_TMP_OPTION)
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
-        return HomeOrSdsPopulatorForSdsContents(tmp_user_dir_contents(contents))
+    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return sds.tmp.user_dir
+
+    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
+        return tmp_user_dir_contents(contents)
 
 
 def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
-    ret_val = sds.act_dir / _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD
+    ret_val = _test_cwd_dir(sds)
     if not ret_val.exists():
         os.mkdir(str(ret_val))
     return ret_val
@@ -147,6 +186,10 @@ class MkSubDirOfActAndMakeItCurrentDirectory(home_and_sds_test.Action):
     def apply(self, home_and_sds: HomeAndSds):
         sub_dir = _get_cwd_path_and_make_dir_if_not_exists(home_and_sds.sds)
         os.chdir(str(sub_dir))
+
+
+def _test_cwd_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
+    return sds.act_dir / _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD
 
 
 class _HomeOrSdsPopulatorForContentsThatDependOnHomeAndSds(HomeOrSdsPopulator):

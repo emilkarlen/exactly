@@ -6,10 +6,10 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelCwd, \
-    RelativityOptionConfigurationForRelAct, RelativityOptionConfigurationForRelTmp, \
+    RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
+    RelativityOptionConfigurationForRelTmp, \
     MkSubDirOfActAndMakeItCurrentDirectory, TestWithConfigurationAndRelativityOptionAndNegationBase, \
-    suite_for__conf__rel_opts__negations
+    suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
     ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -67,7 +67,7 @@ class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(Relativity
 
 _RELATIVITY_OPTION_CONFIGURATIONS = [
     RelativityOptionConfigurationForRelHome(),
-    RelativityOptionConfigurationForRelCwd(),
+    RelativityOptionConfigurationForRelCwdForTestCwdDir(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
     RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(),
