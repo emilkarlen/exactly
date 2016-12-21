@@ -6,11 +6,12 @@ from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
+    InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
-from exactly_lib_test.test_resources.execution.utils import home_and_sds_with_act_as_curr_dir, HomeAndSds
+from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
+    home_and_sds_with_act_as_curr_dir
 
 
 class TestInstruction(InstructionWithFileRefsBase):
@@ -89,6 +90,7 @@ def suite() -> unittest.TestSuite:
 
 def run_suite():
     unittest.TextTestRunner().run(suite())
+
 
 if __name__ == '__main__':
     run_suite()

@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib.test_case import phase_identifier
@@ -17,9 +18,10 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import home_or_sds_populator, utils
+from exactly_lib_test.test_resources.execution import utils
+from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator
+from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
-from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -94,7 +96,7 @@ class Executor(InstructionExecutionBase):
         instruction = parser.apply(source)
         self._check_instruction(CleanupPhaseInstruction, instruction)
         assert isinstance(instruction, CleanupPhaseInstruction)
-        with utils.home_and_sds_with_act_as_curr_dir(
+        with exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,

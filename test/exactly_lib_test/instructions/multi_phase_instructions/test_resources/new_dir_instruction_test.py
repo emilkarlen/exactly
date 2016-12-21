@@ -7,9 +7,10 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds
+from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import SubDirOfSdsContainsExactly
-from exactly_lib_test.test_resources.execution.utils import HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.parse import new_source2
 
