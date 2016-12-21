@@ -73,7 +73,6 @@ class FileInfo(tuple):
 
 def parse(source: SingleInstructionParserSource) -> FileInfo:
     arguments = split_arguments_list_string(source.instruction_argument)
-
     (destination_path, remaining_arguments) = parse_destination_path(_RELATIVITY_OPTIONS, True, arguments)
     contents = ''
     if remaining_arguments:

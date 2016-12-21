@@ -16,18 +16,20 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator, utils
-from exactly_lib_test.test_resources.execution.utils import write_act_result
+from exactly_lib_test.test_resources.execution.utils import write_act_result, HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
-def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 home_or_sds_contents_before_main: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
                 process_execution_settings=with_no_timeout(),
                 ) -> ArrangementPostAct:
-    return ArrangementPostAct(home_contents=home_dir_contents,
+    return ArrangementPostAct(pre_contents_population_action=pre_contents_population_action,
+                              home_contents=home_dir_contents,
                               sds_contents=sds_contents_before_main,
                               act_result_producer=act_result_producer,
                               os_services=os_services,

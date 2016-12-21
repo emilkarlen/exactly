@@ -9,6 +9,7 @@ from exactly_lib_test.instructions.cleanup.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -34,10 +35,12 @@ class CleanupConfigurationBase(ConfigurationBase):
         return Expectation(validate_pre_sds_result=svh_check.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,
+                    pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     environ: dict = None,
                     os_services: OsServices = new_default()):
-        return Arrangement(sds_contents_before_main=sds_contents_before_main,
+        return Arrangement(pre_contents_population_action=pre_contents_population_action,
+                           sds_contents_before_main=sds_contents_before_main,
                            process_execution_settings=with_environ(environ),
                            os_services=os_services)
 

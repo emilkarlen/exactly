@@ -2,8 +2,9 @@ import unittest
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.setup import new_dir as sut
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources import new_dir_instruction_test
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.new_dir_instruction_test import \
-    Configuration, suite_for
+    Configuration
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
@@ -18,4 +19,4 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
 
 
 def suite() -> unittest.TestSuite:
-    return suite_for(TheConfiguration())
+    return new_dir_instruction_test.suite_for(TheConfiguration())

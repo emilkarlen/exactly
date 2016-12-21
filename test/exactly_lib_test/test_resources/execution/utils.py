@@ -52,6 +52,14 @@ class HomeAndSdsAction:
         pass
 
 
+class HomeAndSdsActionFromSdsAction(HomeAndSdsAction):
+    def __init__(self, sds_action: SdsAction):
+        self.sds_action = sds_action
+
+    def apply(self, home_and_sds: HomeAndSds):
+        return self.sds_action.apply(home_and_sds.sds)
+
+
 class MkDirIfNotExistsAndChangeToIt(SdsAction):
     def __init__(self, sds_2_dir_path):
         self.sds_2_dir_path = sds_2_dir_path
@@ -91,13 +99,13 @@ def home_and_sds_with_act_as_curr_dir(
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = resolved_path(home_dir)
-        with sandbox_directory_structure(prefix=prefix + "-sds-",
-                                         contents=sds_contents) as sds:
+        with sandbox_directory_structure(prefix=prefix + "-sds-") as sds:
             ret_val = HomeAndSds(home_dir_path, sds)
             with preserved_cwd():
                 os.chdir(str(sds.act_dir))
                 pre_contents_population_action.apply(ret_val)
                 home_dir_contents.write_to(home_dir_path)
+                sds_contents.apply(sds)
                 home_or_sds_contents.write_to(ret_val)
                 yield ret_val
 

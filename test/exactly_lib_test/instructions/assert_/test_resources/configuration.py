@@ -10,6 +10,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -38,10 +39,12 @@ class AssertConfigurationBase(ConfigurationBase):
         return Expectation(validation_pre_sds=svh_check.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,
+                    pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     environ: dict = None,
                     os_services: OsServices = new_default()):
-        return arrangement(sds_contents_before_main=sds_contents_before_main,
+        return arrangement(pre_contents_population_action=pre_contents_population_action,
+                           sds_contents_before_main=sds_contents_before_main,
                            process_execution_settings=with_environ(environ),
                            os_services=os_services)
 

@@ -1,5 +1,6 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.multi_phase_instructions import new_dir as mkdir_utils
+from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
     SingleInstructionParserSource
@@ -22,12 +23,11 @@ class Parser(SingleInstructionParser):
 
 
 class _Instruction(CleanupPhaseInstruction):
-    def __init__(self, directory_components: str):
-        self.directory_components = directory_components
+    def __init__(self, destination_path: DestinationPath):
+        self.destination_path = destination_path
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
-        error_message = mkdir_utils.make_dir_in_current_dir(self.directory_components)
-        return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
+        return mkdir_utils.execute_and_return_sh(environment.sds, self.destination_path)
