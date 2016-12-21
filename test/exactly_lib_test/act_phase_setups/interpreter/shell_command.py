@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.interpreter import shell_command as sut
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
     Configuration, suite_for_execution
-from exactly_lib_test.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 
 
 class TheConfiguration(Configuration):
