@@ -12,13 +12,12 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution import sds_test
-from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, cwd_contents, SdsPopulator
+from exactly_lib_test.test_resources.execution.sds_populator import cwd_contents, SdsPopulator
 from exactly_lib_test.test_resources.execution.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.execution.utils import SdsAction, mk_sub_dir_of_act_and_change_to_it
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
-from exactly_lib_test.test_resources.value_assertions.sds_contents_check import cwd_contains_exactly, \
-    SubDirOfSdsContainsExactly
+from exactly_lib_test.test_resources.value_assertions.sds_contents_check import SubDirOfSdsContainsExactly
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'cwd-dir'
 
@@ -43,19 +42,19 @@ class TestParse(unittest.TestCase):
         arguments = '  expected-argument  '
         result = sut.parse(arguments)
         self.assertEqual('expected-argument',
-                         result)
+                         str(result.path_argument))
 
     def test_success_when_correct_number_of_arguments(self):
         arguments = 'expected-argument'
         result = sut.parse(arguments)
         self.assertEqual('expected-argument',
-                         result)
+                         str(result.path_argument))
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
         result = sut.parse(arguments)
         self.assertEqual('expected argument',
-                         result)
+                         str(result.path_argument))
 
 
 class ParseAndMkDirAction(SdsAction):
@@ -64,8 +63,8 @@ class ParseAndMkDirAction(SdsAction):
         self.arguments = arguments
 
     def apply(self, sds: SandboxDirectoryStructure):
-        directory_argument = sut.parse(self.arguments)
-        return sut.make_dir_in_current_dir(directory_argument)
+        destination_path = sut.parse(self.arguments)
+        return sut.make_dir_in_current_dir(sds, destination_path)
 
 
 class TestCaseForCheckOfArgumentBase(sds_test.TestCaseBase):
@@ -121,21 +120,25 @@ class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfigur
         return cwd_contents(contents)
 
 
-def suite_for_relativity_options() -> unittest.TestSuite:
-    _relativity_options = [
-        RelativityOptionConfigurationForDefaultRelativity(),
-        RelativityOptionConfigurationForRelAct(),
-        RelativityOptionConfigurationForRelTmp(),
-    ]
+RELATIVITY_OPTIONS = [
+    RelativityOptionConfigurationForDefaultRelativity(),
+    RelativityOptionConfigurationForRelAct(),
+    RelativityOptionConfigurationForRelTmp(),
+]
 
+
+def suite_for_relativity_options() -> unittest.TestSuite:
     return unittest.TestSuite([suite_for_relativity_option(relativity_option)
-                               for relativity_option in _relativity_options])
+                               for relativity_option in RELATIVITY_OPTIONS])
 
 
 def suite_for_relativity_option(relativity_option: RelativityOptionConfigurationForRelSdsBase) -> unittest.TestSuite:
     test_cases = [
         test_creation_of_directory_with_single_path_component,
         test_creation_of_directory_with_multiple_path_components,
+        test_whole_argument_exists_as_directory__single_path_component,
+        test_whole_argument_exists_as_directory__multiple_path_components,
+        test_initial_component_of_argument_exists_as_directory__multiple_path_components,
     ]
     return unittest.TestSuite([tc(relativity_option) for tc in test_cases])
 
@@ -156,63 +159,81 @@ class test_creation_of_directory_with_single_path_component(TestWithRelativityOp
 
 class test_creation_of_directory_with_multiple_path_components(TestWithRelativityOptionBase):
     def runTest(self):
-        self._check_argument_with_relativity_option('{relativity_option} first-component/second-component',
-                                                    arrangement_with_sub_dir_of_act_as_cwd(),
-                                                    Expectation(expected_action_result=is_success(),
-                                                                expected_sds_contents_after=cwd_contains_exactly(
-                                                                    DirContents([
-                                                                        Dir('first-component', [
-                                                                            empty_dir('second-component')
-                                                                        ])
-                                                                    ]))
-                                                                ))
+        self._check_argument_with_relativity_option(
+            '{relativity_option} first-component/second-component',
+            arrangement_with_sub_dir_of_act_as_cwd(),
+            Expectation(expected_action_result=is_success(),
+                        expected_sds_contents_after=SubDirOfSdsContainsExactly(
+                            self.relativity_option.root_dir__sds,
+                            DirContents([
+                                Dir('first-component', [
+                                    empty_dir('second-component')
+                                ])
+                            ]))
+                        ))
 
 
-class TestSuccessfulScenariosWithExistingDirectories(TestCaseForCheckOfArgumentBase):
-    def test_whole_argument_exists_as_directory__single_path_component(self):
-        self._check_argument('existing-directory',
-                             arrangement_with_sub_dir_of_act_as_cwd(
-                                 sds_contents_before=act_dir_contents(DirContents([
-                                     empty_dir('existing-directory')
-                                 ]))),
-                             Expectation(
-                                 expected_action_result=is_success(),
-                                 expected_sds_contents_after=cwd_contains_exactly(DirContents([
-                                     empty_dir('existing-directory')
-                                 ]))
-                             ))
+class test_whole_argument_exists_as_directory__single_path_component(TestWithRelativityOptionBase):
+    def runTest(self):
+        self._check_argument_with_relativity_option(
+            '{relativity_option} existing-directory',
+            arrangement_with_sub_dir_of_act_as_cwd(
+                sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
+                    DirContents([
+                        empty_dir('existing-directory')
+                    ]))),
+            Expectation(
+                expected_action_result=is_success(),
+                expected_sds_contents_after=SubDirOfSdsContainsExactly(
+                    self.relativity_option.root_dir__sds,
+                    DirContents([
+                        empty_dir('existing-directory')
+                    ]))
+            ))
 
-    def test_whole_argument_exists_as_directory__multiple_path_components(self):
-        self._check_argument('first-component/second-component',
-                             arrangement_with_sub_dir_of_act_as_cwd(
-                                 sds_contents_before=act_dir_contents(DirContents([
-                                     Dir('first-component', [
-                                         empty_dir('second-component')
-                                     ])]))),
-                             Expectation(
-                                 expected_action_result=is_success(),
-                                 expected_sds_contents_after=cwd_contains_exactly(DirContents([
-                                     Dir('first-component', [
-                                         empty_dir('second-component')
-                                     ])
-                                 ]))
-                             ))
 
-    def test_initial_component_of_argument_exists_as_directory__multiple_path_components(self):
-        self._check_argument('first-component-that-exists/second-component',
-                             arrangement_with_sub_dir_of_act_as_cwd(
-                                 sds_contents_before=act_dir_contents(DirContents([
-                                     Dir('first-component-that-exists', [
-                                         empty_dir('second-component')])
-                                 ]))),
-                             Expectation(
-                                 expected_action_result=is_success(),
-                                 expected_sds_contents_after=cwd_contains_exactly(DirContents([
-                                     Dir('first-component-that-exists', [
-                                         empty_dir('second-component')
-                                     ])
-                                 ]))
-                             ))
+class test_whole_argument_exists_as_directory__multiple_path_components(TestWithRelativityOptionBase):
+    def runTest(self):
+        self._check_argument_with_relativity_option(
+            '{relativity_option} first-component/second-component',
+            arrangement_with_sub_dir_of_act_as_cwd(
+                sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
+                    DirContents([
+                        Dir('first-component', [
+                            empty_dir('second-component')
+                        ])]))),
+            Expectation(
+                expected_action_result=is_success(),
+                expected_sds_contents_after=SubDirOfSdsContainsExactly(
+                    self.relativity_option.root_dir__sds,
+                    DirContents([
+                        Dir('first-component', [
+                            empty_dir('second-component')
+                        ])
+                    ]))
+            ))
+
+
+class test_initial_component_of_argument_exists_as_directory__multiple_path_components(TestWithRelativityOptionBase):
+    def runTest(self):
+        self._check_argument_with_relativity_option(
+            '{relativity_option} first-component-that-exists/second-component',
+            arrangement_with_sub_dir_of_act_as_cwd(
+                sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
+                    DirContents([
+                        Dir('first-component-that-exists', [
+                            empty_dir('second-component')])
+                    ]))),
+            Expectation(
+                expected_action_result=is_success(),
+                expected_sds_contents_after=SubDirOfSdsContainsExactly(
+                    self.relativity_option.root_dir__sds,
+                    DirContents([
+                        Dir('first-component-that-exists', [
+                            empty_dir('second-component')
+                        ])
+                    ]))
+            ))
 
 
 class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
@@ -254,7 +275,6 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParse),
-        unittest.makeSuite(TestSuccessfulScenariosWithExistingDirectories),
         unittest.makeSuite(TestFailingScenarios),
         suite_for_relativity_options(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
@@ -264,10 +284,10 @@ def suite() -> unittest.TestSuite:
 def arrangement_with_sub_dir_of_act_as_cwd(
         sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty()) -> Arrangement:
     return Arrangement(sds_contents_before=sds_contents_before,
-                       pre_contents_population_action=_SETUP_CWD_ACTION)
+                       pre_contents_population_action=SETUP_CWD_ACTION)
 
 
-_SETUP_CWD_ACTION = mk_sub_dir_of_act_and_change_to_it(_SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
+SETUP_CWD_ACTION = mk_sub_dir_of_act_and_change_to_it(_SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

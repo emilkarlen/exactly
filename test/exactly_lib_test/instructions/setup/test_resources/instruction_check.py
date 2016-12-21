@@ -23,11 +23,13 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator
+from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class Arrangement(ArrangementWithSds):
     def __init__(self,
+                 pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
@@ -35,7 +37,8 @@ class Arrangement(ArrangementWithSds):
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
                  ):
-        super().__init__(home_contents=home_dir_contents,
+        super().__init__(pre_contents_population_action=pre_contents_population_action,
+                         home_contents=home_dir_contents,
                          sds_contents=sds_contents_before_main,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
