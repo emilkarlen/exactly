@@ -3,12 +3,14 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources import tmp_dir_test
+from exactly_lib_test.test_resources.execution import sds_test
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
+from exactly_lib_test.test_resources.execution.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
-from exactly_lib_test.test_resources.tmp_dir_test import Arrangement, Expectation
-from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions.sds_contents_check import act_dir_contains_exactly
 
 
 class TestParseSet(unittest.TestCase):
@@ -41,21 +43,21 @@ class TestParseSet(unittest.TestCase):
                          result)
 
 
-class ParseAndMkDirAction:
+class ParseAndMkDirAction(sds_test.Action):
     def __init__(self,
                  arguments: str):
         self.arguments = arguments
 
-    def __call__(self, *args, **kwargs):
+    def apply(self, sds: SandboxDirectoryStructure):
         directory_argument = sut.parse(self.arguments)
         return sut.make_dir_in_current_dir(directory_argument)
 
 
-class TestCaseForCheckOfArgumentBase(tmp_dir_test.TestCaseBase):
+class TestCaseForCheckOfArgumentBase(sds_test.TestCaseBase):
     def _check_argument(self,
                         arguments: str,
-                        arrangement: tmp_dir_test.Arrangement,
-                        expectation: tmp_dir_test.Expectation):
+                        arrangement: Arrangement,
+                        expectation: Expectation):
         action = ParseAndMkDirAction(arguments)
         self._check(action,
                     arrangement,
@@ -75,7 +77,7 @@ class TestSuccessfulScenariosWithEmptyCwd(TestCaseForCheckOfArgumentBase):
         self._check_argument('dir-that-should-be-constructed',
                              Arrangement(),
                              Expectation(expected_action_result=is_success(),
-                                         expected_dir_contents_after=fa.dir_contains_exactly(DirContents([
+                                         expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                              empty_dir('dir-that-should-be-constructed')
                                          ]))
                                          ))
@@ -84,7 +86,7 @@ class TestSuccessfulScenariosWithEmptyCwd(TestCaseForCheckOfArgumentBase):
         self._check_argument('first-component/second-component',
                              Arrangement(),
                              Expectation(expected_action_result=is_success(),
-                                         expected_dir_contents_after=fa.dir_contains_exactly(DirContents([
+                                         expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                              Dir('first-component', [
                                                  empty_dir('second-component')
                                              ])
@@ -95,12 +97,12 @@ class TestSuccessfulScenariosWithEmptyCwd(TestCaseForCheckOfArgumentBase):
 class TestSuccessfulScenariosWithExistingDirectories(TestCaseForCheckOfArgumentBase):
     def test_whole_argument_exists_as_directory__single_path_component(self):
         self._check_argument('existing-directory',
-                             Arrangement(dir_contents_before=DirContents([
+                             Arrangement(sds_contents_before=act_dir_contents(DirContents([
                                  empty_dir('existing-directory')
-                             ])),
+                             ]))),
                              Expectation(
                                  expected_action_result=is_success(),
-                                 expected_dir_contents_after=fa.dir_contains_exactly(DirContents([
+                                 expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                      empty_dir('existing-directory')
                                  ]))
                              ))
@@ -108,13 +110,13 @@ class TestSuccessfulScenariosWithExistingDirectories(TestCaseForCheckOfArgumentB
     def test_whole_argument_exists_as_directory__multiple_path_components(self):
         self._check_argument('first-component/second-component',
                              Arrangement(
-                                 dir_contents_before=DirContents([
+                                 sds_contents_before=act_dir_contents(DirContents([
                                      Dir('first-component', [
                                          empty_dir('second-component')
-                                     ])])),
+                                     ])]))),
                              Expectation(
                                  expected_action_result=is_success(),
-                                 expected_dir_contents_after=fa.dir_contains_exactly(DirContents([
+                                 expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                      Dir('first-component', [
                                          empty_dir('second-component')
                                      ])
@@ -124,13 +126,13 @@ class TestSuccessfulScenariosWithExistingDirectories(TestCaseForCheckOfArgumentB
     def test_initial_component_of_argument_exists_as_directory__multiple_path_components(self):
         self._check_argument('first-component-that-exists/second-component',
                              Arrangement(
-                                 dir_contents_before=DirContents([
+                                 sds_contents_before=act_dir_contents(DirContents([
                                      Dir('first-component-that-exists', [
                                          empty_dir('second-component')])
-                                 ])),
+                                 ]))),
                              Expectation(
                                  expected_action_result=is_success(),
-                                 expected_dir_contents_after=fa.dir_contains_exactly(DirContents([
+                                 expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                      Dir('first-component-that-exists', [
                                          empty_dir('second-component')
                                      ])
@@ -142,9 +144,9 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
     def test_argument_exists_as_non_directory__single_path_component(self):
         self._check_argument('file',
                              Arrangement(
-                                 dir_contents_before=DirContents([
+                                 sds_contents_before=act_dir_contents(DirContents([
                                      empty_file('file')
-                                 ])),
+                                 ]))),
                              Expectation(
                                  expected_action_result=is_failure(),
                              ))
@@ -152,11 +154,11 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
     def test_argument_exists_as_non_directory__multiple_path_components(self):
         self._check_argument('existing-dir/existing-file',
                              Arrangement(
-                                 dir_contents_before=DirContents([
+                                 sds_contents_before=act_dir_contents(DirContents([
                                      Dir('existing-dir', [
                                          empty_file('existing-file')
                                      ])
-                                 ])),
+                                 ]))),
                              Expectation(
                                  expected_action_result=is_failure(),
                              ))
@@ -164,11 +166,11 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
     def test_multi_path_component_with_middle_component_is_a_file(self):
         self._check_argument('existing-dir/existing-file/leaf-dir',
                              Arrangement(
-                                 dir_contents_before=DirContents([
+                                 sds_contents_before=act_dir_contents(DirContents([
                                      Dir('existing-dir', [
                                          empty_file('existing-file')
                                      ])
-                                 ])),
+                                 ]))),
                              Expectation(
                                  expected_action_result=is_failure(),
                              ))
