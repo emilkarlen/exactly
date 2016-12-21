@@ -5,8 +5,8 @@ from contextlib import contextmanager
 from exactly_lib.instructions.utils import file_properties as sut
 from exactly_lib.instructions.utils.file_properties import FileType, CheckResult, PropertiesWithNegation, \
     new_properties_for_existence
+from exactly_lib_test.test_resources.execution.file_structure_utils import tmp_dir, tmp_dir_with
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, sym_link
-from exactly_lib_test.test_resources.file_structure_utils import tmp_dir, tmp_dir_with
 
 
 class FileCheckThatEvaluatesTo(sut.FilePropertiesCheck):
