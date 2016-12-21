@@ -2,6 +2,17 @@ import os
 import pathlib
 import tempfile
 from contextlib import contextmanager
+from stat import S_IREAD, S_IRGRP, S_IROTH
+
+
+@contextmanager
+def open_and_make_read_only_on_close(filename: str, mode: str):
+    yield open(filename, mode=mode)
+    make_file_read_only(filename)
+
+
+def make_file_read_only(path: str):
+    os.chmod(path, S_IREAD | S_IRGRP | S_IROTH)
 
 
 def resolved_path(existing_path: str) -> pathlib.Path:
