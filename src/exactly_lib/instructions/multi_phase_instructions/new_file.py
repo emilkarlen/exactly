@@ -28,12 +28,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def main_description_rest(self) -> list:
         return (
             rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
-                                                             rel_path_doc.RelOptionType.REL_CWD) +
+                                                             _RELATIVITY_OPTIONS.options.default_option) +
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [rel_path_doc.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-                     a.Single(a.Multiplicity.MANDATORY, _PATH_ARGUMENT), ]
+        arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),

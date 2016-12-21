@@ -107,7 +107,8 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
         the_format_map = {
             'assert_phase': ASSERT_PHASE_NAME,
         }
-        the_format_map.update(format_map)
+        if format_map:
+            the_format_map.update(format_map)
         super().__init__(instruction_name, the_format_map)
         self._is_in_assert_phase = is_in_assert_phase
 

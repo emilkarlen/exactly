@@ -1,32 +1,26 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
+from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, additional_format_map: dict = None, is_in_assert_phase: bool = False):
-        format_map = {
-            'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-        }
-        if additional_format_map is not None:
-            format_map.update(additional_format_map)
-        super().__init__(name, format_map, is_in_assert_phase)
+        super().__init__(name, additional_format_map, is_in_assert_phase)
         self.path_arg = _PATH_ARGUMENT
 
     def single_line_description(self) -> str:
-        return self._format('Creates a directory in the {cwd}')
+        return self._format('Creates a directory')
 
     def _main_description_rest_body(self) -> list:
         text = """\
@@ -35,26 +29,28 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
             Does nothing if the given directory already exists.
             """
-        return self._paragraphs(text) + dt.paths_uses_posix_syntax()
+        return (self._paragraphs(text) +
+                rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
+                                                                 RELATIVITY_OPTIONS.options.default_option) +
+                dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
+        arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT)
         return [
-            InvokationVariant(self._cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY,
-                         self.path_arg)]),
-                []),
+            InvokationVariant(self._cl_syntax_for_args(arguments),
+                              []),
         ]
 
     def syntax_element_descriptions(self) -> list:
         return [
-            dt.a_path_that_is_relative_the(self.path_arg,
-                                           CURRENT_WORKING_DIRECTORY_CONCEPT),
+            rel_path_doc.relativity_syntax_element_description(_PATH_ARGUMENT,
+                                                               RELATIVITY_OPTIONS.options.accepted_options),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        return [
-            CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
-        ]
+        concepts = rel_path_doc.see_also_concepts(RELATIVITY_OPTIONS.options.accepted_options)
+        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT])
+        return [concept.cross_reference_target() for concept in concepts]
 
 
 def parse(argument: str) -> DestinationPath:
