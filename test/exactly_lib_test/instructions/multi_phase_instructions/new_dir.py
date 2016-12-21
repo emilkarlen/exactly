@@ -5,6 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_resources.execution import sds_test
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.sds_test import Arrangement, Expectation
@@ -13,7 +14,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.sds_contents_check import act_dir_contains_exactly
 
 
-class TestParseSet(unittest.TestCase):
+class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
         arguments = ''
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -21,6 +22,11 @@ class TestParseSet(unittest.TestCase):
 
     def test_fail_when_superfluous_arguments(self):
         arguments = 'expected-argument superfluous-argument'
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse(arguments)
+
+    def test_rel_result_option_is_not_allowed(self):
+        arguments = args_with_rel_ops('{rel_result_option} file')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(arguments)
 
@@ -178,7 +184,7 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestParseSet),
+        unittest.makeSuite(TestParse),
         unittest.makeSuite(TestSuccessfulScenariosWithEmptyCwd),
         unittest.makeSuite(TestSuccessfulScenariosWithExistingDirectories),
         unittest.makeSuite(TestFailingScenarios),

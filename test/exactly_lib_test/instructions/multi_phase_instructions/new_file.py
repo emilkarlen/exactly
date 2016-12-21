@@ -7,6 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_resources.execution import sds_test
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
@@ -24,6 +25,11 @@ class TestParseWithNoContents(unittest.TestCase):
 
     def test_path_is_mandatory__with_option(self):
         arguments = '--rel-act'
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse(single_line_source(arguments))
+
+    def test_rel_result_option_is_not_allowed(self):
+        arguments = args_with_rel_ops('{rel_result_option} file')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(single_line_source(arguments))
 
