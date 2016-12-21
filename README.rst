@@ -246,6 +246,8 @@ it just displays some of Exactly's features.)
 
     env MY_VAR = 'value of my environment variable'
 
+    env PATH = '${PATH}:/my-dir'
+
     env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
