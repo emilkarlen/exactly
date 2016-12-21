@@ -37,32 +37,33 @@ class TheConfiguration(Configuration):
         super().__init__(sut.Constructor())
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self) -> list:
+    def program_that_copes_stdin_to_stdout(self, home_dir_path: pathlib.Path) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.copy_stdin_to_stdout())
 
     @contextmanager
-    def program_that_prints_to_stderr(self, string_to_print: str) -> list:
+    def program_that_prints_to_stderr(self, home_dir_path: pathlib.Path, string_to_print: str) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
-    def program_that_prints_to_stdout(self, string_to_print: str) -> list:
+    def program_that_prints_to_stdout(self, home_dir_path: pathlib.Path, string_to_print: str) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
-    def program_that_exits_with_code(self, exit_code: int) -> list:
+    def program_that_exits_with_code(self, home_dir_path: pathlib.Path, exit_code: int) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.exit_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self, home_dir_path: pathlib.Path) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> list:
+    def program_that_prints_value_of_environment_variable_to_stdout(self, home_dir_path: pathlib.Path,
+                                                                    var_name: str) -> list:
         return self._instructions_for_executing_source_from_py_file(
             py_program.write_value_of_environment_variable_to_stdout(var_name))
 
     @contextmanager
-    def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
+    def program_that_sleeps_at_least(self, home_dir_path: pathlib.Path, number_of_seconds: int) -> list:
         return self._instructions_for_executing_source_from_py_file(
             py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds))
 
