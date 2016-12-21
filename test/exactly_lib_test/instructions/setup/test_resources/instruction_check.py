@@ -122,9 +122,11 @@ class Executor:
                         sds,
                         phase_identifier.SETUP.identifier,
                         timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
+                    home_and_sds = HomeAndSds(home_dir_path, sds)
+                    self.arrangement.pre_contents_population_action.apply(home_and_sds)
                     self.arrangement.sds_contents.apply(sds)
                     self.arrangement.home_or_sds_contents.write_to(sds)
-                    self.arrangement.post_sds_population_action.apply(HomeAndSds(home_dir_path, sds))
+                    self.arrangement.post_sds_population_action.apply(home_and_sds)
                     main_result = self._execute_main(sds, global_environment_with_sds, instruction)
                     if not main_result.is_success:
                         return

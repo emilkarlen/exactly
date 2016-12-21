@@ -17,15 +17,15 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulatorForHomeContents
+from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
-from exactly_lib_test.test_resources.home_and_sds_test import Action
 
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
                                             expected: HomeOrSdsPopulator,
-                                            post_sds_population_action: Action = Action(),
+                                            post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                             ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
 

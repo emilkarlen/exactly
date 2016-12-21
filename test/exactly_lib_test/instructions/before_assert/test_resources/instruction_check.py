@@ -18,21 +18,23 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import sds_populator, utils
-from exactly_lib_test.test_resources.execution.utils import write_act_result
+from exactly_lib_test.test_resources.execution.utils import write_act_result, HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
-def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                 ) -> ArrangementPostAct:
-    return ArrangementPostAct(home_dir_contents,
-                              sds_contents_before_main,
-                              act_result_producer,
-                              os_services,
-                              process_execution_settings)
+    return ArrangementPostAct(pre_contents_population_action=pre_contents_population_action,
+                              home_contents=home_dir_contents,
+                              sds_contents=sds_contents_before_main,
+                              act_result_producer=act_result_producer,
+                              os_services=os_services,
+                              process_execution_settings=process_execution_settings)
 
 
 class Expectation(ExpectationBase):
@@ -94,6 +96,7 @@ class Executor(InstructionExecutionBase):
         self._check_instruction(BeforeAssertPhaseInstruction, instruction)
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
         with utils.home_and_sds_with_act_as_curr_dir(
+                pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:

@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.file_structure import DirContents, File
-from exactly_lib_test.test_resources.home_and_sds_test import Action
+from exactly_lib_test.test_resources.home_and_sds_test import HomeAndSdsAction
 from exactly_lib_test.test_resources.parse import new_source2
 
 
@@ -29,7 +29,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
                            following_lines)
 
     def arrangement_for_contents(self, actual_contents: str,
-                                 post_sds_population_action: Action = Action(),
+                                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             sds_contents=self._populator_for_actual(actual_contents),
@@ -39,7 +39,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def arrangement_for_contents_from_fun(self,
                                           home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: Action = Action(),
+                                          post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                           ) -> instruction_check.ArrangementPostAct:
         act_result_producer = _ActResultProducer(home_and_sds_2_str, self.FILE_NAME_REL_ACT)
         return instruction_check.ArrangementPostAct(
@@ -51,7 +51,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
                                             expected: HomeOrSdsPopulator,
-                                            post_sds_population_action: Action = Action(),
+                                            post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                             ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             sds_contents=self._populator_for_actual(actual_contents),

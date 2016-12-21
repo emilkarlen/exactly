@@ -13,13 +13,14 @@ from exactly_lib.test_case.phases.common import HomeAndSds, PhaseLoggingPaths, I
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources import home_and_sds_test
 from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
-class ExecuteAction(home_and_sds_test.Action):
+class ExecuteAction(HomeAndSdsAction):
     def __init__(self,
                  source_info: spe.InstructionSourceInfo,
                  setup: SubProcessExecutionSetup):
