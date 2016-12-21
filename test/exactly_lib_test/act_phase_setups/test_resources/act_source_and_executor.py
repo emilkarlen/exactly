@@ -16,6 +16,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.sds_check.sds_utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
@@ -26,49 +27,59 @@ class Configuration:
         self.sut = sut
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self) -> list:
+    def program_that_copes_stdin_to_stdout(self, home_dir_path: pathlib.Path) -> list:
         """
         :return: List of ActPhaseInstruction
         """
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_to_stdout(self, string_to_print: str) -> list:
+    def program_that_prints_to_stdout(self,
+                                      home_dir_path: pathlib.Path,
+                                      string_to_print: str) -> list:
         """
         :return: List of ActPhaseInstruction
         """
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_to_stderr(self, string_to_print: str) -> list:
+    def program_that_prints_to_stderr(self,
+                                      home_dir_path: pathlib.Path,
+                                      string_to_print: str) -> list:
         """
         :return: List of ActPhaseInstruction
         """
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_exits_with_code(self, exit_code: int) -> list:
+    def program_that_exits_with_code(self,
+                                     home_dir_path: pathlib.Path,
+                                     exit_code: int) -> list:
         """
         :return: List of ActPhaseInstruction
         """
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self, home_dir_path: pathlib.Path) -> list:
         """
         :return: List of ActPhaseInstruction
         """
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> list:
+    def program_that_prints_value_of_environment_variable_to_stdout(self,
+                                                                    home_dir_path: pathlib.Path,
+                                                                    var_name: str) -> list:
         """
         :return: List of ActPhaseInstruction
         """
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
+    def program_that_sleeps_at_least(self,
+                                     home_dir_path: pathlib.Path,
+                                     number_of_seconds: int) -> list:
         """
         :return: List of ActPhaseInstruction
         """
@@ -93,13 +104,13 @@ class TestExecuteBase(unittest.TestCase):
         self.source_and_executor_constructor = source_and_executor_constructor
 
     def _execute(self,
+                 home_dir: pathlib.Path,
                  act_phase_instructions: list,
                  stdin_contents: str = '',
                  environ: dict = None) -> SubProcessResult:
         environ = dict(os.environ) if environ is None else environ
         assert_is_list_of_act_phase_instructions(self, act_phase_instructions)
 
-        home_dir = pathlib.Path()
         environment = InstructionEnvironmentForPreSdsStep(home_dir, environ)
         sut = self.source_and_executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                          environment,
@@ -141,39 +152,46 @@ class TestBase(TestExecuteBase):
 
 class TestStdoutIsConnectedToProgram(TestBase):
     def runTest(self):
-        with self.test_setup.program_that_prints_to_stdout('expected output on stdout') as program:
-            process_result = self._execute(program)
-            self.assertEqual('expected output on stdout\n',
-                             process_result.stdout,
-                             'Contents of stdout')
+        with tmp_dir() as home_dir_path:
+            with self.test_setup.program_that_prints_to_stdout(home_dir_path,
+                                                               'expected output on stdout') as program:
+                process_result = self._execute(home_dir_path, program)
+                self.assertEqual('expected output on stdout\n',
+                                 process_result.stdout,
+                                 'Contents of stdout')
 
 
 class TestStderrIsConnectedToProgram(TestBase):
     def runTest(self):
-        with self.test_setup.program_that_prints_to_stderr('expected output on stderr') as program:
-            process_result = self._execute(program)
-            self.assertEqual('expected output on stderr\n',
-                             process_result.stderr,
-                             'Contents of stderr')
+        with tmp_dir() as home_dir_path:
+            with self.test_setup.program_that_prints_to_stderr(home_dir_path,
+                                                               'expected output on stderr') as program:
+                process_result = self._execute(home_dir_path, program)
+                self.assertEqual('expected output on stderr\n',
+                                 process_result.stderr,
+                                 'Contents of stderr')
 
 
 class TestStdinAndStdoutAreConnectedToProgram(TestBase):
     def runTest(self):
-        with self.test_setup.program_that_copes_stdin_to_stdout() as program:
-            process_result = self._execute(program,
-                                           stdin_contents='contents of stdin')
-            self.assertEqual('contents of stdin',
-                             process_result.stdout,
-                             'Contents of stdout is expected to be equal to stdin')
+        with tmp_dir() as home_dir_path:
+            with self.test_setup.program_that_copes_stdin_to_stdout(home_dir_path) as program:
+                process_result = self._execute(home_dir_path,
+                                               program,
+                                               stdin_contents='contents of stdin')
+                self.assertEqual('contents of stdin',
+                                 process_result.stdout,
+                                 'Contents of stdout is expected to be equal to stdin')
 
 
 class TestExitCodeIsReturned(TestBase):
     def runTest(self):
-        with self.test_setup.program_that_exits_with_code(87) as program:
-            process_result = self._execute(program)
-            self.assertEqual(87,
-                             process_result.exitcode,
-                             'Exit Code')
+        with tmp_dir() as home_dir_path:
+            with self.test_setup.program_that_exits_with_code(home_dir_path, 87) as program:
+                process_result = self._execute(home_dir_path, program)
+                self.assertEqual(87,
+                                 process_result.exitcode,
+                                 'Exit Code')
 
 
 class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
@@ -182,54 +200,56 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
         var_value = str(random.getrandbits(32))
         environ = dict(os.environ)
         environ[var_name] = var_value
-        with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(var_name) as program:
-            process_result = self._execute(program, environ=environ)
-            self.assertEqual(var_value + '\n',
-                             process_result.stdout,
-                             'Contents of stdout should be value of environment variable')
+        with tmp_dir() as home_dir_path:
+            with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(home_dir_path,
+                                                                                             var_name) as program:
+                process_result = self._execute(home_dir_path, program, environ=environ)
+                self.assertEqual(var_value + '\n',
+                                 process_result.stdout,
+                                 'Contents of stdout should be value of environment variable')
 
 
 class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
     def runTest(self):
-        with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
-            executor_constructor = self.test_setup.sut
-            home_dir = pathlib.Path.cwd()
-            environment = InstructionEnvironmentForPreSdsStep(home_dir, dict(os.environ))
-            sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
-            step_result = sut.validate_pre_sds(environment)
-            self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                             step_result.status,
-                             'Result of validation/pre-sds')
-            with sds_with_act_as_curr_dir(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as sds:
-                environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
-                                                                   environment.environ,
-                                                                   sds,
-                                                                   phase_identifier.ACT.identifier,
-                                                                   environment.timeout_in_seconds)
-                process_cwd = str(sds.act_dir / 'expected-cwd')
-                os.chdir(process_cwd)
-                assert process_cwd == os.getcwd()
-                step_result = sut.validate_post_setup(environment)
+        with tmp_dir() as home_dir_path:
+            with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(home_dir_path) as source:
+                executor_constructor = self.test_setup.sut
+                environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
+                sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
+                step_result = sut.validate_pre_sds(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
-                                 'Result of validation/post-setup')
-                script_output_dir_path = sds.test_case_dir
-                step_result = sut.prepare(environment, script_output_dir_path)
-                self.assertTrue(step_result.is_success,
-                                'Expecting success from prepare (found hard error)')
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
-                    environment,
-                    script_output_dir_path,
-                    sut)
-                process_result = capture_process_executor_result(process_executor,
-                                                                 sds.result.root_dir)
-                self.assertEqual(process_cwd + '\n',
-                                 process_result.stdout,
-                                 'Current Working Directory for program should be act-directory')
+                                 'Result of validation/pre-sds')
+                with sds_with_act_as_curr_dir(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as sds:
+                    environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
+                                                                       environment.environ,
+                                                                       sds,
+                                                                       phase_identifier.ACT.identifier,
+                                                                       environment.timeout_in_seconds)
+                    process_cwd = str(sds.act_dir / 'expected-cwd')
+                    os.chdir(process_cwd)
+                    assert process_cwd == os.getcwd()
+                    step_result = sut.validate_post_setup(environment)
+                    self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     step_result.status,
+                                     'Result of validation/post-setup')
+                    script_output_dir_path = sds.test_case_dir
+                    step_result = sut.prepare(environment, script_output_dir_path)
+                    self.assertTrue(step_result.is_success,
+                                    'Expecting success from prepare (found hard error)')
+                    process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
+                        environment,
+                        script_output_dir_path,
+                        sut)
+                    process_result = capture_process_executor_result(process_executor,
+                                                                     sds.result.root_dir)
+                    self.assertEqual(process_cwd + '\n',
+                                     process_result.stdout,
+                                     'Current Working Directory for program should be act-directory')
 
-                self.assertEqual(process_cwd,
-                                 os.getcwd(),
-                                 'Current Working Directory should be restored after program has finished')
+                    self.assertEqual(process_cwd,
+                                     os.getcwd(),
+                                     'Current Working Directory should be restored after program has finished')
 
 
 class TestTimeoutValueIsUsed(unittest.TestCase):
@@ -241,8 +261,9 @@ class TestTimeoutValueIsUsed(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
-        with self.configuration.program_that_sleeps_at_least(5) as act_phase_instructions:
-            arrangement = act_phase_execution.Arrangement(self.configuration.sut, act_phase_instructions,
-                                                          timeout_in_seconds=1)
-            expectation = act_phase_execution.Expectation(result_of_execute=eh_check.is_hard_error)
-            act_phase_execution.check_execution(self, arrangement, expectation)
+        with tmp_dir() as home_dir_path:
+            with self.configuration.program_that_sleeps_at_least(home_dir_path, 5) as act_phase_instructions:
+                arrangement = act_phase_execution.Arrangement(self.configuration.sut, act_phase_instructions,
+                                                              timeout_in_seconds=1)
+                expectation = act_phase_execution.Expectation(result_of_execute=eh_check.is_hard_error)
+                act_phase_execution.check_execution(self, arrangement, expectation)
