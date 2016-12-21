@@ -2,9 +2,8 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, ProcessExecutionSettings
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources import home_and_sds_test
 from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator
-from exactly_lib_test.test_resources.execution.utils import ActResult
+from exactly_lib_test.test_resources.execution.utils import ActResult, HomeAndSdsAction
 
 
 class ActEnvironment(tuple):
@@ -41,15 +40,17 @@ class ArrangementBase:
 
 class ArrangementWithSds(ArrangementBase):
     def __init__(self,
+                 pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings=with_no_timeout(),
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
-                 post_sds_population_action: home_and_sds_test.Action = home_and_sds_test.Action(),
+                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  ):
         super().__init__(home_contents=home_contents,
                          process_execution_settings=process_execution_settings)
+        self.pre_contents_population_action = pre_contents_population_action
         self.sds_contents = sds_contents
         self.home_or_sds_contents = home_or_sds_contents
         self.post_sds_population_action = post_sds_population_action
@@ -59,15 +60,17 @@ class ArrangementWithSds(ArrangementBase):
 
 class ArrangementPostAct(ArrangementWithSds):
     def __init__(self,
+                 pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
-                 post_sds_population_action: home_and_sds_test.Action = home_and_sds_test.Action(),
+                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  ):
-        super().__init__(home_contents=home_contents,
+        super().__init__(pre_contents_population_action=pre_contents_population_action,
+                         home_contents=home_contents,
                          sds_contents=sds_contents,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,

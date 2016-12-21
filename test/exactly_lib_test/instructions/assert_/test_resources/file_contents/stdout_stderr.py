@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals i
 from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import ActResult
-from exactly_lib_test.test_resources.home_and_sds_test import Action
+from exactly_lib_test.test_resources.home_and_sds_test import HomeAndSdsAction
 from exactly_lib_test.test_resources.parse import new_source2
 
 
@@ -20,7 +20,7 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
         return new_source2(argument_tail, following_lines)
 
     def arrangement_for_contents(self, actual_contents: str,
-                                 post_sds_population_action: Action = Action(),
+                                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=(self._act_result_producer(actual_contents)),
@@ -30,7 +30,7 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
                                             expected: HomeOrSdsPopulator,
-                                            post_sds_population_action: Action = Action(),
+                                            post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                             ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=(self._act_result_producer(actual_contents)),

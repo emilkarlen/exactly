@@ -91,6 +91,7 @@ class Executor(InstructionExecutionBase):
         self._check_instruction(CleanupPhaseInstruction, instruction)
         assert isinstance(instruction, CleanupPhaseInstruction)
         with utils.home_and_sds_with_act_as_curr_dir(
+                pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:

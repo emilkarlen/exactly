@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import ActEnviron
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds
 from exactly_lib_test.test_resources.execution.utils import ActResult
-from exactly_lib_test.test_resources.home_and_sds_test import Action
+from exactly_lib_test.test_resources.home_and_sds_test import HomeAndSdsAction
 
 
 def suite() -> unittest.TestSuite:
@@ -34,7 +34,7 @@ class TestConfigurationForStdout(TestConfigurationForStdFile):
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: Action = Action(),
+                                          post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                           ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=ActResultProducerForStdout(home_and_sds_2_str),

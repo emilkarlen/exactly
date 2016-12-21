@@ -10,11 +10,11 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
-from exactly_lib_test.test_resources import home_and_sds_test
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents, \
     SdsPopulator, SdsPopulatorForFileWithContentsThatDependOnSds, cwd_contents
+from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
@@ -182,7 +182,7 @@ def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
     return ret_val
 
 
-class MkSubDirOfActAndMakeItCurrentDirectory(home_and_sds_test.Action):
+class MkSubDirOfActAndMakeItCurrentDirectory(HomeAndSdsAction):
     def apply(self, home_and_sds: HomeAndSds):
         sub_dir = _get_cwd_path_and_make_dir_if_not_exists(home_and_sds.sds)
         os.chdir(str(sub_dir))

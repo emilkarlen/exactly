@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_oper
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds
-from exactly_lib_test.test_resources.home_and_sds_test import Action
+from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -23,7 +23,7 @@ class InstructionTestConfiguration:
 
     def arrangement_for_contents(self,
                                  actual_contents: str,
-                                 post_sds_population_action: Action = Action(),
+                                 post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
 
@@ -34,7 +34,7 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
-                                          post_sds_population_action: Action = Action(),
+                                          post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                           ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
 
