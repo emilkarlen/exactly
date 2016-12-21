@@ -172,6 +172,7 @@ files = itertools.chain.from_iterable([
     sts(setup_dir,
         ['copy-stdin-to-stdout',
          'remove-all-files-in-the-current-directory',
+         'print-environment-variables',
          'list-files-under-current-directory']),
 ])
 

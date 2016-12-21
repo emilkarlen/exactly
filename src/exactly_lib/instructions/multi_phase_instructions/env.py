@@ -1,3 +1,4 @@
+import re
 import types
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
@@ -26,11 +27,20 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [
             InvokationVariant(
                 'NAME = VALUE',
-                paras('Sets the environment variable NAME to VALUE.')),
+                self._paragraphs(_DESCRIPTION_OF_SET)),
             InvokationVariant(
                 'unset NAME',
                 paras('Removes the environment variable NAME.')),
         ]
+
+
+_DESCRIPTION_OF_SET = """\
+Sets the environment variable NAME to VALUE.
+
+
+Elements of the form "${{var_name}}" in VALUE, will be replaced with the value of the environment variable "var_name",
+or the empty string, if there is no environment variable with that name.
+"""
 
 
 class Parser(SingleInstructionParser):
@@ -67,7 +77,7 @@ class _SetExecutor(Executor):
         self.value = value
 
     def execute(self, environ: dict):
-        environ[self.name] = self.value
+        environ[self.name] = _expand_vars(self.value, environ)
 
 
 class _UnsetExecutor(Executor):
@@ -85,3 +95,25 @@ class _UnsetExecutor(Executor):
 _MAIN_DESCRIPTION_REST_BODY = """\
 The manipulation affects all following phases.
 """
+
+_ENV_VAR_REFERENCE = re.compile('\${[a-zA-Z0-9_]+}')
+
+
+def _expand_vars(value: str, environ: dict) -> str:
+    def substitute(reference: str) -> str:
+        var_name = reference[2:-1]
+        try:
+            return environ[var_name]
+        except KeyError:
+            return ''
+
+    processed = ''
+    remaining = value
+    match = _ENV_VAR_REFERENCE.search(remaining)
+    while match:
+        processed += remaining[:match.start()]
+        processed += substitute(remaining[match.start():match.end()])
+        remaining = remaining[match.end():]
+        match = _ENV_VAR_REFERENCE.search(remaining)
+    processed += remaining
+    return processed

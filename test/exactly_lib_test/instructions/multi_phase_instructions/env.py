@@ -1,9 +1,8 @@
 import unittest
 
+from exactly_lib.instructions.multi_phase_instructions import env as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.instructions.multi_phase_instructions import env as sut
-from exactly_lib.test_case.os_services import new_with_environ
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.parse import new_source2
 
@@ -66,6 +65,39 @@ class TestSet(unittest.TestCase):
                          {'name': 'value'})
 
 
+class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
+    def test_set_value_that_references_an_env_var(self):
+        parser = sut.Parser(identity)
+        environ = {'MY_VAR': 'MY_VAL'}
+        executor = parser.apply(new_source2('name = ${MY_VAR}'))
+        assert isinstance(executor, sut.Executor)
+        executor.execute(environ)
+        self.assertEqual(environ,
+                         {'name': 'MY_VAL',
+                          'MY_VAR': 'MY_VAL'})
+
+    def test_set_value_that_contains_text_and_references_to_env_vars(self):
+        parser = sut.Parser(identity)
+        environ = {'MY_VAR': 'MY_VAL',
+                   'YOUR_VAR': 'YOUR_VAL'}
+        executor = parser.apply(new_source2('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
+        assert isinstance(executor, sut.Executor)
+        executor.execute(environ)
+        self.assertEqual(environ,
+                         {'name': 'pre MY_VAL YOUR_VAL post',
+                          'MY_VAR': 'MY_VAL',
+                          'YOUR_VAR': 'YOUR_VAL'})
+
+    def test_a_references_to_a_non_existing_env_var_SHOULD_be_replaced_with_empty_string(self):
+        parser = sut.Parser(identity)
+        executor = parser.apply(new_source2('name = ${NON_EXISTING_VAR}'))
+        assert isinstance(executor, sut.Executor)
+        environ = {}
+        executor.execute(environ)
+        self.assertEqual(environ,
+                         {'name': ''})
+
+
 class TestUnset(unittest.TestCase):
     def test_unset(self):
         parser = sut.Parser(identity)
@@ -83,5 +115,6 @@ def suite():
         unittest.makeSuite(TestParseSet),
         unittest.makeSuite(TestParseUnset),
         unittest.makeSuite(TestSet),
+        unittest.makeSuite(TestSetWithReferencesToExistingEnvVars),
         unittest.makeSuite(TestUnset),
     ])
