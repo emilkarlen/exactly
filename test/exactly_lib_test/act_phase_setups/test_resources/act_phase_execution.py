@@ -17,7 +17,7 @@ from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
-from exactly_lib_test.test_resources.execution.utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.execution.sds_check.sds_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder

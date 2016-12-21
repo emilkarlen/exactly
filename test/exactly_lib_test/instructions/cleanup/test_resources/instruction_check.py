@@ -17,7 +17,8 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator, utils
+from exactly_lib_test.test_resources.execution import home_or_sds_populator, utils
+from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 

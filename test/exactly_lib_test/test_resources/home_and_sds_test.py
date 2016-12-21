@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case.phases.common import HomeAndSds
-from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_with_act_as_curr_dir, HomeAndSdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va

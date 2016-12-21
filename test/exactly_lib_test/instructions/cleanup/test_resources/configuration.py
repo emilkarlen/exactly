@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.cleanup.test_resources.instruction_check impo
     Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
-from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

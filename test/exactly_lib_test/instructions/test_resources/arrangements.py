@@ -2,7 +2,8 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, ProcessExecutionSettings
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, home_or_sds_populator
+from exactly_lib_test.test_resources.execution import home_or_sds_populator
+from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult, HomeAndSdsAction
 
 
