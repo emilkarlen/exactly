@@ -13,7 +13,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution
-from exactly_lib_test.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 
 
 def suite() -> unittest.TestSuite:

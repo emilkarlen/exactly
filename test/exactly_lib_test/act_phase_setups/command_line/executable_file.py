@@ -15,9 +15,9 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution
 from exactly_lib_test.execution.test_resources import eh_check
+from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
-from exactly_lib_test.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
