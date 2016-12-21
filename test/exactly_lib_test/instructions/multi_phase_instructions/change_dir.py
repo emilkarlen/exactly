@@ -2,14 +2,14 @@ import os
 import pathlib
 import unittest
 
-import exactly_lib_test.test_resources.execution.utils
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.execution import sds_test
-from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents
+from exactly_lib_test.test_resources.execution.sds_check import sds_test
+from exactly_lib_test.test_resources.execution.sds_check import sds_utils
+from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNotNone
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
@@ -104,7 +104,7 @@ class TestParseSet(unittest.TestCase):
             sut.parse(arguments, is_after_act_phase=False)
 
 
-class ParseAndChangeDirAction(exactly_lib_test.test_resources.execution.utils.SdsAction):
+class ParseAndChangeDirAction(sds_utils.SdsAction):
     def __init__(self,
                  arguments: str,
                  is_after_act_phase: bool):
@@ -147,7 +147,7 @@ def is_failure() -> ValueAssertion:
     return ValueIsNotNone()
 
 
-class ChangeDirTo(exactly_lib_test.test_resources.execution.utils.SdsAction):
+class ChangeDirTo(sds_utils.SdsAction):
     def __init__(self, sds2dir_fun):
         self.sds2dir_fun = sds2dir_fun
 

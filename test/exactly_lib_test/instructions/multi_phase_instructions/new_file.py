@@ -1,6 +1,5 @@
 import unittest
 
-import exactly_lib_test.test_resources.execution.utils
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -9,12 +8,13 @@ from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectorySt
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
-from exactly_lib_test.test_resources.execution import sds_test
-from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
+from exactly_lib_test.test_resources.execution.sds_check import sds_test
+from exactly_lib_test.test_resources.execution.sds_check import sds_utils
+from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import act_dir_contains_exactly, \
+    tmp_user_dir_contains_exactly
+from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import single_line_source, argument_list_source
-from exactly_lib_test.test_resources.value_assertions.sds_contents_check import act_dir_contains_exactly, \
-    tmp_user_dir_contains_exactly
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
 
 
@@ -93,7 +93,7 @@ class TestParseWithContents(unittest.TestCase):
                          source.line_sequence.next_line())
 
 
-class ParseAndCreateFileAction(exactly_lib_test.test_resources.execution.utils.SdsAction):
+class ParseAndCreateFileAction(sds_utils.SdsAction):
     def __init__(self,
                  source: SingleInstructionParserSource):
         self.source = source
