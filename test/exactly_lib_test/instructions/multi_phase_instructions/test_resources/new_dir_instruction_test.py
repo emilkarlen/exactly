@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfigurationForRelSdsBase
 from exactly_lib_test.instructions.multi_phase_instructions import new_dir
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
+from exactly_lib_test.instructions.test_resources.relativity_options import \
+    RelativityOptionConfigurationForRelSds
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -22,7 +22,7 @@ class Configuration(ConfigurationBase):
 class TestCaseBase(unittest.TestCase):
     def __init__(self,
                  conf: Configuration,
-                 relativity_option: RelativityOptionConfigurationForRelSdsBase):
+                 relativity_option: RelativityOptionConfigurationForRelSds):
         super().__init__()
         self.relativity_option = relativity_option
         self.conf = conf

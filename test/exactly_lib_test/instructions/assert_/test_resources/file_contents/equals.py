@@ -6,15 +6,16 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
-    RelativityOptionConfigurationForRelTmp, \
-    MkSubDirOfActAndMakeItCurrentDirectory, TestWithConfigurationAndRelativityOptionAndNegationBase, \
-    suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir
+    suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
+    TestWithConfigurationAndRelativityOptionAndNegationBase, MkSubDirOfActAndMakeItCurrentDirectory
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
     ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
+from exactly_lib_test.instructions.test_resources.relativity_options import \
+    RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
+    RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulatorForHomeContents
 from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
