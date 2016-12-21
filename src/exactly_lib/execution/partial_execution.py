@@ -24,7 +24,8 @@ from exactly_lib.test_case.sandbox_directory_structure import construct_at, Sand
     stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
-from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name, preserved_cwd
+from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name, preserved_cwd, \
+    open_and_make_read_only_on_close
 from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import result
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
@@ -524,8 +525,8 @@ class _ActProgramExecution:
         Pre-condition: write has been executed.
         """
         sds = self.home_and_sds.sds
-        with open(str(sds.result.stdout_file), 'w') as f_stdout:
-            with open(str(sds.result.stderr_file), 'w') as f_stderr:
+        with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
+            with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
                 exit_code_or_hard_error = self.act_source_and_executor.execute(
                     self.environment,
                     self.script_output_dir_path,
@@ -537,7 +538,7 @@ class _ActProgramExecution:
                 return exit_code_or_hard_error
 
     def _store_exit_code(self, exitcode: int):
-        with open(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:
+        with open_and_make_read_only_on_close(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
     def _custom_stdin_file_name(self) -> str:
