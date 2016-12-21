@@ -15,7 +15,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
-from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
+from exactly_lib_test.test_resources.execution.utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
@@ -99,7 +99,6 @@ class TestExecuteBase(unittest.TestCase):
         environ = dict(os.environ) if environ is None else environ
         assert_is_list_of_act_phase_instructions(self, act_phase_instructions)
 
-        cwd_before_test = os.getcwd()
         home_dir = pathlib.Path()
         environment = InstructionEnvironmentForPreSdsStep(home_dir, environ)
         sut = self.source_and_executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
@@ -109,30 +108,26 @@ class TestExecuteBase(unittest.TestCase):
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                          step_result.status,
                          'Result of validation/pre-sds')
-        with sandbox_directory_structure() as sds:
+        with sds_with_act_as_curr_dir() as sds:
             environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
                                                                environment.environ,
                                                                sds,
                                                                phase_identifier.ACT.identifier,
                                                                environment.timeout_in_seconds)
-            try:
-                os.chdir(str(sds.act_dir))
-                step_result = sut.validate_post_setup(environment)
-                self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                 step_result.status,
-                                 'Result of validation/post-setup')
-                script_output_path = sds.test_case_dir
-                step_result = sut.prepare(environment, script_output_path)
-                self.assertTrue(step_result.is_success,
-                                'Expecting success from prepare (found hard error)')
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(environment,
-                                                                                                    script_output_path,
-                                                                                                    sut)
-                return capture_process_executor_result(process_executor,
-                                                       sds.result.root_dir,
-                                                       stdin_contents=stdin_contents)
-            finally:
-                os.chdir(cwd_before_test)
+            step_result = sut.validate_post_setup(environment)
+            self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                             step_result.status,
+                             'Result of validation/post-setup')
+            script_output_path = sds.test_case_dir
+            step_result = sut.prepare(environment, script_output_path)
+            self.assertTrue(step_result.is_success,
+                            'Expecting success from prepare (found hard error)')
+            process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(environment,
+                                                                                                script_output_path,
+                                                                                                sut)
+            return capture_process_executor_result(process_executor,
+                                                   sds.result.root_dir,
+                                                   stdin_contents=stdin_contents)
 
 
 class TestBase(TestExecuteBase):
@@ -196,49 +191,45 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
 
 class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
     def runTest(self):
-        cwd_before = os.getcwd()
-        try:
-            with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
-                executor_constructor = self.test_setup.sut
-                home_dir = pathlib.Path.cwd()
-                environment = InstructionEnvironmentForPreSdsStep(home_dir, dict(os.environ))
-                sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
-                step_result = sut.validate_pre_sds(environment)
+        with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
+            executor_constructor = self.test_setup.sut
+            home_dir = pathlib.Path.cwd()
+            environment = InstructionEnvironmentForPreSdsStep(home_dir, dict(os.environ))
+            sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
+            step_result = sut.validate_pre_sds(environment)
+            self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                             step_result.status,
+                             'Result of validation/pre-sds')
+            with sds_with_act_as_curr_dir(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as sds:
+                environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
+                                                                   environment.environ,
+                                                                   sds,
+                                                                   phase_identifier.ACT.identifier,
+                                                                   environment.timeout_in_seconds)
+                process_cwd = str(sds.act_dir / 'expected-cwd')
+                os.chdir(process_cwd)
+                assert process_cwd == os.getcwd()
+                step_result = sut.validate_post_setup(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
-                                 'Result of validation/pre-sds')
-                with sandbox_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as sds:
-                    environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
-                                                                       environment.environ,
-                                                                       sds,
-                                                                       phase_identifier.ACT.identifier,
-                                                                       environment.timeout_in_seconds)
-                    process_cwd = str(sds.act_dir / 'expected-cwd')
-                    os.chdir(process_cwd)
-                    assert process_cwd == os.getcwd()
-                    step_result = sut.validate_post_setup(environment)
-                    self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     step_result.status,
-                                     'Result of validation/post-setup')
-                    script_output_dir_path = sds.test_case_dir
-                    step_result = sut.prepare(environment, script_output_dir_path)
-                    self.assertTrue(step_result.is_success,
-                                    'Expecting success from prepare (found hard error)')
-                    process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
-                        environment,
-                        script_output_dir_path,
-                        sut)
-                    process_result = capture_process_executor_result(process_executor,
-                                                                     sds.result.root_dir)
-                    self.assertEqual(process_cwd + '\n',
-                                     process_result.stdout,
-                                     'Current Working Directory for program should be act-directory')
+                                 'Result of validation/post-setup')
+                script_output_dir_path = sds.test_case_dir
+                step_result = sut.prepare(environment, script_output_dir_path)
+                self.assertTrue(step_result.is_success,
+                                'Expecting success from prepare (found hard error)')
+                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
+                    environment,
+                    script_output_dir_path,
+                    sut)
+                process_result = capture_process_executor_result(process_executor,
+                                                                 sds.result.root_dir)
+                self.assertEqual(process_cwd + '\n',
+                                 process_result.stdout,
+                                 'Current Working Directory for program should be act-directory')
 
-                    self.assertEqual(process_cwd,
-                                     os.getcwd(),
-                                     'Current Working Directory should be restored after program has finished')
-        finally:
-            os.chdir(cwd_before)
+                self.assertEqual(process_cwd,
+                                 os.getcwd(),
+                                 'Current Working Directory should be restored after program has finished')
 
 
 class TestTimeoutValueIsUsed(unittest.TestCase):
