@@ -8,7 +8,7 @@ from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.test_resources.execution.home_or_sds_populator import HomeOrSdsPopulator
-from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
+from exactly_lib_test.test_resources.execution.utils import home_with_sds_and_act_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
@@ -82,7 +82,7 @@ def check(put: unittest.TestCase,
     put.assertEquals(expectation.exists_pre_eds,
                      actual_exe_file.exists_pre_sds,
                      'Existence pre SDS')
-    with home_and_sds_and_test_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as home_and_sds:
+    with home_with_sds_and_act_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as home_and_sds:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
         validator_util.check2(put,
@@ -108,7 +108,7 @@ class CheckBase(unittest.TestCase):
 
     def _home_and_sds_and_test_as_curr_dir(self, file: File) -> HomeAndSds:
         contents = self.configuration.file_installation(file)
-        return home_and_sds_and_test_as_curr_dir(home_or_sds_contents=contents)
+        return home_with_sds_and_act_as_curr_dir(home_or_sds_contents=contents)
 
     def _assert_passes_validation(self, actual: ExecutableFile, home_and_sds: HomeAndSds):
         validator_util.check(self, actual.validator, home_and_sds)
@@ -186,7 +186,7 @@ class CheckNonExistingFile(CheckBase):
                          remaining_arguments.source,
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_sds(exe_file)
-        with home_and_sds_and_test_as_curr_dir() as home_and_sds:
+        with home_with_sds_and_act_as_curr_dir() as home_and_sds:
             self._check_file_path('file.exe', exe_file, home_and_sds)
             self._assert_does_not_pass_validation(exe_file, home_and_sds)
 

@@ -59,7 +59,7 @@ class HomeAndSdsContents(tuple):
 
 
 @contextmanager
-def home_and_sds_and_test_as_curr_dir(
+def home_with_sds_and_act_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
         sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
         home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty()) -> HomeAndSds:
@@ -74,6 +74,17 @@ def home_and_sds_and_test_as_curr_dir(
                 home_or_sds_contents.write_to(ret_val)
                 os.chdir(str(sds.act_dir))
                 yield ret_val
+
+
+@contextmanager
+def sds_with_act_as_curr_dir(contents: sds_populator.SdsPopulator = sds_populator.empty()
+                             ) -> sds_module.SandboxDirectoryStructure:
+    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-sds-') as sds_root_dir:
+        with preserved_cwd():
+            sds = sds_module.construct_at(resolved_path_name(sds_root_dir))
+            os.chdir(str(sds.act_dir))
+            contents.apply(sds)
+            yield sds
 
 
 @contextmanager

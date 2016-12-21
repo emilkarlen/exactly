@@ -17,7 +17,7 @@ from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
-from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
+from exactly_lib_test.test_resources.execution.utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
@@ -70,8 +70,6 @@ def check_execution(put: unittest.TestCase,
                     arrangement: Arrangement,
                     expectation: Expectation) -> ExitCodeOrHardError:
     assert_is_list_of_act_phase_instructions(put, arrangement.act_phase_instructions)
-
-    cwd_before_test = os.getcwd()
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
         environment = InstructionEnvironmentForPreSdsStep(home_dir,
                                                           arrangement.environ,
@@ -83,51 +81,47 @@ def check_execution(put: unittest.TestCase,
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of validation/pre-sds')
-        with sandbox_directory_structure() as sds:
+        with sds_with_act_as_curr_dir() as sds:
             environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
                                                                environment.environ,
                                                                sds,
                                                                phase_identifier.ACT.identifier,
                                                                environment.timeout_in_seconds)
+            step_result = sut.validate_post_setup(environment)
+            put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                            step_result.status,
+                            'Result of validation/post-setup')
+            script_output_dir_path = sds.test_case_dir
+            step_result = sut.prepare(environment, script_output_dir_path)
+            expectation.side_effects_on_files_after_prepare.apply(put, sds)
+            expectation.result_of_prepare.apply(put,
+                                                step_result,
+                                                MessageBuilder('Result of prepare'))
+            if not step_result.is_success:
+                return
+
+            process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
+                environment,
+                script_output_dir_path,
+                sut)
+            error_msg_extra_info = ''
+            sub_process_result = None
             try:
-                os.chdir(str(sds.act_dir))
-                step_result = sut.validate_post_setup(environment)
-                put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                step_result.status,
-                                'Result of validation/post-setup')
-                script_output_dir_path = sds.test_case_dir
-                step_result = sut.prepare(environment, script_output_dir_path)
-                expectation.side_effects_on_files_after_prepare.apply(put, sds)
-                expectation.result_of_prepare.apply(put,
-                                                    step_result,
-                                                    MessageBuilder('Result of prepare'))
-                if not step_result.is_success:
-                    return
+                sub_process_result = capture_process_executor_result(process_executor,
+                                                                     sds.result.root_dir)
+                step_result = new_eh_exit_code(sub_process_result.exitcode)
+            except HardErrorResultError as ex:
+                step_result = ex.result
+                error_msg_extra_info = os.linesep + str(ex.failure_details) + os.linesep
 
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
-                    environment,
-                    script_output_dir_path,
-                    sut)
-                error_msg_extra_info = ''
-                sub_process_result = None
-                try:
-                    sub_process_result = capture_process_executor_result(process_executor,
-                                                                         sds.result.root_dir)
-                    step_result = new_eh_exit_code(sub_process_result.exitcode)
-                except HardErrorResultError as ex:
-                    step_result = ex.result
-                    error_msg_extra_info = os.linesep + str(ex.failure_details) + os.linesep
-
-                expectation.result_of_execute.apply(put,
-                                                    step_result,
-                                                    MessageBuilder('Result of execute' + error_msg_extra_info))
-                if sub_process_result:
-                    msg_builder = MessageBuilder('Sub process output from execute' + error_msg_extra_info)
-                    expectation.sub_process_result_from_execute.apply(put, sub_process_result, msg_builder)
-                expectation.side_effects_on_files_after_execute.apply(put, sds)
-                return step_result
-            finally:
-                os.chdir(cwd_before_test)
+            expectation.result_of_execute.apply(put,
+                                                step_result,
+                                                MessageBuilder('Result of execute' + error_msg_extra_info))
+            if sub_process_result:
+                msg_builder = MessageBuilder('Sub process output from execute' + error_msg_extra_info)
+                expectation.sub_process_result_from_execute.apply(put, sub_process_result, msg_builder)
+            expectation.side_effects_on_files_after_execute.apply(put, sds)
+            return step_result
 
 
 def assert_is_list_of_act_phase_instructions(put: unittest.TestCase, x):
