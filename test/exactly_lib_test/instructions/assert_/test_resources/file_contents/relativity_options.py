@@ -10,8 +10,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfigurationForRelSds, \
     RelativityOptionConfiguration
+from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.sds_check.sds_populator import SdsPopulator
-from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'

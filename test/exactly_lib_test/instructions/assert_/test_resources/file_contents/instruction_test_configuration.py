@@ -11,8 +11,8 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_resources.execution import home_or_sds_populator as home_or_sds
-from exactly_lib_test.test_resources.execution.utils import HomeAndSdsAction
+from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator as home_or_sds
+from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
