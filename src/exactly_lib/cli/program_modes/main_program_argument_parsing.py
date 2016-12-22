@@ -75,7 +75,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         the output from the act phase script is emitted:
                         Output on stdout/stderr from the script is printed to stdout/stderr.
                         The exit code from the act script becomes the exit code from the program.""")
-    from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+    from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
     from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
     from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_ACTOR__LONG),
@@ -83,7 +83,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          nargs=1,
                          help=_ACTOR_OPTION_DESCRIPTION.format(
                              ARGUMENT=opt.ACTOR_OPTION_ARGUMENT,
-                             INTERPRETER_ACTOR_TERM=formatting.entity(INTERPRETER_ACTOR.singular_name),
+                             INTERPRETER_ACTOR_TERM=formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
                              ACTOR_CONCEPT=ACTOR_CONCEPT.singular_name(),
                              shell_syntax_concept=formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
                          ))

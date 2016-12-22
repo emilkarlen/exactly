@@ -44,7 +44,7 @@ class TestFailingParseForCommandLine(unittest.TestCase):
 
 class TestFailingParseForInterpreter(unittest.TestCase):
     def test_fail_when_missing_program_argument(self):
-        source = new_source2(actor_utils.INTERPRETER_OPTION)
+        source = new_source2(actor_utils.SOURCE_INTERPRETER_OPTION)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
@@ -84,7 +84,7 @@ class TestSuccessfulParseAndInstructionExecutionForInterpreterActor(unittest.Tes
                     ['executable with space', 'arg2', 'arg 3'])
 
     def test_with_interpreter_option(self):
-        self._check(actor_utils.INTERPRETER_OPTION + ' executable arg',
+        self._check(actor_utils.SOURCE_INTERPRETER_OPTION + ' executable arg',
                     ['executable', 'arg'])
 
 
@@ -123,7 +123,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandInterpreterActor(
                     "'arg with space' arg2 \"arg 3\"")
 
     def test_with_interpreter_keyword(self):
-        self._check(actor_utils.INTERPRETER_OPTION + ' ' + actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD +
+        self._check(actor_utils.SOURCE_INTERPRETER_OPTION + ' ' + actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD +
                     ' arg1 arg2',
                     'arg1 arg2')
 

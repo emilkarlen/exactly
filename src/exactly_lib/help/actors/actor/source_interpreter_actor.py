@@ -3,7 +3,7 @@ from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionC
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
@@ -18,7 +18,7 @@ from exactly_lib.util.textformat.structure.structures import section_contents
 
 class InterpreterActorDocumentation(ActorDocumentation):
     def __init__(self):
-        super().__init__(INTERPRETER_ACTOR)
+        super().__init__(SOURCE_INTERPRETER_ACTOR)
         from exactly_lib.execution.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),

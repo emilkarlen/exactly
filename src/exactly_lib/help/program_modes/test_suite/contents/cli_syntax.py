@@ -4,7 +4,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
-from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters import actor
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
@@ -26,7 +26,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         super().__init__(program_info.PROGRAM_NAME)
         self.parser = TextParser({
             'actor': formatting.concept(actor.ACTOR_CONCEPT.name().singular),
-            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name),
+            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
             'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
             'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),

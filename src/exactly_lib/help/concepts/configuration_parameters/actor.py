@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs, INTERPRETER_ACTOR
+from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs, SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import Name, \
     ConfigurationParameterDocumentation
@@ -27,7 +27,7 @@ class _ActorConcept(ConfigurationParameterDocumentation):
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name),
+            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
         })
         contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION) + parse.fnap(HOW_TO_SPECIFY_ACTOR)
         return DescriptionWithSubSections(parse.text(_SINGLE_LINE_DESCRIPTION),

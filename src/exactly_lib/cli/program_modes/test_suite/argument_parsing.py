@@ -7,7 +7,7 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as help_args
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
-from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
+from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
@@ -76,7 +76,7 @@ class _Parser:
                              nargs=1,
                              help=_ACTOR_OPTION_DESCRIPTION.format(
                                  ARGUMENT=case_opts.ACTOR_OPTION_ARGUMENT,
-                                 INTERPRETER_ACTOR_TERM=formatting.entity(INTERPRETER_ACTOR.singular_name),
+                                 INTERPRETER_ACTOR_TERM=formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
                                  ACTOR_CONCEPT=formatting.concept(ACTOR_CONCEPT.singular_name()),
                                  shell_syntax_concept=formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
                              ))

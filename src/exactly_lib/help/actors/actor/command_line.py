@@ -1,6 +1,8 @@
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help.actors.actor.common import SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, \
+    ARGUMENT_SYNTAX_ELEMENT, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
 from exactly_lib.help.actors.single_command_line_base import SingleCommandLineActorDocumentationBase
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
@@ -14,7 +16,6 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import text
 
@@ -25,7 +26,7 @@ class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
         from exactly_lib.execution.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'home_directory': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
+            # 'home_directory_concept': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'sandbox': SANDBOX_CONCEPT.name().singular,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
@@ -38,7 +39,7 @@ class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
 
     def act_phase_contents_syntax(self) -> doc.SectionContents:
         documentation = ActPhaseDocumentationSyntax()
-        initial_paragraphs = self._parser.fnap(_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
+        initial_paragraphs = self._parser.fnap(SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
         sub_sections = []
         synopsis_section = doc.Section(text('SYNOPSIS'),
                                        invokation_variants_content(None,
@@ -61,11 +62,7 @@ def see_also_targets() -> list:
 DOCUMENTATION = CommandLineActorDocumentation()
 
 
-class ActPhaseDocumentationSyntax:
-    CL_SYNTAX_RENDERER = cli_program_syntax.CommandLineSyntaxRenderer()
-
-    ARG_SYNTAX_RENDERER = cli_program_syntax.ArgumentInArgumentDescriptionRenderer()
-
+class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
     def __init__(self):
         self.executable = a.Named('EXECUTABLE')
         self.argument = a.Named('ARGUMENT')
@@ -76,11 +73,11 @@ class ActPhaseDocumentationSyntax:
             'ARGUMENT': self.argument.name,
             'actor': formatting.concept(ACTOR_CONCEPT.name().singular),
             'act_phase': ACT_PHASE_NAME.emphasis,
-            'home_directory_concept': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            # 'home_directory_concept': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.name().singular),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
         }
-        self._parser = TextParser(fm)
+        super().__init__(TextParser(fm))
 
     def invokation_variants(self) -> list:
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
@@ -102,32 +99,10 @@ class ActPhaseDocumentationSyntax:
             SyntaxElementDescription(self.executable.name,
                                      self._paragraphs(_EXECUTABLE_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.argument.name,
-                                     self._paragraphs(_ARGUMENT_SYNTAX_ELEMENT)),
+                                     self._paragraphs(ARGUMENT_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.command.name,
                                      self._paragraphs(_COMMAND_SYNTAX_ELEMENT))
         ]
-
-    def _cl_syntax_for_args(self, argument_usages: list) -> str:
-        cl = a.CommandLine(argument_usages)
-        return self._cl_syntax(cl)
-
-    def _cl_syntax(self, command_line: a.CommandLine) -> str:
-        return self.CL_SYNTAX_RENDERER.as_str(command_line)
-
-    def _arg_syntax(self, arg: a.Argument) -> str:
-        return self.ARG_SYNTAX_RENDERER.visit(arg)
-
-    def _cli_argument_syntax_element_description(self,
-                                                 argument: a.Argument,
-                                                 description_rest: list) -> SyntaxElementDescription:
-        return SyntaxElementDescription(self._arg_syntax(argument),
-                                        description_rest)
-
-    def _paragraphs(self, s: str, extra: dict = None) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
-        return self._parser.fnap(s, extra)
 
 
 _ACT_PHASE_CONTENTS = """\
@@ -135,11 +110,6 @@ A single command line.
 
 
 Any number of empty lines and comment lines are allowed.
-"""
-
-_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH = """\
-Comment lines are lines beginning with {LINE_COMMENT_MARKER}
-(optionally preceded by space).
 """
 
 _PROGRAM_WITH_ARGUMENTS_INVOKATION_VARIANT = """\
@@ -154,7 +124,8 @@ _EXECUTABLE_SYNTAX_ELEMENT = """\
 The path of an existing executable file.
 
 
-If the path is not absolute, then it is relative the {home_directory_concept}.
+If the path is not absolute, then it is searched for in the operating system's path,
+which is dependent on the current operating system.
 
 
 Uses {shell_syntax_concept}.
@@ -167,11 +138,4 @@ A shell command line.
 Uses the syntax of the current operating system's shell.
 
 Note that this is not the same as the {shell_syntax_concept} built into {program_name}.
-"""
-
-_ARGUMENT_SYNTAX_ELEMENT = """\
-A command line argument.
-
-
-Uses {shell_syntax_concept}.
 """

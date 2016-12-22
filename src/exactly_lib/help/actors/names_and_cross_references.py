@@ -16,14 +16,18 @@ def name_and_ref_target(name: str,
 COMMAND_LINE_ACTOR = name_and_ref_target(
     'command line',
     'Executes a command line - either an executable file or a shell command')
-INTERPRETER_ACTOR = name_and_ref_target(
-    'interpreter',
+SOURCE_INTERPRETER_ACTOR = name_and_ref_target(
+    'source interpreter',
     'Treats the {act_phase} phase as source code to be executed by an interpreter'.format(
         act_phase=ACT_PHASE_NAME.syntax))
+FILE_INTERPRETER_ACTOR = name_and_ref_target(
+    'file interpreter',
+    'Executes a source code file using an interpreter')
 
 ALL_ACTORS = [
     COMMAND_LINE_ACTOR,
-    INTERPRETER_ACTOR,
+    SOURCE_INTERPRETER_ACTOR,
+    FILE_INTERPRETER_ACTOR,
 ]
 
 # Bad to have definition of default value in help package.

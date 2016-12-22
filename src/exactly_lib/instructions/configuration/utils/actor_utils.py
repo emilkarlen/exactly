@@ -20,8 +20,8 @@ COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.lo
 
 SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = '$'
 
-INTERPRETER_OPTION_NAME = a.OptionName(long_name='interpreter')
-INTERPRETER_OPTION = long_option_syntax(INTERPRETER_OPTION_NAME.long)
+SOURCE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='source')
+SOURCE_INTERPRETER_OPTION = long_option_syntax(SOURCE_INTERPRETER_OPTION_NAME.long)
 
 
 class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -44,7 +44,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
 
     def invokation_variants(self) -> list:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
-        interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Option(INTERPRETER_OPTION_NAME))
+        source_interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
         shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -53,11 +53,11 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return [
             InvokationVariant(self._cl_syntax_for_args([command_line_actor_arg]),
                               self._description_of_command_line()),
-            InvokationVariant(self._cl_syntax_for_args([interpreter_arg,
+            InvokationVariant(self._cl_syntax_for_args([source_interpreter_arg,
                                                         executable_arg,
                                                         optional_arguments_arg]),
                               self._description_of_interpreter()),
-            InvokationVariant(self._cl_syntax_for_args([interpreter_arg,
+            InvokationVariant(self._cl_syntax_for_args([source_interpreter_arg,
                                                         shell_interpreter_argument,
                                                         command_argument]),
                               self._description_of_shell_command_interpreter()),
@@ -80,15 +80,15 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                 command_line_actor_help.see_also_targets())
 
     def _description_of_interpreter(self) -> list:
-        from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
-        return self._paragraphs(_DESCRIPTION_OF_INTERPRETER, {
-            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name)
+        from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
+        return self._paragraphs(_DESCRIPTION_OF_SOURCE_INTERPRETER, {
+            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name)
         })
 
     def _description_of_shell_command_interpreter(self) -> list:
-        from exactly_lib.help.actors.names_and_cross_references import INTERPRETER_ACTOR
-        return self._paragraphs(_DESCRIPTION_OF_SHELL_COMMAND_INTERPRETER, {
-            'interpreter_actor': formatting.entity(INTERPRETER_ACTOR.singular_name)
+        from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
+        return self._paragraphs(_DESCRIPTION_OF_SHELL_COMMAND_SOURCE_INTERPRETER, {
+            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name)
         })
 
     def _description_of_command_line(self) -> list:
@@ -111,7 +111,7 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     if args:
         if args[0] == COMMAND_LINE_ACTOR_OPTION and len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments')
-    if len(args) > 0 and args[0] == INTERPRETER_OPTION:
+    if len(args) > 0 and args[0] == SOURCE_INTERPRETER_OPTION:
         if len(args) == 1:
             raise SingleInstructionInvalidArgumentException('Missing interpreter')
         return _parse_interpreter(args[1])
@@ -142,11 +142,11 @@ def _parse_interpreter_command(arg: str) -> Command:
     return Command(command_and_arguments, shell=False)
 
 
-_DESCRIPTION_OF_INTERPRETER = """\
+_DESCRIPTION_OF_SOURCE_INTERPRETER = """\
 Specifies that the {interpreter_actor} {actor} should be used, with an executable program as interpreter.
 """
 
-_DESCRIPTION_OF_SHELL_COMMAND_INTERPRETER = """\
+_DESCRIPTION_OF_SHELL_COMMAND_SOURCE_INTERPRETER = """\
 Specifies that the {interpreter_actor} {actor} should be used, with a shell command as interpreter.
 """
 
