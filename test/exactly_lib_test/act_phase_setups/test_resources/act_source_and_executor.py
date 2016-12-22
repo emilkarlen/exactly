@@ -22,6 +22,13 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
 
 
+class TestCaseSourceSetup:
+    def __init__(self, act_phase_instructions: list,
+                 home_dir_contents: DirContents = DirContents([])):
+        self.home_dir_contents = home_dir_contents
+        self.act_phase_instructions = act_phase_instructions
+
+
 class Configuration:
     def __init__(self, sut: ActSourceAndExecutorConstructor):
         self.sut = sut
@@ -77,12 +84,7 @@ class Configuration:
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_sleeps_at_least(self,
-                                     home_dir_path: pathlib.Path,
-                                     number_of_seconds: int) -> list:
-        """
-        :return: List of ActPhaseInstruction
-        """
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
         raise NotImplementedError()
 
 
@@ -261,9 +263,10 @@ class TestTimeoutValueIsUsed(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
-        with tmp_dir() as home_dir_path:
-            with self.configuration.program_that_sleeps_at_least(home_dir_path, 5) as act_phase_instructions:
-                arrangement = act_phase_execution.Arrangement(self.configuration.sut, act_phase_instructions,
-                                                              timeout_in_seconds=1)
-                expectation = act_phase_execution.Expectation(result_of_execute=eh_check.is_hard_error)
-                act_phase_execution.check_execution(self, arrangement, expectation)
+        with self.configuration.program_that_sleeps_at_least(5) as test_case_setup:
+            arrangement = act_phase_execution.Arrangement(self.configuration.sut,
+                                                          test_case_setup.act_phase_instructions,
+                                                          home_dir_contents=test_case_setup.home_dir_contents,
+                                                          timeout_in_seconds=1)
+            expectation = act_phase_execution.Expectation(result_of_execute=eh_check.is_hard_error)
+            act_phase_execution.check_execution(self, arrangement, expectation)

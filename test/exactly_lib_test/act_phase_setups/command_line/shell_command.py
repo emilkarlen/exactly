@@ -11,9 +11,10 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
-from exactly_lib_test.act_phase_setups.test_resources import test_validation_for_single_line_source as common_validation
+from exactly_lib_test.act_phase_setups.test_resources import \
+    test_validation_for_single_line_source as single_line_source
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
-    suite_for_execution
+    suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
@@ -22,7 +23,7 @@ from exactly_lib_test.test_resources.programs.python_program_execution import ab
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     configuration = TheConfiguration()
-    ret_val.addTest(common_validation.suite_for(configuration))
+    ret_val.addTest(single_line_source.suite_for(configuration))
     ret_val.addTest(unittest.makeSuite(TestValidation))
     ret_val.addTest(suite_for_execution(configuration))
     return ret_val
@@ -105,11 +106,9 @@ class TheConfiguration(Configuration):
             shell_commands.command_that_prints_value_of_environment_variable_to_stdout(var_name))
 
     @contextmanager
-    def program_that_sleeps_at_least(self,
-                                     home_dir_path: pathlib.Path,
-                                     number_of_seconds: int) -> list:
-        yield self._instruction_for(
-            shell_commands.program_that_sleeps_at_least(number_of_seconds))
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
+        yield TestCaseSourceSetup(self._instruction_for(
+            shell_commands.program_that_sleeps_at_least(number_of_seconds)))
 
     @staticmethod
     def _instruction_for(command: str) -> list:

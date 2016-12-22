@@ -1,3 +1,4 @@
+import functools
 import pathlib
 import shlex
 
@@ -6,6 +7,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -16,30 +18,59 @@ from exactly_lib.util.process_execution.os_process_execution import Command
 SHELL_COMMAND_MARKER = '$'
 
 
-def act_phase_setup() -> ActPhaseSetup:
-    return ActPhaseSetup(Constructor())
+def act_phase_setup(interpreter: Command) -> ActPhaseSetup:
+    return ActPhaseSetup(constructor(interpreter))
 
 
-def act_phase_handling() -> ActPhaseHandling:
-    return ActPhaseHandling(Constructor())
+def act_phase_handling(interpreter: Command) -> ActPhaseHandling:
+    return ActPhaseHandling(constructor(interpreter))
 
 
-class Constructor(parts.Constructor):
-    def __init__(self):
-        super().__init__(_Parser(),
-                         _validator,
-                         _executor)
+def constructor(interpreter: Command) -> parts.Constructor:
+    if interpreter.shell:
+        return ConstructorForShellCommand(interpreter.args)
+    else:
+        return ConstructorForExecutableFile(interpreter.args)
+
+
+class ConstructorForExecutableFile(parts.Constructor):
+    def __init__(self, cmd_and_args: list):
+        super().__init__(_Parser(is_shell=False),
+                         _Validator,
+                         functools.partial(_ExecutableFileExecutor, cmd_and_args))
+
+
+class ConstructorForShellCommand(parts.Constructor):
+    def __init__(self, shell_command: str):
+        super().__init__(_Parser(is_shell=True),
+                         _Validator,
+                         functools.partial(_ShellCommandExecutor, shell_command))
+
+
+class _SourceInfo:
+    def __init__(self,
+                 file_name: str,
+                 remaining_arguments):
+        self.remaining_arguments = remaining_arguments
+        self.file_reference = file_name
 
 
 class _Parser(Parser):
-    def apply(self, act_phase_instructions: list) -> Command:
+    def __init__(self, is_shell: bool):
+        self.is_shell = is_shell
+
+    def apply(self, act_phase_instructions: list) -> _SourceInfo:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
         single_line = single_line_parser.apply(act_phase_instructions)
         single_line = single_line.strip()
-        if single_line.startswith(SHELL_COMMAND_MARKER):
-            return self._parse_shell_command(single_line[len(SHELL_COMMAND_MARKER):])
-        else:
-            return self._parse_executable_file(single_line)
+        try:
+            token_stream = TokenStream(single_line)
+            if token_stream.is_null:
+                raise ValueError('Illegal state: cannot read a single token from source: "{}"'.format(single_line))
+            remaining_arguments = self._parse_remaining_arguments(token_stream.tail_source)
+            return _SourceInfo(token_stream.head, remaining_arguments)
+        except Exception as ex:
+            raise parts.ParseException(svh.new_svh_validation_error(str(ex)))
 
     @staticmethod
     def _parse_shell_command(argument: str) -> Command:
@@ -54,71 +85,85 @@ class _Parser(Parser):
         cmd_and_args = shlex.split(argument)
         return Command(cmd_and_args, shell=False)
 
-
-def _validator(environment: InstructionEnvironmentForPreSdsStep, command: Command) -> parts.Validator:
-    if command.shell:
-        return parts.UnconditionallySuccessfulValidator()
-    else:
-        return _ExecutableFileValidator(command.args)
-
-
-def _executor(os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
-              command: Command) -> parts.Executor:
-    if command.shell:
-        return _ShellCommandExecutor(os_process_executor, command.args)
-    else:
-        return _ExecutableFileExecutor(os_process_executor, command.args)
+    def _parse_remaining_arguments(self, tail_source: str):
+        if self.is_shell:
+            if tail_source is None:
+                return None
+            return tail_source.strip()
+        else:
+            if tail_source is None:
+                return []
+            try:
+                return shlex.split(tail_source)
+            except Exception as ex:
+                raise parts.ParseException(svh.new_svh_validation_error(str(ex)))
 
 
-class _ExecutableFileValidator(parts.Validator):
-    def __init__(self, cmd_and_args: list):
-        self.cmd_and_args = cmd_and_args
+class _Validator(parts.Validator):
+    def __init__(self,
+                 environment: InstructionEnvironmentForPreSdsStep,
+                 source: _SourceInfo):
+        self.environment = environment
+        self.source = source
 
     def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        cmd = self.cmd_and_args[0]
-        cmd_path = pathlib.Path(cmd)
-        if cmd_path.is_absolute():
-            if not cmd_path.exists():
-                return svh.new_svh_validation_error('File does not exist: ' + cmd)
+                         environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
+        file_path = pathlib.Path(self.source.file_reference)
+        if file_path.is_absolute():
+            if not file_path.exists():
+                return svh.new_svh_validation_error('File does not exist: ' + self.source.file_reference)
         else:
-            cmd_abs_path = environment.home_directory / cmd
-            if not cmd_abs_path.exists():
-                return svh.new_svh_validation_error('Not a file relative home-dir: ' + str(cmd_abs_path))
+            file_abs_path = self.environment.home_directory / self.source.file_reference
+            if not file_abs_path.exists():
+                msg = 'Not an existing file relative home-dir: ' + str(file_abs_path)
+                return svh.new_svh_validation_error(msg)
         return svh.new_svh_success()
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 
 class _ExecutableFileExecutor(CommandExecutor):
     def __init__(self,
+                 cmd_and_args_of_interpreter: list,
                  os_process_executor: ActPhaseOsProcessExecutor,
-                 cmd_and_args: list):
+                 environment: InstructionEnvironmentForPreSdsStep,
+                 source: _SourceInfo):
         super().__init__(os_process_executor)
-        self.cmd_and_args = cmd_and_args
+        self.cmd_and_args_of_interpreter = cmd_and_args_of_interpreter
+        self.source = source
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        cmd = self.cmd_and_args[0]
-        cmd_path = pathlib.Path(cmd)
-        if not cmd_path.is_absolute():
-            cmd_path = environment.home_directory / cmd_path
-            self.cmd_and_args[0] = str(cmd_path)
-        return Command(self.cmd_and_args, shell=False)
+        absolute_file_name = _resolve_absolute_file_name(self.source.file_reference, environment)
+        cmd_and_args = self.cmd_and_args_of_interpreter + [absolute_file_name] + self.source.remaining_arguments
+        return Command(cmd_and_args, shell=False)
 
 
 class _ShellCommandExecutor(CommandExecutor):
     def __init__(self,
+                 shell_command_of_interpreter: str,
                  os_process_executor: ActPhaseOsProcessExecutor,
-                 command_line: str):
+                 environment: InstructionEnvironmentForPreSdsStep,
+                 source: _SourceInfo):
         super().__init__(os_process_executor)
-        self.command_line = command_line
+        self.shell_command_of_interpreter = shell_command_of_interpreter
+        self.source = source
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
         return Command(self.command_line, shell=True)
+
+
+def _resolve_absolute_file_name(file_reference: str, environment: InstructionEnvironmentForPostSdsStep) -> str:
+    file_path = pathlib.Path(file_reference)
+    if file_path.is_absolute():
+        return file_reference
+    else:
+        file_abs_path = environment.home_directory / file_reference
+        return str(file_abs_path)
