@@ -3,8 +3,8 @@ from exactly_lib.act_phase_setups import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.actors.actor.common import SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, \
     ARGUMENT_SYNTAX_ELEMENT, ActPhaseDocumentationSyntaxBase
+from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
-from exactly_lib.help.actors.single_command_line_base import SingleCommandLineActorDocumentationBase
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
@@ -20,17 +20,16 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import text
 
 
-class CommandLineActorDocumentation(SingleCommandLineActorDocumentationBase):
+class CommandLineActorDocumentation(ActorDocumentation):
     def __init__(self):
         super().__init__(COMMAND_LINE_ACTOR)
         from exactly_lib.execution.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            # 'home_directory_concept': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'sandbox': SANDBOX_CONCEPT.name().singular,
+            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
-            'LINE_COMMENT_MARKER': LINE_COMMENT_MARKER,
+            'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
         }
         self._parser = TextParser(format_map)
 
@@ -73,7 +72,6 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
             'ARGUMENT': self.argument.name,
             'actor': formatting.concept(ACTOR_CONCEPT.name().singular),
             'act_phase': ACT_PHASE_NAME.emphasis,
-            # 'home_directory_concept': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.name().singular),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
         }
