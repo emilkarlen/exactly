@@ -6,6 +6,8 @@ from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib_test.act_phase_setups.test_resources import \
+    test_validation_for_single_line_source as single_line_source
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
@@ -15,7 +17,14 @@ from exactly_lib_test.test_resources.execution import tmp_dir as fs_utils
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 
-def suite_for(conf: Configuration) -> unittest.TestSuite:
+def suite_for(configuration: Configuration) -> unittest.TestSuite:
+    return unittest.TestSuite([
+        single_line_source.suite_for(configuration),
+        suite_for_additional(configuration)
+    ])
+
+
+def suite_for_additional(conf: Configuration) -> unittest.TestSuite:
     test_cases = [
         test_succeeds_when_there_is_exactly_one_statement_but_surrounded_by_empty_and_comment_lines,
         test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file_rel_home,

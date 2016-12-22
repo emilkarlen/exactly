@@ -78,6 +78,10 @@ def check_execution(put: unittest.TestCase,
                                                      environment,
                                                      arrangement.act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)
+        if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
+            put.fail('Failure of validation/pre-sds: {}: {}'.format(
+                step_result.status,
+                step_result.failure_message))
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of validation/pre-sds')

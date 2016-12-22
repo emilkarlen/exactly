@@ -10,11 +10,19 @@ from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
-    Configuration, suite_for_execution
+    Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import test_case_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, File
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        suite_for_execution(TheConfiguration()),
+        unittest.makeSuite(TestThatScriptSourceIsWrittenToTestCaseDir),
+        unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
+    ])
 
 
 class TheConfiguration(Configuration):
@@ -55,11 +63,9 @@ class TheConfiguration(Configuration):
         yield _instructions_for(py_program.write_value_of_environment_variable_to_stdout(var_name))
 
     @contextmanager
-    def program_that_sleeps_at_least(self,
-                                     home_dir_path: pathlib.Path,
-                                     number_of_seconds: int) -> list:
-        yield _instructions_for(
-            py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds))
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
+        yield TestCaseSourceSetup(_instructions_for(
+            py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)))
 
 
 def _instructions_for(statements: list) -> list:
@@ -103,14 +109,6 @@ class _SourceFileManagerWithNonExistingInterpreter(SourceFileManager):
 
     def base_name_from_stem(self, stem: str) -> str:
         return stem + '.src'
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        suite_for_execution(TheConfiguration()),
-        unittest.makeSuite(TestThatScriptSourceIsWrittenToTestCaseDir),
-        unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
-    ])
 
 
 if __name__ == '__main__':
