@@ -1,11 +1,8 @@
-import pathlib
-import sys
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
-from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources import \
@@ -18,6 +15,7 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.programs.shell_commands import which_python
 
 
 def suite() -> unittest.TestSuite:
@@ -32,13 +30,13 @@ if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
 
-class TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigurationForValidation):
+class TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigurationForValidation):
     def runTest(self):
         act_phase_instructions = [instr(["""valid-file-ref 'quoting missing ending single-quote"""]),
                                   instr([''])]
         actual = self._do_validate_pre_sds(act_phase_instructions,
                                            home_dir_contents=DirContents([empty_file('valid-file-ref')]))
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
 
@@ -62,11 +60,12 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
                                                       act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self, arrangement, expectation)
-        self.assertFalse(executor_that_records_arguments.command.shell,
-                         'Should not be executed as a shell command')
-        self.assertEqual(2,
-                         len(executor_that_records_arguments.command.args),
-                         'Number of command-and-arguments, including interpreter')
+        actual_command = executor_that_records_arguments.command
+        self.assertTrue(actual_command.shell,
+                        'Should be executed as a shell command')
+        self.assertIsInstance(actual_command.args,
+                              str,
+                              'Argument is expected to be a str for shell commands')
 
 
 class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
@@ -78,8 +77,8 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
-        act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """]),
-                                  instr([''])]
+        act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """])]
+        should_be_last_part_of_command_line = """un-quoted 'single quoted' "double-quoted\""""
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(self.configuration.sut,
                                                       act_phase_instructions,
@@ -87,24 +86,18 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                                                       act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self, arrangement, expectation)
-        self.assertFalse(executor_that_records_arguments.command.shell,
-                         'Should not be executed as a shell command')
-        self.assertEqual(5,
-                         len(executor_that_records_arguments.command.args),
-                         'Number of command-and-arguments, including interpreter')
-        self.assertListEqual(['un-quoted', 'single quoted', 'double-quoted'],
-                             executor_that_records_arguments.command.args[2:])
+        self.assertTrue(executor_that_records_arguments.command.shell,
+                        'Should be executed as a shell command')
+        self.assertIsInstance(executor_that_records_arguments.command.args,
+                              str,
+                              'Argument should be a single string when for shell command')
+        self.assertEqual(should_be_last_part_of_command_line,
+                         executor_that_records_arguments.command.args[-(len(should_be_last_part_of_command_line)):])
 
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.constructor(Command([sys.executable], shell=False)))
-
-
-def _instructions_for_file_in_home_dir(home_dir_path: pathlib.Path, statements: list) -> list:
-    with open(str(home_dir_path / 'sut.py'), 'w') as f:
-        f.write(lines_content(statements))
-    return [instr(['sut.py'])]
+        super().__init__(sut.constructor(Command(which_python(), shell=True)))
 
 
 def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
@@ -116,7 +109,7 @@ def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
 
 def custom_suite_for(conf: TheConfiguration) -> unittest.TestSuite:
     test_cases = [
-        TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
+        TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
         TestFileReferenceCanBeQuoted,
         TestArgumentsAreParsedAndPassedToExecutor,
     ]

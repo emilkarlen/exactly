@@ -8,6 +8,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
+from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.file_structure import empty_dir_contents
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 
@@ -28,8 +31,6 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
         self.constructor = configuration.sut
         assert isinstance(self.constructor, ActSourceAndExecutorConstructor)
         self.home_dir_as_current_dir = pathlib.Path()
-        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir,
-                                                               dict(os.environ))
 
     def runTest(self):
         raise NotImplementedError()
@@ -39,9 +40,15 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
         home_dir_path = pathlib.Path()
         return InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
 
-    def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
-        executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
-        return executor.validate_pre_sds(self.pre_sds_env)
+    def _do_validate_pre_sds(self,
+                             act_phase_instructions: list,
+                             home_dir_contents: DirContents = empty_dir_contents()
+                             ) -> svh.SuccessOrValidationErrorOrHardError:
+        with tmp_dir(contents=home_dir_contents) as home_dir_path:
+            pre_sds_env = InstructionEnvironmentForPreSdsStep(home_dir_path,
+                                                              dict(os.environ))
+            executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
+            return executor.validate_pre_sds(pre_sds_env)
 
 
 class test_fails_when_there_are_no_instructions(TestCaseForConfigurationForValidation):

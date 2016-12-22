@@ -1,6 +1,13 @@
 import sys
 
 
+def which_python() -> str:
+    if sys.platform == 'win23':
+        return sys.executable
+    else:
+        return '$(which python)'
+
+
 def command_that_copes_stdin_to_stdout() -> str:
     if sys.platform == 'win32':
         return 'echo'
