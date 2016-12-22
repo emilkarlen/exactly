@@ -1,7 +1,8 @@
 import shlex
 
 from exactly_lib.act_phase_setups import command_line
-from exactly_lib.act_phase_setups.interpreter import act_phase_handling
+from exactly_lib.act_phase_setups import file_interpreter
+from exactly_lib.act_phase_setups import interpreter as source_interpreter
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.actors.actor import command_line as command_line_actor_help
 from exactly_lib.help.utils import formatting
@@ -12,6 +13,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.process_execution.os_process_execution import Command
 
@@ -22,6 +24,9 @@ SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = '$'
 
 SOURCE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='source')
 SOURCE_INTERPRETER_OPTION = long_option_syntax(SOURCE_INTERPRETER_OPTION_NAME.long)
+
+FILE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='file')
+FILE_INTERPRETER_OPTION = long_option_syntax(FILE_INTERPRETER_OPTION_NAME.long)
 
 
 class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -103,43 +108,60 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     :raises SingleInstructionInvalidArgumentException In case of invalid syntax
     """
     arg = source.instruction_argument.strip()
-    if arg == '':
+    if not arg:
         raise SingleInstructionInvalidArgumentException('An actor must be given')
-    if arg == COMMAND_LINE_ACTOR_OPTION:
+    try:
+        args = arg.split(maxsplit=1)
+    except Exception as ex:
+        raise SingleInstructionInvalidArgumentException(str(ex))
+    if matches(COMMAND_LINE_ACTOR_OPTION_NAME, args[0]):
+        if len(args) > 1:
+            raise SingleInstructionInvalidArgumentException('Superfluous arguments to ' + args[0])
         return command_line.act_phase_handling()
-    args = arg.split(maxsplit=1)
-    if args:
-        if args[0] == COMMAND_LINE_ACTOR_OPTION and len(args) > 1:
-            raise SingleInstructionInvalidArgumentException('Superfluous arguments')
-    if len(args) > 0 and args[0] == SOURCE_INTERPRETER_OPTION:
-        if len(args) == 1:
-            raise SingleInstructionInvalidArgumentException('Missing interpreter')
-        return _parse_interpreter(args[1])
-    else:
-        return _parse_interpreter(arg)
+    if len(args) == 1:
+        raise SingleInstructionInvalidArgumentException('Missing file argument for ' + args[0])
+    if matches(SOURCE_INTERPRETER_OPTION_NAME, args[0]):
+        return _parse_source_interpreter(args[1])
+    if matches(FILE_INTERPRETER_OPTION_NAME, args[0]):
+        return _parse_file_interpreter(args[1])
+    raise SingleInstructionInvalidArgumentException('Invalid option: "{}"'.format(args[0]))
 
 
-def _parse_interpreter(arg: str) -> ActPhaseHandling:
-    return act_phase_handling(_parse_interpreter_command(arg))
+def _parse_source_interpreter(arg: str) -> ActPhaseHandling:
+    return source_interpreter.act_phase_handling(_parse_source_interpreter_command(arg))
 
 
-def _parse_interpreter_command(arg: str) -> Command:
+def _parse_file_interpreter(arg: str) -> ActPhaseHandling:
+    return file_interpreter.act_phase_handling(_parse_file_interpreter_command(arg))
+
+
+def _parse_source_interpreter_command(arg: str) -> Command:
     args = arg.split(maxsplit=1)
     if not args:
-        raise SingleInstructionInvalidArgumentException('Missing interpreter')
+        raise SingleInstructionInvalidArgumentException('Missing source interpreter')
     if args[0] == SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD:
         if len(args) == 1:
-            raise SingleInstructionInvalidArgumentException('Missing shell command for interpreter')
+            raise SingleInstructionInvalidArgumentException('Missing shell command for source interpreter')
         else:
             return Command(args[1], shell=True)
-    try:
-        command_and_arguments = shlex.split(arg)
-    except:
-        raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
+    command_and_arguments = shlex_split(arg)
     if not command_and_arguments:
-        raise SingleInstructionInvalidArgumentException('Missing interpreter')
-
+        raise SingleInstructionInvalidArgumentException('Missing source interpreter')
     return Command(command_and_arguments, shell=False)
+
+
+def _parse_file_interpreter_command(arg: str) -> Command:
+    command_and_arguments = shlex_split(arg)
+    if not command_and_arguments:
+        raise SingleInstructionInvalidArgumentException('Missing file interpreter')
+    return Command(command_and_arguments, shell=False)
+
+
+def shlex_split(s: str) -> list:
+    try:
+        return shlex.split(s)
+    except:
+        raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + s)
 
 
 _DESCRIPTION_OF_SOURCE_INTERPRETER = """\

@@ -3,6 +3,7 @@ import unittest
 
 from exactly_lib.act_phase_setups import command_line
 from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.instructions.configuration.utils.actor_utils import SOURCE_INTERPRETER_OPTION
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -104,7 +105,10 @@ class ActorIsNotPropagatedToSubSuites(SetupForSuccessfulExecution):
 
 
 def _set_actor_for_running(quoted_name_of_executable) -> str:
-    return INSTRUCTION_NAME__ACTOR + ' ' + quoted_name_of_executable
+    return '{actor_instruction} {actor_option} {actor_executable}'.format(
+        actor_instruction=INSTRUCTION_NAME__ACTOR,
+        actor_option=SOURCE_INTERPRETER_OPTION,
+        actor_executable=quoted_name_of_executable)
 
 
 def _assert_every_test_case_to_pass(put: unittest.TestCase,
