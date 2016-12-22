@@ -113,7 +113,6 @@ It's probably most useful as a tool for experimenting::
     world
     EOF
 
-::
 or for running a source file in a sandbox::
 
     > exactly --actor bash my-script.sh
