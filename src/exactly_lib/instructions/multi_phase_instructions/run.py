@@ -152,10 +152,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                        '(Must be inside parentheses.)') +
                                       default_relativity_desc),
                     InvokationVariant(self._cl_syntax_for_args(python_interpreter_arguments),
-                                      self._paragraphs('The Python 3 interpreter.')),
+                                      self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM)),
                     InvokationVariant(self._cl_syntax_for_args(python_interpreter_in_parenthesis_arguments),
-                                      self._paragraphs('The Python 3 interpreter. '
-                                                       '(Must be inside parentheses.)')),
+                                      self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM +
+                                                       ' (Must be inside literal parentheses.)')),
                 ]),
             rel_path_doc.relativity_syntax_element_description(self.relativity_arg_path,
                                                                PARSE_FILE_REF_CONFIGURATION.options.accepted_options),
@@ -258,3 +258,5 @@ and optionally also arguments to the program.
 
 Elements are parsed using {shell_syntax_concept}.
 """
+
+_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM = 'The Python interpreter (Python >= 3.5).'
