@@ -31,7 +31,7 @@ class _ProgramDocumentationRenderer:
                                     sections)
 
     def _synopsis_section(self, program: CliProgramSyntaxDocumentation) -> docs.Section:
-        return docs.section(docs.text('SYNOPSIS'),
+        return docs.section('SYNOPSIS',
                             [self._list(map(self._synopsis_list_item, program.synopsises()))])
 
     @staticmethod
@@ -47,8 +47,7 @@ class _ProgramDocumentationRenderer:
             return []
         l = self._list(map(self._arg_description_list_item, argument_descriptions))
 
-        return [docs.section(docs.text('OPTIONS'),
-                             [l])]
+        return [docs.section('OPTIONS', [l])]
 
     def _arg_description_list_item(self, argument: DescribedArgument) -> lists.HeaderContentListItem:
         header = docs.text(self.arg_in_description_renderer.visit(argument.argument))
