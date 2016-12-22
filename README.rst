@@ -87,8 +87,40 @@ The ``actor`` instruction can specify an interpreter to test a source code file:
     [assert]
 
     stdout equals <<EOF
-    some output
+    Arguments: an argument
     EOF
+
+
+
+Experimenting with source code
+------------------------------
+
+The "source interpreter" actor treats the contents of the "act" phase as source code.
+It's probably most useful as a tool for experimenting::
+
+    [conf]
+
+    actor --source bash
+
+    [act]
+
+    var='hello world'
+    echo ${var:5}
+
+    [assert]
+
+    stdout equals <<EOF
+    world
+    EOF
+
+::
+or for running a source file in a sandbox::
+
+    > exactly --actor bash my-script.sh
+    PASS
+
+
+This is more useful combined with ``--act`` (see below).
 
 
 [act] is the default phase
