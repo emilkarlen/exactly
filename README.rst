@@ -113,7 +113,6 @@ It's probably most useful as a tool for experimenting::
     world
     EOF
 
-::
 or for running a source file in a sandbox::
 
     > exactly --actor bash my-script.sh
@@ -247,13 +246,16 @@ HELP
 ====
 
 
+Exactly has a built in help system.
+
+
 Use ``exactly --help`` or ``exactly help`` to get brief help.
 
 ``exactly help help`` displays a summary of help options.
 
 ``exactly help instructions`` lists the instructions that are available in each "phase".
 
-``exactly help htmldoc`` outputs html that is an introduction and reference to the program.
+``exactly help htmldoc`` outputs all built in help as html, which serves as Exactly's reference manual.
 
 
 EXAMPLES
