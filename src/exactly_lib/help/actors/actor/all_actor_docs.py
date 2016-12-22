@@ -3,8 +3,8 @@ from exactly_lib.help.actors.names_and_cross_references import DEFAULT_ACTOR
 
 ALL_ACTOR_DOCS = [
     command_line.DOCUMENTATION,
-    source_interpreter_actor.DOCUMENTATION,
     file_interpreter_actor.DOCUMENTATION,
+    source_interpreter_actor.DOCUMENTATION,
 ]
 
 NAME_2_ACTOR_DOC = dict(map(lambda x: (x.singular_name(), x), ALL_ACTOR_DOCS))
