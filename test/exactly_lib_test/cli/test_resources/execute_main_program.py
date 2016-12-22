@@ -1,4 +1,5 @@
-from exactly_lib.cli.argument_parsing_of_act_phase_setup import INTERPRETER_FOR_TEST
+import sys
+
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
 from exactly_lib.default import default_main_program as sut
 from exactly_lib.processing.instruction_setup import InstructionsSetup
@@ -6,7 +7,7 @@ from exactly_lib_test.cli.test_resources.test_case_handling_setup import test_ca
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 
-ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE = (OPTION_FOR_ACTOR, INTERPRETER_FOR_TEST)
+ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE = (OPTION_FOR_ACTOR, sys.executable)
 
 ARGUMENTS_FOR_TEST_INTERPRETER = list(ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE)
 
