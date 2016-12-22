@@ -139,32 +139,25 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
 
 
 def _parse_source_interpreter(arg: str) -> ActPhaseHandling:
-    return source_interpreter.act_phase_handling(_parse_source_interpreter_command(arg))
+    return source_interpreter.act_phase_handling(_parse_interpreter_command(arg))
 
 
 def _parse_file_interpreter(arg: str) -> ActPhaseHandling:
-    return file_interpreter.act_phase_handling(_parse_file_interpreter_command(arg))
+    return file_interpreter.act_phase_handling(_parse_interpreter_command(arg))
 
 
-def _parse_source_interpreter_command(arg: str) -> Command:
+def _parse_interpreter_command(arg: str) -> Command:
     args = arg.split(maxsplit=1)
     if not args:
-        raise SingleInstructionInvalidArgumentException('Missing source interpreter')
+        raise SingleInstructionInvalidArgumentException('Missing interpreter')
     if args[0] == SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD:
         if len(args) == 1:
-            raise SingleInstructionInvalidArgumentException('Missing shell command for source interpreter')
+            raise SingleInstructionInvalidArgumentException('Missing shell command for interpreter')
         else:
             return Command(args[1], shell=True)
     command_and_arguments = shlex_split(arg)
     if not command_and_arguments:
-        raise SingleInstructionInvalidArgumentException('Missing source interpreter')
-    return Command(command_and_arguments, shell=False)
-
-
-def _parse_file_interpreter_command(arg: str) -> Command:
-    command_and_arguments = shlex_split(arg)
-    if not command_and_arguments:
-        raise SingleInstructionInvalidArgumentException('Missing file interpreter')
+        raise SingleInstructionInvalidArgumentException('Missing interpreter')
     return Command(command_and_arguments, shell=False)
 
 
