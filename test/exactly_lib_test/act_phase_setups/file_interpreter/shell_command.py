@@ -15,7 +15,7 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.programs.shell_commands import which_python
+from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 
 def suite() -> unittest.TestSuite:
@@ -97,7 +97,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.constructor(Command(which_python(), shell=True)))
+        super().__init__(sut.constructor(Command(abs_path_to_interpreter_quoted_for_exactly(), shell=True)))
 
 
 def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
