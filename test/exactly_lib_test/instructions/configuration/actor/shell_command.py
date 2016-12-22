@@ -116,10 +116,6 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShel
         self._check("{actor_option} {shell_option} 'arg with space' arg2 \"arg 3\"",
                     initial_part_of_command_without_file_argument_is("'arg with space' arg2 \"arg 3\""))
 
-    def test_with_interpreter_keyword(self):
-        self._check('{actor_option} {shell_option} arg1 arg2',
-                    initial_part_of_command_without_file_argument_is('arg1 arg2'))
-
 
 class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellCommand(unittest.TestCase):
     helper = _ShellExecutionCheckerHelper(actor_utils.FILE_INTERPRETER_OPTION)
