@@ -1,5 +1,7 @@
 -*- org -*-
 
+* Make suites run in a hierarchical way, à la make
+<2016-12-22 tor>
 * Specify python actor executable via --python
 <2016-12-22 tor>
 same functionality as for the "run" instruction.
