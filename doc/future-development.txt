@@ -1,5 +1,13 @@
 -*- org -*-
 
+* Specify python actor executable via --python
+<2016-12-22 tor>
+same functionality as for the "run" instruction.
+
+Is this useful?
+* env: Assign the output from a shell command to an env var
+<2016-12-22 tor>
+A way to allow more complex expressions.
 * Use other dir than "home" for referencing the SUT
 <2016-12-17 lör>
 Currently, "home" dir is used both for referencing test resources and the
@@ -36,7 +44,7 @@ med argumentet "setup".  Och under cleanup-fasen (el motsvarande) så körs
 programmet m argumentet "cleanup".
 
 "fixture" skulle kunna komplettera "setup" + "cleanup".
-* Multipla fall-filer på kommandoraden kör implicit test-svit
+* Multiple case-files on the command line should run implicit suite
 Möjlighet att ange "anonym" testsvit genom att ange de testfall som ska ingå
 på kommandoraden.
 Argumenten som ger inställningar för testfall (t ex preprocessor,
@@ -44,7 +52,25 @@ act-program-executor) kan hanteras som inställningar för sviten.
 
 Programmet ska köra, och rapportera, som om en svit angivits som innehöll de
 givna fallen.
-* <2015-11-04 ons> Ange filstruktur i textformat att installera
+* Instruction for dir+file strucuture
+<2015-11-04 ons>
+
+It would be nice to be make it easy to make a file structure.
+
+The question is what format is best.
+One way is to use the "dir" instruction, and make it include "dir" and "file"
+instructions that follows and are indented:
+
+dir my-dir
+  file a-file
+  dir sub-dir
+    file with-content.txt <<EOF
+contents
+EOF
+    file empty-file.txt
+  dir empty-dir
+
+
 På liknande sätt som jag gör i Python:
 DirContents([File('f','contents'], Dir('d', [...]))
 
@@ -81,3 +107,24 @@ samma sätt som med omgivningsvariabler.
 assert/JÄMFÖRELSE
 Vore naturligtvis även användbart att kunna asserta att innehållet i en
 katalog är identiskt (el innehåller som minst) en sådan hårdkodad filstruktur.
+* Have setup in test suites
+<2016-12-22 tor>
+Both variants are usefull:
+  - setup that is executed once for each test case (thus included in each tc)
+  - setup that is executed once for the whole suite:
+    [setup] and [cleanup] of the suite
+* suite: default values for configuration parameters
+<2016-12-22 tor>
+Any instruction in the test case "conf" phase could be possible to use in test
+suites, and would provide defaults to test cases.
+* run a test case with setup/conf from a suite
+<2016-12-22 tor>
+Since it is possible to configure how a test case is executed in a test suite,
+there is a problem of executing the test case on it's own, since the conf from
+the suite will not be used.
+
+A solution is to reference a suite on the command line:
+
+> exactly --suite the.suite the.case
+
+This would make all conf from the suite used.
