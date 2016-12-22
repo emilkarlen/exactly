@@ -71,6 +71,30 @@ def initial_part_of_command_without_file_argument_is(
     return RetClass()
 
 
+def is_interpreter_file_and_args(interpreter: str,
+                                 file_name_base: str,
+                                 args: str) -> va.ValueAssertion:
+    class RetClass(va.ValueAssertion):
+        def apply(self,
+                  put: unittest.TestCase,
+                  actual_cmd_and_args: str,
+                  message_builder: va.MessageBuilder = va.MessageBuilder()):
+            put.assertEquals(interpreter + ' ',
+                             actual_cmd_and_args[:len(interpreter) + 1],
+                             'First part of string should be equal to the interpreter')
+            put.assertEquals(' ' + args,
+                             actual_cmd_and_args[-(len(args) + 1):],
+                             'Last part of string should be equal to the arguments')
+            file_ref_part = actual_cmd_and_args[len(interpreter):-(len(args) + 1)]
+            put.assertTrue(file_name_base in file_ref_part,
+                           'File ref base name should appear in the file reference')
+            # This may be a dangerous test, since string quoting may obfuscate the
+            # file name.
+            # Remove/replace if it causes problems!
+
+    return RetClass()
+
+
 class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShellCommand(unittest.TestCase):
     helper = _ShellExecutionCheckerHelper(actor_utils.SOURCE_INTERPRETER_OPTION)
 
@@ -112,27 +136,21 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
                           home_dir_contents)
 
     def test_single_command(self):
-        self._check('{actor_option} {shell_option} arg',
+        self._check('{actor_option} {shell_option} interpreter',
                     ['file.src'],
-                    initial_part_of_command_without_file_argument_is('arg'),
+                    initial_part_of_command_without_file_argument_is('interpreter'),
                     home_dir_contents=file_in_home_dir('file.src'))
 
     def test_command_with_arguments(self):
-        self._check('{actor_option} {shell_option} arg arg1 --arg2',
+        self._check('{actor_option} {shell_option} interpreter with --arg2',
                     ['file.src'],
-                    initial_part_of_command_without_file_argument_is('arg arg1 --arg2'),
+                    initial_part_of_command_without_file_argument_is('interpreter with --arg2'),
                     home_dir_contents=file_in_home_dir('file.src'))
 
     def test_quoting(self):
-        self._check("{actor_option} {shell_option} 'arg with space' arg2 \"arg 3\"",
+        self._check("{actor_option} {shell_option} 'interpreter with quoting' arg2 \"arg 3\"",
                     ['file.src'],
-                    initial_part_of_command_without_file_argument_is("'arg with space' arg2 \"arg 3\""),
-                    home_dir_contents=file_in_home_dir('file.src'))
-
-    def test_with_interpreter_keyword(self):
-        self._check('{actor_option} {shell_option} arg1 arg2',
-                    ['file.src'],
-                    initial_part_of_command_without_file_argument_is('arg1 arg2'),
+                    initial_part_of_command_without_file_argument_is("'interpreter with quoting' arg2 \"arg 3\""),
                     home_dir_contents=file_in_home_dir('file.src'))
 
 
