@@ -122,3 +122,7 @@ def entity(name: str) -> str:
 
 def program_name(name: str) -> str:
     return name.capitalize()
+
+
+def string_constant(constant: str) -> str:
+    return '"' + constant + '"'

@@ -33,9 +33,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         self.phase_name_dictionary = phase_name_dictionary()
         self.format_map = {
             'phase': phase_name_dictionary(),
-            'home_directory': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
-            'actor': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
-            'sandbox': SANDBOX_CONCEPT.name().singular,
+            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'actor': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
             'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),

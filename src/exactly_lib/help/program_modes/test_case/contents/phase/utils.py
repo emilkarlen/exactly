@@ -53,7 +53,7 @@ def env_vars_after_act() -> list:
 
 def sequence_info__not_executed_if_execution_mode_is_skip() -> list:
     return normalize_and_parse(_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP.format(
-        execution_mode=EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular,
+        execution_mode=formatting.concept(EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular),
         SKIP=NAME_SKIP,
     ))
 
@@ -105,7 +105,7 @@ def result_sub_dir_files_table() -> docs.ParagraphItem:
 def execution_environment_prologue_for_post_act_phase() -> list:
     format_map = {
         'result_subdir': sds.SUB_DIRECTORY__RESULT,
-        'sandbox': SANDBOX_CONCEPT.name().singular,
+        'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
         'ENV_VAR_RESULT': ENV_VAR_RESULT,
     }
     return (normalize_and_parse(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR.format_map(format_map)) +

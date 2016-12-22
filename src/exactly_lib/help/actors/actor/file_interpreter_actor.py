@@ -35,13 +35,13 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
         from exactly_lib.execution.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'sandbox': SANDBOX_CONCEPT.name().singular,
+            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
-            'LINE_COMMENT_MARKER': LINE_COMMENT_MARKER,
+            'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
         }
         self._parser = TextParser(format_map)
 

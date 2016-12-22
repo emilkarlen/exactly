@@ -18,7 +18,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
         super().__init__(Name('environment variable', 'environment variables'))
         self.format_map = {
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'home_directory': formatting.term(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'act_sub_dir': sds.SUB_DIRECTORY__ACT,
             'tmp_sub_dir': sds.PATH__TMP_USER,
             'result_sub_dir': sds.SUB_DIRECTORY__RESULT,

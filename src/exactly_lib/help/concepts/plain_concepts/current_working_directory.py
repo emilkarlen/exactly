@@ -25,7 +25,7 @@ class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
             'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
-            'concept': self.name().singular,
+            'concept': formatting.concept(self.name().singular),
         })
         return from_simple_description(
             Description(text(_SINGLE_LINE_DESCRIPTION),

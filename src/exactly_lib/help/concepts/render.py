@@ -1,6 +1,7 @@
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
     PlainConceptDocumentation, ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
+from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils import see_also_section as render_utils
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
@@ -64,6 +65,6 @@ class _SummaryConstructor(ConceptDocumentationVisitor):
     def visit_configuration_parameter(self, x: ConfigurationParameterDocumentation):
         header = x.summary_paragraphs()
         footer = paras('This is a {cp} that can be set in the {phase[conf]} phase.'
-                       .format(cp=CONFIGURATION_PARAMETER_CONCEPT.name().singular,
+                       .format(cp=formatting.concept(CONFIGURATION_PARAMETER_CONCEPT.name().singular),
                                phase=phase_name_dictionary()))
         return header + footer
