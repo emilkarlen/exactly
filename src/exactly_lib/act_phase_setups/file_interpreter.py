@@ -157,7 +157,15 @@ class _ShellCommandExecutor(CommandExecutor):
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        return Command(self.command_line, shell=True)
+        remaining_arguments = '' if not self.source.remaining_arguments else self.source.remaining_arguments
+        absolute_path_to_file = _resolve_absolute_file_name(self.source.file_reference, environment)
+        quoted_absolute_path_to_file = shlex.quote(absolute_path_to_file)
+        command_string = '{interpreter} {source_file} {command_line_arguments}'.format(
+            interpreter=self.shell_command_of_interpreter,
+            source_file=quoted_absolute_path_to_file,
+            command_line_arguments=remaining_arguments,
+        )
+        return Command(command_string, shell=True)
 
 
 def _resolve_absolute_file_name(file_reference: str, environment: InstructionEnvironmentForPostSdsStep) -> str:
