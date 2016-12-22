@@ -5,6 +5,7 @@ from exactly_lib.act_phase_setups import file_interpreter
 from exactly_lib.act_phase_setups import interpreter as source_interpreter
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.actors.actor import command_line as command_line_actor_help
+from exactly_lib.help.actors.names_and_cross_references import FILE_INTERPRETER_ACTOR
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -49,7 +50,8 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
 
     def invokation_variants(self) -> list:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
-        source_interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
+        file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
+        source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
         shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -58,10 +60,14 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return [
             InvokationVariant(self._cl_syntax_for_args([command_line_actor_arg]),
                               self._description_of_command_line()),
+            InvokationVariant(self._cl_syntax_for_args([file_interpreter_arg,
+                                                        executable_arg,
+                                                        optional_arguments_arg]),
+                              self._description_of_file_interpreter()),
             InvokationVariant(self._cl_syntax_for_args([source_interpreter_arg,
                                                         executable_arg,
                                                         optional_arguments_arg]),
-                              self._description_of_interpreter()),
+                              self._description_of_source_interpreter()),
             InvokationVariant(self._cl_syntax_for_args([source_interpreter_arg,
                                                         shell_interpreter_argument,
                                                         command_argument]),
@@ -84,7 +90,12 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                 all_actor_cross_refs() +
                 command_line_actor_help.see_also_targets())
 
-    def _description_of_interpreter(self) -> list:
+    def _description_of_file_interpreter(self) -> list:
+        return self._paragraphs(_DESCRIPTION_OF_FILE_INTERPRETER, {
+            'interpreter_actor': formatting.entity(FILE_INTERPRETER_ACTOR.singular_name)
+        })
+
+    def _description_of_source_interpreter(self) -> list:
         from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
         return self._paragraphs(_DESCRIPTION_OF_SOURCE_INTERPRETER, {
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name)
@@ -163,6 +174,10 @@ def shlex_split(s: str) -> list:
     except:
         raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + s)
 
+
+_DESCRIPTION_OF_FILE_INTERPRETER = """\
+Specifies that the {interpreter_actor} {actor} should be used, with an executable program as interpreter.
+"""
 
 _DESCRIPTION_OF_SOURCE_INTERPRETER = """\
 Specifies that the {interpreter_actor} {actor} should be used, with an executable program as interpreter.
