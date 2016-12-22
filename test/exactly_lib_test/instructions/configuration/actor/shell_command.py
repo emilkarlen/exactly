@@ -8,6 +8,8 @@ from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor imp
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.programs import shell_commands
+from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -16,6 +18,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellCommand),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShellCommand),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand),
+        unittest.makeSuite(TestShellHandlingViaExecution),
     ])
 
 
@@ -151,3 +154,15 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
                               'Arguments of command to execute should be a string')
         self.assertEqual(actual_cmd_and_args,
                          'act phase source')
+
+
+class TestShellHandlingViaExecution(unittest.TestCase):
+    def test_valid_shell_command(self):
+        act_phase_source_line = shell_command_source_line_for(
+            shell_commands.command_that_prints_line_to_stdout('output on stdout'))
+        _check(self,
+               Arrangement(actor_utils.COMMAND_LINE_ACTOR_OPTION,
+                           [act_phase_source_line]),
+               Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout\n',
+                                                                               'expected output on stdout')))
+               )
