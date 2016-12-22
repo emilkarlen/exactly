@@ -73,9 +73,7 @@ def _paragraphs() -> list:
 
 
 def _sections():
-    return [docs.section('header',
-                         _paragraphs(),
-                         [])]
+    return [docs.section('header', _paragraphs())]
 
 
 def _section_contents():

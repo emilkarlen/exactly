@@ -38,5 +38,4 @@ class TextParser:
         header = header_or_text
         if not isinstance(header_or_text, docs.Text):
             header = docs.text(self.format(header_or_text, extra))
-        return docs.section(header,
-                            self.fnap(paragraphs_text, extra))
+        return docs.section(header, self.fnap(paragraphs_text, extra))

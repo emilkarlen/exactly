@@ -107,9 +107,7 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
 
     def _add_section_for_contents_description(self, sections: list):
         section_contents = self.contents_description()
-        sections.append(docs.section('Contents',
-                                     section_contents.initial_paragraphs,
-                                     section_contents.sections))
+        sections.append(doc.Section(docs.text('Contents'), section_contents))
 
     def _add_section_for_phase_sequence_description(self, sections: list):
         si = self.sequence_info()

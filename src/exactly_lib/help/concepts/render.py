@@ -50,7 +50,7 @@ class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVis
             return []
         sect = section('Description',
                        rest.initial_paragraphs,
-                       sub_sections=rest.sections)
+                       rest.sections)
         return [sect]
 
     def _see_also_sections(self) -> list:
