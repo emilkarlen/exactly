@@ -118,9 +118,11 @@ class TestExecuteBase(unittest.TestCase):
                                                          environment,
                                                          act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)
-        self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                         step_result.status,
-                         'Result of validation/pre-sds')
+        if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
+            self.fail('Expecting success. Found {}: {}'.format(
+                step_result.status,
+                step_result.failure_message,
+            ))
         with sds_with_act_as_curr_dir() as sds:
             environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
                                                                environment.environ,

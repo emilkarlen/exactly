@@ -36,7 +36,7 @@ def _parse_single_line(act_phase_instructions: list) -> str:
     if not non_empty_lines:
         raise ParseException(svh.new_svh_validation_error('No lines with source code found'))
     if len(non_empty_lines) > 1:
-        raise ParseException(svh.new_svh_validation_error('More than one lines with source code found'))
+        raise ParseException(svh.new_svh_validation_error('More than one line with source code found'))
     return non_empty_lines[0]
 
 
