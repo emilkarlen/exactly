@@ -11,6 +11,14 @@ from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellCommand),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShellCommand),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand),
+    ])
+
+
 class _ShellExecutionCheckerHelper:
     def __init__(self, cli_option: str):
         self.cli_option = cli_option

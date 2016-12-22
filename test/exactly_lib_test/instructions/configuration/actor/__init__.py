@@ -5,16 +5,8 @@ from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
-from exactly_lib_test.instructions.configuration.actor.executable_file import \
-    TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExecutableFIle, \
-    TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecutableFile, \
-    TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutableFile
-from exactly_lib_test.instructions.configuration.actor.shell_command import file_in_home_dir, \
-    TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShellCommand, \
-    TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellCommand, \
-    TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand
-from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, _check, \
-    file_in_home_dir
+from exactly_lib_test.instructions.configuration.actor import executable_file, shell_command
+from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, _check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.parse import new_source2
 from exactly_lib_test.test_resources.programs import shell_commands
@@ -27,12 +19,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParseForAnyActor),
         unittest.makeSuite(TestFailingParseForCommandLineActor),
         unittest.makeSuite(TestFailingParseForSourceInterpreterActor),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecutableFile),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellCommand),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExecutableFIle),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShellCommand),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutableFile),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand),
+        executable_file.suite(),
+        shell_command.suite(),
         unittest.makeSuite(TestShellHandlingViaExecution),
         suite_for_instruction_documentation(sut.setup('instruction name').documentation),
     ])

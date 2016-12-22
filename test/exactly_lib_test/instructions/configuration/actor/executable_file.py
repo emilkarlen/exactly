@@ -10,6 +10,14 @@ from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecutableFile),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExecutableFIle),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutableFile),
+    ])
+
+
 class _NonShellExecutionCheckHelper:
     def __init__(self, cli_option: str):
         self.cli_option = cli_option
