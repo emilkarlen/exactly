@@ -7,6 +7,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.actors.actor import command_line as command_line_actor_help
 from exactly_lib.help.actors.names_and_cross_references import FILE_INTERPRETER_ACTOR
 from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -49,30 +50,14 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._format(self.single_line_description_unformatted)
 
     def invokation_variants(self) -> list:
-        command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
-        file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
+        from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
         source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
-        executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
-        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
-        shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
-                                              a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
-        command_argument = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.command)
-        return [
-            InvokationVariant(self._cl_syntax_for_args([command_line_actor_arg]),
-                              self._description_of_command_line()),
-            InvokationVariant(self._cl_syntax_for_args([file_interpreter_arg,
-                                                        executable_arg,
-                                                        optional_arguments_arg]),
-                              self._description_of_file_interpreter()),
-            InvokationVariant(self._cl_syntax_for_args([source_interpreter_arg,
-                                                        executable_arg,
-                                                        optional_arguments_arg]),
-                              self._description_of_source_interpreter()),
-            InvokationVariant(self._cl_syntax_for_args([source_interpreter_arg,
-                                                        shell_interpreter_argument,
-                                                        command_argument]),
-                              self._description_of_shell_command_interpreter()),
-        ]
+        file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
+        return (self._command_line_invokation_variants() +
+                self._interpreter_actor_invokation_variants(FILE_INTERPRETER_ACTOR,
+                                                            file_interpreter_arg) +
+                self._interpreter_actor_invokation_variants(SOURCE_INTERPRETER_ACTOR,
+                                                            source_interpreter_arg))
 
     def syntax_element_descriptions(self) -> list:
         return self.command_line_syntax.syntax_element_descriptions()
@@ -90,21 +75,46 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                 all_actor_cross_refs() +
                 command_line_actor_help.see_also_targets())
 
+    def _command_line_invokation_variants(self) -> list:
+        command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
+        return [
+            InvokationVariant(self._cl_syntax_for_args([command_line_actor_arg]),
+                              self._description_of_command_line()),
+        ]
+
+    def _interpreter_actor_invokation_variants(self,
+                                               actor: SingularNameAndCrossReferenceId,
+                                               cli_option: a.Single) -> list:
+        shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
+                                              a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
+        command_argument = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.command)
+        executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
+        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
+        return [
+            InvokationVariant(self._cl_syntax_for_args([cli_option,
+                                                        executable_arg,
+                                                        optional_arguments_arg]),
+                              self._description_of_executable_program_interpreter(actor)),
+            InvokationVariant(self._cl_syntax_for_args([cli_option,
+                                                        shell_interpreter_argument,
+                                                        command_argument]),
+                              self._description_of_shell_command_interpreter(actor)),
+
+        ]
+
     def _description_of_file_interpreter(self) -> list:
         return self._paragraphs(_DESCRIPTION_OF_FILE_INTERPRETER, {
             'interpreter_actor': formatting.entity(FILE_INTERPRETER_ACTOR.singular_name)
         })
 
-    def _description_of_source_interpreter(self) -> list:
-        from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
+    def _description_of_executable_program_interpreter(self, actor: SingularNameAndCrossReferenceId) -> list:
         return self._paragraphs(_DESCRIPTION_OF_SOURCE_INTERPRETER, {
-            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name)
+            'interpreter_actor': formatting.entity(actor.singular_name)
         })
 
-    def _description_of_shell_command_interpreter(self) -> list:
-        from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
+    def _description_of_shell_command_interpreter(self, actor: SingularNameAndCrossReferenceId) -> list:
         return self._paragraphs(_DESCRIPTION_OF_SHELL_COMMAND_SOURCE_INTERPRETER, {
-            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name)
+            'interpreter_actor': formatting.entity(actor.singular_name)
         })
 
     def _description_of_command_line(self) -> list:

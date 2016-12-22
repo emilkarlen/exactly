@@ -26,8 +26,8 @@ FILE_INTERPRETER_ACTOR = name_and_ref_target(
 
 ALL_ACTORS = [
     COMMAND_LINE_ACTOR,
-    SOURCE_INTERPRETER_ACTOR,
     FILE_INTERPRETER_ACTOR,
+    SOURCE_INTERPRETER_ACTOR,
 ]
 
 # Bad to have definition of default value in help package.
