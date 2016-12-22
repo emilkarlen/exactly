@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.act_phase_setups.interpreter import executable_file, shell_command
+from exactly_lib_test.act_phase_setups.source_interpreter import executable_file, shell_command
 
 
 def suite() -> unittest.TestSuite:
