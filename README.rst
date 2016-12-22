@@ -71,6 +71,26 @@ A shell command in the "assert" phase becomes an assertion that depends on the e
 of the command.
 
 
+Testing source code files
+-------------------------
+
+The ``actor`` instruction can specify an interpreter to test a source code file::
+
+    [conf]
+
+    actor --file python
+
+    [act]
+
+    my-python-program.py 'an argument'
+
+    [assert]
+
+    stdout equals <<EOF
+    some output
+    EOF
+
+
 [act] is the default phase
 --------------------------
 
