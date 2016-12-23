@@ -65,6 +65,8 @@ def sandbox_directories_info_sections(phase_name_dictionary: dict,
                 _result_dir_description_paragraphs(instruction, phase_name_dictionary)),
         section(sds.SUB_DIRECTORY__TMP + '/' + sds.SUB_DIRECTORY__TMP_USER,
                 _tmp_user_dir_description_paragraphs()),
+        docs.section('Other directories',
+                     _other_directories_than_those_listed())
     ]
 
 
@@ -176,3 +178,14 @@ def _directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
         items.append(lists.HeaderContentListItem(docs.text(dir_wsd.name + '/'), sub_dirs_items))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.ITEMIZED_LIST))
+
+
+def _other_directories_than_those_listed() -> list:
+    return docs.normalize_and_parse(_OTHER_DIRECTORIES_THAN_THOSE_LISTED.format(
+        program_name=formatting.program_name(program_info.PROGRAM_NAME)))
+
+
+_OTHER_DIRECTORIES_THAN_THOSE_LISTED = """\
+The directories not mentioned above are reserved for {program_name},
+and should not be touched.
+"""
