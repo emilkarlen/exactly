@@ -1,9 +1,8 @@
 from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
-from exactly_lib.help.concepts.names_and_cross_references import concept_cross_ref
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
-from exactly_lib.help.utils.name_and_cross_ref import Name
+from exactly_lib.help.utils.name_and_cross_ref import Name, SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 from exactly_lib.util.textformat.structure.structures import para
@@ -14,21 +13,20 @@ class ConceptDocumentation(EntityDocumentation):
     Abstract base class for concepts.
     """
 
-    def __init__(self,
-                 name: Name):
-        self._name = name
+    def __init__(self, info: SingularAndPluralNameAndCrossReferenceId):
+        self._info = info
 
     def name(self) -> Name:
-        return self._name
+        return self._info.name
 
     def single_line_description(self) -> Text:
-        return self.purpose().single_line_description
+        return self._info.single_line_description
 
     def singular_name(self) -> str:
         return self.name().singular
 
     def cross_reference_target(self) -> EntityCrossReferenceId:
-        return concept_cross_ref(self._name.singular)
+        return self._info.cross_reference_target
 
     def purpose(self) -> DescriptionWithSubSections:
         raise NotImplementedError()

@@ -1,7 +1,7 @@
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import TIMEOUT_INSTRUCTION_NAME
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help.utils.name_and_cross_ref import Name
+from exactly_lib.help.concepts.names_and_cross_references import TIMEOUT_CONCEPT_INFO
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -9,7 +9,7 @@ from exactly_lib.util.description import Description, DescriptionWithSubSections
 
 class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(Name('timeout', 'timeouts'))
+        super().__init__(TIMEOUT_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({

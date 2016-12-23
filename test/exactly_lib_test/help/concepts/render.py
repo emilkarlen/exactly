@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.help.concepts import render as sut
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, ConfigurationParameterDocumentation
+from exactly_lib.help.concepts.names_and_cross_references import name_and_ref_target
 from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -88,7 +89,8 @@ class PlainConceptTestImpl(PlainConceptDocumentation):
     def __init__(self,
                  name: Name,
                  description: Description):
-        super().__init__(name)
+        super().__init__(name_and_ref_target(name,
+                                             'PlainConceptTestImpl single_line_description'))
         self.description = description
 
     def purpose(self) -> DescriptionWithSubSections:
@@ -101,7 +103,8 @@ class ConfigurationParameterTestImpl(ConfigurationParameterDocumentation):
                  name: Name,
                  description: Description,
                  default_value: str):
-        super().__init__(name)
+        super().__init__(name_and_ref_target(name,
+                                             'ConfigurationParameterTestImpl single_line_description'))
         self.description = description
         self.default_value = default_value
 

@@ -1,7 +1,7 @@
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
+from exactly_lib.help.concepts.names_and_cross_references import EXECUTION_MODE_CONCEPT_INFO
 from exactly_lib.help.utils import phase_names
-from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.test_case import execution_mode
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.structure.structures import text
 
 class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(Name('execution mode', 'execution modes'))
+        super().__init__(EXECUTION_MODE_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(

@@ -2,9 +2,9 @@ from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
 from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -16,7 +16,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 
 class _EnvironmentVariableConcept(PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(Name('environment variable', 'environment variables'))
+        super().__init__(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
         self.format_map = {
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),

@@ -1,6 +1,8 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
+    HOME_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.utils import formatting
@@ -93,7 +95,10 @@ class _RelOptionTypeInfo(tuple):
         """
         :type see_also: [`ConceptDocumentation`]
         """
-        return tuple.__new__(cls, (name, paragraph_items_text, see_also, relativity_root_description))
+        return tuple.__new__(cls, (name,
+                                   paragraph_items_text,
+                                   see_also,
+                                   relativity_root_description))
 
     @property
     def option_name(self) -> a.OptionName:
@@ -188,12 +193,13 @@ _ALL = {
                                                  _REL_RESULT_DESCRIPTION,
                                                  [ENVIRONMENT_VARIABLE_CONCEPT]),
     RelOptionType.REL_CWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
-                                              formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+                                              formatting.concept(
+                                                  CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
                                               _REL_CWD_DESCRIPTION,
                                               [CURRENT_WORKING_DIRECTORY_CONCEPT]),
     RelOptionType.REL_HOME: _RelOptionTypeInfo(options.REL_HOME_OPTION_NAME,
                                                formatting.concept(
-                                                   HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+                                                   HOME_DIRECTORY_CONCEPT_INFO.singular_name),
                                                _REL_HOME_DESCRIPTION,
                                                [HOME_DIRECTORY_CONFIGURATION_PARAMETER]),
 }
