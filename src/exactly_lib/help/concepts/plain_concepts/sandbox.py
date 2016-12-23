@@ -3,7 +3,7 @@ from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionC
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.concepts.names_and_cross_references import SANDBOX_CONCEPT_INFO
+from exactly_lib.help.concepts.names_and_cross_references import SANDBOX_CONCEPT_INFO, ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary, InstructionName
@@ -18,7 +18,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents, Section
 
 
-class _Sandbox(PlainConceptDocumentation):
+class _SandboxConcept(PlainConceptDocumentation):
     def __init__(self):
         super().__init__(SANDBOX_CONCEPT_INFO)
 
@@ -37,10 +37,11 @@ class _Sandbox(PlainConceptDocumentation):
         return [
             TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME.plain,
                                                    CHANGE_DIR_INSTRUCTION_NAME),
+            ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
         ]
 
 
-SANDBOX_CONCEPT = _Sandbox()
+SANDBOX_CONCEPT = _SandboxConcept()
 
 _SANDBOX_PRE_DIRECTORY_TREE = """\
 Each test case uses its own sandbox.
