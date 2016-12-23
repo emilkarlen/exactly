@@ -10,7 +10,9 @@ def actor_cross_ref(actor_name: str) -> EntityCrossReferenceId:
 
 def name_and_ref_target(name: str,
                         single_line_description_str: str) -> SingularNameAndCrossReferenceId:
-    return SingularNameAndCrossReferenceId(name, single_line_description_str, actor_cross_ref(name))
+    return SingularNameAndCrossReferenceId(name,
+                                           single_line_description_str,
+                                           actor_cross_ref(name))
 
 
 COMMAND_LINE_ACTOR = name_and_ref_target(
