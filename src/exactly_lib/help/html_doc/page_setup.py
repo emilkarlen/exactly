@@ -11,12 +11,10 @@ pre {
   background-color : #EEFFCC;
   padding: 7px;
   border: 1px solid #cEdFaC;
-  border-radius     : 3px;
 }
 
 h1 {
   background-color: #E6E6FA;
-  border-radius     : 4px;
   padding: 5px;
 }
 
