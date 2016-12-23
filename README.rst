@@ -159,6 +159,8 @@ stdout, stderr and exit code.
 
 The test case is executed in a sandbox, as usual.
 And all phases are executed, not just the "act" phase.
+But the outcome of tha "assert" phase is ignored.
+
 
 Keeping the sandbox directory for later inspection
 --------------------------------------------------
