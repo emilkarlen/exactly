@@ -30,7 +30,7 @@ class _Sandbox(PlainConceptDocumentation):
         rest_paragraphs.extend(normalize_and_parse(_SANDBOX_PRE_DIRECTORY_TREE.format(phase=phase)))
         sub_sections.append(directory_structure_list_section(sds.execution_directories))
         sub_sections.extend(sandbox_directories_info_sections(phase, instruction))
-        return DescriptionWithSubSections(docs.text(_SANDBOX_SINGLE_LINE_DESCRIPTION),
+        return DescriptionWithSubSections(self.single_line_description(),
                                           SectionContents(rest_paragraphs, sub_sections))
 
     def _see_also_cross_refs(self) -> list:
@@ -41,9 +41,6 @@ class _Sandbox(PlainConceptDocumentation):
 
 
 SANDBOX_CONCEPT = _Sandbox()
-
-_SANDBOX_SINGLE_LINE_DESCRIPTION = """\
-The temporary directory structure where a test case is executed."""
 
 _SANDBOX_PRE_DIRECTORY_TREE = """\
 Each test case uses its own sandbox.

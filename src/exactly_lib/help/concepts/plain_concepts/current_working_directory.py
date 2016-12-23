@@ -10,7 +10,6 @@ from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_case.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
@@ -28,14 +27,11 @@ class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
             'concept': formatting.concept(self.name().singular),
         })
         return from_simple_description(
-            Description(text(_SINGLE_LINE_DESCRIPTION),
+            Description(self.single_line_description(),
                         tp.fnap(_DESCRIPTION_REST)))
 
 
 CURRENT_WORKING_DIRECTORY_CONCEPT = _CurrentWorkingDirectoryConcept()
-
-_SINGLE_LINE_DESCRIPTION = """\
-The current directory of the environment in which an instruction is executed."""
 
 _DESCRIPTION_REST = """\
 The {phase[setup]} phase, and all following phases, has a {concept},

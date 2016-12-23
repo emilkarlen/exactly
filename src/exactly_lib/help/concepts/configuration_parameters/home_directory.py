@@ -7,7 +7,6 @@ from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
@@ -16,7 +15,7 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(
-            Description(text(_HOME_DIRECTORY_SINGLE_LINE_DESCRIPTION),
+            Description(self.single_line_description(),
                         normalize_and_parse(_HOME_DIRECTORY_REST_DESCRIPTION
                                             .format(phase=phase_name_dictionary(),
                                                     the_concept=_NAME.singular,
@@ -35,8 +34,6 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
 _NAME = Name('home directory', 'home directories')
 
 HOME_DIRECTORY_CONFIGURATION_PARAMETER = _HomeDirectoryConfigurationParameter()
-_HOME_DIRECTORY_SINGLE_LINE_DESCRIPTION = """\
-Default location of (external, existing) files referenced from the test case."""
 
 _HOME_DIRECTORY_REST_DESCRIPTION = """\
 Instructions and phases may use predefined input in terms of files

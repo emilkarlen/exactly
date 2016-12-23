@@ -16,7 +16,7 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
             'phase': phase_name_dictionary(),
         })
         return from_simple_description(
-            Description(parse.text(_SINGLE_LINE_DESCRIPTION),
+            Description(self.single_line_description(),
                         parse.fnap(WHAT_THE_TIMEOUT_APPLIES_TO)))
 
     def default_value_str(self) -> str:
@@ -30,9 +30,6 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
 
 
 TIMEOUT_CONFIGURATION_PARAMETER = _TimeoutConfigurationParameter()
-
-_SINGLE_LINE_DESCRIPTION = """\
-Timeout of sub processes executed by instructions and the {phase[act]} phase."""
 
 WHAT_THE_TIMEOUT_APPLIES_TO = """\
 The timeout is per instruction, and for the {phase[act]} phase.

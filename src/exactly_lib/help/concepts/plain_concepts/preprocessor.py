@@ -4,7 +4,6 @@ from exactly_lib.help.concepts.names_and_cross_references import PREPROCESSOR_CO
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _PreprocessorConcept(PlainConceptDocumentation):
@@ -16,14 +15,11 @@ class _PreprocessorConcept(PlainConceptDocumentation):
             'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
         })
         return from_simple_description(
-            Description(text(_SINGLE_LINE_DESCRIPTION),
+            Description(self.single_line_description(),
                         tp.fnap(_DESCRIPTION_REST)))
 
 
 PREPROCESSOR_CONCEPT = _PreprocessorConcept()
-
-_SINGLE_LINE_DESCRIPTION = """\
-A program that transforms a test case file as the first step in the processing of it."""
 
 _DESCRIPTION_REST = """\
 A preprocessor is an executable program, together with optional command line arguments.

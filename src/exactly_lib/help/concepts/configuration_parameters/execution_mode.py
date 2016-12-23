@@ -2,7 +2,6 @@ from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import EXECUTION_MODE_CONCEPT_INFO
 from exactly_lib.help.utils import phase_names
-from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.test_case import execution_mode
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -17,8 +16,7 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(
-            Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION
-                             .format(phase=phase_name_dictionary())),
+            Description(self.single_line_description(),
                         [execution_modes_list()]))
 
     def default_value_str(self) -> str:
@@ -26,9 +24,6 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
 
 
 EXECUTION_MODE_CONFIGURATION_PARAMETER = _ExecutionModeConfigurationParameter()
-_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION = """\
-Determines how the outcome of the {phase[assert]} phase is interpreted,
-or if the test case should be skipped."""
 
 
 def execution_modes_list() -> ParagraphItem:

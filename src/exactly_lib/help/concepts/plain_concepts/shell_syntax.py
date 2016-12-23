@@ -6,7 +6,6 @@ from exactly_lib.help.suite_reporters import names_and_cross_references as repor
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _ShellSyntaxConcept(PlainConceptDocumentation):
@@ -19,7 +18,7 @@ class _ShellSyntaxConcept(PlainConceptDocumentation):
             'default_reporter': formatting.entity(reporters.DEFAULT_REPORTER.singular_name),
         })
         return from_simple_description(
-            Description(text(_SINGLE_LINE_DESCRIPTION),
+            Description(self.single_line_description(),
                         tp.fnap(_DESCRIPTION_REST)))
 
     def see_also_items(self) -> list:
@@ -30,10 +29,6 @@ class _ShellSyntaxConcept(PlainConceptDocumentation):
 
 
 SHELL_SYNTAX_CONCEPT = _ShellSyntaxConcept()
-
-_SINGLE_LINE_DESCRIPTION = """\
-Quoting of strings in command lines.
-"""
 
 _DESCRIPTION_REST = """\
 Quoting according to the "shlex" module of the Python language.

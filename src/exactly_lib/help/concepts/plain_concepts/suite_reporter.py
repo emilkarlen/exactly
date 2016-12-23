@@ -6,7 +6,6 @@ from exactly_lib.help.suite_reporters.names_and_cross_references import all_suit
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _SuiteReporterConcept(PlainConceptDocumentation):
@@ -19,7 +18,7 @@ class _SuiteReporterConcept(PlainConceptDocumentation):
             'default_reporter': formatting.entity(reporters.DEFAULT_REPORTER.singular_name),
         })
         return from_simple_description(
-            Description(text(_SINGLE_LINE_DESCRIPTION),
+            Description(self.single_line_description(),
                         tp.fnap(_DESCRIPTION_REST)))
 
     def _see_also_cross_refs(self) -> list:
@@ -27,10 +26,6 @@ class _SuiteReporterConcept(PlainConceptDocumentation):
 
 
 SUITE_REPORTER_CONCEPT = _SuiteReporterConcept()
-
-_SINGLE_LINE_DESCRIPTION = """\
-Reports the outcome of a test suite via stdout, stderr and exit code.
-"""
 
 _DESCRIPTION_REST = """\
 The reporter is specified via the command line using the {reporter_option} option.

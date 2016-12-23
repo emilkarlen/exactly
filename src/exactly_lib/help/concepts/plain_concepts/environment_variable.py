@@ -27,7 +27,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(
-            docs.text(_ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION.format_map(self.format_map)),
+            self.single_line_description(),
             SectionContents([],
                             [self._variables_from_setup(),
                              self._variables_from_before_assert()]))
@@ -69,9 +69,6 @@ def _variables_section(first_phase_name: formatting.SectionName,
 def _variables_list_paragraphs(items: list) -> list:
     return [docs.simple_list(items, docs.lists.ListType.VARIABLE_LIST)]
 
-
-_ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION = """\
-Environment variables set by {program_name}."""
 
 ENVIRONMENT_VARIABLE_CONCEPT = _EnvironmentVariableConcept()
 
