@@ -62,7 +62,7 @@ def sandbox_directories_info_sections(phase_name_dictionary: dict,
                 _act_dir_description_paragraphs(instruction, phase_name_dictionary)),
         section(sds.SUB_DIRECTORY__RESULT,
                 _result_dir_description_paragraphs(instruction, phase_name_dictionary)),
-        section(sds.SUB_DIRECTORY__TMP + '/' + sds.SUB_DIRECTORY__TMP_USER,
+        section(sds.PATH__TMP_USER,
                 _tmp_user_dir_description_paragraphs()),
         docs.section('Other directories',
                      _other_directories_than_those_listed())

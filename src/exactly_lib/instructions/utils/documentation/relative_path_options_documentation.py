@@ -2,12 +2,13 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
-    HOME_DIRECTORY_CONCEPT_INFO, ENVIRONMENT_VARIABLE_CONCEPT_INFO
+    HOME_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
+from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists
@@ -123,11 +124,12 @@ class RelOptionRenderer:
         self.argument_name = argument_name
         self.parser = TextParser({
             'PATH': path_name_in_description,
-            'ENV_VAR_TMP': env.ENV_VAR_TMP,
-            'ENV_VAR_ACT': env.ENV_VAR_ACT,
-            'ENV_VAR_RESULT': env.ENV_VAR_RESULT,
+            'DIR_TMP': sds.PATH__TMP_USER,
+            'DIR_ACT': sds.SUB_DIRECTORY__ACT,
+            'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'sandbox_concept': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
 
@@ -158,15 +160,15 @@ class RelOptionRenderer:
 
 
 _REL_TMP_DESCRIPTION = """\
-{PATH} is relative the {ENV_VAR_TMP} directory.
+{PATH} is relative the {DIR_TMP}/ directory in the {sandbox_concept}.
 """
 
 _REL_ACT_DESCRIPTION = """\
-{PATH} is relative the {ENV_VAR_ACT} directory.
+{PATH} is relative the {DIR_ACT}/ directory in the {sandbox_concept}.
 """
 
 _REL_RESULT_DESCRIPTION = """\
-{PATH} is relative the {ENV_VAR_RESULT} directory.
+{PATH} is relative the {DIR_RESULT}/ directory in the {sandbox_concept}.
 """
 
 _REL_CWD_DESCRIPTION = """\
@@ -181,16 +183,16 @@ _ALL = {
     RelOptionType.REL_TMP: _RelOptionTypeInfo(options.REL_TMP_OPTION_NAME,
                                               env.ENV_VAR_TMP,
                                               _REL_TMP_DESCRIPTION,
-                                              [ENVIRONMENT_VARIABLE_CONCEPT_INFO],
+                                              [SANDBOX_CONCEPT_INFO],
                                               ),
     RelOptionType.REL_ACT: _RelOptionTypeInfo(options.REL_ACT_OPTION_NAME,
                                               env.ENV_VAR_ACT,
                                               _REL_ACT_DESCRIPTION,
-                                              [ENVIRONMENT_VARIABLE_CONCEPT_INFO]),
+                                              [SANDBOX_CONCEPT_INFO]),
     RelOptionType.REL_RESULT: _RelOptionTypeInfo(options.REL_RESULT_OPTION_NAME,
                                                  env.ENV_VAR_RESULT,
                                                  _REL_RESULT_DESCRIPTION,
-                                                 [ENVIRONMENT_VARIABLE_CONCEPT_INFO]),
+                                                 [SANDBOX_CONCEPT_INFO]),
     RelOptionType.REL_CWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
                                               formatting.concept(
                                                   CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
