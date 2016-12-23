@@ -3,24 +3,10 @@ from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.concepts.cross_reference import concept_cross_ref
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
+from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 from exactly_lib.util.textformat.structure.structures import para
-
-
-class Name(tuple):
-    def __new__(cls,
-                singular: str,
-                plural: str):
-        return tuple.__new__(cls, (singular, plural))
-
-    @property
-    def singular(self) -> str:
-        return self[0]
-
-    @property
-    def plural(self) -> str:
-        return self[1]
 
 
 class ConceptDocumentation(EntityDocumentation):

@@ -1,6 +1,7 @@
 from exactly_lib.help.concepts.configuration_parameters.all_configuration_parameters import all_configuration_parameters
-from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.utils import sorted_concepts_list
+from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.phase_names import CONFIGURATION_PHASE_NAME
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.structure.structures import text

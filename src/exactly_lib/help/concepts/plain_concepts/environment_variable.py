@@ -1,9 +1,10 @@
 from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
 from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.description import DescriptionWithSubSections
