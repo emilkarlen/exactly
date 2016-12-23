@@ -2,8 +2,8 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.structure.structures import text
 
 class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(CURRENT_WORKING_DIRECTORY_CONCEPT_NAME)
+        super().__init__(CURRENT_WORKING_DIRECTORY_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
         tp = TextParser({

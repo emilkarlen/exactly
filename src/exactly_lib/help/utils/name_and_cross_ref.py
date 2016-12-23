@@ -1,4 +1,5 @@
 from exactly_lib.common.help.cross_reference_id import CrossReferenceId
+from exactly_lib.util.textformat.structure.core import Text, StringText
 
 
 class Name(tuple):
@@ -32,6 +33,10 @@ class SingularNameAndCrossReferenceId:
     @property
     def single_line_description_str(self) -> str:
         return self._single_line_description_str
+
+    @property
+    def single_line_description(self) -> Text:
+        return StringText(self._single_line_description_str)
 
     @property
     def cross_reference_target(self) -> CrossReferenceId:
