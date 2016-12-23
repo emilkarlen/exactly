@@ -1,3 +1,4 @@
+from exactly_lib.util.textformat import parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import table
 from exactly_lib.util.textformat.structure.core import ParagraphItem, ConcreteText, StringText, CrossReferenceTarget, \
@@ -64,6 +65,14 @@ def paras(str_or_text) -> list:
 
     """
     return [para(str_or_text)]
+
+
+def normalize_and_parse(paragraphs: str,
+                        list_settings: parse.ListSettings = parse.DEFAULT_LIST_SETTINGS) -> list:
+    """
+    :rtype: [`ParagraphItem`]
+    """
+    return parse.normalize_and_parse(paragraphs, list_settings)
 
 
 def text(s: str) -> ConcreteText:
