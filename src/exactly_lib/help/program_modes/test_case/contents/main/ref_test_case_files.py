@@ -1,4 +1,6 @@
+from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_INFO
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.section_document.syntax import section_header
@@ -12,11 +14,13 @@ def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
         'instruction': AnyInstructionNameDictionary(),
         'default_phase': setup.phase_names[DEFAULT_PHASE.identifier].syntax,
         'phase': setup.phase_names,
+        'actor': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
     })
     return docs.SectionContents(
         [],
         [
             parser.section('Phases', PHASES_DOC),
+            parser.section('Phase contents', PHASES_CONTENTS_DOC),
             parser.section('Instructions', INSTRUCTIONS_DOC),
             parser.section('Comments and empty lines', OTHER_DOC),
         ])
@@ -57,6 +61,15 @@ helloworld
 
 stderr empty
 ```
+"""
+
+PHASES_CONTENTS_DOC = """\
+All phases except the {phase[act]} phase consist of a sequence of "instructions" (see below).
+
+
+The contents of the {phase[act]} phase depends on which {actor} is used.
+
+By default, it consists of a single command line.
 """
 
 INSTRUCTIONS_DOC = """\
