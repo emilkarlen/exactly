@@ -1,3 +1,6 @@
+.. contents::
+
+
 Tests a command line program by executing it in a temporary sandbox directory and inspecting its result.
 
 Supports individual test cases and test suites.
