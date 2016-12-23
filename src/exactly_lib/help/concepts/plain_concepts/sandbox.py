@@ -2,10 +2,11 @@ from exactly_lib import program_info
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution import environment_variables
-from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary, InstructionName
+from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.test_case import sandbox_directory_structure as sds
