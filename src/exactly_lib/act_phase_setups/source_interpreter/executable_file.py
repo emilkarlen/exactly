@@ -1,7 +1,7 @@
 import pathlib
 
-from exactly_lib.act_phase_setups.interpreter import parser_and_executor as pa
-from exactly_lib.act_phase_setups.interpreter.source_file_management import SourceInterpreterSetup
+from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor as pa
+from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
