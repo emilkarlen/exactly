@@ -30,7 +30,7 @@ class _ActorConcept(ConfigurationParameterDocumentation):
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
         })
         contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION) + parse.fnap(HOW_TO_SPECIFY_ACTOR)
-        return DescriptionWithSubSections(parse.text(_SINGLE_LINE_DESCRIPTION),
+        return DescriptionWithSubSections(self.single_line_description(),
                                           docs.section_contents(contents))
 
     def default_value_str(self) -> str:
@@ -42,7 +42,6 @@ class _ActorConcept(ConfigurationParameterDocumentation):
     def _see_also_cross_refs(self) -> list:
         return (all_actor_cross_refs() +
                 [
-                    HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
                     TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                            ACTOR_INSTRUCTION_NAME),
                     TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
@@ -51,10 +50,6 @@ class _ActorConcept(ConfigurationParameterDocumentation):
 
 
 ACTOR_CONCEPT = _ActorConcept()
-
-_SINGLE_LINE_DESCRIPTION = """\
-Interprets the contents of the {phase[act]} phase, and executes it.
-"""
 
 _AFTER_SINGLE_LINE_DESCRIPTION = """\
 The {actor_concept} handles {phase[act]} phase - interprets the contents in the test case file,

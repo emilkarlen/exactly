@@ -2,9 +2,7 @@ from exactly_lib.help.concepts.configuration_parameters.all_configuration_parame
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import CONFIGURATION_PARAMETER_CONCEPT_INFO
 from exactly_lib.help.concepts.utils import sorted_concepts_list
-from exactly_lib.help.utils.phase_names import CONFIGURATION_PHASE_NAME
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _ConfigurationParameterConcept(PlainConceptDocumentation):
@@ -13,11 +11,8 @@ class _ConfigurationParameterConcept(PlainConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(
-            Description(text(_CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)),
+            Description(self.single_line_description(),
                         [sorted_concepts_list(all_configuration_parameters())]))
 
 
 CONFIGURATION_PARAMETER_CONCEPT = _ConfigurationParameterConcept()
-
-_CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
-A value set by the {0} phase that determine how the remaining phases are executed."""
