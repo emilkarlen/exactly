@@ -1,6 +1,3 @@
-.. contents::
-
-
 Tests a command line program by executing it in a temporary sandbox directory and inspecting its result.
 
 Supports individual test cases and test suites.
@@ -12,6 +9,9 @@ and an `introduction by examples
 
 It also has a `Reference manual
 <http://htmlpreview.github.io/?https://raw.githubusercontent.com/wiki/emilkarlen/exactly/Reference.html>`_.
+
+
+.. contents::
 
 
 TEST CASES
