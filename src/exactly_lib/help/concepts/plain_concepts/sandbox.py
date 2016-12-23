@@ -47,7 +47,8 @@ _SANDBOX_PRE_DIRECTORY_TREE = """\
 Each test case uses its own sandbox.
 
 
-The sandbox is created just before the {phase[setup]} phase is executed.
+The sandbox is created just before the {phase[setup]} phase is executed,
+and deleted after the test case has finished.
 """
 
 
@@ -105,8 +106,8 @@ _ACT_DIR_DESCRIPTION = """\
 This directory is the {cwd} when the {phase[setup]} phase begin.
 
 
-If it is not changed by the {cd_instruction} instruction,
-it will also be the {cwd} for the {phase[act]} phase.
+It will also be the {cwd} for the {phase[act]} phase, and following phases,
+unless it is changed by the {cd_instruction} instruction.
 
 
 (Files and directories that {phase[setup]:syntax} creates

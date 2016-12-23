@@ -47,7 +47,7 @@ PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(
 
 SANDBOX_CONCEPT_INFO = name_and_ref_target(
     Name('sandbox', 'sandboxes'),
-    'The temporary directory structure where a test case is executed.'
+    'The temporary directory where a test case is executed.'
 )
 
 SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(
