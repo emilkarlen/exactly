@@ -92,7 +92,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
 
 ONE_LINE_DESCRIPTION = """\
-The system under test (SUT).
+The action to check/system under test (SUT).
 """
 
 REST_OF_DESCRIPTION = """\
