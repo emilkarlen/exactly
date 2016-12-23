@@ -122,9 +122,10 @@ with the following files (with obvious contents):
 """
 
 _USR_TMP_DIR_DESCRIPTION = """\
-A directory that the writer of the test case can store arbitrary files.
+A directory that {program_name} does not touch.
 
-{program_name} does not touch contents of this directory.
+The test case can use it as a place where it is safe to put temporary files without
+the risk of clashes with files from other program.
 """
 
 
