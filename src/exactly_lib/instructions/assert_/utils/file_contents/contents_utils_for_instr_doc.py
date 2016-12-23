@@ -1,8 +1,8 @@
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
+from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.utils.formatting import InstructionName
+from exactly_lib.help.utils.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import EMPTY_ARGUMENT, NOT_ARGUMENT
@@ -118,9 +118,9 @@ class FileContentsHelpParts:
     @staticmethod
     def _see_also_cross_refs() -> list:
         concepts = rel_opts.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options.accepted_options)
-        if ENVIRONMENT_VARIABLE_CONCEPT not in concepts:
-            concepts.append(ENVIRONMENT_VARIABLE_CONCEPT)
-        return list(map(ConceptDocumentation.cross_reference_target, concepts))
+        if ENVIRONMENT_VARIABLE_CONCEPT_INFO not in concepts:
+            concepts.append(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
+        return list(map(SingularAndPluralNameAndCrossReferenceId.cross_reference_target.fget, concepts))
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:
         """
