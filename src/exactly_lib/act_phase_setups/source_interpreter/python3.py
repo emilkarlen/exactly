@@ -1,8 +1,8 @@
 import sys
 
-from exactly_lib.act_phase_setups.interpreter import source_file_management
-from exactly_lib.act_phase_setups.interpreter.executable_file import Constructor
-from exactly_lib.act_phase_setups.interpreter.source_file_management import StandardSourceFileManager
+from exactly_lib.act_phase_setups.source_interpreter import source_file_management
+from exactly_lib.act_phase_setups.source_interpreter.executable_file import Constructor
+from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
 
 

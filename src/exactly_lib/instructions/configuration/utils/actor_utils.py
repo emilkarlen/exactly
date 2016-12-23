@@ -2,7 +2,7 @@ import shlex
 
 from exactly_lib.act_phase_setups import command_line
 from exactly_lib.act_phase_setups import file_interpreter
-from exactly_lib.act_phase_setups import interpreter as source_interpreter
+from exactly_lib.act_phase_setups import source_interpreter as source_interpreter
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.actors.actor import command_line as command_line_actor_help
 from exactly_lib.help.actors.names_and_cross_references import FILE_INTERPRETER_ACTOR

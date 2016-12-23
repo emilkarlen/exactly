@@ -1,6 +1,6 @@
-from exactly_lib.act_phase_setups.interpreter import executable_file
-from exactly_lib.act_phase_setups.interpreter import shell_command as shell_cmd
-from exactly_lib.act_phase_setups.interpreter.source_file_management import SourceInterpreterSetup, \
+from exactly_lib.act_phase_setups.source_interpreter import executable_file
+from exactly_lib.act_phase_setups.source_interpreter import shell_command as shell_cmd
+from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup, \
     StandardSourceFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor
