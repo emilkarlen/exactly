@@ -59,13 +59,13 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         ]
 
     def _see_also_cross_refs(self) -> list:
-        from exactly_lib.help.concepts.plain_concepts.sandbox import \
-            SANDBOX_CONCEPT
         concepts = rel_path_doc.see_also_concepts(self.relativity_options.options.accepted_options)
+        from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
+        from exactly_lib.help.concepts.names_and_cross_references import SANDBOX_CONCEPT_INFO
         rel_path_doc.add_concepts_if_not_listed(concepts,
-                                                [CURRENT_WORKING_DIRECTORY_CONCEPT,
-                                                 SANDBOX_CONCEPT])
-        return [concept.cross_reference_target() for concept in concepts]
+                                                [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                                                 SANDBOX_CONCEPT_INFO])
+        return [concept.cross_reference_target for concept in concepts]
 
 
 _NO_DIR_ARG_MEANING = """\

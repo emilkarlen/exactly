@@ -2,9 +2,8 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
-    HOME_DIRECTORY_CONCEPT_INFO
+    HOME_DIRECTORY_CONCEPT_INFO, ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
@@ -182,26 +181,26 @@ _ALL = {
     RelOptionType.REL_TMP: _RelOptionTypeInfo(options.REL_TMP_OPTION_NAME,
                                               env.ENV_VAR_TMP,
                                               _REL_TMP_DESCRIPTION,
-                                              [ENVIRONMENT_VARIABLE_CONCEPT],
+                                              [ENVIRONMENT_VARIABLE_CONCEPT_INFO],
                                               ),
     RelOptionType.REL_ACT: _RelOptionTypeInfo(options.REL_ACT_OPTION_NAME,
                                               env.ENV_VAR_ACT,
                                               _REL_ACT_DESCRIPTION,
-                                              [ENVIRONMENT_VARIABLE_CONCEPT]),
+                                              [ENVIRONMENT_VARIABLE_CONCEPT_INFO]),
     RelOptionType.REL_RESULT: _RelOptionTypeInfo(options.REL_RESULT_OPTION_NAME,
                                                  env.ENV_VAR_RESULT,
                                                  _REL_RESULT_DESCRIPTION,
-                                                 [ENVIRONMENT_VARIABLE_CONCEPT]),
+                                                 [ENVIRONMENT_VARIABLE_CONCEPT_INFO]),
     RelOptionType.REL_CWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
                                               formatting.concept(
                                                   CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
                                               _REL_CWD_DESCRIPTION,
-                                              [CURRENT_WORKING_DIRECTORY_CONCEPT]),
+                                              [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
     RelOptionType.REL_HOME: _RelOptionTypeInfo(options.REL_HOME_OPTION_NAME,
                                                formatting.concept(
                                                    HOME_DIRECTORY_CONCEPT_INFO.singular_name),
                                                _REL_HOME_DESCRIPTION,
-                                               [HOME_DIRECTORY_CONFIGURATION_PARAMETER]),
+                                               [HOME_DIRECTORY_CONCEPT_INFO]),
 }
 
 _DEFAULT_RELATIVITY = """\

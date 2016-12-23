@@ -1,5 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
@@ -49,8 +49,8 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(RELATIVITY_OPTIONS.options.accepted_options)
-        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT])
-        return [concept.cross_reference_target() for concept in concepts]
+        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
+        return [concept.cross_reference_target for concept in concepts]
 
 
 def parse(argument: str) -> DestinationPath:

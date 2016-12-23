@@ -1,6 +1,7 @@
 import shlex
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help.concepts.names_and_cross_references import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils import file_properties
@@ -163,8 +164,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.options.accepted_options)
-        concepts.append(SHELL_SYNTAX_CONCEPT)
-        return [concept.cross_reference_target() for concept in concepts]
+        concepts.append(SHELL_SYNTAX_CONCEPT_INFO)
+        return [concept.cross_reference_target for concept in concepts]
 
 
 class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
