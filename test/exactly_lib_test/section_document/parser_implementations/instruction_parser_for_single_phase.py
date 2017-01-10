@@ -11,6 +11,15 @@ from exactly_lib.util.line_source import Line
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestFailingSplitter))
+    ret_val.addTest(unittest.makeSuite(TestParse))
+    ret_val.addTest(unittest.makeSuite(TestSectionElementParserForStandardCommentAndEmptyLines))
+    ret_val.addTest(unittest.makeSuite(TestParseWithDescription))
+    return ret_val
+
+
 def name_argument_splitter(s: str) -> (str, str):
     return s[0], s[1:]
 
@@ -22,6 +31,38 @@ def new_source(first_line: str,
             parse.ListOfLines(list(following_lines))),
         1,
         first_line)
+
+
+class SingleInstructionParserThatRaisesInvalidArgumentError(sut.SingleInstructionParser):
+    def __init__(self,
+                 error_message: str):
+        self.error_message = error_message
+
+    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
+        raise sut.SingleInstructionInvalidArgumentException(self.error_message)
+
+
+class SingleInstructionParserThatRaisesImplementationException(sut.SingleInstructionParser):
+    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
+        raise NotImplementedError()
+
+
+class SingleInstructionParserThatSucceeds(sut.SingleInstructionParser):
+    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
+        return Instruction(source.instruction_argument)
+
+
+class SectionElementParserForStandardCommentAndEmptyLines(sut.SectionElementParserForStandardCommentAndEmptyLines):
+    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> model.Instruction:
+        return Instruction(source.first_line.text)
+
+
+class Instruction(model.Instruction):
+    def __init__(self,
+                 argument: str,
+                 description: str = None):
+        self.description = description
+        self.argument = argument
 
 
 class TestFailingSplitter(unittest.TestCase):
@@ -153,6 +194,48 @@ class TestParse(unittest.TestCase):
                            'Source line')
 
 
+class TestParseWithDescription(unittest.TestCase):
+    parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
+                    'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
+    phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                       parsers_dict)
+
+    def test__when__parser_succeeds__then__the_instruction_should_be_returned(self):
+        description_variants = [
+            ([""""'single line, single quotes'"""],
+             'single line, single quotes'),
+            (['"single line, double quotes"'],
+             'single line, double quotes'),
+        ]
+        for description_lines, expected_description in description_variants:
+            with self.subTest(description_lines=description_lines,
+                              expected_description=expected_description):
+                self._check(description_lines=description_lines,
+                            expected_description=expected_description)
+
+    def _check(self, description_lines: list, expected_description: str):
+        source = new_source(description_lines[0],
+                            tuple(description_lines[1:] + ['Sa']))
+        phase_content_element = self.phase_parser.apply(source)
+        self.assertEqual(ElementType.INSTRUCTION,
+                         phase_content_element.element_type,
+                         'Should be instruction')
+        assert_equals_line(self,
+                           source.first_line,
+                           phase_content_element.first_line,
+                           'Source line')
+        instruction = phase_content_element.instruction
+        self.assertIsInstance(instruction, Instruction,
+                              'Instruction class')
+        assert isinstance(instruction, Instruction)
+        self.assertEqual(instruction.argument,
+                         'a',
+                         'Argument given to parser')
+        self.assertEqual(instruction.description,
+                         expected_description,
+                         'Description')
+
+
 class TestSectionElementParserForStandardCommentAndEmptyLines(unittest.TestCase):
     def test_parse_empty_line(self):
         parser = SectionElementParserForStandardCommentAndEmptyLines()
@@ -189,44 +272,6 @@ class TestSectionElementParserForStandardCommentAndEmptyLines(unittest.TestCase)
         assert_equals_line(self,
                            Line(1, 'instruction'),
                            element.first_line)
-
-
-class SingleInstructionParserThatRaisesInvalidArgumentError(sut.SingleInstructionParser):
-    def __init__(self,
-                 error_message: str):
-        self.error_message = error_message
-
-    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
-        raise sut.SingleInstructionInvalidArgumentException(self.error_message)
-
-
-class SingleInstructionParserThatRaisesImplementationException(sut.SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
-        raise NotImplementedError()
-
-
-class SingleInstructionParserThatSucceeds(sut.SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
-        return Instruction(source.instruction_argument)
-
-
-class SectionElementParserForStandardCommentAndEmptyLines(sut.SectionElementParserForStandardCommentAndEmptyLines):
-    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> model.Instruction:
-        return Instruction(source.first_line.text)
-
-
-class Instruction(model.Instruction):
-    def __init__(self,
-                 argument: str):
-        self.argument = argument
-
-
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestFailingSplitter))
-    ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestSectionElementParserForStandardCommentAndEmptyLines))
-    return ret_val
 
 
 if __name__ == '__main__':
