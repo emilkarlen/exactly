@@ -15,12 +15,13 @@ def name_argument_splitter(s: str) -> (str, str):
     return s[0], s[1:]
 
 
-def new_source(text: str) -> line_source.LineSequenceBuilder:
+def new_source(first_line: str,
+               following_lines: tuple = ()) -> line_source.LineSequenceBuilder:
     return line_source.LineSequenceBuilder(
         parse.LineSequenceSourceFromListOfLines(
-            parse.ListOfLines([])),
+            parse.ListOfLines(list(following_lines))),
         1,
-        text)
+        first_line)
 
 
 class TestFailingSplitter(unittest.TestCase):
