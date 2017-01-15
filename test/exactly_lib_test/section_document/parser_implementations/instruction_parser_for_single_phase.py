@@ -33,6 +33,14 @@ def new_source(first_line: str,
         first_line)
 
 
+class Instruction(model.Instruction):
+    def __init__(self,
+                 argument: str,
+                 description: str = None):
+        self.description = description
+        self.argument = argument
+
+
 class SingleInstructionParserThatRaisesInvalidArgumentError(sut.SingleInstructionParser):
     def __init__(self,
                  error_message: str):
@@ -49,20 +57,13 @@ class SingleInstructionParserThatRaisesImplementationException(sut.SingleInstruc
 
 class SingleInstructionParserThatSucceeds(sut.SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
-        return Instruction(source.instruction_argument)
+        return Instruction(source.instruction_argument,
+                           source.description)
 
 
 class SectionElementParserForStandardCommentAndEmptyLines(sut.SectionElementParserForStandardCommentAndEmptyLines):
     def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> model.Instruction:
         return Instruction(source.first_line.text)
-
-
-class Instruction(model.Instruction):
-    def __init__(self,
-                 argument: str,
-                 description: str = None):
-        self.description = description
-        self.argument = argument
 
 
 class TestFailingSplitter(unittest.TestCase):
@@ -210,13 +211,18 @@ class TestParseWithDescription(unittest.TestCase):
         for description_lines, expected_description in description_variants:
             with self.subTest(description_lines=description_lines,
                               expected_description=expected_description):
-                self._check(description_lines=description_lines,
-                            expected_description=expected_description)
+                self._do_test(description_lines=description_lines,
+                              expected_description=expected_description)
 
-    def _check(self, description_lines: list, expected_description: str):
-        source = new_source(description_lines[0],
-                            tuple(description_lines[1:] + ['Sa']))
+    def _do_test(self, description_lines: list, expected_description: str):
+        # ARRANGE #
+        first_line = description_lines[0]
+        following_lines = description_lines[1:] + ['Sa']
+        source = new_source(first_line,
+                            tuple(following_lines))
+        # ACT #
         phase_content_element = self.phase_parser.apply(source)
+        # ASSERT #
         self.assertEqual(ElementType.INSTRUCTION,
                          phase_content_element.element_type,
                          'Should be instruction')
