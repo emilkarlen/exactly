@@ -20,8 +20,9 @@ class SingleInstructionInvalidArgumentException(Exception):
 class SingleInstructionParserSource(tuple):
     def __new__(cls,
                 line_sequence: line_source.LineSequenceBuilder,
-                instruction_argument: str):
-        return tuple.__new__(cls, (line_sequence, instruction_argument))
+                instruction_argument: str,
+                description: str = None):
+        return tuple.__new__(cls, (line_sequence, instruction_argument, description))
 
     @property
     def line_sequence(self) -> line_source.LineSequenceBuilder:
@@ -30,6 +31,10 @@ class SingleInstructionParserSource(tuple):
     @property
     def instruction_argument(self) -> str:
         return self[1]
+
+    @property
+    def description(self) -> str:
+        return self[2]
 
 
 class SingleInstructionParser:
