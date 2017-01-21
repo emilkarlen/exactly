@@ -170,6 +170,7 @@ class SectionElementParserForDictionaryOfInstructions(SectionElementParserForSta
         self._name_and_argument_splitter = split_line_into_name_and_argument_function
 
     def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> Instruction:
+        source, description = self._consume_description(source)
         first_line = source.first_line
         (name, argument) = self._split(first_line)
         parser = self._lookup_parser(first_line, name)
@@ -212,3 +213,21 @@ class SectionElementParserForDictionaryOfInstructions(SectionElementParserForSta
             raise ArgumentParsingImplementationException(source.line_sequence.first_line,
                                                          name,
                                                          parser)
+
+    def _consume_description(self, source: line_source.LineSequenceBuilder) -> (line_source.LineSequenceBuilder, str):
+        dp = _DescriptionParser(source)
+        if dp.has_description():
+            return dp.parse()
+        else:
+            return source, None
+
+
+class _DescriptionParser:
+    def __init__(self, source: line_source.LineSequenceBuilder):
+        self.source = source
+
+    def has_description(self) -> bool:
+        return False
+
+    def parse(self) -> (line_source.LineSequenceBuilder, str):
+        raise NotImplementedError()
