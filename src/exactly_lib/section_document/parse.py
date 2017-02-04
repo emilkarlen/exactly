@@ -90,7 +90,7 @@ class SectionConfiguration(tuple):
 
 class SectionsConfiguration:
     """
-    Phases and their instruction parser.
+    Sections and their instruction parser.
     """
 
     def __init__(self,
@@ -124,16 +124,12 @@ class SectionsConfiguration:
 
     def section_names(self) -> tuple:
         """
-        Sequence of all Phase Names (same order as given to constructor.
-        The Phase Name None represents the configuration Phase.
+        Sequence of all Section Names (same order as given to constructor.
         :return: tuple of str:s
         """
         return self._section_list_as_tuple
 
     def parser_for_section(self, section_name: str) -> SectionElementParser:
-        """
-        :param section_name None denotes the configuration section.
-        """
         return self._section2parser[section_name]
 
     def has_section(self, section_name: str) -> bool:
@@ -148,9 +144,8 @@ class _PlainDocumentParserForSectionsConfiguration(PlainDocumentParser):
     def __init__(self, configuration: SectionsConfiguration):
         self._configuration = configuration
 
-    def apply(self, plain_test_case: LineSource) -> model.Document:
-        return _Impl(self._configuration,
-                     plain_test_case).apply()
+    def apply(self, source: LineSource) -> model.Document:
+        return _Impl(self._configuration, source).apply()
 
 
 class ListOfLines:
@@ -199,11 +194,11 @@ class LineSequenceSourceFromListOfLines(line_source.LineSequenceSource):
 class _Impl:
     def __init__(self,
                  configuration: SectionsConfiguration,
-                 plain_test_case: LineSource):
+                 document_source: LineSource):
         self.configuration = configuration
-        self._plain_test_case = plain_test_case
+        self._document_source = document_source
         self._list_of_lines = ListOfLines(map(lambda l: l.text,
-                                              self._plain_test_case))
+                                              self._document_source))
         self._current_line = self._get_next_line()
         self._parser_for_current_section = None
         self._name_of_current_section = None
