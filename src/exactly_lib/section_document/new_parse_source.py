@@ -4,6 +4,9 @@ from exactly_lib.util.line_source import Line
 
 
 class ParseSource:
+    """
+    Source string with lookahead of the current line.
+    """
     def __init__(self, source_string: str):
         self.source_string = source_string
         if self.source_string == '':
@@ -28,10 +31,15 @@ class ParseSource:
     def current_line(self) -> Line:
         return self._current_line
 
+    @property
+    def remaining_source(self) -> str:
+        return self.source_string
+
     def consume_current_line(self):
         first_line_split = self.source_string.split(sep='\n', maxsplit=1)
         if len(first_line_split) == 1:
             self._current_line = None
+            self.source_string = ''
         else:
             next_line_num = self._current_line.line_number + 1
             self.source_string = first_line_split[1]
@@ -58,6 +66,8 @@ class TestParseSource(unittest.TestCase):
 
     def _assert_is_at_eof(self, source: ParseSource):
         self.assertTrue(source.is_at_eof)
+        self.assertEquals('', source.remaining_source,
+                          'remaining source')
 
     def test_when_source_is_empty_then_it_should_indicate_eof(self):
         source = ParseSource('')
@@ -70,14 +80,21 @@ class TestParseSource(unittest.TestCase):
     def test_single_line_source(self):
         source = ParseSource('single line')
         self._assert_current_line_is(1, 'single line', source)
+        self.assertEquals('single line', source.remaining_source,
+                          'remaining source')
         source.consume_current_line()
         self._assert_is_at_eof(source)
 
     def test_two_line_source(self):
-        source = ParseSource('first line' + '\n' + 'second line')
+        original_source = 'first line' + '\n' + 'second line'
+        source = ParseSource(original_source)
         self._assert_current_line_is(1, 'first line', source)
+        self.assertEquals(original_source, source.remaining_source,
+                          'remaining source')
         source.consume_current_line()
         self._assert_current_line_is(2, 'second line', source)
+        self.assertEquals('second line', source.remaining_source,
+                          'remaining source')
         source.consume_current_line()
         self._assert_is_at_eof(source)
 
@@ -86,6 +103,8 @@ class TestParseSource(unittest.TestCase):
         self._assert_current_line_is(1, '', source)
         source.consume_current_line()
         self._assert_current_line_is(2, 'second line', source)
+        self.assertEquals('second line', source.remaining_source,
+                          'remaining source')
         source.consume_current_line()
         self._assert_is_at_eof(source)
 
