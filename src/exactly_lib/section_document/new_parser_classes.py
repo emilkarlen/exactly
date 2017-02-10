@@ -32,14 +32,6 @@ class SectionElementParser2:
         raise NotImplementedError()
 
 
-class InstructionParser2:
-    def parse(self, source: ParseSource) -> model.Instruction:
-        """
-        :raises FileSourceError The instruction cannot be parsed.
-        """
-        raise NotImplementedError()
-
-
 def new_parser_for(configuration: SectionsConfiguration) -> PlainDocumentParser2:
     return _PlainDocumentParserForSectionsConfiguration2(configuration)
 
@@ -77,41 +69,6 @@ class _PlainDocumentParserForSectionsConfiguration2(PlainDocumentParser2):
 #                 self.result[self.current_senction_name] = []
 #             self.result[self.current_senction_name].append(element)
 
-
-
-class StdElementParser(ElementParser2):
-    """
-    A parser that knows how to parse empty lines and
-    comment lines (denoted by standard syntax).
-    Every other line is treated as the start of an
-    instruction to be parsed by a given instruction parser.
-    """
-
-    def __init__(self, instruction_parser: InstructionParser2):
-        self.instruction_parser = instruction_parser
-
-    def parse(self, source: ParseSource) -> model.SectionContentElement:
-        if self._is_empty_line(source.current_line):
-            return model.SectionContentElement()  # empty
-        if self._is_comment_line(source.current_line):
-            return model.SectionContentElement()  # comment
-        else:
-            instruction = self.instruction_parser.parse(source)
-            return model.SectionContentElement()  # instruction
-
-    @staticmethod
-    def _is_empty_line(current_line):
-        raise NotImplementedError()
-
-    @staticmethod
-    def _is_comment_line(current_line):
-        raise NotImplementedError()
-
-    def _parse_description(self, source) -> str:
-        raise NotImplementedError()
-
-    def _consume_ignored_lines_and_space(self, source):
-        raise NotImplementedError()
 
 
 class _Impl:
