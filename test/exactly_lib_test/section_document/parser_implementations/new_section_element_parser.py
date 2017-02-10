@@ -92,14 +92,14 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionParser2)
     def __init__(self, instruction_line_identifier: str):
         self.instruction_line_identifier = instruction_line_identifier
 
-    def parse(self, source: ParseSource) -> model.Instruction:
+    def parse(self, source: ParseSource) -> sut.InstructionAndDescription:
         is_instruction = False
         while not source.is_at_eof and source.current_line_text.startswith(self.instruction_line_identifier):
             source.consume_current_line()
             is_instruction = True
         if not is_instruction:
             raise ValueError('Not an instruction')
-        return Instruction()
+        return sut.InstructionAndDescription(Instruction(), None)
 
 
 class Instruction(model.Instruction):
