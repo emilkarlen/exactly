@@ -5,8 +5,23 @@ from exactly_lib.section_document.new_parser_classes import ElementParser2
 from exactly_lib.util import line_source
 
 
+class InstructionAndDescription(tuple):
+    def __new__(cls,
+                instruction: model.Instruction,
+                description: str = None):
+        return tuple.__new__(cls, (instruction, description))
+
+    @property
+    def instruction(self) -> model.Instruction:
+        return self[0]
+
+    @property
+    def description(self) -> str:
+        return self[0]
+
+
 class InstructionParser2:
-    def parse(self, source: ParseSource) -> model.Instruction:
+    def parse(self, source: ParseSource) -> InstructionAndDescription:
         """
         :raises FileSourceError The instruction cannot be parsed.
         """
@@ -34,13 +49,14 @@ class StandardSyntaxElementParser(ElementParser2):
             source_before = source.remaining_source
             first_line_number = source.current_line_number
             len_before_parse = len(source_before)
-            instruction = self.instruction_parser.parse(source)
+            instruction_and_description = self.instruction_parser.parse(source)
             len_after_parse = len(source.remaining_source)
             len_instruction_source = len_before_parse - len_after_parse
             instruction_source = source_before[:len_instruction_source]
             return model.new_instruction_e(line_source.LineSequence(first_line_number,
                                                                     tuple(instruction_source.split('\n'))),
-                                           instruction)
+                                           instruction_and_description.instruction,
+                                           instruction_and_description.description)
 
     @staticmethod
     def _consume_and_return_current_line(source: ParseSource) -> line_source.LineSequence:

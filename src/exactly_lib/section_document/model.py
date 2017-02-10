@@ -26,10 +26,12 @@ class SectionContentElement:
     def __init__(self,
                  element_type: ElementType,
                  source: line_source.LineSequence,
-                 instruction: Instruction):
+                 instruction: Instruction,
+                 description: str):
         self._element_type = element_type
         self._source = source
         self._instruction = instruction
+        self._description = description
 
     @property
     def source(self) -> line_source.LineSequence:
@@ -50,24 +52,33 @@ class SectionContentElement:
         """
         return self._instruction
 
+    @property
+    def description(self) -> str:
+        """
+        Precondition: Element type is INSTRUCTION.
+        """
+        return self._description
+
 
 def new_empty_e(source: line_source.LineSequence) -> SectionContentElement:
     return SectionContentElement(ElementType.EMPTY,
                                  source,
-                                 None)
+                                 None, None)
 
 
 def new_comment_e(source: line_source.LineSequence) -> SectionContentElement:
     return SectionContentElement(ElementType.COMMENT,
                                  source,
-                                 None)
+                                 None, None)
 
 
 def new_instruction_e(source: line_source.LineSequence,
-                      instruction: Instruction) -> SectionContentElement:
+                      instruction: Instruction,
+                      description: str = None) -> SectionContentElement:
     return SectionContentElement(ElementType.INSTRUCTION,
                                  source,
-                                 instruction)
+                                 instruction,
+                                 description)
 
 
 class SectionContents:

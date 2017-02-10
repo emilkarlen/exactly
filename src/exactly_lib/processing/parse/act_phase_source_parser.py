@@ -20,7 +20,7 @@ class PlainSourceActPhaseParser(parse.SectionElementParser):
                                      tuple(lines_read))
         return model.SectionContentElement(model.ElementType.INSTRUCTION,
                                            line_sequence,
-                                           SourceCodeInstruction(line_sequence))
+                                           SourceCodeInstruction(line_sequence), None)
 
 
 def _un_escape(s: str) -> str:
