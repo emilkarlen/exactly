@@ -86,7 +86,7 @@ class TestParseSingleLineElements(ParseTestBase):
         # ACT #
         actual_document = self._parse_lines(parser,
                                             source_lines)
-
+        # ASSERT #
         expected_phase2instructions = {
             'phase 1': model.SectionContents(()),
             'phase 2': model.SectionContents(()),
