@@ -13,6 +13,7 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
 
     def parse(self, source: ParseSource) -> InstructionAndDescription:
         description = _DescriptionExtractor(source).apply()
+        source.consume_initial_space_on_current_line()
         instruction = self.instruction_parser.parse(source)
         return InstructionAndDescription(instruction, description)
 
@@ -20,6 +21,7 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
 class _DescriptionExtractor:
     def __init__(self, source: ParseSource):
         self.source = source
+        self.source.consume_initial_space_on_current_line()
         self.source_io = io.StringIO(source.remaining_source)
         self.lexer = shlex.shlex(self.source_io, posix=True)
 
@@ -35,9 +37,12 @@ class _DescriptionExtractor:
         except ValueError as ex:
             raise SourceError(self.source.current_line,
                               'Invalid description: ' + str(ex))
-        self.source.consume_current_line()
+        num_chars_consumed = self.source_io.tell()
+        self.source.consume_part_of_current_line(num_chars_consumed - 1)
+        if self.source.is_at_eol:
+            self.source.consume_current_line()
         return ret_val
 
     def starts_with_description(self) -> bool:
-        stripped_first_line = self.source.current_line_text.lstrip()
+        stripped_first_line = self.source.remaining_part_of_current_line
         return stripped_first_line and stripped_first_line[0] in self.lexer.quotes
