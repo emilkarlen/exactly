@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
 class SingleInstructionParserThatSucceeds(InstructionParser):
     def parse(self, source: ParseSource) -> model.Instruction:
         ret_val = Instruction(source.current_line_number,
-                              source.current_line_text)
+                              source.remaining_part_of_current_line)
         source.consume_current_line()
         return ret_val
 
@@ -35,6 +35,24 @@ class TestParseWithDescription(unittest.TestCase):
                                   instruction=instruction_is(1, 'instruction'))
         arrangement = Arrangement(self.sut, source)
         check(self, expectation, arrangement)
+
+    def test_description_and_instruction_on_single_line(self):
+        source_and_description_variants = [
+            (["'single line, single quotes' instruction"],
+             'single line, single quotes', 'instruction'),
+            (['       "single line, indented, double quotes"    other-instruction'],
+             'single line, indented, double quotes', 'other-instruction'),
+        ]
+        for source_lines, expected_description, expected_instruction in source_and_description_variants:
+            with self.subTest(source_lines=source_lines,
+                              expected_description=expected_description,
+                              expected_instruction=expected_instruction):
+                source = source3(source_lines)
+                expectation = Expectation(description=va.Equals(expected_description),
+                                          source=source_is_at_end,
+                                          instruction=instruction_is(1, expected_instruction))
+                arrangement = Arrangement(self.sut, source)
+                check(self, expectation, arrangement)
 
     def test_description_on_single_line_and_instruction_on_line_after(self):
         source_and_description_variants = [
