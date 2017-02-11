@@ -1,6 +1,7 @@
 import shlex
 
 from exactly_lib.section_document import parse
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib.util import line_source
@@ -20,6 +21,15 @@ def new_source2(first_line_arguments: str,
     return SingleInstructionParserSource(
         new_line_sequence(first_line, tuple(following_lines)),
         first_line_arguments)
+
+
+def source3(lines: list) -> ParseSource:
+    return ParseSource('\n'.join(lines))
+
+
+def source4(first_line: str,
+            following_lines: list = ()) -> ParseSource:
+    return ParseSource('\n'.join([first_line] + list(following_lines)))
 
 
 def single_line_source(arguments: str) -> SingleInstructionParserSource:

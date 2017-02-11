@@ -16,7 +16,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestFailingSplitter))
     ret_val.addTest(unittest.makeSuite(TestParse))
     ret_val.addTest(unittest.makeSuite(TestSectionElementParserForStandardCommentAndEmptyLines))
-    ret_val.addTest(unittest.makeSuite(TestParseWithDescription))
     return ret_val
 
 
@@ -193,53 +192,6 @@ class TestParse(unittest.TestCase):
                            source.first_line,
                            phase_content_element.first_line,
                            'Source line')
-
-
-class TestParseWithDescription(unittest.TestCase):
-    parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
-                    'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
-    phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                       parsers_dict)
-
-    def test__when__parser_succeeds__then__the_instruction_should_be_returned(self):
-        description_variants = [
-            ([""""'single line, single quotes'"""],
-             'single line, single quotes'),
-            (['"single line, double quotes"'],
-             'single line, double quotes'),
-        ]
-        for description_lines, expected_description in description_variants:
-            with self.subTest(description_lines=description_lines,
-                              expected_description=expected_description):
-                self._do_test(description_lines=description_lines,
-                              expected_description=expected_description)
-
-    def _do_test(self, description_lines: list, expected_description: str):
-        # ARRANGE #
-        first_line = description_lines[0]
-        following_lines = description_lines[1:] + ['Sa']
-        source = new_source(first_line,
-                            tuple(following_lines))
-        # ACT #
-        phase_content_element = self.phase_parser.apply(source)
-        # ASSERT #
-        self.assertEqual(ElementType.INSTRUCTION,
-                         phase_content_element.element_type,
-                         'Should be instruction')
-        assert_equals_line(self,
-                           source.first_line,
-                           phase_content_element.first_line,
-                           'Source line')
-        instruction = phase_content_element.instruction
-        self.assertIsInstance(instruction, Instruction,
-                              'Instruction class')
-        assert isinstance(instruction, Instruction)
-        self.assertEqual(instruction.argument,
-                         'a',
-                         'Argument given to parser')
-        self.assertEqual(instruction.description,
-                         expected_description,
-                         'Description')
 
 
 class TestSectionElementParserForStandardCommentAndEmptyLines(unittest.TestCase):

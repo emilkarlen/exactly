@@ -88,7 +88,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                                  'Remaining source')
 
 
-class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionParser2):
+class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescriptionParser):
     def __init__(self, instruction_line_identifier: str):
         self.instruction_line_identifier = instruction_line_identifier
 
