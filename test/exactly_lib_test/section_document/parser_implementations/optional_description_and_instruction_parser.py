@@ -27,7 +27,16 @@ class SingleInstructionParserThatSucceeds(InstructionParser):
 class TestParseWithDescription(unittest.TestCase):
     sut = InstructionWithOptionalDescriptionParser(SingleInstructionParserThatSucceeds())
 
-    def test__when__parser_succeeds__then__the_instruction_should_be_returned(self):
+    def test_no_description(self):
+        source_lines = ['instruction']
+        source = source3(source_lines)
+        expectation = Expectation(description=va.is_none,
+                                  source=source_is_at_end,
+                                  instruction=instruction_is(1, 'instruction'))
+        arrangement = Arrangement(self.sut, source)
+        check(self, expectation, arrangement)
+
+    def test_description_on_single_line_and_instruction_on_line_after(self):
         source_and_description_variants = [
             (["'single line, single quotes'"],
              'single line, single quotes'),
