@@ -17,15 +17,43 @@ class InstructionAndDescription(tuple):
 
     @property
     def description(self) -> str:
-        return self[0]
+        return self[1]
 
 
-class InstructionParser2:
+class InstructionAndDescriptionParser:
+    """
+    Parses an instruction, optionally preceded by an description.
+
+    Raises an exception if the parse fails.
+    """
     def parse(self, source: ParseSource) -> InstructionAndDescription:
+        """
+        :raises FileSourceError The description or instruction cannot be parsed.
+        """
+        raise NotImplementedError()
+
+
+class InstructionParser:
+    """
+    Parses a single instruction.
+
+    Raises an exception if the parse fails.
+    """
+
+    def parse(self, source: ParseSource) -> model.Instruction:
         """
         :raises FileSourceError The instruction cannot be parsed.
         """
         raise NotImplementedError()
+
+
+class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
+    def __init__(self, instruction_parser: InstructionParser):
+        self.instruction_parser = instruction_parser
+
+    def parse(self, source: ParseSource) -> InstructionAndDescription:
+        instruction = self.instruction_parser.parse(source)
+        return InstructionAndDescription(instruction, None)
 
 
 class StandardSyntaxElementParser(ElementParser2):
@@ -36,7 +64,7 @@ class StandardSyntaxElementParser(ElementParser2):
     instruction to be parsed by a given instruction parser.
     """
 
-    def __init__(self, instruction_parser: InstructionParser2):
+    def __init__(self, instruction_parser: InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
     def parse(self, source: ParseSource) -> model.SectionContentElement:
