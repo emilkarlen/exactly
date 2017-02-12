@@ -316,7 +316,6 @@ class TestParseMultiLineElements(ParseTestBase):
                                         ['MULTI-LINE-INSTRUCTION 1',
                                          'MULTI-LINE-INSTRUCTION 2'],
                                         'default'),
-            new_empty(4, ''),
         )
         expected_phase2instructions = {
             'default': model.SectionContents(default_phase_instructions),
@@ -602,7 +601,7 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
             lines = [current_line]
             source.consume_current_line()
             # Eat additional lines
-            while not source.is_at_eof:
+            while source.has_current_line:
                 current_line = source.current_line_text
                 if is_multi_line_instruction_line(current_line):
                     lines.append(current_line)

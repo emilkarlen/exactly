@@ -70,7 +70,6 @@ class _PlainDocumentParserForSectionsConfiguration2(PlainDocumentParser2):
 #             self.result[self.current_senction_name].append(element)
 
 
-
 class _Impl:
     def __init__(self,
                  configuration: SectionsConfiguration,
