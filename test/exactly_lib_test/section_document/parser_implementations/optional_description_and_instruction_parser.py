@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse import SourceError
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser, \
     InstructionAndDescription
 from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
@@ -36,6 +37,29 @@ class TestParseWithDescription(unittest.TestCase):
                                   instruction=assert_instruction(1, 'instruction'))
         arrangement = Arrangement(self.sut, source)
         check(self, expectation, arrangement)
+
+    def test_fail_when_there_is_a_description_but_no_following_instruction(self):
+        test_cases = [
+            ['\'description\'',
+             ],
+            ['\'description\'        ',
+             ],
+            ['\'description\'',
+             '',
+             ],
+            ['\'multi line description',
+             '\'',
+             ],
+            ['\'multi line description',
+             '\'',
+             '',
+             ],
+        ]
+        for source_lines in test_cases:
+            with self.subTest(source_lines=source_lines):
+                source = source3(source_lines)
+                with self.assertRaises(SourceError):
+                    self.sut.parse(source)
 
     def test_description_and_instruction_on_single_line(self):
         source_and_description_variants = [
