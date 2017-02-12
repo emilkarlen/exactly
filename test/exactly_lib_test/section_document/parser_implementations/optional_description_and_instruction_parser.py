@@ -81,21 +81,48 @@ class TestParseWithDescription(unittest.TestCase):
 
     def test_description_on_single_line_and_instruction_on_line_after(self):
         source_and_description_variants = [
-            (["'single line, single quotes'"],
-             'single line, single quotes'),
-            (["   'single line, indented, single quotes'"],
-             'single line, indented, single quotes'),
-            (['       "single line, indented, double quotes"'],
-             'single line, indented, double quotes'),
+            (["'single line, single quotes'",
+              'instruction',
+              ],
+             Expectation(description=asrt.Equals('single line, single quotes'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(2, 'instruction')),
+             ),
+            (["'single line, single quotes'",
+              '',
+              'instruction',
+              ],
+             Expectation(description=asrt.Equals('single line, single quotes'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(3, 'instruction')),
+             ),
+            (["   'single line, indented, single quotes'",
+              'instruction',
+              ],
+             Expectation(description=asrt.Equals('single line, indented, single quotes'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(2, 'instruction')),
+             ),
+            (['       "single line, indented, double quotes"    ',
+              'instruction',
+              ],
+             Expectation(description=asrt.Equals('single line, indented, double quotes'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(2, 'instruction')),
+             ),
+            (['       "single line, indented, double quotes"    ',
+              '     ',
+              '',
+              'instruction',
+              ],
+             Expectation(description=asrt.Equals('single line, indented, double quotes'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(4, 'instruction')),
+             ),
         ]
-        for description_lines, expected_description in source_and_description_variants:
-            with self.subTest(description_lines=description_lines,
-                              expected_description=expected_description):
-                instruction_source_lines = ['instruction']
-                source = source3(description_lines + instruction_source_lines)
-                expectation = Expectation(description=asrt.Equals(expected_description),
-                                          source=source_is_at_end,
-                                          instruction=assert_instruction(2, 'instruction'))
+        for description_lines, expectation in source_and_description_variants:
+            with self.subTest(description_lines=description_lines):
+                source = source3(description_lines)
                 arrangement = Arrangement(self.sut, source)
                 check(self, expectation, arrangement)
 
@@ -106,15 +133,29 @@ class TestParseWithDescription(unittest.TestCase):
               'instruction line'],
              Expectation(asrt.equals('first line of description\nsecond line of description'),
                          assert_instruction(3, 'instruction line'),
-                         assert_source(is_at_eof=asrt.equals(True),
-                                       has_current_line=asrt.equals(False))),
+                         source_is_at_end),
+             ),
+            (['\'first line of description',
+              'second line of description\'',
+              '',
+              'instruction line'],
+             Expectation(asrt.equals('first line of description\nsecond line of description'),
+                         assert_instruction(4, 'instruction line'),
+                         source_is_at_end),
+             ),
+            (['\'first line of description',
+              'second line of description\'      ',
+              '    ',
+              'instruction line'],
+             Expectation(asrt.equals('first line of description\nsecond line of description'),
+                         assert_instruction(4, 'instruction line'),
+                         source_is_at_end),
              ),
             (['\'first line of description',
               'second line of description\'   instruction source'],
              Expectation(asrt.equals('first line of description\nsecond line of description'),
                          assert_instruction(2, 'instruction source'),
-                         assert_source(is_at_eof=asrt.equals(True),
-                                       has_current_line=asrt.equals(False))),
+                         source_is_at_end),
              ),
         ]
         for source_lines, expectation in test_cases:
