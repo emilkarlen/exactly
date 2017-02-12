@@ -66,17 +66,13 @@ class TestParseWithDescription(unittest.TestCase):
         for description_lines, expected_description in source_and_description_variants:
             with self.subTest(description_lines=description_lines,
                               expected_description=expected_description):
-                self._do_test(description_lines=description_lines,
-                              expected_description=expected_description)
-
-    def _do_test(self, description_lines: list, expected_description: str):
-        instruction_source_lines = ['instruction']
-        source = source3(description_lines + instruction_source_lines)
-        expectation = Expectation(description=va.Equals(expected_description),
-                                  source=source_is_at_end,
-                                  instruction=instruction_is(2, 'instruction'))
-        arrangement = Arrangement(self.sut, source)
-        check(self, expectation, arrangement)
+                instruction_source_lines = ['instruction']
+                source = source3(description_lines + instruction_source_lines)
+                expectation = Expectation(description=va.Equals(expected_description),
+                                          source=source_is_at_end,
+                                          instruction=instruction_is(2, 'instruction'))
+                arrangement = Arrangement(self.sut, source)
+                check(self, expectation, arrangement)
 
 
 class Expectation(tuple):
