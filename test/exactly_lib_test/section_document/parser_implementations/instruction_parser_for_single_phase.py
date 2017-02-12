@@ -58,9 +58,7 @@ class SectionElementParserForStandardCommentAndEmptyLines(sut.SectionElementPars
 
 class Instruction(model.Instruction):
     def __init__(self,
-                 argument: str,
-                 description: str = None):
-        self.description = description
+                 argument: str):
         self.argument = argument
 
 
@@ -192,46 +190,6 @@ class TestParse(unittest.TestCase):
                            phase_content_element.first_line,
                            'Source line')
 
-class TestParseWithDescription(unittest.TestCase):
-    parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
-                    'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
-    phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                       parsers_dict)
-
-    def test__when__parser_succeeds__then__the_instruction_should_be_returned(self):
-        description_variants = [
-            ([""""'single line, single quotes'"""],
-             'single line, single quotes'),
-            (['"single line, double quotes"'],
-             'single line, double quotes'),
-        ]
-        for description_lines, expected_description in description_variants:
-            with self.subTest(description_lines=description_lines,
-                              expected_description=expected_description):
-                self._check(description_lines=description_lines,
-                            expected_description=expected_description)
-
-    def _check(self, description_lines: list, expected_description: str):
-        source = new_source(description_lines[0],
-                            tuple(description_lines[1:] + ['Sa']))
-        phase_content_element = self.phase_parser.apply(source)
-        self.assertEqual(ElementType.INSTRUCTION,
-                         phase_content_element.element_type,
-                         'Should be instruction')
-        assert_equals_line(self,
-                           source.first_line,
-                           phase_content_element.first_line,
-                           'Source line')
-        instruction = phase_content_element.instruction
-        self.assertIsInstance(instruction, Instruction,
-                              'Instruction class')
-        assert isinstance(instruction, Instruction)
-        self.assertEqual(instruction.argument,
-                         'a',
-                         'Argument given to parser')
-        self.assertEqual(instruction.description,
-                         expected_description,
-                         'Description')
 
 class TestSectionElementParserForStandardCommentAndEmptyLines(unittest.TestCase):
     def test_parse_empty_line(self):
