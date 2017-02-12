@@ -33,6 +33,10 @@ def is_comment_line(line: str) -> bool:
     return bool(COMMENT_LINE_RE.match(line))
 
 
+def is_empty_or_comment_line(line: str) -> bool:
+    return is_empty_line(line) or is_comment_line(line)
+
+
 def is_section_header_line(line: str) -> bool:
     return bool(SECTION_LINE_RE.match(line))
 
