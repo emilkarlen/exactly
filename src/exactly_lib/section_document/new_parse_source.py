@@ -35,7 +35,7 @@ class ParseSource:
     @property
     def is_at_eol(self) -> bool:
         """
-        Precondition: not is_at_eof
+        Precondition: has_current_line
         """
         return self._column_index == len(self._current_line.text)
 
