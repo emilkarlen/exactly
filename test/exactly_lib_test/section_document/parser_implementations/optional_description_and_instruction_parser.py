@@ -6,8 +6,9 @@ from exactly_lib.section_document.parser_implementations.new_section_element_par
     InstructionAndDescription
 from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_resources.parse import source3
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -16,7 +17,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class SingleInstructionParserThatSucceeds(InstructionParser):
+class SingleInstructionParserThatConsumesCurrentLine(InstructionParser):
     def parse(self, source: ParseSource) -> model.Instruction:
         ret_val = Instruction(source.current_line_number,
                               source.remaining_part_of_current_line)
@@ -25,14 +26,14 @@ class SingleInstructionParserThatSucceeds(InstructionParser):
 
 
 class TestParseWithDescription(unittest.TestCase):
-    sut = InstructionWithOptionalDescriptionParser(SingleInstructionParserThatSucceeds())
+    sut = InstructionWithOptionalDescriptionParser(SingleInstructionParserThatConsumesCurrentLine())
 
     def test_no_description(self):
         source_lines = ['instruction']
         source = source3(source_lines)
-        expectation = Expectation(description=va.is_none,
+        expectation = Expectation(description=asrt.is_none,
                                   source=source_is_at_end,
-                                  instruction=instruction_is(1, 'instruction'))
+                                  instruction=assert_instruction(1, 'instruction'))
         arrangement = Arrangement(self.sut, source)
         check(self, expectation, arrangement)
 
@@ -48,9 +49,9 @@ class TestParseWithDescription(unittest.TestCase):
                               expected_description=expected_description,
                               expected_instruction=expected_instruction):
                 source = source3(source_lines)
-                expectation = Expectation(description=va.Equals(expected_description),
+                expectation = Expectation(description=asrt.equals(expected_description),
                                           source=source_is_at_end,
-                                          instruction=instruction_is(1, expected_instruction))
+                                          instruction=assert_instruction(1, expected_instruction))
                 arrangement = Arrangement(self.sut, source)
                 check(self, expectation, arrangement)
 
@@ -68,30 +69,80 @@ class TestParseWithDescription(unittest.TestCase):
                               expected_description=expected_description):
                 instruction_source_lines = ['instruction']
                 source = source3(description_lines + instruction_source_lines)
-                expectation = Expectation(description=va.Equals(expected_description),
+                expectation = Expectation(description=asrt.Equals(expected_description),
                                           source=source_is_at_end,
-                                          instruction=instruction_is(2, 'instruction'))
+                                          instruction=assert_instruction(2, 'instruction'))
                 arrangement = Arrangement(self.sut, source)
                 check(self, expectation, arrangement)
+
+    def test_multi_line_description(self):
+        test_cases = [
+            (['\'first line of description',
+              'second line of description\'',
+              'instruction line'],
+             Expectation(asrt.equals('first line of description\nsecond line of description'),
+                         assert_instruction(3, 'instruction line'),
+                         assert_source(is_at_eof=asrt.equals(True),
+                                       has_current_line=asrt.equals(False))),
+             ),
+            (['\'first line of description',
+              'second line of description\'   instruction source'],
+             Expectation(asrt.equals('first line of description\nsecond line of description'),
+                         assert_instruction(2, 'instruction source'),
+                         assert_source(is_at_eof=asrt.equals(True),
+                                       has_current_line=asrt.equals(False))),
+             ),
+        ]
+        for source_lines, expectation in test_cases:
+            with self.subTest(source_lines=str(source_lines)):
+                check(self, expectation,
+                      Arrangement(self.sut, source3(source_lines)))
+
+    def test_strip_space_from_description(self):
+        test_cases = [
+            (['\'   first line of description',
+              'second line of description  \'',
+              'instruction line'],
+             Expectation(asrt.equals('first line of description\nsecond line of description'),
+                         assert_instruction(3, 'instruction line'),
+                         assert_source(is_at_eof=asrt.equals(True),
+                                       has_current_line=asrt.equals(False))),
+             ),
+            (['\'',
+              'first line of description',
+              '  second line of description',
+              '',
+              '\'',
+              'instruction source'],
+             Expectation(asrt.equals('first line of description\n  second line of description'),
+                         assert_instruction(6, 'instruction source'),
+                         assert_source(is_at_eof=asrt.equals(True),
+                                       has_current_line=asrt.equals(False))),
+             ),
+        ]
+        for source_lines, expectation in test_cases:
+            with self.subTest(source_lines=str(source_lines)):
+                check(self, expectation,
+                      Arrangement(self.sut, source3(source_lines)))
 
 
 class Expectation(tuple):
     def __new__(cls,
-                description: va.ValueAssertion = va.anything_goes(),
-                instruction: va.ValueAssertion = va.anything_goes(),
-                source: va.ValueAssertion = va.anything_goes()):
+                description: asrt.ValueAssertion = asrt.anything_goes(),
+                instruction: asrt.ValueAssertion = asrt.anything_goes(),
+                source: asrt.ValueAssertion = asrt.anything_goes()):
         return tuple.__new__(cls, (description, instruction, source))
 
     @property
-    def description(self) -> va.ValueAssertion:
+    def description(self) -> asrt.ValueAssertion:
         return self[0]
 
     @property
-    def instruction(self) -> va.ValueAssertion:
+    def instruction(self) -> asrt.ValueAssertion:
         return self[1]
 
     @property
-    def source(self) -> va.ValueAssertion:
+    def source(self) -> asrt.ValueAssertion:
         return self[2]
 
     def apply(self, put: unittest.TestCase,
@@ -132,13 +183,13 @@ def check(put: unittest.TestCase,
     expectation.apply(put, result, arrangement.source)
 
 
-def instruction_is(first_line_number: int,
-                   source_string: str) -> va.ValueAssertion:
-    return va.And([
-        va.sub_component('first_line_number', Instruction.first_line_number.fget,
-                         va.Equals(first_line_number)),
-        va.sub_component('source_string', Instruction.source_string.fget,
-                         va.Equals(source_string))
+def assert_instruction(first_line_number: int,
+                       source_string: str) -> asrt.ValueAssertion:
+    return asrt.And([
+        asrt.sub_component('first_line_number', Instruction.first_line_number.fget,
+                           asrt.Equals(first_line_number)),
+        asrt.sub_component('source_string', Instruction.source_string.fget,
+                           asrt.Equals(source_string))
     ])
 
 
@@ -156,9 +207,11 @@ class Instruction(model.Instruction):
         return self._source_string
 
 
-source_is_at_end = va.And([
-    va.sub_component('is_at_eof', ParseSource.is_at_eof.fget,
-                     va.Boolean(True)),
-    va.sub_component('remaining_source', ParseSource.remaining_source.fget,
-                     va.Equals(''))
+source_is_at_end = asrt.And([
+    asrt.sub_component('is_at_eof', ParseSource.is_at_eof.fget,
+                       asrt.Boolean(True)),
+    asrt.sub_component('has_current_line', ParseSource.has_current_line.fget,
+                       asrt.Boolean(False)),
+    asrt.sub_component('remaining_source', ParseSource.remaining_source.fget,
+                       asrt.Equals(''))
 ])
