@@ -33,15 +33,15 @@ class _DescriptionExtractor:
 
     def extract_and_consume_description(self) -> str:
         try:
-            ret_val = self.lexer.get_token()
+            string_token = self.lexer.get_token()
         except ValueError as ex:
             raise SourceError(self.source.current_line,
                               'Invalid description: ' + str(ex))
-        num_chars_consumed = self.source_io.tell()
-        self.source.consume_part_of_current_line(num_chars_consumed - 1)
+        num_chars_consumed = self.source_io.tell() - 1
+        self.source.consume(num_chars_consumed)
         if self.source.is_at_eol:
             self.source.consume_current_line()
-        return ret_val
+        return string_token.strip()
 
     def starts_with_description(self) -> bool:
         stripped_first_line = self.source.remaining_part_of_current_line
