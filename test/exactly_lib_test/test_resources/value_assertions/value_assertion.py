@@ -203,10 +203,6 @@ class ValueIsNotNone(ValueAssertion):
                             message_builder.apply(self.message))
 
 
-is_none = ValueIsNone()
-
-is_not_none = ValueIsNotNone()
-
 class Equals(ValueAssertion):
     def __init__(self,
                  expected,
@@ -402,3 +398,10 @@ class _WithTransformedMessage(ValueAssertion):
         self.value_assertion.apply(put,
                                    value,
                                    self.message_builder_transformer(message_builder))
+
+
+is_instance = IsInstance
+is_none = ValueIsNone()
+is_not_none = ValueIsNotNone()
+equals = Equals
+on_transformed = OnTransformed
