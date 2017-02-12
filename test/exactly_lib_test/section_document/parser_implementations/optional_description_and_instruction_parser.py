@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.section_document import model
+from exactly_lib.section_document import syntax
 from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parse import SourceError
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser, \
@@ -118,6 +119,61 @@ class TestParseWithDescription(unittest.TestCase):
              Expectation(description=asrt.Equals('single line, indented, double quotes'),
                          source=source_is_at_end,
                          instruction=assert_instruction(4, 'instruction')),
+             ),
+        ]
+        for description_lines, expectation in source_and_description_variants:
+            with self.subTest(description_lines=description_lines):
+                source = source3(description_lines)
+                arrangement = Arrangement(self.sut, source)
+                check(self, expectation, arrangement)
+
+    def test_ignore_comment_lines_between_description_and_instruction(self):
+        source_and_description_variants = [
+            (['\'description\'',
+              syntax.LINE_COMMENT_MARKER,
+              'instruction',
+              ],
+             Expectation(description=asrt.Equals('description'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(3, 'instruction')),
+             ),
+            (['\'description\'',
+              '     ' + syntax.LINE_COMMENT_MARKER + ' comment text   ',
+              'instruction',
+              ],
+             Expectation(description=asrt.Equals('description'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(3, 'instruction')),
+             ),
+            (['\'description\'',
+              '',
+              syntax.LINE_COMMENT_MARKER,
+              '',
+              'Instruction',
+              ],
+             Expectation(description=asrt.Equals('description'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(5, 'Instruction')),
+             ),
+            (['\'description line 1',
+              'description line 2\'',
+              syntax.LINE_COMMENT_MARKER,
+              'Instruction',
+              ],
+             Expectation(description=asrt.Equals('description line 1\ndescription line 2'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(4, 'Instruction')),
+             ),
+            (['\'description line 1',
+              'description line 2\'',
+              '',
+              '' + syntax.LINE_COMMENT_MARKER,
+              '' + syntax.LINE_COMMENT_MARKER,
+              'Instruction',
+              ],
+             Expectation(description=asrt.Equals('description line 1\ndescription line 2'),
+                         source=source_is_at_end,
+                         instruction=assert_instruction(6, 'Instruction')),
              ),
         ]
         for description_lines, expectation in source_and_description_variants:

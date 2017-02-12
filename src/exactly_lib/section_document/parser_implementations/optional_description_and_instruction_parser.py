@@ -1,6 +1,7 @@
 import io
 import shlex
 
+from exactly_lib.section_document import syntax
 from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parse import SourceError
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionAndDescription, \
@@ -15,21 +16,26 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
     def parse(self, source: ParseSource) -> InstructionAndDescription:
         first_line = source.current_line
         description = _DescriptionExtractor(source).apply()
-        self._consume_space(source, first_line)
+        self._consume_space_and_comment_lines(source, first_line)
         instruction = self.instruction_parser.parse(source)
         return InstructionAndDescription(instruction, description)
 
     @staticmethod
-    def _consume_space(source: ParseSource, first_line: Line):
+    def _consume_space_and_comment_lines(source: ParseSource, first_line: Line):
         error_message = 'End-of-file reached without finding an instruction (following a description)'
         if source.is_at_eof:
             raise SourceError(first_line, error_message)
         source.consume_initial_space_on_current_line()
-        while source.is_at_eol:
-            source.consume_current_line()
-            if source.is_at_eof:
-                raise SourceError(first_line, error_message)
-            source.consume_initial_space_on_current_line()
+        if not source.is_at_eol:
+            return
+        source.consume_current_line()
+        while not source.is_at_eof:
+            if syntax.is_empty_or_comment_line(source.current_line_text):
+                source.consume_current_line()
+            else:
+                source.consume_initial_space_on_current_line()
+                return
+        raise SourceError(first_line, error_message)
 
 
 class _DescriptionExtractor:
@@ -55,8 +61,6 @@ class _DescriptionExtractor:
         if len(self.source.remaining_source) > num_chars_consumed:
             num_chars_consumed -= 1
         self.source.consume(num_chars_consumed)
-        if self.source.is_at_eol:
-            self.source.consume_current_line()
         return string_token.strip()
 
     def starts_with_description(self) -> bool:
