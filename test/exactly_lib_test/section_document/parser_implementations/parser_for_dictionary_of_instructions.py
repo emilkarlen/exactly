@@ -17,23 +17,23 @@ def name_extractor(s: str) -> str:
     return s[0]
 
 
-class SingleInstructionParserThatRaisesInvalidArgumentError(sut.NamedInstructionParser):
+class SingleInstructionParserThatRaisesInvalidArgumentError(sut.InstructionParser):
     def __init__(self, error_message: str):
         self.error_message = error_message
 
-    def apply(self, source: sut.SingleInstructionParserSource2) -> model.Instruction:
+    def parse(self, source: sut.ParseSource) -> model.Instruction:
         raise sut.SingleInstructionInvalidArgumentException(self.error_message)
 
 
-class SingleInstructionParserThatRaisesImplementationException(sut.NamedInstructionParser):
-    def apply(self, source: sut.SingleInstructionParserSource2) -> model.Instruction:
+class SingleInstructionParserThatRaisesImplementationException(sut.InstructionParser):
+    def parse(self, source: sut.ParseSource) -> model.Instruction:
         raise NotImplementedError()
 
 
-class SingleInstructionParserThatSucceeds(sut.NamedInstructionParser):
-    def apply(self, source: sut.SingleInstructionParserSource2) -> model.Instruction:
-        ret_val = Instruction(source.source.remaining_part_of_current_line)
-        source.source.consume_current_line()
+class SingleInstructionParserThatSucceeds(sut.InstructionParser):
+    def parse(self, source: sut.ParseSource) -> model.Instruction:
+        ret_val = Instruction(source.remaining_part_of_current_line)
+        source.consume_current_line()
         return ret_val
 
 
@@ -139,7 +139,7 @@ class TestParse(unittest.TestCase):
                 source = source3(source_lines)
                 instruction = phase_parser.parse(source)
                 self.assertIsInstance(instruction,
-                                      Instruction,
+                                      model.Instruction,
                                       'Instruction class')
                 assert isinstance(instruction, Instruction)
                 self.assertEqual(instruction.argument,
