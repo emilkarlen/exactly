@@ -44,45 +44,262 @@ class TestParseSource(unittest.TestCase):
         self.assertEquals('', source.remaining_part_of_current_line,
                           'remaining_part_of_current_line')
 
-    def test_empty_source(self):
-        source = ParseSource('')
-        self._assert_is_at_eof(source)
+    def test_construction(self):
+        test_cases = [
+            ('single line',
+             assert_source(is_at_eof=asrt.is_false,
+                           is_at_eol=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals('single line'))
+             ),
+            ('',
+             assert_source(is_at_eof=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals(''))
+             ),
+            ('first line\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           is_at_eol=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals('first line'))
+             ),
+            ('single line\n',
+             assert_source(is_at_eof=asrt.is_false,
+                           is_at_eol=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals('single line'))
+             ),
+            ('\n',
+             assert_source(is_at_eof=asrt.is_false,
+                           is_at_eol=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals(''))
+             ),
+            ('\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           is_at_eol=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals(''))
+             ),
+        ]
+        for source_string, expectation in test_cases:
+            with self.subTest(msg='construction:' + repr(source_string)):
+                source = ParseSource(source_string)
+                expectation.apply_with_message(self, source, 'construction:{}'.format(repr(source_string)))
+
+    def test_only_newline2(self):
+        source = ParseSource('\n\n')
+        source.consume_current_line()
+        self.assertFalse(source.is_at_eof)
         self.assertTrue(source.has_current_line, 'has_current_line')
         self._assert_is_at_eol(source)
-        self._assert_current_line_is(1, '', source)
+        self._assert_current_line_is(2, '', source)
 
-    def test_source_with_single_line(self):
-        source = ParseSource('single line')
-        self.assertFalse(source.is_at_eof, 'is_at_eof')
-        self.assertTrue(source.has_current_line, 'has_current_line')
-        self.assertFalse(source.is_at_eol, 'is_at_eol')
-        self._assert_current_line_is(1, 'single line', source)
-        self.assertEquals('single line', source.remaining_source,
-                          'remaining source')
+    def test_consume_current_line(self):
+        test_cases = [
+            ('single line',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_false,
+                           remaining_source=asrt.equals(''))
+             ),
+            ('',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_false)
+             ),
+            ('first line\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_false,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals('second line'),
+                           remaining_source=asrt.equals('second line'))
+             ),
+            ('single line\n',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals(''))
+             ),
+            ('\n',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals(''))
+             ),
+            ('\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_false,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals('second line'),
+                           remaining_source=asrt.equals('second line'))
+             ),
+        ]
+        for source_string, expectation in test_cases:
+            with self.subTest(msg='consume current line: ' + repr(source_string)):
+                source = ParseSource(source_string)
+                source.consume_current_line()
+                expectation.apply_with_message(self, source, 'consume_current_line:{}'.format(repr(source_string)))
 
-    def test_consume_line_from_source_with_single_line(self):
-        source = ParseSource('single line')
-        source.consume_current_line()
-        self.assertTrue(source.is_at_eof, 'is_at_eof')
-        self.assertFalse(source.has_current_line, 'has_current_line')
+    def test_consume_part_of_current_line__consume_all_characters(self):
+        test_cases = [
+            ('single line',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           remaining_source=asrt.equals(''))
+             ),
+            ('',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           remaining_source=asrt.equals(''))
+             ),
+            ('first line\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals('first line'),
+                           remaining_source=asrt.equals('\nsecond line'))
+             ),
+            ('single line\n',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals('single line'),
+                           remaining_source=asrt.equals('\n'))
+             ),
+            ('\n',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals('\n'))
+             ),
+            ('\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals('\nsecond line'))
+             ),
+        ]
+        for source_string, expectation in test_cases:
+            with self.subTest(msg='consume_part_of_current_line: ' + repr(source_string)):
+                source = ParseSource(source_string)
+                source.consume_part_of_current_line(len(source.current_line_text))
+                expectation.apply_with_message(self, source,
+                                               'consume_part_of_current_line:{}'.format(repr(source_string)))
 
-    def test_consume_all_characters_of_first_line_from_source_with_single_line(self):
-        source = ParseSource('single line')
-        source.consume_part_of_current_line(len('single line'))
-        self.assertTrue(source.is_at_eof, 'is_at_eof')
-        self.assertTrue(source.has_current_line, 'has_current_line')
-        self.assertTrue(source.is_at_eol, 'is_at_eol')
-        self.assertEquals('', source.remaining_source,
-                          'remaining source')
+    def test_consume__consume_all_characters_of_current_line(self):
+        test_cases = [
+            ('single line',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           remaining_source=asrt.equals(''))
+             ),
+            ('',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           remaining_source=asrt.equals(''))
+             ),
+            ('first line\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals('first line'),
+                           remaining_source=asrt.equals('\nsecond line'))
+             ),
+            ('single line\n',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals('single line'),
+                           remaining_source=asrt.equals('\n'))
+             ),
+            ('\n',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals('\n'))
+             ),
+            ('\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(1),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals('\nsecond line'))
+             ),
+        ]
+        for source_string, expectation in test_cases:
+            with self.subTest(msg='consume: ' + repr(source_string)):
+                source = ParseSource(source_string)
+                source.consume(len(source.current_line_text))
+                expectation.apply_with_message(self, source, 'consume:{}'.format(repr(source_string)))
 
-    def test_consume_all_characters_from_source_with_single_line(self):
-        source = ParseSource('single line')
-        source.consume(len('single line'))
-        self.assertTrue(source.is_at_eof, 'is_at_eof')
-        self.assertTrue(source.has_current_line, 'has_current_line')
-        self.assertTrue(source.is_at_eol, 'is_at_eol')
-        self.assertEquals('', source.remaining_source,
-                          'remaining source')
+    def test_consume__consume_all_characters_of_current_line_plus_one(self):
+        test_cases = [
+            ('first line\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_false,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals('second line'),
+                           remaining_source=asrt.equals('second line'))
+             ),
+            ('single line\n',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals(''))
+             ),
+            ('\n',
+             assert_source(is_at_eof=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_true,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals(''),
+                           remaining_source=asrt.equals(''))
+             ),
+            ('\nsecond line',
+             assert_source(is_at_eof=asrt.is_false,
+                           has_current_line=asrt.is_true,
+                           is_at_eol=asrt.is_false,
+                           current_line_number=asrt.equals(2),
+                           current_line_text=asrt.equals('second line'),
+                           remaining_source=asrt.equals('second line'))
+             ),
+        ]
+        for source_string, expectation in test_cases:
+            with self.subTest(msg='consume len(current line)+1: ' + repr(source_string)):
+                source = ParseSource(source_string)
+                source.consume(1 + len(source.current_line_text))
+                expectation.apply_with_message(self, source,
+                                               'consume len(current line)+1:{}'.format(repr(source_string)))
 
     def test_when_source_is_empty_then_it_should_indicate_eof(self):
         source = ParseSource('')
@@ -161,22 +378,6 @@ class TestParseSource(unittest.TestCase):
             source.consume_part_of_current_line(len('first line') + 1)
             self.assertEquals('first line', source.remaining_part_of_current_line,
                               'remaining_part_of_current_line should not have been updated')
-
-    def test_is_at_eol_should_be_false_if_is_not_at_eol(self):
-        source = ParseSource('non empty line')
-        self.assertFalse(source.is_at_eol,
-                         'is_at_eol')
-
-    def test_is_at_eol_should_be_true_if_is_at_eol(self):
-        source = ParseSource('' + '\n' + 'second line')
-        self.assertTrue(source.is_at_eol,
-                        'is_at_eol')
-
-    def test_is_at_eol_should_be_false_after_consuming_a_line_if_the_following_line_is_non_empty(self):
-        source = ParseSource('' + '\n' + 'second line')
-        source.consume_current_line()
-        self.assertFalse(source.is_at_eol,
-                         'is_at_eol')
 
     def test_consume_initial_space(self):
         test_cases = [

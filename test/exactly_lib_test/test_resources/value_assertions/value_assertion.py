@@ -405,3 +405,6 @@ is_none = ValueIsNone()
 is_not_none = ValueIsNotNone()
 equals = Equals
 on_transformed = OnTransformed
+
+is_false = Equals(False)
+is_true = Equals(True)
