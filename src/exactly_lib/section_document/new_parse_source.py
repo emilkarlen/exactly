@@ -3,10 +3,13 @@ from exactly_lib.util.line_source import Line
 
 class ParseSource:
     """
-    Source string with lookahead of the current line.
+    Source string with buffer for the current line.
 
     Lines are separated by \n.
-    The number of lines = number of \n + 1
+    The number of lines
+       = 1                (if source is empty)
+       = number of \n + 1 (if last line is not empty)
+       = number of \n     (if last line is     empty)
     (this means there is always at least one line, even though the source string is empty!)
     """
 
