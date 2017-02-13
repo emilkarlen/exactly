@@ -32,8 +32,9 @@ class SingleInstructionParserThatRaisesImplementationException(sut.NamedInstruct
 
 class SingleInstructionParserThatSucceeds(sut.NamedInstructionParser):
     def apply(self, source: sut.SingleInstructionParserSource2) -> model.Instruction:
+        ret_val = Instruction(source.source.remaining_part_of_current_line)
         source.source.consume_current_line()
-        return Instruction(source.instruction_argument)
+        return ret_val
 
 
 class Instruction(model.Instruction):
@@ -126,15 +127,26 @@ class TestParse(unittest.TestCase):
                         'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
         phase_parser = sut.InstructionParserForDictionaryOfInstructions(name_extractor,
                                                                         parsers_dict)
-        source = source3(['Sa'])
-        instruction = phase_parser.parse(source)
-        self.assertIsInstance(instruction,
-                              Instruction,
-                              'Instruction class')
-        assert isinstance(instruction, Instruction)
-        self.assertEqual(instruction.argument,
-                         'a',
-                         'Argument given to parser')
+        test_cases = [
+            (['Sa'], 'a', ''),
+            (['S  a'], 'a', ''),
+            (['S  '], '', ''),
+            (['S  ',
+              'next line'], '', 'next line'),
+        ]
+        for source_lines, expected_argument, expected_remaining_source in test_cases:
+            with self.subTest(source_lines=source_lines):
+                source = source3(source_lines)
+                instruction = phase_parser.parse(source)
+                self.assertIsInstance(instruction,
+                                      Instruction,
+                                      'Instruction class')
+                assert isinstance(instruction, Instruction)
+                self.assertEqual(instruction.argument,
+                                 expected_argument,
+                                 'Argument given to parser')
+                self.assertEqual(expected_remaining_source, source.remaining_source,
+                                 'remaining_source')
 
 
 if __name__ == '__main__':
