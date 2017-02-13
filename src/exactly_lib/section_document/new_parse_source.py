@@ -16,11 +16,8 @@ class ParseSource:
     def __init__(self, source_string: str):
         self._column_index = 0
         self.source_string = source_string
-        if self.source_string == '':
-            self._current_line = Line(1, '')
-        else:
-            first_line_split = self.source_string.split(sep='\n', maxsplit=1)
-            self._current_line = Line(1, first_line_split[0])
+        first_line_split = self.source_string.split(sep='\n', maxsplit=1)
+        self._current_line = Line(1, first_line_split[0])
 
     @property
     def is_at_eof(self) -> bool:
