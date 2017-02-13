@@ -40,14 +40,14 @@ class NamedInstructionParser:
 
     def apply(self, source: SingleInstructionParserSource2) -> Instruction:
         """
-        The name of the instruction has already been parsed.
-        And that name has been mapped to this parser.
+        The parser must consume the contents of the ParseSource that it parses.
+        This is important to remember, since it is possible to read input from
+        the ParseSource (the current line) without consuming it.
 
         :raises SingleInstructionInvalidArgumentException The arguments are invalid.
 
-        :param source: First line is the line with the instruction name at the
-        beginning, followed by the instruction_argument.
-        This, and only this, first line has been consumed.
+        :param source: "Located" at the first non-space character following the instruction name on the
+        same line as the instruction name; or is at End Of Line if no non-space character follows.
 
         :return: An instruction, iff the arguments are valid.
         """
