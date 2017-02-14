@@ -25,7 +25,7 @@ not in sub suites.
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> ConfigurationSectionInstruction:
-        act_phase_handling = actor_utils.parse(source)
+        act_phase_handling = actor_utils.parse(source.instruction_argument)
         return Instruction(ActPhaseSetup(act_phase_handling.source_and_executor_constructor))
 
 

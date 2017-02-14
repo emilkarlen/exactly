@@ -6,12 +6,12 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, 
     ActSourceAndExecutorConstructor
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import empty_file
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -34,12 +34,14 @@ class Expectation:
         self.sub_process_result_from_execute = sub_process_result_from_execute
 
 
+# TODO this method is accessed from other package, so need to be public (or refactor away usage)
 def _check(put: unittest.TestCase,
            arrangement: Arrangement,
            expectation: Expectation):
-    source = new_source2(arrangement.instruction_argument)
-    instruction = sut.Parser().apply(source)
+    source = source4(arrangement.instruction_argument)
+    instruction = sut.Parser().parse(source)
     configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
+    assert isinstance(instruction, ConfigurationPhaseInstruction)
     instruction.main(configuration_builder)
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
     executor_constructor = configuration_builder.act_phase_handling.source_and_executor_constructor

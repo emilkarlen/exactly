@@ -9,8 +9,9 @@ from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 
@@ -57,9 +58,9 @@ If {PATH} is relative, then it's relative to the current {home_directory}.
 """
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> ConfigurationPhaseInstruction:
-        arguments = split_arguments_list_string(source.instruction_argument)
+class Parser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
+        arguments = split_arguments_list_string(rest_of_line)
         if len(arguments) != 1:
             msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
             raise SingleInstructionInvalidArgumentException(msg)
