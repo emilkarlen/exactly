@@ -9,8 +9,8 @@ from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAnd
 from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource, SingleInstructionParser
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -19,7 +19,7 @@ from exactly_lib_test.act_phase_setups.test_resources import py_program as py
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import \
@@ -33,7 +33,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion_str
 class Configuration(ConfigurationBase):
     def run_sub_process_test(self,
                              put: unittest.TestCase,
-                             source: SingleInstructionParserSource,
+                             source: ParseSource,
                              execution_setup_parser: spe_parts.ValidationAndSubProcessExecutionSetupParser,
                              arrangement,
                              expectation,
@@ -52,7 +52,7 @@ class Configuration(ConfigurationBase):
         raise NotImplementedError()
 
     def _parser(self, instruction_name: str,
-                execution_setup_parser: spe_parts.ValidationAndSubProcessExecutionSetupParser) -> SingleInstructionParser:
+                execution_setup_parser: spe_parts.ValidationAndSubProcessExecutionSetupParser) -> InstructionParser:
         return spe_parts.InstructionParser(self.instruction_info_for(instruction_name),
                                            execution_setup_parser)
 
@@ -105,7 +105,7 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
         )
         self.conf.run_sub_process_test(
             self,
-            new_source2(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
+            source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expect_failing_validation_pre_sds(va.Equals('validation error message')))
@@ -118,7 +118,7 @@ class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
         )
         self.conf.run_sub_process_test(
             self,
-            new_source2(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
+            source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expect_failing_validation_post_setup(va.Equals('validation error message post setup')))
@@ -130,7 +130,7 @@ class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
             pre_or_post_validation.ConstantSuccessValidator())
         self.conf.run_sub_process_test(
             self,
-            new_source2(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
+            source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expectation_for_zero_exitcode())
@@ -143,7 +143,7 @@ class TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero(TestCaseBa
         command_that_exits_with_code = shell_commands.command_that_exits_with_code(0)
         self.conf.run_sub_process_test(
             self,
-            new_source2(command_that_exits_with_code),
+            source4(command_that_exits_with_code),
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expectation_for_zero_exitcode())
@@ -157,7 +157,7 @@ class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
             pre_or_post_validation.ConstantSuccessValidator())
         self.conf.run_sub_process_test(
             self,
-            new_source2(script_that_exists_with_non_zero_status),
+            source4(script_that_exists_with_non_zero_status),
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expectation_for_non_zero_exitcode())
@@ -167,12 +167,14 @@ class TestInstructionIsErrorWhenProcessTimesOut(TestCaseBase):
     def runTest(self):
         timeout_in_seconds = 1
         script_that_sleeps = lines_content(py.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(4))
+        program_source_as_single_line = script_that_sleeps.replace('\n', ';')
+        source = source4(program_source_as_single_line)
 
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
         self.conf.run_sub_process_test(
             self,
-            new_source2(script_that_sleeps),
+            source,
             execution_setup_parser,
             self.conf.arrangement_with_timeout(timeout_in_seconds),
             self.conf.expect_hard_error_in_main())
@@ -187,12 +189,13 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
                                                        stderr='')
         environ = {var_name: var_value}
         program = lines_content(py.write_value_of_environment_variable_to_stdout(var_name))
+        program_source_as_single_line = program.replace('\n', ';')
+        source = source4(program_source_as_single_line)
 
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
-        source = new_source2(program)
         instruction_name = 'name-of-the-instruction'
-        source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+        source_info = spe.InstructionSourceInfo(source.current_line_number,
                                                 instruction_name)
         self.conf.run_sub_process_test(
             self,
@@ -211,11 +214,12 @@ class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
                                               stdout='output on stdout',
                                               stderr='output on stderr')
         program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
+        program_source_as_single_line = program.replace('\n', ';')
+        source = source4(program_source_as_single_line)
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
-        source = new_source2(program)
         instruction_name = 'name-of-the-instruction'
-        source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+        source_info = spe.InstructionSourceInfo(source.current_line_number,
                                                 instruction_name)
         self.conf.run_sub_process_test(
             self,
@@ -234,9 +238,10 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
                                               stdout='output on stdout',
                                               stderr='output on stderr')
         program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
+        program_source_as_single_line = program.replace('\n', ';')
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
-        source = new_source2(program)
+        source = source4(program_source_as_single_line)
         self.conf.run_sub_process_test(
             self,
             source,
@@ -271,10 +276,12 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
+    def parse(self, source: ParseSource) -> ValidationAndSubProcessExecutionSetup:
+        instruction_argument = source.remaining_part_of_current_line
+        source.consume_current_line()
         return ValidationAndSubProcessExecutionSetup(self.validator,
                                                      _resolver_for_execute_py_on_command_line(
-                                                         source.instruction_argument),
+                                                         instruction_argument),
                                                      is_shell=False)
 
 
@@ -284,9 +291,11 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
+    def parse(self, source: ParseSource) -> ValidationAndSubProcessExecutionSetup:
+        instruction_argument = source.remaining_part_of_current_line
+        source.consume_current_line()
         return ValidationAndSubProcessExecutionSetup(self.validator,
-                                                     ConstantCmdAndArgsResolver(source.instruction_argument),
+                                                     ConstantCmdAndArgsResolver(instruction_argument),
                                                      is_shell=True)
 
 

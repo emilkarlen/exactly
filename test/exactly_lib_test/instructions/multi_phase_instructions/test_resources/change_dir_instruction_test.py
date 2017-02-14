@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import AssertCwdIsSubDirOfActDir
 from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, Dir, empty_dir, empty_file
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -29,7 +29,7 @@ class TestExistingDirectoryWithMultiplePathComponents(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            new_source2('first-component/second-component'),
+            source4('first-component/second-component'),
             self.conf.arrangement(
                 sds_contents_before_main=act_dir_contents(DirContents([
                     Dir('first-component', [
@@ -44,7 +44,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            new_source2('file'),
+            source4('file'),
             self.conf.arrangement(sds_contents_before_main=act_dir_contents(DirContents([
                 empty_file('file')
             ]))),

@@ -6,8 +6,9 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.textformat.structure.structures import paras
@@ -43,13 +44,13 @@ or the empty string, if there is no environment variable with that name.
 """
 
 
-class Parser(SingleInstructionParser):
+class Parser(InstructionParserThatConsumesCurrentLine):
     def __init__(self,
                  instruction_constructor_for_executor: types.FunctionType):
         self.instruction_constructor_for_executor = instruction_constructor_for_executor
 
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
-        arguments = split_arguments_list_string(source.instruction_argument)
+    def _parse(self, rest_of_line: str) -> TestCaseInstruction:
+        arguments = split_arguments_list_string(rest_of_line)
         if len(arguments) == 3 and arguments[1] == '=':
             return self.instruction_constructor_for_executor(_SetExecutor(arguments[0],
                                                                           arguments[2]))

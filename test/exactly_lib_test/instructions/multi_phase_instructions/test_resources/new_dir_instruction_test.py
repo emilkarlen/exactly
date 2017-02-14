@@ -1,7 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib_test.instructions.multi_phase_instructions import new_dir
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
@@ -12,7 +11,7 @@ from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_u
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import SubDirOfSdsContainsExactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import source4
 
 
 class Configuration(ConfigurationBase):
@@ -28,8 +27,8 @@ class TestCaseBase(unittest.TestCase):
         self.relativity_option = relativity_option
         self.conf = conf
 
-    def _source(self, argument_template: str) -> SingleInstructionParserSource:
-        return new_source2(argument_template.format(relativity_option=self.relativity_option.option_string))
+    def _source(self, argument_template: str) -> ParseSource:
+        return source4(argument_template.format(relativity_option=self.relativity_option.option_string))
 
     def _arrangement_with_sub_dir_of_act_as_cwd(
             self,

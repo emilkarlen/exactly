@@ -4,7 +4,7 @@ from exactly_lib.instructions.multi_phase_instructions import env as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import source4
 
 
 def identity(x): return x
@@ -14,50 +14,50 @@ class TestParseSet(unittest.TestCase):
     parser = sut.Parser(identity)
 
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source2('')
+        source = source4('')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.apply(source)
+            self.parser.parse(source)
 
     def test_fail_when_there_is_more_than_three_argument(self):
-        source = new_source2('argument1 = argument3 argument4')
+        source = source4('argument1 = argument3 argument4')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.apply(source)
+            self.parser.parse(source)
 
     def test_succeed_when_there_is_exactly_one_assignment(self):
-        source = new_source2('name = value')
-        self.parser.apply(source)
+        source = source4('name = value')
+        self.parser.parse(source)
 
     def test_both_name_and_value_can_be_shell_quoted(self):
-        source = new_source2("'long name' = 'long value'")
-        self.parser.apply(source)
+        source = source4("'long name' = 'long value'")
+        self.parser.parse(source)
 
 
 class TestParseUnset(unittest.TestCase):
     parser = sut.Parser(identity)
 
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source2('unset')
+        source = source4('unset')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.apply(source)
+            self.parser.parse(source)
 
     def test_fail_when_there_is_more_than_one_argument(self):
-        source = new_source2('unset name superfluous')
+        source = source4('unset name superfluous')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.apply(source)
+            self.parser.parse(source)
 
     def test_succeed_when_there_is_exactly_one_argument(self):
-        source = new_source2('unset name')
-        self.parser.apply(source)
+        source = source4('unset name')
+        self.parser.parse(source)
 
     def test_all_parts_may_be_shell_quoted(self):
-        source = new_source2("'unset' 'long name'")
-        self.parser.apply(source)
+        source = source4("'unset' 'long name'")
+        self.parser.parse(source)
 
 
 class TestSet(unittest.TestCase):
     def test_set(self):
         parser = sut.Parser(identity)
-        executor = parser.apply(new_source2('name = value'))
+        executor = parser.parse(source4('name = value'))
         assert isinstance(executor, sut.Executor)
         environ = {}
         executor.execute(environ)
@@ -69,7 +69,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
     def test_set_value_that_references_an_env_var(self):
         parser = sut.Parser(identity)
         environ = {'MY_VAR': 'MY_VAL'}
-        executor = parser.apply(new_source2('name = ${MY_VAR}'))
+        executor = parser.parse(source4('name = ${MY_VAR}'))
         assert isinstance(executor, sut.Executor)
         executor.execute(environ)
         self.assertEqual(environ,
@@ -80,7 +80,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         parser = sut.Parser(identity)
         environ = {'MY_VAR': 'MY_VAL',
                    'YOUR_VAR': 'YOUR_VAL'}
-        executor = parser.apply(new_source2('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
+        executor = parser.parse(source4('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
         assert isinstance(executor, sut.Executor)
         executor.execute(environ)
         self.assertEqual(environ,
@@ -90,7 +90,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
 
     def test_a_references_to_a_non_existing_env_var_SHOULD_be_replaced_with_empty_string(self):
         parser = sut.Parser(identity)
-        executor = parser.apply(new_source2('name = ${NON_EXISTING_VAR}'))
+        executor = parser.parse(source4('name = ${NON_EXISTING_VAR}'))
         assert isinstance(executor, sut.Executor)
         environ = {}
         executor.execute(environ)
@@ -101,7 +101,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
 class TestUnset(unittest.TestCase):
     def test_unset(self):
         parser = sut.Parser(identity)
-        executor = parser.apply(new_source2('unset a'))
+        executor = parser.parse(source4('unset a'))
         assert isinstance(executor, sut.Executor)
         environ = {'a': 'A', 'b': 'B'}
         executor.execute(environ)

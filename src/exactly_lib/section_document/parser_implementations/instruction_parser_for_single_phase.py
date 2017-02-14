@@ -3,6 +3,7 @@ from exactly_lib.section_document import parse
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse import SourceError
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 
@@ -161,7 +162,7 @@ class SectionElementParserForDictionaryOfInstructions(SectionElementParserForSta
         """
         self.__instruction_name__2__single_instruction_parser = instruction_name__2__single_instruction_parser
         for value in self.__instruction_name__2__single_instruction_parser.values():
-            assert isinstance(value, SingleInstructionParser)
+            assert isinstance(value, InstructionParser)
         self._name_and_argument_splitter = split_line_into_name_and_argument_function
 
     def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> Instruction:

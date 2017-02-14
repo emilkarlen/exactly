@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource, SingleInstructionParser
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
@@ -15,15 +15,15 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 class ConfigurationBase:
     def run_test_with_parser(self,
                              put: unittest.TestCase,
-                             parser: SingleInstructionParser,
-                             source: SingleInstructionParserSource,
+                             parser: InstructionParser,
+                             source: ParseSource,
                              arrangement,
                              expectation):
         raise NotImplementedError()
 
     def run_test(self,
                  put: unittest.TestCase,
-                 source: SingleInstructionParserSource,
+                 source: ParseSource,
                  arrangement,
                  expectation):
         self.run_test_with_parser(put, self.parser(), source, arrangement, expectation)
@@ -31,7 +31,7 @@ class ConfigurationBase:
     def instruction_setup(self) -> SingleInstructionSetup:
         raise NotImplementedError()
 
-    def parser(self) -> SingleInstructionParser:
+    def parser(self) -> InstructionParser:
         return self.instruction_setup()
 
     def documentation(self) -> InstructionDocumentation:

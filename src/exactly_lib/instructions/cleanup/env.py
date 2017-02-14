@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.result import sh
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            PARSER,
+        PARSER,
         env.TheInstructionDocumentation(instruction_name))
 
 

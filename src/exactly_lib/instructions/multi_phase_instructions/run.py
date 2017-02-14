@@ -21,15 +21,17 @@ from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
 
 def instruction_parser(
-        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> SingleInstructionParser:
+        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> InstructionParser:
     return spe_parts.InstructionParser(instruction_info,
                                        SetupParser())
 
@@ -204,8 +206,9 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
 
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
-    def apply(self, source: SingleInstructionParserSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        tokens = TokenStream(source.instruction_argument)
+    def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
+        tokens = TokenStream(source.remaining_part_of_current_line)
+        source.consume_current_line()
         (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, arg_tokens)
         return spe_parts.ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
