@@ -12,7 +12,7 @@ from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
@@ -124,11 +124,11 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         })
 
 
-def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
+def parse(instruction_argument: str) -> ActPhaseHandling:
     """
     :raises SingleInstructionInvalidArgumentException In case of invalid syntax
     """
-    arg = source.instruction_argument.strip()
+    arg = instruction_argument.strip()
     if not arg:
         raise SingleInstructionInvalidArgumentException('An actor must be given')
     try:

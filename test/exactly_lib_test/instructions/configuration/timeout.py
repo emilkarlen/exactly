@@ -10,29 +10,29 @@ from exactly_lib_test.instructions.configuration.test_resources import configura
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import source4
 
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source2('   ')
+        source = source4('   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_fail_when_more_than_one_argument(self):
-        source = new_source2('arg1 arg2')
+        source = source4('arg1 arg2')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_fail_when_a_single_argument_but_that_argument_is_not_an_integer(self):
-        source = new_source2('notAnInteger')
+        source = source4('notAnInteger')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_fail_when_a_single_argument_which_is_an_integer_but_the_value_is_negative(self):
-        source = new_source2('-1')
+        source = source4('-1')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
@@ -43,7 +43,7 @@ class TestCaseBaseForParser(TestCaseBase):
                                                              act_phase_handling_that_runs_constant_actions())
         initial_configuration_builder.set_timeout_in_seconds(None)
         self._check(sut.Parser(),
-                    new_source2(argument),
+                    source4(argument),
                     Arrangement(initial_configuration_builder=initial_configuration_builder),
                     Expectation(configuration=AssertTimeout(expected)))
 

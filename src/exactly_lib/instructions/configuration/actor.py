@@ -1,7 +1,7 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.configuration.utils import actor_utils
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
@@ -22,9 +22,9 @@ to specify the actor.
 """
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> ConfigurationPhaseInstruction:
-        act_phase_handling = actor_utils.parse(source)
+class Parser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
+        act_phase_handling = actor_utils.parse(rest_of_line)
         return Instruction(act_phase_handling)
 
 
