@@ -1,15 +1,15 @@
 import unittest
 
 import exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
@@ -66,16 +66,16 @@ is_success = Expectation
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               parser: SingleInstructionParser,
-               source: SingleInstructionParserSource,
+               parser: InstructionParser,
+               source: ParseSource,
                arrangement: Arrangement,
                expectation: Expectation):
         check(self, parser, source, arrangement, expectation)
 
 
 def check(put: unittest.TestCase,
-          parser: SingleInstructionParser,
-          source: SingleInstructionParserSource,
+          parser: InstructionParser,
+          source: ParseSource,
           arrangement: Arrangement,
           expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
@@ -91,9 +91,9 @@ class Executor(InstructionExecutionBase):
         self.expectation = expectation
 
     def execute(self,
-                parser: SingleInstructionParser,
-                source: SingleInstructionParserSource):
-        instruction = parser.apply(source)
+                parser: InstructionParser,
+                source: ParseSource):
+        instruction = parser.parse(source)
         self._check_instruction(CleanupPhaseInstruction, instruction)
         assert isinstance(instruction, CleanupPhaseInstruction)
         with exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
@@ -127,7 +127,7 @@ class Executor(InstructionExecutionBase):
 
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
-                      instruction: CleanupPhaseInstruction) -> pfh.PassOrFailOrHardError:
+                      instruction: CleanupPhaseInstruction) -> sh.SuccessOrHardError:
         result = instruction.main(environment,
                                   self.arrangement.os_services,
                                   self.arrangement.previous_phase)
