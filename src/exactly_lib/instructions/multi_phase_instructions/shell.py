@@ -7,14 +7,15 @@ from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_pro
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 def instruction_parser(
-        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> SingleInstructionParser:
+        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> InstructionParser:
     return spe_parts.InstructionParser(instruction_info, SetupParser())
 
 
@@ -79,8 +80,9 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
 
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
-    def apply(self, source: SingleInstructionParserSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        argument = source.instruction_argument.strip()
+    def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
+        argument = source.remaining_part_of_current_line.strip()
+        source.consume_current_line()
         if not argument:
             msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)

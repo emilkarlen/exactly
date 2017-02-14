@@ -39,6 +39,11 @@ def single_line_source(arguments: str) -> SingleInstructionParserSource:
         arguments)
 
 
+def single_line_sourcE(arguments: str) -> ParseSource:
+    remaining_part_of_current_line = arguments
+    return source4(remaining_part_of_current_line)
+
+
 def multi_line_source(first_line_arguments: str,
                       following_lines: list) -> SingleInstructionParserSource:
     first_line = 'instruction-name' + ' ' + first_line_arguments

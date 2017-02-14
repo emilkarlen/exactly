@@ -2,8 +2,8 @@ from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.instruction_parts import MainStepExecutor, InstructionParts, \
     InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource, SingleInstructionParser
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations import new_section_element_parser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     TestCaseInstruction
@@ -70,21 +70,21 @@ class MainStepExecutorForSubProcess(MainStepExecutor):
 
 
 class ValidationAndSubProcessExecutionSetupParser:
-    def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
+    def parse(self, source: ParseSource) -> ValidationAndSubProcessExecutionSetup:
         raise NotImplementedError()
 
 
-class InstructionParser(SingleInstructionParser):
+class InstructionParser(new_section_element_parser.InstructionParser):
     def __init__(self,
                  instruction_info: InstructionInfoForConstructingAnInstructionFromParts,
                  setup_parser: ValidationAndSubProcessExecutionSetupParser):
         self.instruction_info = instruction_info
         self.setup_parser = setup_parser
 
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
-        source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+    def parse(self, source: ParseSource) -> TestCaseInstruction:
+        source_info = spe.InstructionSourceInfo(source.current_line_number,
                                                 self.instruction_info.instruction_name)
-        setup = self.setup_parser.apply(source)
+        setup = self.setup_parser.parse(source)
         return self.instruction_info.instruction_parts_2_instruction_function(
             InstructionParts(setup.validator,
                              MainStepExecutorForSubProcess(source_info, setup)))
