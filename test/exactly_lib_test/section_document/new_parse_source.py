@@ -498,6 +498,35 @@ class TestParseSource(unittest.TestCase):
                 source.consume(setup.number_of_characters_to_consume)
                 assertion.apply(self, source, asrt.MessageBuilder(setup.name))
 
+    def test_catch_up_with(self):
+        test_cases = [
+            (['abc'],
+             lambda parse_source: parse_source.consume(1),
+             lambda parse_source: parse_source.consume(2)),
+            (['abc', 'def'],
+             lambda parse_source: None,
+             lambda parse_source: parse_source.consume_current_line()),
+            (['123', '456'],
+             lambda parse_source: None,
+             lambda parse_source: parse_source.consume(5)),
+            (['123', '456'],
+             lambda parse_source: None,
+             lambda parse_source: parse_source.consume(7)),
+        ]
+        for original_source_lines, original_setup, copy_modifier in test_cases:
+            with self.subTest():
+                original = ParseSource('\n'.join(original_source_lines))
+                original_setup(original)
+                copy = original.copy
+                copy_modifier(copy)
+                original.catch_up_with(copy)
+                self.assertEqual(copy.remaining_source, original.remaining_source,
+                                 'remaining_source')
+                self.assertEqual(copy.current_line_number, original.current_line_number,
+                                 'current_line_number')
+                self.assertEqual(copy.remaining_part_of_current_line, original.remaining_part_of_current_line,
+                                 'remaining_part_of_current_line')
+
 
 class TestSetupForConsume:
     def __init__(self,

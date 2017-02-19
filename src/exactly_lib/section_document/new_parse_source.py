@@ -1,3 +1,5 @@
+import copy
+
 from exactly_lib.util.line_source import Line
 
 
@@ -18,6 +20,10 @@ class ParseSource:
         self.source_string = source_string
         first_line_split = self.source_string.split(sep='\n', maxsplit=1)
         self._current_line = Line(1, first_line_split[0])
+
+    @property
+    def copy(self):
+        return copy.copy(self)
 
     @property
     def is_at_eof(self) -> bool:
@@ -118,6 +124,15 @@ class ParseSource:
             next_line_num = self._current_line.line_number + num_lines_consumed
             first_line_split = self.source_string.split(sep='\n', maxsplit=1)
             self._current_line = Line(next_line_num, first_line_split[0])
+
+    def catch_up_with(self, parse_source_that_is_ahead):
+        """
+        Consumes characters so that this source becomes identical to the given source.
+        :param parse_source_that_is_ahead: Typically a source created as a copy of this source.
+        """
+        assert isinstance(parse_source_that_is_ahead, ParseSource)
+        delta = len(self.remaining_source) - len(parse_source_that_is_ahead.remaining_source)
+        self.consume(delta)
 
 
 def _index_of_1st_char_on_new_current_line(remaining_source: str, number_of_characters: int) -> int:
