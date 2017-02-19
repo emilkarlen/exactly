@@ -36,7 +36,7 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
             with self.subTest(msg=repr(first_line)):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     source = remaining_source(first_line)
-                    sut.parse_token_on_current_line(source)
+                    sut.parse_token_or_none_on_current_line(source)
 
     def test_valid_token(self):
         test_cases = [
@@ -53,7 +53,7 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
         for first_line, token_assertion, source_assertion in test_cases:
             with self.subTest(msg=repr(first_line)):
                 source = remaining_source(first_line)
-                actual = sut.parse_token_on_current_line(source)
+                actual = sut.parse_token_or_none_on_current_line(source)
                 token_assertion.apply_with_message(self, actual, 'token')
                 source_assertion.apply_with_message(self, source, 'source')
 
