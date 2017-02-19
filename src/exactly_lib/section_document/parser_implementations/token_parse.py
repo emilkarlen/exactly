@@ -27,6 +27,21 @@ class Token(tuple):
         return self[1]
 
 
+def parse_token_or_none_on_current_line(source: ParseSource) -> Token:
+    """
+    Parses a single, optional token from remaining part of current line.
+
+    Tokens must be separated by space.
+
+    :param source: Must have a current line. Initial space is consumed. Text for token is consumed.
+    :raise SingleInstructionInvalidArgumentException: The token has invalid syntax
+    """
+    source.consume_initial_space_on_current_line()
+    if source.is_at_eol:
+        return None
+    return parse_token_on_current_line(source)
+
+
 def parse_token_on_current_line(source: ParseSource) -> Token:
     """
     Parses a single, mandatory token from remaining part of current line.
@@ -34,7 +49,8 @@ def parse_token_on_current_line(source: ParseSource) -> Token:
     Tokens must be separated by space.
 
     :param source: Must have a current line. Initial space is consumed. Text for token is consumed.
-    :return:
+    :raise SingleInstructionInvalidArgumentException: There is no token
+    :raise SingleInstructionInvalidArgumentException: The token has invalid syntax
     """
     source.consume_initial_space_on_current_line()
     if source.is_at_eol:
