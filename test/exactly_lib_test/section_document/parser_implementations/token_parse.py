@@ -9,7 +9,53 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParseTokenOnCurrentLine)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParseTokenOnCurrentLine),
+        unittest.makeSuite(TestParseTokenOrNoneOnCurrentLine),
+    ])
+
+
+class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
+    def test_no_token_on_remaining_part_of_current_line(self):
+        test_cases = [
+            '',
+            '     ',
+        ]
+        for first_line in test_cases:
+            with self.subTest(msg=repr(first_line)):
+                source = remaining_source(first_line)
+                actual = sut.parse_token_or_none_on_current_line(source)
+                self.assertIsNone(actual)
+                assert_source(is_at_eol=asrt.is_true)
+
+    def test_invalid_token(self):
+        test_cases = [
+            '\'missing end single quote',
+        ]
+        for first_line in test_cases:
+            with self.subTest(msg=repr(first_line)):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    source = remaining_source(first_line)
+                    sut.parse_token_on_current_line(source)
+
+    def test_valid_token(self):
+        test_cases = [
+            ('token',
+             assert_plain('token'),
+             assert_source(is_at_eol=asrt.is_true,
+                           has_current_line=asrt.is_true,
+                           current_line_number=asrt.equals(1))),
+            ('<<->> other_token',
+             assert_plain('<<->>'),
+             source_is_not_at_end(remaining_part_of_current_line=asrt.equals(' other_token'),
+                                  current_line_number=asrt.equals(1))),
+        ]
+        for first_line, token_assertion, source_assertion in test_cases:
+            with self.subTest(msg=repr(first_line)):
+                source = remaining_source(first_line)
+                actual = sut.parse_token_on_current_line(source)
+                token_assertion.apply_with_message(self, actual, 'token')
+                source_assertion.apply_with_message(self, source, 'source')
 
 
 class TestParseTokenOnCurrentLine(unittest.TestCase):
