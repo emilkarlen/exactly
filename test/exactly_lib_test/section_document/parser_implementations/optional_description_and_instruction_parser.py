@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.new_section_element_par
     InstructionAndDescription
 from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source, source_is_at_end
 from exactly_lib_test.test_resources.parse import source3
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -326,13 +326,3 @@ class Instruction(model.Instruction):
     @property
     def source_string(self) -> str:
         return self._source_string
-
-
-source_is_at_end = asrt.And([
-    asrt.sub_component('is_at_eof', ParseSource.is_at_eof.fget,
-                       asrt.Boolean(True)),
-    asrt.sub_component('has_current_line', ParseSource.has_current_line.fget,
-                       asrt.Boolean(False)),
-    asrt.sub_component('remaining_source', ParseSource.remaining_source.fget,
-                       asrt.Equals(''))
-])
