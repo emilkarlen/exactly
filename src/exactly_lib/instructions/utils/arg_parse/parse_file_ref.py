@@ -6,8 +6,11 @@ from exactly_lib.instructions.utils.arg_parse import relative_path_options as re
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream, is_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_parse import parse_token_or_none_on_current_line, \
+    TokenType, Token
 from exactly_lib.util.cli_syntax import option_parsing
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
@@ -69,6 +72,31 @@ def parse_file_ref__list(arguments: list,
     else:
         fr = _read_absolute_or_default_file_ref(first_argument, conf)
         return fr, arguments[1:]
+
+
+def parse_file_ref_from_parse_source(source: ParseSource,
+                                     conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> file_ref.FileRef:
+    """
+    :param source: Has a current line
+    :return: The parsed FileRef, remaining arguments after file was parsed.
+    """
+
+    def ensure_have_at_least_two_arguments_for_option(option: str) -> Token:
+        token1 = parse_token_or_none_on_current_line(source)
+        if token1 is None:
+            _raise_missing_option_argument_exception(option, conf)
+        return token1
+
+    first_argument = parse_token_or_none_on_current_line(source)
+    if first_argument is None:
+        _raise_missing_arguments_exception(conf)
+
+    if first_argument.type is TokenType.PLAIN and is_option_argument(first_argument.string):
+        file_ref_constructor = _get_file_ref_constructor(first_argument.string, conf)
+        tokens1 = ensure_have_at_least_two_arguments_for_option(first_argument.string)
+        return file_ref_constructor(tokens1.string)
+    else:
+        return _read_absolute_or_default_file_ref(first_argument.string, conf)
 
 
 def parse_file_ref(tokens: TokenStream,
