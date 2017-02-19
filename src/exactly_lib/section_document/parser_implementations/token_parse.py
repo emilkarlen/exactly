@@ -39,7 +39,17 @@ def parse_token_or_none_on_current_line(source: ParseSource) -> Token:
     source.consume_initial_space_on_current_line()
     if source.is_at_eol:
         return None
-    return parse_token_on_current_line(source)
+    part_of_current_line = source.remaining_part_of_current_line
+    source_io = io.StringIO(part_of_current_line)
+    lexer = shlex.shlex(source_io, posix=True)
+    lexer.whitespace_split = True
+    token_type = _derive_token_type(lexer, source.remaining_part_of_current_line[0])
+    try:
+        token_string = lexer.get_token()
+    except ValueError as ex:
+        raise SingleInstructionInvalidArgumentException('Invalid token: ' + str(ex))
+    _consume_token_characters(source, source_io)
+    return Token(token_type, token_string)
 
 
 def parse_token_on_current_line(source: ParseSource) -> Token:
@@ -52,20 +62,10 @@ def parse_token_on_current_line(source: ParseSource) -> Token:
     :raise SingleInstructionInvalidArgumentException: There is no token
     :raise SingleInstructionInvalidArgumentException: The token has invalid syntax
     """
-    source.consume_initial_space_on_current_line()
-    if source.is_at_eol:
+    token = parse_token_or_none_on_current_line(source)
+    if token is None:
         raise SingleInstructionInvalidArgumentException('Missing token')
-    part_of_current_line = source.remaining_part_of_current_line
-    source_io = io.StringIO(part_of_current_line)
-    lexer = shlex.shlex(source_io, posix=True)
-    lexer.whitespace_split = True
-    token_type = _derive_token_type(lexer, source.remaining_part_of_current_line[0])
-    try:
-        token_string = lexer.get_token()
-    except ValueError as ex:
-        raise SingleInstructionInvalidArgumentException('Invalid token: ' + str(ex))
-    _consume_token_characters(source, source_io)
-    return Token(token_type, token_string)
+    return token
 
 
 def _derive_token_type(lexer: shlex.shlex, character: str) -> TokenType:
