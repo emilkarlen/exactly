@@ -42,6 +42,7 @@ def parse_token_on_current_line(source: ParseSource) -> Token:
     part_of_current_line = source.remaining_part_of_current_line
     source_io = io.StringIO(part_of_current_line)
     lexer = shlex.shlex(source_io, posix=True)
+    lexer.whitespace_split = True
     token_type = _derive_token_type(lexer, source.remaining_part_of_current_line[0])
     try:
         token_string = lexer.get_token()
