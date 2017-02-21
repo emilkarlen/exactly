@@ -10,8 +10,11 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, short_option_syntax
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Configuration:
@@ -74,7 +77,7 @@ class Arrangement:
                  default_type: RelOptionType,
                  path_argument_is_mandatory: bool,
                  arguments: list):
-        self.arguments = arguments
+        self.arguments = ' '.join(arguments)
         self.default_rel_type = default_type
         self.path_argument_is_mandatory = path_argument_is_mandatory
 
@@ -85,23 +88,21 @@ class Expectation:
                  path_argument,
                  rel_option_type: RelOptionType):
         self.path_argument = path_argument
-        self.remaining_arguments = remaining_arguments
+        self.remaining_arguments = ' '.join(remaining_arguments)
         self.rel_option_type = rel_option_type
 
 
 def test(put: unittest.TestCase,
          arrangement: Arrangement,
          expectation: Expectation):
-    actual_path, actual_remaining_arguments = sut.parse_destination_path(
+    source = remaining_source(arrangement.arguments)
+    actual_path = sut.parse_destination_pathInstrDesc(
         _with_all_options_acceptable(arrangement.default_rel_type),
         arrangement.path_argument_is_mandatory,
-        arrangement.arguments)
+        source)
     put.assertIs(expectation.rel_option_type,
                  actual_path.destination_type,
                  'actual destination type')
-    put.assertListEqual(expectation.remaining_arguments,
-                        actual_remaining_arguments,
-                        'remaining arguments')
     expected_path_argument = _expected_path_argument(expectation.path_argument)
     put.assertEqual(expected_path_argument,
                     actual_path.path_argument,
@@ -114,6 +115,10 @@ def test(put: unittest.TestCase,
     put.assertEqual(expected_resolved_path,
                     actual_resolved_path,
                     'resolved path')
+    source.consume_initial_space_on_current_line()
+    source_assertion = assert_source(current_line_number=asrt.equals(1),
+                                     remaining_part_of_current_line=asrt.equals(expectation.remaining_arguments))
+    source_assertion.apply_with_message(put, source, 'source')
 
 
 def _home_and_sds() -> HomeAndSds:
