@@ -4,6 +4,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def assert_source(is_at_eof: asrt.ValueAssertion = asrt.anything_goes(),
                   is_at_eol: asrt.ValueAssertion = asrt.anything_goes(),
+                  is_at_eol__except_for_space: asrt.ValueAssertion = asrt.anything_goes(),
                   has_current_line: asrt.ValueAssertion = asrt.anything_goes(),
                   current_line_number: asrt.ValueAssertion = asrt.anything_goes(),
                   current_line_text: asrt.ValueAssertion = asrt.anything_goes(),
@@ -19,6 +20,8 @@ def assert_source(is_at_eof: asrt.ValueAssertion = asrt.anything_goes(),
             # The following must only be checked if has_current_line (because of precondition of ParseSource):
             asrt.And([
                 asrt.sub_component('is_at_eol', ParseSource.is_at_eol.fget, is_at_eol),
+                asrt.sub_component('is_at_eol__except_for_space', ParseSource.is_at_eol__except_for_space.fget,
+                                   is_at_eol__except_for_space),
                 asrt.sub_component('current_line_number', ParseSource.current_line_number.fget, current_line_number),
                 asrt.sub_component('current_line_text', ParseSource.current_line_text.fget, current_line_text),
                 asrt.sub_component('remaining_part_of_current_line', ParseSource.remaining_part_of_current_line.fget,

@@ -46,6 +46,14 @@ class ParseSource:
         return self._column_index == len(self._current_line.text)
 
     @property
+    def is_at_eol__except_for_space(self) -> bool:
+        """
+        Precondition: has_current_line
+        """
+        s = self.remaining_part_of_current_line
+        return not s or s.isspace()
+
+    @property
     def current_line_number(self) -> int:
         return self._current_line.line_number
 
