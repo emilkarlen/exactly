@@ -108,26 +108,27 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
              source_is_not_at_end(remaining_part_of_current_line=asrt.equals(' other_token'),
                                   current_line_number=asrt.equals(1))),
             ('\'single quoted\'',
-             assert_quoted('single quoted'),
+             assert_quoted('single quoted', '\'single quoted\''),
              assert_source(is_at_eol=asrt.is_true,
                            has_current_line=asrt.is_true,
                            current_line_number=asrt.equals(1))),
             ('\"double quoted\"',
-             assert_quoted('double quoted'),
+             assert_quoted('double quoted', '\"double quoted\"'),
              assert_source(is_at_eol=asrt.is_true,
                            has_current_line=asrt.is_true,
                            current_line_number=asrt.equals(1))),
             (' \'quoted preceded by space\'',
-             assert_quoted('quoted preceded by space'),
+             assert_quoted('quoted preceded by space', '\'quoted preceded by space\''),
              assert_source(is_at_eol=asrt.is_true,
                            has_current_line=asrt.is_true,
                            current_line_number=asrt.equals(1))),
             (' \'quoted followed by space\' ',
-             assert_quoted('quoted followed by space'),
+             assert_quoted('quoted followed by space', '\'quoted followed by space\''),
              source_is_not_at_end(remaining_part_of_current_line=asrt.equals(' '),
                                   current_line_number=asrt.equals(1))),
             (' \'quoted token followed by other token\' \'other_token\'',
-             assert_quoted('quoted token followed by other token'),
+             assert_quoted('quoted token followed by other token',
+                           '\'quoted token followed by other token\''),
              source_is_not_at_end(remaining_part_of_current_line=asrt.equals(' \'other_token\''),
                                   current_line_number=asrt.equals(1))),
         ]
@@ -140,17 +141,21 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
 
 
 def assert_token(token_type: asrt.ValueAssertion = asrt.anything_goes(),
-                 string: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
+                 string: asrt.ValueAssertion = asrt.anything_goes(),
+                 source_string: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
     return asrt.And([
         asrt.is_instance(sut.Token, 'Value to apply assertions on must be a {}'.format(sut.Token)),
         asrt.sub_component('type', sut.Token.type.fget, token_type),
         asrt.sub_component('string', sut.Token.string.fget, string),
+        asrt.sub_component('source_string', sut.Token.source_string.fget, source_string),
     ])
 
 
-def assert_quoted(string: str) -> asrt.ValueAssertion:
+def assert_quoted(string: str,
+                  source_string: str) -> asrt.ValueAssertion:
     return assert_token(token_type=asrt.equals(sut.TokenType.QUOTED),
-                        string=asrt.equals(string))
+                        string=asrt.equals(string),
+                        source_string=asrt.equals(source_string))
 
 
 def assert_plain(string: str) -> asrt.ValueAssertion:

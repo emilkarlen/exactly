@@ -15,8 +15,11 @@ class TokenType(enum.Enum):
 class Token(tuple):
     def __new__(cls,
                 token_type: TokenType,
-                string: str):
-        return tuple.__new__(cls, (token_type, string))
+                string: str,
+                source_string: str = None):
+        return tuple.__new__(cls, (token_type,
+                                   string,
+                                   source_string if source_string is not None else string))
 
     @property
     def type(self) -> TokenType:
@@ -25,6 +28,10 @@ class Token(tuple):
     @property
     def string(self) -> str:
         return self[1]
+
+    @property
+    def source_string(self) -> str:
+        return self[2]
 
 
 def parse_token_or_none_on_current_line(source: ParseSource) -> Token:
@@ -48,8 +55,8 @@ def parse_token_or_none_on_current_line(source: ParseSource) -> Token:
         token_string = lexer.get_token()
     except ValueError as ex:
         raise SingleInstructionInvalidArgumentException('Invalid token: ' + str(ex))
-    _consume_token_characters(source, source_io)
-    return Token(token_type, token_string)
+    source_string = _get_source_string_and_consume_token_characters(source, source_io)
+    return Token(token_type, token_string, source_string)
 
 
 def parse_token_on_current_line(source: ParseSource) -> Token:
@@ -64,7 +71,25 @@ def parse_token_on_current_line(source: ParseSource) -> Token:
     """
     token = parse_token_or_none_on_current_line(source)
     if token is None:
-        raise SingleInstructionInvalidArgumentException('Missing token')
+        raise SingleInstructionInvalidArgumentException('Missing argument')
+    return token
+
+
+def parse_plain_token_on_current_line(source: ParseSource) -> Token:
+    """
+    Parses a single, mandatory plain (unquoted) token from remaining part of current line.
+
+    Tokens must be separated by space.
+
+    :param source: Must have a current line. Initial space is consumed. Text for token is consumed.
+    :raise SingleInstructionInvalidArgumentException: There is no token
+    :raise SingleInstructionInvalidArgumentException: The token has invalid syntax
+    """
+    token = parse_token_or_none_on_current_line(source)
+    if token is None:
+        raise SingleInstructionInvalidArgumentException('Missing argument')
+    if token.type is TokenType.QUOTED:
+        raise SingleInstructionInvalidArgumentException('Argument must not be quoted: ' + token.source_string)
     return token
 
 
@@ -72,8 +97,11 @@ def _derive_token_type(lexer: shlex.shlex, character: str) -> TokenType:
     return TokenType.QUOTED if character in lexer.quotes else TokenType.PLAIN
 
 
-def _consume_token_characters(source: ParseSource, source_io: io.StringIO):
+def _get_source_string_and_consume_token_characters(source: ParseSource,
+                                                    source_io: io.StringIO) -> str:
     num_chars_consumed = source_io.tell()
     if source.remaining_part_of_current_line[num_chars_consumed - 1].isspace():
         num_chars_consumed -= 1
+    ret_val = source.remaining_source[:num_chars_consumed]
     source.consume_part_of_current_line(num_chars_consumed)
+    return ret_val
