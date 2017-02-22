@@ -9,6 +9,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     MkSubDirOfActAndMakeItCurrentDirectory
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.parse import remaining_source
 
@@ -34,7 +35,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option)),
             ArrangementPostAct(
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(source_is_at_end),
         )
 
 
@@ -49,7 +50,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(source_is_at_end),
         )
 
 
@@ -64,7 +65,8 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'no match')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
+            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass,
+                        source=source_is_at_end),
         )
 
 
@@ -79,5 +81,6 @@ class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOption
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'REG-matching-EX')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail,
+                        source=source_is_at_end),
         )

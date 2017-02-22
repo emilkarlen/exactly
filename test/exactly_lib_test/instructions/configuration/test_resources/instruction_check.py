@@ -30,9 +30,11 @@ class Expectation:
     def __init__(self,
                  main_result: va.ValueAssertion = sh_check.is_success(),
                  configuration: config_check.Assertion = config_check.AnythingGoes(),
+                 source: va.ValueAssertion = va.anything_goes(),
                  ):
         self.main_result = main_result
         self.configuration = configuration
+        self.source = source
 
 
 class TestCaseBase(unittest.TestCase):
@@ -62,6 +64,7 @@ class Executor:
         self.put.assertIsInstance(instruction,
                                   ConfigurationPhaseInstruction,
                                   'The instruction must be an instance of ' + str(ConfigurationPhaseInstruction))
+        self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, ConfigurationPhaseInstruction)
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:

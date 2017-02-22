@@ -50,7 +50,9 @@ class Expectation(ExpectationBase):
                  validate_pre_sds_result: va.ValueAssertion = svh_check.is_success(),
                  main_result: va.ValueAssertion = sh_check.is_success(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
-                 side_effects_check: va.ValueAssertion = va.anything_goes()):
+                 side_effects_check: va.ValueAssertion = va.anything_goes(),
+                 source: va.ValueAssertion = va.anything_goes(),
+                 ):
         super().__init__(validate_pre_sds_result,
                          main_side_effects_on_files,
                          side_effects_check)
@@ -59,6 +61,7 @@ class Expectation(ExpectationBase):
         self.main_result = main_result
         self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
+        self.source = source
 
 
 is_success = Expectation
@@ -95,6 +98,7 @@ class Executor(InstructionExecutionBase):
                 source: ParseSource):
         instruction = parser.parse(source)
         self._check_instruction(CleanupPhaseInstruction, instruction)
+        self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, CleanupPhaseInstruction)
         with exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,

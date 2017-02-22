@@ -47,12 +47,14 @@ class Expectation:
                  main_result: va.ValueAssertion = pfh_check.is_pass(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  side_effects_check: va.ValueAssertion = va.anything_goes(),
+                 source: va.ValueAssertion = va.anything_goes(),
                  ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
         self.main_result = main_result
         self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
+        self.source = source
 
 
 is_pass = Expectation
@@ -93,6 +95,7 @@ class Executor:
         self.put.assertIsInstance(instruction,
                                   AssertPhaseInstruction,
                                   'The instruction must be an instance of ' + str(AssertPhaseInstruction))
+        self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, AssertPhaseInstruction)
         with exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,

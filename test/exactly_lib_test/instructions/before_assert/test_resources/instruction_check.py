@@ -45,10 +45,13 @@ class Expectation(ExpectationBase):
                  validation_post_setup: va.ValueAssertion = svh_check.is_success(),
                  main_result: va.ValueAssertion = sh_check.is_success(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
-                 home_and_sds: va.ValueAssertion = va.anything_goes()):
+                 home_and_sds: va.ValueAssertion = va.anything_goes(),
+                 source: va.ValueAssertion = va.anything_goes(),
+                 ):
         super().__init__(validation_pre_sds, main_side_effects_on_files, home_and_sds)
         self.validation_post_setup = validation_post_setup
         self.main_result = sh_check.is_sh_and(main_result)
+        self.source = source
 
 
 is_success = Expectation
@@ -96,6 +99,7 @@ class Executor(InstructionExecutionBase):
                 source: SingleInstructionParserSource):
         instruction = parser.apply(source)
         self._check_instruction(BeforeAssertPhaseInstruction, instruction)
+        self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
         with home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,

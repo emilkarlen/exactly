@@ -51,6 +51,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                      actual: ComparisonActualFile,
                      source: ParseSource) -> AssertPhaseInstruction:
         _ensure_no_more_arguments(source)
+        source.consume_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_emptieness import \
             EmptinessAssertionInstruction
         return EmptinessAssertionInstruction(not negated, actual)
@@ -59,8 +60,11 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                       actual_file_transformer: ActualFileTransformer,
                       actual: ComparisonActualFile,
                       source: ParseSource) -> AssertPhaseInstruction:
+        current_line_before = source.current_line_number
         here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(source)
-        _ensure_no_more_arguments(source)
+        if source.has_current_line and source.current_line_number == current_line_before:
+            _ensure_no_more_arguments(source)
+            source.consume_current_line()
 
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_equality import \
             EqualsAssertionInstruction
@@ -75,6 +79,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                         source: ParseSource) -> AssertPhaseInstruction:
         reg_ex_arg = token_parse.parse_token_on_current_line(source, 'REG EX')
         _ensure_no_more_arguments(source)
+        source.consume_current_line()
         try:
             reg_ex = re.compile(reg_ex_arg.string)
         except Exception as ex:

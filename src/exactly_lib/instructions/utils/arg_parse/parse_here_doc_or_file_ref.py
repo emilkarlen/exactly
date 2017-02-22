@@ -51,6 +51,7 @@ def parse_from_parse_source(source: ParseSource) -> HereDocOrFileRef:
         copy_of_source = source.copy
         here_doc = parse_here_document.parse_as_last_argumentInstrDesc(False, copy_of_source)
         source.catch_up_with(copy_of_source)
+        source.consume_current_line()
         return HereDocOrFileRef(here_doc, None)
     except HereDocumentContentsParsingException as ex:
         raise ex
