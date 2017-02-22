@@ -4,7 +4,7 @@ from exactly_lib.instructions.utils.arg_parse import parse_here_document
 from exactly_lib.instructions.utils.arg_parse.parse_here_document import HereDocumentContentsParsingException
 from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+    SingleInstructionInvalidArgumentException
 
 CONFIGURATION = parse_file_ref.DEFAULT_CONFIG
 
@@ -28,28 +28,10 @@ class HereDocOrFileRef(tuple):
         return self[1]
 
 
-# TODO [instr-desc] Remove when new parser structures are fully integrated
-def parse(first_line_arguments: list,
-          source: SingleInstructionParserSource) -> (HereDocOrFileRef, list):
-    try:
-        here_doc = parse_here_document.parse_as_last_argument(False, first_line_arguments, source)
-        return HereDocOrFileRef(here_doc, None), []
-    except HereDocumentContentsParsingException as ex:
-        raise ex
-    except SingleInstructionInvalidArgumentException:
-        try:
-            (file_reference, remaining_arguments) = parse_file_ref.parse_file_ref__list(first_line_arguments,
-                                                                                        CONFIGURATION)
-            return HereDocOrFileRef(None, file_reference), remaining_arguments
-        except SingleInstructionInvalidArgumentException:
-            msg = 'Neither A "here document" nor a file reference: {}'.format(first_line_arguments)
-            raise SingleInstructionInvalidArgumentException(msg)
-
-
 def parse_from_parse_source(source: ParseSource) -> HereDocOrFileRef:
     try:
         copy_of_source = source.copy
-        here_doc = parse_here_document.parse_as_last_argumentInstrDesc(False, copy_of_source)
+        here_doc = parse_here_document.parse_as_last_argument(False, copy_of_source)
         source.catch_up_with(copy_of_source)
         source.consume_current_line()
         return HereDocOrFileRef(here_doc, None)
