@@ -74,7 +74,7 @@ def parse(source: ParseSource) -> FileInfo:
     if source.is_at_eol__except_for_space:
         source.consume_current_line()
     else:
-        lines = parse_here_document.parse_as_last_argumentInstrDesc(False, source)
+        lines = parse_here_document.parse_as_last_argument(False, source)
         contents = lines_content(lines)
     return FileInfo(destination_path, contents)
 
