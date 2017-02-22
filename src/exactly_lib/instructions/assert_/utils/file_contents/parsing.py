@@ -48,8 +48,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                                actual_file_transformer_for_replace_env_vars: ActualFileTransformer,
                                source: ParseSource) -> AssertPhaseInstruction:
     def _parse_empty(negated: bool,
-                     actual: ComparisonActualFile,
-                     source: ParseSource) -> AssertPhaseInstruction:
+                     actual: ComparisonActualFile) -> AssertPhaseInstruction:
         _ensure_no_more_arguments(source)
         source.consume_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_emptieness import \
@@ -58,8 +57,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
 
     def _parse_equals(negated: bool,
                       actual_file_transformer: ActualFileTransformer,
-                      actual: ComparisonActualFile,
-                      source: ParseSource) -> AssertPhaseInstruction:
+                      actual: ComparisonActualFile) -> AssertPhaseInstruction:
         current_line_before = source.current_line_number
         here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(source)
         if source.has_current_line and source.current_line_number == current_line_before:
@@ -75,8 +73,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
 
     def _parse_contains(negated: bool,
                         actual_file_transformer: ActualFileTransformer,
-                        actual: ComparisonActualFile,
-                        source: ParseSource) -> AssertPhaseInstruction:
+                        actual: ComparisonActualFile) -> AssertPhaseInstruction:
         reg_ex_arg = token_parse.parse_token_on_current_line(source, 'REG EX')
         _ensure_no_more_arguments(source)
         source.consume_current_line()
@@ -91,8 +88,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             file_checker = instruction_for_contains.FileCheckerForPositiveMatch(reg_ex)
         return instruction_for_contains.ContainsAssertionInstruction(file_checker, actual, actual_file_transformer)
 
-    def _parse_contents(actual: ComparisonActualFile,
-                        source: ParseSource) -> AssertPhaseInstruction:
+    def _parse_contents(actual: ComparisonActualFile) -> AssertPhaseInstruction:
         with_replaced_env_vars = False
         peek_source = source.copy
         next_arg = token_parse.parse_token_or_none_on_current_line(peek_source)
@@ -113,22 +109,22 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                 return _missing_operator([EQUALS_ARGUMENT, CONTAINS_ARGUMENT])
             next_arg_str = token_parse.parse_plain_token_on_current_line(source, 'OPERATION').string
         if next_arg_str == CONTAINS_ARGUMENT:
-            return _parse_contains(negated, actual_file_transformer, actual, source)
+            return _parse_contains(negated, actual_file_transformer, actual)
         if next_arg_str == EQUALS_ARGUMENT:
-            return _parse_equals(negated, actual_file_transformer, actual, source)
+            return _parse_equals(negated, actual_file_transformer, actual)
         raise _parse_exception('Unknown operator: {}'.format(next_arg_str))
 
     peek_source = source.copy
     first_argument = token_parse.parse_plain_token_on_current_line(peek_source).string
     if first_argument == EMPTY_ARGUMENT:
         source.catch_up_with(peek_source)
-        return _parse_empty(False, actual_file, source)
+        return _parse_empty(False, actual_file)
     second_argument = token_parse.parse_token_on_current_line(peek_source)
     if second_argument.is_plain and [first_argument, second_argument.string] == [NOT_ARGUMENT, EMPTY_ARGUMENT]:
         source.catch_up_with(peek_source)
-        return _parse_empty(True, actual_file, source)
+        return _parse_empty(True, actual_file)
     else:
-        return _parse_contents(actual_file, source)
+        return _parse_contents(actual_file)
 
 
 def _missing_operator(operators: list) -> AssertPhaseInstruction:
