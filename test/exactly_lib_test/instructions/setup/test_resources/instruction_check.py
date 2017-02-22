@@ -58,6 +58,7 @@ class Expectation:
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  post_validation_result: va.ValueAssertion = svh_check.is_success(),
                  side_effects_check: va.ValueAssertion = va.anything_goes(),
+                 source: va.ValueAssertion = va.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result
@@ -65,6 +66,7 @@ class Expectation:
         self.main_side_effects_on_files = main_side_effects_on_files
         self.post_validation_result = post_validation_result
         self.side_effects_check = side_effects_check
+        self.source = source
 
 
 is_success = Expectation
@@ -105,6 +107,7 @@ class Executor:
         self.put.assertIsInstance(instruction,
                                   SetupPhaseInstruction,
                                   'The instruction must be an instance of ' + str(SetupPhaseInstruction))
+        self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, SetupPhaseInstruction)
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         initial_cwd = os.getcwd()

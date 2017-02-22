@@ -16,11 +16,13 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import svh_che
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
+from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import \
     HomeOrSdsPopulatorForHomeContents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
@@ -63,8 +65,11 @@ class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(Relativity
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForHomeContents(contents)
 
-    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        return Expectation(validation_pre_sds=svh_check.is_validation_error())
+    def expectation_that_file_for_expected_contents_is_invalid(self,
+                                                               source: asrt.ValueAssertion = asrt.anything_goes()
+                                                               ) -> Expectation:
+        return Expectation(validation_pre_sds=svh_check.is_validation_error(),
+                           source=source)
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS = [
@@ -84,7 +89,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(source_is_at_end),
         )
 
 
@@ -100,7 +105,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
                     DirContents([empty_dir('dir')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()
             ),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(source_is_at_end),
         )
 
 
@@ -116,7 +121,8 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
+            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass,
+                        source=source_is_at_end),
         )
 
 
@@ -132,7 +138,8 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail,
+                        source=source_is_at_end),
         )
 
 
@@ -152,7 +159,8 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
                     contents_generator.expected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail,
+                        source=source_is_at_end),
         )
 
 
@@ -173,7 +181,8 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
                     contents_generator.unexpected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
+            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass,
+                        source=source_is_at_end),
         )
 
 
@@ -188,7 +197,8 @@ class _ContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase)
             self.configuration.arrangement_for_contents(
                 lines_content(['expected content line']),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail,
+                        source=source_is_at_end),
         )
 
 
@@ -203,5 +213,6 @@ class _ContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentB
             self.configuration.arrangement_for_contents(
                 lines_content(['actual contents that is not equal to expected contents']),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
+            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass,
+                        source=source_is_at_end),
         )
