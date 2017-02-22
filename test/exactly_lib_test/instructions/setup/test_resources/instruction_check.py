@@ -6,8 +6,8 @@ import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common as i
@@ -72,16 +72,16 @@ is_success = Expectation
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               parser: SingleInstructionParser,
-               source: SingleInstructionParserSource,
+               parser: InstructionParser,
+               source: ParseSource,
                arrangement: Arrangement,
                expectation: Expectation):
         check(self, parser, source, arrangement, expectation)
 
 
 def check(put: unittest.TestCase,
-          parser: SingleInstructionParser,
-          source: SingleInstructionParserSource,
+          parser: InstructionParser,
+          source: ParseSource,
           arrangement: Arrangement,
           expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
@@ -97,9 +97,9 @@ class Executor:
         self.expectation = expectation
 
     def execute(self,
-                parser: SingleInstructionParser,
-                source: SingleInstructionParserSource):
-        instruction = parser.apply(source)
+                parser: InstructionParser,
+                source: ParseSource):
+        instruction = parser.parse(source)
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,

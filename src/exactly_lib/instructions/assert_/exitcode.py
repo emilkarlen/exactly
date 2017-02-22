@@ -7,8 +7,9 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -100,9 +101,9 @@ class InstructionForOperator(AssertPhaseInstruction):
         return pfh.new_pfh_fail(_unexpected_exit_code_message(condition_str, actual_value))
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        argument_list = split_arguments_list_string(source.instruction_argument)
+class Parser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
+        argument_list = split_arguments_list_string(rest_of_line)
         num_arguments = len(argument_list)
         if num_arguments != 1 and num_arguments != 2:
             raise SingleInstructionInvalidArgumentException('1 or 2 arguments expected, got ' +

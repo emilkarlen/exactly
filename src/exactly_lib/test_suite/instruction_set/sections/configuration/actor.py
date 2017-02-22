@@ -1,8 +1,8 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 
@@ -23,9 +23,9 @@ not in sub suites.
 """
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> ConfigurationSectionInstruction:
-        act_phase_handling = actor_utils.parse(source.instruction_argument)
+class Parser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> ConfigurationSectionInstruction:
+        act_phase_handling = actor_utils.parse(rest_of_line)
         return Instruction(ActPhaseSetup(act_phase_handling.source_and_executor_constructor))
 
 

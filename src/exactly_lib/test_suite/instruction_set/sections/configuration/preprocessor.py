@@ -9,7 +9,9 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -72,9 +74,9 @@ not in sub suites.
 """
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> ConfigurationSectionInstruction:
-        arg = source.instruction_argument.strip()
+class Parser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> ConfigurationSectionInstruction:
+        arg = rest_of_line.strip()
         if arg == '':
             raise SingleInstructionInvalidArgumentException('A preprocessor program must be given.')
         try:

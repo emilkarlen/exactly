@@ -11,9 +11,10 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.file_properties import FileType
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -69,14 +70,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [concept.cross_reference_target for concept in concepts]
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        first_line_arguments = split_arguments_list_string(source.instruction_argument)
+class Parser(InstructionParser):
+    def parse(self, source: ParseSource) -> SetupPhaseInstruction:
+        first_line_arguments = split_arguments_list_string(source.remaining_part_of_current_line)
         if not first_line_arguments:
             raise SingleInstructionInvalidArgumentException('Missing arguments: no arguments')
-        (here_doc_or_file_ref, remaining_arguments) = parse_here_doc_or_file_ref.parse(first_line_arguments, source)
-        if remaining_arguments:
-            raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(remaining_arguments))
+        here_doc_or_file_ref = parse_here_doc_or_file_ref.parse_from_parse_source(source)
+        if source.remaining_part_of_current_line.strip():
+            raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
+                                                            str(source.remaining_part_of_current_line))
         if here_doc_or_file_ref.is_here_document:
             content = lines_content(here_doc_or_file_ref.here_document)
             return _InstructionForHereDocument(content)

@@ -55,31 +55,16 @@ def remaining_source_lines(lines: list) -> ParseSource:
     return remaining_source(lines[0], lines[1:])
 
 
-def single_line_source(arguments: str) -> SingleInstructionParserSource:
-    first_line = 'instruction-name' + ' ' + arguments
-    return SingleInstructionParserSource(
-        new_line_sequence(first_line),
-        arguments)
-
-
+# TODO [instr-desc] Rename when new parser structures are fully integrated
 def single_line_sourcE(arguments: str) -> ParseSource:
     remaining_part_of_current_line = arguments
     return source4(remaining_part_of_current_line)
 
 
-def multi_line_source(first_line_arguments: str,
-                      following_lines: list) -> SingleInstructionParserSource:
-    first_line = 'instruction-name' + ' ' + first_line_arguments
-    return SingleInstructionParserSource(
-        new_line_sequence(first_line,
-                          following_lines=tuple(following_lines)),
-        first_line_arguments)
-
-
 def argument_list_source(arguments: list,
-                         following_lines: iter = ()) -> SingleInstructionParserSource:
-    return multi_line_source(' '.join(map(shlex.quote, arguments)),
-                             following_lines)
+                         following_lines: iter = ()) -> ParseSource:
+    return source4(' '.join(map(_quote, arguments)),
+                   following_lines)
 
 
 def new_line_sequence(first_line: str,
@@ -89,3 +74,9 @@ def new_line_sequence(first_line: str,
             parse.ListOfLines(list(following_lines))),
         1,
         first_line)
+
+
+def _quote(s: str) -> str:
+    if s.find(' ') != -1:
+        return shlex.quote(s)
+    return s

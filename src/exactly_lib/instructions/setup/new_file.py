@@ -1,7 +1,7 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.multi_phase_instructions import new_file as new_file_utils
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
-    SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -10,12 +10,12 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
+        Parser(),
         new_file_utils.TheInstructionDocumentation(instruction_name))
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
+class Parser(InstructionParser):
+    def parse(self, source: ParseSource) -> SetupPhaseInstruction:
         argument = new_file_utils.parse(source)
         return _Instruction(argument)
 

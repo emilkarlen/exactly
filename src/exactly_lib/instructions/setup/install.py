@@ -10,8 +10,9 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
@@ -90,9 +91,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        arguments = split_arguments_list_string(source.instruction_argument)
+class Parser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> SetupPhaseInstruction:
+        arguments = split_arguments_list_string(rest_of_line)
         num_arguments = len(arguments)
         if num_arguments == 0 or num_arguments > 2:
             msg = 'Invalid number of arguments (one or two expected), found {}'.format(str(num_arguments))
