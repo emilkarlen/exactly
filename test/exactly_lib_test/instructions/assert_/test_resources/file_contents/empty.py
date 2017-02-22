@@ -27,7 +27,7 @@ class ParseShouldFailWhenThereAreSuperfluousArguments(TestWithConfigurationAndNe
             args('{maybe_not} {empty} superfluous-argument',
                  maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option))
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.apply(source)
+            parser.parse(source)
 
 
 class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
@@ -40,7 +40,7 @@ class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
             ['single line',
              'MARKER'])
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.apply(source)
+            parser.parse(source)
 
 
 class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):

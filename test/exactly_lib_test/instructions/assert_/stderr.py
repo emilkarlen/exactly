@@ -2,8 +2,7 @@ import unittest
 
 import exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr
 from exactly_lib.instructions.assert_ import stderr as sut
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.contains import \
     ActResultProducerFromHomeAndSds2Str
@@ -29,7 +28,7 @@ class ActResultProducerForStderr(ActResultProducerFromHomeAndSds2Str):
 
 
 class TestConfigurationForStderr(TestConfigurationForStdFile):
-    def new_parser(self) -> SingleInstructionParser:
+    def new_parser(self) -> InstructionParser:
         return sut.ParserForContentsForStderr()
 
     def arrangement_for_contents_from_fun(self,

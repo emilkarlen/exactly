@@ -1,7 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, contains
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
@@ -10,14 +9,14 @@ from exactly_lib_test.instructions.test_resources.arrangements import ActResultP
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import ActResult
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import remaining_source
 
 
 class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def source_for(self,
-                   argument_tail:
-                   str, following_lines=()) -> SingleInstructionParserSource:
-        return new_source2(argument_tail, following_lines)
+                   argument_tail: str,
+                   following_lines=()) -> ParseSource:
+        return remaining_source(argument_tail, following_lines)
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),

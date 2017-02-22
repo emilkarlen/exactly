@@ -13,7 +13,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import multiple
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import remaining_source
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:
@@ -38,7 +38,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
             contents_generator.contents_before_replacement)
         home_or_sds_populator = multiple([populator_of_expected, populator_of_actual])
         self._check(
-            new_source2(
+            remaining_source(
                 args('{relativity_option} actual.txt {replace_env_vars_option} '
                      '{maybe_not} {equals} {rel_tmp_option} expected.txt',
                      relativity_option=self.rel_opt.option_string,
@@ -62,7 +62,7 @@ class _ContentsNotEquals(TestWithConfigurationAndRelativityOptionAndNegationBase
             contents_generator.contents_before_replacement)
         home_or_sds_populator = multiple([populator_of_expected, populator_of_actual])
         self._check(
-            new_source2(
+            remaining_source(
                 args('{relativity_option} actual.txt {replace_env_vars_option} '
                      '{maybe_not} {equals} {rel_tmp_option} expected.txt',
                      relativity_option=self.rel_opt.option_string,
