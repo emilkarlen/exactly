@@ -10,14 +10,14 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import rel_opts_configuration
-from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.sandbox_directory_structure import \
@@ -86,15 +86,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._help_parts.see_also_items()
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        arguments = split_arguments_list_string(source.instruction_argument)
-        if not arguments:
+class Parser(InstructionParser):
+    def parse(self, source: ParseSource) -> AssertPhaseInstruction:
+        source.consume_initial_space_on_current_line()
+        if source.is_at_eol:
             raise SingleInstructionInvalidArgumentException('At least one argument expected (FILE)')
-        (comparison_target, remaining_arguments) = parse_actual_file_argument(arguments)
+        comparison_target = parse_actual_file_argument(source)
+        source.consume_initial_space_on_current_line()
         instruction = parsing.parse_comparison_operation(comparison_target,
                                                          _ActualFileTransformerForEnvVarsReplacement(),
-                                                         remaining_arguments,
                                                          source)
         return instruction
 
@@ -131,7 +131,7 @@ _ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfi
     'PATH')
 
 
-def parse_actual_file_argument(arguments: list) -> (ComparisonActualFile, list):
-    (file_ref, remaining_arguments) = parse_file_ref.parse_file_ref__list(arguments,
-                                                                          _ACTUAL_RELATIVITY_CONFIGURATION)
-    return ActComparisonActualFileForFileRef(file_ref), remaining_arguments
+def parse_actual_file_argument(source: ParseSource) -> ComparisonActualFile:
+    file_ref = parse_file_ref.parse_file_ref_from_parse_source(source,
+                                                               _ACTUAL_RELATIVITY_CONFIGURATION)
+    return ActComparisonActualFileForFileRef(file_ref)

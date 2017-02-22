@@ -26,6 +26,14 @@ class Token(tuple):
         return self[0]
 
     @property
+    def is_plain(self) -> bool:
+        return self.type is TokenType.PLAIN
+
+    @property
+    def is_quoted(self) -> bool:
+        return self.type is TokenType.QUOTED
+
+    @property
     def string(self) -> str:
         return self[1]
 
@@ -34,7 +42,8 @@ class Token(tuple):
         return self[2]
 
 
-def parse_token_or_none_on_current_line(source: ParseSource) -> Token:
+def parse_token_or_none_on_current_line(source: ParseSource,
+                                        argument_description: str = 'argument') -> Token:
     """
     Parses a single, optional token from remaining part of current line.
 
@@ -54,12 +63,14 @@ def parse_token_or_none_on_current_line(source: ParseSource) -> Token:
     try:
         token_string = lexer.get_token()
     except ValueError as ex:
-        raise SingleInstructionInvalidArgumentException('Invalid token: ' + str(ex))
+        msg = 'Invalid {}: {}'.format(argument_description, str(ex))
+        raise SingleInstructionInvalidArgumentException(msg)
     source_string = _get_source_string_and_consume_token_characters(source, source_io)
     return Token(token_type, token_string, source_string)
 
 
-def parse_token_on_current_line(source: ParseSource) -> Token:
+def parse_token_on_current_line(source: ParseSource,
+                                argument_description: str = 'argument') -> Token:
     """
     Parses a single, mandatory token from remaining part of current line.
 
@@ -71,11 +82,12 @@ def parse_token_on_current_line(source: ParseSource) -> Token:
     """
     token = parse_token_or_none_on_current_line(source)
     if token is None:
-        raise SingleInstructionInvalidArgumentException('Missing argument')
+        raise SingleInstructionInvalidArgumentException('Missing ' + argument_description)
     return token
 
 
-def parse_plain_token_on_current_line(source: ParseSource) -> Token:
+def parse_plain_token_on_current_line(source: ParseSource,
+                                      argument_description: str = 'argument') -> Token:
     """
     Parses a single, mandatory plain (unquoted) token from remaining part of current line.
 
@@ -85,9 +97,7 @@ def parse_plain_token_on_current_line(source: ParseSource) -> Token:
     :raise SingleInstructionInvalidArgumentException: There is no token
     :raise SingleInstructionInvalidArgumentException: The token has invalid syntax
     """
-    token = parse_token_or_none_on_current_line(source)
-    if token is None:
-        raise SingleInstructionInvalidArgumentException('Missing argument')
+    token = parse_token_on_current_line(source, argument_description)
     if token.type is TokenType.QUOTED:
         raise SingleInstructionInvalidArgumentException('Argument must not be quoted: ' + token.source_string)
     return token

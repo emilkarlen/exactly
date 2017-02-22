@@ -7,12 +7,12 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
     ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
-from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -52,21 +52,21 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 _WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
 
 
-class ParserForContentsForActualValue(SingleInstructionParser):
+class ParserForContentsForActualValue(InstructionParser):
     def __init__(self,
                  comparison_actual_value: actual_files.ComparisonActualFile,
                  actual_value_transformer: ActualFileTransformer):
         self.comparison_actual_value = comparison_actual_value
         self.target_transformer = actual_value_transformer
 
-    def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        arguments = split_arguments_list_string(source.instruction_argument)
+    def parse(self, source: ParseSource) -> AssertPhaseInstruction:
+        source.consume_initial_space_on_current_line()
+        first_line = source.remaining_part_of_current_line
         content_instruction = parsing.parse_comparison_operation(self.comparison_actual_value,
                                                                  self.target_transformer,
-                                                                 arguments,
                                                                  source)
         if content_instruction is None:
-            raise SingleInstructionInvalidArgumentException(str(arguments))
+            raise SingleInstructionInvalidArgumentException(first_line)
         return content_instruction
 
 

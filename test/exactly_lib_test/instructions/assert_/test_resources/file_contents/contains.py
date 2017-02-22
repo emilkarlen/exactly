@@ -40,7 +40,7 @@ class ActResultProducerFromHomeAndSds2Str(ActResultProducer):
 class _ParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.configuration.new_parser().apply(
+            self.configuration.new_parser().parse(
                 self.configuration.source_for(
                     args('{maybe_not} {contains}',
                          maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
@@ -49,7 +49,7 @@ class _ParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumentBas
 class _ParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.configuration.new_parser().apply(
+            self.configuration.new_parser().parse(
                 self.configuration.source_for(
                     args('{maybe_not} {contains} abc superfluous',
                          maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
@@ -58,7 +58,7 @@ class _ParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase
 class _ParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.configuration.new_parser().apply(
+            self.configuration.new_parser().parse(
                 self.configuration.source_for(
                     args('{maybe_not} {contains} **',
                          maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))

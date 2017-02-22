@@ -2,10 +2,8 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
@@ -18,7 +16,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 
 
 class InstructionTestConfiguration:
-    def new_parser(self) -> SingleInstructionParser:
+    def new_parser(self) -> InstructionParser:
         raise NotImplementedError()
 
     def arrangement_for_contents(self,
@@ -29,7 +27,7 @@ class InstructionTestConfiguration:
 
 
 class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
-    def source_for(self, argument_tail: str, following_lines=()) -> SingleInstructionParserSource:
+    def source_for(self, argument_tail: str, following_lines=()) -> ParseSource:
         raise NotImplementedError()
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
@@ -45,7 +43,7 @@ class TestWithConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAn
         self.configuration = configuration
 
     def _check(self,
-               source: SingleInstructionParserSource,
+               source: ParseSource,
                arrangement: ArrangementPostAct,
                expectation: Expectation):
         instruction_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
