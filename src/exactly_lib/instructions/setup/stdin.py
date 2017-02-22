@@ -76,9 +76,10 @@ class Parser(InstructionParser):
         if not first_line_arguments:
             raise SingleInstructionInvalidArgumentException('Missing arguments: no arguments')
         here_doc_or_file_ref = parse_here_doc_or_file_ref.parse_from_parse_source(source)
-        if source.remaining_part_of_current_line.strip():
-            raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
-                                                            str(source.remaining_part_of_current_line))
+        if here_doc_or_file_ref.is_file_ref:
+            if not source.is_at_eol__except_for_space:
+                raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
+                                                                str(source.remaining_part_of_current_line))
         if here_doc_or_file_ref.is_here_document:
             content = lines_content(here_doc_or_file_ref.here_document)
             return _InstructionForHereDocument(content)

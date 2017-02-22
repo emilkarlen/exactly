@@ -20,6 +20,10 @@ class HereDocOrFileRef(tuple):
         return self.here_document is not None
 
     @property
+    def is_file_ref(self) -> bool:
+        return not self.is_here_document
+
+    @property
     def here_document(self) -> list:
         return self[0]
 
