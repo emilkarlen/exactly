@@ -3,7 +3,6 @@ import unittest
 
 from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
     SingleInstructionParserSource
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.phases.common import TestCaseInstruction
@@ -37,12 +36,12 @@ def raises_test_error() -> va.ValueAssertion:
     return RaisesTestError()
 
 
-class ParserThatGives(SingleInstructionParser):
+class ParserThatGives(InstructionParser):
     def __init__(self,
                  instruction: TestCaseInstruction):
         self.instruction = instruction
 
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
+    def parse(self, source: ParseSource) -> TestCaseInstruction:
         return self.instruction
 
 

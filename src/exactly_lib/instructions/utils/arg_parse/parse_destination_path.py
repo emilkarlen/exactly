@@ -26,6 +26,7 @@ def parse_destination_pathInstrDesc(options: RelOptionArgumentConfiguration,
                 'Missing {} argument: {}'.format(options.argument_syntax_name,
                                                  initial_argument_string))
         path_argument = pathlib.PurePath()
+        # TODO invalid argument type to DestinationPath
         return DestinationPath(destination_type, path_argument)
     else:
         token = token_parse.parse_token_on_current_line(source)
@@ -36,6 +37,7 @@ def parse_destination_pathInstrDesc(options: RelOptionArgumentConfiguration,
 
 
 # TODO [instr-desc] Remove when new parser structures are fully integrated
+# (perhaps should remain since there are valid usages of this variant, but then rename methods)
 def parse_destination_path(options: RelOptionArgumentConfiguration,
                            path_argument_is_mandatory: bool,
                            arguments: list) -> (DestinationPath, list):

@@ -11,8 +11,9 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck, type_name
 from exactly_lib.instructions.utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -31,7 +32,6 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 TYPE_NAME_SYMLINK = 'symlink'
 TYPE_NAME_REGULAR = 'regular'
 TYPE_NAME_DIRECTORY = 'directory'
-
 
 FILE_TYPES = {
     TYPE_NAME_SYMLINK: FileType.SYMLINK,
@@ -102,9 +102,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
 
-class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        arguments = split_arguments_list_string(source.instruction_argument)
+class Parser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
+        arguments = split_arguments_list_string(rest_of_line)
         if len(arguments) != 2:
             raise SingleInstructionInvalidArgumentException('Expecting exactly two arguments.')
         file_argument = arguments[0]

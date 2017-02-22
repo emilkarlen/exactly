@@ -1,8 +1,8 @@
 import unittest
 
 import exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
@@ -60,16 +60,16 @@ is_pass = Expectation
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               parser: SingleInstructionParser,
-               source: SingleInstructionParserSource,
+               parser: InstructionParser,
+               source: ParseSource,
                arrangement: ArrangementPostAct,
                expectation: Expectation):
         check(self, parser, source, arrangement, expectation)
 
 
 def check(put: unittest.TestCase,
-          parser: SingleInstructionParser,
-          source: SingleInstructionParserSource,
+          parser: InstructionParser,
+          source: ParseSource,
           arrangement: ArrangementPostAct,
           expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
@@ -85,9 +85,9 @@ class Executor:
         self.expectation = expectation
 
     def execute(self,
-                parser: SingleInstructionParser,
-                source: SingleInstructionParserSource):
-        instruction = parser.apply(source)
+                parser: InstructionParser,
+                source: ParseSource):
+        instruction = parser.parse(source)
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,

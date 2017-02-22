@@ -2,8 +2,9 @@ import unittest
 
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.instructions.utils import file_ref
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.string import lines_content
@@ -13,57 +14,57 @@ from exactly_lib_test.instructions.setup.test_resources.settings_check import As
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
-from exactly_lib_test.test_resources.parse import new_source2, argument_list_source
+from exactly_lib_test.test_resources.parse import argument_list_source, source4
 
 
 class TestParseSet(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source2('')
+        source = source4('')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_fail_when_there_is_more_than_three_argument(self):
-        source = new_source2('--rel-home file superfluous-argument')
+        source = source4('--rel-home file superfluous-argument')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_succeed_when_syntax_is_correct__rel_home(self):
-        source = new_source2('--rel-home file')
-        sut.Parser().apply(source)
+        source = source4('--rel-home file')
+        sut.Parser().parse(source)
 
     def test_succeed_when_syntax_is_correct__rel_cwd(self):
-        source = new_source2('--rel-cd file')
-        sut.Parser().apply(source)
+        source = source4('--rel-cd file')
+        sut.Parser().parse(source)
 
     def test_succeed_when_syntax_is_correct__rel_tmp(self):
-        source = new_source2('--rel-tmp file')
-        sut.Parser().apply(source)
+        source = source4('--rel-tmp file')
+        sut.Parser().parse(source)
 
     def test_succeed_when_syntax_is_correct__rel_home__implicitly(self):
-        source = new_source2('file')
-        sut.Parser().apply(source)
+        source = source4('file')
+        sut.Parser().parse(source)
 
     def test_here_document(self):
         source = argument_list_source(['<<MARKER'],
                                       ['single line',
                                        'MARKER'])
-        sut.Parser().apply(source)
+        sut.Parser().parse(source)
 
     def test_fail_when_here_document_but_superfluous_arguments(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             source = argument_list_source(['<<MARKER', 'superfluous argument'],
                                           ['single line',
                                            'MARKER'])
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_file_name_can_be_quoted(self):
-        source = new_source2('--rel-home "file name with space"')
-        sut.Parser().apply(source)
+        source = source4('--rel-home "file name with space"')
+        sut.Parser().parse(source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
-             source: SingleInstructionParserSource,
+             source: ParseSource,
              arrangement: Arrangement,
              expectation: Expectation):
         self._check(sut.Parser(), source, arrangement, expectation)
@@ -71,35 +72,35 @@ class TestCaseBaseForParser(TestCaseBase):
 
 class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
     def test_file_rel_home__explicitly(self):
-        self._run(new_source2('--rel-home file-in-home-dir.txt'),
+        self._run(source4('--rel-home file-in-home-dir.txt'),
                   Arrangement(
-                          home_dir_contents=DirContents([
-                              empty_file('file-in-home-dir.txt')])
+                      home_dir_contents=DirContents([
+                          empty_file('file-in-home-dir.txt')])
                   ),
                   Expectation(
-                          main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                                  file_ref.rel_home('file-in-home-dir.txt')))
+                      main_side_effects_on_environment=AssertStdinFileIsSetToFile(
+                          file_ref.rel_home('file-in-home-dir.txt')))
                   )
 
     def test_file_rel_home__implicitly(self):
-        self._run(new_source2('file-in-home-dir.txt'),
+        self._run(source4('file-in-home-dir.txt'),
                   Arrangement(home_dir_contents=DirContents([
                       empty_file('file-in-home-dir.txt')])
                   ),
                   Expectation(main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                          file_ref.rel_home('file-in-home-dir.txt')))
+                      file_ref.rel_home('file-in-home-dir.txt')))
                   )
 
 
 class TestFailingInstructionExecution(TestCaseBaseForParser):
     def test_referenced_file_does_not_exist(self):
-        self._run(new_source2('--rel-home non-existing-file'),
+        self._run(source4('--rel-home non-existing-file'),
                   Arrangement(),
                   Expectation(pre_validation_result=svh_check.is_validation_error())
                   )
 
     def test_referenced_file_is_a_directory(self):
-        self._run(new_source2('--rel-home directory'),
+        self._run(source4('--rel-home directory'),
                   Arrangement(home_dir_contents=DirContents([
                       empty_dir('directory')])
                   ),
@@ -112,7 +113,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
                                         'MARKER']),
                   Arrangement(),
                   Expectation(main_side_effects_on_environment=AssertStdinIsSetToContents(
-                          lines_content(['single line'])))
+                      lines_content(['single line'])))
                   )
 
 

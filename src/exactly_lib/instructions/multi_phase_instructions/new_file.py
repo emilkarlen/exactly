@@ -1,16 +1,14 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path
-from exactly_lib.instructions.utils.arg_parse.parse_here_document import parse_as_last_argument
-from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.arg_parse import parse_here_document
+from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_pathInstrDesc
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
@@ -70,12 +68,13 @@ class FileInfo(tuple):
         return self[1]
 
 
-def parse(source: SingleInstructionParserSource) -> FileInfo:
-    arguments = split_arguments_list_string(source.instruction_argument)
-    (destination_path, remaining_arguments) = parse_destination_path(_RELATIVITY_OPTIONS, True, arguments)
+def parse(source: ParseSource) -> FileInfo:
+    destination_path = parse_destination_pathInstrDesc(_RELATIVITY_OPTIONS, True, source)
     contents = ''
-    if remaining_arguments:
-        lines = parse_as_last_argument(False, remaining_arguments, source)
+    if source.is_at_eol__except_for_space:
+        source.consume_current_line()
+    else:
+        lines = parse_here_document.parse_as_last_argumentInstrDesc(False, source)
         contents = lines_content(lines)
     return FileInfo(destination_path, contents)
 

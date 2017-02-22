@@ -4,8 +4,7 @@ Test of test-infrastructure: instruction_check.
 import unittest
 
 import exactly_lib_test.test_resources.parse
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -31,28 +30,28 @@ class TestCases(instruction_check.TestCaseBase):
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                    ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                    single_line_source(),
-                    Arrangement(),
+                ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                single_line_source(),
+                Arrangement(),
                 Expectation(pre_validation_result=test_misc.raises_test_error())
             )
 
     def test_fail_due_to_unexpected_result_from_main(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                    ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                    single_line_source(),
-                    Arrangement(),
+                ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                single_line_source(),
+                Arrangement(),
                 Expectation(main_result=test_misc.raises_test_error())
             )
 
     def test_fail_due_to_fail_of_side_effects_on_environment(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                    ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                    single_line_source(),
-                    Arrangement(),
-                    Expectation(main_side_effects_on_environment=SettingsCheckRaisesTestError())
+                ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                single_line_source(),
+                Arrangement(),
+                Expectation(main_side_effects_on_environment=SettingsCheckRaisesTestError())
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
@@ -65,9 +64,9 @@ class TestCases(instruction_check.TestCaseBase):
     def test_fail_due_to_unexpected_result_from_post_validation(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                    ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                    single_line_source(),
-                    Arrangement(),
+                ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                single_line_source(),
+                Arrangement(),
                 Expectation(post_validation_result=test_misc.raises_test_error())
             )
 
@@ -95,8 +94,8 @@ class SettingsCheckRaisesTestError(settings_check.Assertion):
         raise test_misc.TestError()
 
 
-def single_line_source() -> SingleInstructionParserSource:
-    return exactly_lib_test.test_resources.parse.new_source2('instruction arguments')
+def single_line_source() -> ParseSource:
+    return exactly_lib_test.test_resources.parse.source4('instruction arguments')
 
 
 SUCCESSFUL_INSTRUCTION = setup_phase_instruction_that()
