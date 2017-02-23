@@ -7,11 +7,11 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import SectionContents, ElementType
+from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.test_suite import parser as test_suite_parser
 from exactly_lib.test_suite.instruction_set import parse, instruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionEnvironment
-from exactly_lib.util import line_source
 from . import structure
 from . import test_suite_doc
 
@@ -62,7 +62,7 @@ class _SingleFileReader:
     def __call__(self,
                  inclusions: list,
                  suite_file_path: pathlib.Path) -> structure.TestSuite:
-        source = line_source.new_for_file(suite_file_path)
+        source = new_for_file(suite_file_path)
         try:
             test_suite = test_suite_parser.Parser().apply(source)
         except FileSourceError as ex:

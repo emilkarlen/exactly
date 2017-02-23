@@ -1,4 +1,4 @@
-def splitter(line: str) -> (str, str):
+def splitter(line: str) -> str:
     s = line.lstrip()
     if not s:
         raise ValueError('Line contains no instruction name')
