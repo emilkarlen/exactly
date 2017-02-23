@@ -10,6 +10,10 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sh_chec
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
+def suite() -> unittest.TestSuite:
+    return suite_for(TheConfiguration())
+
+
 class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
@@ -20,10 +24,6 @@ class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
 
     def expect_target_is_not_a_directory(self):
         return Expectation(main_result=sh_check.is_hard_error())
-
-
-def suite():
-    return suite_for(TheConfiguration())
 
 
 if __name__ == '__main__':
