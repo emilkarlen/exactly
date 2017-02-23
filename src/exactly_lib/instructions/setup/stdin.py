@@ -80,6 +80,7 @@ class Parser(InstructionParser):
             if not source.is_at_eol__except_for_space:
                 raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
                                                                 str(source.remaining_part_of_current_line))
+            source.consume_current_line()
         if here_doc_or_file_ref.is_here_document:
             content = lines_content(here_doc_or_file_ref.here_document)
             return _InstructionForHereDocument(content)
