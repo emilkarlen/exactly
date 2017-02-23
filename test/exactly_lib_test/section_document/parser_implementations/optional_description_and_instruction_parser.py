@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.parse import SourceError
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser, \
     InstructionAndDescription
 from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \

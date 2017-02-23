@@ -1,10 +1,12 @@
 import os
 import unittest
 
+import exactly_lib.section_document.new_parser_classes
 from exactly_lib.section_document import model
 from exactly_lib.section_document import parse
+from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.model import ElementType
-from exactly_lib.section_document.parse import SourceError, PlainDocumentParser, FileSourceError
+from exactly_lib.section_document.parse import PlainDocumentParser
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, assert_equals_line_sequence
@@ -64,12 +66,13 @@ class TestSectionsConfiguration(ParseTestBase):
     def test_WHEN_the_default_section_name_is_not_a_name_of_a_section_THEN_an_exception_SHOULD_be_raised(self):
         # ARRANGE #
         section_names = ['section 1', 'section 2']
-        sections = [parse.SectionConfiguration(name, InstructionParserForPhase(name))
-                    for name in section_names]
+        sections = [
+            exactly_lib.section_document.new_parser_classes.SectionConfiguration(name, InstructionParserForPhase(name))
+            for name in section_names]
         default_section_name = 'not the name of a section'
         # ACT & ASSERT #
         with self.assertRaises(ValueError):
-            parse.SectionsConfiguration(
+            exactly_lib.section_document.new_parser_classes.SectionsConfiguration(
                 tuple(sections),
                 default_section_name=default_section_name)
 
@@ -600,26 +603,27 @@ class InstructionParserThatFails(parse.SectionElementParser):
 
 
 def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
-    configuration = parse.SectionsConfiguration(
-        (parse.SectionConfiguration('phase 1',
-                                    InstructionParserForPhase('phase 1')),
-         parse.SectionConfiguration('phase 2',
-                                    InstructionParserThatFails()))
+    configuration = exactly_lib.section_document.new_parser_classes.SectionsConfiguration(
+        (exactly_lib.section_document.new_parser_classes.SectionConfiguration('phase 1',
+                                                                              InstructionParserForPhase('phase 1')),
+         exactly_lib.section_document.new_parser_classes.SectionConfiguration('phase 2',
+                                                                              InstructionParserThatFails()))
     )
     return parse.new_parser_for(configuration)
 
 
 def parser_for_sections(section_names: list,
                         default_section_name: str = None) -> PlainDocumentParser:
-    sections = [parse.SectionConfiguration(name, InstructionParserForPhase(name))
-                for name in section_names]
+    sections = [
+        exactly_lib.section_document.new_parser_classes.SectionConfiguration(name, InstructionParserForPhase(name))
+        for name in section_names]
     if default_section_name is not None:
         if default_section_name not in section_names:
             raise ValueError('Test setup: The given default section %s is not the name of a section (%s)' % (
                 default_section_name,
                 section_names,
             ))
-    configuration = parse.SectionsConfiguration(
+    configuration = exactly_lib.section_document.new_parser_classes.SectionsConfiguration(
         tuple(sections),
         default_section_name=default_section_name)
     return parse.new_parser_for(configuration)

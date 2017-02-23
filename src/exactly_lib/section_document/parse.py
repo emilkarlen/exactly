@@ -1,49 +1,9 @@
 from exactly_lib.section_document import model
-from exactly_lib.section_document import new_parser_classes as parse_classes
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.exceptions import SourceError, FileSourceError
+from exactly_lib.section_document.new_parser_classes import SectionsConfiguration
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSource
-
-
-class SourceError(Exception):
-    """
-    An exceptions related to a line in the test case,
-    raised by a parser that is unaware of current section.
-    """
-
-    def __init__(self,
-                 line: line_source.Line,
-                 message: str):
-        self._line = line
-        self._message = message
-
-    @property
-    def line(self) -> line_source.Line:
-        return self._line
-
-    @property
-    def message(self) -> str:
-        return self._message
-
-
-class FileSourceError(Exception):
-    """
-    An exceptions related to a line in the test case.
-    """
-
-    def __init__(self,
-                 source_error: SourceError,
-                 maybe_section_name: str):
-        self._source_error = source_error
-        self._maybe_section_name = maybe_section_name
-
-    @property
-    def source_error(self) -> SourceError:
-        return self._source_error
-
-    @property
-    def maybe_section_name(self) -> str:
-        return self._maybe_section_name
 
 
 class PlainDocumentParser:
@@ -72,69 +32,6 @@ class SectionElementParser:
         :raises SourceError Syntax error.
         """
         raise NotImplementedError()
-
-
-class SectionConfiguration(tuple):
-    def __new__(cls,
-                section_name: str,
-                parser: parse_classes.SectionElementParser2):
-        return tuple.__new__(cls, (section_name, parser))
-
-    @property
-    def section_name(self) -> str:
-        return self[0]
-
-    @property
-    def parser(self) -> parse_classes.SectionElementParser2:
-        return self[1]
-
-
-class SectionsConfiguration:
-    """
-    Sections and their instruction parser.
-    """
-
-    def __init__(self,
-                 parsers_for_named_sections: tuple,
-                 default_section_name: str = None,
-                 section_element_name_for_error_messages: str = 'section'):
-        """
-        :param parsers_for_named_sections: sequence of SectionConfiguration.
-        """
-        self.section_element_name_for_error_messages = section_element_name_for_error_messages
-        self._parsers_for_named_sections = parsers_for_named_sections
-        section_names = []
-        section2parser = {}
-        for pfp in parsers_for_named_sections:
-            section_names.append(pfp.section_name)
-            section2parser[pfp.section_name] = pfp.parser
-        self._section_list_as_tuple = tuple(section_names)
-        self._section2parser = section2parser
-
-        self._parser_for_default_section = None
-        self.default_section_name = None
-        if default_section_name is not None:
-            try:
-                self._parser_for_default_section = self._section2parser[default_section_name]
-                self.default_section_name = (default_section_name,)
-            except KeyError:
-                raise ValueError('The name of the default section "%s" does not correspond to any section: %s' %
-                                 (default_section_name,
-                                  str(self._section2parser.keys()))
-                                 )
-
-    def section_names(self) -> tuple:
-        """
-        Sequence of all Section Names (same order as given to constructor.
-        :return: tuple of str:s
-        """
-        return self._section_list_as_tuple
-
-    def parser_for_section(self, section_name: str) -> parse_classes.SectionElementParser2:
-        return self._section2parser[section_name]
-
-    def has_section(self, section_name: str) -> bool:
-        return section_name in self._section2parser
 
 
 def new_parser_for(configuration: SectionsConfiguration) -> PlainDocumentParser:

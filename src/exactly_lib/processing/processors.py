@@ -1,5 +1,6 @@
 import pathlib
 
+import exactly_lib.section_document.exceptions
 from exactly_lib import program_info
 from exactly_lib.default.program_modes.test_case import test_case_parser
 from exactly_lib.execution import full_execution
@@ -11,7 +12,6 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
-from exactly_lib.section_document import parse as document_parser
 from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.new_parser_classes import SectionElementParser2
 from exactly_lib.test_case import error_description
@@ -95,7 +95,7 @@ class _Parser(processing_utils.Parser):
         source = ParseSource(test_case_plain_source)
         try:
             return file_parser.apply(source)
-        except document_parser.FileSourceError as ex:
+        except exactly_lib.section_document.exceptions.FileSourceError as ex:
             error_info = ErrorInfo(error_description.of_message('Parse error: ' + ex.source_error.message),
                                    file_path=test_case_file_path,
                                    line=ex.source_error.line,

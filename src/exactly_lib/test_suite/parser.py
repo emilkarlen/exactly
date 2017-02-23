@@ -1,3 +1,4 @@
+import exactly_lib.section_document.new_parser_classes
 from exactly_lib.section_document import parse
 from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.instruction_set.sections import cases
@@ -7,11 +8,12 @@ from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAM
     DEFAULT_SECTION_NAME
 from exactly_lib.util import line_source
 
-PARSER_CONFIGURATION = parse.SectionsConfiguration(
+PARSER_CONFIGURATION = exactly_lib.section_document.new_parser_classes.SectionsConfiguration(
     (
-        parse.SectionConfiguration(SECTION_NAME__CONF, instruction_set.new_parser()),
-        parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
-        parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
+        exactly_lib.section_document.new_parser_classes.SectionConfiguration(SECTION_NAME__CONF,
+                                                                             instruction_set.new_parser()),
+        exactly_lib.section_document.new_parser_classes.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
+        exactly_lib.section_document.new_parser_classes.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
     ),
     default_section_name=DEFAULT_SECTION_NAME
 )
