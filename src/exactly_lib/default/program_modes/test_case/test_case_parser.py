@@ -12,7 +12,7 @@ from exactly_lib.test_case import test_case_doc, phase_identifier
 
 class Parser:
     def __init__(self,
-                 plain_file_parser: parse2.PlainDocumentParser2):
+                 plain_file_parser: parse2.DocumentParser):
         self.__plain_file_parser = plain_file_parser
 
     def apply(self,
@@ -29,9 +29,9 @@ class Parser:
 
 
 def new_parser(instruction_name_extractor_function,
-               act_phase_parser: parse2.SectionElementParser2,
+               act_phase_parser: parse2.SectionElementParser,
                instructions_setup: InstructionsSetup) -> Parser:
-    def dict_parser(instruction_set: dict) -> parse2.SectionElementParser2:
+    def dict_parser(instruction_set: dict) -> parse2.SectionElementParser:
         return StandardSyntaxElementParser(
             InstructionWithOptionalDescriptionParser(
                 InstructionParserForDictionaryOfInstructions(instruction_name_extractor_function,

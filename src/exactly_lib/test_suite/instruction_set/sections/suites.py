@@ -1,4 +1,4 @@
-from exactly_lib.section_document.new_parser_classes import SectionElementParser2
+from exactly_lib.section_document.new_parser_classes import SectionElementParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import \
@@ -7,7 +7,7 @@ from exactly_lib.test_suite.instruction_set import instruction, utils
 from exactly_lib.test_suite.instruction_set.instruction import Environment, TestSuiteInstruction
 
 
-def new_parser() -> SectionElementParser2:
+def new_parser() -> SectionElementParser:
     return StandardSyntaxElementParser(InstructionWithoutDescriptionParser(_SuitesSectionParser()))
 
 

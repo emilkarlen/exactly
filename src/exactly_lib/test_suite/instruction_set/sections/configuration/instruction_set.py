@@ -20,7 +20,7 @@ CONFIGURATION_INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_lis
 )
 
 
-def new_parser() -> parse.SectionElementParser2:
+def new_parser() -> parse.SectionElementParser:
     return StandardSyntaxElementParser(
         InstructionWithOptionalDescriptionParser(
             InstructionParserForDictionaryOfInstructions(

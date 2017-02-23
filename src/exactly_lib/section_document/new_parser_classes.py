@@ -5,8 +5,7 @@ from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.util import line_source
 
 
-# TODO [instr-desc] Rename when new parser structures are fully integrated (to "DocumentParser")
-class PlainDocumentParser2:
+class DocumentParser:
     """
     Base class for parsers that parse a "plain file"
     (i.e., a file that do not need pre-processing).
@@ -19,8 +18,7 @@ class PlainDocumentParser2:
         raise NotImplementedError()
 
 
-# TODO [instr-desc] Rename when new parser structures are fully integrated
-class SectionElementParser2:
+class SectionElementParser:
     def parse(self, source: ParseSource) -> model.SectionContentElement:
         """
         :raises FileSourceError The element cannot be parsed.
@@ -69,49 +67,23 @@ class SectionsConfiguration:
         """
         return self._section_list_as_tuple
 
-    def parser_for_section(self, section_name: str) -> SectionElementParser2:
+    def parser_for_section(self, section_name: str) -> SectionElementParser:
         return self._section2parser[section_name]
 
     def has_section(self, section_name: str) -> bool:
         return section_name in self._section2parser
 
 
-def new_parser_for(configuration: SectionsConfiguration) -> PlainDocumentParser2:
-    return _PlainDocumentParserForSectionsConfiguration2(configuration)
+def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
+    return _DocumentParserForSectionsConfiguration(configuration)
 
 
-class _PlainDocumentParserForSectionsConfiguration2(PlainDocumentParser2):
+class _DocumentParserForSectionsConfiguration(DocumentParser):
     def __init__(self, configuration: SectionsConfiguration):
         self._configuration = configuration
 
     def parse(self, source: ParseSource) -> model.Document:
         return _Impl(self._configuration, source).apply()
-
-
-# class _ParseImpl:
-#     def __init__(self, configuration: SectionsConfiguration, source: ParseSource):
-#         self.configuration = configuration
-#         self.doc_parser = doc_parser
-#         self.source = source
-#         self.result = {}
-#         self.current_senction_name = doc_parser.default_section_name
-#         self.current_section_element_parser = doc_parser.section_name_2_element_parser[doc_parser.default_section_name]
-# 
-#     def parse(self):
-#         while not self.source.is_at_eof():
-#             self.parse_one_thing()
-# 
-#     def parse_one_thing(self):
-#         current_line = self.source.current_line
-#         section_name = _section_name_if_section_line(current_line)
-#         if section_name:
-#             pass  # set current section and current element parser according to section
-#             self.source.consume_current_line()
-#         else:
-#             element = self.current_section_element_parser.parse(self.source)
-#             if not self.current_senction_name in self.result:
-#                 self.result[self.current_senction_name] = []
-#             self.result[self.current_senction_name].append(element)
 
 
 class _Impl:
@@ -120,8 +92,6 @@ class _Impl:
                  document_source: ParseSource):
         self.configuration = configuration
         self._document_source = document_source
-        # self._list_of_lines = ListOfLines(map(lambda l: l.text,
-        #                                       self._document_source))
         self._current_line = self._get_current_line_or_none_if_is_at_eof()
         self._parser_for_current_section = None
         self._name_of_current_section = None
@@ -129,12 +99,8 @@ class _Impl:
         self._section_name_2_element_list = {}
 
     @property
-    def parser_for_current_section(self) -> SectionElementParser2:
+    def parser_for_current_section(self) -> SectionElementParser:
         return self._parser_for_current_section
-
-    # @property
-    # def list_of_lines(self) -> ListOfLines:
-    #     return self._list_of_lines
 
     def apply(self) -> model.Document:
         if self.is_at_eof():
@@ -197,22 +163,13 @@ class _Impl:
                 raise FileSourceError(ex, self._name_of_current_section)
             self.add_element_to_current_section(element)
 
-            # self.forward_line_source_according_lines_consumed_by(element)
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
     def parse_element_at_current_line_using_current_section_element_parser(self) -> model.SectionContentElement:
-        # sequence_source = LineSequenceSourceFromListOfLines(self._list_of_lines.copy())
-        # line_sequence_builder = line_source.LineSequenceBuilder(sequence_source,
-        #                                                         self._current_line.line_number,
-        #                                                         self._current_line.text)
         return self.parser_for_current_section.parse(self._document_source)
 
     def add_element_to_current_section(self, element: model.SectionContentElement):
         self._elements_for_current_section.append(element)
-
-    # def forward_line_source_according_lines_consumed_by(self, element: model.SectionContentElement):
-    #     self.list_of_lines.forward(len(element.source.lines) - 1)
-    #     self.move_one_line_forward()
 
     def extract_section_name_and_consume_line(self) -> str:
         section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
@@ -264,7 +221,7 @@ class _Impl:
 class SectionConfiguration(tuple):
     def __new__(cls,
                 section_name: str,
-                parser: SectionElementParser2):
+                parser: SectionElementParser):
         return tuple.__new__(cls, (section_name, parser))
 
     @property
@@ -272,5 +229,5 @@ class SectionConfiguration(tuple):
         return self[0]
 
     @property
-    def parser(self) -> SectionElementParser2:
+    def parser(self) -> SectionElementParser:
         return self[1]
