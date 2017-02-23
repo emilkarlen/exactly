@@ -9,18 +9,18 @@ from exactly_lib.util import line_source
 
 class InstructionParserForDictionaryOfInstructions(InstructionParser):
     def __init__(self,
-                 split_line_into_name_and_argument_function,
+                 instruction_name_extractor_function,
                  instruction_name__2__single_instruction_parser: dict):
         """
-        :param split_line_into_name_and_argument_function Callable that splits a source line text into a
-        (name, argument) tuple. The source line text is assumed to contain at least
+        :param instruction_name_extractor_function Callable that extracts an instruction name from a source line.
+        The source line text is assumed to contain at least
         an instruction name.
         :param instruction_name__2__single_instruction_parser: dict: str -> SingleTypeOfInstructionParser
         """
         self.__instruction_name__2__single_instruction_parser = instruction_name__2__single_instruction_parser
         for value in self.__instruction_name__2__single_instruction_parser.values():
             assert isinstance(value, InstructionParser)
-        self._name_and_argument_splitter = split_line_into_name_and_argument_function
+        self._name_and_argument_splitter = instruction_name_extractor_function
 
     def parse(self, source: ParseSource) -> model.Instruction:
         first_line = source.current_line
@@ -65,4 +65,4 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         except Exception:
             raise ArgumentParsingImplementationException(first_line,
                                                          name,
-                                                         parser)  # TODO [instr-desc] Change expected type in ex when done replacing
+                                                         parser)

@@ -29,13 +29,13 @@ class Parser:
         )
 
 
-def new_parser(split_line_into_name_and_argument_function,
+def new_parser(instruction_name_extractor_function,
                act_phase_parser: parse2.SectionElementParser2,
                instructions_setup: InstructionsSetup) -> Parser:
     def dict_parser(instruction_set: dict) -> parse2.SectionElementParser2:
         return StandardSyntaxElementParser(
             InstructionWithOptionalDescriptionParser(
-                InstructionParserForDictionaryOfInstructions(split_line_into_name_and_argument_function,
+                InstructionParserForDictionaryOfInstructions(instruction_name_extractor_function,
                                                              instruction_set)))
 
     configuration = exactly_lib.section_document.new_parser_classes.SectionsConfiguration(

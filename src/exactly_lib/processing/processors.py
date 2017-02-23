@@ -22,14 +22,14 @@ from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 
 class Configuration:
     def __init__(self,
-                 split_line_into_name_and_argument_function,
+                 instruction_name_extractor_function,
                  instruction_setup: InstructionsSetup,
                  default_handling_setup: TestCaseHandlingSetup,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self.default_handling_setup = default_handling_setup
         self.instruction_setup = instruction_setup
-        self.split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
+        self.instruction_name_extractor_function = instruction_name_extractor_function
         self.is_keep_execution_directory_root = is_keep_execution_directory_root
         self.execution_directory_root_name_prefix = execution_directory_root_name_prefix
 
@@ -49,7 +49,7 @@ def new_processor_that_is_allowed_to_pollute_current_process(configuration: Conf
 def new_accessor(configuration: Configuration) -> processing.Accessor:
     return processing_utils.AccessorFromParts(_SourceReader(),
                                               configuration.default_handling_setup.preprocessor,
-                                              _Parser(configuration.split_line_into_name_and_argument_function,
+                                              _Parser(configuration.instruction_name_extractor_function,
                                                       # configuration.handling_setup.act_phase_setup.parser,
                                                       ActPhaseParser(),
                                                       configuration.instruction_setup))
@@ -79,17 +79,17 @@ class _SourceReader(processing_utils.SourceReader):
 
 class _Parser(processing_utils.Parser):
     def __init__(self,
-                 split_line_into_name_and_argument_function,
+                 instruction_name_extractor_function,
                  act_phase_parser: SectionElementParser2,
                  instruction_setup: InstructionsSetup):
-        self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
+        self._instruction_name_extractor_function = instruction_name_extractor_function
         self._act_phase_parser = act_phase_parser
         self._instruction_setup = instruction_setup
 
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case_plain_source: str) -> test_case_doc.TestCase:
-        file_parser = test_case_parser.new_parser(self._split_line_into_name_and_argument_function,
+        file_parser = test_case_parser.new_parser(self._instruction_name_extractor_function,
                                                   self._act_phase_parser,
                                                   self._instruction_setup)
         source = ParseSource(test_case_plain_source)
