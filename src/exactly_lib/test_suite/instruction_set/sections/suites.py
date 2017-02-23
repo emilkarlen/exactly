@@ -1,7 +1,7 @@
 from exactly_lib.section_document.new_parser_classes import SectionElementParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.new_section_element_parser import \
+from exactly_lib.section_document.parser_implementations.section_element_parsers import \
     StandardSyntaxElementParser, InstructionWithoutDescriptionParser
 from exactly_lib.test_suite.instruction_set import instruction, utils
 from exactly_lib.test_suite.instruction_set.instruction import Environment, TestSuiteInstruction

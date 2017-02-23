@@ -3,7 +3,7 @@ from exactly_lib.instructions.utils.instruction_parts import MainStepExecutor, I
     InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations import new_section_element_parser
+from exactly_lib.section_document.parser_implementations import section_element_parsers
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     TestCaseInstruction
@@ -74,7 +74,7 @@ class ValidationAndSubProcessExecutionSetupParser:
         raise NotImplementedError()
 
 
-class InstructionParser(new_section_element_parser.InstructionParser):
+class InstructionParser(section_element_parsers.InstructionParser):
     def __init__(self,
                  instruction_info: InstructionInfoForConstructingAnInstructionFromParts,
                  setup_parser: ValidationAndSubProcessExecutionSetupParser):

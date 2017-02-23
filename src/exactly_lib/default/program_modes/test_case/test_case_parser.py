@@ -1,12 +1,11 @@
 from exactly_lib.processing.instruction_setup import InstructionsSetup
-# TODO [instr-desc] Rename when new parser structures are fully integrated
 from exactly_lib.section_document import new_parser_classes as parse2
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.new_section_element_parser import StandardSyntaxElementParser
 from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
+from exactly_lib.section_document.parser_implementations.section_element_parsers import StandardSyntaxElementParser
 from exactly_lib.test_case import test_case_doc, phase_identifier
 
 

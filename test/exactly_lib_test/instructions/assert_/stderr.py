@@ -2,7 +2,7 @@ import unittest
 
 import exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr
 from exactly_lib.instructions.assert_ import stderr as sut
-from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
+from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.contains import \
     ActResultProducerFromHomeAndSds2Str
