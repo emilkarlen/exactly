@@ -9,16 +9,16 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.run_i
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 
 
+def suite() -> unittest.TestSuite:
+    return suite_for(TheConfiguration())
+
+
 class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
 
     def expect_failure_because_specified_file_under_sds_is_missing(self):
         return Expectation(validation_post_setup=svh_check.is_validation_error())
-
-
-def suite():
-    return suite_for(TheConfiguration())
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.instructions.before_assert import test_resources, change_dir, env, run, shell, new_dir, utils
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         test_resources.suite(),
         utils.suite(),

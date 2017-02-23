@@ -13,6 +13,10 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import svh_che
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
+def suite() -> unittest.TestSuite:
+    return test_impl.suite_for(ConfigurationForTheBeforeAssertPhase())
+
+
 class ConfigurationForTheBeforeAssertPhase(BeforeAssertConfigurationBase, test_impl.Configuration):
     def phase(self) -> phase_identifier.Phase:
         return phase_identifier.BEFORE_ASSERT
@@ -35,10 +39,6 @@ class ConfigurationForTheBeforeAssertPhase(BeforeAssertConfigurationBase, test_i
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         return Expectation(validation_post_setup=svh_check.is_validation_error(assertion_on_error_message))
-
-
-def suite() -> unittest.TestSuite:
-    return test_impl.suite_for(ConfigurationForTheBeforeAssertPhase())
 
 
 if __name__ == '__main__':

@@ -23,6 +23,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion_test import TestException
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestCases)
+
+
 class ConcreteTestCase(sut.TestCaseBase):
     def __init__(self):
         super().__init__()
@@ -115,12 +119,6 @@ def instruction_that_asserts_cwd_is_act_dir(put: unittest.TestCase):
     return before_assert_phase_instruction_that(
         validate_post_setup=functools.partial(do_assert_cwd_is_act_dir, svh.new_svh_success()),
         main=functools.partial(do_assert_cwd_is_act_dir, sh.new_sh_success()))
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCases))
-    return ret_val
 
 
 def run_suite():
