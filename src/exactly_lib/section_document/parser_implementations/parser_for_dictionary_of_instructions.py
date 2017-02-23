@@ -31,7 +31,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
 
     def _extract_name(self, source: ParseSource) -> str:
         try:
-            name = self._name_and_argument_splitter(source.current_line_text)
+            name = self._name_and_argument_splitter(source.remaining_part_of_current_line)
             source.consume_part_of_current_line(len(name))
         except:
             raise InvalidInstructionSyntaxException(source.current_line)

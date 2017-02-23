@@ -1,7 +1,7 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.new_parser_classes import ElementParser2
+from exactly_lib.section_document.new_parser_classes import SectionElementParser2
 from exactly_lib.util import line_source
 
 
@@ -26,6 +26,7 @@ class InstructionAndDescriptionParser:
 
     Raises an exception if the parse fails.
     """
+
     def parse(self, source: ParseSource) -> InstructionAndDescription:
         """
         :raises FileSourceError The description or instruction cannot be parsed.
@@ -56,7 +57,7 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
         return InstructionAndDescription(instruction, None)
 
 
-class StandardSyntaxElementParser(ElementParser2):
+class StandardSyntaxElementParser(SectionElementParser2):
     """
     A parser that knows how to parse empty lines and
     comment lines (denoted by standard syntax).

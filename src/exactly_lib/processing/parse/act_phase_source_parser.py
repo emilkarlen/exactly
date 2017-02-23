@@ -24,6 +24,7 @@ class PlainSourceActPhaseParser(parse.SectionElementParser):
                                            SourceCodeInstruction(line_sequence), None)
 
 
+# TODO [instr-desc] Rename when new parser structures are fully integrated
 class PlainSourceActPhaseParser2(parse2.SectionElementParser2):
     def parse(self, source: parse2.ParseSource) -> model.SectionContentElement:
         first_line_number = source.current_line_number

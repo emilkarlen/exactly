@@ -1,4 +1,5 @@
 from exactly_lib.section_document import model
+from exactly_lib.section_document import new_parser_classes as parse_classes
 from exactly_lib.section_document import syntax
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSource
@@ -76,7 +77,7 @@ class SectionElementParser:
 class SectionConfiguration(tuple):
     def __new__(cls,
                 section_name: str,
-                parser: SectionElementParser):
+                parser: parse_classes.SectionElementParser2):
         return tuple.__new__(cls, (section_name, parser))
 
     @property
@@ -84,7 +85,7 @@ class SectionConfiguration(tuple):
         return self[0]
 
     @property
-    def parser(self) -> SectionElementParser:
+    def parser(self) -> parse_classes.SectionElementParser2:
         return self[1]
 
 
@@ -129,7 +130,7 @@ class SectionsConfiguration:
         """
         return self._section_list_as_tuple
 
-    def parser_for_section(self, section_name: str) -> SectionElementParser:
+    def parser_for_section(self, section_name: str) -> parse_classes.SectionElementParser2:
         return self._section2parser[section_name]
 
     def has_section(self, section_name: str) -> bool:

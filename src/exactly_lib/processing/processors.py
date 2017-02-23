@@ -8,16 +8,16 @@ from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
-from exactly_lib.processing.parse.act_phase_source_parser import PlainSourceActPhaseParser
+from exactly_lib.processing.parse.act_phase_source_parser import PlainSourceActPhaseParser2
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
 from exactly_lib.section_document import parse as document_parser
-from exactly_lib.section_document.parse import SectionElementParser
+from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.new_parser_classes import SectionElementParser2
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.util import line_source
 
 
 class Configuration:
@@ -51,7 +51,7 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
                                               configuration.default_handling_setup.preprocessor,
                                               _Parser(configuration.split_line_into_name_and_argument_function,
                                                       # configuration.handling_setup.act_phase_setup.parser,
-                                                      PlainSourceActPhaseParser(),
+                                                      PlainSourceActPhaseParser2(),
                                                       configuration.instruction_setup))
 
 
@@ -80,7 +80,7 @@ class _SourceReader(processing_utils.SourceReader):
 class _Parser(processing_utils.Parser):
     def __init__(self,
                  split_line_into_name_and_argument_function,
-                 act_phase_parser: SectionElementParser,
+                 act_phase_parser: SectionElementParser2,
                  instruction_setup: InstructionsSetup):
         self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
         self._act_phase_parser = act_phase_parser
@@ -92,7 +92,7 @@ class _Parser(processing_utils.Parser):
         file_parser = test_case_parser.new_parser(self._split_line_into_name_and_argument_function,
                                                   self._act_phase_parser,
                                                   self._instruction_setup)
-        source = line_source.new_for_string(test_case_plain_source)
+        source = ParseSource(test_case_plain_source)
         try:
             return file_parser.apply(source)
         except document_parser.FileSourceError as ex:
