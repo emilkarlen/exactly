@@ -1,10 +1,6 @@
-from exactly_lib.section_document import model
-from exactly_lib.section_document import parse
-from exactly_lib.section_document import syntax
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
-from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 
 
@@ -61,21 +57,6 @@ class SingleInstructionParser:
 
         :return: An instruction, iff the arguments are valid.
         """
-        raise NotImplementedError()
-
-
-class SectionElementParserForStandardCommentAndEmptyLines(parse.SectionElementParser):
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
-        first_line = source.first_line
-        if syntax.is_empty_line(first_line.text):
-            return model.new_empty_e(source.build())
-        if syntax.is_comment_line(first_line.text):
-            return model.new_comment_e(source.build())
-        instruction = self._parse_instruction(source)
-        return model.new_instruction_e(source.build(), instruction)
-
-    def _parse_instruction(self,
-                           source: line_source.LineSequenceBuilder) -> TestCaseInstruction:
         raise NotImplementedError()
 
 
@@ -148,63 +129,3 @@ class ArgumentParsingImplementationException(SourceError):
                          'Parser implementation error while parsing ' + instruction_name)
         self.instruction_name = instruction_name
         self.parser_that_raised_exception = parser_that_raised_exception
-
-
-class SectionElementParserForDictionaryOfInstructions(SectionElementParserForStandardCommentAndEmptyLines):
-    def __init__(self,
-                 instruction_name_extractor_function,
-                 instruction_name__2__single_instruction_parser: dict):
-        """
-        :param instruction_name_extractor_function Callable that extracts an instruction name from a source line.
-        The source line text is assumed to contain at least
-        an instruction name.
-        :param instruction_name__2__single_instruction_parser: dict: str -> SingleInstructionParser
-        """
-        self.__instruction_name__2__single_instruction_parser = instruction_name__2__single_instruction_parser
-        for value in self.__instruction_name__2__single_instruction_parser.values():
-            assert isinstance(value, InstructionParser)
-        self._name_and_argument_splitter = instruction_name_extractor_function
-
-    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> Instruction:
-        first_line = source.first_line
-        (name, argument) = self._split(first_line)
-        parser = self._lookup_parser(first_line, name)
-        return self._parse(SingleInstructionParserSource(source, argument),
-                           parser,
-                           name)
-
-    def _split(self, source_line: line_source.Line) -> (str, str):
-        try:
-            (name, arg) = self._name_and_argument_splitter(source_line.text)
-            return name, arg
-        except:
-            raise InvalidInstructionSyntaxException(source_line)
-
-    def _lookup_parser(self,
-                       original_source_line: line_source.Line,
-                       name: str) -> SingleInstructionParser:
-        """
-        :raises: InvalidInstructionException
-        """
-        if name not in self.__instruction_name__2__single_instruction_parser:
-            raise UnknownInstructionException(original_source_line,
-                                              name)
-        return self.__instruction_name__2__single_instruction_parser[name]
-
-    @staticmethod
-    def _parse(source: SingleInstructionParserSource,
-               parser: SingleInstructionParser,
-               name: str) -> Instruction:
-        """
-        :raises: InvalidInstructionException
-        """
-        try:
-            return parser.apply(source)
-        except SingleInstructionInvalidArgumentException as ex:
-            raise InvalidInstructionArgumentException(source.line_sequence.first_line,
-                                                      name,
-                                                      ex.error_message)
-        except Exception:
-            raise ArgumentParsingImplementationException(source.line_sequence.first_line,
-                                                         name,
-                                                         parser)
