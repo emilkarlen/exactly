@@ -13,6 +13,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.parse import argument_list_source, source4
 
@@ -79,7 +80,8 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                   ),
                   Expectation(
                       main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                          file_ref.rel_home('file-in-home-dir.txt')))
+                          file_ref.rel_home('file-in-home-dir.txt')),
+                      source=source_is_at_end)
                   )
 
     def test_file_rel_home__implicitly(self):
@@ -88,7 +90,8 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                       empty_file('file-in-home-dir.txt')])
                   ),
                   Expectation(main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                      file_ref.rel_home('file-in-home-dir.txt')))
+                      file_ref.rel_home('file-in-home-dir.txt')),
+                      source=source_is_at_end)
                   )
 
 
@@ -96,7 +99,8 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
     def test_referenced_file_does_not_exist(self):
         self._run(source4('--rel-home non-existing-file'),
                   Arrangement(),
-                  Expectation(pre_validation_result=svh_check.is_validation_error())
+                  Expectation(pre_validation_result=svh_check.is_validation_error(),
+                              source=source_is_at_end)
                   )
 
     def test_referenced_file_is_a_directory(self):
@@ -104,7 +108,8 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
                   Arrangement(home_dir_contents=DirContents([
                       empty_dir('directory')])
                   ),
-                  Expectation(pre_validation_result=svh_check.is_validation_error())
+                  Expectation(pre_validation_result=svh_check.is_validation_error(),
+                              source=source_is_at_end)
                   )
 
     def test_single_line_contents_from_here_document(self):
@@ -113,7 +118,8 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
                                         'MARKER']),
                   Arrangement(),
                   Expectation(main_side_effects_on_environment=AssertStdinIsSetToContents(
-                      lines_content(['single line'])))
+                      lines_content(['single line'])),
+                      source=source_is_at_end)
                   )
 
 
