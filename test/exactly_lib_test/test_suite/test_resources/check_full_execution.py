@@ -63,8 +63,8 @@ def _default_case_configuration(test_case_handling_setup: TestCaseHandlingSetup)
                                          False)
 
 
-def white_space_name_and_argument_splitter(s: str) -> list:
-    return s.strip().split()
+def white_space_name_and_argument_splitter(s: str) -> str:
+    return s.split()[0]
 
 
 INSTRUCTION_SETUP = InstructionsSetup(
