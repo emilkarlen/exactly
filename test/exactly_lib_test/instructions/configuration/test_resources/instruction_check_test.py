@@ -10,32 +10,32 @@ from exactly_lib_test.instructions.configuration.test_resources import configura
 from exactly_lib_test.instructions.configuration.test_resources import instruction_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
-from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGivesInstrDesc, \
-    single_line_sourceInstrDesc
+from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives, \
+    single_line_source
 
 
 class TestCases(instruction_check.TestCaseBase):
     def test_successful_flow(self):
         self._check(
-            ParserThatGivesInstrDesc(_SUCCESSFUL_INSTRUCTION),
-            single_line_sourceInstrDesc(),
+            ParserThatGives(_SUCCESSFUL_INSTRUCTION),
+            single_line_source(),
             Arrangement(),
             Expectation())
 
     def test_fail_due_to_unexpected_result_from_main(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                ParserThatGivesInstrDesc(_SUCCESSFUL_INSTRUCTION),
+                ParserThatGives(_SUCCESSFUL_INSTRUCTION),
 
-                single_line_sourceInstrDesc(),
+                single_line_source(),
                 Arrangement(),
                 Expectation(main_result=test_misc.raises_test_error()))
 
     def test_fail_due_to_fail_of_side_effects_on_configuration(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                ParserThatGivesInstrDesc(_SUCCESSFUL_INSTRUCTION),
-                single_line_sourceInstrDesc(),
+                ParserThatGives(_SUCCESSFUL_INSTRUCTION),
+                single_line_source(),
                 Arrangement(),
                 Expectation(configuration=ConfigurationCheckRaisesTestError()))
 
