@@ -1,6 +1,12 @@
 import unittest
 
-from exactly_lib.default.program_modes.test_case.instruction_name_and_argument_splitter import splitter
+from exactly_lib.default.instruction_name_and_argument_splitter import splitter
+
+
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestCase))
+    return ret_val
 
 
 class TestCase(unittest.TestCase):
@@ -46,12 +52,6 @@ class TestCase(unittest.TestCase):
         # ASSERT #
         self.assertEqual(expected_name, actual_name, 'Name')
         self.assertEqual(expected_argument, actual_arg, 'Argument')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCase))
-    return ret_val
 
 
 if __name__ == '__main__':
