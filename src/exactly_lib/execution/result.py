@@ -33,14 +33,20 @@ class InstructionFailureInfo(FailureInfo):
     def __init__(self,
                  phase_step: PhaseStep,
                  source_line: line_source.Line,
-                 failure_details: FailureDetails):
+                 failure_details: FailureDetails,
+                 element_description: str = None):
         super().__init__(phase_step, failure_details)
         self.__source_line = source_line
         self.__phase_step = phase_step
+        self.__element_description = element_description
 
     @property
     def source_line(self) -> line_source.Line:
         return self.__source_line
+
+    @property
+    def element_description(self) -> str:
+        return self.__element_description
 
 
 class PhaseFailureInfo(FailureInfo):

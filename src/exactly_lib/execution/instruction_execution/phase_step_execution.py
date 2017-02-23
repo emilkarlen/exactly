@@ -23,8 +23,9 @@ class Failure(tuple):
     def __new__(cls,
                 status: PartialResultStatus,
                 source_line: line_source.Line,
-                failure_details: FailureDetails):
-        return tuple.__new__(cls, (status, source_line, failure_details))
+                failure_details: FailureDetails,
+                element_description: str = None):
+        return tuple.__new__(cls, (status, source_line, failure_details, element_description))
 
     @property
     def status(self) -> PartialResultStatus:
@@ -37,6 +38,13 @@ class Failure(tuple):
     @property
     def failure_details(self) -> FailureDetails:
         return self[2]
+
+    @property
+    def element_description(self) -> str:
+        """
+        :return: May be None
+        """
+        return self[3]
 
 
 def non_instruction_failure(status: PartialResultStatus,
@@ -76,11 +84,12 @@ def execute_phase(phase_contents: SectionContents,
         return new_partial_result_pass(sds)
     else:
         return PartialResult(
-                failure.status,
-                sds,
-                InstructionFailureInfo(phase_step,
-                                       failure.source_line,
-                                       failure.failure_details)
+            failure.status,
+            sds,
+            InstructionFailureInfo(phase_step,
+                                   failure.source_line,
+                                   failure.failure_details,
+                                   failure.element_description)
         )
 
 
@@ -115,5 +124,6 @@ def execute_phase_prim(phase_contents: SectionContents,
             if failure_info is not None:
                 return Failure(failure_info.status,
                                failure_info.source_line,
-                               failure_info.failure_details)
+                               failure_info.failure_details,
+                               element.description)
     return None
