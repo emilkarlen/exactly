@@ -20,7 +20,7 @@ def print_error_message_for_full_result(printer: FilePrinter, the_full_result: f
         failure_info = the_full_result.failure_info
         _SourceDisplayer(printer).visit(failure_info)
         failure_details = failure_info.failure_details
-        if failure_info.failure_details.is_only_failure_message:
+        if failure_details.is_only_failure_message:
             ed = error_description.of_message(failure_details.failure_message)
         else:
             ed = error_description.of_exception(failure_details.exception,
@@ -46,6 +46,7 @@ def output_location(printer: FilePrinter,
                     file: pathlib.Path,
                     section_name: str,
                     line: line_source.Line,
+                    description: str = None,
                     section_presentation_type_name: str = 'phase'):
     has_output_header = False
     if file:
@@ -56,6 +57,9 @@ def output_location(printer: FilePrinter,
         has_output_header = True
     if line:
         printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
+        has_output_header = True
+    if description:
+        printer.write_line('Described as: ' + description)
         has_output_header = True
 
     if has_output_header:
@@ -97,4 +101,5 @@ class _SourceDisplayer(FailureInfoVisitor):
         output_location(self.out,
                         None,
                         failure_info.phase_step.phase.identifier,
-                        failure_info.source_line)
+                        failure_info.source_line,
+                        failure_info.element_description)
