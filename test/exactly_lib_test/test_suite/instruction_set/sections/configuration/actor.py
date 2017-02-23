@@ -4,13 +4,15 @@ from exactly_lib.instructions.configuration.utils.actor_utils import COMMAND_LIN
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections.configuration import actor as sut
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
+    ConfigurationSectionInstruction
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
     configuration_section_environment
 
@@ -31,14 +33,14 @@ if __name__ == '__main__':
 
 class TestFailingParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source2('   ')
+        source = remaining_source('   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_fail_when_the_quoting_is_invalid(self):
-        source = new_source2('argument-1 "argument-2')
+        source = remaining_source('argument-1 "argument-2')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
 
 class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.TestCase):
@@ -52,8 +54,9 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
     def test_act_phase_source_is_single_shell_command(self):
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        source = new_source2(COMMAND_LINE_ACTOR_OPTION)
-        instruction = sut.Parser().apply(source)
+        source = remaining_source(COMMAND_LINE_ACTOR_OPTION)
+        instruction = sut.Parser().parse(source)
+        assert isinstance(instruction, ConfigurationSectionInstruction)
         environment = configuration_section_environment()
         # ACT #
         instruction.execute(environment)

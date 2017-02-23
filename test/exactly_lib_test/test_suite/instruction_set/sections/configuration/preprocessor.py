@@ -4,8 +4,10 @@ from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor as sut
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
+    ConfigurationSectionInstruction
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
     configuration_section_environment
 
@@ -24,22 +26,23 @@ if __name__ == '__main__':
 
 class TestFailingParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source2('   ')
+        source = remaining_source('   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
     def test_fail_when_the_quoting_is_invalid(self):
-        source = new_source2('argument-1 "argument-2')
+        source = remaining_source('argument-1 "argument-2')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.Parser().parse(source)
 
 
 class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
     def _check(self, instruction_argument_source: str,
                expected_command_and_arguments: list):
         # ARRANGE #
-        source = new_source2(instruction_argument_source)
-        instruction = sut.Parser().apply(source)
+        source = remaining_source(instruction_argument_source)
+        instruction = sut.Parser().parse(source)
+        assert isinstance(instruction, ConfigurationSectionInstruction)
         environment = configuration_section_environment()
         # ACT #
         instruction.execute(environment)
