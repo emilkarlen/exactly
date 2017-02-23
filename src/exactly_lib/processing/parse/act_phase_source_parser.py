@@ -5,7 +5,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
 
 
-class ActPhaseParser(parse2.SectionElementParser2):
+class ActPhaseParser(parse2.SectionElementParser):
     def parse(self, source: parse2.ParseSource) -> model.SectionContentElement:
         first_line_number = source.current_line_number
         current_line = source.current_line_text

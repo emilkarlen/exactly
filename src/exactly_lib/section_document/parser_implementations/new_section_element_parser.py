@@ -1,7 +1,7 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.new_parser_classes import SectionElementParser2
+from exactly_lib.section_document.new_parser_classes import SectionElementParser
 from exactly_lib.util import line_source
 
 
@@ -61,7 +61,7 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
         return parse_and_compute_source(self.instruction_parser, source)
 
 
-class StandardSyntaxElementParser(SectionElementParser2):
+class StandardSyntaxElementParser(SectionElementParser):
     """
     A parser that knows how to parse empty lines and
     comment lines (denoted by standard syntax).

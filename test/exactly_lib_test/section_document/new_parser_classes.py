@@ -6,7 +6,7 @@ from exactly_lib.section_document import new_parser_classes as sut
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.new_parser_classes import PlainDocumentParser2, new_parser_for
+from exactly_lib.section_document.new_parser_classes import DocumentParser, new_parser_for
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, assert_equals_line_sequence
@@ -33,7 +33,7 @@ _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
 
 class ParseTestBase(unittest.TestCase):
     def _parse_lines(self,
-                     parser: PlainDocumentParser2,
+                     parser: DocumentParser,
                      lines: list) -> model.Document:
         plain_document = '\n'.join(lines)
         ptc_source = ParseSource(plain_document)
@@ -580,7 +580,7 @@ def _consume_current_line_and_return_it_as_line_sequence(source: ParseSource) ->
     return ret_val
 
 
-class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementParser2):
+class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
 
@@ -615,13 +615,13 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
             return _consume_current_line_and_return_it_as_line_sequence(source)
 
 
-class SectionElementParserThatFails(sut.SectionElementParser2):
+class SectionElementParserThatFails(sut.SectionElementParser):
     def parse(self, source: ParseSource) -> model.SectionContentElement:
         raise SourceError(_consume_current_line_and_return_it_as_line_sequence(source).first_line,
                           'Unconditional failure')
 
 
-def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser2:
+def parser_for_phase2_that_fails_unconditionally() -> DocumentParser:
     configuration = exactly_lib.section_document.new_parser_classes.SectionsConfiguration(
         (exactly_lib.section_document.new_parser_classes.SectionConfiguration('phase 1',
                                                                               SectionElementParserForEmptyCommentAndInstructionLines(
@@ -633,7 +633,7 @@ def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser2:
 
 
 def parser_for_sections(section_names: list,
-                        default_section_name: str = None) -> PlainDocumentParser2:
+                        default_section_name: str = None) -> DocumentParser:
     sections = [exactly_lib.section_document.new_parser_classes.SectionConfiguration(name,
                                                                                      SectionElementParserForEmptyCommentAndInstructionLines(
                                                                                          name))
