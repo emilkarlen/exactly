@@ -1,5 +1,5 @@
 from exactly_lib.section_document import model
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     InvalidInstructionSyntaxException, UnknownInstructionException, SingleInstructionInvalidArgumentException, \
     InvalidInstructionArgumentException, ArgumentParsingImplementationException

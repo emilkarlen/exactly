@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_argum
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.destination_path import DestinationType, DestinationPath
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

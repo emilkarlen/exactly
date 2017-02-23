@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import exitcode as sut
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

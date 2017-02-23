@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check

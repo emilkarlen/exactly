@@ -1,5 +1,5 @@
 from exactly_lib.instructions.assert_ import contents as sut
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources

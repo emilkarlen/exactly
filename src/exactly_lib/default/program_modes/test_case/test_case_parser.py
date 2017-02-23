@@ -1,6 +1,6 @@
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import new_parser_classes as parse2
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \

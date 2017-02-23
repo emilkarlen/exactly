@@ -4,7 +4,7 @@ Test of test-infrastructure: instruction_check.
 import unittest
 
 import exactly_lib_test.test_resources.parse
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep

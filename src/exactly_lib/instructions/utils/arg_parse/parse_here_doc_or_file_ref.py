@@ -2,7 +2,7 @@ from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_here_document
 from exactly_lib.instructions.utils.arg_parse.parse_here_document import HereDocumentContentsParsingException
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 
