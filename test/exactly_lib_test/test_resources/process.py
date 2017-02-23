@@ -1,7 +1,6 @@
 import pathlib
 import subprocess
 import tempfile
-import unittest
 
 from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
@@ -31,42 +30,6 @@ class SubProcessResult(tuple):
     @property
     def output_files(self) -> StdOutputFiles:
         return StdOutputFiles(self.stdout, self.stderr)
-
-
-class ExpectedSubProcessResult(tuple):
-    def __new__(cls,
-                exitcode: int = None,
-                stdout: str = None,
-                stderr: str = None):
-        return tuple.__new__(cls, (exitcode, stdout, stderr))
-
-    def assert_matches(self,
-                       put: unittest.TestCase,
-                       actual: SubProcessResult):
-        if self.exitcode is not None:
-            put.assertEqual(self.exitcode,
-                            actual.exitcode,
-                            'Exit code')
-        if self.stdout is not None:
-            put.assertEqual(self.stdout,
-                            actual.stdout,
-                            'Content on stdout')
-        if self.stderr is not None:
-            put.assertEqual(self.stderr,
-                            actual.stderr,
-                            'Content on stderr')
-
-    @property
-    def exitcode(self) -> int:
-        return self[0]
-
-    @property
-    def stdout(self) -> str:
-        return self[1]
-
-    @property
-    def stderr(self) -> str:
-        return self[2]
 
 
 stdout_file_name = 'stdout.txt'
