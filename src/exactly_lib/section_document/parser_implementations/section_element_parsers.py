@@ -1,6 +1,6 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
-from exactly_lib.section_document.new_parser_classes import SectionElementParser
+from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 

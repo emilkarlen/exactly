@@ -1,4 +1,4 @@
-from exactly_lib.section_document.new_parser_classes import SectionElementParser
+from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.section_element_parsers import \

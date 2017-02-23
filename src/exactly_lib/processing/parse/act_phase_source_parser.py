@@ -1,12 +1,12 @@
+from exactly_lib.section_document import document_parser
 from exactly_lib.section_document import model
-from exactly_lib.section_document import new_parser_classes as parse2
 from exactly_lib.section_document import syntax
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
 
 
-class ActPhaseParser(parse2.SectionElementParser):
-    def parse(self, source: parse2.ParseSource) -> model.SectionContentElement:
+class ActPhaseParser(document_parser.SectionElementParser):
+    def parse(self, source: document_parser.ParseSource) -> model.SectionContentElement:
         first_line_number = source.current_line_number
         current_line = source.current_line_text
         lines_read = [_un_escape(current_line)]
