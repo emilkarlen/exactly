@@ -12,7 +12,7 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
-from exactly_lib.section_document.new_parser_classes import SectionElementParser
+from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc

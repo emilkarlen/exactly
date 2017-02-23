@@ -1,4 +1,4 @@
-from exactly_lib.section_document import new_parser_classes as parse
+from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.instruction_set.sections import cases
@@ -7,12 +7,12 @@ from exactly_lib.test_suite.instruction_set.sections.configuration import instru
 from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES, \
     DEFAULT_SECTION_NAME
 
-PARSER_CONFIGURATION = parse.SectionsConfiguration(
+PARSER_CONFIGURATION = document_parser.SectionsConfiguration(
     (
-        parse.SectionConfiguration(SECTION_NAME__CONF,
-                                   instruction_set.new_parser()),
-        parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
-        parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
+        document_parser.SectionConfiguration(SECTION_NAME__CONF,
+                                             instruction_set.new_parser()),
+        document_parser.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
+        document_parser.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
     ),
     default_section_name=DEFAULT_SECTION_NAME
 )
@@ -20,7 +20,7 @@ PARSER_CONFIGURATION = parse.SectionsConfiguration(
 
 class Parser:
     def __init__(self):
-        self.__plain_file_parser = parse.new_parser_for(PARSER_CONFIGURATION)
+        self.__plain_file_parser = document_parser.new_parser_for(PARSER_CONFIGURATION)
 
     def apply(self,
               plain_test_case: ParseSource) -> test_suite_doc.TestSuiteDocument:
