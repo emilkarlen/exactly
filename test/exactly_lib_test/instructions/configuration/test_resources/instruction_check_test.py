@@ -3,9 +3,6 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-import exactly_lib_test.test_resources.parse
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     configuration_phase_instruction_that
@@ -46,10 +43,6 @@ class TestCases(instruction_check.TestCaseBase):
 class ConfigurationCheckRaisesTestError(configuration_check.Assertion):
     def apply(self, put: unittest.TestCase, initial: ConfigurationBuilder, actual_result: ConfigurationBuilder):
         raise test_misc.TestError()
-
-
-def single_line_source() -> SingleInstructionParserSource:
-    return exactly_lib_test.test_resources.parse.new_source('instruction name', 'instruction arguments')
 
 
 _SUCCESSFUL_INSTRUCTION = configuration_phase_instruction_that()

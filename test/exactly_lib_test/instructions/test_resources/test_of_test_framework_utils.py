@@ -2,17 +2,11 @@ import os
 import unittest
 
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources.parse import new_source2, source3
+from exactly_lib_test.test_resources.parse import source3
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
-
-
-def single_line_source() -> SingleInstructionParserSource:
-    return new_source2('argument')
 
 
 # TODO [instr-desc] Remove other with new parsing integrated
