@@ -6,11 +6,7 @@ from exactly_lib.section_document.parse import SectionsConfiguration, SourceErro
 from exactly_lib.util import line_source
 
 
-class ElementParser2:
-    def parse(self, source: ParseSource) -> model.SectionContentElement:
-        raise NotImplementedError()
-
-
+# TODO [instr-desc] Rename when new parser structures are fully integrated (to "DocumentParser")
 class PlainDocumentParser2:
     """
     Base class for parsers that parse a "plain file"
@@ -24,6 +20,7 @@ class PlainDocumentParser2:
         raise NotImplementedError()
 
 
+# TODO [instr-desc] Rename when new parser structures are fully integrated
 class SectionElementParser2:
     def parse(self, source: ParseSource) -> model.SectionContentElement:
         """
