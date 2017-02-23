@@ -1,6 +1,6 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionParser
+from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 
 
 class InstructionParserThatConsumesCurrentLine(InstructionParser):
