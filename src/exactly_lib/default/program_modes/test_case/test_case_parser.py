@@ -1,4 +1,3 @@
-import exactly_lib.section_document.new_parser_classes
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 # TODO [instr-desc] Rename when new parser structures are fully integrated
 from exactly_lib.section_document import new_parser_classes as parse2
@@ -38,25 +37,25 @@ def new_parser(instruction_name_extractor_function,
                 InstructionParserForDictionaryOfInstructions(instruction_name_extractor_function,
                                                              instruction_set)))
 
-    configuration = exactly_lib.section_document.new_parser_classes.SectionsConfiguration(
+    configuration = parse2.SectionsConfiguration(
         (
-            exactly_lib.section_document.new_parser_classes.SectionConfiguration(
+            parse2.SectionConfiguration(
                 phase_identifier.CONFIGURATION.section_name,
                 dict_parser(instructions_setup.config_instruction_set)),
-            exactly_lib.section_document.new_parser_classes.SectionConfiguration(phase_identifier.SETUP.section_name,
-                                                                                 dict_parser(
-                                                                                     instructions_setup.setup_instruction_set)),
-            exactly_lib.section_document.new_parser_classes.SectionConfiguration(phase_identifier.ACT.section_name,
-                                                                                 act_phase_parser),
-            exactly_lib.section_document.new_parser_classes.SectionConfiguration(
+            parse2.SectionConfiguration(phase_identifier.SETUP.section_name,
+                                        dict_parser(
+                                            instructions_setup.setup_instruction_set)),
+            parse2.SectionConfiguration(phase_identifier.ACT.section_name,
+                                        act_phase_parser),
+            parse2.SectionConfiguration(
                 phase_identifier.BEFORE_ASSERT.section_name,
                 dict_parser(instructions_setup.before_assert_instruction_set)),
-            exactly_lib.section_document.new_parser_classes.SectionConfiguration(phase_identifier.ASSERT.section_name,
-                                                                                 dict_parser(
-                                                                                     instructions_setup.assert_instruction_set)),
-            exactly_lib.section_document.new_parser_classes.SectionConfiguration(phase_identifier.CLEANUP.section_name,
-                                                                                 dict_parser(
-                                                                                     instructions_setup.cleanup_instruction_set)),
+            parse2.SectionConfiguration(phase_identifier.ASSERT.section_name,
+                                        dict_parser(
+                                            instructions_setup.assert_instruction_set)),
+            parse2.SectionConfiguration(phase_identifier.CLEANUP.section_name,
+                                        dict_parser(
+                                            instructions_setup.cleanup_instruction_set)),
         ),
         default_section_name=phase_identifier.DEFAULT_PHASE.section_name,
         section_element_name_for_error_messages=phase_identifier.SECTION_CONCEPT_NAME,
