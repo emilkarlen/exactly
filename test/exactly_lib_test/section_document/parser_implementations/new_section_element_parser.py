@@ -4,6 +4,7 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import new_section_element_parser as sut
+from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 
@@ -93,13 +94,15 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescr
         self.instruction_line_identifier = instruction_line_identifier
 
     def parse(self, source: ParseSource) -> sut.InstructionAndDescription:
+        first_line_number = source.current_line_number
+        dummy_source = line_source.LineSequence(first_line_number, (source.current_line_text,))
         is_instruction = False
         while not source.is_at_eof and source.current_line_text.startswith(self.instruction_line_identifier):
             source.consume_current_line()
             is_instruction = True
         if not is_instruction:
             raise ValueError('Not an instruction')
-        return sut.InstructionAndDescription(Instruction(), None)
+        return sut.InstructionAndDescription(Instruction(), dummy_source, None)
 
 
 class Instruction(model.Instruction):

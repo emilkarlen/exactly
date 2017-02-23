@@ -8,16 +8,21 @@ from exactly_lib.util import line_source
 class InstructionAndDescription(tuple):
     def __new__(cls,
                 instruction: model.Instruction,
+                source: line_source.LineSequence,
                 description: str = None):
-        return tuple.__new__(cls, (instruction, description))
+        return tuple.__new__(cls, (instruction, source, description))
 
     @property
     def instruction(self) -> model.Instruction:
         return self[0]
 
     @property
-    def description(self) -> str:
+    def source(self) -> line_source.LineSequence:
         return self[1]
+
+    @property
+    def description(self) -> str:
+        return self[2]
 
 
 class InstructionAndDescriptionParser:
@@ -53,8 +58,7 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
     def parse(self, source: ParseSource) -> InstructionAndDescription:
-        instruction = self.instruction_parser.parse(source)
-        return InstructionAndDescription(instruction, None)
+        return parse_and_compute_source(self.instruction_parser, source)
 
 
 class StandardSyntaxElementParser(SectionElementParser2):
@@ -75,15 +79,8 @@ class StandardSyntaxElementParser(SectionElementParser2):
         if syntax.is_comment_line(first_line.text):
             return model.new_comment_e(self._consume_and_return_current_line(source))
         else:
-            source_before = source.remaining_source
-            first_line_number = source.current_line_number
-            len_before_parse = len(source_before)
             instruction_and_description = self.instruction_parser.parse(source)
-            len_after_parse = len(source.remaining_source)
-            len_instruction_source = len_before_parse - len_after_parse
-            instruction_source = source_before[:len_instruction_source]
-            return model.new_instruction_e(line_source.LineSequence(first_line_number,
-                                                                    tuple(instruction_source.split('\n'))),
+            return model.new_instruction_e(instruction_and_description.source,
                                            instruction_and_description.instruction,
                                            instruction_and_description.description)
 
@@ -93,3 +90,17 @@ class StandardSyntaxElementParser(SectionElementParser2):
         source.consume_current_line()
         return line_source.LineSequence(current_line.line_number,
                                         (current_line.text,))
+
+
+def parse_and_compute_source(parser: InstructionParser,
+                             source: ParseSource,
+                             description: str = None) -> InstructionAndDescription:
+    source_before = source.remaining_source
+    first_line_number = source.current_line_number
+    len_before_parse = len(source_before)
+    instruction = parser.parse(source)
+    len_after_parse = len(source.remaining_source)
+    len_instruction_source = len_before_parse - len_after_parse
+    instruction_source = source_before[:len_instruction_source]
+    source = line_source.LineSequence(first_line_number, tuple(instruction_source.split('\n')))
+    return InstructionAndDescription(instruction, source, description)
