@@ -26,14 +26,14 @@ class TestCases(instruction_check.TestCaseBase):
     def test_successful_flow(self):
         self._check(
             test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
-            test_misc.single_line_sourceInstrDesc(),
+            test_misc.single_line_source(),
             arrangement(),
             is_pass())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(test_misc.TestError):
             self._check(test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
-                        test_misc.single_line_sourceInstrDesc(),
+                        test_misc.single_line_source(),
                         arrangement(),
                         Expectation(validation_pre_sds=test_misc.raises_test_error()),
                         )
@@ -41,7 +41,7 @@ class TestCases(instruction_check.TestCaseBase):
     def test_fail_due_to_unexpected_result_from_post_validation(self):
         with self.assertRaises(test_misc.TestError):
             self._check(test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
-                        test_misc.single_line_sourceInstrDesc(),
+                        test_misc.single_line_source(),
                         arrangement(),
                         Expectation(validation_post_sds=test_misc.raises_test_error()),
                         )
@@ -50,7 +50,7 @@ class TestCases(instruction_check.TestCaseBase):
         with self.assertRaises(test_misc.TestError):
             self._check(
                 test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
-                test_misc.single_line_sourceInstrDesc(),
+                test_misc.single_line_source(),
                 arrangement(),
                 Expectation(main_result=test_misc.raises_test_error()),
             )
@@ -59,7 +59,7 @@ class TestCases(instruction_check.TestCaseBase):
         with self.assertRaises(test_misc.TestError):
             self._check(
                 test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
-                test_misc.single_line_sourceInstrDesc(),
+                test_misc.single_line_source(),
                 arrangement(),
                 Expectation(main_side_effects_on_files=test_misc.raises_test_error()),
             )
@@ -67,7 +67,7 @@ class TestCases(instruction_check.TestCaseBase):
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         self._check(
             test_misc.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
-            test_misc.single_line_sourceInstrDesc(),
+            test_misc.single_line_source(),
             arrangement(),
             is_pass())
 
@@ -75,7 +75,7 @@ class TestCases(instruction_check.TestCaseBase):
         with self.assertRaises(test_misc.TestError):
             self._check(
                 test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
-                test_misc.single_line_sourceInstrDesc(),
+                test_misc.single_line_source(),
                 arrangement(),
                 Expectation(side_effects_check=test_misc.raises_test_error()),
             )

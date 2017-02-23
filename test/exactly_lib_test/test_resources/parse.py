@@ -1,19 +1,6 @@
 import shlex
 
-from exactly_lib.section_document import parse
 from exactly_lib.section_document.new_parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
-from exactly_lib.util import line_source
-from exactly_lib.util.line_source import LineSequenceBuilder
-
-
-def new_source2(first_line_arguments: str,
-                following_lines: list = ()) -> SingleInstructionParserSource:
-    first_line = 'instruction-name' + ' ' + first_line_arguments
-    return SingleInstructionParserSource(
-        new_line_sequence(first_line, tuple(following_lines)),
-        first_line_arguments)
 
 
 def source3(lines: list) -> ParseSource:
@@ -48,8 +35,7 @@ def remaining_source_lines(lines: list) -> ParseSource:
     return remaining_source(lines[0], lines[1:])
 
 
-# TODO [instr-desc] Rename when new parser structures are fully integrated
-def single_line_sourcE(arguments: str) -> ParseSource:
+def single_line_source(arguments: str) -> ParseSource:
     remaining_part_of_current_line = arguments
     return source4(remaining_part_of_current_line)
 
@@ -58,15 +44,6 @@ def argument_list_source(arguments: list,
                          following_lines: iter = ()) -> ParseSource:
     return source4(' '.join(map(_quote, arguments)),
                    following_lines)
-
-
-def new_line_sequence(first_line: str,
-                      following_lines: tuple = ()) -> LineSequenceBuilder:
-    return line_source.LineSequenceBuilder(
-        parse.LineSequenceSourceFromListOfLines(
-            parse.ListOfLines(list(following_lines))),
-        1,
-        first_line)
 
 
 def _quote(s: str) -> str:

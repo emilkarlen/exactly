@@ -9,8 +9,7 @@ from exactly_lib_test.test_resources.parse import source3
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
-# TODO [instr-desc] Remove other with new parsing integrated
-def single_line_sourceInstrDesc() -> ParseSource:
+def single_line_source() -> ParseSource:
     return source3(['argument'])
 
 
@@ -31,16 +30,6 @@ def raises_test_error() -> va.ValueAssertion:
 
 
 class ParserThatGives(InstructionParser):
-    def __init__(self,
-                 instruction: TestCaseInstruction):
-        self.instruction = instruction
-
-    def parse(self, source: ParseSource) -> TestCaseInstruction:
-        return self.instruction
-
-
-# TODO [instr-desc] Remove other with new parsing integrated
-class ParserThatGivesInstrDesc(InstructionParser):
     def __init__(self,
                  instruction: TestCaseInstruction):
         self.instruction = instruction
