@@ -57,9 +57,9 @@ class MainProgram:
         return self.execute_test_case(settings)
 
     def _parse_and_execute_test_suite(self, command_line_arguments: list) -> int:
-        from exactly_lib.cli.program_modes.test_suite import argument_parsing as suite_argument_parsing
-        settings = suite_argument_parsing.parse(self._default,
-                                                command_line_arguments)
+        from exactly_lib.cli.program_modes.test_suite import argument_parsing
+        settings = argument_parsing.parse(self._default,
+                                          command_line_arguments)
         return self.execute_test_suite(settings)
 
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:

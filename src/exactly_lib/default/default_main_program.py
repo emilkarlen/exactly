@@ -26,8 +26,10 @@ class MainProgram(main_program.MainProgram):
         return executor.execute()
 
     def execute_test_suite(self, test_suite_execution_settings) -> int:
+        from exactly_lib.processing import processors as case_processing
         from exactly_lib.test_suite import enumeration
         from exactly_lib.test_suite import suite_hierarchy_reading
+        from exactly_lib.test_suite import execution as test_suite_execution
         default_configuration = case_processing.Configuration(self._instruction_name_extractor_function,
                                                               self._instruction_set,
                                                               test_suite_execution_settings.handling_setup,
