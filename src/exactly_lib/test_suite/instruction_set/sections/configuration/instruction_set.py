@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_setup import instruction_set_from_name_and_setup_constructor_list
-from exactly_lib.default.program_modes.test_case import instruction_name_and_argument_splitter
+from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.section_document import parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions
