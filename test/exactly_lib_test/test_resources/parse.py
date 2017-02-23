@@ -8,13 +8,6 @@ from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequenceBuilder
 
 
-def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:
-    first_line = instruction_name + ' ' + arguments
-    return SingleInstructionParserSource(
-        new_line_sequence(first_line),
-        arguments)
-
-
 def new_source2(first_line_arguments: str,
                 following_lines: list = ()) -> SingleInstructionParserSource:
     first_line = 'instruction-name' + ' ' + first_line_arguments
