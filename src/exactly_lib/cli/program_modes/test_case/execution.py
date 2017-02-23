@@ -13,13 +13,13 @@ from exactly_lib.util.std import StdOutputFiles, FilePrinter
 class Executor:
     def __init__(self,
                  output: StdOutputFiles,
-                 split_line_into_name_and_argument_function,
+                 instruction_name_extractor_function,
                  instruction_setup: InstructionsSetup,
                  settings: TestCaseExecutionSettings):
         self._std = output
         self._out_printer = FilePrinter(output.out)
         self._err_printer = FilePrinter(output.err)
-        self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
+        self._instruction_name_extractor_function = instruction_name_extractor_function
         self._instruction_setup = instruction_setup
         self._settings = settings
 
@@ -78,7 +78,7 @@ class Executor:
 
     def _process(self,
                  is_keep_sds: bool) -> test_case_processing.Result:
-        configuration = processors.Configuration(self._split_line_into_name_and_argument_function,
+        configuration = processors.Configuration(self._instruction_name_extractor_function,
                                                  self._instruction_setup,
                                                  self._settings.handling_setup,
                                                  is_keep_sds,

@@ -143,7 +143,7 @@ class ArgumentParsingImplementationException(SourceError):
     def __init__(self,
                  line: line_source.Line,
                  instruction_name: str,
-                 parser_that_raised_exception: SingleInstructionParser):
+                 parser_that_raised_exception: InstructionParser):
         super().__init__(line,
                          'Parser implementation error while parsing ' + instruction_name)
         self.instruction_name = instruction_name
@@ -152,18 +152,18 @@ class ArgumentParsingImplementationException(SourceError):
 
 class SectionElementParserForDictionaryOfInstructions(SectionElementParserForStandardCommentAndEmptyLines):
     def __init__(self,
-                 split_line_into_name_and_argument_function,
+                 instruction_name_extractor_function,
                  instruction_name__2__single_instruction_parser: dict):
         """
-        :param split_line_into_name_and_argument_function Callable that splits a source line text into a
-        (name, argument) tuple. The source line text is assumed to contain at least
+        :param instruction_name_extractor_function Callable that extracts an instruction name from a source line.
+        The source line text is assumed to contain at least
         an instruction name.
         :param instruction_name__2__single_instruction_parser: dict: str -> SingleInstructionParser
         """
         self.__instruction_name__2__single_instruction_parser = instruction_name__2__single_instruction_parser
         for value in self.__instruction_name__2__single_instruction_parser.values():
             assert isinstance(value, InstructionParser)
-        self._name_and_argument_splitter = split_line_into_name_and_argument_function
+        self._name_and_argument_splitter = instruction_name_extractor_function
 
     def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> Instruction:
         first_line = source.first_line
