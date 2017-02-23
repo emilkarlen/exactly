@@ -26,6 +26,21 @@ class SectionElementParser:
         raise NotImplementedError()
 
 
+class SectionConfiguration(tuple):
+    def __new__(cls,
+                section_name: str,
+                parser: SectionElementParser):
+        return tuple.__new__(cls, (section_name, parser))
+
+    @property
+    def section_name(self) -> str:
+        return self[0]
+
+    @property
+    def parser(self) -> SectionElementParser:
+        return self[1]
+
+
 class SectionsConfiguration:
     """
     Sections and their instruction parser.
@@ -216,18 +231,3 @@ class _Impl:
     def current_line_is_comment_or_empty(self):
         return syntax.EMPTY_LINE_RE.match(self._current_line.text) or \
                syntax.COMMENT_LINE_RE.match(self._current_line.text)
-
-
-class SectionConfiguration(tuple):
-    def __new__(cls,
-                section_name: str,
-                parser: SectionElementParser):
-        return tuple.__new__(cls, (section_name, parser))
-
-    @property
-    def section_name(self) -> str:
-        return self[0]
-
-    @property
-    def parser(self) -> SectionElementParser:
-        return self[1]
