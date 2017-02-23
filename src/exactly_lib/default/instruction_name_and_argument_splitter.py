@@ -6,4 +6,4 @@ def splitter(line: str) -> (str, str):
     l = len(s)
     while idx < l and not s[idx].isspace():
         idx += 1
-    return s[:idx], s[idx:]
+    return s[:idx]
