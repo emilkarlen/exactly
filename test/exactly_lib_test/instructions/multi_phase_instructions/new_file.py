@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure

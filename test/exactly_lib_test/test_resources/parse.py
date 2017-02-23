@@ -1,6 +1,6 @@
 import shlex
 
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 
 
 def source3(lines: list) -> ParseSource:

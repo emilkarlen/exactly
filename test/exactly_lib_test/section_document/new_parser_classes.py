@@ -4,9 +4,9 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document import new_parser_classes as sut
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.model import ElementType
-from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.new_parser_classes import DocumentParser, new_parser_for, SectionConfiguration, \
     SectionsConfiguration
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, assert_equals_line_sequence

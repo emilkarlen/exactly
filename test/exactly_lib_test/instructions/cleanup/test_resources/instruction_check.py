@@ -1,7 +1,7 @@
 import unittest
 
 import exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default

@@ -9,7 +9,7 @@ from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAnd
 from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
-from exactly_lib.section_document.new_parse_source import ParseSource
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
