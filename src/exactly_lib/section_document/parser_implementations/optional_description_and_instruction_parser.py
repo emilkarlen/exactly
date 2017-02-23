@@ -5,7 +5,7 @@ from exactly_lib.section_document import syntax
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.new_parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.new_section_element_parser import InstructionAndDescription, \
-    InstructionParser, InstructionAndDescriptionParser
+    InstructionParser, InstructionAndDescriptionParser, parse_and_compute_source
 from exactly_lib.util.line_source import Line
 
 
@@ -17,8 +17,7 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
         first_line = source.current_line
         description = _DescriptionExtractor(source).apply()
         self._consume_space_and_comment_lines(source, first_line)
-        instruction = self.instruction_parser.parse(source)
-        return InstructionAndDescription(instruction, description)
+        return parse_and_compute_source(self.instruction_parser, source, description)
 
     @staticmethod
     def _consume_space_and_comment_lines(source: ParseSource, first_line: Line):

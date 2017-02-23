@@ -59,7 +59,7 @@ def output_location(printer: FilePrinter,
         printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
         has_output_header = True
     if description:
-        printer.write_line('Described as: ' + description)
+        printer.write_line('Described as `{}\''.format(description))
         has_output_header = True
 
     if has_output_header:
