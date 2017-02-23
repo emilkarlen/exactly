@@ -1,13 +1,14 @@
-from exactly_lib.section_document import parse
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SectionElementParserForStandardCommentAndEmptyLines
+from exactly_lib.section_document.new_parser_classes import SectionElementParser2
+from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+    InstructionParserThatConsumesCurrentLine
+from exactly_lib.section_document.parser_implementations.new_section_element_parser import \
+    InstructionWithoutDescriptionParser, StandardSyntaxElementParser
 from exactly_lib.test_suite.instruction_set import instruction, utils
 from exactly_lib.test_suite.instruction_set.instruction import Environment, TestSuiteInstruction
-from exactly_lib.util import line_source
 
 
-def new_parser() -> parse.SectionElementParser:
-    return _CasesSectionParser()
+def new_parser() -> SectionElementParser2:
+    return StandardSyntaxElementParser(InstructionWithoutDescriptionParser(_CasesSectionParser()))
 
 
 class TestCaseSectionInstruction(TestSuiteInstruction):
@@ -20,10 +21,9 @@ class TestCaseSectionInstruction(TestSuiteInstruction):
         raise NotImplementedError()
 
 
-class _CasesSectionParser(SectionElementParserForStandardCommentAndEmptyLines):
-    def _parse_instruction(self,
-                           source: line_source.LineSequenceBuilder) -> TestCaseSectionInstruction:
-        line_text = source.first_line.text
+class _CasesSectionParser(InstructionParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> TestCaseSectionInstruction:
+        line_text = rest_of_line.strip()
         return _TestCaseWildcardFileInstruction(line_text) \
             if utils.is_wildcard_pattern(line_text) \
             else _TestCaseNonWildcardFileInstruction(line_text)
