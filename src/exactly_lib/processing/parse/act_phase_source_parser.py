@@ -1,31 +1,11 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document import new_parser_classes as parse2
-from exactly_lib.section_document import parse
 from exactly_lib.section_document import syntax
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
 
 
-class PlainSourceActPhaseParser(parse.SectionElementParser):
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
-        lines_read = []
-        lines_read.append(_un_escape(source.first_line.text))
-        while source.has_next():
-            next_line = source.next_line()
-            if syntax.is_section_header_line(next_line):
-                source.return_line()
-                break
-            lines_read.append(_un_escape(next_line))
-        line_sequence = LineSequence(source.first_line.line_number,
-                                     tuple(lines_read))
-        return model.SectionContentElement(model.ElementType.INSTRUCTION,
-                                           line_sequence,
-                                           SourceCodeInstruction(line_sequence), None)
-
-
-# TODO [instr-desc] Rename when new parser structures are fully integrated
-class PlainSourceActPhaseParser2(parse2.SectionElementParser2):
+class ActPhaseParser(parse2.SectionElementParser2):
     def parse(self, source: parse2.ParseSource) -> model.SectionContentElement:
         first_line_number = source.current_line_number
         current_line = source.current_line_text
@@ -40,21 +20,6 @@ class PlainSourceActPhaseParser2(parse2.SectionElementParser2):
                 source.consume_current_line()
 
         line_sequence = LineSequence(first_line_number,
-                                     tuple(lines_read))
-        return model.SectionContentElement(model.ElementType.INSTRUCTION,
-                                           line_sequence,
-                                           SourceCodeInstruction(line_sequence), None)
-
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
-        lines_read = []
-        lines_read.append(_un_escape(source.first_line.text))
-        while source.has_next():
-            next_line = source.next_line()
-            if syntax.is_section_header_line(next_line):
-                source.return_line()
-                break
-            lines_read.append(_un_escape(next_line))
-        line_sequence = LineSequence(source.first_line.line_number,
                                      tuple(lines_read))
         return model.SectionContentElement(model.ElementType.INSTRUCTION,
                                            line_sequence,
