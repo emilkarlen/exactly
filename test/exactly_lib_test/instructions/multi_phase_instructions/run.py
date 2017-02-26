@@ -12,6 +12,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import HomeAndSds, PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.execution.home_and_sds_check import home_and_sds_test
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
@@ -40,6 +42,17 @@ class ExecuteAction(HomeAndSdsAction):
 
 
 class TestCaseBase(home_and_sds_test.TestCaseBase):
+    def _check_single_line_arguments_with_source_variants(self,
+                                                          instruction_argument: str,
+                                                          arrangement: home_and_sds_test.Arrangement,
+                                                          expectation: home_and_sds_test.Expectation):
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            source_info = spe.InstructionSourceInfo(source.current_line_number,
+                                                    'instruction-name')
+            setup = sut.SetupParser().parse(source)
+            action = ExecuteAction(source_info, setup)
+            self._check(action, arrangement, expectation)
+
     def _check_source(self,
                       source: ParseSource,
                       arrangement: home_and_sds_test.Arrangement,
@@ -106,98 +119,106 @@ def is_success_result(exitcode: int,
 
 class TestExecuteProgramWithShellArgumentList(TestCaseBase):
     def test_check_zero_exit_code(self):
-        self._check_source(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
-                           home_and_sds_test.Arrangement(),
-                           home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
-                                                                                                  None)))
+        self._check_single_line_arguments_with_source_variants(
+            py_exe.command_line_for_executing_program_via_command_line('exit(0)'),
+            home_and_sds_test.Arrangement(),
+            home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
+                                                                                   None)))
 
     def test_double_dash_should_invoke_execute(self):
         argument = py_exe.command_line_for_executing_program_via_command_line(
             'exit(0)',
             args_directly_after_interpreter='--')
-        self._check_source(single_line_source(argument),
-                           home_and_sds_test.Arrangement(),
-                           home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
-                                                                                                  None)))
+        self._check_single_line_arguments_with_source_variants(
+            argument,
+            home_and_sds_test.Arrangement(),
+            home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
+                                                                                   None)))
 
     def test_check_non_zero_exit_code(self):
-        self._check_source(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
-                           home_and_sds_test.Arrangement(),
-                           home_and_sds_test.Expectation(expected_action_result=is_success_result(1,
-                                                                                                  '')))
+        self._check_single_line_arguments_with_source_variants(
+            py_exe.command_line_for_executing_program_via_command_line('exit(1)'),
+            home_and_sds_test.Arrangement(),
+            home_and_sds_test.Expectation(expected_action_result=is_success_result(1,
+                                                                                   '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write(\\"on stderr\\"); exit(2)'
-        self._check_source(
-            single_line_source(py_exe.command_line_for_executing_program_via_command_line(python_program)),
+        self._check_single_line_arguments_with_source_variants(
+            py_exe.command_line_for_executing_program_via_command_line(python_program),
             home_and_sds_test.Arrangement(),
             home_and_sds_test.Expectation(expected_action_result=is_success_result(2,
                                                                                    'on stderr')))
 
     def test_invalid_executable(self):
-        self._check_source(single_line_source('/not/an/executable/program'),
-                           home_and_sds_test.Arrangement(),
-                           home_and_sds_test.Expectation(expected_action_result=IsFailure()))
+        self._check_single_line_arguments_with_source_variants(
+            '/not/an/executable/program',
+            home_and_sds_test.Arrangement(),
+            home_and_sds_test.Expectation(expected_action_result=IsFailure()))
 
 
 class TestExecuteInterpret(TestCaseBase):
     def test_check_zero_exit_code__rel_home_default(self):
-        self._check_source(single_line_source(py_exe.command_line_for_arguments([sut.INTERPRET_OPTION,
-                                                                                 'exit-with-value-on-command-line.py',
-                                                                                 0])),
-                           home_and_sds_test.Arrangement(
-                               home_dir_contents_before=DirContents([
-                                   File('exit-with-value-on-command-line.py',
-                                        py_pgm_that_exits_with_value_on_command_line(''))])),
-                           home_and_sds_test.Expectation(
-                               expected_action_result=is_success_result(0,
-                                                                        None),
+        self._check_single_line_arguments_with_source_variants(
+            py_exe.command_line_for_arguments([sut.INTERPRET_OPTION,
+                                               'exit-with-value-on-command-line.py',
+                                               0]),
+            home_and_sds_test.Arrangement(
+                home_dir_contents_before=DirContents([
+                    File('exit-with-value-on-command-line.py',
+                         py_pgm_that_exits_with_value_on_command_line(''))])),
+            home_and_sds_test.Expectation(
+                expected_action_result=is_success_result(0,
+                                                         None),
 
-                           )
-                           )
+            )
+        )
 
     def test_check_zero_exit_code__rel_tmp(self):
-        self._check_source(single_line_source(py_exe.command_line_for_arguments([sut.INTERPRET_OPTION,
-                                                                                 REL_TMP_OPTION,
-                                                                                 'exit-with-value-on-command-line.py',
-                                                                                 0])),
-                           home_and_sds_test.Arrangement(
-                               sds_contents_before=sds_populator.tmp_user_dir_contents(DirContents([
-                                   File('exit-with-value-on-command-line.py',
-                                        py_pgm_that_exits_with_value_on_command_line(''))]))),
-                           home_and_sds_test.Expectation(
-                               expected_action_result=is_success_result(0,
-                                                                        None)),
-                           )
+        self._check_single_line_arguments_with_source_variants(
+            py_exe.command_line_for_arguments([sut.INTERPRET_OPTION,
+                                               REL_TMP_OPTION,
+                                               'exit-with-value-on-command-line.py',
+                                               0]),
+            home_and_sds_test.Arrangement(
+                sds_contents_before=sds_populator.tmp_user_dir_contents(DirContents([
+                    File('exit-with-value-on-command-line.py',
+                         py_pgm_that_exits_with_value_on_command_line(''))]))),
+            home_and_sds_test.Expectation(
+                expected_action_result=is_success_result(0,
+                                                         None)),
+        )
 
     def test_check_non_zero_exit_code(self):
-        self._check_source(single_line_source(py_exe.command_line_for_arguments([sut.INTERPRET_OPTION,
-                                                                                 'exit-with-value-on-command-line.py',
-                                                                                 2])),
-                           home_and_sds_test.Arrangement(
-                               home_dir_contents_before=DirContents([
-                                   File('exit-with-value-on-command-line.py',
-                                        py_pgm_that_exits_with_value_on_command_line('on stderr'))])),
-                           home_and_sds_test.Expectation(
-                               expected_action_result=is_success_result(2,
-                                                                        'on stderr'),
+        self._check_single_line_arguments_with_source_variants(
+            py_exe.command_line_for_arguments([sut.INTERPRET_OPTION,
+                                               'exit-with-value-on-command-line.py',
+                                               2]),
+            home_and_sds_test.Arrangement(
+                home_dir_contents_before=DirContents([
+                    File('exit-with-value-on-command-line.py',
+                         py_pgm_that_exits_with_value_on_command_line('on stderr'))])),
+            home_and_sds_test.Expectation(
+                expected_action_result=is_success_result(2,
+                                                         'on stderr'),
 
-                           )
-                           )
+            )
+        )
 
     def test_invalid_executable(self):
         argument = '/not/an/executable/program {} {} {}'.format(sut.INTERPRET_OPTION,
                                                                 'exit-with-value-on-command-line.py',
                                                                 0)
-        self._check_source(single_line_source(argument),
-                           home_and_sds_test.Arrangement(
-                               home_dir_contents_before=DirContents([
-                                   File('exit-with-value-on-command-line.py',
-                                        py_pgm_that_exits_with_value_on_command_line(''))])),
-                           home_and_sds_test.Expectation(
-                               expected_action_result=IsFailure(),
+        self._check_single_line_arguments_with_source_variants(
+            argument,
+            home_and_sds_test.Arrangement(
+                home_dir_contents_before=DirContents([
+                    File('exit-with-value-on-command-line.py',
+                         py_pgm_that_exits_with_value_on_command_line(''))])),
+            home_and_sds_test.Expectation(
+                expected_action_result=IsFailure(),
 
-                           ))
+            ))
 
 
 class TestSource(TestCaseBase):
@@ -206,30 +227,32 @@ class TestSource(TestCaseBase):
             sut.SetupParser().parse(single_line_source('EXECUTABLE %s' % sut.SOURCE_OPTION))
 
     def test_check_zero_exit_code(self):
-        self._check_source(self._python_interpreter_for_source_on_command_line('exit(0)'),
-                           home_and_sds_test.Arrangement(),
-                           home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
-                                                                                                  None)))
+        self._check_single_line_arguments_with_source_variants(
+            self._python_interpreter_for_source_on_command_line('exit(0)'),
+            home_and_sds_test.Arrangement(),
+            home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
+                                                                                   None)))
 
     def test_check_non_zero_exit_code(self):
-        self._check_source(self._python_interpreter_for_source_on_command_line('exit(1)'),
-                           home_and_sds_test.Arrangement(),
-                           home_and_sds_test.Expectation(expected_action_result=is_success_result(1,
-                                                                                                  '')))
+        self._check_single_line_arguments_with_source_variants(
+            self._python_interpreter_for_source_on_command_line('exit(1)'),
+            home_and_sds_test.Arrangement(),
+            home_and_sds_test.Expectation(expected_action_result=is_success_result(1,
+                                                                                   '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
-        self._check_source(
+        self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line(python_program),
             home_and_sds_test.Arrangement(),
             home_and_sds_test.Expectation(expected_action_result=is_success_result(2,
                                                                                    'on stderr')))
 
     @staticmethod
-    def _python_interpreter_for_source_on_command_line(argument: str) -> ParseSource:
-        return single_line_source('( %s ) %s %s' % (py_exe.interpreter_that_executes_argument(),
-                                                    sut.SOURCE_OPTION,
-                                                    argument))
+    def _python_interpreter_for_source_on_command_line(argument: str) -> str:
+        return '( {} ) {} {}'.format(py_exe.interpreter_that_executes_argument(),
+                                     sut.SOURCE_OPTION,
+                                     argument)
 
 
 def py_pgm_that_exits_with_value_on_command_line(stderr_output) -> str:
