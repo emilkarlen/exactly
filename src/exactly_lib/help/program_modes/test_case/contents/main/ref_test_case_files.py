@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
+from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import structures as docs
@@ -16,7 +16,8 @@ def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
         'default_phase': setup.phase_names[DEFAULT_PHASE.identifier].syntax,
         'phase': setup.phase_names,
         'actor': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
-        'CONTENTS_EQUALS_ARGUMENT': EQUALS_ARGUMENT,
+        'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
+        'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,
     })
     return docs.SectionContents(
         [],
@@ -47,7 +48,7 @@ A phase can be declared more than once.
 
 Contents of multiple declarations are merged, and executed in the order it appears in the file.
 
-In following example, {instruction[exitcode]} is executed before {instruction[stderr]}:
+Here, {instruction[exitcode]} is executed before {instruction[stderr]}:
 
 
 ```
@@ -61,7 +62,7 @@ helloworld
 
 [assert]
 
-stderr empty
+stderr {CONTENTS_EMPTY_ARGUMENT}
 ```
 """
 
