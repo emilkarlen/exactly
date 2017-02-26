@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
-    check_equivalent_source_variants
+    equivalent_source_variants__with_source_check
 
 
 def suite() -> unittest.TestSuite:
@@ -49,7 +49,7 @@ class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
              expected: int,
              argument: str):
-        for source in check_equivalent_source_variants(self, argument):
+        for source in equivalent_source_variants__with_source_check(self, argument):
             initial_configuration_builder = ConfigurationBuilder(pathlib.Path(),
                                                                  act_phase_handling_that_runs_constant_actions())
             initial_configuration_builder.set_timeout_in_seconds(None)
