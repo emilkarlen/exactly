@@ -9,12 +9,9 @@ from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
-from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed, \
-    is_at_beginning_of_line
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import empty_file
-from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -37,20 +34,6 @@ class Expectation:
                  source_after_parse: va.ValueAssertion = va.anything_goes()):
         self.sub_process_result_from_execute = sub_process_result_from_execute
         self.source_after_parse = source_after_parse
-
-
-def equivalent_source_variants(put: unittest.TestCase,
-                               instruction_argument: str) -> (ParseSource, va.ValueAssertion):
-    for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
-        with put.subTest(msg='following lines=' + repr(following_lines)):
-            yield remaining_source(instruction_argument, following_lines), source_assertion
-
-
-_SOURCE_VARIANT_TEST_CASES = [
-    ([], every_line_is_consumed),
-    (['following line'], is_at_beginning_of_line(2)),
-    (['  '], is_at_beginning_of_line(2)),
-]
 
 
 def check(put: unittest.TestCase,
