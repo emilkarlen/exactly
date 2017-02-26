@@ -7,6 +7,8 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
@@ -27,6 +29,14 @@ class ConfigurationBase:
                  arrangement,
                  expectation):
         self.run_test_with_parser(put, self.parser(), source, arrangement, expectation)
+
+    def run_single_line_test_with_source_variants_and_source_check(self,
+                                                                   put: unittest.TestCase,
+                                                                   instruction_argument: str,
+                                                                   arrangement,
+                                                                   expectation):
+        for source in equivalent_source_variants__with_source_check(put, instruction_argument):
+            self.run_test(put, source, arrangement, expectation)
 
     def instruction_setup(self) -> SingleInstructionSetup:
         raise NotImplementedError()
