@@ -3,7 +3,9 @@ import unittest
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
-    file_in_home_dir, equivalent_source_variants
+    file_in_home_dir
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants_with_assertion
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources import file_structure
@@ -38,7 +40,7 @@ class _ShellExecutionCheckerHelper:
             actor_option=self.cli_option,
             shell_option=actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD,
         )
-        for source, source_assertion in equivalent_source_variants(put, instruction_argument_source):
+        for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
             # ARRANGE #
             os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
             arrangement = Arrangement(source,

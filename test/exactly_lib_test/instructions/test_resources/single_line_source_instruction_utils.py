@@ -32,6 +32,17 @@ def equivalent_source_variants(put: unittest.TestCase,
             yield source
 
 
+def equivalent_source_variants_with_assertion(put: unittest.TestCase,
+                                              instruction_argument: str):
+    """
+    Yields a ParseSource, ValueAssertion
+    """
+    for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
+        with put.subTest(msg='following lines=' + repr(following_lines)):
+            source = remaining_source(instruction_argument, following_lines)
+            yield source, source_assertion
+
+
 _SOURCE_VARIANT_TEST_CASES = [
     ([], every_line_is_consumed),
     (['following line'], is_at_beginning_of_line(2)),

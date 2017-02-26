@@ -3,7 +3,9 @@ import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
-    file_in_home_dir, equivalent_source_variants
+    file_in_home_dir
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants_with_assertion
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources import file_structure
@@ -40,7 +42,7 @@ class _NonShellExecutionCheckHelper:
     ):
         instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
             self.format_map_for_template_string)
-        for source, source_assertion in equivalent_source_variants(put, instruction_argument_source):
+        for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
             # ARRANGE #
             os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
             arrangement = Arrangement(source,
