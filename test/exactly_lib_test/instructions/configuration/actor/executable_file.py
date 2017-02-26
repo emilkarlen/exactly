@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, _check, \
+from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
     file_in_home_dir
 from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed, \
     is_at_beginning_of_line
@@ -50,7 +50,7 @@ class _NonShellExecutionCheckHelper:
                                       home_dir_contents=home_dir_contents)
             expectation = Expectation(source_after_parse=expected_source_after_parse)
             # ACT #
-            _check(put, arrangement, expectation)
+            check(put, arrangement, expectation)
             # ASSERT #
             put.assertFalse(os_process_executor.command.shell,
                             'Command should not indicate shell execution')
@@ -185,7 +185,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutable
                                   act_phase_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #
-        _check(self, arrangement, expectation)
+        check(self, arrangement, expectation)
         # ASSERT #
         self.assertFalse(os_process_executor.command.shell,
                          'Command should indicate executable file execution')

@@ -36,10 +36,9 @@ class Expectation:
         self.source_after_parse = source_after_parse
 
 
-# TODO this method is accessed from other package, so need to be public (or refactor away usage)
-def _check(put: unittest.TestCase,
-           arrangement: Arrangement,
-           expectation: Expectation):
+def check(put: unittest.TestCase,
+          arrangement: Arrangement,
+          expectation: Expectation):
     instruction = sut.Parser().parse(arrangement.source)
     configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
     assert isinstance(instruction, ConfigurationPhaseInstruction)
