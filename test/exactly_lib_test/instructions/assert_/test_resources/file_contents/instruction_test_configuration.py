@@ -9,8 +9,11 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator as home_or_sds
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -27,8 +30,12 @@ class InstructionTestConfiguration:
 
 
 class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
-    def source_for(self, argument_tail: str, following_lines=()) -> ParseSource:
+    def first_line_argument(self, argument_tail: str) -> str:
         raise NotImplementedError()
+
+    def source_for(self, argument_tail: str, following_lines=()) -> ParseSource:
+        return remaining_source(self.first_line_argument(argument_tail),
+                                following_lines)
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
@@ -47,6 +54,13 @@ class TestWithConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAn
                arrangement: ArrangementPostAct,
                expectation: Expectation):
         instruction_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
+
+    def _check_single_instruction_line_with_source_variants(self,
+                                                            instruction_argument: str,
+                                                            arrangement: ArrangementPostAct,
+                                                            expectation: Expectation):
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            instruction_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
 
 
 class TestWithConfigurationAndNegationArgumentBase(TestWithConfigurationBase):

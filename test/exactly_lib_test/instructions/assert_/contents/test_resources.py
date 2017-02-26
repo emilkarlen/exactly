@@ -1,5 +1,4 @@
 from exactly_lib.instructions.assert_ import contents as sut
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources
@@ -12,7 +11,6 @@ from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_po
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.file_structure import DirContents, File
-from exactly_lib_test.test_resources.parse import remaining_source
 
 
 class TestConfigurationForFile(InstructionTestConfigurationForEquals):
@@ -22,11 +20,8 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def new_parser(self) -> InstructionParser:
         return sut.Parser()
 
-    def source_for(self,
-                   argument_tail: str,
-                   following_lines=()) -> ParseSource:
-        return remaining_source(self.FILE_NAME_REL_CWD + ' ' + argument_tail,
-                                following_lines)
+    def first_line_argument(self, argument_tail: str) -> str:
+        return self.FILE_NAME_REL_CWD + ' ' + argument_tail
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),

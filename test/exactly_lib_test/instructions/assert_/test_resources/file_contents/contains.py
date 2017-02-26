@@ -70,8 +70,8 @@ class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                                          'NO MATCH',
                                          'not match'])
         reg_ex = '123'
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
@@ -88,8 +88,8 @@ class _ALineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                                          'MATCH',
                                          'not match'])
         reg_ex = 'ATC'
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
@@ -106,8 +106,8 @@ class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                                          'MATCH',
                                          'not match'])
         reg_ex = '^MATCH$'
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
@@ -125,8 +125,8 @@ class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArg
 
         reg_ex = environment_variables.ENV_VAR_HOME
 
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args("{replace_env_vars_option} {maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
@@ -144,8 +144,8 @@ class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegat
 
         reg_ex = environment_variables.ENV_VAR_HOME
 
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
