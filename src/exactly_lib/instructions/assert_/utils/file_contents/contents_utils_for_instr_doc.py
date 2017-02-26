@@ -1,11 +1,11 @@
+import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.instructions.assert_.utils.file_contents import parsing
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import EMPTY_ARGUMENT, NOT_ARGUMENT
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -26,7 +26,8 @@ class FileContentsHelpParts:
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self.expected_file_arg = a.Named('EXPECTED-FILE')
-        self.with_replaced_env_vars_option = a.Option(parsing.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+        self.with_replaced_env_vars_option = a.Option(
+            exactly_lib.instructions.assert_.utils.file_contents.instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
         format_map = {
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,
@@ -45,9 +46,11 @@ class FileContentsHelpParts:
         optional_not_arg = a.Single(a.Multiplicity.OPTIONAL,
                                     NOT_ARGUMENT_CONSTANT)
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
-                              a.Constant(parsing.EQUALS_ARGUMENT))
+                              a.Constant(
+                                  exactly_lib.instructions.assert_.utils.file_contents.instruction_options.EQUALS_ARGUMENT))
         contains_arg = a.Single(a.Multiplicity.MANDATORY,
-                                a.Constant(parsing.CONTAINS_ARGUMENT))
+                                a.Constant(
+                                    exactly_lib.instructions.assert_.utils.file_contents.instruction_options.CONTAINS_ARGUMENT))
         reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
                               dt.REG_EX)
         expected_file_arg = a.Single(a.Multiplicity.MANDATORY,

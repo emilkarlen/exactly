@@ -1,5 +1,6 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
 from exactly_lib.program_info import PROGRAM_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
@@ -11,7 +12,8 @@ def intro_intro_documentation(setup: Setup) -> doc.SectionContents:
         'EXECUTABLE_PROGRAM': PROGRAM_NAME,
         'program_name': formatting.program_name(PROGRAM_NAME),
         'action_to_check': 'helloworld',
-        'phase': setup.phase_names
+        'phase': setup.phase_names,
+        'CONTENTS_EQUALS_ARGUMENT': EQUALS_ARGUMENT,
     }
     paragraphs = normalize_and_parse(TEXT.format_map(format_values))
     return doc.SectionContents(paragraphs, [])
@@ -30,7 +32,7 @@ A test case is written as a plain text file:
 
 exitcode 0
 
-stdout <<EOF
+stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
 Hello, World!
 EOF
 ```
