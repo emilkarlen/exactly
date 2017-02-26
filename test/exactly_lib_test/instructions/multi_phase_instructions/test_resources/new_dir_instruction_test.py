@@ -6,6 +6,8 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
@@ -30,6 +32,9 @@ class TestCaseBase(unittest.TestCase):
     def _source(self, argument_template: str) -> ParseSource:
         return source4(argument_template.format(relativity_option=self.relativity_option.option_string))
 
+    def _instruction_argument(self, argument_template: str) -> str:
+        return argument_template.format(relativity_option=self.relativity_option.option_string)
+
     def _arrangement_with_sub_dir_of_act_as_cwd(
             self,
             sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty()):
@@ -45,33 +50,39 @@ class TestCaseBase(unittest.TestCase):
 
 class TestCreationOfDirectory(TestCaseBase):
     def runTest(self):
-        self.conf.run_test(
-            self,
-            self._source('{relativity_option} first-component/second-component'),
-            self._arrangement_with_sub_dir_of_act_as_cwd(),
-            self.conf.expect_success_and_side_effects_on_files(
-                main_side_effects_on_files=SubDirOfSdsContainsExactly(
-                    self.relativity_option.root_dir__sds,
-                    DirContents([
-                        Dir('first-component', [
-                            empty_dir('second-component')
-                        ])
-                    ])))
-        )
+        instruction_argument_template = '{relativity_option} first-component/second-component'
+        instruction_argument = self._instruction_argument(instruction_argument_template)
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            self.conf.run_test(
+                self,
+                source,
+                self._arrangement_with_sub_dir_of_act_as_cwd(),
+                self.conf.expect_success_and_side_effects_on_files(
+                    main_side_effects_on_files=SubDirOfSdsContainsExactly(
+                        self.relativity_option.root_dir__sds,
+                        DirContents([
+                            Dir('first-component', [
+                                empty_dir('second-component')
+                            ])
+                        ])))
+            )
 
 
 class TestArgumentExistsAsNonDirectory(TestCaseBase):
     def runTest(self):
-        self.conf.run_test(
-            self,
-            self._source('{relativity_option} file'),
-            self._arrangement_with_sub_dir_of_act_as_cwd(
-                sds_contents_before_main=self.relativity_option.populator_for_relativity_option_root__sds(
-                    DirContents([
-                        empty_file('file')
-                    ]))),
-            self.conf.expect_failure_to_create_dir()
-        )
+        instruction_argument_template = '{relativity_option} file'
+        instruction_argument = self._instruction_argument(instruction_argument_template)
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            self.conf.run_test(
+                self,
+                source,
+                self._arrangement_with_sub_dir_of_act_as_cwd(
+                    sds_contents_before_main=self.relativity_option.populator_for_relativity_option_root__sds(
+                        DirContents([
+                            empty_file('file')
+                        ]))),
+                self.conf.expect_failure_to_create_dir()
+            )
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
