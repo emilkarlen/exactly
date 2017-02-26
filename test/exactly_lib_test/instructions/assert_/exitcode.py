@@ -6,59 +6,83 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, Expectation, is_pass
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation, is_pass
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants, equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.parse import remaining_source
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestParseAndExecuteTwoArguments),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+    ])
+
+
 class TestParse(unittest.TestCase):
-    def test_that_when_operator_is_invalid_then_exception_is_raised(self):
+    def test_invalid_syntax(self):
+        test_cases = [
+            ' <> 1',
+            ' = a',
+            '',
+            'a b c',
+            'a',
+            '-1',
+            '256',
+        ]
         parser = sut.Parser()
-        self.assertRaises(SingleInstructionInvalidArgumentException,
-                          parser.parse,
-                          remaining_source(' <> 1'))
+        for instruction_argument in test_cases:
+            with self.subTest(msg=instruction_argument):
+                for source in equivalent_source_variants(self, instruction_argument):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        parser.parse(source)
 
-    def test_that_when_no_arguments_then_exception_is_raised(self):
-        parser = sut.Parser()
-        self.assertRaises(SingleInstructionInvalidArgumentException,
-                          parser.parse,
-                          remaining_source(''))
-
-    def test_that_when_too_many_arguments_then_exception_is_raised(self):
-        parser = sut.Parser()
-        self.assertRaises(SingleInstructionInvalidArgumentException,
-                          parser.parse,
-                          remaining_source('a b c'))
-
-    def test_that_when_argument_does_not_contain_integer_then_exception_is_raised(self):
-        parser = sut.Parser()
-        self.assertRaises(SingleInstructionInvalidArgumentException,
-                          parser.parse,
-                          remaining_source('a'))
-
-    def test_that__when__argument_contains_too_small_integer__then__exception_is_raised(self):
-        parser = sut.Parser()
-        self.assertRaises(SingleInstructionInvalidArgumentException,
-                          parser.parse,
-                          remaining_source('-1'))
-
-    def test_that__when__argument_contains_too_large_integer__then__exception_is_raised(self):
-        parser = sut.Parser()
-        self.assertRaises(SingleInstructionInvalidArgumentException,
-                          parser.parse,
-                          remaining_source('256'))
-
-    def test_that_when_valid_argument_is_given_than_instruction_is_returned(self):
+    def test_valid_syntax(self):
         parser = sut.Parser()
         actual_instruction = parser.parse(remaining_source('1'))
         self.assertIsInstance(actual_instruction,
                               AssertPhaseInstruction)
 
 
-class TestCaseBaseForParser(instruction_check.TestCaseBase):
+class TestParseAndExecuteTwoArguments(instruction_check.TestCaseBase):
+    def test(self):
+        test_cases = [
+            (_actual_exitcode(0), ' =  72', _IS_FAIL),
+            (_actual_exitcode(72), ' =  72', _IS_PASS),
+
+            (_actual_exitcode(72), ' !  72', _IS_FAIL),
+            (_actual_exitcode(72), ' !  73', _IS_PASS),
+
+            (_actual_exitcode(72), ' <  28', _IS_FAIL),
+            (_actual_exitcode(72), ' <  72', _IS_FAIL),
+            (_actual_exitcode(72), ' <  87', _IS_PASS),
+
+            (_actual_exitcode(72), ' <= 28', _IS_FAIL),
+            (_actual_exitcode(72), ' <= 72', _IS_PASS),
+            (_actual_exitcode(72), ' <= 87', _IS_PASS),
+
+            (_actual_exitcode(72), ' > 28', _IS_PASS),
+            (_actual_exitcode(72), ' > 72', _IS_FAIL),
+            (_actual_exitcode(72), ' > 87', _IS_FAIL),
+
+            (_actual_exitcode(72), ' >= 28', _IS_PASS),
+            (_actual_exitcode(72), ' >= 72', _IS_PASS),
+            (_actual_exitcode(72), ' >= 87', _IS_FAIL),
+        ]
+        for arrangement, instr_arg, expectation in test_cases:
+            with self.subTest(msg=instr_arg):
+                for source in equivalent_source_variants__with_source_check(self, instr_arg):
+                    self._run(
+                        source,
+                        arrangement,
+                        expectation,
+                    )
+
     def _run(self,
              source: ParseSource,
              arrangement: ArrangementPostAct,
@@ -66,159 +90,12 @@ class TestCaseBaseForParser(instruction_check.TestCaseBase):
         self._check(sut.Parser(), source, arrangement, expectation)
 
 
-class TestParseAndExecute(TestCaseBaseForParser):
-    def test_that__when__actual_value_is_as_expected__then__pass_is_returned(self):
-        self._run(
-            remaining_source(' 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
-        self._run(
-            remaining_source('72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=0))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
+def _actual_exitcode(actual: int) -> ArrangementPostAct:
+    return ArrangementPostAct(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=actual)))
 
 
-class TestParseAndExecuteTwoArgumentsEq(TestCaseBaseForParser):
-    def test_pass(self):
-        self._run(
-            remaining_source(' = 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(),
-        )
-
-    def test_fail(self):
-        self._run(
-            remaining_source(' = 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=0))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-class TestParseAndExecuteTwoArgumentsNe(TestCaseBaseForParser):
-    def test_pass(self):
-        self._run(
-            remaining_source(' ! 73'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_fail(self):
-        self._run(
-            remaining_source(' ! 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(main_result=pfh_check.is_fail())
-        )
-
-
-class TestParseAndExecuteTwoArgumentsLt(TestCaseBaseForParser):
-    def test_pass(self):
-        self._run(
-            remaining_source(' < 87'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_fail_equal(self):
-        self._run(
-            remaining_source(' < 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-    def test_fail_unequal(self):
-        self._run(
-            remaining_source(' < 28'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-class TestParseAndExecuteTwoArgumentsLe(TestCaseBaseForParser):
-    def test_pass(self):
-        self._run(
-            remaining_source(' <= 87'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_pass_equal(self):
-        self._run(
-            remaining_source(' <= 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_fail_unequal(self):
-        self._run(
-            remaining_source(' <= 28'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-class TestParseAndExecuteTwoArgumentsGt(TestCaseBaseForParser):
-    def test_pass(self):
-        self._run(
-            remaining_source(' > 28'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_fail_equal(self):
-        self._run(
-            remaining_source(' > 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-    def test_fail_unequal(self):
-        self._run(
-            remaining_source(' > 87'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-class TestParseAndExecuteTwoArgumentsGe(TestCaseBaseForParser):
-    def test_pass(self):
-        self._run(
-            remaining_source(' >= 28'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_pass_equal(self):
-        self._run(
-            remaining_source(' >= 72'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            is_pass(),
-        )
-
-    def test_fail_unequal(self):
-        self._run(
-            remaining_source(' >= 87'),
-            arrangement(act_result_producer=ActResultProducerFromActResult(utils.ActResult(exitcode=72))),
-            Expectation(main_result=pfh_check.is_fail()),
-        )
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParse),
-        unittest.makeSuite(TestParseAndExecute),
-        unittest.makeSuite(TestParseAndExecuteTwoArgumentsEq),
-        unittest.makeSuite(TestParseAndExecuteTwoArgumentsNe),
-        unittest.makeSuite(TestParseAndExecuteTwoArgumentsLt),
-        unittest.makeSuite(TestParseAndExecuteTwoArgumentsLe),
-        unittest.makeSuite(TestParseAndExecuteTwoArgumentsGt),
-        unittest.makeSuite(TestParseAndExecuteTwoArgumentsGe),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
-    ])
-
+_IS_PASS = is_pass()
+_IS_FAIL = Expectation(main_result=pfh_check.is_fail())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
