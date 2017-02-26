@@ -18,20 +18,26 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+_ACTOR_OPTION_NAME_IN_TEMPLATE = 'actor_option'
+
+
 class _NonShellExecutionCheckHelper:
     def __init__(self, cli_option: str):
         self.cli_option = cli_option
+        self.format_map_for_template_string = {
+            _ACTOR_OPTION_NAME_IN_TEMPLATE: self.cli_option
+        }
 
     def apply(self,
               put: unittest.TestCase,
-              instruction_argument_source_template: str,
+              first_source_line_instruction_argument_source_template: str,
               act_phase_source_lines: list,
               expected_cmd_and_args: va.ValueAssertion,
               home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
               ):
         # ARRANGE #
-        instruction_argument_source = instruction_argument_source_template.format(
-            actor_option=self.cli_option)
+        instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
+            self.format_map_for_template_string)
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = Arrangement(instruction_argument_source,
                                   act_phase_source_lines,
