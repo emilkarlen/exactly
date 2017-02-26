@@ -2,65 +2,66 @@ import unittest
 
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.instructions.utils import file_ref
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
-from exactly_lib_test.test_resources.parse import argument_list_source, source4
+from exactly_lib_test.test_resources.parse import argument_list_source, source4, remaining_source
 
 
 class TestParseSet(unittest.TestCase):
-    def test_fail_when_there_is_no_arguments(self):
-        source = source4('')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+    def test_fail(self):
+        test_cases = [
+            source4(''),
+            source4('--rel-home file superfluous-argument'),
+            remaining_source('<<MARKER superfluous argument',
+                             ['single line',
+                              'MARKER'])
+        ]
+        parser = sut.Parser()
+        for source in test_cases:
+            with self.subTest(msg='first line of source=' + source.remaining_part_of_current_line):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    parser.parse(source)
 
-    def test_fail_when_there_is_more_than_three_argument(self):
-        source = source4('--rel-home file superfluous-argument')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+    def test_succeed_when_syntax_is_correct__with_relativity_option(self):
+        parser = sut.Parser()
+        for rel_option_type in sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_options:
+            option_string = long_option_syntax(REL_OPTIONS_MAP[rel_option_type].option_name.long)
+            instruction_argument = '{} file'.format(option_string)
+            with self.subTest(msg='Argument ' + instruction_argument):
+                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                    parser.parse(source)
 
-    def test_succeed_when_syntax_is_correct__rel_home(self):
-        source = source4('--rel-home file')
-        sut.Parser().parse(source)
-
-    def test_succeed_when_syntax_is_correct__rel_cwd(self):
-        source = source4('--rel-cd file')
-        sut.Parser().parse(source)
-
-    def test_succeed_when_syntax_is_correct__rel_tmp(self):
-        source = source4('--rel-tmp file')
-        sut.Parser().parse(source)
-
-    def test_succeed_when_syntax_is_correct__rel_home__implicitly(self):
-        source = source4('file')
-        sut.Parser().parse(source)
+    def test_successful_single_line(self):
+        test_cases = [
+            'file',
+            '--rel-home "file name with space"',
+        ]
+        parser = sut.Parser()
+        for instruction_argument in test_cases:
+            for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                parser.parse(source)
 
     def test_here_document(self):
         source = argument_list_source(['<<MARKER'],
                                       ['single line',
                                        'MARKER'])
         sut.Parser().parse(source)
-
-    def test_fail_when_here_document_but_superfluous_arguments(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            source = argument_list_source(['<<MARKER', 'superfluous argument'],
-                                          ['single line',
-                                           'MARKER'])
-            sut.Parser().parse(source)
-
-    def test_file_name_can_be_quoted(self):
-        source = source4('--rel-home "file name with space"')
-        sut.Parser().parse(source)
+        self.assertFalse(source.has_current_line, 'has_current_line')
 
 
 class TestCaseBaseForParser(TestCaseBase):

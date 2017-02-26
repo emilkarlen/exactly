@@ -30,6 +30,9 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
+RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_file_ref.CONFIGURATION
+
+
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {})
@@ -42,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return (
             rel_path_doc.default_relativity_for_rel_opt_type(
                 self.path_arg.name,
-                parse_here_doc_or_file_ref.CONFIGURATION.options.default_option) +
+                RELATIVITY_OPTIONS_CONFIGURATION.options.default_option) +
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
@@ -75,7 +78,8 @@ class Parser(InstructionParser):
         first_line_arguments = split_arguments_list_string(source.remaining_part_of_current_line)
         if not first_line_arguments:
             raise SingleInstructionInvalidArgumentException('Missing arguments: no arguments')
-        here_doc_or_file_ref = parse_here_doc_or_file_ref.parse_from_parse_source(source)
+        here_doc_or_file_ref = parse_here_doc_or_file_ref.parse_from_parse_source(source,
+                                                                                  RELATIVITY_OPTIONS_CONFIGURATION)
         if here_doc_or_file_ref.is_file_ref:
             if not source.is_at_eol__except_for_space:
                 raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
