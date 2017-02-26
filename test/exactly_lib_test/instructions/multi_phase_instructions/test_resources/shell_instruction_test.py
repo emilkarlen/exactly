@@ -7,8 +7,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants, \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
@@ -43,13 +42,12 @@ sys.exit(0)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             instruction_argument = py_exe.shell_command_line_for_interpreting(script_file_path)
-            for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                self.conf.run_test(
-                    self,
-                    source,
-                    self.conf.empty_arrangement(),
-                    self.conf.expectation_for_zero_exitcode(),
-                )
+            self.conf.run_single_line_test_with_source_variants_and_source_check(
+                self,
+                instruction_argument,
+                self.conf.empty_arrangement(),
+                self.conf.expectation_for_zero_exitcode(),
+            )
 
 
 class TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
@@ -61,13 +59,12 @@ sys.exit(1)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             instruction_argument = py_exe.command_line_for_interpreting(script_file_path)
-            for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                self.conf.run_test(
-                    self,
-                    source,
-                    self.conf.empty_arrangement(),
-                    self.conf.expectation_for_non_zero_exitcode(),
-                )
+            self.conf.run_single_line_test_with_source_variants_and_source_check(
+                self,
+                instruction_argument,
+                self.conf.empty_arrangement(),
+                self.conf.expectation_for_non_zero_exitcode(),
+            )
 
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
