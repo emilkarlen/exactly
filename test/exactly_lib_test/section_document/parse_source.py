@@ -10,6 +10,65 @@ def suite() -> unittest.TestSuite:
 
 
 class TestParseSource(unittest.TestCase):
+    test_cases_for_consume_all_characters_of_current_line = [
+        ('single line',
+         assert_source(is_at_eof=asrt.is_true,
+                       has_current_line=asrt.is_true,
+                       column_index=asrt.equals(len('single line')),
+                       is_at_eol=asrt.is_true,
+                       is_at_eol__except_for_space=asrt.is_true,
+                       remaining_source=asrt.equals(''))
+         ),
+        ('',
+         assert_source(is_at_eof=asrt.is_true,
+                       has_current_line=asrt.is_true,
+                       column_index=asrt.equals(0),
+                       is_at_eol=asrt.is_true,
+                       is_at_eol__except_for_space=asrt.is_true,
+                       remaining_source=asrt.equals(''))
+         ),
+        ('first line\nsecond line',
+         assert_source(is_at_eof=asrt.is_false,
+                       has_current_line=asrt.is_true,
+                       is_at_eol=asrt.is_true,
+                       is_at_eol__except_for_space=asrt.is_true,
+                       current_line_number=asrt.equals(1),
+                       current_line_text=asrt.equals('first line'),
+                       column_index=asrt.equals(len('first line')),
+                       remaining_source=asrt.equals('\nsecond line'))
+         ),
+        ('single line\n',
+         assert_source(is_at_eof=asrt.is_false,
+                       has_current_line=asrt.is_true,
+                       is_at_eol=asrt.is_true,
+                       is_at_eol__except_for_space=asrt.is_true,
+                       current_line_number=asrt.equals(1),
+                       current_line_text=asrt.equals('single line'),
+                       column_index=asrt.equals(len('single line')),
+                       remaining_source=asrt.equals('\n'))
+         ),
+        ('\n',
+         assert_source(is_at_eof=asrt.is_false,
+                       has_current_line=asrt.is_true,
+                       is_at_eol=asrt.is_true,
+                       is_at_eol__except_for_space=asrt.is_true,
+                       current_line_number=asrt.equals(1),
+                       current_line_text=asrt.equals(''),
+                       column_index=asrt.equals(0),
+                       remaining_source=asrt.equals('\n'))
+         ),
+        ('\nsecond line',
+         assert_source(is_at_eof=asrt.is_false,
+                       has_current_line=asrt.is_true,
+                       is_at_eol=asrt.is_true,
+                       is_at_eol__except_for_space=asrt.is_true,
+                       current_line_number=asrt.equals(1),
+                       current_line_text=asrt.equals(''),
+                       column_index=asrt.equals(0),
+                       remaining_source=asrt.equals('\nsecond line'))
+         ),
+    ]
+
     def _assert_current_line_and_remaining_part_of_it_is(self, line_number: int,
                                                          line_text: str,
                                                          source: ParseSource):
@@ -51,6 +110,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol=asrt.is_false,
                            is_at_eol__except_for_space=asrt.is_false,
                            has_current_line=asrt.is_true,
+                           column_index=asrt.equals(0),
                            current_line_number=asrt.equals(1),
                            current_line_text=asrt.equals('single line'))
              ),
@@ -59,6 +119,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol=asrt.is_true,
                            is_at_eol__except_for_space=asrt.is_true,
                            has_current_line=asrt.is_true,
+                           column_index=asrt.equals(0),
                            current_line_number=asrt.equals(1),
                            current_line_text=asrt.equals(''))
              ),
@@ -67,6 +128,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol=asrt.is_false,
                            is_at_eol__except_for_space=asrt.is_false,
                            has_current_line=asrt.is_true,
+                           column_index=asrt.equals(0),
                            current_line_number=asrt.equals(1),
                            current_line_text=asrt.equals('first line'))
              ),
@@ -75,6 +137,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol=asrt.is_false,
                            is_at_eol__except_for_space=asrt.is_false,
                            has_current_line=asrt.is_true,
+                           column_index=asrt.equals(0),
                            current_line_number=asrt.equals(1),
                            current_line_text=asrt.equals('single line'))
              ),
@@ -83,6 +146,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol=asrt.is_true,
                            is_at_eol__except_for_space=asrt.is_true,
                            has_current_line=asrt.is_true,
+                           column_index=asrt.equals(0),
                            current_line_number=asrt.equals(1),
                            current_line_text=asrt.equals(''))
              ),
@@ -91,6 +155,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol=asrt.is_true,
                            is_at_eol__except_for_space=asrt.is_true,
                            has_current_line=asrt.is_true,
+                           column_index=asrt.equals(0),
                            current_line_number=asrt.equals(1),
                            current_line_text=asrt.equals(''))
              ),
@@ -126,6 +191,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_false,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('second line'),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals('second line'))
              ),
             ('single line\n',
@@ -135,6 +201,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_true,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals(''),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals(''))
              ),
             ('\n',
@@ -144,6 +211,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_true,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals(''),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals(''))
              ),
             ('\nsecond line',
@@ -153,6 +221,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_false,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('second line'),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals('second line'))
              ),
         ]
@@ -163,59 +232,7 @@ class TestParseSource(unittest.TestCase):
                 expectation.apply_with_message(self, source, 'consume_current_line:{}'.format(repr(source_string)))
 
     def test_consume_part_of_current_line__consume_all_characters(self):
-        test_cases = [
-            ('single line',
-             assert_source(is_at_eof=asrt.is_true,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           remaining_source=asrt.equals(''))
-             ),
-            ('',
-             assert_source(is_at_eof=asrt.is_true,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           remaining_source=asrt.equals(''))
-             ),
-            ('first line\nsecond line',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals('first line'),
-                           remaining_source=asrt.equals('\nsecond line'))
-             ),
-            ('single line\n',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals('single line'),
-                           remaining_source=asrt.equals('\n'))
-             ),
-            ('\n',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals(''),
-                           remaining_source=asrt.equals('\n'))
-             ),
-            ('\nsecond line',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals(''),
-                           remaining_source=asrt.equals('\nsecond line'))
-             ),
-        ]
-        for source_string, expectation in test_cases:
+        for source_string, expectation in self.test_cases_for_consume_all_characters_of_current_line:
             with self.subTest(msg='consume_part_of_current_line: ' + repr(source_string)):
                 source = ParseSource(source_string)
                 source.consume_part_of_current_line(len(source.current_line_text))
@@ -223,59 +240,7 @@ class TestParseSource(unittest.TestCase):
                                                'consume_part_of_current_line:{}'.format(repr(source_string)))
 
     def test_consume__consume_all_characters_of_current_line(self):
-        test_cases = [
-            ('single line',
-             assert_source(is_at_eof=asrt.is_true,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           remaining_source=asrt.equals(''))
-             ),
-            ('',
-             assert_source(is_at_eof=asrt.is_true,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           remaining_source=asrt.equals(''))
-             ),
-            ('first line\nsecond line',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals('first line'),
-                           remaining_source=asrt.equals('\nsecond line'))
-             ),
-            ('single line\n',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals('single line'),
-                           remaining_source=asrt.equals('\n'))
-             ),
-            ('\n',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals(''),
-                           remaining_source=asrt.equals('\n'))
-             ),
-            ('\nsecond line',
-             assert_source(is_at_eof=asrt.is_false,
-                           has_current_line=asrt.is_true,
-                           is_at_eol=asrt.is_true,
-                           is_at_eol__except_for_space=asrt.is_true,
-                           current_line_number=asrt.equals(1),
-                           current_line_text=asrt.equals(''),
-                           remaining_source=asrt.equals('\nsecond line'))
-             ),
-        ]
-        for source_string, expectation in test_cases:
+        for source_string, expectation in self.test_cases_for_consume_all_characters_of_current_line:
             with self.subTest(msg='consume: ' + repr(source_string)):
                 source = ParseSource(source_string)
                 source.consume(len(source.current_line_text))
@@ -290,6 +255,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_false,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('second line'),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals('second line'))
              ),
             ('single line\n',
@@ -299,6 +265,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_true,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals(''),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals(''))
              ),
             ('\n',
@@ -308,6 +275,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_true,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals(''),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals(''))
              ),
             ('\nsecond line',
@@ -317,6 +285,7 @@ class TestParseSource(unittest.TestCase):
                            is_at_eol__except_for_space=asrt.is_false,
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('second line'),
+                           column_index=asrt.equals(0),
                            remaining_source=asrt.equals('second line'))
              ),
         ]
@@ -326,14 +295,6 @@ class TestParseSource(unittest.TestCase):
                 source.consume(1 + len(source.current_line_text))
                 expectation.apply_with_message(self, source,
                                                'consume len(current line)+1:{}'.format(repr(source_string)))
-
-    def test_when_source_is_empty_then_it_should_indicate_eof(self):
-        source = ParseSource('')
-        self._assert_is_at_eof(source)
-
-    def test_when_source_is_empty_then_it_should_not_indicate_eof(self):
-        source = ParseSource('non-empty')
-        self.assertFalse(source.is_at_eof)
 
     def test_single_line_source(self):
         source = ParseSource('single line')
@@ -414,14 +375,19 @@ class TestParseSource(unittest.TestCase):
         ]
         for lines, remaining_part, is_at_eol in test_cases:
             with self.subTest():
+                first_line = lines[0]
                 source_lines = '\n'.join(lines)
+                # ACT #
                 source = ParseSource(source_lines)
+                # ASSERT #
                 source.consume_initial_space_on_current_line()
-                self.assertEquals(is_at_eol, source.is_at_eol,
-                                  'is_at_eol')
-                self.assertEqual(remaining_part, source.remaining_part_of_current_line,
-                                 'remaining_part_of_current_line')
-                self._assert_current_line_is(1, lines[0], source)
+                assertion = assert_source(is_at_eol=asrt.equals(is_at_eol),
+                                          remaining_part_of_current_line=asrt.equals(remaining_part),
+                                          current_line_number=asrt.equals(1),
+                                          current_line_text=asrt.equals(lines[0]),
+                                          column_index=asrt.equals(len(first_line) - len(first_line.lstrip()))
+                                          )
+                assertion.apply(self, source)
 
     def test_consume_with_invalid_arguments(self):
         test_cases = [
@@ -451,6 +417,7 @@ class TestParseSource(unittest.TestCase):
                            has_current_line=asrt.equals(True),
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('45'),
+                           column_index=asrt.equals(1),
                            remaining_part_of_current_line=asrt.equals('5'),
                            remaining_source=asrt.equals('5\n6'))),
             (TestSetupForConsume('one whole line and part of next, with one line remaining, on column index 1',
@@ -465,6 +432,7 @@ class TestParseSource(unittest.TestCase):
                            has_current_line=asrt.equals(True),
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('45'),
+                           column_index=asrt.equals(1),
                            remaining_part_of_current_line=asrt.equals('5'),
                            remaining_source=asrt.equals('5\n6'))),
             (TestSetupForConsume('two whole lines, with one line remaining',
@@ -479,6 +447,7 @@ class TestParseSource(unittest.TestCase):
                            has_current_line=asrt.equals(True),
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('45'),
+                           column_index=asrt.equals(2),
                            remaining_part_of_current_line=asrt.equals(''),
                            remaining_source=asrt.equals('\n6'))),
             (TestSetupForConsume('two whole lines, with one line remaining, on column index 2',
@@ -493,6 +462,7 @@ class TestParseSource(unittest.TestCase):
                            has_current_line=asrt.equals(True),
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('45'),
+                           column_index=asrt.equals(2),
                            remaining_part_of_current_line=asrt.equals(''),
                            remaining_source=asrt.equals('\n6'))),
             (TestSetupForConsume('two whole lines, with no line after',
@@ -519,6 +489,7 @@ class TestParseSource(unittest.TestCase):
                            has_current_line=asrt.equals(True),
                            current_line_number=asrt.equals(2),
                            current_line_text=asrt.equals('45'),
+                           column_index=asrt.equals(2),
                            remaining_part_of_current_line=asrt.equals(''),
                            remaining_source=asrt.equals(''))),
         ]
@@ -547,17 +518,26 @@ class TestParseSource(unittest.TestCase):
         ]
         for original_source_lines, original_setup, copy_modifier in test_cases:
             with self.subTest():
+                # ARRANGE #
                 original = ParseSource('\n'.join(original_source_lines))
                 original_setup(original)
+                # ACT #
                 copy = original.copy
                 copy_modifier(copy)
                 original.catch_up_with(copy)
-                self.assertEqual(copy.remaining_source, original.remaining_source,
+                # ASSERT #
+                self.assertEqual(copy.remaining_source,
+                                 original.remaining_source,
                                  'remaining_source')
-                self.assertEqual(copy.current_line_number, original.current_line_number,
+                self.assertEqual(copy.current_line_number,
+                                 original.current_line_number,
                                  'current_line_number')
-                self.assertEqual(copy.remaining_part_of_current_line, original.remaining_part_of_current_line,
+                self.assertEqual(copy.remaining_part_of_current_line,
+                                 original.remaining_part_of_current_line,
                                  'remaining_part_of_current_line')
+                self.assertEqual(copy.column_index,
+                                 original.column_index,
+                                 'column_index')
 
 
 class TestSetupForConsume:

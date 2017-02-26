@@ -55,14 +55,30 @@ class ParseSource:
 
     @property
     def current_line_number(self) -> int:
+        """
+        Precondition: has_current_line
+        """
         return self._current_line.line_number
 
     @property
+    def column_index(self) -> int:
+        """
+        Precondition: has_current_line
+        """
+        return self._column_index
+
+    @property
     def current_line_text(self) -> str:
+        """
+        Precondition: has_current_line
+        """
         return self._current_line.text
 
     @property
     def current_line(self) -> Line:
+        """
+        Precondition: has_current_line
+        """
         return self._current_line
 
     @property
