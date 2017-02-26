@@ -6,8 +6,10 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants, \
+    check_equivalent_source_variants
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing
-from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
 
@@ -27,9 +29,9 @@ class TestCaseBase(unittest.TestCase):
 
 class TestParseFailsWhenThereAreNoArguments(TestCaseBase):
     def runTest(self):
-        source = source4('   ')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.conf.parser().parse(source)
+        for source in equivalent_source_variants(self, '   '):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                self.conf.parser().parse(source)
 
 
 class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
@@ -40,12 +42,14 @@ sys.exit(0)
 """
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
-            self.conf.run_test(
-                self,
-                source4(py_exe.shell_command_line_for_interpreting(script_file_path)),
-                self.conf.empty_arrangement(),
-                self.conf.expectation_for_zero_exitcode(),
-            )
+            instruction_argument = py_exe.shell_command_line_for_interpreting(script_file_path)
+            for source in check_equivalent_source_variants(self, instruction_argument):
+                self.conf.run_test(
+                    self,
+                    source,
+                    self.conf.empty_arrangement(),
+                    self.conf.expectation_for_zero_exitcode(),
+                )
 
 
 class TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
@@ -56,12 +60,14 @@ sys.exit(1)
 """
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
-            self.conf.run_test(
-                self,
-                source4(py_exe.command_line_for_interpreting(script_file_path)),
-                self.conf.empty_arrangement(),
-                self.conf.expectation_for_non_zero_exitcode(),
-            )
+            instruction_argument = py_exe.command_line_for_interpreting(script_file_path)
+            for source in check_equivalent_source_variants(self, instruction_argument):
+                self.conf.run_test(
+                    self,
+                    source,
+                    self.conf.empty_arrangement(),
+                    self.conf.expectation_for_non_zero_exitcode(),
+                )
 
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
