@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.configuration import actor as sut
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, \
     ActSourceAndExecutorConstructor
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -11,35 +12,35 @@ from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import empty_file
-from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class Arrangement:
     def __init__(self,
-                 instruction_argument: str,
+                 source: ParseSource,
                  act_phase_source_lines: list,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
         self.home_dir_contents = home_dir_contents
-        self.instruction_argument = instruction_argument
+        self.source = source
         self.act_phase_source_lines = act_phase_source_lines
         self.act_phase_process_executor = act_phase_process_executor
 
 
 class Expectation:
     def __init__(self,
-                 sub_process_result_from_execute: va.ValueAssertion = va.anything_goes()):
+                 sub_process_result_from_execute: va.ValueAssertion = va.anything_goes(),
+                 source_after_parse: va.ValueAssertion = va.anything_goes()):
         self.sub_process_result_from_execute = sub_process_result_from_execute
+        self.source_after_parse = source_after_parse
 
 
 # TODO this method is accessed from other package, so need to be public (or refactor away usage)
 def _check(put: unittest.TestCase,
            arrangement: Arrangement,
            expectation: Expectation):
-    source = source4(arrangement.instruction_argument)
-    instruction = sut.Parser().parse(source)
+    instruction = sut.Parser().parse(arrangement.source)
     configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
     assert isinstance(instruction, ConfigurationPhaseInstruction)
     instruction.main(configuration_builder)
@@ -54,6 +55,7 @@ def _check(put: unittest.TestCase,
                                         act_phase_execution.Expectation(
                                             sub_process_result_from_execute=expectation.sub_process_result_from_execute)
                                         )
+    expectation.source_after_parse.apply_with_message(put, arrangement.source, 'source after parse')
 
 
 def _configuration_builder_with_exception_throwing_act_phase_setup() -> ConfigurationBuilder:
