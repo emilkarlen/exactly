@@ -2,11 +2,8 @@ import sys
 import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
-    file_in_home_dir
-from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed, \
-    is_at_beginning_of_line
+    file_in_home_dir, equivalent_source_variants
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources import file_structure
@@ -41,14 +38,16 @@ class _NonShellExecutionCheckHelper:
             home_dir_contents: file_structure.DirContents = file_structure.DirContents(
                 []),
     ):
-        def check_source(source: ParseSource, expected_source_after_parse: va.ValueAssertion):
+        instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
+            self.format_map_for_template_string)
+        for source, source_assertion in equivalent_source_variants(put, instruction_argument_source):
             # ARRANGE #
             os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
             arrangement = Arrangement(source,
                                       act_phase_source_lines,
                                       act_phase_process_executor=os_process_executor,
                                       home_dir_contents=home_dir_contents)
-            expectation = Expectation(source_after_parse=expected_source_after_parse)
+            expectation = Expectation(source_after_parse=source_assertion)
             # ACT #
             check(put, arrangement, expectation)
             # ASSERT #
@@ -60,17 +59,6 @@ class _NonShellExecutionCheckHelper:
             put.assertTrue(len(actual_cmd_and_args) > 0,
                            'List of arguments is expected to contain at least the file|interpreter argument')
             expected_cmd_and_args.apply_with_message(put, actual_cmd_and_args, 'actual_cmd_and_args')
-
-        test_cases = [
-            ([], every_line_is_consumed),
-            (['following line'], is_at_beginning_of_line(2)),
-        ]
-        for following_lines, source_assertion in test_cases:
-            with put.subTest(msg='Following lines=' + repr(following_lines)):
-                instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
-                    self.format_map_for_template_string)
-                source = remaining_source(instruction_argument_source, following_lines)
-                check_source(source, source_assertion)
 
 
 def equals_with_last_element_removed(expected: list) -> va.ValueAssertion:

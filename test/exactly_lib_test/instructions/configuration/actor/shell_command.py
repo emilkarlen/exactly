@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
-    file_in_home_dir
+    file_in_home_dir, equivalent_source_variants
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources import file_structure
@@ -34,26 +34,27 @@ class _ShellExecutionCheckerHelper:
               expectation_of_cmd_and_args: va.ValueAssertion,
               home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
               ):
-        # ARRANGE #
         instruction_argument_source = instruction_argument_source_template.format(
             actor_option=self.cli_option,
             shell_option=actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD,
         )
-        os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = Arrangement(remaining_source(instruction_argument_source),
-                                  act_phase_source_lines,
-                                  act_phase_process_executor=os_process_executor,
-                                  home_dir_contents=home_dir_contents)
-        expectation = Expectation()
-        # ACT #
-        check(put, arrangement, expectation)
-        # ASSERT #
-        put.assertTrue(os_process_executor.command.shell,
-                       'Command should indicate shell execution')
-        actual_cmd_and_args = os_process_executor.command.args
-        put.assertIsInstance(actual_cmd_and_args, str,
-                             'Arguments of command to execute should be a string')
-        expectation_of_cmd_and_args.apply_with_message(put, actual_cmd_and_args, 'cmd_and_args')
+        for source, source_assertion in equivalent_source_variants(put, instruction_argument_source):
+            # ARRANGE #
+            os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+            arrangement = Arrangement(source,
+                                      act_phase_source_lines,
+                                      act_phase_process_executor=os_process_executor,
+                                      home_dir_contents=home_dir_contents)
+            expectation = Expectation(source_after_parse=source_assertion)
+            # ACT #
+            check(put, arrangement, expectation)
+            # ASSERT #
+            put.assertTrue(os_process_executor.command.shell,
+                           'Command should indicate shell execution')
+            actual_cmd_and_args = os_process_executor.command.args
+            put.assertIsInstance(actual_cmd_and_args, str,
+                                 'Arguments of command to execute should be a string')
+            expectation_of_cmd_and_args.apply_with_message(put, actual_cmd_and_args, 'cmd_and_args')
 
 
 def initial_part_of_command_without_file_argument_is(
@@ -177,7 +178,7 @@ class TestShellHandlingViaExecution(unittest.TestCase):
             shell_commands.command_that_prints_line_to_stdout('output on stdout'))
         check(self,
               Arrangement(remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
-                           [act_phase_source_line]),
+                          [act_phase_source_line]),
               Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout\n',
-                                                                               'expected output on stdout')))
+                                                                              'expected output on stdout')))
               )
