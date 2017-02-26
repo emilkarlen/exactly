@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.instructions.configuration import home as sut
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
@@ -10,8 +9,9 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
     Arrangement, Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants, check_equivalent_source_variants
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
-from exactly_lib_test.test_resources.parse import source4
 
 
 def suite() -> unittest.TestSuite:
@@ -29,35 +29,36 @@ if __name__ == '__main__':
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = source4('   ')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, '   '):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
     def test_fail_when_there_is_more_than_one_argument(self):
-        source = source4('argument-1 argument-2')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, 'argument-1 argument-2'):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
-             source: ParseSource,
+             instruction_argument: str,
              arrangement: Arrangement,
              expectation: Expectation):
-        self._check(sut.Parser(), source, arrangement, expectation)
+        for source in check_equivalent_source_variants(self, instruction_argument):
+            self._check(sut.Parser(), source, arrangement, expectation)
 
 
 class TestFailingExecution(TestCaseBaseForParser):
     def test_hard_error_WHEN_path_does_not_exist(self):
         self._run(
-            source4('non-existing-path'),
+            'non-existing-path',
             Arrangement(),
             Expectation(main_result=sh_check.is_hard_error()))
 
     def test_hard_error_WHEN_path_exists_but_is_a_file(self):
         file_name = 'existing-plain-file'
         self._run(
-            source4(file_name),
+            file_name,
             Arrangement(home_dir_contents=DirContents([empty_file(file_name)])),
             Expectation(main_result=sh_check.is_hard_error())
         )
@@ -67,7 +68,7 @@ class TestSuccessfulExecution(TestCaseBaseForParser):
     def test_change_to_direct_sub_dir(self):
         directory_name = 'existing-directory'
         self._run(
-            source4(directory_name),
+            directory_name,
             Arrangement(home_dir_contents=DirContents([empty_dir(directory_name)])),
             Expectation(configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name))
         )
@@ -76,7 +77,7 @@ class TestSuccessfulExecution(TestCaseBaseForParser):
         first_dir = 'first_dir'
         second_dir = 'second_dir'
         self._run(
-            source4('{}/{}'.format(first_dir, second_dir)),
+            '{}/{}'.format(first_dir, second_dir),
             Arrangement(home_dir_contents=DirContents([Dir(first_dir,
                                                            [empty_dir(second_dir)])])),
             Expectation(configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
@@ -85,7 +86,7 @@ class TestSuccessfulExecution(TestCaseBaseForParser):
 
     def test_change_to_parent_dir(self):
         self._run(
-            source4('..'),
+            '..',
             Arrangement(),
             Expectation(configuration=AssertActualHomeDirIsParentOfOriginalHomeDir())
         )
