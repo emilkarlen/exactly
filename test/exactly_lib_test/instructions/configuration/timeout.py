@@ -10,42 +10,53 @@ from exactly_lib_test.instructions.configuration.test_resources import configura
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.parse import source4
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants, \
+    check_equivalent_source_variants
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestSetTimeout),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+    ])
 
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = source4('   ')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, '   '):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
     def test_fail_when_more_than_one_argument(self):
-        source = source4('arg1 arg2')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, 'arg1 arg2'):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
     def test_fail_when_a_single_argument_but_that_argument_is_not_an_integer(self):
-        source = source4('notAnInteger')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, 'notAnInteger'):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
     def test_fail_when_a_single_argument_which_is_an_integer_but_the_value_is_negative(self):
-        source = source4('-1')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, '-1'):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
              expected: int,
              argument: str):
-        initial_configuration_builder = ConfigurationBuilder(pathlib.Path(),
-                                                             act_phase_handling_that_runs_constant_actions())
-        initial_configuration_builder.set_timeout_in_seconds(None)
-        self._check(sut.Parser(),
-                    source4(argument),
-                    Arrangement(initial_configuration_builder=initial_configuration_builder),
-                    Expectation(configuration=AssertTimeout(expected)))
+        for source in check_equivalent_source_variants(self, argument):
+            initial_configuration_builder = ConfigurationBuilder(pathlib.Path(),
+                                                                 act_phase_handling_that_runs_constant_actions())
+            initial_configuration_builder.set_timeout_in_seconds(None)
+            self._check(sut.Parser(),
+                        source,
+                        Arrangement(initial_configuration_builder=initial_configuration_builder),
+                        Expectation(configuration=AssertTimeout(expected)))
 
 
 class TestSetTimeout(TestCaseBaseForParser):
@@ -70,14 +81,6 @@ class AssertTimeout(config_check.Assertion):
         put.assertEqual(self.expected,
                         actual_result.timeout_in_seconds,
                         'timeout')
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParse),
-        unittest.makeSuite(TestSetTimeout),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
-    ])
 
 
 if __name__ == '__main__':
