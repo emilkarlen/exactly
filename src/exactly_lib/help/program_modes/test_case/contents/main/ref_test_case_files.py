@@ -3,6 +3,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import structures as docs
@@ -15,6 +16,7 @@ def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
         'default_phase': setup.phase_names[DEFAULT_PHASE.identifier].syntax,
         'phase': setup.phase_names,
         'actor': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
+        'CONTENTS_EQUALS_ARGUMENT': EQUALS_ARGUMENT,
     })
     return docs.SectionContents(
         [],
@@ -87,7 +89,7 @@ An instruction may span several lines, as this form of {instruction[stdout]} doe
 
 
 ```
-stdout <<EOF
+stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
 Hello, World!
 EOF
 ```
@@ -126,7 +128,7 @@ As {instruction[stdout]} does here:
 
 
 ```
-stdout <<EOF
+stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
 this assertion expects 4 lines of output
 # this is the second line of the expected output
 

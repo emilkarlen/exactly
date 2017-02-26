@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents import parsing
+import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
@@ -91,11 +91,12 @@ def args(arg_str: str, **kwargs) -> str:
 
 
 _FORMAT_MAP = {
-    'contains': parsing.CONTAINS_ARGUMENT,
-    'empty': parsing.EMPTY_ARGUMENT,
-    'equals': parsing.EQUALS_ARGUMENT,
-    'not': parsing.NOT_ARGUMENT,
-    'replace_env_vars_option': long_option_syntax(parsing.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
+    'contains': exactly_lib.instructions.assert_.utils.file_contents.instruction_options.CONTAINS_ARGUMENT,
+    'empty': exactly_lib.instructions.assert_.utils.file_contents.instruction_options.EMPTY_ARGUMENT,
+    'equals': exactly_lib.instructions.assert_.utils.file_contents.instruction_options.EQUALS_ARGUMENT,
+    'not': exactly_lib.instructions.assert_.utils.file_contents.instruction_options.NOT_ARGUMENT,
+    'replace_env_vars_option': long_option_syntax(
+        exactly_lib.instructions.assert_.utils.file_contents.instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
     'rel_home_option': relative_path_options.REL_HOME_OPTION,
     'rel_cwd_option': relative_path_options.REL_CWD_OPTION,
     'rel_tmp_option': relative_path_options.REL_TMP_OPTION,
