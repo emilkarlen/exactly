@@ -5,8 +5,8 @@ from exactly_lib_test.section_document.test_resources.parse_source import every_
 from exactly_lib_test.test_resources.parse import remaining_source
 
 
-def check_equivalent_source_variants(put: unittest.TestCase,
-                                     instruction_argument: str):
+def equivalent_source_variants__with_source_check(put: unittest.TestCase,
+                                                  instruction_argument: str):
     """
     Yields a ParseSource
 

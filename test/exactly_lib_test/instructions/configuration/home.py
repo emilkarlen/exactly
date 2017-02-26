@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants, check_equivalent_source_variants
+    equivalent_source_variants, equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
 
 
@@ -44,7 +44,7 @@ class TestCaseBaseForParser(TestCaseBase):
              instruction_argument: str,
              arrangement: Arrangement,
              expectation: Expectation):
-        for source in check_equivalent_source_variants(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._check(sut.Parser(), source, arrangement, expectation)
 
 
