@@ -1,7 +1,8 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils.instruction_from_parts import instruction_info_for
 from exactly_lib.instructions.multi_phase_instructions import shell as shell_common
-from exactly_lib.instructions.multi_phase_instructions.shell import TheInstructionDocumentationBase
+from exactly_lib.instructions.multi_phase_instructions.shell import TheInstructionDocumentationBase, \
+    SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -12,7 +13,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 class TheDocumentation(TheInstructionDocumentationBase):
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(name, SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION)
 
     def _main_description_rest_prelude(self) -> list:
         text = """\
