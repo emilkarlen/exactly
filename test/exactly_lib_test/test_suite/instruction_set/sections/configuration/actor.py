@@ -9,6 +9,8 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
@@ -19,7 +21,7 @@ from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_res
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFailingParse),
+        unittest.makeSuite(TestParse),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForShellCommandActor),
         suite_for_instruction_documentation(sut.actor_utils.InstructionDocumentation('instruction mame',
                                                                                      'single line description',
@@ -31,16 +33,23 @@ if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
 
-class TestFailingParse(unittest.TestCase):
-    def test_fail_when_there_is_no_arguments(self):
-        source = remaining_source('   ')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+class TestParse(unittest.TestCase):
+    def test_fail_when_invalid_syntax(self):
+        test_cases = [
+            '   ',
+            'argument-1 "argument-2',
+        ]
+        parser = sut.Parser()
+        for instruction_argument in test_cases:
+            with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
+                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        parser.parse(source)
 
-    def test_fail_when_the_quoting_is_invalid(self):
-        source = remaining_source('argument-1 "argument-2')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+    def test_success_when_argument_is_valid(self):
+        parser = sut.Parser()
+        for source in equivalent_source_variants__with_source_check(self, COMMAND_LINE_ACTOR_OPTION):
+            parser.parse(source)
 
 
 class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.TestCase):
