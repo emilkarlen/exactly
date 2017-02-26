@@ -1,10 +1,13 @@
 import unittest
 
-from exactly_lib_test.test_suite.instruction_set.sections import configuration
+from exactly_lib_test.test_suite.instruction_set import utils, sections
 
 
 def suite() -> unittest.TestSuite:
-    return configuration.suite()
+    return unittest.TestSuite([
+        utils.suite(),
+        sections.suite(),
+    ])
 
 
 if __name__ == '__main__':
