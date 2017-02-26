@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
-from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, _check, \
+from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
     file_in_home_dir
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
@@ -46,7 +46,7 @@ class _ShellExecutionCheckerHelper:
                                   home_dir_contents=home_dir_contents)
         expectation = Expectation()
         # ACT #
-        _check(put, arrangement, expectation)
+        check(put, arrangement, expectation)
         # ASSERT #
         put.assertTrue(os_process_executor.command.shell,
                        'Command should indicate shell execution')
@@ -160,7 +160,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
                                   act_phase_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #
-        _check(self, arrangement, expectation)
+        check(self, arrangement, expectation)
         # ASSERT #
         self.assertTrue(os_process_executor.command.shell,
                         'Command should indicate shell execution')
@@ -175,9 +175,9 @@ class TestShellHandlingViaExecution(unittest.TestCase):
     def test_valid_shell_command(self):
         act_phase_source_line = shell_command_source_line_for(
             shell_commands.command_that_prints_line_to_stdout('output on stdout'))
-        _check(self,
-               Arrangement(remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
+        check(self,
+              Arrangement(remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
                            [act_phase_source_line]),
-               Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout\n',
+              Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout\n',
                                                                                'expected output on stdout')))
-               )
+              )
