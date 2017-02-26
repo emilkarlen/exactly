@@ -39,6 +39,7 @@ every_line_is_consumed = assert_source(has_current_line=asrt.Boolean(False))
 
 def is_at_beginning_of_line(current_line_number: int) -> asrt.ValueAssertion:
     return assert_source(
+        has_current_line=asrt.is_true,
         current_line_number=asrt.equals(current_line_number),
         column_index=asrt.equals(0),
     )
