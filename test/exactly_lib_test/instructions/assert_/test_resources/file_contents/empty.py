@@ -45,8 +45,8 @@ class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
 
 class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{maybe_not} {empty}',
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
@@ -58,8 +58,8 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
 
 class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{maybe_not} {empty}',
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(

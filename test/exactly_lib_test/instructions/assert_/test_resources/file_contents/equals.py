@@ -22,7 +22,6 @@ from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_po
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import \
     HomeOrSdsPopulatorForHomeContents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
@@ -65,11 +64,8 @@ class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(Relativity
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForHomeContents(contents)
 
-    def expectation_that_file_for_expected_contents_is_invalid(self,
-                                                               source: asrt.ValueAssertion = asrt.anything_goes()
-                                                               ) -> Expectation:
-        return Expectation(validation_pre_sds=svh_check.is_validation_error(),
-                           source=source)
+    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
+        return Expectation(validation_pre_sds=svh_check.is_validation_error())
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS = [
@@ -83,20 +79,20 @@ _RELATIVITY_OPTION_CONFIGURATIONS = [
 
 class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} non-existing-file.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(source_is_at_end),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
 
 class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} dir',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
@@ -105,14 +101,14 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
                     DirContents([empty_dir('dir')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()
             ),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(source_is_at_end),
+            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
 
 class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
@@ -121,15 +117,14 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass,
-                        source=source_is_at_end),
+            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
         )
 
 
 class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
@@ -138,8 +133,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail,
-                        source=source_is_at_end),
+            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
         )
 
 
@@ -147,8 +141,8 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         contents_generator = ReplacedEnvVarsFileContentsGenerator()
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
@@ -159,8 +153,7 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
                     contents_generator.expected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail,
-                        source=source_is_at_end),
+            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
         )
 
 
@@ -169,8 +162,8 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
     def runTest(self):
         contents_generator = ReplacedEnvVarsFileContentsGenerator()
 
-        self._check(
-            self.configuration.source_for(
+        self._check_single_instruction_line_with_source_variants(
+            self.configuration.first_line_argument(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
@@ -181,8 +174,7 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
                     contents_generator.unexpected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass,
-                        source=source_is_at_end),
+            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
         )
 
 
