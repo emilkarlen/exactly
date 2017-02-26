@@ -73,10 +73,11 @@ By default, it consists of a single command line.
 """
 
 INSTRUCTIONS_DOC = """\
-Instructions start at the beginning of the line with a space separated identifier.
+Instructions start at the beginning of the line with a space separated identifier that
+is the name of the instruction.
 
 
-The identifier may optionally be followed by arguments. Most instructions use a syntax for
+The name may optionally be followed by arguments. Most instructions use a syntax for
 options, arguments and quoting that resembles the unix shell.
 
 The exact syntax depends on the particular instruction, though.
@@ -89,6 +90,24 @@ An instruction may span several lines, as this form of {instruction[stdout]} doe
 stdout <<EOF
 Hello, World!
 EOF
+```
+
+
+The name may optionally be preceded by a "description" - a string within quotes that is
+displayed together with the instruction source line in error messages.
+
+The purpose of a description is describe the purpose of the instruction using
+text that is easier to understand than the source code.
+
+A description is a quoted string using shell syntax.
+
+
+For example, a description may be easier to understand than some shell commands:
+
+
+```
+'my-dir should be empty'
+$ test $(ls my-dir | wc -l) -eq 0
 ```
 """
 
