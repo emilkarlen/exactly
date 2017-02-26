@@ -24,7 +24,10 @@ def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
         [
             parser.section('Phases', PHASES_DOC),
             parser.section('Phase contents', PHASES_CONTENTS_DOC),
-            parser.section('Instructions', INSTRUCTIONS_DOC),
+            docs.section('Instructions',
+                         parser.fnap(INSTRUCTIONS_DOC),
+                         [parser.section('Instruction descriptions',
+                                         INSTRUCTIONS_DESCRIPTION_DOC)]),
             parser.section('Comments and empty lines', OTHER_DOC),
         ])
 
@@ -94,24 +97,29 @@ stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
 Hello, World!
 EOF
 ```
+"""
 
-
-The name may optionally be preceded by a "description" - a string within quotes that is
+INSTRUCTIONS_DESCRIPTION_DOC = """\
+The instruction name may optionally be preceded by a "description" -
+a free text within quotes that is
 displayed together with the instruction source line in error messages.
 
-The purpose of a description is describe the purpose of the instruction using
-text that is easier to understand than the source code.
+The purpose of a description is to describe the meaning of the instruction using
+text that is easier to understand than the source line.
 
 A description is a quoted string using shell syntax.
 
 
-For example, a description may be easier to understand than some shell commands:
+For example, a free text may be easier to understand than a shell command:
 
 
 ```
 'my-dir should be empty'
 $ test $(ls my-dir | wc -l) -eq 0
 ```
+
+
+A description may span several lines.
 """
 
 OTHER_DOC = """\
