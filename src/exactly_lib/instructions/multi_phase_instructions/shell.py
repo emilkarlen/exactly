@@ -21,14 +21,24 @@ def instruction_parser(
 
 _COMMAND_SYNTAX_ELEMENT = 'COMMAND'
 
+_SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS = \
+    "Executes a command using the current operating system's shell"
+
+SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION = \
+    "Executes a command using the current operating system's shell," \
+    " and PASS if, and only if, its exit code is 0"
+
 
 class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase):
-    def __init__(self, name: str):
+    def __init__(self,
+                 name: str,
+                 single_line_description: str):
         super().__init__(name, {'COMMAND': _COMMAND_SYNTAX_ELEMENT})
+        self.__single_line_description = single_line_description
         self.command_arg = a.Named(_COMMAND_SYNTAX_ELEMENT)
 
     def single_line_description(self) -> str:
-        return "Executes a command using the current operating system's shell"
+        return self.__single_line_description
 
     def _main_description_rest_body(self) -> list:
         text = """\
@@ -70,7 +80,8 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
 
 class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(name,
+                         _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS)
 
     def _main_description_rest_prelude(self) -> list:
         text = """\
