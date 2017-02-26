@@ -12,19 +12,21 @@ from exactly_lib_test.instructions.configuration.test_resources import configura
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.parse import source4
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants, \
+    check_equivalent_source_variants
 
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = source4('   ')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, '   '):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
     def test_fail_when_the_argument_is_invalid(self):
-        source = source4('invalid-argument')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().parse(source)
+        for source in equivalent_source_variants(self, 'invalid-argument'):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.Parser().parse(source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
@@ -32,13 +34,14 @@ class TestCaseBaseForParser(TestCaseBase):
              expected: ExecutionMode,
              initial: ExecutionMode,
              argument: str):
-        initial_configuration_builder = ConfigurationBuilder(pathlib.Path(),
-                                                             act_phase_handling_that_runs_constant_actions())
-        initial_configuration_builder.set_execution_mode(initial)
-        self._check(sut.Parser(),
-                    source4(argument),
-                    Arrangement(initial_configuration_builder=initial_configuration_builder),
-                    Expectation(configuration=AssertExecutionMode(expected)))
+        for source in check_equivalent_source_variants(self, argument):
+            initial_configuration_builder = ConfigurationBuilder(pathlib.Path(),
+                                                                 act_phase_handling_that_runs_constant_actions())
+            initial_configuration_builder.set_execution_mode(initial)
+            self._check(sut.Parser(),
+                        source,
+                        Arrangement(initial_configuration_builder=initial_configuration_builder),
+                        Expectation(configuration=AssertExecutionMode(expected)))
 
 
 class TestChangeMode(TestCaseBaseForParser):
