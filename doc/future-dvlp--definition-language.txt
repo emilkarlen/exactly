@@ -1,0 +1,140 @@
+-*- org -*-
+
+<2017-02-27 mån>
+
+* Macros for running SUT repeatedly with many arguments
+and not wanting to repeat the many arguments.
+
+** Using only definitions
+
+*** (a) - sut and arguments as single definition
+
+def path SUT_DIR = --rel-home ../../bin
+
+def list SUT_WITH_MANY_ARGS = SUT_DIR/sut -x arg -y arg2
+
+[act]
+
+SUT_WITH_MANY_ARGS
+
+*** (b) - sut and arguments as single definition
+
+def path SUT_DIR = --rel-home ../../bin
+
+def path SUT     = --rel SUT_DIR sut
+
+def list SUT_WITH_MANY_ARGS = SUT -x arg -y arg2
+
+[act]
+
+SUT_WITH_MANY_ARGS
+
+*** (c) - sut as individual definition used in act phase
+
+def path SUT_DIR = --rel-home ../../bin
+
+def path SUT     = --rel SUT_DIR sut
+
+def list MANY_ARGS = -x arg -y arg2 DEF_ARG
+
+[act]
+
+SUT MANY_ARGS
+
+*** (d) with act dir set by "home" instruction (real name for sut)
+
+[conf]
+
+home --act ../../bin
+
+def list MANY_ARGS = -x arg -y arg2 DEF_ARG
+
+[act]
+
+sut MANY_ARGS
+
+*** (d) with act dir set by "home" instruction (macro name for sut)
+
+[conf]
+
+home --act ../../bin
+
+def SUT = sut
+
+def list MANY_ARGS = -x arg -y arg2 DEF_ARG
+
+[act]
+
+SUT MANY_ARGS
+
+* Definition types
+
+** string
+
+def X = abc
+
+def X = 'abc def'
+
+** list
+
+def list EMPTY =
+
+def list SINGLETON = a
+
+def list MULTI = aa bb cde
+
+def list CONS = ELEMENT_VAR aa bb cde
+
+def list CONCAT = LIST1 LIST2 aa bb
+
+** path
+
+Resolves abolute paths and expects paths to exist, by default.
+These will be resolved to absolute paths to a file that exists
+(this is done of first use, so that they can be defined
+before paths exists).
+
+A path is basically a list of path components.
+
+def abs path REL_CURRENT_FILE_LOC = ../bin
+
+def abs path REL_RELATIVITY_OPT = --rel-home data/more-data
+
+def abs path REL_DEFINITION     = --rel REL_RELATIVITY_OPT sub-dir/file
+
+** part of path
+
+def path COMPONENTS = work/invalid
+
+# alt1
+# yeilds a relative path (since relativity path is relative)
+def path CSV_COMPONENTS = --rel COMPONENTS csv
+
+# alt2
+# yeilds a relative path (since relativity path is relative)
+def path CSV_COMPONENTS = @{COMPONENTS}@/csv
+
+*** Algebra
+
+PATH/STRING   => PATH
+
+PATH/PATH     => error if second is absolute
+
+PATH/REL_PATH => PATH
+
+--rel PATH_VAR REL_PATH => PATH
+
+
+* Algebra
+
+A list is a sequence of list elements
+A list elemet is a string or a path
+
+elem   elem   => list
+
+list   list   => list
+
+list   elem   => list
+
+elem   list   => list
+
