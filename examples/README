@@ -17,3 +17,7 @@ Remove them using:
 All examples can be run using:
 
 > exactly suite examples.suite
+
+or, if an executable has not been installed:
+
+> python3 ../src/default-main-program-runner.py suite examples.suite

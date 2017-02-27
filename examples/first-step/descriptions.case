@@ -1,0 +1,13 @@
+[act]
+
+hello-world
+
+[assert]
+
+'
+Exitcode of 0 indicates success
+
+This "description" will appear in error messages related
+to the following instruction!
+'
+exitcode 0
