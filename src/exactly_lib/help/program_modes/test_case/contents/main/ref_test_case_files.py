@@ -13,11 +13,9 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 class TestCaseFileDocumentationRenderer(TestCaseHelpRendererBase):
     def __init__(self, setup: Setup,
-                 target_factory: cross_ref.CustomTargetInfoFactory = None):
+                 target_factory: cross_ref.CustomTargetInfoFactory):
         super().__init__(setup.test_case_help)
         self.setup = setup
-        if target_factory is None:
-            target_factory = cross_ref.CustomTargetInfoFactory('')
 
         self._PHASES_TI = target_factory.sub('Phases', 'phases')
         self._PHASE_CONTENTS_TI = target_factory.sub('Phase contents', 'phase-contents')
