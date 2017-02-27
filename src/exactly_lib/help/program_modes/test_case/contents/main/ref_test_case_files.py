@@ -35,6 +35,14 @@ def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
 PHASES_DOC = """\
 "{phase_declaration_for_NAME}" on a single line declares the start of phase NAME.
 
+This line marks the start the {phase[assert]} phase, for example:
+
+
+```
+[assert]
+```
+
+
 The following lines will belong to this phase.
 
 
