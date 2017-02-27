@@ -1,11 +1,97 @@
 -*- org -*-
 
-* TODO textformat/text for URL
-<2016-12-05 mån>
-URL à la "http://x.y.dom/p".
-Use for "https://windyroad.com.au/dl/Open Source/JUnit.xsd".
-* Default act phase setup should be able to treat "$ cmd" as a shell command
-<2016-11-27 sön>
+* TODO Handling of relative paths
+Many paths to resources and sut:s are needed by a test.
+Currently (2017-02-26) there is no good way to handle these within Exactly
+itself.
+Currently this is fixed by a combination of preprocessing and pre-run setup:
+ - m4 for preprocessing (for specifying paths in one, and only one, place)
+ - autotools for pre-run setup (sets absolute paths to resources)
+The current solution
+ - requires a lot of knowledge (autotools, m4)
+ - fragile and difficult to maintain and debug
+ - requires external tools (autotools, m4)
+
+Probably more than one new functionality is needed to handle the problem in an
+efficient manner.
+** Possibility to have separate "home" for act phase and other phases
+The act phase usually need to locate an executable that is references from
+many test cases and also test suites located in different directories.
+This is different from resources used by other phases - since the other phases
+often refers resources that are specific for the test case or the test suite -
+and thus can be relative the location of the test case/suite.
+** Built in preprocessor
+But every preprocessor will have the weakness of handling paths that needs
+quoting (even a built in one).  If you only do text search+replace then spaces
+,e.g., in paths will cause problems, and will thus require complicated quoting
+logic to work.  That kind of logic will make tests much more complicated.
+
+But what a built in preprocessor could help with is the functionallity to
+support knowledge of current-source file, so that references can be relative
+an included source file, e.g.
+** New option for instructions to specify base-path: --rel PATH_VAR
+A variant of
+ --rel-home, --rel-act, ...
+
+Solution consits of two constructs:
+ 1. New instruction option: --rel PATH_VAR
+ 2. New instruction resolved-path PATH_VAR PATH
+
+The option should be usable whereever a "--rel-XYZ" can be used (at least)
+
+The argument PATH_VAR to the option must be a PATH_VAR that has previously
+been set by the "resolved-path" instruction.
+That instruction handles a repository of resolved paths (absolute) that each
+has a name (PATH_VAR) 
+
+For example:
+--------------------
+[setup]
+
+register-path GLOBAL_RESOURCE_DIR ../../global
+register-path GLOBAL_ICONS_DIR --rel GLOBAL_RESOURCE_DIR icons
+
+register-path GLOBAL_OUTPUT_DIR ...
+
+# Some option to register non-existing paths that cannot be
+# resolved to an absolute path.
+# (but if they are relative a previously resolved absolute path,
+# then this will be no problem.)
+register-path --non-existing ICONS_OUTPUT_DIR --rel GLOBAL_OUTPUT_DIR icons
+
+install --rel GLOBAL_RESOURCE_DIR icons
+
+env set --registered-path GLOB_R_DIR_VAR = GLOBAL_RESOURCE_DIR
+env set --registered-path --shell-quoted GLOB_R_DIR_VAR = GLOBAL_RESOURCE_DIR
+
+[act]
+
+my-sut --icons @<GLOBAL_ICONS_DIR>@
+/
+my-sut --icons @<GLOBAL_ICONS_DIR>@/the-icon.gif
+
+[assert]
+
+contents --rel GLOBAL_RESOURCE_DIR equals icon/x actal/x
+
+run my-assertion-prog @<GLOBAL_RESOURCE_DIR>@
+run my-assertion-prog @<GLOBAL_ICONS_DIR>@/the-icon.gif
+--------------------
+
+Some kind of syntax for giving registered paths as arguments to programs is
+probably needed.  Above @<GLOBAL_RESOURCE_DIR>@ is special syntax for that.
+
+If Exactly had a preprocessor with file inclusion, then paths could be
+relative the location of the file the instruction appears in.
+(that would need new instruction-information to be available during
+instruction execution: the path of the file that contains the instruction.)
+
+*** Validation of references to registered paths
+It would be very nice if the validation step could check references to
+registered paths.
+If every instruction could tell which references it uses and which paths it
+sets, then it's possible to do validation-time checking of references.
+
 * TODO Preprocessor process should maybe have timeout
 <2016-11-27 sön>
 * TODO Act phase
@@ -16,11 +102,6 @@ to see which actor reports errors.
 ... relative home_dir
 
 Currently, it is reported as an hard error in execute.
-* Timeout
-** for the act phase
-** for external commands in other phases
-* Report test suite by JUnit XML
-To make it easier to integrate Exactly with other test frameworks
 * TODO Suite
 ** TODO Set test case config that serves as default for each test case
 Possibility to use all instructions in [conf] for test cases
