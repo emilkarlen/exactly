@@ -1,0 +1,55 @@
+-*- org -*-
+
+* https://packaging.python.org/
+
+** 0. Remove existing distributables
+
+> rm -rf dist
+
+** 1. Make distributables
+Distribute source and wheel
+
+> python3 setup.py sdist
+> python3 setup.py bdist_wheel
+
+** 2. Upload
+
+> twine upload dist/*
+
+* Documentation on pythonhosted
+
+Log in to PyPI, select the package, and upload a zip file via the UI.
+
+The zip-file must contain an index.html.
+
+> python3 src/default-main-program-runner.py help htmldoc > FILE
+> zip doc.zip FILE
+
+* http://peterdowns.com/posts/first-time-with-pypi.html
+
+** Upload your package to PyPI Test
+
+Run:
+
+> python setup.py register -r pypitest
+
+This will attempt to register your package against PyPI's test server, just to
+make sure you've set up everything correctly.
+
+Then, run:
+
+> python setup.py sdist upload -r pypitest
+
+You should get no errors, and should also now be able to see your library in
+the test PyPI repository.
+
+** Upload to PyPI Live
+
+Once you've successfully uploaded to PyPI Test, perform the same steps but
+point to the live PyPI server instead. To register, run:
+
+> python setup.py register -r pypi
+Then, run:
+
+> python setup.py sdist upload -r pypi
+and you're done! Congratulations on successfully publishing your first package!
