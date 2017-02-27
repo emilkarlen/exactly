@@ -56,9 +56,13 @@ The ``home`` instruction can be used to change the directory where Exactly looks
 Using shell commands
 --------------------
 
-Shell commands can be used both in the "act" phase (the system under test), and in other phases.
+Shell commands can be used both in the "act" phase (the system under test), and in other phases, using "$".
 
 ::
+
+    [setup]
+
+    $ touch file
 
     [act]
 
@@ -66,8 +70,7 @@ Shell commands can be used both in the "act" phase (the system under test), and 
 
     [assert]
 
-    cd --rel-result
-    $ tr ':' '\n' < stdout | grep '^/usr/local/bin$'
+    $ tr ':' '\n' < ../result/stdout | grep '^/usr/local/bin$'
 
 
 A shell command in the "assert" phase becomes an assertion that depends on the exit code
