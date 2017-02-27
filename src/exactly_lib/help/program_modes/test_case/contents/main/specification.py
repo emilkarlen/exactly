@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.intro_environment im
 from exactly_lib.help.program_modes.test_case.contents.main.intro_intro import intro_intro_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.intro_phases import phases_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.intro_test_case import test_case_intro_documentation
-from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_files import test_case_files_documentation
+from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_files import TestCaseFileDocumentationRenderer
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     test_case_processing_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.test_outcome import test_outcome_documentation
@@ -20,14 +20,14 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
     def __init__(self, test_case_help: TestCaseHelp,
                  target_factory: cross_ref.CustomTargetInfoFactory = None):
         super().__init__(test_case_help)
+        self.setup = Setup(self.test_case_help)
         if target_factory is None:
             target_factory = cross_ref.CustomTargetInfoFactory('')
 
         ow_target_factory = cross_ref.sub_component_factory('overview',
                                                             target_factory)
 
-        self._OVERVIEW_TI = target_factory.sub('Overview',
-                                               'overview')
+        self._OVERVIEW_TI = ow_target_factory.root('Overview')
 
         self._OV__INTRO_TI = ow_target_factory.sub('Introduction',
                                                    'introduction')
@@ -44,8 +44,11 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
         self._OUTCOME_TI = target_factory.sub('Test outcome',
                                               'outcome')
 
-        self._TEST_CASE_FILES_TI = target_factory.sub('Test case file syntax',
-                                                      'test-case-files')
+        self._file_target_factory = cross_ref.sub_component_factory('file-syntax',
+                                                                    target_factory)
+        self._TEST_CASE_FILES_TI = self._file_target_factory.root('Test case file syntax')
+        self._test_case_file_renderer = TestCaseFileDocumentationRenderer(self.setup,
+                                                                          self._file_target_factory)
 
         self._TEST_CASE_PROCESSING_TI = target_factory.sub('Test case processing',
                                                            'test-case-processing')
@@ -60,7 +63,8 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
 
             ]),
             _leaf(self._OUTCOME_TI),
-            _leaf(self._TEST_CASE_FILES_TI),
+            cross_ref.TargetInfoNode(self._TEST_CASE_FILES_TI,
+                                     self._test_case_file_renderer.target_info_hierarchy()),
             _leaf(self._TEST_CASE_PROCESSING_TI),
         ]
 
@@ -86,7 +90,7 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
                                                 phases_contents),
                                 ])),
                 doc.Section(self._TEST_CASE_FILES_TI.anchor_text(),
-                            test_case_files_documentation(setup)),
+                            self._test_case_file_renderer.apply(environment)),
                 doc.Section(self._TEST_CASE_PROCESSING_TI.anchor_text(),
                             test_case_processing_documentation(setup)),
                 doc.Section(self._OUTCOME_TI.anchor_text(),

@@ -1,7 +1,9 @@
+from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_INFO
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.program_modes.test_case.contents.main.utils import TestCaseHelpRendererBase, Setup
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header
@@ -9,27 +11,48 @@ from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
-    parser = TextParser({
-        'phase_declaration_for_NAME': section_header('NAME'),
-        'instruction': AnyInstructionNameDictionary(),
-        'default_phase': setup.phase_names[DEFAULT_PHASE.identifier].syntax,
-        'phase': setup.phase_names,
-        'actor': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
-        'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
-        'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,
-    })
-    return docs.SectionContents(
-        [],
-        [
-            parser.section('Phases', PHASES_DOC),
-            parser.section('Phase contents', PHASES_CONTENTS_DOC),
-            docs.section('Instructions',
-                         parser.fnap(INSTRUCTIONS_DOC),
-                         [parser.section('Instruction descriptions',
-                                         INSTRUCTIONS_DESCRIPTION_DOC)]),
-            parser.section('Comments and empty lines', OTHER_DOC),
-        ])
+class TestCaseFileDocumentationRenderer(TestCaseHelpRendererBase):
+    def __init__(self, setup: Setup,
+                 target_factory: cross_ref.CustomTargetInfoFactory = None):
+        super().__init__(setup.test_case_help)
+        self.setup = setup
+        if target_factory is None:
+            target_factory = cross_ref.CustomTargetInfoFactory('')
+
+        self._PHASES_TI = target_factory.sub('Phases', 'phases')
+        self._PHASE_CONTENTS_TI = target_factory.sub('Phase contents', 'phase-contents')
+        self._INSTRUCTIONS_TI = target_factory.sub('Instructions', 'instructions')
+        self._COM_EMPTY_TI = target_factory.sub('Comments and empty lines', 'com-empty')
+
+    def target_info_hierarchy(self) -> list:
+        return [
+            cross_ref.target_info_leaf(self._PHASES_TI),
+            cross_ref.target_info_leaf(self._PHASE_CONTENTS_TI),
+            cross_ref.target_info_leaf(self._INSTRUCTIONS_TI),
+            cross_ref.target_info_leaf(self._COM_EMPTY_TI),
+        ]
+
+    def apply(self, environment: RenderingEnvironment) -> docs.SectionContents:
+        parser = TextParser({
+            'phase_declaration_for_NAME': section_header('NAME'),
+            'instruction': AnyInstructionNameDictionary(),
+            'default_phase': self.setup.phase_names[DEFAULT_PHASE.identifier].syntax,
+            'phase': self.setup.phase_names,
+            'actor': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
+            'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
+            'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,
+        })
+        return docs.SectionContents(
+            [],
+            [
+                docs.section(self._PHASES_TI.anchor_text(), parser.fnap(PHASES_DOC)),
+                docs.section(self._PHASE_CONTENTS_TI.anchor_text(), parser.fnap(PHASES_CONTENTS_DOC)),
+                docs.section(self._INSTRUCTIONS_TI.anchor_text(),
+                             parser.fnap(INSTRUCTIONS_DOC),
+                             [parser.section('Instruction descriptions',
+                                             INSTRUCTIONS_DESCRIPTION_DOC)]),
+                docs.section(self._COM_EMPTY_TI.anchor_text(), parser.fnap(OTHER_DOC)),
+            ])
 
 
 PHASES_DOC = """\
