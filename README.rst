@@ -17,11 +17,13 @@ It also has a `Reference manual
 TEST CASES
 ==========
 
-A test case is written as a plain text file::
+A test case is written as a plain text file.
+The following checks that your new ``addressbook`` program reads an address book from stdin,
+and is able to find an address::
 
     [setup]
 
-    stdin an-address-book.txt
+    stdin a-test-address-book.txt
 
     [act]
 
@@ -56,9 +58,13 @@ The ``home`` instruction can be used to change the directory where Exactly looks
 Using shell commands
 --------------------
 
-Shell commands can be used both in the "act" phase (the system under test), and in other phases.
+Shell commands can be used both in the "act" phase (the system under test), and in other phases, using "$".
 
 ::
+
+    [setup]
+
+    $ touch file
 
     [act]
 
@@ -66,8 +72,7 @@ Shell commands can be used both in the "act" phase (the system under test), and 
 
     [assert]
 
-    cd --rel-result
-    $ tr ':' '\n' < stdout | grep '^/usr/local/bin$'
+    $ tr ':' '\n' < ../result/stdout | grep '^/usr/local/bin$'
 
 
 A shell command in the "assert" phase becomes an assertion that depends on the exit code
