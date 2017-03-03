@@ -91,3 +91,81 @@ url_is_valid = _is_str('url', UrlCrossReferenceTarget.url.fget)
 def _assertion_on_properties_of(x, properties_assertion: va.ValueAssertion) -> va.ValueAssertion:
     return va.with_transformed_message(va.append_to_message(':' + str(type(x)) + ':'),
                                        properties_assertion)
+
+
+def equals(expected: CrossReferenceId) -> va.ValueAssertion:
+    return _CrossReferenceIdEquals(expected)
+
+
+class _CrossReferenceIdEquals(va.ValueAssertion):
+    def __init__(self, expected: CrossReferenceId):
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
+        put.assertIsInstance(value, type(self.expected), message_builder.apply('type of CrossReferenceId'))
+        equality_checker = _CrossReferenceIdEqualsWhenClassIsEqual(self.expected, put, message_builder)
+        equality_checker.visit(value)
+
+
+class _CrossReferenceIdEqualsWhenClassIsEqual(CrossReferenceIdVisitor):
+    def __init__(self,
+                 expected: CrossReferenceId,
+                 put: unittest.TestCase,
+                 message_builder: va.MessageBuilder = va.MessageBuilder()):
+        self.put = put
+        self.message_builder = message_builder
+        self.expected = expected
+
+    def visit_entity(self, x: EntityCrossReferenceId):
+        assert isinstance(self.expected, EntityCrossReferenceId)
+        self.put.assertEquals(self.expected.entity_type_name,
+                              x.entity_type_name,
+                              self.message_builder.apply('entity_type_name'))
+        self.put.assertEquals(self.expected.entity_name,
+                              x.entity_name,
+                              self.message_builder.apply('entity_name'))
+
+    def visit_test_case_phase(self, x: TestCasePhaseCrossReference):
+        assert isinstance(self.expected, TestCasePhaseCrossReference)
+        self.put.assertEquals(self.expected.phase_name,
+                              x.phase_name,
+                              self.message_builder.apply('phase_name'))
+
+    def visit_test_case_phase_instruction(self, x: TestCasePhaseInstructionCrossReference):
+        assert isinstance(self.expected, TestCasePhaseInstructionCrossReference)
+        self.put.assertEquals(self.expected.phase_name,
+                              x.phase_name,
+                              self.message_builder.apply('phase_name'))
+        self.put.assertEquals(self.expected.instruction_name,
+                              x.instruction_name,
+                              self.message_builder.apply('instruction_name'))
+
+    def visit_test_suite_section(self, x: TestSuiteSectionCrossReference):
+        assert isinstance(self.expected, TestSuiteSectionCrossReference)
+        self.put.assertEquals(self.expected.section_name,
+                              x.section_name,
+                              self.message_builder.apply('section_name'))
+
+    def visit_test_suite_section_instruction(self, x: TestSuiteSectionInstructionCrossReference):
+        assert isinstance(self.expected, TestSuiteSectionInstructionCrossReference)
+        self.put.assertEquals(self.expected.section_name,
+                              x.section_name,
+                              self.message_builder.apply('section_name'))
+        self.put.assertEquals(self.expected.instruction_name,
+                              x.instruction_name,
+                              self.message_builder.apply('instruction_name'))
+
+    def visit_custom(self, x: CustomCrossReferenceId):
+        assert isinstance(self.expected, CustomCrossReferenceId)
+        self.put.assertEquals(self.expected.target_name,
+                              x.target_name,
+                              self.message_builder.apply('target_name'))
+
+    def visit_url(self, x: UrlCrossReferenceTarget):
+        assert isinstance(self.expected, UrlCrossReferenceTarget)
+        self.put.assertEquals(self.expected.url,
+                              x.url,
+                              self.message_builder.apply('url'))

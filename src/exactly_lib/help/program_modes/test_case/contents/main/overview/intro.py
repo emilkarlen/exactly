@@ -1,9 +1,18 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
 from exactly_lib.program_info import PROGRAM_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
+
+
+class Documentation(SectionContentsRenderer):
+    def __init__(self, setup: Setup):
+        self.setup = setup
+
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        return intro_intro_documentation(self.setup)
 
 
 def intro_intro_documentation(setup: Setup) -> doc.SectionContents:

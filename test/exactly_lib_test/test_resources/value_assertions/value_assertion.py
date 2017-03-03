@@ -177,6 +177,21 @@ class Not(ValueAssertion):
             put.fail(message_builder.apply('NOT ' + self.assertion_name))
 
 
+class Is(ValueAssertion):
+    def __init__(self,
+                 expected,
+                 message: str = None):
+        self.expected = expected
+        self.message = message
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIs(self.expected, value,
+                     message_builder.apply(self.message))
+
+
 class ValueIsNone(ValueAssertion):
     def __init__(self,
                  message: str = None):
@@ -216,6 +231,22 @@ class Equals(ValueAssertion):
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertEquals(self.expected,
                          value,
+                         message_builder.apply(self.message))
+
+
+class _LenEquals(ValueAssertion):
+    def __init__(self,
+                 expected: int,
+                 message: str = None):
+        self.expected = expected
+        self.message = message
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertEquals(self.expected,
+                         len(value),
                          message_builder.apply(self.message))
 
 
@@ -404,6 +435,7 @@ is_instance = IsInstance
 is_none = ValueIsNone()
 is_not_none = ValueIsNotNone()
 equals = Equals
+len_equals = _LenEquals
 on_transformed = OnTransformed
 
 is_false = Equals(False)
