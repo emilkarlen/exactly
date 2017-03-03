@@ -24,7 +24,7 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
         ow_target_factory = cross_ref.sub_component_factory('overview',
                                                             target_factory)
         self._OVERVIEW_TI = ow_target_factory.root('Overview')
-        self._overview_renderer = OverviewDocumentationRenderer(self.setup, ow_target_factory)
+        self._overview_renderer = OverviewDocumentationRenderer('Overview', self.setup, ow_target_factory)
         self._OUTCOME_TI = target_factory.sub('Test outcome',
                                               'outcome')
 
