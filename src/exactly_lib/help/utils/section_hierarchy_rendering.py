@@ -37,6 +37,24 @@ class SectionGenerator:
         raise NotImplementedError()
 
 
+def leaf(header: str,
+         contents_renderer: SectionContentsRenderer) -> SectionGenerator:
+    """A section without sub sections that appear in the TOC/target hierarchy"""
+    return _SectionGeneratorLeaf(header, contents_renderer)
+
+
+def parent(header: str,
+           initial_paragraphs: list,
+           local_target_name__sub_section__list: list,
+           ) -> SectionGenerator:
+    """
+    A section with ub sections that appear in the TOC/target hierarchy.
+    :param local_target_name__sub_section__list: [(str, SectionGenerator)]
+    :param initial_paragraphs: [ParagraphItem]
+    """
+    return _SectionGeneratorWithSubSections(header, initial_paragraphs, local_target_name__sub_section__list)
+
+
 class _LeafSectionRendererNode(SectionRendererNode):
     """
     A section without sub sections that appear in the target-hierarchy.
@@ -62,14 +80,6 @@ class _LeafSectionRendererNode(SectionRendererNode):
                                    super_self._contents_renderer.apply(environment))
 
         return RetVal()
-
-
-class SubSection:
-    def __init__(self,
-                 target_component: str,
-                 sub_section_node: SectionRendererNode):
-        self.target_component = target_component
-        self.sub_section_node = sub_section_node
 
 
 class _SectionRendererNodeWithSubSections(SectionRendererNode):
@@ -112,7 +122,7 @@ class _SectionRendererNodeWithSubSections(SectionRendererNode):
         return RetVal()
 
 
-class SectionGeneratorLeaf(SectionGenerator):
+class _SectionGeneratorLeaf(SectionGenerator):
     """
     A section without sub sections.
     """
@@ -130,7 +140,7 @@ class SectionGeneratorLeaf(SectionGenerator):
                                         target_factory)
 
 
-class SectionGeneratorWithSubSections(SectionGenerator):
+class _SectionGeneratorWithSubSections(SectionGenerator):
     """
     A section with sub sections.
     """
