@@ -37,7 +37,7 @@ class SectionGenerator:
         raise NotImplementedError()
 
 
-class LeafSectionRendererNode(SectionRendererNode):
+class _LeafSectionRendererNode(SectionRendererNode):
     """
     A section without sub sections that appear in the target-hierarchy.
     """
@@ -72,7 +72,7 @@ class SubSection:
         self.sub_section_node = sub_section_node
 
 
-class SectionRendererNodeWithSubSections(SectionRendererNode):
+class _SectionRendererNodeWithSubSections(SectionRendererNode):
     """
     A section with sub sections that appear in the target-hierarchy.
     """
@@ -125,9 +125,9 @@ class SectionGeneratorLeaf(SectionGenerator):
         self._contents_renderer = contents_renderer
 
     def section_renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionRendererNode:
-        return LeafSectionRendererNode(self._header,
-                                       self._contents_renderer,
-                                       target_factory)
+        return _LeafSectionRendererNode(self._header,
+                                        self._contents_renderer,
+                                        target_factory)
 
 
 class SectionGeneratorWithSubSections(SectionGenerator):
@@ -156,7 +156,7 @@ class SectionGeneratorWithSubSections(SectionGenerator):
         sub_sections = [section_generator.section_renderer_node(sub_factory(local_target_name))
                         for (local_target_name, section_generator)
                         in self._local_target_name__sub_section__list]
-        return SectionRendererNodeWithSubSections(self._header,
-                                                  self._initial_paragraphs,
-                                                  sub_sections,
-                                                  target_factory)
+        return _SectionRendererNodeWithSubSections(self._header,
+                                                   self._initial_paragraphs,
+                                                   sub_sections,
+                                                   target_factory)
