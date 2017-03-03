@@ -138,3 +138,19 @@ list   elem   => list
 
 elem   list   => list
 
+
+
+* Syntax proposals
+let path M4_TEST_ROOT_DIR = ../..
+
+let path M4_DATABASE_IMPORT_DIR = --rel M4_TEST_ROOT_DIR ..
+
+
+def path M4_TEST_ROOT_DIR = ../..
+
+def path M4_DATABASE_IMPORT_DIR = --rel M4_TEST_ROOT_DIR ..
+
+
+def M4_TEST_ROOT_DIR = path ../..
+
+def M4_DATABASE_IMPORT_DIR = path --rel M4_TEST_ROOT_DIR ..
