@@ -57,6 +57,15 @@ is_text = va.Or([
 ])
 
 
+def is_string_text_that_equals(expected: str) -> va.ValueAssertion:
+    return va.And([
+        is_string_text,
+        va.sub_component('value',
+                         core.StringText.value.fget,
+                         va.equals(expected)),
+    ])
+
+
 class _IsParagraphItem(ParagraphItemVisitor, va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,

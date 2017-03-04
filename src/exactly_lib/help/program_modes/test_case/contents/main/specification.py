@@ -1,66 +1,28 @@
-from exactly_lib.common.help import cross_reference_id as cross_ref
-from exactly_lib.help.program_modes.test_case.contents.main.overview.renderer import OverviewDocumentationRenderer
-from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_files import TestCaseFileDocumentationRenderer
-from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
-    test_case_processing_documentation
-from exactly_lib.help.program_modes.test_case.contents.main.test_outcome import test_outcome_documentation
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, TestCaseHelpRendererBase
+from exactly_lib.help.program_modes.test_case.contents.main import ref_test_case_files as tc
+from exactly_lib.help.program_modes.test_case.contents.main import ref_test_case_processing as processing
+from exactly_lib.help.program_modes.test_case.contents.main import test_outcome
+from exactly_lib.help.program_modes.test_case.contents.main.overview import renderer as overview
+from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.program_modes.test_case.contents.util import SectionFromGeneratorAsSectionContentsRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
-from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure.structures import para
+from exactly_lib.help.utils import section_hierarchy_rendering as hierarchy_rendering
+from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
-class SpecificationRenderer(TestCaseHelpRendererBase):
-    def __init__(self, test_case_help: TestCaseHelp,
-                 target_factory: cross_ref.CustomTargetInfoFactory = None):
-        super().__init__(test_case_help)
-        self.setup = Setup(self.test_case_help)
-        if target_factory is None:
-            target_factory = cross_ref.CustomTargetInfoFactory('')
-
-        ow_target_factory = cross_ref.sub_component_factory('overview',
-                                                            target_factory)
-        self._OVERVIEW_TI = ow_target_factory.root('Overview')
-        self._overview_renderer = OverviewDocumentationRenderer(self.setup, ow_target_factory)
-        self._OUTCOME_TI = target_factory.sub('Test outcome',
-                                              'outcome')
-
-        self._file_target_factory = cross_ref.sub_component_factory('file-syntax',
-                                                                    target_factory)
-        self._TEST_CASE_FILES_TI = self._file_target_factory.root('Test case file syntax')
-        self._test_case_file_renderer = TestCaseFileDocumentationRenderer(self.setup,
-                                                                          self._file_target_factory)
-
-        self._TEST_CASE_PROCESSING_TI = target_factory.sub('Test case processing',
-                                                           'test-case-processing')
-
-    def target_info_hierarchy(self) -> list:
-        return [
-            cross_ref.TargetInfoNode(self._OVERVIEW_TI,
-                                     self._overview_renderer.target_info_hierarchy()),
-            _leaf(self._OUTCOME_TI),
-            cross_ref.TargetInfoNode(self._TEST_CASE_FILES_TI,
-                                     self._test_case_file_renderer.target_info_hierarchy()),
-            _leaf(self._TEST_CASE_PROCESSING_TI),
-        ]
-
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        setup = Setup(self.test_case_help)
-        return doc.SectionContents(
-            [para(ONE_LINE_DESCRIPTION)],
-            [
-                doc.Section(self._OVERVIEW_TI.anchor_text(),
-                            self._overview_renderer.apply(environment)),
-                doc.Section(self._TEST_CASE_FILES_TI.anchor_text(),
-                            self._test_case_file_renderer.apply(environment)),
-                doc.Section(self._TEST_CASE_PROCESSING_TI.anchor_text(),
-                            test_case_processing_documentation(setup)),
-                doc.Section(self._OUTCOME_TI.anchor_text(),
-                            test_outcome_documentation(setup)),
-            ])
+def generator(header: str, test_case_help: TestCaseHelp) -> hierarchy_rendering.SectionGenerator:
+    setup = Setup(test_case_help)
+    return hierarchy_rendering.parent(
+        header,
+        [],
+        [
+            ('overview', overview.generator('Overview', setup)),
+            ('outcome', hierarchy_rendering.leaf('Test outcome', test_outcome.TestOutcomeDocumentation(setup))),
+            ('file-syntax', tc.generator('Test case file syntax', setup)),
+            ('processing', hierarchy_rendering.leaf('Test case processing', processing.ContentsRenderer(setup))),
+        ])
 
 
-_leaf = cross_ref.target_info_leaf
+def as_section_contents_renderer(test_case_help: TestCaseHelp) -> SectionContentsRenderer:
+    return SectionFromGeneratorAsSectionContentsRenderer(generator('unused header', test_case_help))

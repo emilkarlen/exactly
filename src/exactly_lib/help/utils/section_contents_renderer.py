@@ -21,3 +21,8 @@ class RenderingEnvironment(tuple):
 class SectionContentsRenderer:
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         raise NotImplementedError()
+
+
+class SectionRenderer:
+    def apply(self, environment: RenderingEnvironment) -> doc.Section:
+        raise NotImplementedError()
