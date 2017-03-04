@@ -1,5 +1,5 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
-from exactly_lib.help.program_modes.test_case.contents.main.overview.renderer import OverviewDocumentationRenderer
+from exactly_lib.help.program_modes.test_case.contents.main.overview import renderer as overview
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_files import TestCaseFileDocumentationRenderer
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     test_case_processing_documentation
@@ -23,8 +23,8 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
 
         ow_target_factory = cross_ref.sub_component_factory('overview',
                                                             target_factory)
-        self._OVERVIEW_TI = ow_target_factory.root('Overview')
-        self._overview_renderer = OverviewDocumentationRenderer('Overview', self.setup, ow_target_factory)
+        self._overview_section_renderer_node = overview.generator('Overview', self.setup).section_renderer_node(
+            ow_target_factory)
         self._OUTCOME_TI = target_factory.sub('Test outcome',
                                               'outcome')
 
@@ -39,8 +39,7 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
 
     def target_info_hierarchy(self) -> list:
         return [
-            cross_ref.TargetInfoNode(self._OVERVIEW_TI,
-                                     self._overview_renderer.target_info_hierarchy()),
+            self._overview_section_renderer_node.target_info_node(),
             _leaf(self._OUTCOME_TI),
             cross_ref.TargetInfoNode(self._TEST_CASE_FILES_TI,
                                      self._test_case_file_renderer.target_info_hierarchy()),
@@ -52,8 +51,7 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
         return doc.SectionContents(
             [para(ONE_LINE_DESCRIPTION)],
             [
-                doc.Section(self._OVERVIEW_TI.anchor_text(),
-                            self._overview_renderer.apply(environment)),
+                self._overview_section_renderer_node.section(environment),
                 doc.Section(self._TEST_CASE_FILES_TI.anchor_text(),
                             self._test_case_file_renderer.apply(environment)),
                 doc.Section(self._TEST_CASE_PROCESSING_TI.anchor_text(),

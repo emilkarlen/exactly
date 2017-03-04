@@ -25,6 +25,8 @@ class SectionRendererNode:
     def section_renderer(self) -> SectionRenderer:
         raise NotImplementedError()
 
+    def section(self, environment: RenderingEnvironment) -> doc.Section:
+        return self.section_renderer().apply(environment)
 
 class SectionGenerator:
     """
