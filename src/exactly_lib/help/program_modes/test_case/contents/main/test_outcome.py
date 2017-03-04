@@ -7,34 +7,38 @@ from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_proces
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
+from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsRendererWithSetup
 from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import *
 
 EXIT_CODE_FROM_ARGUMENT_PARSER = 2
 
 
-def test_outcome_documentation(setup: Setup) -> SectionContents:
-    preamble_paragraphs = normalize_and_parse(PREAMBLE)
-    return SectionContents(
-        preamble_paragraphs,
-        [
-            section('Reporting',
-                    normalize_and_parse(REPORTING)),
-            section('Complete execution',
-                    _description_of_complete_execution(setup)),
-            section('Error during execution',
-                    _interrupted_execution(setup)),
-            section('Error during validation (before execution)',
-                    _error_in_validation_before_execution(setup)),
-            section('Other errors',
-                    _other_errors(setup)),
-            section('Summary of exit codes and identifiers',
-                    [_exit_value_table_for(setup,
-                                           sorted(exit_values.ALL_EXIT_VALUES,
-                                                  key=ExitValue.exit_identifier.fget))]),
-        ]
-    )
+class TestOutcomeDocumentation(SectionContentsRendererWithSetup):
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        preamble_paragraphs = normalize_and_parse(PREAMBLE)
+        return SectionContents(
+            preamble_paragraphs,
+            [
+                section('Reporting',
+                        normalize_and_parse(REPORTING)),
+                section('Complete execution',
+                        _description_of_complete_execution(self.setup)),
+                section('Error during execution',
+                        _interrupted_execution(self.setup)),
+                section('Error during validation (before execution)',
+                        _error_in_validation_before_execution(self.setup)),
+                section('Other errors',
+                        _other_errors(self.setup)),
+                section('Summary of exit codes and identifiers',
+                        [_exit_value_table_for(self.setup,
+                                               sorted(exit_values.ALL_EXIT_VALUES,
+                                                      key=ExitValue.exit_identifier.fget))]),
+            ]
+        )
 
 
 PREAMBLE = ''
