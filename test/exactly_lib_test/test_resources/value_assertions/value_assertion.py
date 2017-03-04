@@ -411,6 +411,26 @@ class EveryElement(ValueAssertion):
             element_index += 1
 
 
+class _MatchesSequence(ValueAssertion):
+    def __init__(self,
+                 element_assertions: list):
+        self.element_assertions = element_assertions
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertEquals(len(value),
+                         len(self.element_assertions),
+                         message_builder.apply('Number of elements'))
+        for idx, element in enumerate(value):
+            element_message_builder = sub_component_builder('[' + str(idx) + ']',
+                                                            message_builder,
+                                                            component_separator='')
+            self.element_assertions[idx].apply(put, element,
+                                               element_message_builder)
+
+
 def fail(msg: str) -> ValueAssertion:
     return Constant(False, msg)
 
@@ -440,3 +460,7 @@ on_transformed = OnTransformed
 
 is_false = Equals(False)
 is_true = Equals(True)
+
+
+def matches_sequence(element_assertions: list) -> ValueAssertion:
+    return _MatchesSequence(element_assertions)
