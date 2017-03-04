@@ -13,17 +13,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.util.textformat.test_resources.structure import is_anchor_text, is_string_text_that_equals
 
 
-class TestLeaf(unittest.TestCase):
-    def test_empty_section_contents(self):
+class Test(unittest.TestCase):
+    def test_leaf(self):
         # ARRANGE #
         target_factory = CustomTargetInfoFactory('target_component')
         expected_section_contents_object = doc.empty_contents()
-        actual = sut.leaf('header', section_contents(expected_section_contents_object))
-        # ACT #
-        section_renderer_node = actual.section_renderer_node(target_factory)
-        actual_target_info_node = section_renderer_node.target_info_node()
-        actual_section = section_renderer_node.section_renderer().apply(RENDERING_ENVIRONMENT)
-        # ASSERT #
+        object_to_test = sut.leaf('header', section_contents(expected_section_contents_object))
+        # EXPECTATION #
         expected_target_info = target_factory.root('header')
 
         target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
@@ -36,6 +32,44 @@ class TestLeaf(unittest.TestCase):
                                doc.Section.contents.fget,
                                asrt.Is(expected_section_contents_object))
         ])
+        # ACT & ASSERT #
+        self._act_and_assert(object_to_test, target_factory,
+                             target_info_node_assertion,
+                             section_assertion)
+
+    def test_parent_without_sub_sections(self):
+        # ARRANGE #
+        target_factory = CustomTargetInfoFactory('target_component')
+        expected_section_contents_object = doc.empty_contents()
+        object_to_test = sut.parent('top header', [], [])
+        # EXPECTATION #
+        expected_target_info = target_factory.root('top header')
+
+        target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
+
+        section_assertion = asrt.And([
+            asrt.sub_component('header',
+                               doc.Section.header.fget,
+                               is_anchor_text_that_corresponds_to(expected_target_info)),
+            asrt.sub_component('contents',
+                               doc.Section.contents.fget,
+                               asrt.sub_component('is_empty',
+                                                  doc.SectionContents.is_empty.fget,
+                                                  asrt.is_true))
+        ])
+        # ACT & ASSERT #
+        self._act_and_assert(object_to_test, target_factory,
+                             target_info_node_assertion,
+                             section_assertion)
+
+    def _act_and_assert(self,
+                        object_to_test: sut.SectionGenerator,
+                        target_factory: CustomTargetInfoFactory,
+                        target_info_node_assertion: asrt.ValueAssertion,
+                        section_assertion: asrt.ValueAssertion):
+        section_renderer_node = object_to_test.section_renderer_node(target_factory)
+        actual_target_info_node = section_renderer_node.target_info_node()
+        actual_section = section_renderer_node.section_renderer().apply(RENDERING_ENVIRONMENT)
 
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')
         section_assertion.apply_with_message(self, actual_section, 'Section')
