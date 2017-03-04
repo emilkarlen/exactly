@@ -15,9 +15,6 @@ class HtmlDocGeneratorForSectionDocumentBase:
 
     def _sections_contents(self, targets_factory: CustomTargetInfoFactory,
                            sections: list) -> (list, doc.SectionContents):
-        """
-        :type sections: [`SectionDocumentation`]
-        """
         ret_val_sections = []
         ret_val_targets = []
         for phase in sections:
@@ -37,9 +34,6 @@ class HtmlDocGeneratorForSectionDocumentBase:
 
     def _instructions_contents(self, targets_factory: CustomTargetInfoFactory,
                                sections: list) -> (list, doc.SectionContents):
-        """
-        :type sections: [`SectionDocumentation`]
-        """
         ret_val_sections = []
         ret_val_targets = []
         for section in sections:
