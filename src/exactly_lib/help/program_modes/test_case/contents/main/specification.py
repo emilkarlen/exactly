@@ -14,6 +14,19 @@ from exactly_lib.util.textformat.structure.structures import para
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
+def generator(header: str, test_case_help: TestCaseHelp) -> hierarchy_rendering.SectionGenerator:
+    setup = Setup(test_case_help)
+    return hierarchy_rendering.parent(
+        header,
+        [],
+        [
+            ('overview', overview.generator('Overview', setup)),
+            ('outcome', hierarchy_rendering.leaf('Test outcome', test_outcome.TestOutcomeDocumentation(setup))),
+            ('file-syntax', tc.generator('Test case file syntax', setup)),
+            ('processing', hierarchy_rendering.leaf('Test case processing', processing.ContentsRenderer(setup))),
+        ])
+
+
 class SpecificationRenderer(TestCaseHelpRendererBase):
     def __init__(self, test_case_help: TestCaseHelp,
                  target_factory: cross_ref.CustomTargetInfoFactory = None):
@@ -22,17 +35,16 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
         if target_factory is None:
             target_factory = cross_ref.CustomTargetInfoFactory('')
 
-        ow_target_factory = cross_ref.sub_component_factory('overview',
-                                                            target_factory)
-
-        self._overview_section_renderer_node = overview.generator('Overview', self.setup).section_renderer_node(
-            ow_target_factory)
+        overview_generator = overview.generator('Overview', self.setup)
+        self._overview_section_renderer_node = overview_generator.section_renderer_node(
+            target_factory.sub_factory('overview'))
         outcome_generator = hierarchy_rendering.leaf('Test outcome', test_outcome.TestOutcomeDocumentation(self.setup))
         self._outcome_node = outcome_generator.section_renderer_node(sub_component_factory('outcome', target_factory))
 
         _file_target_factory = cross_ref.sub_component_factory('file-syntax',
                                                                target_factory)
-        self._tc_section_renderer_node = tc.generator('Test case file syntax', self.setup).section_renderer_node(
+        test_case_generator = tc.generator('Test case file syntax', self.setup)
+        self._tc_section_renderer_node = test_case_generator.section_renderer_node(
             _file_target_factory)
 
         processing_generator = hierarchy_rendering.leaf('Test case processing', processing.ContentsRenderer(self.setup))
