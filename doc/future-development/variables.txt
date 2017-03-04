@@ -1,0 +1,41 @@
+-*_ org -*-
+
+* File inclusion and variable declarations
+When a file is included and processed by m4, then the declarations do not
+appear in the parsed source, since m4 outputs just space for a declaration.
+Thus the only affected output is where the variables are used.
+
+If Exactly has it's own inclusion mechanism, on the other hand, then
+declarations will become part of the source.
+
+If declarations become part of the source for phases, then each phase where
+they are allowed must be able to parse declarations.
+
+One alternative is to have a file inclusion mechanism that includes only
+"definitions", and that is treated as a special kind of information that is
+not part of any phase (and thus is parsed by a separate parser.)
+
+Note: since it should not be forced to put declarations in a separate file,
+the ordinary phases must be able to handle declarations as well.
+
+* Mixfix syntax for function names
+
+Postfix syntax for argument can make function calls unnatural to read:
+----------------------------------------
+dir_contains_n_files('my-dir', 5)
+----------------------------------------
+
+A mixfix syntax could be easier:
+
+----------------------------------------
+dir('my-dir')contains(5)files
+----------------------------------------
+
+The name in the symbol table for that function could be
+"dir()contains()files"
+
+Each parenthasis should be able to take more than one parameter.
+
+Positive is that this syntax is compatible with normal syntax, if people find
+it difficult to learn/use/understand/remember.
+
