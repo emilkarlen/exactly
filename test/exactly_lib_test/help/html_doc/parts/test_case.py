@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.help.program_modes.test_case.contents.main import specification as sut
+from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory
+from exactly_lib.help.html_doc.parts import test_case as sut
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_CASE_HELP_WITH_PRODUCTION_PHASES
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -15,20 +16,22 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_document_structure(self):
         # ARRANGE #
-        rendering_environment = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+        generator = sut.HtmlDocGeneratorForTestCaseHelp(RENDERING_ENVIRONMENT, TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
         # ACT #
-        actual = sut.SpecificationRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES).apply(rendering_environment)
+        targets, contents = generator.apply(CustomTargetInfoFactory('target-prefix'))
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_section_contents.apply(self, contents)
 
     def test_target_info_hierarchy(self):
         # ARRANGE #
-        overview_renderer = sut.SpecificationRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
+        generator = sut.HtmlDocGeneratorForTestCaseHelp(RENDERING_ENVIRONMENT, TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
         # ACT #
-        actual = overview_renderer.target_info_hierarchy()
+        targets, contents = generator.apply(CustomTargetInfoFactory('target-prefix'))
         # ASSERT #
-        is_target_info_node_list.apply(self, actual)
+        is_target_info_node_list.apply(self, targets)
 
+
+RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

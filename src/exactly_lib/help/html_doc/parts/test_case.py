@@ -20,11 +20,10 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         self.test_case_help = test_case_help
 
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        specification_targets_factory = cross_ref.sub_component_factory('spec',
-                                                                        targets_factory)
-        specification_target = specification_targets_factory.root('Specification of test case functionality')
-        specification_sub_targets, specification_contents = self._specification_contents(
-            specification_targets_factory)
+        specification_generator = test_case_specification_rendering.generator(
+            'Specification of test case functionality',
+            self.test_case_help)
+        specification_node = specification_generator.section_renderer_node(targets_factory.sub_factory('spec'))
 
         cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax',
                                                                      targets_factory)
@@ -52,8 +51,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         ret_val_contents = doc.SectionContents(
             [],
             [
-                doc.Section(specification_target.anchor_text(),
-                            specification_contents),
+                specification_node.section(self.rendering_environment),
                 doc.Section(phases_target.anchor_text(),
                             phases_contents),
                 doc.Section(actors_target.anchor_text(),
@@ -65,8 +63,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
             ]
         )
         ret_val_targets = [
-            cross_ref.TargetInfoNode(specification_target,
-                                     specification_sub_targets),
+            specification_node.target_info_node(),
             cross_ref.TargetInfoNode(phases_target,
                                      phases_sub_targets),
             cross_ref.TargetInfoNode(actors_target,
@@ -76,11 +73,6 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
                                      instructions_sub_targets),
         ]
         return ret_val_targets, ret_val_contents
-
-    def _specification_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = test_case_specification_rendering.SpecificationRenderer(self.test_case_help, targets_factory)
-        section_contents = generator.apply(self.rendering_environment)
-        return generator.target_info_hierarchy(), section_contents
 
     def _actors_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         generator = HtmlDocGeneratorForEntitiesHelp(IndividualActorRenderer, ALL_ACTOR_DOCS, self.rendering_environment)
