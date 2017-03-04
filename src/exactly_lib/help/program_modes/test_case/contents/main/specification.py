@@ -1,11 +1,13 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
+from exactly_lib.common.help.cross_reference_id import sub_component_factory
 from exactly_lib.help.program_modes.test_case.contents.main import ref_test_case_files as tc
+from exactly_lib.help.program_modes.test_case.contents.main import test_outcome
 from exactly_lib.help.program_modes.test_case.contents.main.overview import renderer as overview
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     test_case_processing_documentation
-from exactly_lib.help.program_modes.test_case.contents.main.test_outcome import test_outcome_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, TestCaseHelpRendererBase
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.utils import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para
@@ -23,10 +25,13 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
 
         ow_target_factory = cross_ref.sub_component_factory('overview',
                                                             target_factory)
+
         self._overview_section_renderer_node = overview.generator('Overview', self.setup).section_renderer_node(
             ow_target_factory)
         self._OUTCOME_TI = target_factory.sub('Test outcome',
                                               'outcome')
+        outcome_generator = hierarchy_rendering.leaf('Test outcome', test_outcome.TestOutcomeDocumentation(self.setup))
+        self._outcome_node = outcome_generator.section_renderer_node(sub_component_factory('outcome', target_factory))
 
         _file_target_factory = cross_ref.sub_component_factory('file-syntax',
                                                                target_factory)
@@ -39,7 +44,7 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
     def target_info_hierarchy(self) -> list:
         return [
             self._overview_section_renderer_node.target_info_node(),
-            _leaf(self._OUTCOME_TI),
+            self._outcome_node.target_info_node(),
             self._tc_section_renderer_node.target_info_node(),
             _leaf(self._TEST_CASE_PROCESSING_TI),
         ]
@@ -53,8 +58,7 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
                 self._tc_section_renderer_node.section(environment),
                 doc.Section(self._TEST_CASE_PROCESSING_TI.anchor_text(),
                             test_case_processing_documentation(setup)),
-                doc.Section(self._OUTCOME_TI.anchor_text(),
-                            test_outcome_documentation(setup)),
+                self._outcome_node.section(environment),
             ])
 
 
