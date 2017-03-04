@@ -198,6 +198,9 @@ class CustomTargetInfoFactory:
         return TargetInfo(presentation,
                           CustomCrossReferenceId(self.prefix))
 
+    def sub_factory(self, local_name: str):
+        return sub_component_factory(local_name, self)
+
 
 def sub_component_factory(local_name: str,
                           root: CustomTargetInfoFactory) -> CustomTargetInfoFactory:

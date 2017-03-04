@@ -1,10 +1,9 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import sub_component_factory
 from exactly_lib.help.program_modes.test_case.contents.main import ref_test_case_files as tc
+from exactly_lib.help.program_modes.test_case.contents.main import ref_test_case_processing as processing
 from exactly_lib.help.program_modes.test_case.contents.main import test_outcome
 from exactly_lib.help.program_modes.test_case.contents.main.overview import renderer as overview
-from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
-    test_case_processing_documentation
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, TestCaseHelpRendererBase
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils import section_hierarchy_rendering as hierarchy_rendering
@@ -28,8 +27,6 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
 
         self._overview_section_renderer_node = overview.generator('Overview', self.setup).section_renderer_node(
             ow_target_factory)
-        self._OUTCOME_TI = target_factory.sub('Test outcome',
-                                              'outcome')
         outcome_generator = hierarchy_rendering.leaf('Test outcome', test_outcome.TestOutcomeDocumentation(self.setup))
         self._outcome_node = outcome_generator.section_renderer_node(sub_component_factory('outcome', target_factory))
 
@@ -38,26 +35,25 @@ class SpecificationRenderer(TestCaseHelpRendererBase):
         self._tc_section_renderer_node = tc.generator('Test case file syntax', self.setup).section_renderer_node(
             _file_target_factory)
 
-        self._TEST_CASE_PROCESSING_TI = target_factory.sub('Test case processing',
-                                                           'test-case-processing')
+        processing_generator = hierarchy_rendering.leaf('Test case processing', processing.ContentsRenderer(self.setup))
+        self._processing_node = processing_generator.section_renderer_node(
+            target_factory.sub_factory('test-case-processing'))
 
     def target_info_hierarchy(self) -> list:
         return [
             self._overview_section_renderer_node.target_info_node(),
             self._outcome_node.target_info_node(),
             self._tc_section_renderer_node.target_info_node(),
-            _leaf(self._TEST_CASE_PROCESSING_TI),
+            self._processing_node.target_info_node(),
         ]
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        setup = Setup(self.test_case_help)
         return doc.SectionContents(
             [para(ONE_LINE_DESCRIPTION)],
             [
                 self._overview_section_renderer_node.section(environment),
                 self._tc_section_renderer_node.section(environment),
-                doc.Section(self._TEST_CASE_PROCESSING_TI.anchor_text(),
-                            test_case_processing_documentation(setup)),
+                self._processing_node.section(environment),
                 self._outcome_node.section(environment),
             ])
 
