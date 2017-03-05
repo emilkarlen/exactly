@@ -1,4 +1,4 @@
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 

@@ -4,7 +4,7 @@ import stat
 from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.file_ref import FileRefValidatorBase
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
 class ExecutableFile:
@@ -15,11 +15,11 @@ class ExecutableFile:
         self._arguments = arguments
         self._validator = ExistingExecutableFileValidator(file_reference)
 
-    def path(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self._file_reference.file_path_pre_or_post_sds(home_and_sds)
+    def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
+        return self._file_reference.file_path_pre_or_post_sds(environment)
 
-    def path_string(self, home_and_sds: HomeAndSds) -> str:
-        return str(self.path(home_and_sds))
+    def path_string(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+        return str(self.path(environment))
 
     @property
     def file_reference(self) -> file_ref.FileRef:

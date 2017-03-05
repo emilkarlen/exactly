@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator

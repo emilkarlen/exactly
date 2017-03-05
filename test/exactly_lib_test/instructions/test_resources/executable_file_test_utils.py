@@ -5,7 +5,8 @@ import unittest
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
@@ -102,22 +103,25 @@ class CheckBase(unittest.TestCase):
                           actual.exists_pre_sds(),
                           'Existence pre SDS')
 
-    def _check_file_path(self, file_name: str, actual: ExecutableFile, home_and_sds: HomeAndSds):
-        self.assertEqual(str(self.configuration.installed_file_path(file_name, home_and_sds)),
-                         actual.path_string(home_and_sds),
+    def _check_file_path(self, file_name: str, actual: ExecutableFile,
+                         environment: PathResolvingEnvironmentPreOrPostSds):
+        self.assertEqual(str(self.configuration.installed_file_path(file_name, environment.home_and_sds)),
+                         actual.path_string(environment),
                          'Path string')
 
     def _home_and_sds_and_test_as_curr_dir(self, file: File) -> HomeAndSds:
         contents = self.configuration.file_installation(file)
         return home_and_sds_with_act_as_curr_dir(home_or_sds_contents=contents)
 
-    def _assert_passes_validation(self, actual: ExecutableFile, home_and_sds: HomeAndSds):
-        validator_util.check(self, actual.validator, home_and_sds)
+    def _assert_passes_validation(self, actual: ExecutableFile,
+                                  environment: PathResolvingEnvironmentPreOrPostSds):
+        validator_util.check(self, actual.validator, environment)
 
-    def _assert_does_not_pass_validation(self, actual: ExecutableFile, home_and_sds: HomeAndSds):
+    def _assert_does_not_pass_validation(self, actual: ExecutableFile,
+                                         environment: PathResolvingEnvironmentPreOrPostSds):
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds
-        validator_util.check(self, actual.validator, home_and_sds,
+        validator_util.check(self, actual.validator, environment,
                              passes_pre_sds=passes_pre_sds,
                              passes_post_sds=passes_post_sds)
 
@@ -136,8 +140,9 @@ class CheckExistingFile(CheckBase):
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_sds(exe_file)
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
-            self._check_file_path('file.exe', exe_file, home_and_sds)
-            self._assert_passes_validation(exe_file, home_and_sds)
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
+            self._check_file_path('file.exe', exe_file, environment)
+            self._assert_passes_validation(exe_file, environment)
 
 
 class CheckExistingFileWithArguments(CheckBase):
@@ -157,8 +162,9 @@ class CheckExistingFileWithArguments(CheckBase):
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_sds(exe_file)
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
-            self._check_file_path('file.exe', exe_file, home_and_sds)
-            self._assert_passes_validation(exe_file, home_and_sds)
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
+            self._check_file_path('file.exe', exe_file, environment)
+            self._assert_passes_validation(exe_file, environment)
 
 
 class CheckExistingButNonExecutableFile(CheckBase):
@@ -171,7 +177,8 @@ class CheckExistingButNonExecutableFile(CheckBase):
         arguments = TokenStream(arguments_str)
         (exe_file, remaining_arguments) = sut.parse(arguments)
         with self._home_and_sds_and_test_as_curr_dir(empty_file('file.exe')) as home_and_sds:
-            self._assert_does_not_pass_validation(exe_file, home_and_sds)
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
+            self._assert_does_not_pass_validation(exe_file, environment)
 
 
 class CheckNonExistingFile(CheckBase):
@@ -188,8 +195,9 @@ class CheckNonExistingFile(CheckBase):
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_sds(exe_file)
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
-            self._check_file_path('file.exe', exe_file, home_and_sds)
-            self._assert_does_not_pass_validation(exe_file, home_and_sds)
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
+            self._check_file_path('file.exe', exe_file, environment)
+            self._assert_does_not_pass_validation(exe_file, environment)
 
 
 def suite_for(configuration: RelativityConfiguration) -> list:

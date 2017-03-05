@@ -2,7 +2,7 @@ import types
 import unittest
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
 class Expectation:
@@ -23,16 +23,16 @@ def expect_validation_pre_eds(result: bool) -> Expectation:
 
 def check2(put: unittest.TestCase,
            validator: PreOrPostSdsValidator,
-           home_and_sds: HomeAndSds,
+           environment: PathResolvingEnvironmentPreOrPostSds,
            expectation: Expectation):
-    check(put, validator, home_and_sds,
+    check(put, validator, environment,
           expectation.passes_pre_sds,
           expectation.passes_post_sds)
 
 
 def check(put: unittest.TestCase,
           validator: PreOrPostSdsValidator,
-          home_and_sds: HomeAndSds,
+          environment: PathResolvingEnvironmentPreOrPostSds,
           passes_pre_sds: bool = True,
           passes_post_sds: bool = True):
     def _check(f: types.FunctionType,
@@ -49,12 +49,12 @@ def check(put: unittest.TestCase,
     _check(validator.validate_pre_sds_if_applicable,
            'Validation pre SDS',
            passes_pre_sds,
-           home_and_sds.home_dir_path)
+           environment)
     _check(validator.validate_post_sds_if_applicable,
            'Validation post SDS',
            passes_post_sds,
-           home_and_sds.sds)
+           environment)
     _check(validator.validate_pre_or_post_sds,
            'Validation pre or post SDS',
            passes_pre_sds and passes_post_sds,
-           home_and_sds)
+           environment)

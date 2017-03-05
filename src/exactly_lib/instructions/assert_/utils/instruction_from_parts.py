@@ -16,12 +16,14 @@ class AssertPhaseInstructionFromValidatorAndExecutor(AssertPhaseInstruction):
         self._validator = PreOrPostSdsSvhValidationErrorValidator(instruction_setup.validator)
 
     def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validator.validate_pre_sds_if_applicable(environment.home_directory)
+                         environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validator.validate_post_sds_if_applicable(environment.sds)
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,

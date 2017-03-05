@@ -2,25 +2,12 @@ import pathlib
 
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.test_case import sandbox_directory_structure as _sds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.value_definition import SymbolTable
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
-
-
-class HomeAndSds:
-    def __init__(self,
-                 home_path: pathlib.Path,
-                 sds: _sds.SandboxDirectoryStructure):
-        self._home_path = home_path
-        self._sds = sds
-
-    @property
-    def home_dir_path(self) -> pathlib.Path:
-        return self._home_path
-
-    @property
-    def sds(self) -> _sds.SandboxDirectoryStructure:
-        return self._sds
 
 
 class InstructionEnvironmentForPreSdsStep:
@@ -60,6 +47,10 @@ class InstructionEnvironmentForPreSdsStep:
     @property
     def value_definitions(self) -> SymbolTable:
         return self.__value_definitions
+
+    @property
+    def path_resolving_environment(self) -> PathResolvingEnvironmentPreSds:
+        return PathResolvingEnvironmentPreSds(self.__home_dir)
 
 
 class PhaseLoggingPaths:
@@ -127,6 +118,14 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     @property
     def phase_logging(self) -> PhaseLoggingPaths:
         return self._phase_logging
+
+    @property
+    def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
+        return PathResolvingEnvironmentPostSds(self.__sds)
+
+    @property
+    def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:
+        return PathResolvingEnvironmentPreOrPostSds(self.home_and_sds)
 
 
 class TestCaseInstruction(Instruction):

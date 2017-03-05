@@ -1,9 +1,7 @@
-import pathlib
-
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class PreOrPostSdsValidator:
@@ -13,36 +11,37 @@ class PreOrPostSdsValidator:
     Whether validation is done pre or post SDS depends on whether the validated
     object is outside or inside the SDS.
     """
-    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
+
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
         """
         Validates the object if it is expected to exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
-    def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
         """
         Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
-    def validate_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> str:
+    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         """
         Validates the object using either pre- or post- SDS.
         :return: Error message iff validation failed.
         """
-        error_message = self.validate_pre_sds_if_applicable(home_and_sds.home_dir_path)
+        error_message = self.validate_pre_sds_if_applicable(environment)
         if error_message is not None:
             return error_message
-        return self.validate_post_sds_if_applicable(home_and_sds.sds)
+        return self.validate_post_sds_if_applicable(environment)
 
 
 class ConstantSuccessValidator(PreOrPostSdsValidator):
-    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
         return None
 
-    def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
         return None
 
 
@@ -51,16 +50,16 @@ class AndValidator(PreOrPostSdsValidator):
                  validators: iter):
         self.validators = validators
 
-    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
         for validator in self.validators:
-            result = validator.validate_pre_sds_if_applicable(home_dir_path)
+            result = validator.validate_pre_sds_if_applicable(environment)
             if result is not None:
                 return result
         return None
 
-    def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
         for validator in self.validators:
-            result = validator.validate_post_sds_if_applicable(sds)
+            result = validator.validate_post_sds_if_applicable(environment)
             if result is not None:
                 return result
         return None
@@ -75,15 +74,18 @@ class PreOrPostSdsSvhValidationErrorValidator:
                  validator: PreOrPostSdsValidator):
         self.validator = validator
 
-    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._translate(self.validator.validate_pre_sds_if_applicable(home_dir_path))
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds
+                                       ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_pre_sds_if_applicable(environment))
 
     def validate_post_sds_if_applicable(self,
-                                        sds: SandboxDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._translate(self.validator.validate_post_sds_if_applicable(sds))
+                                        environment: PathResolvingEnvironmentPostSds
+                                        ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_post_sds_if_applicable(environment))
 
-    def validate_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._translate(self.validator.validate_pre_or_post_sds(home_and_sds))
+    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds
+                                 ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_pre_or_post_sds(environment))
 
     @staticmethod
     def _translate(error_message_or_none: str) -> svh.SuccessOrValidationErrorOrHardError:
@@ -97,18 +99,17 @@ class PreOrPostSdsSvhValidationForSuccessOrHardError:
     A validator that translates error messages to a sh.HardError
     """
 
-    def __init__(self,
-                 validator: PreOrPostSdsValidator):
+    def __init__(self, validator: PreOrPostSdsValidator):
         self.validator = validator
 
-    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        return self._translate(self.validator.validate_pre_sds_if_applicable(home_dir_path))
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> sh.SuccessOrHardError:
+        return self._translate(self.validator.validate_pre_sds_if_applicable(environment))
 
-    def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
-        return self._translate(self.validator.validate_post_sds_if_applicable(sds))
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> sh.SuccessOrHardError:
+        return self._translate(self.validator.validate_post_sds_if_applicable(environment))
 
-    def validate_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> sh.SuccessOrHardError:
-        return self._translate(self.validator.validate_pre_or_post_sds(home_and_sds))
+    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> sh.SuccessOrHardError:
+        return self._translate(self.validator.validate_pre_or_post_sds(environment))
 
     @staticmethod
     def _translate(error_message_or_none: str) -> sh.SuccessOrHardError:

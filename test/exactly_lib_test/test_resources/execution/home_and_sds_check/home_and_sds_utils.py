@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.util.file_utils import resolved_path, preserved_cwd
 from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator

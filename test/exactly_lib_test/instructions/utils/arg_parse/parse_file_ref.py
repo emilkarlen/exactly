@@ -11,7 +11,7 @@ from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_C
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
@@ -40,22 +40,22 @@ def suite() -> unittest.TestSuite:
 class TestParsesBase(unittest.TestCase):
     def assert_is_file_that_exists_pre_sds(self,
                                            expected_path: pathlib.Path,
-                                           home_and_sds: HomeAndSds,
+                                           environment: PathResolvingEnvironmentPreOrPostSds,
                                            actual: FileRef):
         self.assertTrue(actual.exists_pre_sds())
-        self.assertEqual(actual.file_path_pre_sds(home_and_sds.home_dir_path),
+        self.assertEqual(actual.file_path_pre_sds(environment),
                          expected_path)
-        self.assertEqual(actual.file_path_pre_or_post_sds(home_and_sds),
+        self.assertEqual(actual.file_path_pre_or_post_sds(environment),
                          expected_path)
 
     def assert_is_file_that_does_not_exist_pre_sds(self,
                                                    expected_path: pathlib.Path,
-                                                   home_and_sds: HomeAndSds,
+                                                   environment: PathResolvingEnvironmentPreOrPostSds,
                                                    actual: FileRef):
         self.assertFalse(actual.exists_pre_sds())
-        self.assertEqual(actual.file_path_post_sds(home_and_sds.sds),
+        self.assertEqual(actual.file_path_post_sds(environment),
                          expected_path)
-        self.assertEqual(actual.file_path_pre_or_post_sds(home_and_sds),
+        self.assertEqual(actual.file_path_pre_or_post_sds(environment),
                          expected_path)
 
 
@@ -92,8 +92,9 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
         (file_reference, _) = sut.parse_file_ref__list([REL_HOME_OPTION, 'file.txt'])
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
     def test_rel_cwd(self):
@@ -101,16 +102,18 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
         with home_and_sds_with_act_as_curr_dir(
                 sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_rel_tmp(self):
         (file_reference, _) = sut.parse_file_ref__list([REL_TMP_OPTION, 'file.txt'])
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.sds.tmp.user_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_absolute(self):
@@ -118,16 +121,18 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
         abs_path_str = str(abs_path)
         (file_reference, _) = sut.parse_file_ref__list([abs_path_str])
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(abs_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
     def test_rel_home_is_default(self):
         (file_reference, _) = sut.parse_file_ref__list(['file-in-home-dir.txt'])
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file-in-home-dir.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
 
@@ -141,8 +146,9 @@ class TestParsesCorrectValueFromListWithCustomConfiguration(TestParsesBase):
                                                        custom_configuration)
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
@@ -155,7 +161,6 @@ class TestParsesCorrectValueFromListWithCustomConfiguration(TestParsesBase):
                                      custom_configuration)
 
 
-# TODO [instr-desc] Remove when new parser structures are fully integrated
 class TestParseFromTokenStream(unittest.TestCase):
     def test_fail_when_no_arguments(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -181,7 +186,6 @@ class TestParseFromTokenStream(unittest.TestCase):
             sut.parse_file_ref(TokenStream(REL_CWD_OPTION))
 
 
-# TODO [instr-desc] Remove when new parser structures are fully integrated
 class TestParsesCorrectValueFromTokenStreamWithCustomConfiguration(TestParsesBase):
     def test_default_relativity_is_different_than_that_of_default_configuration(self):
         custom_configuration = RelOptionArgumentConfiguration(
@@ -192,8 +196,9 @@ class TestParsesCorrectValueFromTokenStreamWithCustomConfiguration(TestParsesBas
                                                  custom_configuration)
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
@@ -206,14 +211,14 @@ class TestParsesCorrectValueFromTokenStreamWithCustomConfiguration(TestParsesBas
                                custom_configuration)
 
 
-# TODO [instr-desc] Remove when new parser structures are fully integrated
 class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBase):
     def test_rel_home(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_HOME_OPTION))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
     def test_rel_cwd(self):
@@ -221,16 +226,18 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
         with home_and_sds_with_act_as_curr_dir(
                 sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_rel_tmp(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_TMP_OPTION))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.sds.tmp.user_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_absolute(self):
@@ -238,16 +245,18 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
         abs_path_str = str(abs_path)
         (file_reference, _) = sut.parse_file_ref(TokenStream(abs_path_str))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(abs_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
     def test_rel_home_is_default(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('file.txt'))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
 
@@ -291,8 +300,9 @@ class TestParsesCorrectValueFromParseSourceWithCustomConfiguration(TestParsesBas
                                                               custom_configuration)
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
@@ -310,8 +320,9 @@ class TestParsesCorrectValueFromParseSourceWithDefaultConfiguration(TestParsesBa
         file_reference = sut.parse_file_ref_from_parse_source(remaining_source('%s file.txt' % REL_HOME_OPTION))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
     def test_rel_cwd(self):
@@ -319,16 +330,18 @@ class TestParsesCorrectValueFromParseSourceWithDefaultConfiguration(TestParsesBa
         with home_and_sds_with_act_as_curr_dir(
                 sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_rel_tmp(self):
         file_reference = sut.parse_file_ref_from_parse_source(remaining_source('%s file.txt' % REL_TMP_OPTION))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.sds.tmp.user_dir / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            home_and_sds,
+                                                            environment,
                                                             file_reference)
 
     def test_absolute(self):
@@ -336,16 +349,18 @@ class TestParsesCorrectValueFromParseSourceWithDefaultConfiguration(TestParsesBa
         abs_path_str = str(abs_path)
         file_reference = sut.parse_file_ref_from_parse_source(remaining_source(abs_path_str))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(abs_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
     def test_rel_home_is_default(self):
         file_reference = sut.parse_file_ref_from_parse_source(remaining_source('file.txt'))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    home_and_sds,
+                                                    environment,
                                                     file_reference)
 
 

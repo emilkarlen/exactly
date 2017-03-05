@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
