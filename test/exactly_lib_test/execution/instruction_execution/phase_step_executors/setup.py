@@ -37,7 +37,7 @@ class TestValueReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectT
 
     def runTest(self):
         test_cases = [
-            ('WHEN referenced value not in symbol table THEN validation error',
+            ('WHEN referenced value not in symbol table THEN error',
              Arrangement(value_usages=[vd.ValueReference('undefined')],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
@@ -47,6 +47,21 @@ class TestValueReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectT
              Arrangement(value_usages=[vd.ValueReference('defined')],
                          environment=env_with_singleton_symbol_table(value_definition_of('defined'))),
              Expectation(return_value=is_success,
+                         environment=symbol_table_contains_exactly_names({'defined'}))
+             ),
+            ('WHEN referenced valueS is in symbol table THEN None',
+             Arrangement(value_usages=[vd.ValueReference('defined1'),
+                                       vd.ValueReference('defined2')],
+                         environment=env_with_symbol_table([value_definition_of('defined1'),
+                                                            value_definition_of('defined2')])),
+             Expectation(return_value=is_success,
+                         environment=symbol_table_contains_exactly_names({'defined1', 'defined2'}))
+             ),
+            ('WHEN at least one referenced value is in symbol table THEN error',
+             Arrangement(value_usages=[vd.ValueReference('defined'),
+                                       vd.ValueReference('undefined')],
+                         environment=env_with_symbol_table([value_definition_of('defined')])),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_contains_exactly_names({'defined'}))
              ),
         ]
@@ -62,7 +77,7 @@ class TestValueDefinition(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
 
     def runTest(self):
         test_cases = [
-            ('WHEN defined value is in symbol table THEN validation error',
+            ('WHEN value to defined is in symbol table THEN validation error',
              Arrangement(value_usages=[vd.ValueDefinition('already-defined')],
                          environment=env_with_singleton_symbol_table(value_definition_of('already-defined'))),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
@@ -73,6 +88,20 @@ class TestValueDefinition(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
                          environment=env_with_singleton_symbol_table(value_definition_of('other'))),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'undefined', 'other'}))
+             ),
+            ('WHEN defined valueS not in symbol table THEN None and added to symbol table',
+             Arrangement(value_usages=[vd.ValueDefinition('undefined1'),
+                                       vd.ValueDefinition('undefined2')],
+                         environment=env_with_singleton_symbol_table(value_definition_of('other'))),
+             Expectation(return_value=is_success,
+                         environment=symbol_table_contains_exactly_names({'undefined1', 'undefined2', 'other'}))
+             ),
+            ('WHEN at least one value to define is in symbol table THEN validation error',
+             Arrangement(value_usages=[vd.ValueDefinition('undefined'),
+                                       vd.ValueDefinition('already-defined')],
+                         environment=env_with_singleton_symbol_table(value_definition_of('already-defined'))),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
+                         environment=symbol_table_contains_exactly_names({'undefined', 'already-defined'}))
              ),
         ]
         for test_name, arrangement, expectation in test_cases:
@@ -102,9 +131,17 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
 
 
 def env_with_singleton_symbol_table(definition: vd.ValueDefinition) -> InstructionEnvironmentForPreSdsStep:
+    table = SymbolTable({definition.name: definition})
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
                                                {},
-                                               value_definitions=SymbolTable({definition.name: definition}))
+                                               value_definitions=table)
+
+
+def env_with_symbol_table(value_definitions: list) -> InstructionEnvironmentForPreSdsStep:
+    value_definitions = SymbolTable(dict([(d.name, d) for d in value_definitions]))
+    return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
+                                               {},
+                                               value_definitions=value_definitions)
 
 
 def value_definition_of(name: str) -> vd.ValueDefinition:
