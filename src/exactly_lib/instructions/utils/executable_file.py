@@ -29,9 +29,8 @@ class ExecutableFile:
     def arguments(self) -> list:
         return self._arguments
 
-    @property
     def exists_pre_sds(self) -> bool:
-        return self._file_reference.exists_pre_sds
+        return self._file_reference.exists_pre_sds()
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

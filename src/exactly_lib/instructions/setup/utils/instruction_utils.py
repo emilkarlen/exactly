@@ -17,7 +17,7 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         for file_ref_check in self.file_ref_check_list_tuple:
             assert isinstance(file_ref_check, FileRefCheck)
-            if file_ref_check.file_reference.exists_pre_sds:
+            if file_ref_check.file_reference.exists_pre_sds():
                 result = pre_sds_validate(file_ref_check, environment)
                 if not result.is_success:
                     return result
@@ -27,7 +27,7 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
                             environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         for file_ref_check in self.file_ref_check_list_tuple:
             assert isinstance(file_ref_check, FileRefCheck)
-            if not file_ref_check.file_reference.exists_pre_sds:
+            if not file_ref_check.file_reference.exists_pre_sds():
                 result = pre_or_post_sds_validate(file_ref_check, environment.home_and_sds)
                 if not result.is_success:
                     return result

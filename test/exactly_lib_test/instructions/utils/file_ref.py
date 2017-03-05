@@ -21,7 +21,7 @@ def suite() -> unittest.TestSuite:
 class TestRelHome(unittest.TestCase):
     def test_exists_pre_sds(self):
         file_reference = sut.rel_home('file.txt')
-        self.assertTrue(file_reference.exists_pre_sds,
+        self.assertTrue(file_reference.exists_pre_sds(),
                         'File is expected to exist pre SDS')
 
     def test_existing_file(self):
@@ -41,7 +41,7 @@ class TestRelHome(unittest.TestCase):
 class TestRelCwd(unittest.TestCase):
     def test_exists_pre_sds(self):
         file_reference = sut.rel_cwd('file.txt')
-        self.assertFalse(file_reference.exists_pre_sds,
+        self.assertFalse(file_reference.exists_pre_sds(),
                          'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
@@ -59,7 +59,7 @@ class TestRelCwd(unittest.TestCase):
 class TestRelTmpUser(unittest.TestCase):
     def test_exists_pre_sds(self):
         file_reference = sut.rel_tmp_user('file.txt')
-        self.assertFalse(file_reference.exists_pre_sds,
+        self.assertFalse(file_reference.exists_pre_sds(),
                          'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
@@ -77,7 +77,7 @@ class TestRelTmpUser(unittest.TestCase):
 class TestRelTmpInternal(unittest.TestCase):
     def test_exists_pre_sds(self):
         file_reference = sut.rel_tmp_internal('file.txt')
-        self.assertFalse(file_reference.exists_pre_sds,
+        self.assertFalse(file_reference.exists_pre_sds(),
                          'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
@@ -95,12 +95,12 @@ class TestRelTmpInternal(unittest.TestCase):
 class TestRelValueDefinition(unittest.TestCase):
     def test_exists_pre_sds_for_value_that_exists_pre_sds(self):
         file_reference = sut.rel_value_definition('file.txt', 'value_definition_name')
-        self.assertTrue(file_reference.exists_pre_sds,
+        self.assertTrue(file_reference.exists_pre_sds(),
                         'File is expected to exist pre SDS')
 
     def test_exists_pre_sds_for_value_that_does_not_exist_pre_sds(self):
         file_reference = sut.rel_value_definition('file.txt', 'value_definition_name')
-        self.assertFalse(file_reference.exists_pre_sds,
+        self.assertFalse(file_reference.exists_pre_sds(),
                          'File is expected to not exist pre SDS')
 
     def test_existing_file__pre_sds(self):
