@@ -25,7 +25,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
@@ -177,7 +177,7 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
         super().__init__(executable)
         self.argument_list = argument_list
 
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
+    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         return self.argument_list
 
 
@@ -190,8 +190,8 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
         self.file_to_interpret = file_to_interpret
         self.argument_list = argument_list
 
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
-        return [str(self.file_to_interpret.file_path_pre_or_post_sds(home_and_sds))] + self.argument_list
+    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+        return [str(self.file_to_interpret.file_path_pre_or_post_sds(environment))] + self.argument_list
 
 
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
@@ -201,7 +201,7 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
         super().__init__(executable)
         self.source = source
 
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
+    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         return [self.source]
 
 

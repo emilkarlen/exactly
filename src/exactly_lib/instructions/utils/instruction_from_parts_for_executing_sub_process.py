@@ -49,8 +49,9 @@ class MainStepExecutorForSubProcess(MainStepExecutor):
         # it had the purpose of being reusable in many places!
         # After the refactoring that introduced this class, this implementation should perhaps be refactored.
         # But no time for this now!
-        execute_info = spe.ExecuteInfo(self._source_info,
-                                       self._setup.cmd_and_args_resolver.resolve(environment.home_and_sds))
+        execute_info = spe.ExecuteInfo(
+            self._source_info,
+            self._setup.cmd_and_args_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds))
         executor = spe.ExecutorThatStoresResultInFilesInDir(
             self._setup.is_shell,
             environment.process_execution_settings)

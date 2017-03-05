@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 
 from exactly_lib.instructions.utils import file_services
-from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
@@ -92,7 +92,7 @@ class CmdAndArgsResolver:
     Resolves the command string to execute.
     """
 
-    def resolve(self, home_and_sds: HomeAndSds):
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds):
         """
         Resolves the "thing" to execute by Python's subprocess module.
 

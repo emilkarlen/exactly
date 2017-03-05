@@ -1,6 +1,6 @@
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.sub_process_execution import CmdAndArgsResolver
-from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
 class ConstantCmdAndArgsResolver(CmdAndArgsResolver):
@@ -10,7 +10,7 @@ class ConstantCmdAndArgsResolver(CmdAndArgsResolver):
         """
         self.__cmd_or_cmd_and_args = cmd_or_cmd_and_args
 
-    def resolve(self, home_and_sds: HomeAndSds):
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds):
         return self.__cmd_or_cmd_and_args
 
 
@@ -18,10 +18,10 @@ class CmdAndArgsResolverForExecutableFileBase(CmdAndArgsResolver):
     def __init__(self, executable: ExecutableFile):
         self.__executable = executable
 
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
+    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         raise NotImplementedError()
 
-    def resolve(self, home_and_sds: HomeAndSds) -> list:
-        return [self.__executable.path_string(home_and_sds)] + \
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+        return [self.__executable.path_string(environment)] + \
                self.__executable.arguments + \
-               self._arguments(home_and_sds)
+               self._arguments(environment)
