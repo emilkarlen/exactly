@@ -2,8 +2,8 @@ import os
 import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
+from exactly_lib.test_case import file_ref
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \

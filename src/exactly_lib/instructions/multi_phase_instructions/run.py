@@ -17,7 +17,6 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
-from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
@@ -25,6 +24,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax

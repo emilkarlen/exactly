@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.test_case.phases.value_definition import SymbolTable
+from exactly_lib.test_case.value_definition import SymbolTable
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \

@@ -8,9 +8,9 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, \
     REL_TMP_OPTION
-from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \

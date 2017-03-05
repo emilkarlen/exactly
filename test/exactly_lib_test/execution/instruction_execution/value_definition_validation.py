@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.instruction_execution import value_definition_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
-from exactly_lib.test_case.phases import value_definition as vd
+from exactly_lib.test_case import value_definition as vd
 
 
 def suite() -> unittest.TestSuite:

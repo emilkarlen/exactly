@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.utils import file_ref as sut
+from exactly_lib.test_case import file_ref as sut
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir

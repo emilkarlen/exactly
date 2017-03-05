@@ -1,8 +1,8 @@
 import pathlib
 
 from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
-from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
+from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.phases import common as i
 
 
