@@ -2,7 +2,6 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string, \
     ensure_is_not_option_argument
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -14,6 +13,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
+from exactly_lib.test_case import file_ref
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

@@ -4,11 +4,12 @@ import unittest
 from exactly_lib.execution.instruction_execution.phase_step_executors import SetupValidatePreSdsExecutor
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum, \
     PartialInstructionControlledFailureInfo
-from exactly_lib.test_case.phases import value_definition as vd
+from exactly_lib.test_case import value_definition as vd
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.test_case.phases.value_definition import SymbolTable
+from exactly_lib.test_case.value_definition import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
+from exactly_lib_test.test_case.test_resources import value_definition as vdtr
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -159,14 +160,14 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
 
 
 def env_with_singleton_symbol_table(definition: vd.ValueDefinition) -> InstructionEnvironmentForPreSdsStep:
-    table = SymbolTable({definition.name: definition})
+    table = vdtr.symbol_table_from_value_definitions([definition])
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
                                                {},
                                                value_definitions=table)
 
 
 def env_with_symbol_table(value_definitions: list) -> InstructionEnvironmentForPreSdsStep:
-    value_definitions = SymbolTable(dict([(d.name, d) for d in value_definitions]))
+    value_definitions = vdtr.symbol_table_from_value_definitions(value_definitions)
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
                                                {},
                                                value_definitions=value_definitions)

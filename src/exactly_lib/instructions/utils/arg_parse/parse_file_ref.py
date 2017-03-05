@@ -1,7 +1,6 @@
 import pathlib
 import types
 
-from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream, is_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -11,6 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_parse import parse_token_or_none_on_current_line, \
     TokenType, Token
+from exactly_lib.test_case import file_ref
 from exactly_lib.util.cli_syntax import option_parsing
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {

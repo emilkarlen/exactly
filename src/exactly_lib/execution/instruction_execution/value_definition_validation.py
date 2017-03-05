@@ -1,6 +1,6 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.test_case.phases import value_definition
+from exactly_lib.test_case import value_definition
 
 
 def validate_pre_sds(value_usage: value_definition.ValueUsage,

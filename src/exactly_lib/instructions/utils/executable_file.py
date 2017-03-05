@@ -1,9 +1,9 @@
 import pathlib
 import stat
 
-from exactly_lib.instructions.utils import file_ref
-from exactly_lib.instructions.utils.file_ref import FileRefValidatorBase
+from exactly_lib.instructions.utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case import file_ref
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
