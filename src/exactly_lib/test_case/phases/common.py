@@ -3,6 +3,7 @@ import pathlib
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.test_case import sandbox_directory_structure as _sds
 from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.test_case.phases.value_definition import SymbolTable
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
 
 
@@ -26,10 +27,12 @@ class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
                  home_dir: pathlib.Path,
                  environ: dict,
-                 timeout_in_seconds: int = None):
+                 timeout_in_seconds: int = None,
+                 value_definitions: SymbolTable = None):
         self.__home_dir = home_dir
         self.__timeout_in_seconds = timeout_in_seconds
         self.__environ = environ
+        self.__value_definitions = SymbolTable() if value_definitions is None else value_definitions
 
     @property
     def home_directory(self) -> pathlib.Path:
@@ -53,6 +56,10 @@ class InstructionEnvironmentForPreSdsStep:
     @property
     def process_execution_settings(self) -> ProcessExecutionSettings:
         return ProcessExecutionSettings(self.timeout_in_seconds, self.environ)
+
+    @property
+    def value_definitions(self) -> SymbolTable:
+        return self.__value_definitions
 
 
 class PhaseLoggingPaths:

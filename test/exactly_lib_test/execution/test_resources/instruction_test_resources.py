@@ -42,10 +42,12 @@ def setup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success(
                                  validate_post_setup=do_return(svh.new_svh_success()),
                                  validate_post_setup_initial_action=None,
                                  main=do_return(sh.new_sh_success()),
-                                 main_initial_action=None) -> SetupPhaseInstruction:
+                                 main_initial_action=None,
+                                 value_usages=None) -> SetupPhaseInstruction:
     return _SetupPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                       _action_of(validate_post_setup_initial_action, validate_post_setup),
-                                      _action_of(main_initial_action, main))
+                                      _action_of(main_initial_action, main),
+                                      value_usages)
 
 
 def act_phase_instruction_with_source(source_code: LineSequence = LineSequence(72, (
@@ -106,10 +108,12 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
     def __init__(self,
                  validate_pre_sds,
                  validate_post_setup,
-                 main):
+                 main,
+                 value_usages: list):
         self._validate_pre_sds = validate_pre_sds
         self._validate_post_setup = validate_post_setup
         self._main = main
+        self._value_usages = [] if value_usages is None else value_usages
 
     def validate_pre_sds(self,
                          environment: instrs.InstructionEnvironmentForPreSdsStep) \
@@ -126,6 +130,9 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
                             environment: instrs.InstructionEnvironmentForPostSdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
+
+    def value_usages(self) -> list:
+        return self._value_usages
 
 
 class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
