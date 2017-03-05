@@ -13,6 +13,10 @@ from exactly_lib_test.test_resources.value_assertions import file_assertions as 
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestExecutorThatStoresResultInFilesInDir)
+
+
 class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
     source_info = InstructionSourceInfo(4, 'instruction-name')
 
@@ -99,10 +103,6 @@ def assert_dir_contains_at_least_result_files(expected: SubProcessResult,
         File(file_names.stderr,
              expected.stderr),
     ]))
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestExecutorThatStoresResultInFilesInDir)
 
 
 if __name__ == '__main__':

@@ -6,6 +6,10 @@ from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectorySt
 
 
 class FileRef:
+    """
+    A reference to a file (any kind of file), with functionality to resolve it's path,
+    and information about whether it exists pre SDS or not.
+    """
     def __init__(self,
                  exists_pre_sds: bool,
                  file_name: str):
@@ -132,6 +136,9 @@ class _FileRefRelTmpInternal(FileRefRelSds):
 
 
 class FileRefValidatorBase(PreOrPostSdsValidator):
+    """
+    Validates existence of the resolved path of a `FileRef`.
+    """
     def __init__(self,
                  file_ref: FileRef):
         self.file_ref = file_ref
