@@ -27,6 +27,7 @@ def _suite_for(phase_configuration: PhaseConfiguration) -> unittest.TestSuite:
     return unittest.TestSuite([
         TestValueReference(phase_configuration),
         TestValueDefinition(phase_configuration),
+        TestCombinationOfDefinitionAndReference(phase_configuration),
     ])
 
 
@@ -102,6 +103,33 @@ class TestValueDefinition(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
                          environment=env_with_singleton_symbol_table(value_definition_of('already-defined'))),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_contains_exactly_names({'undefined', 'already-defined'}))
+             ),
+        ]
+        for test_name, arrangement, expectation in test_cases:
+            with self.subTest(msg=test_name):
+                _check(self, self.phase_configuration, arrangement, expectation)
+
+
+class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
+    def __init__(self, phase_configuration: PhaseConfiguration):
+        super().__init__(phase_configuration)
+        self.phase_configuration = phase_configuration
+
+    def runTest(self):
+        test_cases = [
+            ('WHEN value to define is before reference to it (in list of value usages) THEN ok',
+             Arrangement(value_usages=[vd.ValueDefinition('define'),
+                                       vd.ValueReference('define')],
+                         environment=env_with_empty_symbol_table()),
+             Expectation(return_value=is_success,
+                         environment=symbol_table_contains_exactly_names({'define'}))
+             ),
+            ('WHEN value to define is after reference to it (in list of value usages) THEN error',
+             Arrangement(value_usages=[vd.ValueReference('define'),
+                                       vd.ValueDefinition('define')],
+                         environment=env_with_empty_symbol_table()),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
+                         environment=symbol_table_is_empty())
              ),
         ]
         for test_name, arrangement, expectation in test_cases:
