@@ -1,6 +1,6 @@
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.sub_process_execution import CmdAndArgsResolver
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 
 
 class ConstantCmdAndArgsResolver(CmdAndArgsResolver):

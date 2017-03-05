@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 

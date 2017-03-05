@@ -1,4 +1,3 @@
-import pathlib
 import random
 import unittest
 
@@ -11,6 +10,8 @@ from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_pro
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -312,8 +313,8 @@ class ConstantResultValidator(pre_or_post_validation.PreOrPostSdsValidator):
         self.pre_sds = pre_sds
         self.post_setup = post_setup
 
-    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
         return self.pre_sds
 
-    def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
         return self.post_setup

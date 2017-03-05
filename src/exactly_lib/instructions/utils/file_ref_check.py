@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.instructions.utils.file_properties import FilePropertiesCheck, CheckResult
 from exactly_lib.instructions.utils.file_properties import render_failure
 from exactly_lib.instructions.utils.file_ref import FileRef, FileRefValidatorBase
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure

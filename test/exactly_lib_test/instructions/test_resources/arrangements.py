@@ -1,5 +1,5 @@
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.test_case.phases import common as i
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, ProcessExecutionSettings
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator
@@ -10,11 +10,11 @@ from exactly_lib_test.test_resources.execution.utils import ActResult
 
 class ActEnvironment(tuple):
     def __new__(cls,
-                home_and_sds: i.HomeAndSds):
+                home_and_sds: HomeAndSds):
         return tuple.__new__(cls, (home_and_sds,))
 
     @property
-    def home_and_sds(self) -> i.HomeAndSds:
+    def home_and_sds(self) -> HomeAndSds:
         return self[0]
 
 

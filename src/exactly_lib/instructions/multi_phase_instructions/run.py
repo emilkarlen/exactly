@@ -25,7 +25,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 

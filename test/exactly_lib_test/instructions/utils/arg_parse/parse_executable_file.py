@@ -7,7 +7,7 @@ from exactly_lib.instructions.utils.arg_parse import relative_path_options as op
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for

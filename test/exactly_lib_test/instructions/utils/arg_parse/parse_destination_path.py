@@ -7,7 +7,7 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType, REL_OPTIONS_MAP
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, short_option_syntax
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source

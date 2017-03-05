@@ -2,7 +2,7 @@ import enum
 import pathlib
 import types
 
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
