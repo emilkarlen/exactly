@@ -35,6 +35,10 @@ class SymbolTable:
     def contains(self, name: str) -> bool:
         return name in self._name_2_value
 
+    @property
+    def names_set(self) -> set:
+        return set(self._name_2_value.keys())
+
 
 def empty_symbol_table() -> SymbolTable:
     return SymbolTable()

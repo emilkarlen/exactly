@@ -56,6 +56,9 @@ class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):
         self.__global_environment = global_environment
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        handling_result = _handle_value_usages(instruction.value_usages())
+        if handling_result is not None:
+            return handling_result
         return _from_success_or_validation_error_or_hard_error(
             instruction.validate_pre_sds(self.__global_environment))
 
@@ -174,3 +177,7 @@ class CleanupMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__environment,
                              self.__os_services,
                              self.__previous_phase))
+
+
+def _handle_value_usages(value_usages: list) -> PartialInstructionControlledFailureInfo:
+    return None

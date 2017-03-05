@@ -57,6 +57,21 @@ class SetupPhaseInstruction(TestCaseInstruction):
     def phase(self) -> phase_identifier.Phase:
         return phase_identifier.SETUP
 
+    def value_usages(self) -> list:
+        """
+        Gives information about all value definitions that this instruction uses.
+
+        This list should be available right after construction (and thus should not need
+        any phase step to have been executed).
+
+        The list should be in usage order. So, for example, if an instruction defines
+        a value X = Y (where Y is a value definition). Then the return value should contain
+        an element that says <reference of Y> before the element that says <definition of X>.
+
+        :return: [`ValueUsage`]
+        """
+        return []
+
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
@@ -69,4 +84,4 @@ class SetupPhaseInstruction(TestCaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        raise NotImplementedError()
+        return sh.new_sh_success()

@@ -327,9 +327,31 @@ class _IsInstanceWith(ValueAssertion):
         self.value_assertion.apply(put, value, message_builder)
 
 
+class _IsNotNoneAndInstanceWith(ValueAssertion):
+    def __init__(self,
+                 expected_type: type,
+                 value_assertion: ValueAssertion):
+        self.expected_type = expected_type
+        self.value_assertion = value_assertion
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        msg = message_builder.apply('')
+        put.assertIsNotNone(value, msg)
+        put.assertIsInstance(value, self.expected_type, msg)
+        self.value_assertion.apply(put, value, message_builder)
+
+
 def is_instance_with(expected_type: type,
                      value_assertion: ValueAssertion) -> ValueAssertion:
     return _IsInstanceWith(expected_type, value_assertion)
+
+
+def is_not_none_and_instance_with(expected_type: type,
+                                  value_assertion: ValueAssertion) -> ValueAssertion:
+    return _IsNotNoneAndInstanceWith(expected_type, value_assertion)
 
 
 def every_element(iterable_name: str,
