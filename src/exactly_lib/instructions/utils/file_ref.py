@@ -18,7 +18,6 @@ class FileRef:
     def file_name(self) -> str:
         return self._file_name
 
-    @property
     def exists_pre_sds(self) -> bool:
         raise NotImplementedError()
 
@@ -35,7 +34,7 @@ class FileRef:
         raise NotImplementedError()
 
     def file_path_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        if self.exists_pre_sds:
+        if self.exists_pre_sds():
             return self.file_path_pre_sds(home_and_sds.home_dir_path)
         else:
             return self.file_path_post_sds(home_and_sds.sds)
@@ -50,7 +49,6 @@ class _FileRefWithConstantLocationBase(FileRef):
         super().__init__(file_name)
         self.__exists_pre_sds = exists_pre_sds
 
-    @property
     def exists_pre_sds(self) -> bool:
         return self.__exists_pre_sds
 
@@ -162,7 +160,6 @@ class _FileRefRelValueDefinition(FileRef):
         super().__init__(file_name)
         self.value_definition_name = value_definition_name
 
-    @property
     def exists_pre_sds(self) -> bool:
         raise NotImplementedError()
 
@@ -189,11 +186,11 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
         raise NotImplementedError()
 
     def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
-        if self.file_ref.exists_pre_sds:
+        if self.file_ref.exists_pre_sds():
             return self._validate_path(self.file_ref.file_path_pre_sds(home_dir_path))
         return None
 
     def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
-        if not self.file_ref.exists_pre_sds:
+        if not self.file_ref.exists_pre_sds():
             return self._validate_path(self.file_ref.file_path_post_sds(sds))
         return None
