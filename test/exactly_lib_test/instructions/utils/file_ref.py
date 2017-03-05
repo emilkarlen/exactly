@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestRelCwd))
     ret_val.addTest(unittest.makeSuite(TestRelTmpUser))
     ret_val.addTest(unittest.makeSuite(TestRelTmpInternal))
+    ret_val.addTest(unittest.makeSuite(TestRelValueDefinition))
     return ret_val
 
 
@@ -88,6 +89,44 @@ class TestRelTmpInternal(unittest.TestCase):
     def test_non_existing_file(self):
         file_reference = sut.rel_tmp_internal('file.txt')
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
+            self.assertFalse(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
+
+
+class TestRelValueDefinition(unittest.TestCase):
+    def test_exists_pre_sds_for_value_that_exists_pre_sds(self):
+        file_reference = sut.rel_value_definition('file.txt', 'value_definition_name')
+        self.assertTrue(file_reference.exists_pre_sds,
+                        'File is expected to exist pre SDS')
+
+    def test_exists_pre_sds_for_value_that_does_not_exist_pre_sds(self):
+        file_reference = sut.rel_value_definition('file.txt', 'value_definition_name')
+        self.assertFalse(file_reference.exists_pre_sds,
+                         'File is expected to not exist pre SDS')
+
+    def test_existing_file__pre_sds(self):
+        file_reference = sut.rel_value_definition('file.txt', 'rel_home_path_value')
+        with home_and_sds_with_act_as_curr_dir(
+                home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_sds:
+            self.assertTrue(file_reference.file_path_pre_sds(home_and_sds.home_dir_path).exists())
+            self.assertTrue(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
+
+    def test_existing_file__post_sds(self):
+        file_reference = sut.rel_value_definition('file.txt', 'rel_tmp_user_path_value')
+        with home_and_sds_with_act_as_curr_dir(
+                sds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+            self.assertTrue(file_reference.file_path_post_sds(home_and_sds.sds).exists())
+            self.assertTrue(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
+
+    def test_non_existing_file__pre_sds(self):
+        file_reference = sut.rel_value_definition('file.txt', 'rel_home_path_value')
+        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
+            self.assertFalse(file_reference.file_path_pre_sds(home_and_sds.home_dir_path).exists())
+            self.assertFalse(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
+
+    def test_non_existing_file__post_sds(self):
+        file_reference = sut.rel_value_definition('file.txt', 'rel_tmp_user_path_value')
+        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
+            self.assertFalse(file_reference.file_path_post_sds(home_and_sds.sds).exists())
             self.assertFalse(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
 
 

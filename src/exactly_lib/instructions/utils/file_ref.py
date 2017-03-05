@@ -10,15 +10,17 @@ class FileRef:
     A reference to a file (any kind of file), with functionality to resolve it's path,
     and information about whether it exists pre SDS or not.
     """
-    def __init__(self,
-                 exists_pre_sds: bool,
-                 file_name: str):
-        self.__exists_pre_sds = exists_pre_sds
+
+    def __init__(self, file_name: str):
         self._file_name = file_name
 
     @property
     def file_name(self) -> str:
         return self._file_name
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        raise NotImplementedError()
 
     def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         """
@@ -38,12 +40,28 @@ class FileRef:
         else:
             return self.file_path_post_sds(home_and_sds.sds)
 
+
+class _FileRefWithConstantLocationBase(FileRef):
+    """
+    Base class for `FileRef`s who's "relativity" is constant.
+    """
+
+    def __init__(self, exists_pre_sds: bool, file_name: str):
+        super().__init__(file_name)
+        self.__exists_pre_sds = exists_pre_sds
+
     @property
     def exists_pre_sds(self) -> bool:
         return self.__exists_pre_sds
 
+    def file_path_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        if self.__exists_pre_sds:
+            return self.file_path_pre_sds(home_and_sds.home_dir_path)
+        else:
+            return self.file_path_post_sds(home_and_sds.sds)
 
-class FileRefRelSds(FileRef):
+
+class FileRefRelSds(_FileRefWithConstantLocationBase):
     def __init__(self, file_name: str):
         super().__init__(False, file_name)
 
@@ -81,7 +99,11 @@ def rel_tmp_user(file_name: str) -> FileRefRelSds:
     return _FileRefRelTmpUser(file_name)
 
 
-class _FileRefAbsolute(FileRef):
+def rel_value_definition(file_name: str, value_definition_name: str) -> FileRef:
+    return _FileRefRelValueDefinition(file_name, value_definition_name)
+
+
+class _FileRefAbsolute(_FileRefWithConstantLocationBase):
     def __init__(self, file_name: str):
         super().__init__(True, file_name)
 
@@ -92,7 +114,7 @@ class _FileRefAbsolute(FileRef):
         raise ValueError('This file exists pre-SDS')
 
 
-class _FileRefRelHome(FileRef):
+class _FileRefRelHome(_FileRefWithConstantLocationBase):
     def __init__(self, file_name: str):
         super().__init__(True, file_name)
 
@@ -135,10 +157,27 @@ class _FileRefRelTmpInternal(FileRefRelSds):
         return sds.tmp.internal_dir / self._file_name
 
 
+class _FileRefRelValueDefinition(FileRef):
+    def __init__(self, file_name: str, value_definition_name: str):
+        super().__init__(file_name)
+        self.value_definition_name = value_definition_name
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        raise NotImplementedError()
+
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        raise NotImplementedError()
+
+
 class FileRefValidatorBase(PreOrPostSdsValidator):
     """
     Validates existence of the resolved path of a `FileRef`.
     """
+
     def __init__(self,
                  file_ref: FileRef):
         self.file_ref = file_ref
