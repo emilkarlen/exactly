@@ -4,10 +4,10 @@ from exactly_lib.test_case.phases import value_definition
 
 
 def validate_pre_sds(value_usage: value_definition.ValueUsage,
-                     symbol_table: set) -> PartialInstructionControlledFailureInfo:
+                     symbol_table: value_definition.SymbolTable) -> PartialInstructionControlledFailureInfo:
     if isinstance(value_usage, value_definition.ValueReference):
         assert isinstance(value_usage, value_definition.ValueReference)
-        if value_usage.name not in symbol_table:
+        if not symbol_table.contains(value_usage.name):
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
                 'Referenced variable `{}\' is undefined.'.format(value_usage.name))
@@ -15,12 +15,12 @@ def validate_pre_sds(value_usage: value_definition.ValueUsage,
             return None
     elif isinstance(value_usage, value_definition.ValueDefinition):
         assert isinstance(value_usage, value_definition.ValueDefinition)
-        if value_usage.name in symbol_table:
+        if symbol_table.contains(value_usage.name):
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
                 'Defined variable `{}\' has already been defined.'.format(value_usage.name))
         else:
-            symbol_table.add(value_usage.name)
+            symbol_table.add(value_usage)
             return None
     else:
         raise TypeError('Unknown variant of {}: {}'.format(str(value_definition.ValueUsage),
