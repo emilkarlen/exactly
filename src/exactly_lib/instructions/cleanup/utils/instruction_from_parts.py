@@ -19,7 +19,7 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         validator = PreOrPostSdsSvhValidationErrorValidator(self.setup.validator)
-        return validator.validate_pre_sds_if_applicable(environment.home_directory)
+        return validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -36,7 +36,7 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
             self,
             environment: InstructionEnvironmentForPostSdsStep) -> sh.SuccessOrHardError:
         validator = PreOrPostSdsSvhValidationForSuccessOrHardError(self.setup.validator)
-        return validator.validate_pre_or_post_sds(environment.home_and_sds)
+        return validator.validate_pre_or_post_sds(environment.path_resolving_environment_pre_or_post_sds)
 
 
 def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
