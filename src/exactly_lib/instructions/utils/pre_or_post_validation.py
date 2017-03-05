@@ -7,6 +7,12 @@ from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectorySt
 
 
 class PreOrPostSdsValidator:
+    """
+    Validates an object - usually a path - either pre or post creation of SDS.
+
+    Whether validation is done pre or post SDS depends on whether the validated
+    object is outside or inside the SDS.
+    """
     def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
         """
         Validates the object if it is expected to exist pre-SDS.

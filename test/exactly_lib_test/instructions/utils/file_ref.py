@@ -8,6 +8,15 @@ from exactly_lib_test.test_resources.execution.sds_check.sds_populator import ac
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestRelHome))
+    ret_val.addTest(unittest.makeSuite(TestRelCwd))
+    ret_val.addTest(unittest.makeSuite(TestRelTmpUser))
+    ret_val.addTest(unittest.makeSuite(TestRelTmpInternal))
+    return ret_val
+
+
 class TestRelHome(unittest.TestCase):
     def test_exists_pre_sds(self):
         file_reference = sut.rel_home('file.txt')
@@ -82,14 +91,5 @@ class TestRelTmpInternal(unittest.TestCase):
             self.assertFalse(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestRelHome))
-    ret_val.addTest(unittest.makeSuite(TestRelCwd))
-    ret_val.addTest(unittest.makeSuite(TestRelTmpUser))
-    ret_val.addTest(unittest.makeSuite(TestRelTmpInternal))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

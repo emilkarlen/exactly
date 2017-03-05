@@ -9,6 +9,18 @@ from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir, tmp_dir_w
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, sym_link
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestNegationOf))
+    ret_val.addTest(unittest.makeSuite(TestMustExistWhenFollowSymLinks))
+    ret_val.addTest(unittest.makeSuite(TestMustExistWhenDoNotFollowSymLinks))
+    ret_val.addTest(unittest.makeSuite(TestMustExistAsRegularFileWhenFollowSymLinks))
+    ret_val.addTest(unittest.makeSuite(TestMustExistAsDirectoryWhenFollowSymLinks))
+    ret_val.addTest(unittest.makeSuite(TestMustExistAsDirectoryWhenDoNotFollowSymLinks))
+    ret_val.addTest(unittest.makeSuite(TestMustExistAsSymbolicLinkWhenDoNotFollowSymLinks))
+    return ret_val
+
+
 class FileCheckThatEvaluatesTo(sut.FilePropertiesCheck):
     def __init__(self, constant: bool):
         self.__constant = constant
@@ -306,17 +318,5 @@ def dir_with_symlink_to_non_existing_file() -> pathlib.Path:
         yield dir_path / 'symlink-to-non-existing-file'
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestNegationOf))
-    ret_val.addTest(unittest.makeSuite(TestMustExistWhenFollowSymLinks))
-    ret_val.addTest(unittest.makeSuite(TestMustExistWhenDoNotFollowSymLinks))
-    ret_val.addTest(unittest.makeSuite(TestMustExistAsRegularFileWhenFollowSymLinks))
-    ret_val.addTest(unittest.makeSuite(TestMustExistAsDirectoryWhenFollowSymLinks))
-    ret_val.addTest(unittest.makeSuite(TestMustExistAsDirectoryWhenDoNotFollowSymLinks))
-    ret_val.addTest(unittest.makeSuite(TestMustExistAsSymbolicLinkWhenDoNotFollowSymLinks))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())
