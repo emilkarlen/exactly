@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib.test_case.file_refs
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.section_document.parse_source import ParseSource
@@ -81,7 +82,7 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                   ),
                   Expectation(
                       main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                          file_ref.rel_home('file-in-home-dir.txt')),
+                          exactly_lib.test_case.file_refs.rel_home('file-in-home-dir.txt')),
                       source=source_is_at_end)
                   )
 
@@ -91,7 +92,7 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                       empty_file('file-in-home-dir.txt')])
                   ),
                   Expectation(main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                      file_ref.rel_home('file-in-home-dir.txt')),
+                      exactly_lib.test_case.file_refs.rel_home('file-in-home-dir.txt')),
                       source=source_is_at_end)
                   )
 

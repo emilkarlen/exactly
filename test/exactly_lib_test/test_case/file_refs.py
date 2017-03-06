@@ -1,7 +1,8 @@
 import unittest
 
-from exactly_lib.test_case import file_ref as sut
+from exactly_lib.test_case import file_refs as sut
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case.value_definition import ValueReference
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents, tmp_user_dir_contents, \
@@ -20,6 +21,11 @@ def suite() -> unittest.TestSuite:
 
 
 class TestRelHome(unittest.TestCase):
+    def test_should_reference_no_value_definitions(self):
+        file_reference = sut.rel_home('file.txt')
+        self.assertTrue(len(file_reference.value_references()) == 0,
+                        'File is expected to reference no variable definitions')
+
     def test_exists_pre_sds(self):
         file_reference = sut.rel_home('file.txt')
         self.assertTrue(file_reference.exists_pre_sds(),
@@ -42,6 +48,11 @@ class TestRelHome(unittest.TestCase):
 
 
 class TestRelCwd(unittest.TestCase):
+    def test_should_reference_no_value_definitions(self):
+        file_reference = sut.rel_cwd('file.txt')
+        self.assertTrue(len(file_reference.value_references()) == 0,
+                        'File is expected to reference no variable definitions')
+
     def test_exists_pre_sds(self):
         file_reference = sut.rel_cwd('file.txt')
         self.assertFalse(file_reference.exists_pre_sds(),
@@ -62,6 +73,11 @@ class TestRelCwd(unittest.TestCase):
 
 
 class TestRelTmpUser(unittest.TestCase):
+    def test_should_reference_no_value_definitions(self):
+        file_reference = sut.rel_tmp_user('file.txt')
+        self.assertTrue(len(file_reference.value_references()) == 0,
+                        'File is expected to reference no variable definitions')
+
     def test_exists_pre_sds(self):
         file_reference = sut.rel_tmp_user('file.txt')
         self.assertFalse(file_reference.exists_pre_sds(),
@@ -82,6 +98,11 @@ class TestRelTmpUser(unittest.TestCase):
 
 
 class TestRelTmpInternal(unittest.TestCase):
+    def test_should_reference_no_value_definitions(self):
+        file_reference = sut.rel_tmp_internal('file.txt')
+        self.assertTrue(len(file_reference.value_references()) == 0,
+                        'File is expected to reference no variable definitions')
+
     def test_exists_pre_sds(self):
         file_reference = sut.rel_tmp_internal('file.txt')
         self.assertFalse(file_reference.exists_pre_sds(),
@@ -102,6 +123,19 @@ class TestRelTmpInternal(unittest.TestCase):
 
 
 class TestRelValueDefinition(unittest.TestCase):
+    def test_should_reference_no_value_definitions(self):
+        # ARRANGE #
+        file_reference = sut.rel_value_definition('file.txt', 'value_definition_name')
+        # ACT #
+        actual = file_reference.value_references()
+        # ASSERT #
+        self.assertEqual(1, len(actual),
+                         'There should be exactly one ValueReference')
+        actual_vr = actual[0]
+        self.assertIsInstance(actual_vr, ValueReference)
+        assert isinstance(actual_vr, ValueReference)
+        self.assertEqual('value_definition_name', actual_vr.name)
+
     def test_exists_pre_sds_for_value_that_exists_pre_sds(self):
         file_reference = sut.rel_value_definition('file.txt', 'value_definition_name')
         self.assertTrue(file_reference.exists_pre_sds(),

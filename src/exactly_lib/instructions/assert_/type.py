@@ -1,3 +1,4 @@
+import exactly_lib.test_case.file_refs
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
@@ -109,7 +110,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             raise SingleInstructionInvalidArgumentException('Expecting exactly two arguments.')
         file_argument = arguments[0]
         ensure_is_not_option_argument(file_argument)
-        file_reference = file_ref.rel_cwd(file_argument)
+        file_reference = exactly_lib.test_case.file_refs.rel_cwd(file_argument)
         del arguments[0]
         expected_properties = self._parse_properties(arguments)
         return _Instruction(file_reference, expected_properties)
