@@ -4,6 +4,7 @@ from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.value_definition import ValueReference
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class _FileRefWithConstantLocationBase(FileRef):
@@ -18,7 +19,7 @@ class _FileRefWithConstantLocationBase(FileRef):
     def value_references(self) -> list:
         return []
 
-    def exists_pre_sds(self) -> bool:
+    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         return self.__exists_pre_sds
 
     def file_path_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
@@ -129,11 +130,11 @@ class _FileRefRelValueDefinition(FileRef):
     def value_references(self) -> list:
         return [ValueReference(self.value_definition_name)]
 
-    def exists_pre_sds(self) -> bool:
+    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         raise NotImplementedError()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         raise NotImplementedError()
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return [ValueReference(self.value_definition_name)]
+        raise NotImplementedError()

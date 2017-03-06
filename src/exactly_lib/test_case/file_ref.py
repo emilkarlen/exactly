@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class FileRef:
@@ -27,7 +28,7 @@ class FileRef:
         """
         raise NotImplementedError()
 
-    def exists_pre_sds(self) -> bool:
+    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         raise NotImplementedError()
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
@@ -43,7 +44,7 @@ class FileRef:
         raise NotImplementedError()
 
     def file_path_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        if self.exists_pre_sds():
+        if self.exists_pre_sds(environment.value_definitions):
             return self.file_path_pre_sds(environment)
         else:
             return self.file_path_post_sds(environment)

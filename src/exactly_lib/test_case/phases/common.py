@@ -6,8 +6,8 @@ from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.test_case.value_definition import SymbolTable
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class InstructionEnvironmentForPreSdsStep:

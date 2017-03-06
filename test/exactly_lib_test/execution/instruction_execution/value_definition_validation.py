@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.execution.instruction_execution import value_definition_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.test_case import value_definition as vd
+from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 
 
 def suite() -> unittest.TestSuite:
@@ -15,7 +16,7 @@ def suite() -> unittest.TestSuite:
 class TestValueReference(unittest.TestCase):
     def test_WHEN_referenced_value_not_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
-        symbol_table = vd.empty_symbol_table()
+        symbol_table = empty_symbol_table()
         value_usage = vd.ValueReference('undefined')
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
@@ -25,7 +26,7 @@ class TestValueReference(unittest.TestCase):
 
     def test_WHEN_referenced_value_is_in_symbol_table_THEN_None(self):
         # ARRANGE #
-        symbol_table = vd.singleton_symbol_table(value_definition_of('defined'))
+        symbol_table = singleton_symbol_table(value_definition_of('defined'))
         value_usage = vd.ValueReference('defined')
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
@@ -35,7 +36,7 @@ class TestValueReference(unittest.TestCase):
 class TestValueDefinition(unittest.TestCase):
     def test_WHEN_defined_value_is_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
-        symbol_table = vd.singleton_symbol_table(value_definition_of('already-defined'))
+        symbol_table = singleton_symbol_table(value_definition_of('already-defined'))
         value_usage = vd.ValueDefinition('already-defined')
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
@@ -45,7 +46,7 @@ class TestValueDefinition(unittest.TestCase):
 
     def test_WHEN_defined_value_not_in_symbol_table_THEN_None_and_added_to_symbol_table(self):
         # ARRANGE #
-        symbol_table = vd.singleton_symbol_table(value_definition_of('other'))
+        symbol_table = singleton_symbol_table(value_definition_of('other'))
         value_usage = vd.ValueDefinition('undefined')
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
@@ -56,8 +57,8 @@ class TestValueDefinition(unittest.TestCase):
                         'definition in symbol table before definition should remain there')
 
 
-def value_definition_of(name: str) -> vd.ValueDefinition:
-    return vd.ValueDefinition(name)
+def value_definition_of(name: str) -> Entry:
+    return vd.ValueDefinition(name).symbol_table_entry
 
 
 if __name__ == '__main__':

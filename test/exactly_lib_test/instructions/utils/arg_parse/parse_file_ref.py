@@ -42,7 +42,7 @@ class TestParsesBase(unittest.TestCase):
                                            expected_path: pathlib.Path,
                                            environment: PathResolvingEnvironmentPreOrPostSds,
                                            actual: FileRef):
-        self.assertTrue(actual.exists_pre_sds())
+        self.assertTrue(actual.exists_pre_sds(environment.value_definitions))
         self.assertEqual(actual.file_path_pre_sds(environment),
                          expected_path)
         self.assertEqual(actual.file_path_pre_or_post_sds(environment),
@@ -52,7 +52,7 @@ class TestParsesBase(unittest.TestCase):
                                                    expected_path: pathlib.Path,
                                                    environment: PathResolvingEnvironmentPreOrPostSds,
                                                    actual: FileRef):
-        self.assertFalse(actual.exists_pre_sds())
+        self.assertFalse(actual.exists_pre_sds(environment.value_definitions))
         self.assertEqual(actual.file_path_post_sds(environment),
                          expected_path)
         self.assertEqual(actual.file_path_pre_or_post_sds(environment),
