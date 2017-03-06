@@ -1,6 +1,7 @@
 import pathlib
 import types
 
+import exactly_lib.test_case.file_refs
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream, is_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -14,10 +15,10 @@ from exactly_lib.test_case import file_ref
 from exactly_lib.util.cli_syntax import option_parsing
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
-    rel_opts.RelOptionType.REL_HOME: file_ref.rel_home,
-    rel_opts.RelOptionType.REL_CWD: file_ref.rel_cwd,
-    rel_opts.RelOptionType.REL_ACT: file_ref.rel_act,
-    rel_opts.RelOptionType.REL_TMP: file_ref.rel_tmp_user,
+    rel_opts.RelOptionType.REL_HOME: exactly_lib.test_case.file_refs.rel_home,
+    rel_opts.RelOptionType.REL_CWD: exactly_lib.test_case.file_refs.rel_cwd,
+    rel_opts.RelOptionType.REL_ACT: exactly_lib.test_case.file_refs.rel_act,
+    rel_opts.RelOptionType.REL_TMP: exactly_lib.test_case.file_refs.rel_tmp_user,
 }
 
 ALL_REL_OPTIONS = set(rel_opts.RelOptionType) - {rel_opts.RelOptionType.REL_RESULT}
@@ -129,7 +130,7 @@ def _read_absolute_or_default_file_ref(argument: str,
                                        conf: RelOptionArgumentConfiguration) -> file_ref.FileRef:
     argument_path = pathlib.PurePath(argument)
     if argument_path.is_absolute():
-        return file_ref.absolute_file_name(argument)
+        return exactly_lib.test_case.file_refs.absolute_file_name(argument)
     else:
         file_ref_constructor = _REL_OPTION_2_FILE_REF_CONSTRUCTOR[conf.options.default_option]
         return file_ref_constructor(argument)

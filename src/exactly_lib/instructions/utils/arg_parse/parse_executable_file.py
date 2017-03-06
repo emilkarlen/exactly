@@ -1,5 +1,6 @@
 import sys
 
+import exactly_lib.test_case.file_refs
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
@@ -38,7 +39,7 @@ def _parse_exe_file_ref(tokens: TokenStream) -> (file_ref.FileRef, TokenStream):
     if tokens.is_null:
         parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
     if option_parsing.matches(PYTHON_EXECUTABLE_OPTION_NAME, tokens.head):
-        return file_ref.absolute_file_name(sys.executable), tokens.tail
+        return exactly_lib.test_case.file_refs.absolute_file_name(sys.executable), tokens.tail
     else:
         return parse_file_ref.parse_file_ref(tokens,
                                              conf=PARSE_FILE_REF_CONFIGURATION)
