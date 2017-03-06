@@ -48,7 +48,7 @@ class SymbolTable:
         """
         :raises KeyError: The symbol table does not contain name.
         """
-        return self._name_2_value[name].file_ref
+        return self._name_2_value[name]
 
 
 def empty_symbol_table() -> SymbolTable:
@@ -56,4 +56,4 @@ def empty_symbol_table() -> SymbolTable:
 
 
 def singleton_symbol_table(entry: Entry) -> SymbolTable:
-    return SymbolTable({entry.name: entry})
+    return SymbolTable({entry.name: entry.value})

@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.value_definition import ValueReference
+from exactly_lib.test_case.value_definition import ValueReference, FileRefValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -131,10 +131,19 @@ class _FileRefRelValueDefinition(FileRef):
         return [ValueReference(self.value_definition_name)]
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        raise NotImplementedError()
+        file_ref = _lookup_file_ref(value_definitions, self.value_definition_name)
+        return file_ref.exists_pre_sds(value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        raise NotImplementedError()
+        file_ref = _lookup_file_ref(environment.value_definitions, self.value_definition_name)
+        return file_ref.file_path_post_sds(environment)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        raise NotImplementedError()
+        file_ref = _lookup_file_ref(environment.value_definitions, self.value_definition_name)
+        return file_ref.file_path_pre_sds(environment)
+
+
+def _lookup_file_ref(value_definitions: SymbolTable, name: str) -> FileRef:
+    value = value_definitions.lookup(name)
+    assert isinstance(value, FileRefValue)
+    return value.file_ref
