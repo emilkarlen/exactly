@@ -12,8 +12,8 @@ def file_ref_value(file_ref: _file_ref.FileRef = file_refs.rel_cwd('file-name-re
                         file_ref)
 
 
-def entry(name: str, info_: Value = file_ref_value()) -> Entry:
-    return Entry(name, info_)
+def entry(name: str, value_: Value = file_ref_value()) -> Entry:
+    return Entry(name, value_)
 
 
 def symbol_table_from_none_or_value(symbol_table_or_none: SymbolTable) -> SymbolTable:
