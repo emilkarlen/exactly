@@ -92,6 +92,12 @@ registered paths.
 If every instruction could tell which references it uses and which paths it
 sets, then it's possible to do validation-time checking of references.
 
+** env should be able to assign paths using --rel VALUE-DEF
+
+env path MY_DIR_VAR = --rel-act act/sub/dir
+env path MY_DIR_VAR = --rel DIR_VAL sub/dir
+env path MY_DIR_VAR = @{DIR_VAL}@
+
 * TODO Preprocessor process should maybe have timeout
 <2016-11-27 sön>
 * TODO Act phase
@@ -366,20 +372,11 @@ Alternativt ska fasnamn vara skiftokänsliga.
 <2016-01-19 tis>
 if __name__ == '__main__':
     unittest.main()
-* TODO [#A] Ändring av miljövariabler får inte störa andra test-fall i en svit
-* TODO [#A] timeout för programmet i act-fasen
-* TODO timeout för instruktioner som kör subprocesser
-subprocess.call(timeout=...)
 * TODO Skräddarsy act-fasen
-** TODO Dokumetera ny utökad sekvens i UML
-Nytt är act-exekverarens faser.
 ** TODO Då interpretator anges via CLA: resolva abs-sökväg till denna
 ... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
 senare framtid, även i testsviter).
 Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
-** TODO Exekverare för shell-kommando
-Väldigt lik utgångsexekveraren.  Skilnnaden är att köra m shell=True,
-o ev inte splitta kommandoraden.
 * TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
 * TODO Kring instruktioner
 ** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
