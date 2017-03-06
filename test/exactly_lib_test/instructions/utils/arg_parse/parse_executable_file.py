@@ -8,6 +8,8 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
@@ -369,14 +371,14 @@ class TestParseAbsolutePath(unittest.TestCase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self.assertTrue(exe_file.exists_pre_sds(),
+        self.assertTrue(exe_file.exists_pre_sds(empty_symbol_table()),
                         'File is expected to exist pre SDS')
         with home_and_sds_with_act_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(sys.executable,
                              exe_file.path_string(home_and_sds),
                              'Path string')
-            validator_util.check(self, exe_file.validator, home_and_sds)
+            validator_util.check(self, exe_file.validator, PathResolvingEnvironmentPreOrPostSds(home_and_sds))
 
     def test_non_existing_file(self):
         non_existing_file_path = non_existing_absolute_path('/this/file/is/assumed/to/not/exist')
@@ -387,14 +389,14 @@ class TestParseAbsolutePath(unittest.TestCase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self.assertTrue(exe_file.exists_pre_sds(),
+        self.assertTrue(exe_file.exists_pre_sds(empty_symbol_table()),
                         'File is expected to exist pre SDS')
         with home_and_sds_with_act_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(non_existing_file_path_str,
                              exe_file.path_string(home_and_sds),
                              'Path string')
-            validator_util.check(self, exe_file.validator, home_and_sds,
+            validator_util.check(self, exe_file.validator, PathResolvingEnvironmentPreOrPostSds(home_and_sds),
                                  passes_pre_sds=False)
 
 

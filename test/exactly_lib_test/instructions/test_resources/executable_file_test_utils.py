@@ -7,7 +7,9 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
+from exactly_lib_test.test_case.test_resources.value_definition import symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator
@@ -32,8 +34,11 @@ class RelativityConfiguration:
 
 
 class Arrangement:
-    def __init__(self, home_or_sds_populator: HomeOrSdsPopulator):
+    def __init__(self,
+                 home_or_sds_populator: HomeOrSdsPopulator,
+                 value_definitions: SymbolTable = None):
         self.home_or_sds_populator = home_or_sds_populator
+        self.value_definitions = symbol_table_from_none_or_value(value_definitions)
 
 
 token_stream_is_null = va.sub_component('is_null',
@@ -82,14 +87,14 @@ def check(put: unittest.TestCase,
                         actual_exe_file.arguments,
                         'Arguments of executable file')
     put.assertEquals(expectation.exists_pre_eds,
-                     actual_exe_file.exists_pre_sds(),
+                     actual_exe_file.exists_pre_sds(arrangement.value_definitions),
                      'Existence pre SDS')
     with home_and_sds_with_act_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as home_and_sds:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
         validator_util.check2(put,
                               actual_exe_file.validator,
-                              home_and_sds,
+                              PathResolvingEnvironmentPreOrPostSds(home_and_sds),
                               expectation.validation_result)
 
 
@@ -98,9 +103,9 @@ class CheckBase(unittest.TestCase):
         super().__init__()
         self.configuration = configuration
 
-    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFile):
+    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFile, value_definitions: SymbolTable):
         self.assertEquals(self.configuration.exists_pre_sds,
-                          actual.exists_pre_sds(),
+                          actual.exists_pre_sds(value_definitions),
                           'Existence pre SDS')
 
     def _check_file_path(self, file_name: str, actual: ExecutableFile,
@@ -138,7 +143,7 @@ class CheckExistingFile(CheckBase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self._check_expectance_to_exist_pre_sds(exe_file)
+        self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self._check_file_path('file.exe', exe_file, environment)
@@ -160,7 +165,7 @@ class CheckExistingFileWithArguments(CheckBase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self._check_expectance_to_exist_pre_sds(exe_file)
+        self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self._check_file_path('file.exe', exe_file, environment)
@@ -193,14 +198,14 @@ class CheckNonExistingFile(CheckBase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self._check_expectance_to_exist_pre_sds(exe_file)
+        self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self._check_file_path('file.exe', exe_file, environment)
             self._assert_does_not_pass_validation(exe_file, environment)
 
 
-def suite_for(configuration: RelativityConfiguration) -> list:
+def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTests([CheckExistingFile(configuration),
                       CheckExistingFileWithArguments(configuration),

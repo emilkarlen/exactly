@@ -22,11 +22,11 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
         raise NotImplementedError()
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
-        if self.file_ref.exists_pre_sds():
+        if self.file_ref.exists_pre_sds(environment.value_definitions):
             return self._validate_path(self.file_ref.file_path_pre_sds(environment))
         return None
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
-        if not self.file_ref.exists_pre_sds():
+        if not self.file_ref.exists_pre_sds(environment.value_definitions):
             return self._validate_path(self.file_ref.file_path_post_sds(environment))
         return None

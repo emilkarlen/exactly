@@ -6,7 +6,6 @@ from exactly_lib.instructions.utils.file_ref_validator import FileRefValidatorBa
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 
 
@@ -71,10 +70,10 @@ def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 
 def pre_sds_validate(file_ref_check: FileRefCheck,
-                     environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-    validation_result = file_ref_check.pre_sds_condition_result(environment.path_resolving_environment)
+                     environment: PathResolvingEnvironmentPreSds) -> svh.SuccessOrValidationErrorOrHardError:
+    validation_result = file_ref_check.pre_sds_condition_result(environment)
     if not validation_result.is_success:
-        file_path = file_ref_check.file_reference.file_path_pre_sds(environment.path_resolving_environment)
+        file_path = file_ref_check.file_reference.file_path_pre_sds(environment)
         return svh.new_svh_validation_error(render_failure(validation_result.cause,
                                                            file_path))
     return svh.new_svh_success()

@@ -5,6 +5,7 @@ from exactly_lib.instructions.utils.file_ref_validator import FileRefValidatorBa
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case import file_ref
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class ExecutableFile:
@@ -29,8 +30,8 @@ class ExecutableFile:
     def arguments(self) -> list:
         return self._arguments
 
-    def exists_pre_sds(self) -> bool:
-        return self._file_reference.exists_pre_sds()
+    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
+        return self._file_reference.exists_pre_sds(value_definitions)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
