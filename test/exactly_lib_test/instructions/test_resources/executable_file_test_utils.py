@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
+from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
@@ -45,10 +46,20 @@ token_stream_is_null = va.sub_component('is_null',
                                         TokenStream.is_null.fget,
                                         va.Constant(True))
 
+token_stream2_is_null = va.sub_component('is_null',
+                                         TokenStream2.is_null.fget,
+                                         va.Constant(True))
+
 
 def token_stream_is(source: str) -> va.ValueAssertion:
     return va.sub_component('source',
                             TokenStream.source.fget,
+                            va.Equals(source))
+
+
+def token_stream2_is(source: str) -> va.ValueAssertion:
+    return va.sub_component('remaining-source',
+                            lambda ts: ts.source[ts.position:],
                             va.Equals(source))
 
 
@@ -78,10 +89,10 @@ def check(put: unittest.TestCase,
           instruction_argument_string: str,
           arrangement: Arrangement,
           expectation: Expectation):
-    arguments = TokenStream(instruction_argument_string)
-    (actual_exe_file, actual_remaining_argument) = sut.parse(arguments)
+    arguments = TokenStream2(instruction_argument_string)
+    actual_exe_file = sut.parse(arguments)
     expectation.remaining_argument.apply_with_message(put,
-                                                      actual_remaining_argument,
+                                                      arguments,
                                                       'Remaining arguments')
     put.assertListEqual(expectation.arguments_of_exe_file_ref,
                         actual_exe_file.arguments,
@@ -138,10 +149,10 @@ class CheckExistingFile(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        arguments = TokenStream2(arguments_str)
+        exe_file = sut.parse(arguments)
         self.assertEqual('remaining args',
-                         remaining_arguments.source,
+                         _remaining_source(arguments),
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
@@ -157,13 +168,13 @@ class CheckExistingFileWithArguments(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '( {} file.exe arg1 -arg2 ) remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        arguments = TokenStream2(arguments_str)
+        exe_file = sut.parse(arguments)
         self.assertEqual(['arg1', '-arg2'],
                          exe_file.arguments,
                          'Arguments to executable')
         self.assertEqual('remaining args',
-                         remaining_arguments.source,
+                         _remaining_source(arguments),
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
@@ -179,8 +190,8 @@ class CheckExistingButNonExecutableFile(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        arguments = TokenStream2(arguments_str)
+        exe_file = sut.parse(arguments)
         with self._home_and_sds_and_test_as_curr_dir(empty_file('file.exe')) as home_and_sds:
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self._assert_does_not_pass_validation(exe_file, environment)
@@ -193,16 +204,20 @@ class CheckNonExistingFile(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        arguments = TokenStream2(arguments_str)
+        exe_file = sut.parse(arguments)
         self.assertEqual('remaining args',
-                         remaining_arguments.source,
+                         _remaining_source(arguments),
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self._check_file_path('file.exe', exe_file, environment)
             self._assert_does_not_pass_validation(exe_file, environment)
+
+
+def _remaining_source(ts: TokenStream2) -> str:
+    return ts.source[ts.position:]
 
 
 def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
