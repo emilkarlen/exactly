@@ -25,7 +25,7 @@ def parse(tokens: TokenStream2) -> ExecutableFile:
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
     """
     if tokens.is_null:
-        parse_file_ref.parse_file_ref2(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
+        parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
     if tokens.head.source_string == LIST_DELIMITER_START:
         tokens.consume()
         the_file_ref = _parse_exe_file_ref(tokens)
@@ -38,13 +38,13 @@ def parse(tokens: TokenStream2) -> ExecutableFile:
 
 def _parse_exe_file_ref(tokens: TokenStream2) -> file_ref.FileRef:
     if tokens.is_null:
-        parse_file_ref.parse_file_ref2(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
+        parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
     token = tokens.head
     if token.is_plain and option_parsing.matches(PYTHON_EXECUTABLE_OPTION_NAME, token.string):
         tokens.consume()
         return file_refs.absolute_file_name(sys.executable)
     else:
-        return parse_file_ref.parse_file_ref2(tokens, conf=PARSE_FILE_REF_CONFIGURATION)
+        return parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)
 
 
 def _parse_arguments_and_end_delimiter(tokens: TokenStream2) -> list:
