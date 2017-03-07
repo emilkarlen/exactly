@@ -10,7 +10,6 @@ from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
-from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -24,6 +23,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -207,24 +207,27 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
     def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        tokens = TokenStream(source.remaining_part_of_current_line)
+        tokens = TokenStream2(source.remaining_part_of_current_line)
         source.consume_current_line()
-        (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
-        (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, arg_tokens)
+        exe_file = parse_executable_file.parse(tokens)
+        (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, tokens)
         return spe_parts.ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
 
     def _validator__cmd_and_args_resolver(self,
                                           exe_file: ExecutableFile,
-                                          arg_tokens: TokenStream):
+                                          arg_tokens: TokenStream2):
         if arg_tokens.is_null:
             return self._execute(exe_file, '')
-        if arg_tokens.head == INTERPRET_OPTION:
-            return self._interpret(exe_file, arg_tokens.tail_source_or_empty_string)
-        if arg_tokens.head == SOURCE_OPTION:
-            return self._source(exe_file, arg_tokens.tail_source)
-        if arg_tokens.head == OPTIONS_SEPARATOR_ARGUMENT:
-            return self._execute(exe_file, arg_tokens.tail.source)
-        return self._execute(exe_file, arg_tokens.source)
+        if arg_tokens.head.source_string == INTERPRET_OPTION:
+            arg_tokens.consume()
+            return self._interpret(exe_file, arg_tokens)
+        if arg_tokens.head.source_string == SOURCE_OPTION:
+            arg_tokens.consume()
+            return self._source(exe_file, arg_tokens.remaining_source)
+        if arg_tokens.head.source_string == OPTIONS_SEPARATOR_ARGUMENT:
+            arg_tokens.consume()
+            return self._execute(exe_file, arg_tokens.remaining_source)
+        return self._execute(exe_file, arg_tokens.remaining_source)
 
     @staticmethod
     def _execute(exe_file: ExecutableFile,
@@ -234,14 +237,13 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
 
     @staticmethod
     def _interpret(exe_file: ExecutableFile,
-                   remaining_arguments_str: str):
-        parse_source = ParseSource(remaining_arguments_str)
-        file_to_interpret = parse_file_ref.parse_file_ref_from_parse_source(parse_source)
+                   arg_tokens: TokenStream2):
+        file_to_interpret = parse_file_ref.parse_file_ref2(arg_tokens)
         file_to_interpret_check = FileRefCheck(file_to_interpret,
                                                file_properties.must_exist_as(file_properties.FileType.REGULAR))
         validator = AndValidator((exe_file.validator,
                                   FileRefCheckValidator(file_to_interpret_check)))
-        remaining_arguments = shlex.split(parse_source.remaining_source)
+        remaining_arguments = shlex.split(arg_tokens.remaining_source)
         cmd_resolver = CmdAndArgsResolverForInterpret(exe_file, file_to_interpret, remaining_arguments)
         return validator, cmd_resolver
 
