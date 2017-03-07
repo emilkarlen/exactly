@@ -1,45 +1,10 @@
-import enum
 import io
 import shlex
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-
-
-class TokenType(enum.Enum):
-    PLAIN = 0
-    QUOTED = 1
-
-
-class Token(tuple):
-    def __new__(cls,
-                token_type: TokenType,
-                string: str,
-                source_string: str = None):
-        return tuple.__new__(cls, (token_type,
-                                   string,
-                                   source_string if source_string is not None else string))
-
-    @property
-    def type(self) -> TokenType:
-        return self[0]
-
-    @property
-    def is_plain(self) -> bool:
-        return self.type is TokenType.PLAIN
-
-    @property
-    def is_quoted(self) -> bool:
-        return self.type is TokenType.QUOTED
-
-    @property
-    def string(self) -> str:
-        return self[1]
-
-    @property
-    def source_string(self) -> str:
-        return self[2]
+from exactly_lib.section_document.parser_implementations.token import TokenType, Token
 
 
 def parse_token_or_none_on_current_line(source: ParseSource,
