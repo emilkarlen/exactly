@@ -14,7 +14,6 @@ class TokenStream2:
         self._source_io = io.StringIO(source)
         self._lexer = shlex.shlex(self._source_io, posix=True)
         self._lexer.whitespace_split = True
-        self._start_pos = 0
         self._token = None
         self.forward()
 
@@ -34,7 +33,18 @@ class TokenStream2:
     def position(self) -> int:
         return self._source_io.tell()
 
+    @property
+    def remaining_source(self) -> str:
+        return self._source[self._source_io.tell():]
+
     def forward(self):
+        """
+        Precondition: not is_null
+
+        Consumes current token and makes following token the head,
+        or makes `is_null` become True if there is no following token.
+        """
+        pos_before = self._source_io.tell()
         try:
             s = self._lexer.get_token()
         except ValueError as ex:
@@ -42,21 +52,6 @@ class TokenStream2:
         if s is None:
             self._token = None
         else:
-            s_source = self._source[self._start_pos:self._source_io.tell()].strip()
-            self._start_pos = self._source_io.tell()
+            s_source = self._source[pos_before:self._source_io.tell()].strip()
             t = TokenType.QUOTED if s_source[0] in self._lexer.quotes else TokenType.PLAIN
             self._token = Token(t, s, s_source)
-
-#
-#
-# def p(s):
-#     print('[' + s + ']')
-#
-# ts = TokenStream2(' "b')
-# while not ts.is_null:
-#     print('----------')
-#     p(ts.source[ts.position:])
-#     p(ts.head.string)
-#     p(ts.head.source_string)
-#     p(str(ts.head.type))
-#     ts.forward()
