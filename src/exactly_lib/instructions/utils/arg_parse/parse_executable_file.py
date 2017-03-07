@@ -26,7 +26,7 @@ def parse(tokens: TokenStream2) -> ExecutableFile:
     """
     if tokens.is_null:
         parse_file_ref.parse_file_ref2(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
-    if tokens.head == LIST_DELIMITER_START:
+    if tokens.head.source_string == LIST_DELIMITER_START:
         tokens.consume()
         the_file_ref = _parse_exe_file_ref(tokens)
         exe_argument_list = _parse_arguments_and_end_delimiter(tokens)
@@ -54,6 +54,7 @@ def _parse_arguments_and_end_delimiter(tokens: TokenStream2) -> list:
             msg = 'Missing end delimiter surrounding executable: %s' % LIST_DELIMITER_END
             raise SingleInstructionInvalidArgumentException(msg)
         if tokens.head.is_plain and tokens.head.string == LIST_DELIMITER_END:
+            tokens.consume()
             return arguments
         arguments.append(tokens.head.string)
         tokens.consume()
