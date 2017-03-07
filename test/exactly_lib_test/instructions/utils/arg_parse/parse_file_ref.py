@@ -23,10 +23,6 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithCustomConfiguration))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithDefaultConfiguration))
-    # TODO [instr-desc] Remove when new parser structures are fully integrated BEGIN
     ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream))
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithCustomConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration))
@@ -57,108 +53,6 @@ class TestParsesBase(unittest.TestCase):
                          expected_path)
         self.assertEqual(actual.file_path_pre_or_post_sds(environment),
                          expected_path)
-
-
-class TestParse(unittest.TestCase):
-    def test_fail_when_no_arguments(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_file_ref__list([])
-
-    def test_parse_without_option(self):
-        (file_ref, remaining_arguments) = sut.parse_file_ref__list(['FILE NAME', 'arg2'])
-        self.assertEquals('FILE NAME',
-                          file_ref.file_name)
-        self.assertEquals(['arg2'],
-                          remaining_arguments)
-
-    def test_parse_with_option(self):
-        # ARRANGE #
-        arguments = [REL_CWD_OPTION, 'FILE NAME', 'arg3', 'arg4']
-        # ACT #
-        (file_ref, remaining_arguments) = sut.parse_file_ref__list(arguments)
-        # ASSERT #
-        self.assertEquals('FILE NAME',
-                          file_ref.file_name)
-        self.assertEquals(['arg3', 'arg4'],
-                          remaining_arguments)
-
-    def test_fail_option_is_only_argument(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_file_ref__list([REL_CWD_OPTION])
-
-
-class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
-    def test_rel_home(self):
-        (file_reference, _) = sut.parse_file_ref__list([REL_HOME_OPTION, 'file.txt'])
-        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
-            expected_path = home_and_sds.home_dir_path / 'file.txt'
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-            self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    environment,
-                                                    file_reference)
-
-    def test_rel_cwd(self):
-        (file_reference, _) = sut.parse_file_ref__list([REL_CWD_OPTION, 'file.txt'])
-        with home_and_sds_with_act_as_curr_dir(
-                sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
-            expected_path = home_and_sds.sds.act_dir / 'file.txt'
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-            self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            environment,
-                                                            file_reference)
-
-    def test_rel_tmp(self):
-        (file_reference, _) = sut.parse_file_ref__list([REL_TMP_OPTION, 'file.txt'])
-        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
-            expected_path = home_and_sds.sds.tmp.user_dir / 'file.txt'
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-            self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            environment,
-                                                            file_reference)
-
-    def test_absolute(self):
-        abs_path = pathlib.Path.cwd().resolve()
-        abs_path_str = str(abs_path)
-        (file_reference, _) = sut.parse_file_ref__list([abs_path_str])
-        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-            self.assert_is_file_that_exists_pre_sds(abs_path,
-                                                    environment,
-                                                    file_reference)
-
-    def test_rel_home_is_default(self):
-        (file_reference, _) = sut.parse_file_ref__list(['file-in-home-dir.txt'])
-        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
-            expected_path = home_and_sds.home_dir_path / 'file-in-home-dir.txt'
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-            self.assert_is_file_that_exists_pre_sds(expected_path,
-                                                    environment,
-                                                    file_reference)
-
-
-class TestParsesCorrectValueFromListWithCustomConfiguration(TestParsesBase):
-    def test_default_relativity_is_different_than_that_of_default_configuration(self):
-        custom_configuration = RelOptionArgumentConfiguration(
-            RelOptionsConfiguration({rel_opts.RelOptionType.REL_ACT},
-                                    rel_opts.RelOptionType.REL_ACT),
-            'FILE')
-        (file_reference, _) = sut.parse_file_ref__list(['file.txt'],
-                                                       custom_configuration)
-        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
-            expected_path = home_and_sds.sds.act_dir / 'file.txt'
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-            self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                            environment,
-                                                            file_reference)
-
-    def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
-        custom_configuration = RelOptionArgumentConfiguration(
-            RelOptionsConfiguration({rel_opts.RelOptionType.REL_ACT},
-                                    rel_opts.RelOptionType.REL_ACT),
-            'FILE')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_file_ref__list([REL_TMP_OPTION, 'file.txt'],
-                                     custom_configuration)
 
 
 class TestParseFromTokenStream(unittest.TestCase):
