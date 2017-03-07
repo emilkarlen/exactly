@@ -12,6 +12,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_parse import parse_token_or_none_on_current_line, \
     TokenType, Token
 from exactly_lib.test_case import file_ref
+from exactly_lib.test_case import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
@@ -75,14 +76,24 @@ def parse_file_ref__list(arguments: list,
         return fr, arguments[1:]
 
 
+REL_VALUE_DEFINITION_OPTION = '--rel'
+VALUE_DEFINITION = 'value definition'
+REL_VALUE_DEFINITION_OPTION_ARGUMENT = 'VALUE-NAME'
+
+
+def _is_rel_variable_definition_option(option: str) -> bool:
+    return REL_VALUE_DEFINITION_OPTION == option
+
+
 def parse_file_ref_from_parse_source(source: ParseSource,
                                      conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> file_ref.FileRef:
     """
     :param source: Has a current line
     :return: The parsed FileRef, remaining arguments after file was parsed.
+    :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
     """
 
-    def ensure_have_at_least_two_arguments_for_option(option: str) -> Token:
+    def ensure_have_at_least_one_more_argument_for_option(option: str) -> Token:
         token1 = parse_token_or_none_on_current_line(source)
         if token1 is None:
             _raise_missing_option_argument_exception(option, conf)
@@ -93,9 +104,19 @@ def parse_file_ref_from_parse_source(source: ParseSource,
         _raise_missing_arguments_exception(conf)
 
     if first_argument.type is TokenType.PLAIN and is_option_argument(first_argument.string):
-        file_ref_constructor = _get_file_ref_constructor(first_argument.string, conf)
-        tokens1 = ensure_have_at_least_two_arguments_for_option(first_argument.string)
-        return file_ref_constructor(tokens1.string)
+        if _is_rel_variable_definition_option(first_argument.string):
+            value_definition_name = parse_token_or_none_on_current_line(source)
+            if value_definition_name is None:
+                error_msg = 'Missing {} argument for {} option'.format(VALUE_DEFINITION, REL_VALUE_DEFINITION_OPTION)
+                raise SingleInstructionInvalidArgumentException(error_msg)
+            file_path_arg = ensure_have_at_least_one_more_argument_for_option(
+                '{} {}'.format(REL_VALUE_DEFINITION_OPTION,
+                               REL_VALUE_DEFINITION_OPTION_ARGUMENT))
+            return file_refs.rel_value_definition(file_path_arg.string, value_definition_name.string)
+        else:
+            file_ref_constructor = _get_file_ref_constructor(first_argument.string, conf)
+            tokens1 = ensure_have_at_least_one_more_argument_for_option(first_argument.string)
+            return file_ref_constructor(tokens1.string)
     else:
         return _read_absolute_or_default_file_ref(first_argument.string, conf)
 
