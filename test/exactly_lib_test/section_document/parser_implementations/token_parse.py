@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.section_document.parser_implementations import token_parse as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib_test.section_document.parser_implementations.test_resources import assert_quoted, assert_plain
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_not_at_end, assert_source
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -138,26 +139,3 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
                 actual = sut.parse_token_on_current_line(source)
                 token_assertion.apply_with_message(self, actual, 'token')
                 source_assertion.apply_with_message(self, source, 'source')
-
-
-def assert_token(token_type: asrt.ValueAssertion = asrt.anything_goes(),
-                 string: asrt.ValueAssertion = asrt.anything_goes(),
-                 source_string: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
-    return asrt.And([
-        asrt.is_instance(sut.Token, 'Value to apply assertions on must be a {}'.format(sut.Token)),
-        asrt.sub_component('type', sut.Token.type.fget, token_type),
-        asrt.sub_component('string', sut.Token.string.fget, string),
-        asrt.sub_component('source_string', sut.Token.source_string.fget, source_string),
-    ])
-
-
-def assert_quoted(string: str,
-                  source_string: str) -> asrt.ValueAssertion:
-    return assert_token(token_type=asrt.equals(sut.TokenType.QUOTED),
-                        string=asrt.equals(string),
-                        source_string=asrt.equals(source_string))
-
-
-def assert_plain(string: str) -> asrt.ValueAssertion:
-    return assert_token(token_type=asrt.equals(sut.TokenType.PLAIN),
-                        string=asrt.equals(string))

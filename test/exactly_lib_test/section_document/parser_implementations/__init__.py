@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.section_document.parser_implementations import optional_description_and_instruction_parser
 from exactly_lib_test.section_document.parser_implementations import parser_for_dictionary_of_instructions
 from exactly_lib_test.section_document.parser_implementations import section_element_parsers
-from exactly_lib_test.section_document.parser_implementations import token_parse
+from exactly_lib_test.section_document.parser_implementations import token_parse, token_stream2
 
 
 def suite() -> unittest.TestSuite:
@@ -12,6 +12,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(optional_description_and_instruction_parser.suite())
     ret_val.addTest(parser_for_dictionary_of_instructions.suite())
     ret_val.addTest(token_parse.suite())
+    ret_val.addTest(token_stream2.suite())
     return ret_val
 
 

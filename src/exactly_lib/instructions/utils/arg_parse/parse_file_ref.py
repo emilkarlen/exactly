@@ -9,8 +9,8 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_parse import parse_token_or_none_on_current_line, \
-    TokenType, Token
+from exactly_lib.section_document.parser_implementations.token import TokenType, Token
+from exactly_lib.section_document.parser_implementations.token_parse import parse_token_or_none_on_current_line
 from exactly_lib.test_case import file_ref
 from exactly_lib.test_case import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
