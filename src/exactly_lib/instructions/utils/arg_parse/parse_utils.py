@@ -3,6 +3,7 @@ import shlex
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token import Token
 
 
 def split_arguments_list_string(arguments: str) -> list:
@@ -17,6 +18,10 @@ def split_arguments_list_string(arguments: str) -> list:
 
 def is_option_argument(argument: str) -> bool:
     return argument[0] == '-'
+
+
+def is_option_token(token: Token) -> bool:
+    return token.source_string[0] == '-'
 
 
 def ensure_is_not_option_argument(argument: str):
