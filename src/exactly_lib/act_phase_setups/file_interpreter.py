@@ -7,8 +7,8 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
-from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -64,11 +64,12 @@ class _Parser(Parser):
         single_line = single_line_parser.apply(act_phase_instructions)
         single_line = single_line.strip()
         try:
-            token_stream = TokenStream(single_line)
+            token_stream = TokenStream2(single_line)
             if token_stream.is_null:
                 raise ValueError('Illegal state: cannot read a single token from source: "{}"'.format(single_line))
-            remaining_arguments = self._parse_remaining_arguments(token_stream.tail_source)
-            return _SourceInfo(token_stream.head, remaining_arguments)
+            file_name = token_stream.head.string
+            remaining_arguments = self._parse_remaining_arguments(token_stream.remaining_source_after_head)
+            return _SourceInfo(file_name, remaining_arguments)
         except Exception as ex:
             raise parts.ParseException(svh.new_svh_validation_error(str(ex)))
 
