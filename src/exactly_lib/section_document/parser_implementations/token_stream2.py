@@ -42,6 +42,11 @@ class TokenStream2:
         """Source, including for head, that remains."""
         return self._source[self._start_pos:]
 
+    @property
+    def remaining_source_after_head(self) -> str:
+        """Source, not including for head, that remains."""
+        return self._source[self._source_io.tell():]
+
     def consume(self):
         """
         Precondition: not is_null
