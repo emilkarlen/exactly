@@ -9,6 +9,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseTokenOnCurrentLine),
         unittest.makeSuite(TestParseTokenOrNoneOnCurrentLine),
+        unittest.makeSuite(TestForward),
     ])
 
 
@@ -126,3 +127,33 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
                 self.assertEqual(expected_remaining_source,
                                  actual_remaining_source,
                                  'remaining source')
+                self.assertFalse(ts.is_null)
+
+
+class TestForward(unittest.TestCase):
+    def test_single_token(self):
+        test_cases = [
+            'a',
+            'b ',
+            'c  ',
+        ]
+        for source in test_cases:
+            with self.subTest(msg=repr(source)):
+                ts = sut.TokenStream2(source)
+                ts.forward()
+                self.assertTrue(ts.is_null)
+
+    def test_multiple_tokens(self):
+        test_cases = [
+            ('a A', 'A'),
+            ('b  B', 'B'),
+            ('c  C ', 'C'),
+            ('d  D  ', 'D'),
+        ]
+        for source, second_token in test_cases:
+            with self.subTest(msg=repr(source)):
+                ts = sut.TokenStream2(source)
+                ts.forward()
+                self.assertFalse(ts.is_null)
+                self.assertEqual(second_token, ts.head.string,
+                                 'second token')
