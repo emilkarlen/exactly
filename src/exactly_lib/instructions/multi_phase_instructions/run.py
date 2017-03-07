@@ -235,12 +235,13 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
     @staticmethod
     def _interpret(exe_file: ExecutableFile,
                    remaining_arguments_str: str):
-        remaining_arguments = shlex.split(remaining_arguments_str)
-        (file_to_interpret, remaining_arguments) = parse_file_ref.parse_file_ref__list(remaining_arguments)
+        parse_source = ParseSource(remaining_arguments_str)
+        file_to_interpret = parse_file_ref.parse_file_ref_from_parse_source(parse_source)
         file_to_interpret_check = FileRefCheck(file_to_interpret,
                                                file_properties.must_exist_as(file_properties.FileType.REGULAR))
         validator = AndValidator((exe_file.validator,
                                   FileRefCheckValidator(file_to_interpret_check)))
+        remaining_arguments = shlex.split(parse_source.remaining_source)
         cmd_resolver = CmdAndArgsResolverForInterpret(exe_file, file_to_interpret, remaining_arguments)
         return validator, cmd_resolver
 

@@ -49,33 +49,6 @@ def non_home_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration
 NON_HOME_CONFIG = non_home_config('FILE')
 
 
-def parse_file_ref__list(arguments: list,
-                         conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> (file_ref.FileRef, list):
-    """
-    If no relativity-option is specified, the file is assumed to be rel-home.
-
-    :param conf:
-    :param arguments: All remaining arguments for the instruction.
-    :return: The parsed FileRef, remaining arguments after file was parsed.
-    """
-
-    def ensure_have_at_least_two_arguments_for_option(option: str):
-        if len(arguments) < 2:
-            _raise_missing_option_argument_exception(option, conf)
-
-    if not arguments:
-        _raise_missing_arguments_exception(conf)
-
-    first_argument = arguments[0]
-    if is_option_argument(first_argument):
-        file_ref_constructor = _get_file_ref_constructor(first_argument, conf)
-        ensure_have_at_least_two_arguments_for_option(first_argument)
-        return file_ref_constructor(arguments[1]), arguments[2:]
-    else:
-        fr = _read_absolute_or_default_file_ref(first_argument, conf)
-        return fr, arguments[1:]
-
-
 REL_VALUE_DEFINITION_OPTION = '--rel'
 VALUE_DEFINITION = 'value definition'
 REL_VALUE_DEFINITION_OPTION_ARGUMENT = 'VALUE-NAME'
