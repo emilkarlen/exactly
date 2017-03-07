@@ -2,7 +2,7 @@ import pathlib
 import types
 
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
-from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream, is_option_argument, is_option_token
+from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_token
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.section_document.parse_source import ParseSource
@@ -65,39 +65,13 @@ def parse_file_ref_from_parse_source(source: ParseSource,
     """
 
     ts = TokenStream2(source.remaining_part_of_current_line)
-    ret_val = parse_file_ref2(ts, conf)
+    ret_val = parse_file_ref(ts, conf)
     source.consume(ts.position)
     return ret_val
 
 
-def parse_file_ref(tokens: TokenStream,
-                   conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> (file_ref.FileRef, TokenStream):
-    """
-    :param tokens: Argument list
-    :return: The parsed FileRef, remaining arguments after file was parsed.
-    """
-
-    def ensure_have_at_least_two_arguments_for_option(option: str) -> TokenStream:
-        token1 = tokens.tail
-        if token1.is_null:
-            _raise_missing_option_argument_exception(option, conf)
-        return token1
-
-    if tokens.is_null:
-        _raise_missing_arguments_exception(conf)
-
-    first_argument = tokens.head
-    if is_option_argument(first_argument):
-        file_ref_constructor = _get_file_ref_constructor(first_argument, conf)
-        tokens1 = ensure_have_at_least_two_arguments_for_option(first_argument)
-        return file_ref_constructor(tokens1.head), tokens1.tail
-    else:
-        fr = _read_absolute_or_default_file_ref(first_argument, conf)
-        return fr, tokens.tail
-
-
-def parse_file_ref2(tokens: TokenStream2,
-                    conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> file_ref.FileRef:
+def parse_file_ref(tokens: TokenStream2,
+                   conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> file_ref.FileRef:
     """
     :param tokens: Argument list
     :return: The parsed FileRef, remaining arguments after file was parsed.
