@@ -3,7 +3,6 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
-from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.home_and_sds import HomeAndSds
@@ -42,24 +41,14 @@ class Arrangement:
         self.value_definitions = symbol_table_from_none_or_value(value_definitions)
 
 
-token_stream_is_null = va.sub_component('is_null',
-                                        TokenStream.is_null.fget,
-                                        va.Constant(True))
-
 token_stream2_is_null = va.sub_component('is_null',
                                          TokenStream2.is_null.fget,
                                          va.Constant(True))
 
 
-def token_stream_is(source: str) -> va.ValueAssertion:
-    return va.sub_component('source',
-                            TokenStream.source.fget,
-                            va.Equals(source))
-
-
 def token_stream2_is(source: str) -> va.ValueAssertion:
     return va.sub_component('remaining-source',
-                            lambda ts: ts.source[ts.position:],
+                            TokenStream2.remaining_source.fget,
                             va.Equals(source))
 
 
