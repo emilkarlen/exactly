@@ -1,6 +1,7 @@
 import pathlib
 
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType, REL_OPTIONS_MAP
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 

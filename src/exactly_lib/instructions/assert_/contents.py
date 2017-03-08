@@ -1,6 +1,7 @@
 import pathlib
 
 import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
+import exactly_lib.instructions.utils.relativity_root
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
@@ -130,7 +131,7 @@ class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVar
 _ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
                                                    True,
-                                                   rel_opts.RelOptionType.REL_CWD),
+                                                   exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD),
     'PATH')
 
 

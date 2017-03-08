@@ -1,4 +1,4 @@
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 
 
 class RelOptionsConfiguration(tuple):

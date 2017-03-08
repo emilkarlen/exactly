@@ -1,3 +1,4 @@
+import exactly_lib.instructions.utils.relativity_root
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
@@ -7,7 +8,7 @@ from exactly_lib.help.concepts.plain_concepts.current_working_directory import C
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
@@ -27,7 +28,7 @@ def mandatory_path_with_optional_relativity(path_argument: a.Named) -> list:
 
 
 def default_relativity_for_rel_opt_type(path_arg_name: str,
-                                        default_relativity_type: options.RelOptionType) -> list:
+                                        default_relativity_type: exactly_lib.instructions.utils.relativity_root.RelOptionType) -> list:
     return docs.paras(_DEFAULT_RELATIVITY
                       .format(path=path_arg_name,
                               default_relativity_location=_ALL[default_relativity_type].relativity_root_description))

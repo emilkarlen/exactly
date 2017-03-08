@@ -2,8 +2,8 @@ import pathlib
 import sys
 import unittest
 
+import exactly_lib.instructions.utils.relativity_root
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
-from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, \
@@ -90,9 +90,9 @@ class TestParseFromTokenStream2(unittest.TestCase):
 class TestParsesCorrectValueFromTokenStream2WithCustomConfiguration(TestParsesBase):
     def test_default_relativity_is_different_than_that_of_default_configuration(self):
         custom_configuration = RelOptionArgumentConfiguration(
-            RelOptionsConfiguration({rel_opts.RelOptionType.REL_ACT},
+            RelOptionsConfiguration({exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT},
                                     True,
-                                    rel_opts.RelOptionType.REL_ACT),
+                                    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT),
             'FILE')
         ts = TokenStream2('file.txt')
         file_reference = sut.parse_file_ref(ts, custom_configuration)
@@ -106,9 +106,9 @@ class TestParsesCorrectValueFromTokenStream2WithCustomConfiguration(TestParsesBa
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
         custom_configuration = RelOptionArgumentConfiguration(
-            RelOptionsConfiguration({rel_opts.RelOptionType.REL_ACT},
+            RelOptionsConfiguration({exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT},
                                     True,
-                                    rel_opts.RelOptionType.REL_ACT),
+                                    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT),
             'FILE')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref(TokenStream2('%s file.txt' % REL_TMP_OPTION),
@@ -211,9 +211,9 @@ class TestParseFromParseSource(unittest.TestCase):
 class TestParsesCorrectValueFromParseSourceWithCustomConfiguration(TestParsesBase):
     def test_default_relativity_is_different_than_that_of_default_configuration(self):
         custom_configuration = RelOptionArgumentConfiguration(
-            RelOptionsConfiguration({rel_opts.RelOptionType.REL_ACT},
+            RelOptionsConfiguration({exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT},
                                     True,
-                                    rel_opts.RelOptionType.REL_ACT),
+                                    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT),
             'FILE')
         file_reference = sut.parse_file_ref_from_parse_source(remaining_source('file.txt'),
                                                               custom_configuration)
@@ -226,9 +226,9 @@ class TestParsesCorrectValueFromParseSourceWithCustomConfiguration(TestParsesBas
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
         custom_configuration = RelOptionArgumentConfiguration(
-            RelOptionsConfiguration({rel_opts.RelOptionType.REL_ACT},
+            RelOptionsConfiguration({exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT},
                                     True,
-                                    rel_opts.RelOptionType.REL_ACT),
+                                    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT),
             'FILE')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref_from_parse_source(remaining_source('%s file.txt' % REL_TMP_OPTION),
