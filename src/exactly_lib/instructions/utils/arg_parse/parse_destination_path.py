@@ -4,8 +4,8 @@ from exactly_lib.instructions.utils.arg_parse import relative_path_options as re
 from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_argument, ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
 from exactly_lib.instructions.utils.destination_path import DestinationPath
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \

@@ -1,6 +1,7 @@
 import pathlib
 import types
 
+import exactly_lib.instructions.utils.relativity_root
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_token
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -15,29 +16,32 @@ from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.util.cli_syntax import option_parsing
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
-    rel_opts.RelOptionType.REL_HOME: file_refs.rel_home,
-    rel_opts.RelOptionType.REL_CWD: file_refs.rel_cwd,
-    rel_opts.RelOptionType.REL_ACT: file_refs.rel_act,
-    rel_opts.RelOptionType.REL_TMP: file_refs.rel_tmp_user,
+    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME: file_refs.rel_home,
+    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD: file_refs.rel_cwd,
+    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT: file_refs.rel_act,
+    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_TMP: file_refs.rel_tmp_user,
 }
 
-ALL_REL_OPTIONS = set(rel_opts.RelOptionType) - {rel_opts.RelOptionType.REL_RESULT}
+ALL_REL_OPTIONS = set(exactly_lib.instructions.utils.relativity_root.RelOptionType) - {
+    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_RESULT}
 
-ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME}
+ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {
+    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME}
 
 
 def all_rel_options_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(ALL_REL_OPTIONS,
                                                                   True,
-                                                                  rel_opts.RelOptionType.REL_HOME),
+                                                                  exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME),
                                           argument_syntax_name)
 
 
 ALL_REL_OPTIONS_CONFIG = all_rel_options_config('FILE')
 
-STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME},
+STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(ALL_REL_OPTIONS - {
+    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME},
                                                     True,
-                                                    rel_opts.RelOptionType.REL_CWD)
+                                                    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD)
 
 
 def non_home_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:

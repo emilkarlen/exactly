@@ -4,7 +4,8 @@ import unittest
 from exactly_lib.instructions.utils.arg_parse import parse_destination_path as sut
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType, REL_OPTIONS_MAP
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.home_and_sds import HomeAndSds
