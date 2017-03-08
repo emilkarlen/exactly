@@ -1,15 +1,8 @@
-import enum
 import pathlib
 
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType, REL_OPTIONS_MAP
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-
-
-class DestinationType(enum.Enum):
-    REL_ACT_DIR = 0
-    REL_TMP_DIR = 1
-    REL_CWD = 2
 
 
 class DestinationPath(tuple):

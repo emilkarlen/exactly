@@ -4,7 +4,8 @@ from exactly_lib.instructions.utils.arg_parse import relative_path_options as re
 from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_argument, ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.instructions.utils.destination_path import DestinationType, DestinationPath
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
+from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -57,7 +58,7 @@ def parse_destination_path(options: RelOptionArgumentConfiguration,
 
 
 def _parse_destination_type(options: RelOptionsConfiguration,
-                            arguments: list) -> (DestinationType, list):
+                            arguments: list) -> (RelOptionType, list):
     rel_option_type = options.default_option
     if arguments and is_option_argument(arguments[0]):
         option_argument = arguments[0]
@@ -70,7 +71,7 @@ def _parse_destination_type(options: RelOptionsConfiguration,
 
 
 def _parse_destination_typeInstrDesc(options: RelOptionsConfiguration,
-                                     source: ParseSource) -> DestinationType:
+                                     source: ParseSource) -> RelOptionType:
     rel_option_type = options.default_option
     source_copy = source.copy
     if source_copy.is_at_eol:
@@ -87,7 +88,7 @@ def _parse_destination_typeInstrDesc(options: RelOptionsConfiguration,
     return rel_option_type
 
 
-def _resolve_relativity_option_type(option_argument: str) -> DestinationType:
+def _resolve_relativity_option_type(option_argument: str) -> RelOptionType:
     for option_type in rel_opts.REL_OPTIONS_MAP:
         option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
         if matches(option_name, option_argument):
