@@ -91,10 +91,6 @@ def rel_act(file_name: str) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_act, file_name)
 
 
-def rel_tmp_internal(file_name: str) -> FileRef:
-    return _FileRefRelTmpInternal(file_name)
-
-
 def rel_tmp_user(file_name: str) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_tmp_user, file_name)
 
