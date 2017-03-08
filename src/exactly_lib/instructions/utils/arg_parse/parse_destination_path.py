@@ -19,7 +19,7 @@ def parse_destination_pathInstrDesc(options: RelOptionArgumentConfiguration,
                                     source: ParseSource) -> DestinationPath:
     source.consume_initial_space_on_current_line()
     initial_argument_string = source.remaining_part_of_current_line
-    destination_type = _parse_destination_typeInstrDesc(options.options, source)
+    relativity_type = _parse_relativity_typeInstrDesc(options.options, source)
     source.consume_initial_space_on_current_line()
     if source.is_at_eol:
         if path_argument_is_mandatory:
@@ -27,14 +27,13 @@ def parse_destination_pathInstrDesc(options: RelOptionArgumentConfiguration,
                 'Missing {} argument: {}'.format(options.argument_syntax_name,
                                                  initial_argument_string))
         path_argument = pathlib.PurePath()
-        # TODO invalid argument type to DestinationPath
-        return DestinationPath(destination_type, path_argument)
+        return DestinationPath(relativity_type, path_argument)
     else:
         token = token_parse.parse_token_on_current_line(source)
         if token.type is TokenType.PLAIN:
             ensure_is_not_option_argument(token.string)
         path_argument = pathlib.PurePosixPath(token.string)
-        return DestinationPath(destination_type, path_argument)
+        return DestinationPath(relativity_type, path_argument)
 
 
 # TODO [instr-desc] Remove when new parser structures are fully integrated
@@ -70,8 +69,8 @@ def _parse_destination_type(options: RelOptionsConfiguration,
     return rel_option_type, arguments
 
 
-def _parse_destination_typeInstrDesc(options: RelOptionsConfiguration,
-                                     source: ParseSource) -> RelOptionType:
+def _parse_relativity_typeInstrDesc(options: RelOptionsConfiguration,
+                                    source: ParseSource) -> RelOptionType:
     rel_option_type = options.default_option
     source_copy = source.copy
     if source_copy.is_at_eol:
