@@ -114,5 +114,6 @@ def _relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfigurat
     if is_after_act_phase:
         accepted.append(RelOptionType.REL_RESULT)
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(accepted,
+                                                                  True,
                                                                   RelOptionType.REL_CWD),
                                           _DIR_ARGUMENT.name)

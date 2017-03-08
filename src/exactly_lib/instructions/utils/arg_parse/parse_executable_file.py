@@ -13,7 +13,7 @@ from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
 LIST_DELIMITER_START = '('
 LIST_DELIMITER_END = ')'
-PARSE_FILE_REF_CONFIGURATION = parse_file_ref.DEFAULT_CONFIG
+PARSE_FILE_REF_CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
 PYTHON_EXECUTABLE_OPTION_NAME = argument.OptionName(long_name='python')
 PYTHON_EXECUTABLE_OPTION_STRING = long_option_syntax(PYTHON_EXECUTABLE_OPTION_NAME.long)

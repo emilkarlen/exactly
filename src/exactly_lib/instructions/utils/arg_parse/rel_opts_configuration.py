@@ -4,11 +4,13 @@ from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOp
 class RelOptionsConfiguration(tuple):
     def __new__(cls,
                 accepted_options: iter,
+                is_rel_val_def_option_accepted: bool,
                 default_option: RelOptionType):
         """
         :type accepted_options: Iterable of `RelOptionType`
         """
         return tuple.__new__(cls, (accepted_options,
+                                   is_rel_val_def_option_accepted,
                                    default_option))
 
     @property
@@ -19,8 +21,15 @@ class RelOptionsConfiguration(tuple):
         return self[0]
 
     @property
-    def default_option(self) -> RelOptionType:
+    def is_rel_val_def_option_accepted(self) -> bool:
+        """
+        Tells if the option for relativity of a value definition is accepted.
+        """
         return self[1]
+
+    @property
+    def default_option(self) -> RelOptionType:
+        return self[2]
 
 
 class RelOptionArgumentConfiguration(tuple):
@@ -45,4 +54,5 @@ def argument_configuration_for_file_creation(argument_syntax_element_name: str) 
 
 OPTIONS_FOR_FILE_CREATION = RelOptionsConfiguration([RelOptionType.REL_ACT,
                                                      RelOptionType.REL_TMP],
+                                                    True,
                                                     RelOptionType.REL_CWD)

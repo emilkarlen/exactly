@@ -10,8 +10,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token import Token
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case import file_ref
 from exactly_lib.test_case import file_refs
+from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.util.cli_syntax import option_parsing
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
@@ -28,15 +28,15 @@ ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {rel_opts.RelOpt
 
 def all_rel_options_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(ALL_REL_OPTIONS,
+                                                                  True,
                                                                   rel_opts.RelOptionType.REL_HOME),
                                           argument_syntax_name)
 
 
 ALL_REL_OPTIONS_CONFIG = all_rel_options_config('FILE')
 
-DEFAULT_CONFIG = ALL_REL_OPTIONS_CONFIG
-
 STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME},
+                                                    True,
                                                     rel_opts.RelOptionType.REL_CWD)
 
 
@@ -56,8 +56,7 @@ def _is_rel_variable_definition_option(option: str) -> bool:
     return REL_VALUE_DEFINITION_OPTION == option
 
 
-def parse_file_ref_from_parse_source(source: ParseSource,
-                                     conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> file_ref.FileRef:
+def parse_file_ref_from_parse_source(source: ParseSource, conf: RelOptionArgumentConfiguration) -> FileRef:
     """
     :param source: Has a current line
     :return: The parsed FileRef, remaining arguments after file was parsed.
@@ -70,8 +69,7 @@ def parse_file_ref_from_parse_source(source: ParseSource,
     return ret_val
 
 
-def parse_file_ref(tokens: TokenStream2,
-                   conf: RelOptionArgumentConfiguration = DEFAULT_CONFIG) -> file_ref.FileRef:
+def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -> FileRef:
     """
     :param tokens: Argument list
     :return: The parsed FileRef, remaining arguments after file was parsed.
@@ -100,7 +98,7 @@ def parse_file_ref(tokens: TokenStream2,
 
 
 def _read_absolute_or_default_file_ref(argument: str,
-                                       conf: RelOptionArgumentConfiguration) -> file_ref.FileRef:
+                                       conf: RelOptionArgumentConfiguration) -> FileRef:
     argument_path = pathlib.PurePath(argument)
     if argument_path.is_absolute():
         return file_refs.absolute_file_name(argument)

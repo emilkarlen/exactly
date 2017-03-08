@@ -255,15 +255,16 @@ class TestParseShouldFailWhenRelativityOptionIsNotInSetOfAcceptedOptions(TestCas
             ]
 
         for accepted_type, unaccepted_type in option_infos:
-            with self.subTest(accepted_type=accepted_type,
-                              unaccepted_type=unaccepted_type):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_destination_path(_for(accepted_type, [accepted_type]),
-                                               self.path_argument_is_mandatory,
-                                               [
-                                                   arg_syntax_for(unaccepted_type),
-                                                   'path-arg',
-                                               ])
+            for is_rel_val_def_option_accepted in [False, True]:
+                with self.subTest(accepted_type=accepted_type,
+                                  unaccepted_type=unaccepted_type):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        sut.parse_destination_path(_for(accepted_type, {accepted_type}, is_rel_val_def_option_accepted),
+                                                   self.path_argument_is_mandatory,
+                                                   [
+                                                       arg_syntax_for(unaccepted_type),
+                                                       'path-arg',
+                                                   ])
 
 
 def arg_syntax_for(rel_option_type: RelOptionType) -> str:
@@ -282,9 +283,13 @@ def _other_option_type_than(option_type: RelOptionType) -> RelOptionType:
 
 
 def _with_all_options_acceptable(default: RelOptionType) -> RelOptionArgumentConfiguration:
-    return _for(default, RelOptionType)
+    return _for(default, RelOptionType, True)
 
 
-def _for(default: RelOptionType, acceptable_options: iter) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(RelOptionsConfiguration(acceptable_options, default),
-                                          'SYNTAXELEMENT')
+def _for(default: RelOptionType,
+         acceptable_options: iter,
+         is_rel_val_def_option_accepted: bool) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(RelOptionsConfiguration(acceptable_options,
+                                                                  is_rel_val_def_option_accepted,
+                                                                  default),
+                                          'SYNTAX_ELEMENT')

@@ -7,7 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import file_ref
 
-CONFIGURATION = parse_file_ref.DEFAULT_CONFIG
+CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
 
 class HereDocOrFileRef(tuple):
