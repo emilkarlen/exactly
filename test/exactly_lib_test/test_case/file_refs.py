@@ -7,8 +7,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table, singleton_symbol_t
 from exactly_lib_test.test_case.test_resources import value_definition as vdtr
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents, tmp_user_dir_contents, \
-    tmp_internal_dir_contents
+from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 
 
@@ -17,7 +16,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestRelHome))
     ret_val.addTest(unittest.makeSuite(TestRelCwd))
     ret_val.addTest(unittest.makeSuite(TestRelTmpUser))
-    ret_val.addTest(unittest.makeSuite(TestRelTmpInternal))
     ret_val.addTest(unittest.makeSuite(TestRelValueDefinition))
     return ret_val
 
@@ -96,31 +94,6 @@ class TestRelTmpUser(unittest.TestCase):
         file_reference = sut.rel_tmp_user('file.txt')
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, empty_symbol_table())
-            self.assertFalse(file_reference.file_path_pre_or_post_sds(environment).exists())
-
-
-class TestRelTmpInternal(unittest.TestCase):
-    def test_should_reference_no_value_definitions(self):
-        file_reference = sut.rel_tmp_internal('file.txt')
-        self.assertTrue(len(file_reference.value_references()) == 0,
-                        'File is expected to reference no variable definitions')
-
-    def test_exists_pre_sds(self):
-        file_reference = sut.rel_tmp_internal('file.txt')
-        self.assertFalse(file_reference.exists_pre_sds(1),
-                         'File is expected to not exist pre SDS')
-
-    def test_existing_file(self):
-        file_reference = sut.rel_tmp_internal('file.txt')
-        with home_and_sds_with_act_as_curr_dir(
-                sds_contents=tmp_internal_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-            self.assertTrue(file_reference.file_path_pre_or_post_sds(environment).exists())
-
-    def test_non_existing_file(self):
-        file_reference = sut.rel_tmp_internal('file.txt')
-        with home_and_sds_with_act_as_curr_dir() as home_and_sds:
-            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assertFalse(file_reference.file_path_pre_or_post_sds(environment).exists())
 
 
