@@ -238,7 +238,7 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
     @staticmethod
     def _interpret(exe_file: ExecutableFile,
                    arg_tokens: TokenStream2):
-        file_to_interpret = parse_file_ref.parse_file_ref(arg_tokens)
+        file_to_interpret = parse_file_ref.parse_file_ref(arg_tokens, parse_file_ref.ALL_REL_OPTIONS_CONFIG)
         file_to_interpret_check = FileRefCheck(file_to_interpret,
                                                file_properties.must_exist_as(file_properties.FileType.REGULAR))
         validator = AndValidator((exe_file.validator,
