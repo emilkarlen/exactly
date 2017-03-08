@@ -1,7 +1,6 @@
 import pathlib
-import types
 
-import exactly_lib.instructions.utils.relativity_root
+from exactly_lib.instructions.utils import relativity_root
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_token
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -15,33 +14,26 @@ from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.util.cli_syntax import option_parsing
 
-_REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
-    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME: file_refs.rel_home,
-    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD: file_refs.rel_cwd,
-    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT: file_refs.rel_act,
-    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_TMP: file_refs.rel_tmp_user,
-}
-
-ALL_REL_OPTIONS = set(exactly_lib.instructions.utils.relativity_root.RelOptionType) - {
-    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_RESULT}
+ALL_REL_OPTIONS = set(relativity_root.RelOptionType) - {
+    relativity_root.RelOptionType.REL_RESULT}
 
 ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {
-    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME}
+    relativity_root.RelOptionType.REL_HOME}
 
 
 def all_rel_options_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(ALL_REL_OPTIONS,
                                                                   True,
-                                                                  exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME),
+                                                                  relativity_root.RelOptionType.REL_HOME),
                                           argument_syntax_name)
 
 
 ALL_REL_OPTIONS_CONFIG = all_rel_options_config('FILE')
 
 STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(ALL_REL_OPTIONS - {
-    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_HOME},
+    relativity_root.RelOptionType.REL_HOME},
                                                     True,
-                                                    exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD)
+                                                    relativity_root.RelOptionType.REL_CWD)
 
 
 def non_home_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
@@ -92,9 +84,9 @@ def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -
 
     first_token = tokens.head
     if is_option_token(first_token):
-        file_ref_constructor = _get_file_ref_constructor(first_token.string, conf)
+        root_resolver = _get_root_resolver(first_token.string, conf)
         second_token = ensure_have_at_least_one_more_argument_for_option(first_token.string)
-        return file_ref_constructor(second_token.string)
+        return file_refs.of_rel_root(root_resolver, second_token.string)
     else:
         fr = _read_absolute_or_default_file_ref(first_token.string, conf)
         tokens.consume()
@@ -107,16 +99,16 @@ def _read_absolute_or_default_file_ref(argument: str,
     if argument_path.is_absolute():
         return file_refs.absolute_file_name(argument)
     else:
-        file_ref_constructor = _REL_OPTION_2_FILE_REF_CONSTRUCTOR[conf.options.default_option]
-        return file_ref_constructor(argument)
+        root_resolver = rel_opts.REL_OPTIONS_MAP[conf.options.default_option].root_resolver
+        return file_refs.of_rel_root(root_resolver, argument)
 
 
-def _get_file_ref_constructor(option_argument: str,
-                              conf: RelOptionArgumentConfiguration) -> types.FunctionType:
+def _get_root_resolver(option_argument: str,
+                       conf: RelOptionArgumentConfiguration) -> relativity_root.RelRootResolver:
     for relativity_type in conf.options.accepted_options:
         option_name = rel_opts.REL_OPTIONS_MAP[relativity_type].option_name
         if option_parsing.matches(option_name, option_argument):
-            return _REL_OPTION_2_FILE_REF_CONSTRUCTOR[relativity_type]
+            return rel_opts.REL_OPTIONS_MAP[relativity_type].root_resolver
     msg = 'Invalid option for reference to %s: %s' % (conf.argument_syntax_name, option_argument)
     raise SingleInstructionInvalidArgumentException(msg)
 
