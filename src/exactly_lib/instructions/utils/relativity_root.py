@@ -91,6 +91,12 @@ class _RelPathResolverRelCwd(RelRootResolver):
     def from_cwd(self) -> pathlib.Path:
         return pathlib.Path().cwd()
 
+    def from_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        """
+        Precondition: `is_rel_sds`
+        """
+        raise ValueError('Root is not relative the SDS')
+
     def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         return self.from_cwd()
 
