@@ -1,12 +1,12 @@
 import unittest
 
-import exactly_lib.test_case.file_refs
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import file_ref
+from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -82,7 +82,7 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                   ),
                   Expectation(
                       main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                          exactly_lib.test_case.file_refs.rel_home('file-in-home-dir.txt')),
+                          file_refs.rel_home('file-in-home-dir.txt')),
                       source=source_is_at_end)
                   )
 
@@ -92,7 +92,7 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                       empty_file('file-in-home-dir.txt')])
                   ),
                   Expectation(main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                      exactly_lib.test_case.file_refs.rel_home('file-in-home-dir.txt')),
+                      file_refs.rel_home('file-in-home-dir.txt')),
                       source=source_is_at_end)
                   )
 
