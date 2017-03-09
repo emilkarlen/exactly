@@ -31,14 +31,14 @@ def suite() -> unittest.TestSuite:
         Configuration(rel_option_type, _other_option_type_than(rel_option_type))
         for rel_option_type in RelOptionType
         ]
-    return unittest.TestSuite([suite_for(configuration)
+    return unittest.TestSuite([_suite_for(configuration)
                                for configuration in configurations] +
-                              [suite_for_configuration_and_boolean(configuration)
+                              [_suite_for_configuration_and_boolean(configuration)
                                for configuration in configurations] +
                               [suite_for_boolean()])
 
 
-def suite_for(configuration: Configuration) -> unittest.TestSuite:
+def _suite_for(configuration: Configuration) -> unittest.TestSuite:
     test_cases = [
         TestDefaultOptionWithoutArgumentButArgumentIsRequired,
         TestDefaultRelativityOptionPathArgumentNOTMandatoryWithoutArgument,
@@ -47,7 +47,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
     return unittest.TestSuite([tc(configuration) for tc in test_cases])
 
 
-def suite_for_configuration_and_boolean(configuration: Configuration) -> unittest.TestSuite:
+def _suite_for_configuration_and_boolean(configuration: Configuration) -> unittest.TestSuite:
     test_cases = [
         TestDefaultRelativityOptionWithSingleArgument,
         TestDefaultRelativityOptionWithMultipleArguments,
