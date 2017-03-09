@@ -35,13 +35,13 @@ def suite() -> unittest.TestSuite:
                                for configuration in configurations] +
                               [_suite_for_configuration_and_boolean(configuration)
                                for configuration in configurations] +
-                              [suite_for_boolean()])
+                              [_suite_for_boolean()])
 
 
 def _suite_for(configuration: Configuration) -> unittest.TestSuite:
     test_cases = [
-        TestDefaultOptionWithoutArgumentButArgumentIsRequired,
-        TestDefaultRelativityOptionPathArgumentNOTMandatoryWithoutArgument,
+        TestDefaultRelativityOptionWithPathArgumentMandatoryWithoutArgument,
+        TestDefaultRelativityOptionWithPathArgumentNOTMandatoryWithoutArgument,
 
     ]
     return unittest.TestSuite([tc(configuration) for tc in test_cases])
@@ -62,7 +62,7 @@ def _suite_for_configuration_and_boolean(configuration: Configuration) -> unitte
     return unittest.TestSuite(generated_test_cases)
 
 
-def suite_for_boolean() -> unittest.TestSuite:
+def _suite_for_boolean() -> unittest.TestSuite:
     test_cases = [
         TestParseShouldFailWhenRelativityOptionIsNotInSetOfAcceptedOptions,
     ]
@@ -151,7 +151,7 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
         self.configuration = configuration
 
 
-class TestDefaultOptionWithoutArgumentButArgumentIsRequired(TestCaseBase):
+class TestDefaultRelativityOptionWithPathArgumentMandatoryWithoutArgument(TestCaseBase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_destination_path(_with_all_options_acceptable(self.configuration.default_rel_option_type),
@@ -159,7 +159,7 @@ class TestDefaultOptionWithoutArgumentButArgumentIsRequired(TestCaseBase):
                                        [])
 
 
-class TestDefaultRelativityOptionPathArgumentNOTMandatoryWithoutArgument(TestCaseBase):
+class TestDefaultRelativityOptionWithPathArgumentNOTMandatoryWithoutArgument(TestCaseBase):
     def runTest(self):
         test(
             self,
