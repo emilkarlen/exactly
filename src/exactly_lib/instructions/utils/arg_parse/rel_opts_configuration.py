@@ -50,7 +50,7 @@ class RelOptionArgumentConfiguration(tuple):
 
 
 def argument_configuration_for_file_creation(argument_syntax_element_name: str) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(OPTIONS_FOR_FILE_CREATION, argument_syntax_element_name)
+    return RelOptionArgumentConfiguration(REL_OPTIONS_FOR_FILE_CREATION, argument_syntax_element_name)
 
 
 RELATIVITY_VARIANTS_FOR_FILE_CREATION = PathRelativityVariants({RelOptionType.REL_ACT,
@@ -58,6 +58,6 @@ RELATIVITY_VARIANTS_FOR_FILE_CREATION = PathRelativityVariants({RelOptionType.RE
                                                                 RelOptionType.REL_CWD},
                                                                False)
 
-OPTIONS_FOR_FILE_CREATION = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION.rel_option_types,
-                                                    True,
-                                                    RelOptionType.REL_CWD)
+REL_OPTIONS_FOR_FILE_CREATION = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION.rel_option_types,
+                                                        True,
+                                                        RelOptionType.REL_CWD)
