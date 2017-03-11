@@ -99,24 +99,9 @@ class _ParseMethodConfigurationForTokenStreamVersion(_ParseMethodConfiguration):
             source)
 
 
-class _ParseMethodConfigurationForListVersion(_ParseMethodConfiguration):
-    def test(self,
-             put: unittest.TestCase,
-             arrangement: Arrangement,
-             expectation: Expectation):
-        _test_for_argument_list(put, arrangement, expectation)
-
-    def parse(self, arrangement: Arrangement):
-        return sut.parse_destination_path(
-            arrangement.options_configuration,
-            arrangement.path_argument_is_mandatory,
-            arrangement.arguments)
-
-
 _ALL_PARSE_METHODS = [
     _ParseMethodConfigurationForParseSourceVersion(),
     _ParseMethodConfigurationForTokenStreamVersion(),
-    _ParseMethodConfigurationForListVersion(),
 ]
 
 
@@ -385,19 +370,6 @@ def _test_for_parse_source(put: unittest.TestCase,
     source_assertion = assert_source(current_line_number=asrt.equals(1),
                                      remaining_part_of_current_line=asrt.equals(remaining_arguments_str))
     source_assertion.apply_with_message(put, source, 'source')
-
-
-def _test_for_argument_list(put: unittest.TestCase,
-                            arrangement: Arrangement,
-                            expectation: Expectation):
-    (actual_path, actual_remaining_arguments) = sut.parse_destination_path(
-        arrangement.options_configuration,
-        arrangement.path_argument_is_mandatory,
-        arrangement.arguments)
-    _common_assertions(put, expectation, actual_path)
-    put.assertListEqual(expectation.remaining_arguments,
-                        actual_remaining_arguments,
-                        'remaining_arguments')
 
 
 def _common_assertions(put: unittest.TestCase,
