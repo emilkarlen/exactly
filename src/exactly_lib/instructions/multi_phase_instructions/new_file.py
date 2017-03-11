@@ -1,7 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.utils.arg_parse import parse_here_document
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_pathInstrDesc
+from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination__parse_source
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -69,7 +69,7 @@ class FileInfo(tuple):
 
 
 def parse(source: ParseSource) -> FileInfo:
-    destination_path = parse_destination_pathInstrDesc(_RELATIVITY_OPTIONS, True, source)
+    destination_path = parse_destination__parse_source(_RELATIVITY_OPTIONS, True, source)
     contents = ''
     if source.is_at_eol__except_for_space:
         source.consume_current_line()

@@ -77,7 +77,7 @@ class _ParseMethodConfigurationForParseSourceVersion(_ParseMethodConfiguration):
     def parse(self, arrangement: Arrangement):
         argument_str = ' '.join(arrangement.arguments)
         source = remaining_source(argument_str)
-        return sut.parse_destination_pathInstrDesc(
+        return sut.parse_destination__parse_source(
             arrangement.options_configuration,
             arrangement.path_argument_is_mandatory,
             source)
@@ -375,7 +375,7 @@ def _test_for_parse_source(put: unittest.TestCase,
                            expectation: Expectation):
     argument_str = ' '.join(arrangement.arguments)
     source = remaining_source(argument_str)
-    actual_path = sut.parse_destination_pathInstrDesc(
+    actual_path = sut.parse_destination__parse_source(
         arrangement.options_configuration,
         arrangement.path_argument_is_mandatory,
         source)
