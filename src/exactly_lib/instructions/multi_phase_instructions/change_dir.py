@@ -3,8 +3,7 @@ import os
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path
-from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path__token_stream
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.destination_path import *
@@ -15,6 +14,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -75,13 +75,13 @@ Omitting the {dir_argument} is the same as giving ".".
 
 
 def parse(argument: str, is_after_act_phase: bool) -> DestinationPath:
-    arguments = split_arguments_list_string(argument)
     relativity_options = _relativity_options(is_after_act_phase)
-    (destination_path, remaining_arguments) = parse_destination_path(relativity_options,
-                                                                     False,
-                                                                     arguments)
-    if remaining_arguments:
-        raise SingleInstructionInvalidArgumentException('Superfluous arguments: {}'.format(remaining_arguments))
+    source = TokenStream2(argument)
+    destination_path = parse_destination_path__token_stream(relativity_options,
+                                                            False,
+                                                            source)
+    if not source.is_null:
+        raise SingleInstructionInvalidArgumentException('Superfluous arguments: {}'.format(source.remaining_source))
     return destination_path
 
 

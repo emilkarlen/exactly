@@ -1,7 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path
-from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path__token_stream
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -10,6 +9,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -54,11 +54,11 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 
 def parse(argument: str) -> DestinationPath:
-    arguments = split_arguments_list_string(argument)
-    (destination_path, remaining_arguments) = parse_destination_path(RELATIVITY_OPTIONS, True, arguments)
+    source = TokenStream2(argument)
+    destination_path = parse_destination_path__token_stream(RELATIVITY_OPTIONS, True, source)
 
-    if remaining_arguments:
-        raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(remaining_arguments))
+    if not source.is_null:
+        raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(source.remaining_source))
     return destination_path
 
 
