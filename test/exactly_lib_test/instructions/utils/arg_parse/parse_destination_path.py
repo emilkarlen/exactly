@@ -9,6 +9,7 @@ from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, short_option_syntax
@@ -82,6 +83,22 @@ class _ParseMethodConfigurationForParseSourceVersion(_ParseMethodConfiguration):
             source)
 
 
+class _ParseMethodConfigurationForTokenStreamVersion(_ParseMethodConfiguration):
+    def test(self,
+             put: unittest.TestCase,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        _test_for_token_stream(put, arrangement, expectation)
+
+    def parse(self, arrangement: Arrangement):
+        argument_str = ' '.join(arrangement.arguments)
+        source = TokenStream2(argument_str)
+        return sut.parse_destination_path__token_stream(
+            arrangement.options_configuration,
+            arrangement.path_argument_is_mandatory,
+            source)
+
+
 class _ParseMethodConfigurationForListVersion(_ParseMethodConfiguration):
     def test(self,
              put: unittest.TestCase,
@@ -98,6 +115,7 @@ class _ParseMethodConfigurationForListVersion(_ParseMethodConfiguration):
 
 _ALL_PARSE_METHODS = [
     _ParseMethodConfigurationForParseSourceVersion(),
+    _ParseMethodConfigurationForTokenStreamVersion(),
     _ParseMethodConfigurationForListVersion(),
 ]
 
@@ -333,6 +351,23 @@ def _for(default: RelOptionType,
                                                                   is_rel_val_def_option_accepted,
                                                                   default),
                                           'SYNTAX_ELEMENT')
+
+
+def _test_for_token_stream(put: unittest.TestCase,
+                           arrangement: Arrangement,
+                           expectation: Expectation):
+    argument_str = ' '.join(arrangement.arguments)
+    source = TokenStream2(argument_str)
+    actual_path = sut.parse_destination_path__token_stream(
+        arrangement.options_configuration,
+        arrangement.path_argument_is_mandatory,
+        source)
+    _common_assertions(put, expectation, actual_path)
+    remaining_arguments_str = ' '.join(expectation.remaining_arguments)
+    actual_remaining_part_of_current_line = source.remaining_part_of_current_line.lstrip()
+    put.assertEqual(remaining_arguments_str,
+                    actual_remaining_part_of_current_line,
+                    'remaining_part_of_current_line')
 
 
 def _test_for_parse_source(put: unittest.TestCase,
