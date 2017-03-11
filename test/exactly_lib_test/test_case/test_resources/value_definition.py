@@ -1,6 +1,9 @@
+import unittest
+
 from exactly_lib.test_case import file_ref as _file_ref
 from exactly_lib.test_case import file_refs
-from exactly_lib.test_case.value_definition import FileRefValue, ValueReference
+from exactly_lib.test_case.value_definition import FileRefValue, ValueReference, ValueReferenceVisitor, \
+    ValueReferenceOfPath
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Value, Entry
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -57,11 +60,36 @@ def assert_value_usages_is_singleton_list_with_value_reference(expected: ValueRe
                                  ]))
 
 
-def equals_value_reference(expected: ValueReference) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(ValueReference,
-                                 asrt.And([
-                                     asrt.sub_component('name',
-                                                        ValueReference.name.fget,
-                                                        asrt.equals(expected.name)),
+class _EqualsValueReference(ValueReferenceVisitor):
+    def __init__(self,
+                 actual,
+                 put: unittest.TestCase,
+                 message_builder: asrt.MessageBuilder):
+        self.message_builder = message_builder
+        self.put = put
+        self.actual = actual
 
-                                 ]))
+    def _visit_path(self, expected: ValueReferenceOfPath):
+        self._common(expected)
+
+    def _common(self, expected: ValueReference):
+        self.put.assertIsInstance(self.actual, type(expected),
+                                  self.message_builder.apply('object class'))
+        assert isinstance(self.actual, ValueReference)
+        self.put.assertEqual(self.actual.name,
+                             expected.name,
+                             self.message_builder.apply('name'))
+
+
+class _EqualsValueReferenceAssertion(asrt.ValueAssertion):
+    def __init__(self, expected: ValueReference):
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value, message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        _EqualsValueReference(value, put, message_builder).visit(self.expected)
+
+
+def equals_value_reference(expected: ValueReference) -> asrt.ValueAssertion:
+    return _EqualsValueReferenceAssertion(expected)
