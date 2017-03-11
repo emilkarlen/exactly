@@ -19,6 +19,7 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
@@ -38,13 +39,15 @@ class Arrangement(ArrangementWithSds):
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
                  home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                 value_definitions: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          home_contents=home_dir_contents,
                          sds_contents=sds_contents_before_main,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
-                         home_or_sds_contents=home_or_sds_contents)
+                         home_or_sds_contents=home_or_sds_contents,
+                         value_definitions=value_definitions)
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -60,6 +63,7 @@ class Expectation:
                  post_validation_result: va.ValueAssertion = svh_check.is_success(),
                  side_effects_check: va.ValueAssertion = va.anything_goes(),
                  source: va.ValueAssertion = va.anything_goes(),
+                 value_definition_usages: va.ValueAssertion = va.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result
@@ -68,6 +72,7 @@ class Expectation:
         self.post_validation_result = post_validation_result
         self.side_effects_check = side_effects_check
         self.source = source
+        self.value_definition_usages = value_definition_usages
 
 
 is_success = Expectation
@@ -110,6 +115,8 @@ class Executor:
                                   'The instruction must be an instance of ' + str(SetupPhaseInstruction))
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, SetupPhaseInstruction)
+        self.expectation.value_definition_usages.apply_with_message(self.put, instruction.value_usages(),
+                                                                    'value-definition-usages')
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         initial_cwd = os.getcwd()
         try:
