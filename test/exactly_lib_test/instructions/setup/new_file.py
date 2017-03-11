@@ -1,8 +1,9 @@
 import unittest
 
+from exactly_lib.instructions.multi_phase_instructions.new_file import RELATIVITY_VARIANTS
 from exactly_lib.instructions.setup import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.value_definition import ValueReference
+from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util import symbol_table
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
@@ -87,7 +88,8 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                           main_side_effects_on_files=tmp_user_dir_contains_exactly(DirContents([
                               empty_file('file-name.txt')])),
                           value_definition_usages=assert_value_usages_is_singleton_list_with_value_reference(
-                              ValueReference('VALUE_DEF_NAME')),
+                              ValueReferenceOfPath('VALUE_DEF_NAME',
+                                                   RELATIVITY_VARIANTS)),
                       )
                       )
 
