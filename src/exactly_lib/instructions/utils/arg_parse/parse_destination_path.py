@@ -14,7 +14,7 @@ from exactly_lib.section_document.parser_implementations.token_stream2 import To
 from exactly_lib.util.cli_syntax.option_parsing import matches
 
 
-def parse_destination_pathInstrDesc(options: RelOptionArgumentConfiguration,
+def parse_destination__parse_source(options: RelOptionArgumentConfiguration,
                                     path_argument_is_mandatory: bool,
                                     source: ParseSource) -> DestinationPath:
     token_stream = TokenStream2(source.remaining_source)
