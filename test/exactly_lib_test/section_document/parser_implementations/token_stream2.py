@@ -10,6 +10,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseTokenOnCurrentLine),
         unittest.makeSuite(TestParseTokenOrNoneOnCurrentLine),
         unittest.makeSuite(TestConsume),
+        unittest.makeSuite(TestMisc),
     ])
 
 
@@ -134,6 +135,7 @@ class TestConsume(unittest.TestCase):
             ('b  B', 'B', ' B'),
             ('c  C ', 'C', ' C '),
             ('d  D  ', 'D', ' D  '),
+            ('a A\n_', 'A', 'A\n_'),
         ]
         for source, second_token, remaining_source in test_cases:
             with self.subTest(msg=repr(source)):
@@ -144,3 +146,35 @@ class TestConsume(unittest.TestCase):
                                  'second token')
                 self.assertEqual(remaining_source, ts.remaining_source,
                                  'remaining_source')
+
+
+class TestMisc(unittest.TestCase):
+    def test_remaining_part_of_current_line(self):
+        test_cases = [
+            ('a', 'a'),
+            ('b ', 'b '),
+            ('c  ', 'c  '),
+            ('d\n_', 'd'),
+            ('d  \n_', 'd  '),
+        ]
+        for source, expected in test_cases:
+            with self.subTest(msg=repr(source)):
+                ts = sut.TokenStream2(source)
+                actual = ts.remaining_part_of_current_line
+                self.assertEquals(expected, actual)
+
+    def test_remaining_part_of_current_line_after_consumption_of_first_token(self):
+        test_cases = [
+            ('a', ''),
+            ('b ', ''),
+            ('c  ', ' '),
+            ('a\n_', ''),
+            ('a b', 'b'),
+            ('d b\n_', 'b'),
+        ]
+        for source, expected in test_cases:
+            with self.subTest(msg=repr(source)):
+                ts = sut.TokenStream2(source)
+                ts.consume()
+                actual = ts.remaining_part_of_current_line
+                self.assertEquals(expected, actual)

@@ -12,6 +12,7 @@ class TokenStream2:
     """
     A stream of tokens with look-ahead of one token.
     """
+
     def __init__(self, source: str):
         self._source = source
         self._source_io = io.StringIO(source)
@@ -43,17 +44,30 @@ class TokenStream2:
         return self._source[self._start_pos:]
 
     @property
+    def remaining_part_of_current_line(self) -> str:
+        """Source, including for head, that remains on the current line."""
+        if self._start_pos == len(self._source):
+            return ''
+        else:
+            new_line_pos = self._source.find('\n', self._start_pos)
+            if new_line_pos == -1:
+                return self._source[self._start_pos:]
+            else:
+                return self._source[self._start_pos:new_line_pos]
+
+    @property
     def remaining_source_after_head(self) -> str:
         """Source, not including for head, that remains."""
         return self._source[self._source_io.tell():]
 
-    def consume(self):
+    def consume(self) -> Token:
         """
         Precondition: not is_null
 
         Consumes current token and makes following token the head,
         or makes `is_null` become True if there is no following token.
         """
+        ret_val = self._token
         self._start_pos = self._source_io.tell()
         try:
             s = self._lexer.get_token()
@@ -62,6 +76,13 @@ class TokenStream2:
         if s is None:
             self._token = None
         else:
+            self._revert_reading_of_newline()
             s_source = self._source[self._start_pos:self._source_io.tell()].strip()
             t = TokenType.QUOTED if s_source[0] in self._lexer.quotes else TokenType.PLAIN
             self._token = Token(t, s, s_source)
+        return ret_val
+
+    def _revert_reading_of_newline(self):
+        pos = self._source_io.tell()
+        if pos != len(self._source) and self._source[pos - 1] == '\n':
+            self._source_io.seek(pos - 1)
