@@ -1,4 +1,5 @@
 from exactly_lib.test_case.file_ref import FileRef
+from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.util import symbol_table
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import Value
@@ -29,6 +30,34 @@ class ValueUsage(object):
 
 class ValueReference(ValueUsage):
     pass
+
+
+class ValueReferenceOfPath(ValueReference):
+    """
+    A `ValueReference` to a variable that denotes a path with any
+    of a given set of valid relativities.
+    """
+
+    def __init__(self, name: str, valid_variants: PathRelativityVariants):
+        super().__init__(name)
+        self._valid_variants = valid_variants
+
+    @property
+    def valid_variants(self) -> PathRelativityVariants:
+        return self._valid_variants
+
+
+class ValueReferenceVisitor:
+    def visit(self, value_reference: ValueReference):
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(value_reference, ValueReferenceOfPath):
+            return self._visit_path(value_reference)
+        raise TypeError('Unknown {}: {}'.format(ValueReference, str(value_reference)))
+
+    def _visit_path(self, path_reference: ValueReferenceOfPath):
+        raise NotImplementedError()
 
 
 class ValueDefinition(ValueUsage):
