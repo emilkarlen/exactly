@@ -29,4 +29,4 @@ class _Instruction(CleanupPhaseInstruction):
              os_services: OsServices,
              previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         return cd_utils.execute_with_sh_result(self.destination_directory,
-                                               environment.sds)
+                                               environment.path_resolving_environment)

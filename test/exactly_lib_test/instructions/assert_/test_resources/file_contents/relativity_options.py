@@ -3,7 +3,7 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
-from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
@@ -91,8 +91,8 @@ def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
 
 
 class MkSubDirOfActAndMakeItCurrentDirectory(HomeAndSdsAction):
-    def apply(self, home_and_sds: HomeAndSds):
-        sub_dir = _get_cwd_path_and_make_dir_if_not_exists(home_and_sds.sds)
+    def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
+        sub_dir = _get_cwd_path_and_make_dir_if_not_exists(environment.sds)
         os.chdir(str(sub_dir))
 
 

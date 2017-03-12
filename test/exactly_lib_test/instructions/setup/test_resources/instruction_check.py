@@ -11,6 +11,7 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.os_services import new_default, OsServices
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -124,29 +125,33 @@ class Executor:
                 home_dir_path = pathlib.Path(home_dir_name).resolve()
                 self.arrangement.home_contents.write_to(home_dir_path)
                 environment = InstructionEnvironmentForPreSdsStep(home_dir_path,
-                                                                  self.arrangement.process_execution_settings.environ)
+                                                                  self.arrangement.process_execution_settings.environ,
+                                                                  value_definitions=self.arrangement.value_definitions)
                 pre_validate_result = self._execute_pre_validate(environment, instruction)
                 if not pre_validate_result.is_success:
                     return
                 with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as sds_root_dir_name:
                     sds = sandbox_directory_structure.construct_at(resolved_path_name(sds_root_dir_name))
                     os.chdir(str(sds.act_dir))
-                    global_environment_with_sds = i.InstructionEnvironmentForPostSdsStep(
+                    instruction_environment = i.InstructionEnvironmentForPostSdsStep(
                         environment.home_directory,
                         environment.environ,
                         sds,
                         phase_identifier.SETUP.identifier,
-                        timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
+                        timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
+                        value_definitions=self.arrangement.value_definitions)
                     home_and_sds = HomeAndSds(home_dir_path, sds)
-                    self.arrangement.pre_contents_population_action.apply(home_and_sds)
+                    path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
+                                                                                      self.arrangement.value_definitions)
+                    self.arrangement.pre_contents_population_action.apply(path_resolving_environment)
                     self.arrangement.sds_contents.apply(sds)
-                    self.arrangement.home_or_sds_contents.write_to(sds)
-                    self.arrangement.post_sds_population_action.apply(home_and_sds)
-                    main_result = self._execute_main(sds, global_environment_with_sds, instruction)
+                    self.arrangement.home_or_sds_contents.write_to(home_and_sds)
+                    self.arrangement.post_sds_population_action.apply(path_resolving_environment)
+                    main_result = self._execute_main(sds, instruction_environment, instruction)
                     if not main_result.is_success:
                         return
-                    self._execute_post_validate(global_environment_with_sds, instruction)
-                    self.expectation.side_effects_check.apply(self.put, global_environment_with_sds.home_and_sds)
+                    self._execute_post_validate(instruction_environment, instruction)
+                    self.expectation.side_effects_check.apply(self.put, instruction_environment.home_and_sds)
         finally:
             os.chdir(initial_cwd)
 

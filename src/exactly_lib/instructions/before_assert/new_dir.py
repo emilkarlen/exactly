@@ -28,4 +28,4 @@ class _Instruction(BeforeAssertPhaseInstruction):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return mkdir_utils.execute_and_return_sh(environment.sds, self.destination_path)
+        return mkdir_utils.execute_and_return_sh(environment.path_resolving_environment, self.destination_path)

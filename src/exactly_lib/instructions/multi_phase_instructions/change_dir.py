@@ -17,7 +17,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -87,11 +86,11 @@ def parse(argument: str, is_after_act_phase: bool) -> DestinationPath:
 
 
 def change_dir(destination: DestinationPath,
-               sds: SandboxDirectoryStructure) -> str:
+               environment: PathResolvingEnvironmentPostSds) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path = destination.resolved_path_if_not_rel_home(sds)
+    dir_path = destination.resolved_path_if_not_rel_home(environment)
     try:
         os.chdir(str(dir_path))
     except FileNotFoundError:
@@ -102,8 +101,8 @@ def change_dir(destination: DestinationPath,
 
 
 def execute_with_sh_result(destination: DestinationPath,
-                           sds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
-    error_message = change_dir(destination, sds)
+                           environment: PathResolvingEnvironmentPostSds) -> sh.SuccessOrHardError:
+    error_message = change_dir(destination, environment)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 
 

@@ -97,8 +97,9 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
                  environ: dict,
                  sds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
-                 timeout_in_seconds: int = None):
-        super().__init__(home_dir, environ, timeout_in_seconds)
+                 timeout_in_seconds: int = None,
+                 value_definitions: SymbolTable = None):
+        super().__init__(home_dir, environ, timeout_in_seconds, value_definitions)
         self.__sds = sds
         self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
 

@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
 class TestRelHome(unittest.TestCase):
     def test_should_reference_no_value_definitions(self):
         file_reference = sut.rel_home('file.txt')
-        self.assertTrue(len(file_reference.value_references()) == 0,
+        self.assertTrue(len(file_reference.value_references_of_paths()) == 0,
                         'File is expected to reference no variable definitions')
 
     def test_exists_pre_sds(self):
@@ -50,7 +50,7 @@ class TestRelHome(unittest.TestCase):
 class TestRelCwd(unittest.TestCase):
     def test_should_reference_no_value_definitions(self):
         file_reference = sut.rel_cwd('file.txt')
-        self.assertTrue(len(file_reference.value_references()) == 0,
+        self.assertTrue(len(file_reference.value_references_of_paths()) == 0,
                         'File is expected to reference no variable definitions')
 
     def test_exists_pre_sds(self):
@@ -75,7 +75,7 @@ class TestRelCwd(unittest.TestCase):
 class TestRelTmpUser(unittest.TestCase):
     def test_should_reference_no_value_definitions(self):
         file_reference = sut.rel_tmp_user('file.txt')
-        self.assertTrue(len(file_reference.value_references()) == 0,
+        self.assertTrue(len(file_reference.value_references_of_paths()) == 0,
                         'File is expected to reference no variable definitions')
 
     def test_exists_pre_sds(self):
@@ -102,7 +102,7 @@ class TestRelValueDefinition(unittest.TestCase):
         # ARRANGE #
         file_reference = sut.rel_value_definition('file.txt', 'value_definition_name')
         # ACT #
-        actual = file_reference.value_references()
+        actual = file_reference.value_references_of_paths()
         # ASSERT #
         self.assertEqual(1, len(actual),
                          'There should be exactly one ValueReference')
