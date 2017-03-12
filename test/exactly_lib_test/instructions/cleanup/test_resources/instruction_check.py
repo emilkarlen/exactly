@@ -5,6 +5,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -105,9 +106,12 @@ class Executor(InstructionExecutionBase):
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
-            self.arrangement.post_sds_population_action.apply(home_and_sds)
+            path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
+                                                                              self.arrangement.value_definitions)
+            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
-                                                              self.arrangement.process_execution_settings.environ)
+                                                              self.arrangement.process_execution_settings.environ,
+                                                              value_definitions=self.arrangement.value_definitions)
             result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)
             if not result_of_validate_pre_sds.is_success:
                 return
@@ -116,7 +120,8 @@ class Executor(InstructionExecutionBase):
                 environment.environ,
                 home_and_sds.sds,
                 phase_identifier.CLEANUP.identifier,
-                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
+                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
+                value_definitions=self.arrangement.value_definitions)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)

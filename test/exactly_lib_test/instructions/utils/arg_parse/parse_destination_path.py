@@ -12,8 +12,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, short_option_syntax
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -379,15 +381,16 @@ def _test_for_parse_source(put: unittest.TestCase,
 def _common_assertions(put: unittest.TestCase,
                        expectation: Expectation,
                        actual_path: DestinationPath):
+    symbol_table = empty_symbol_table()
     put.assertIs(expectation.rel_option_type,
-                 actual_path.destination_type,
+                 actual_path.destination_type(symbol_table),
                  'actual destination type')
     expected_path_argument = _expected_path_argument(expectation.path_argument)
     put.assertEqual(expected_path_argument,
                     actual_path.path_argument,
                     'path argument')
     home_and_sds = _home_and_sds()
-    actual_resolved_path = actual_path.resolved_path(home_and_sds)
+    actual_resolved_path = actual_path.resolved_path(PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table))
     expected_resolved_path = _expected_resolve_path(expectation.rel_option_type,
                                                     expectation.path_argument,
                                                     home_and_sds)

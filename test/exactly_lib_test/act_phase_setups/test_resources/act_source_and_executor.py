@@ -123,17 +123,17 @@ class TestExecuteBase(unittest.TestCase):
                 step_result.status,
                 step_result.failure_message,
             ))
-        with sds_with_act_as_curr_dir() as sds:
+        with sds_with_act_as_curr_dir() as path_resolving_env:
             environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
                                                                environment.environ,
-                                                               sds,
+                                                               path_resolving_env.sds,
                                                                phase_identifier.ACT.identifier,
                                                                environment.timeout_in_seconds)
             step_result = sut.validate_post_setup(environment)
             self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                              step_result.status,
                              'Result of validation/post-setup')
-            script_output_path = sds.test_case_dir
+            script_output_path = path_resolving_env.sds.test_case_dir
             step_result = sut.prepare(environment, script_output_path)
             self.assertTrue(step_result.is_success,
                             'Expecting success from prepare (found hard error)')
@@ -141,7 +141,7 @@ class TestExecuteBase(unittest.TestCase):
                                                                                                 script_output_path,
                                                                                                 sut)
             return capture_process_executor_result(process_executor,
-                                                   sds.result.root_dir,
+                                                   path_resolving_env.sds.result.root_dir,
                                                    stdin_contents=stdin_contents)
 
 
@@ -224,20 +224,21 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/pre-sds')
-                with sds_with_act_as_curr_dir(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as sds:
+                with sds_with_act_as_curr_dir(act_dir_contents(DirContents([empty_dir('expected-cwd')]))
+                                              ) as path_resolving_env:
                     environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
                                                                        environment.environ,
-                                                                       sds,
+                                                                       path_resolving_env.sds,
                                                                        phase_identifier.ACT.identifier,
                                                                        environment.timeout_in_seconds)
-                    process_cwd = str(sds.act_dir / 'expected-cwd')
+                    process_cwd = str(path_resolving_env.sds.act_dir / 'expected-cwd')
                     os.chdir(process_cwd)
                     assert process_cwd == os.getcwd()
                     step_result = sut.validate_post_setup(environment)
                     self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                      step_result.status,
                                      'Result of validation/post-setup')
-                    script_output_dir_path = sds.test_case_dir
+                    script_output_dir_path = path_resolving_env.sds.test_case_dir
                     step_result = sut.prepare(environment, script_output_dir_path)
                     self.assertTrue(step_result.is_success,
                                     'Expecting success from prepare (found hard error)')
@@ -246,7 +247,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                         script_output_dir_path,
                         sut)
                     process_result = capture_process_executor_result(process_executor,
-                                                                     sds.result.root_dir)
+                                                                     path_resolving_env.sds.result.root_dir)
                     self.assertEqual(process_cwd + '\n',
                                      process_result.stdout,
                                      'Current Working Directory for program should be act-directory')

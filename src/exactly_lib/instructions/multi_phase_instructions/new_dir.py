@@ -10,8 +10,8 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -62,11 +62,12 @@ def parse(argument: str) -> DestinationPath:
     return destination_path
 
 
-def make_dir_in_current_dir(sds: SandboxDirectoryStructure, destination_path: DestinationPath) -> str:
+def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
+                            destination_path: DestinationPath) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path = destination_path.resolved_path_if_not_rel_home(sds)
+    dir_path = destination_path.resolved_path_if_not_rel_home(environment)
     try:
         if dir_path.is_dir():
             return None
@@ -81,8 +82,9 @@ def make_dir_in_current_dir(sds: SandboxDirectoryStructure, destination_path: De
     return None
 
 
-def execute_and_return_sh(sds: SandboxDirectoryStructure, destination_path: DestinationPath) -> sh.SuccessOrHardError:
-    error_message = make_dir_in_current_dir(sds, destination_path)
+def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
+                          destination_path: DestinationPath) -> sh.SuccessOrHardError:
+    error_message = make_dir_in_current_dir(environment, destination_path)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 
 

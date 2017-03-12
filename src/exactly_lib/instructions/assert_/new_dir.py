@@ -27,5 +27,6 @@ class _Instruction(AssertPhaseInstruction):
 
     def main(self, environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        error_message = mkdir_utils.make_dir_in_current_dir(environment.sds, self.destination_path)
+        error_message = mkdir_utils.make_dir_in_current_dir(environment.path_resolving_environment,
+                                                            self.destination_path)
         return pfh.new_pfh_pass() if error_message is None else pfh.new_pfh_hard_error(error_message)

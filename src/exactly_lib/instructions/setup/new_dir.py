@@ -29,4 +29,4 @@ class _Instruction(SetupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return new_dir_utils.execute_and_return_sh(environment.sds, self.destination_path)
+        return new_dir_utils.execute_and_return_sh(environment.path_resolving_environment, self.destination_path)

@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import \
@@ -61,9 +62,9 @@ class ParseAndMkDirAction(SdsAction):
                  arguments: str):
         self.arguments = arguments
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def apply(self, environment: PathResolvingEnvironmentPostSds):
         destination_path = sut.parse(self.arguments)
-        return sut.make_dir_in_current_dir(sds, destination_path)
+        return sut.make_dir_in_current_dir(environment, destination_path)
 
 
 class TestCaseForCheckOfArgumentBase(sds_test.TestCaseBase):

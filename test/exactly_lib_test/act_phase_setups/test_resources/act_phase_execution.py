@@ -71,13 +71,13 @@ def check_execution(put: unittest.TestCase,
                     expectation: Expectation) -> ExitCodeOrHardError:
     assert_is_list_of_act_phase_instructions(put, arrangement.act_phase_instructions)
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
-        environment = InstructionEnvironmentForPreSdsStep(home_dir,
-                                                          arrangement.environ,
-                                                          arrangement.timeout_in_seconds)
+        instruction_environment = InstructionEnvironmentForPreSdsStep(home_dir,
+                                                                      arrangement.environ,
+                                                                      arrangement.timeout_in_seconds)
         sut = arrangement.executor_constructor.apply(arrangement.act_phase_process_executor,
-                                                     environment,
+                                                     instruction_environment,
                                                      arrangement.act_phase_instructions)
-        step_result = sut.validate_pre_sds(environment)
+        step_result = sut.validate_pre_sds(instruction_environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             put.fail('Failure of validation/pre-sds: {}: {}'.format(
                 step_result.status,
@@ -85,19 +85,20 @@ def check_execution(put: unittest.TestCase,
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of validation/pre-sds')
-        with sds_with_act_as_curr_dir() as sds:
-            environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
-                                                               environment.environ,
-                                                               sds,
-                                                               phase_identifier.ACT.identifier,
-                                                               environment.timeout_in_seconds)
-            step_result = sut.validate_post_setup(environment)
+        with sds_with_act_as_curr_dir(value_definitions=instruction_environment.value_definitions
+                                      ) as path_resolving_env:
+            instruction_environment = InstructionEnvironmentForPostSdsStep(instruction_environment.home_directory,
+                                                                           instruction_environment.environ,
+                                                                           path_resolving_env.sds,
+                                                                           phase_identifier.ACT.identifier,
+                                                                           instruction_environment.timeout_in_seconds)
+            step_result = sut.validate_post_setup(instruction_environment)
             put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                             step_result.status,
                             'Result of validation/post-setup')
-            script_output_dir_path = sds.test_case_dir
-            step_result = sut.prepare(environment, script_output_dir_path)
-            expectation.side_effects_on_files_after_prepare.apply(put, sds)
+            script_output_dir_path = path_resolving_env.sds.test_case_dir
+            step_result = sut.prepare(instruction_environment, script_output_dir_path)
+            expectation.side_effects_on_files_after_prepare.apply(put, path_resolving_env.sds)
             expectation.result_of_prepare.apply(put,
                                                 step_result,
                                                 MessageBuilder('Result of prepare'))
@@ -105,14 +106,14 @@ def check_execution(put: unittest.TestCase,
                 return
 
             process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
-                environment,
+                instruction_environment,
                 script_output_dir_path,
                 sut)
             error_msg_extra_info = ''
             sub_process_result = None
             try:
                 sub_process_result = capture_process_executor_result(process_executor,
-                                                                     sds.result.root_dir)
+                                                                     path_resolving_env.sds.result.root_dir)
                 step_result = new_eh_exit_code(sub_process_result.exitcode)
             except HardErrorResultError as ex:
                 step_result = ex.result
@@ -124,7 +125,7 @@ def check_execution(put: unittest.TestCase,
             if sub_process_result:
                 msg_builder = MessageBuilder('Sub process output from execute' + error_msg_extra_info)
                 expectation.sub_process_result_from_execute.apply(put, sub_process_result, msg_builder)
-            expectation.side_effects_on_files_after_execute.apply(put, sds)
+            expectation.side_effects_on_files_after_execute.apply(put, path_resolving_env.sds)
             return step_result
 
 

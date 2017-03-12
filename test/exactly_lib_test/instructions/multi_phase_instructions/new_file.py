@@ -5,8 +5,9 @@ from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.util.string import lines_content
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_resources.execution.sds_check import sds_test
@@ -39,7 +40,7 @@ class TestParseWithNoContents(unittest.TestCase):
         arguments = 'single-argument'
         actual = sut.parse(single_line_source(arguments))
         self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.destination_type)
+                      actual.destination_path.destination_type(empty_symbol_table()))
         self.assertEqual('single-argument',
                          str(actual.destination_path.path_argument))
         self.assertEqual('',
@@ -70,7 +71,7 @@ class TestParseWithContents(unittest.TestCase):
                                        'MARKER'])
         actual = sut.parse(source)
         self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.destination_type)
+                      actual.destination_path.destination_type(empty_symbol_table()))
         self.assertEqual('file name',
                          str(actual.destination_path.path_argument))
         self.assertEqual(lines_content(['single line']),
@@ -84,7 +85,7 @@ class TestParseWithContents(unittest.TestCase):
                                        'following line'])
         actual = sut.parse(source)
         self.assertIs(RelOptionType.REL_TMP,
-                      actual.destination_path.destination_type)
+                      actual.destination_path.destination_type(empty_symbol_table()))
         self.assertEqual('file name',
                          str(actual.destination_path.path_argument))
         self.assertEqual(lines_content(['single line']),
@@ -99,9 +100,9 @@ class ParseAndCreateFileAction(sds_utils.SdsAction):
                  source: ParseSource):
         self.source = source
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def apply(self, environment: PathResolvingEnvironmentPostSds):
         file_info = sut.parse(self.source)
-        return sut.create_file(file_info, sds)
+        return sut.create_file(file_info, environment)
 
 
 class TestCaseBase(sds_test.TestCaseBase):

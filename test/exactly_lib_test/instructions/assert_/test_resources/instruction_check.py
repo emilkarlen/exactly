@@ -1,10 +1,10 @@
 import unittest
 
-import exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -17,7 +17,8 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
+from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction, \
+    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
@@ -97,19 +98,22 @@ class Executor:
                                   'The instruction must be an instance of ' + str(AssertPhaseInstruction))
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, AssertPhaseInstruction)
-        with exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
+        with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
-            self.arrangement.post_sds_population_action.apply(home_and_sds)
+            path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
+                                                                              self.arrangement.value_definitions)
+            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
             # TODO Execution of validate/pre-sds should be done before act-result is written.
             # But cannot do this for the moment, since many tests write home-dir contents
             # as part of the act-result.
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
-                                                                self.arrangement.process_execution_settings.environ)
+                                                                self.arrangement.process_execution_settings.environ,
+                                                                value_definitions=self.arrangement.value_definitions)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return
@@ -118,7 +122,8 @@ class Executor:
                 environment.environ,
                 home_and_sds.sds,
                 phase_identifier.ASSERT.identifier,
-                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
+                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
+                value_definitions=self.arrangement.value_definitions)
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return

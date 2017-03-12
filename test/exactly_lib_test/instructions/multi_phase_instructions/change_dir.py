@@ -6,7 +6,9 @@ from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution.sds_check import sds_test
 from exactly_lib_test.test_resources.execution.sds_check import sds_utils
@@ -23,7 +25,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = '--rel-act'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
                 self.assertIs(RelOptionType.REL_ACT,
-                              actual.destination_type)
+                              actual.destination_type(empty_symbol_table()))
 
     def test_no_relativity_option_should_use_default_option(self):
         for is_after_act_phase in [False, True]:
@@ -31,7 +33,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = 'single-argument'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
                 self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type)
+                              actual.destination_type(empty_symbol_table()))
                 self.assertEqual('single-argument',
                                  str(actual.path_argument))
 
@@ -41,7 +43,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = ''
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
                 self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type)
+                              actual.destination_type(empty_symbol_table()))
                 self.assertEqual(str(pathlib.PurePath()),
                                  str(actual.path_argument))
 
@@ -58,7 +60,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = '  expected-argument  '
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
                 self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type)
+                              actual.destination_type(empty_symbol_table()))
                 self.assertEqual('expected-argument',
                                  str(actual.path_argument))
 
@@ -68,7 +70,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = '"expected argument"'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
                 self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type)
+                              actual.destination_type(empty_symbol_table()))
                 self.assertEqual('expected argument',
                                  str(actual.path_argument))
 
@@ -78,7 +80,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = '--rel-tmp'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
                 self.assertIs(RelOptionType.REL_TMP,
-                              actual.destination_type)
+                              actual.destination_type(empty_symbol_table()))
                 self.assertEqual(str(pathlib.PurePosixPath()),
                                  str(actual.path_argument))
 
@@ -88,7 +90,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = '--rel-tmp subdir'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
                 self.assertIs(RelOptionType.REL_TMP,
-                              actual.destination_type)
+                              actual.destination_type(empty_symbol_table()))
                 self.assertEqual('subdir',
                                  str(actual.path_argument))
 
@@ -112,9 +114,9 @@ class ParseAndChangeDirAction(sds_utils.SdsAction):
         self.arguments = arguments
         self.is_after_act_phase = is_after_act_phase
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def apply(self, environment: PathResolvingEnvironmentPostSds):
         destination_directory = sut.parse(self.arguments, self.is_after_act_phase)
-        return sut.change_dir(destination_directory, sds)
+        return sut.change_dir(destination_directory, environment)
 
 
 class TestCaseBase(sds_test.TestCaseBase):
@@ -152,8 +154,8 @@ class ChangeDirTo(sds_utils.SdsAction):
     def __init__(self, sds2dir_fun):
         self.sds2dir_fun = sds2dir_fun
 
-    def apply(self, sds: SandboxDirectoryStructure):
-        os.chdir(str(self.sds2dir_fun(sds)))
+    def apply(self, environment: PathResolvingEnvironmentPostSds):
+        os.chdir(str(self.sds2dir_fun(environment.sds)))
 
 
 class CwdIsActDir(sds_test.PostActionCheck):

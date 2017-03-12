@@ -10,7 +10,6 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from exactly_lib.util.string import lines_content
@@ -81,11 +80,11 @@ def parse(source: ParseSource) -> FileInfo:
 
 
 def create_file(file_info: FileInfo,
-                sds: SandboxDirectoryStructure) -> str:
+                environment: PathResolvingEnvironmentPostSds) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.destination_path.resolved_path_if_not_rel_home(sds)
+    file_path = file_info.destination_path.resolved_path_if_not_rel_home(environment)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)
