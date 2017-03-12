@@ -11,7 +11,7 @@ def validate_pre_sds(value_usage: value_definition.ValueUsage,
         if not symbol_table.contains(value_usage.name):
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
-                'Referenced variable `{}\' is undefined.'.format(value_usage.name))
+                'Referenced definition `{}\' is undefined.'.format(value_usage.name))
         else:
             return None
     elif isinstance(value_usage, value_definition.ValueDefinition):
