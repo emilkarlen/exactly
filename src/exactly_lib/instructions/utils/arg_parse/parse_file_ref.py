@@ -17,6 +17,9 @@ from exactly_lib.util.cli_syntax import option_parsing
 
 ALL_REL_OPTIONS = set(relativity_root.RelOptionType) - {relativity_root.RelOptionType.REL_RESULT}
 
+ALL_REL_OPTION_VARIANTS = PathRelativityVariants(ALL_REL_OPTIONS, True)
+
+
 ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {relativity_root.RelOptionType.REL_HOME}
 
 ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(

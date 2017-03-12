@@ -28,17 +28,35 @@ class ValueUsage(object):
         return self._name
 
 
-class ValueReference(ValueUsage):
-    pass
-
-
 class ValueDefinition(ValueUsage):
     def __init__(self, name: str):
         super().__init__(name)
 
     @property
+    def value(self) -> symbol_table.Value:
+        raise NotImplementedError()
+
+    @property
     def symbol_table_entry(self) -> symbol_table.Entry:
-        return symbol_table.Entry(self.name, symbol_table.Value())
+        return symbol_table.Entry(self.name, self.value)
+
+
+class ValueReference(ValueUsage):
+    pass
+
+
+class ValueDefinitionOfPath(ValueDefinition):
+    def __init__(self, name: str, value: FileRefValue):
+        super().__init__(name)
+        self._value = value
+
+    @property
+    def value(self) -> FileRefValue:
+        return self._value
+
+    @property
+    def symbol_table_entry(self) -> symbol_table.Entry:
+        return symbol_table.Entry(self.name, self.value)
 
 
 class ValueReferenceOfPath(ValueReference):
@@ -69,4 +87,21 @@ class ValueReferenceVisitor:
         raise TypeError('Unknown {}: {}'.format(ValueReference, str(value_reference)))
 
     def _visit_path(self, path_reference: ValueReferenceOfPath):
+        raise NotImplementedError()
+
+
+class ValueDefinitionVisitor:
+    """
+    Visitor of `ValueDefinition`
+    """
+
+    def visit(self, value_definition: ValueDefinition):
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(value_definition, ValueDefinitionOfPath):
+            return self._visit_path(value_definition)
+        raise TypeError('Unknown {}: {}'.format(ValueReference, str(value_definition)))
+
+    def _visit_path(self, value_definition: ValueDefinitionOfPath):
         raise NotImplementedError()
