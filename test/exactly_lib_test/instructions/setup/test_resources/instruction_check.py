@@ -169,11 +169,11 @@ class Executor:
 
     def _execute_main(self,
                       sds: SandboxDirectoryStructure,
-                      global_environment_with_sds: i.InstructionEnvironmentForPostSdsStep,
+                      instruction_environment: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
-        main_result = instruction.main(global_environment_with_sds,
+        main_result = instruction.main(instruction_environment,
                                        self.arrangement.os_services,
                                        settings_builder)
         self.put.assertIsInstance(main_result,
@@ -183,7 +183,7 @@ class Executor:
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
         self.expectation.main_side_effects_on_environment.apply(self.put,
-                                                                global_environment_with_sds,
+                                                                instruction_environment,
                                                                 initial_settings_builder,
                                                                 settings_builder)
         self.expectation.main_side_effects_on_files.apply(self.put, sds)
