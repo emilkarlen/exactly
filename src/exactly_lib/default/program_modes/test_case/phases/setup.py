@@ -1,7 +1,8 @@
 from exactly_lib.common.instruction_setup import instruction_set_from_name_and_setup_constructor_list
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME, \
     SHELL_INSTRUCTION_NAME
-from exactly_lib.instructions.setup import change_dir, env, run, install, new_dir, new_file, shell, stdin
+from exactly_lib.instructions.setup import change_dir, env, run, install, new_dir, new_file, shell, stdin, \
+    assign_value_definition
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
@@ -13,5 +14,6 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
         (CHANGE_DIR_INSTRUCTION_NAME, change_dir.setup),
         (SHELL_INSTRUCTION_NAME, shell.setup),
         ('stdin', stdin.setup),
+        ('def', assign_value_definition.setup),
     ]
 )
