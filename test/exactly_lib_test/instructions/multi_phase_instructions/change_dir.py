@@ -2,8 +2,8 @@ import os
 import pathlib
 import unittest
 
-import exactly_lib.instructions.utils.relativity_root
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -22,7 +22,7 @@ class TestParseSet(unittest.TestCase):
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-act'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_ACT,
+                self.assertIs(RelOptionType.REL_ACT,
                               actual.destination_type)
 
     def test_no_relativity_option_should_use_default_option(self):
@@ -30,7 +30,7 @@ class TestParseSet(unittest.TestCase):
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = 'single-argument'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD,
+                self.assertIs(RelOptionType.REL_CWD,
                               actual.destination_type)
                 self.assertEqual('single-argument',
                                  str(actual.path_argument))
@@ -40,7 +40,7 @@ class TestParseSet(unittest.TestCase):
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = ''
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD,
+                self.assertIs(RelOptionType.REL_CWD,
                               actual.destination_type)
                 self.assertEqual(str(pathlib.PurePath()),
                                  str(actual.path_argument))
@@ -57,7 +57,7 @@ class TestParseSet(unittest.TestCase):
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '  expected-argument  '
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD,
+                self.assertIs(RelOptionType.REL_CWD,
                               actual.destination_type)
                 self.assertEqual('expected-argument',
                                  str(actual.path_argument))
@@ -67,7 +67,7 @@ class TestParseSet(unittest.TestCase):
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '"expected argument"'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD,
+                self.assertIs(RelOptionType.REL_CWD,
                               actual.destination_type)
                 self.assertEqual('expected argument',
                                  str(actual.path_argument))
@@ -77,7 +77,7 @@ class TestParseSet(unittest.TestCase):
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-tmp'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_TMP,
+                self.assertIs(RelOptionType.REL_TMP,
                               actual.destination_type)
                 self.assertEqual(str(pathlib.PurePosixPath()),
                                  str(actual.path_argument))
@@ -87,7 +87,7 @@ class TestParseSet(unittest.TestCase):
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-tmp subdir'
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_TMP,
+                self.assertIs(RelOptionType.REL_TMP,
                               actual.destination_type)
                 self.assertEqual('subdir',
                                  str(actual.path_argument))

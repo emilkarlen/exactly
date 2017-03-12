@@ -15,6 +15,7 @@ from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -114,7 +115,8 @@ def _relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfigurat
                 RelOptionType.REL_TMP]
     if is_after_act_phase:
         accepted.append(RelOptionType.REL_RESULT)
-    return RelOptionArgumentConfiguration(RelOptionsConfiguration(accepted,
+    variants = PathRelativityVariants(set(accepted), True)
+    return RelOptionArgumentConfiguration(RelOptionsConfiguration(variants,
                                                                   True,
                                                                   RelOptionType.REL_CWD),
                                           _DIR_ARGUMENT.name)
