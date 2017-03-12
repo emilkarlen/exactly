@@ -2,6 +2,8 @@ import pathlib
 
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.instructions.utils.relativity_root import RelOptionType
+from exactly_lib.test_case.file_ref import FileRef
+from exactly_lib.test_case.file_refs import lookup_file_ref_from_symbol_table
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.value_definition import ValueReferenceOfPath
@@ -81,13 +83,19 @@ class _DestinationPathBasedOnValueDefinition(DestinationPath):
         return self._path_argument
 
     def root_path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        raise NotImplementedError()
+        file_ref = self._lookup_file_ref(environment.value_definitions)
+        return file_ref.file_path_pre_or_post_sds(environment)
 
     def resolved_path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        raise NotImplementedError()
+        return self.root_path(environment) / self.path_argument
 
     def resolved_path_if_not_rel_home(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        raise NotImplementedError()
+        file_ref = self._lookup_file_ref(environment.value_definitions)
+        root_path = file_ref.file_path_post_sds(environment)
+        return root_path / self.path_argument
+
+    def _lookup_file_ref(self, value_definitions: SymbolTable) -> FileRef:
+        return lookup_file_ref_from_symbol_table(value_definitions, self._value_definition_reference.name)
 
 
 def from_rel_option(destination_type: RelOptionType,

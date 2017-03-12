@@ -122,11 +122,11 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
-        return PathResolvingEnvironmentPostSds(self.__sds)
+        return PathResolvingEnvironmentPostSds(self.__sds, self.value_definitions)
 
     @property
     def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:
-        return PathResolvingEnvironmentPreOrPostSds(self.home_and_sds)
+        return PathResolvingEnvironmentPreOrPostSds(self.home_and_sds, self.value_definitions)
 
 
 class TestCaseInstruction(Instruction):

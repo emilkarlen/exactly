@@ -141,19 +141,22 @@ class _FileRefRelValueDefinition(FileRef):
         return [ValueReference(self.value_definition_name)]
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        file_ref = _lookup_file_ref(value_definitions, self.value_definition_name)
+        file_ref = self._lookup_file_ref(value_definitions)
         return file_ref.exists_pre_sds(value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        file_ref = _lookup_file_ref(environment.value_definitions, self.value_definition_name)
+        file_ref = self._lookup_file_ref(environment.value_definitions)
         return file_ref.file_path_post_sds(environment)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        file_ref = _lookup_file_ref(environment.value_definitions, self.value_definition_name)
+        file_ref = self._lookup_file_ref(environment.value_definitions)
         return file_ref.file_path_pre_sds(environment)
 
+    def _lookup_file_ref(self, value_definitions: SymbolTable) -> FileRef:
+        return lookup_file_ref_from_symbol_table(value_definitions, self.value_definition_name)
 
-def _lookup_file_ref(value_definitions: SymbolTable, name: str) -> FileRef:
+
+def lookup_file_ref_from_symbol_table(value_definitions: SymbolTable, name: str) -> FileRef:
     value = value_definitions.lookup(name)
     assert isinstance(value, FileRefValue)
     return value.file_ref
