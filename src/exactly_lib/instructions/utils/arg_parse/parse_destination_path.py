@@ -119,6 +119,8 @@ def _valid_options_info_lines(options: RelOptionsConfiguration):
     if options.is_rel_val_def_option_accepted:
         ret_val.append('  {} VALUE-DEFINITION-NAME'.format(
             option_parsing.long_option_syntax(REL_VARIABLE_DEFINITION_OPTION_NAME.long)))
-    for opt in options.accepted_options:
-        ret_val.append('  ' + option_parsing.long_option_syntax(opt.long))
+    for option_type in options.accepted_options:
+        option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
+        option_str = option_parsing.long_option_syntax(option_name.long)
+        ret_val.append('  ' + option_parsing.long_option_syntax(option_str))
     return ret_val
