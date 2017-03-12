@@ -34,7 +34,7 @@ class ValueDefinition(ValueUsage):
 
     @property
     def value(self) -> symbol_table.Value:
-        raise NotImplementedError()
+        return symbol_table.Value()  # TODO Remove when have simpler sub classes than FileRef to use for test
 
     @property
     def symbol_table_entry(self) -> symbol_table.Entry:

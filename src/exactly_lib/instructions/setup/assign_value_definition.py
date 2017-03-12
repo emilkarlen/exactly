@@ -33,4 +33,6 @@ class _Instruction(SetupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        raise NotImplementedError()
+        environment.value_definitions.put(self.value_definition.name,
+                                          self.value_definition.value)
+        return sh.new_sh_success()

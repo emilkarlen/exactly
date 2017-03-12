@@ -12,6 +12,8 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case.test_resources import value_definition as tr
+from exactly_lib_test.test_case.test_resources.value_definition import assert_symbol_table_is_singleton, \
+    equals_file_ref_value
 from exactly_lib_test.test_resources.parse import remaining_source
 
 
@@ -65,11 +67,14 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = 'name = --rel-act component'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            expected_file_ref_value = tr.file_ref_value(file_refs.rel_act('component'))
             self._run(source,
                       Arrangement(),
                       Expectation(
                           value_definition_usages=tr.assert_value_usages_is_singleton_list(
                               tr.equals_value_definition(
-                                  ValueDefinitionOfPath('name',
-                                                        tr.file_ref_value(file_refs.rel_act('component'))))))
+                                  ValueDefinitionOfPath('name', expected_file_ref_value))),
+                          value_definitions_after_main=assert_symbol_table_is_singleton(
+                              'name',
+                              equals_file_ref_value(expected_file_ref_value)))
                       )
