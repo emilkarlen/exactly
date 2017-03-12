@@ -17,7 +17,7 @@ class _FileRefWithConstantLocationBase(FileRef):
         super().__init__(file_name)
         self.__exists_pre_sds = exists_pre_sds
 
-    def value_references(self) -> list:
+    def value_references_of_paths(self) -> list:
         return []
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
@@ -137,7 +137,7 @@ class _FileRefRelValueDefinition(FileRef):
         super().__init__(file_name)
         self.value_definition_name = value_definition_name
 
-    def value_references(self) -> list:
+    def value_references_of_paths(self) -> list:
         return [ValueReference(self.value_definition_name)]
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
