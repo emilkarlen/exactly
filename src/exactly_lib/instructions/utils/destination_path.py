@@ -4,11 +4,22 @@ from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_O
 from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 
 
 class DestinationPath:
     @property
     def destination_type(self) -> RelOptionType:
+        raise NotImplementedError()
+
+    def value_references_of_paths(self) -> list:
+        """
+        All `ValueReferenceOfPath`s that are _directly_ used by this object.
+        I.e, if value <name> is referenced, that in turn references <name2>,
+        then <name2> should not be included in the result because of this
+        reason.
+        :rtype [`ValueReferenceOfPath`]
+        """
         raise NotImplementedError()
 
     @property
@@ -36,6 +47,9 @@ class _DestinationPathFromRelRootResolver(DestinationPath):
     def destination_type(self) -> RelOptionType:
         return self._root_resolver.relativity_type
 
+    def value_references_of_paths(self) -> list:
+        return []
+
     @property
     def path_argument(self) -> pathlib.PurePath:
         return self._path_argument
@@ -52,14 +66,17 @@ class _DestinationPathFromRelRootResolver(DestinationPath):
 
 class _DestinationPathBasedOnValueDefinition(DestinationPath):
     def __init__(self,
-                 value_definition_name: str,
+                 value_definition_reference: ValueReferenceOfPath,
                  path_argument: pathlib.PurePath):
-        self._value_definition_name = value_definition_name
+        self._value_definition_reference = value_definition_reference
         self._path_argument = path_argument
 
     @property
     def destination_type(self) -> RelOptionType:
         raise NotImplementedError()
+
+    def value_references_of_paths(self) -> list:
+        return [self._value_definition_reference]
 
     @property
     def path_argument(self) -> pathlib.PurePath:
@@ -80,6 +97,6 @@ def from_rel_option(destination_type: RelOptionType,
     return _DestinationPathFromRelRootResolver(destination_type, path_argument)
 
 
-def from_value_definition(value_definition_name: str,
+def from_value_definition(value_definition_reference: ValueReferenceOfPath,
                           path_argument: pathlib.PurePath) -> DestinationPath:
-    return _DestinationPathBasedOnValueDefinition(value_definition_name, path_argument)
+    return _DestinationPathBasedOnValueDefinition(value_definition_reference, path_argument)
