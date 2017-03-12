@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case import file_ref as _file_ref
 from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.value_definition import FileRefValue, ValueReference, ValueReferenceVisitor, \
-    ValueReferenceOfPath
+    ValueReferenceOfPath, ValueDefinitionVisitor, ValueDefinitionOfPath, ValueDefinition
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Value, Entry
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def file_ref_value(file_ref: _file_ref.FileRef = file_refs.rel_cwd('file-name-rel-cd'),
                    line_num: int = 1,
-                   source_line: str = 'value def line') -> Value:
+                   source_line: str = 'value def line') -> FileRefValue:
     return FileRefValue(Line(line_num, source_line),
                         file_ref)
 
@@ -60,6 +60,49 @@ def assert_value_usages_is_singleton_list_with_value_reference(expected: ValueRe
                                  ]))
 
 
+def assert_value_usages_is_singleton_list(assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(list,
+                                 asrt.And([
+                                     asrt.len_equals(1),
+                                     asrt.sub_component('singleton element',
+                                                        lambda l: l[0],
+                                                        assertion)
+                                 ]))
+
+
+class _EqualsValueDefinition(ValueDefinitionVisitor):
+    # TODO Probably needs access to PathResolvingEnvironmentPreOrPostSds
+    # to be able to check all properties of a FileRef
+    def __init__(self,
+                 actual,
+                 put: unittest.TestCase,
+                 message_builder: asrt.MessageBuilder):
+        self.message_builder = message_builder
+        self.put = put
+        self.actual = actual
+
+    def _visit_path(self, expected: ValueDefinitionOfPath):
+        self._common(expected)
+
+    def _common(self, expected: ValueDefinition):
+        self.put.assertIsInstance(self.actual, type(expected),
+                                  self.message_builder.apply('object class'))
+        assert isinstance(self.actual, ValueDefinition)
+        self.put.assertEqual(self.actual.name,
+                             expected.name,
+                             self.message_builder.apply('name'))
+
+
+class _EqualsValueDefinitionAssertion(asrt.ValueAssertion):
+    def __init__(self, expected: ValueDefinition):
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value, message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        _EqualsValueDefinition(value, put, message_builder).visit(self.expected)
+
+
 class _EqualsValueReference(ValueReferenceVisitor):
     def __init__(self,
                  actual,
@@ -89,6 +132,10 @@ class _EqualsValueReferenceAssertion(asrt.ValueAssertion):
               put: unittest.TestCase,
               value, message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         _EqualsValueReference(value, put, message_builder).visit(self.expected)
+
+
+def equals_value_definition(expected: ValueDefinition) -> asrt.ValueAssertion:
+    return _EqualsValueDefinitionAssertion(expected)
 
 
 def equals_value_reference(expected: ValueReference) -> asrt.ValueAssertion:
