@@ -12,17 +12,20 @@ from exactly_lib.section_document.parser_implementations.token import Token
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.file_ref import FileRef
+from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.util.cli_syntax import option_parsing
 
-ALL_REL_OPTIONS = set(relativity_root.RelOptionType) - {
-    relativity_root.RelOptionType.REL_RESULT}
+ALL_REL_OPTIONS = set(relativity_root.RelOptionType) - {relativity_root.RelOptionType.REL_RESULT}
 
-ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {
-    relativity_root.RelOptionType.REL_HOME}
+ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {relativity_root.RelOptionType.REL_HOME}
+
+ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
+    ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
+    False)
 
 
 def all_rel_options_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(RelOptionsConfiguration(ALL_REL_OPTIONS,
+    return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
                                                                   True,
                                                                   relativity_root.RelOptionType.REL_HOME),
                                           argument_syntax_name)
@@ -30,8 +33,11 @@ def all_rel_options_config(argument_syntax_name: str) -> RelOptionArgumentConfig
 
 ALL_REL_OPTIONS_CONFIG = all_rel_options_config('FILE')
 
-STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(ALL_REL_OPTIONS - {
-    relativity_root.RelOptionType.REL_HOME},
+STANDARD_NON_HOME_RELATIVITY_VARIANTS = PathRelativityVariants(
+    ALL_REL_OPTIONS - {relativity_root.RelOptionType.REL_HOME},
+    True)
+
+STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HOME_RELATIVITY_VARIANTS,
                                                     True,
                                                     relativity_root.RelOptionType.REL_CWD)
 

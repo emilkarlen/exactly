@@ -13,6 +13,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token import TokenType
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util.cli_syntax import option_parsing
 
 
@@ -63,7 +64,7 @@ def _parse_relativity_info(options: RelOptionsConfiguration,
 
 
 def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
-                                  source: TokenStream2) -> str:
+                                  source: TokenStream2) -> ValueReferenceOfPath:
     option_str = source.head.string
     if not option_parsing.matches(REL_VARIABLE_DEFINITION_OPTION_NAME, option_str):
         return None
@@ -79,7 +80,7 @@ def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
                                                                                     val_def_name)
         raise SingleInstructionInvalidArgumentException(msg)
     source.consume()
-    return val_def_name
+    return ValueReferenceOfPath(val_def_name, options.accepted_relativity_variants)
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,
@@ -110,11 +111,11 @@ def _resolve_relativity_option_type(option_argument: str) -> RelOptionType:
 def _from_relativity_info(relativity_info, path_argument: pathlib.PurePath) -> DestinationPath:
     if isinstance(relativity_info, RelOptionType):
         return dp.from_rel_option(relativity_info, path_argument)
-    elif isinstance(relativity_info, str):
+    elif isinstance(relativity_info, ValueReferenceOfPath):
         return dp.from_value_definition(relativity_info, path_argument)
 
 
-def _valid_options_info_lines(options: RelOptionsConfiguration):
+def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
     ret_val = []
     if options.is_rel_val_def_option_accepted:
         ret_val.append('  {} VALUE-DEFINITION-NAME'.format(

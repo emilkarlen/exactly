@@ -10,6 +10,7 @@ from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, short_option_syntax
@@ -301,7 +302,8 @@ class TestParseShouldFailWhenRelativityOptionIsNotInSetOfAcceptedOptions(TestCas
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         arrangement = Arrangement(_for(accepted_type,
                                                        {accepted_type},
-                                                       is_rel_val_def_option_accepted),
+                                                       is_rel_val_def_option_accepted,
+                                                       True),
                                                   self.path_argument_is_mandatory,
                                                   [
                                                       arg_syntax_for(unaccepted_type),
@@ -326,13 +328,15 @@ def _other_option_type_than(option_type: RelOptionType) -> RelOptionType:
 
 
 def _with_all_options_acceptable(default: RelOptionType) -> RelOptionArgumentConfiguration:
-    return _for(default, RelOptionType, True)
+    return _for(default, RelOptionType, True, True)
 
 
 def _for(default: RelOptionType,
          acceptable_options: iter,
-         is_rel_val_def_option_accepted: bool) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(RelOptionsConfiguration(acceptable_options,
+         is_rel_val_def_option_accepted: bool,
+         is_abs_path_accepted: bool) -> RelOptionArgumentConfiguration:
+    variants = PathRelativityVariants(acceptable_options, is_abs_path_accepted)
+    return RelOptionArgumentConfiguration(RelOptionsConfiguration(variants,
                                                                   is_rel_val_def_option_accepted,
                                                                   default),
                                           'SYNTAX_ELEMENT')

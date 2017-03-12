@@ -1,7 +1,6 @@
 import pathlib
 
 import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
-import exactly_lib.instructions.utils.relativity_root
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
@@ -16,6 +15,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -129,9 +129,9 @@ class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVar
 
 
 _ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
-    rel_opts_configuration.RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
+    rel_opts_configuration.RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX,
                                                    True,
-                                                   exactly_lib.instructions.utils.relativity_root.RelOptionType.REL_CWD),
+                                                   RelOptionType.REL_CWD),
     'PATH')
 
 
