@@ -70,8 +70,53 @@ def assert_value_usages_is_singleton_list(assertion: asrt.ValueAssertion) -> asr
                                  ]))
 
 
+class _AssertSymbolTableIsSingleton(asrt.ValueAssertion):
+    def __init__(self,
+                 expected_name: str,
+                 value_assertion: asrt.ValueAssertion):
+        self.expected_name = expected_name
+        self.value_assertion = value_assertion
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        assert isinstance(value, SymbolTable)
+        put.assertEqual(1,
+                        len(value.names_set),
+                        'Expecting a single entry')
+        put.assertTrue(value.contains(self.expected_name),
+                       'SymbolTable should contain the expected name')
+        self.value_assertion.apply_with_message(put,
+                                                value.lookup(self.expected_name),
+                                                'value')
+
+
+def assert_symbol_table_is_singleton(expected_name: str, value_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
+    return _AssertSymbolTableIsSingleton(expected_name, value_assertion)
+
+
+class _EqualsFileRefValue(asrt.ValueAssertion):
+    # TODO Probably needs access to PathResolvingEnvironmentPreOrPostSds
+    # or at least SymbolTable
+    # to be able to check all properties of a FileRef
+    def __init__(self, expected: FileRefValue):
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        put.assertIsInstance(value, FileRefValue)
+
+
+def equals_file_ref_value(expected: FileRefValue) -> asrt.ValueAssertion:
+    return _EqualsFileRefValue(expected)
+
+
 class _EqualsValueDefinition(ValueDefinitionVisitor):
     # TODO Probably needs access to PathResolvingEnvironmentPreOrPostSds
+    # or at least SymbolTable
     # to be able to check all properties of a FileRef
     def __init__(self,
                  actual,

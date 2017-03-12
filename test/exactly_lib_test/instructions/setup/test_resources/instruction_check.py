@@ -65,6 +65,7 @@ class Expectation:
                  side_effects_check: va.ValueAssertion = va.anything_goes(),
                  source: va.ValueAssertion = va.anything_goes(),
                  value_definition_usages: va.ValueAssertion = va.anything_goes(),
+                 value_definitions_after_main: va.ValueAssertion = va.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result
@@ -74,6 +75,7 @@ class Expectation:
         self.side_effects_check = side_effects_check
         self.source = source
         self.value_definition_usages = value_definition_usages
+        self.value_definitions_after_main = value_definitions_after_main
 
 
 is_success = Expectation
@@ -150,6 +152,10 @@ class Executor:
                     main_result = self._execute_main(sds, instruction_environment, instruction)
                     if not main_result.is_success:
                         return
+                    self.expectation.value_definitions_after_main.apply_with_message(
+                        self.put,
+                        instruction_environment.value_definitions,
+                        'value_definitions_after_main')
                     self._execute_post_validate(instruction_environment, instruction)
                     self.expectation.side_effects_check.apply(self.put, instruction_environment.home_and_sds)
         finally:
