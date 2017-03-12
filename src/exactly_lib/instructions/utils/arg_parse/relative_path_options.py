@@ -26,6 +26,8 @@ REL_RESULT_OPTION_NAME = argument.OptionName(long_name='rel-result')
 REL_CWD_OPTION_NAME = argument.OptionName(long_name='rel-cd')
 REL_HOME_OPTION_NAME = argument.OptionName(long_name='rel-home')
 
+REL_VARIABLE_DEFINITION_OPTION_NAME = argument.OptionName(long_name='rel')
+
 REL_OPTIONS_MAP = {
     RelOptionType.REL_HOME: RelOptionInfo(REL_HOME_OPTION_NAME, resolver_for_home),
     RelOptionType.REL_CWD: RelOptionInfo(REL_CWD_OPTION_NAME, resolver_for_cwd),
