@@ -32,22 +32,34 @@ class ValueReference(ValueUsage):
     pass
 
 
+class ValueDefinition(ValueUsage):
+    def __init__(self, name: str):
+        super().__init__(name)
+
+    @property
+    def symbol_table_entry(self) -> symbol_table.Entry:
+        return symbol_table.Entry(self.name, symbol_table.Value())
+
+
 class ValueReferenceOfPath(ValueReference):
     """
     A `ValueReference` to a variable that denotes a path with any
     of a given set of valid relativities.
     """
 
-    def __init__(self, name: str, valid_variants: PathRelativityVariants):
+    def __init__(self, name: str, valid_relativities: PathRelativityVariants):
         super().__init__(name)
-        self._valid_variants = valid_variants
+        self._valid_variants = valid_relativities
 
     @property
-    def valid_variants(self) -> PathRelativityVariants:
+    def valid_relativities(self) -> PathRelativityVariants:
         return self._valid_variants
 
 
 class ValueReferenceVisitor:
+    """
+    Visitor of `ValueReference`
+    """
     def visit(self, value_reference: ValueReference):
         """
         :return: Return value from _visit... method
@@ -58,12 +70,3 @@ class ValueReferenceVisitor:
 
     def _visit_path(self, path_reference: ValueReferenceOfPath):
         raise NotImplementedError()
-
-
-class ValueDefinition(ValueUsage):
-    def __init__(self, name: str):
-        super().__init__(name)
-
-    @property
-    def symbol_table_entry(self) -> symbol_table.Entry:
-        return symbol_table.Entry(self.name, symbol_table.Value())
