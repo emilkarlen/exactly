@@ -484,5 +484,12 @@ is_false = Equals(False)
 is_true = Equals(True)
 
 
+def is_boolean(expected: bool) -> ValueAssertion:
+    return Boolean(expected)
+
+
+is_empty = len_equals(0)
+
+
 def matches_sequence(element_assertions: list) -> ValueAssertion:
     return _MatchesSequence(element_assertions)

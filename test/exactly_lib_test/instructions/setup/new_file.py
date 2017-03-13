@@ -20,6 +20,7 @@ from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check impo
 from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import argument_list_source
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -94,6 +95,15 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                               ValueReferenceOfPath('VALUE_DEF_NAME',
                                                    RELATIVITY_VARIANTS)),
                       )
+                      )
+
+    def test_WHEN_no_value_reference_THEN_no_value_usages(self):
+        instruction_argument = '--rel-tmp file-name.txt'
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            self._run(source,
+                      Arrangement(),
+                      Expectation(
+                          value_definition_usages=asrt.is_empty),
                       )
 
 
