@@ -58,7 +58,10 @@ def _parse_rel_option_type(options: RelOptionsConfiguration,
 
 
 def _raise_invalid_option(actual: str, options: RelOptionsConfiguration):
-    lines = ['Option cannot be used in this context: {}'.format(actual)]
+    lines = [
+        'Option cannot be used in this context: {}'.format(actual),
+        'Valid options are:'
+    ]
     lines.extend(_valid_options_info_lines(options))
     msg = '\n'.join(lines)
     raise SingleInstructionInvalidArgumentException(msg)
@@ -80,5 +83,5 @@ def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
     for option_type in options.accepted_options:
         option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
         option_str = option_parsing.long_option_syntax(option_name.long)
-        ret_val.append('  ' + option_parsing.long_option_syntax(option_str))
+        ret_val.append('  ' + option_str)
     return ret_val
