@@ -6,6 +6,7 @@ from exactly_lib.test_case.value_definition import FileRefValue, ValueReference,
     ValueReferenceOfPath, ValueDefinitionVisitor, ValueDefinitionOfPath, ValueDefinition
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Value, Entry
+from exactly_lib_test.test_case.test_resources.file_ref_relativity import file_ref_relativity_equals
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -159,6 +160,9 @@ class _EqualsValueReference(ValueReferenceVisitor):
 
     def _visit_path(self, expected: ValueReferenceOfPath):
         self._common(expected)
+        file_ref_relativity_equals(expected.valid_relativities).apply(self.put,
+                                                                      self.actual.valid_relativities,
+                                                                      self.message_builder)
 
     def _common(self, expected: ValueReference):
         self.put.assertIsInstance(self.actual, type(expected),
