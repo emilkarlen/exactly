@@ -1,8 +1,10 @@
 class Value:
+    """A value in a symbol table, that is assigned to a name."""
     pass
 
 
 class Entry(tuple):
+    """ A value together with the name that is assigned to it. """
     def __new__(cls,
                 name: str,
                 value: Value):

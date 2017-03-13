@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.instructions.utils import relativity_root
+from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
@@ -56,6 +57,12 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
 def of_rel_root(rel_root_resolver: relativity_root.RelRootResolver,
                 file_name: str) -> FileRef:
     return _FileRefFromRelRootResolver(rel_root_resolver, file_name)
+
+
+def of_rel_option(rel_option: relativity_root.RelOptionType,
+                  file_name: str) -> FileRef:
+    return _FileRefFromRelRootResolver(relative_path_options.REL_OPTIONS_MAP[rel_option].root_resolver,
+                                       file_name)
 
 
 def absolute_file_name(file_name: str) -> FileRef:

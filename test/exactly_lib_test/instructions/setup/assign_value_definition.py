@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.instructions.multi_phase_instructions.assign_value_definition import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import assign_value_definition as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -19,9 +20,10 @@ from exactly_lib_test.test_resources.parse import remaining_source
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestFailingParse))
+    ret_val.addTest(unittest.makeSuite(TestFailingParseDueToInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulParse))
     ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleValidOption))
+    ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleDefaultOption))
     return ret_val
 
 
@@ -33,7 +35,7 @@ class TestCaseBaseForParser(TestCaseBase):
         self._check(sut.Parser(), source, arrangement, expectation)
 
 
-class TestFailingParse(unittest.TestCase):
+class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
     def runTest(self):
         test_cases = [
             ('', 'Empty source'),
@@ -68,6 +70,25 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
         instruction_argument = 'name = --rel-act component'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_value = tr.file_ref_value(file_refs.rel_act('component'))
+            self._run(source,
+                      Arrangement(),
+                      Expectation(
+                          value_definition_usages=tr.assert_value_usages_is_singleton_list(
+                              tr.equals_value_definition(
+                                  ValueDefinitionOfPath('name', expected_file_ref_value))),
+                          value_definitions_after_main=assert_symbol_table_is_singleton(
+                              'name',
+                              equals_file_ref_value(expected_file_ref_value)))
+                      )
+
+
+class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
+    def test(self):
+        instruction_argument = 'name = component'
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            expected_file_ref_value = tr.file_ref_value(
+                file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
+                                        'component'))
             self._run(source,
                       Arrangement(),
                       Expectation(
