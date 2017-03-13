@@ -25,6 +25,9 @@ class _Instruction(SetupPhaseInstruction):
     def __init__(self, destination_path: DestinationPath):
         self.destination_path = destination_path
 
+    def value_usages(self) -> list:
+        return self.destination_path.value_references_of_paths()
+
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,

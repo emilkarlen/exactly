@@ -1,7 +1,8 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path__token_stream
-from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation, \
+    RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -91,3 +92,5 @@ def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
 _PATH_ARGUMENT = dt.PATH_ARGUMENT
 
 RELATIVITY_OPTIONS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
+
+RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION
