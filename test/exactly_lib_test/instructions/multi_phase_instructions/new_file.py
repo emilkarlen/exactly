@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
-from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import empty_symbol_table

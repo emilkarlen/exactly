@@ -1,17 +1,9 @@
-import enum
 import pathlib
 import types
 
+from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-
-
-class RelOptionType(enum.Enum):
-    REL_ACT = 0
-    REL_RESULT = 1
-    REL_TMP = 2
-    REL_HOME = 3
-    REL_CWD = 4
 
 
 class RelRootResolver:

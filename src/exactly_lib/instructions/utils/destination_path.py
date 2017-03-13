@@ -1,8 +1,8 @@
 import pathlib
 
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.test_case.file_ref import FileRef
+from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.file_refs import lookup_file_ref_from_symbol_table
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds

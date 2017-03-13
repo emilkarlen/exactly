@@ -1,7 +1,7 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.test_case import value_definition
+from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
