@@ -144,9 +144,10 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        failure_message = pre_or_post_sds_failure_message_or_none(FileRefCheck(self._file_reference,
-                                                                               self._expected_file_properties),
-                                                                  environment.home_and_sds)
+        failure_message = pre_or_post_sds_failure_message_or_none(
+            FileRefCheck(self._file_reference,
+                         self._expected_file_properties),
+            environment.path_resolving_environment_pre_or_post_sds)
         if failure_message is not None:
             return pfh.new_pfh_fail(failure_message)
         return pfh.new_pfh_pass()

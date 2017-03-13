@@ -25,10 +25,10 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         return pre_or_post_sds_failure_message_or_none(FileRefCheck(self.file_ref,
                                                                     must_exist_as(FileType.REGULAR)),
-                                                       environment.home_and_sds)
+                                                       environment.path_resolving_environment_pre_or_post_sds)
 
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return self.file_ref.file_path_pre_or_post_sds(environment.home_and_sds)
+        return self.file_ref.file_path_pre_or_post_sds(environment.path_resolving_environment_pre_or_post_sds)
 
 
 class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
