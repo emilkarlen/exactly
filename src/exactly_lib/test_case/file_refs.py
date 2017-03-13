@@ -140,13 +140,13 @@ class _FileRefRelValueDefinition(FileRef):
         file_ref = self._lookup_file_ref(value_definitions)
         return file_ref.exists_pre_sds(value_definitions)
 
-    def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        file_ref = self._lookup_file_ref(environment.value_definitions)
-        return file_ref.file_path_post_sds(environment)
-
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         file_ref = self._lookup_file_ref(environment.value_definitions)
-        return file_ref.file_path_pre_sds(environment)
+        return file_ref.file_path_pre_sds(environment) / self.file_name
+
+    def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
+        file_ref = self._lookup_file_ref(environment.value_definitions)
+        return file_ref.file_path_post_sds(environment) / self.file_name
 
     def _lookup_file_ref(self, value_definitions: SymbolTable) -> FileRef:
         return lookup_file_ref_from_symbol_table(value_definitions, self.value_reference_of_path.name)
