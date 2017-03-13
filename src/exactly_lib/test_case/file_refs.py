@@ -54,6 +54,10 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
         return root / self._file_name
 
 
+def rel_value_definition(value_reference_of_path: ValueReferenceOfPath, file_name: str) -> FileRef:
+    return _FileRefRelValueDefinition(file_name, value_reference_of_path)
+
+
 def of_rel_root(rel_root_resolver: relativity_root.RelRootResolver,
                 file_name: str) -> FileRef:
     return _FileRefFromRelRootResolver(rel_root_resolver, file_name)
@@ -83,10 +87,6 @@ def rel_act(file_name: str) -> FileRef:
 
 def rel_tmp_user(file_name: str) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_tmp_user, file_name)
-
-
-def rel_value_definition(file_name: str, value_reference_of_path: ValueReferenceOfPath) -> FileRef:
-    return _FileRefRelValueDefinition(file_name, value_reference_of_path)
 
 
 class _FileRefAbsolute(_FileRefWithConstantLocationBase):

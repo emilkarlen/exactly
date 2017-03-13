@@ -107,7 +107,7 @@ class TestRelValueDefinition(unittest.TestCase):
                                                  PathRelativityVariants({RelOptionType.REL_ACT,
                                                                          RelOptionType.REL_HOME},
                                                                         True))
-        file_reference = sut.rel_value_definition('file.txt', value_ref_of_path)
+        file_reference = sut.rel_value_definition(value_ref_of_path, 'file.txt')
         # ACT #
         actual = file_reference.value_references_of_paths()
         # ASSERT #
@@ -118,9 +118,9 @@ class TestRelValueDefinition(unittest.TestCase):
     def test_exists_pre_sds_for_value_that_exists_pre_sds(self):
         # ARRANGE #
         file_reference = sut.rel_value_definition(
-            'file.txt',
             _value_reference_of_path_with_accepted('VAL_DEF_NAME',
-                                                   RelOptionType.REL_HOME))
+                                                   RelOptionType.REL_HOME),
+            'file.txt')
         value_definitions = singleton_symbol_table(
             vd_tr.entry('VAL_DEF_NAME',
                         vd_tr.file_ref_value(file_ref=sut.rel_home('file-name'))))
@@ -131,9 +131,9 @@ class TestRelValueDefinition(unittest.TestCase):
     def test_exists_pre_sds_for_value_that_does_not_exist_pre_sds(self):
         # ARRANGE #
         file_reference = sut.rel_value_definition(
-            'file.txt',
             _value_reference_of_path_with_accepted('VAL_DEF_NAME',
-                                                   RelOptionType.REL_TMP))
+                                                   RelOptionType.REL_TMP),
+            'file.txt')
         value_definitions = singleton_symbol_table(
             vd_tr.entry('VAL_DEF_NAME',
                         vd_tr.file_ref_value(file_ref=sut.rel_tmp_user('file-name'))))
@@ -143,9 +143,9 @@ class TestRelValueDefinition(unittest.TestCase):
 
     def test_existing_file__pre_sds(self):
         file_reference = sut.rel_value_definition(
-            'file.txt',
             _value_reference_of_path_with_accepted('rel_home_path_value',
-                                                   RelOptionType.REL_HOME))
+                                                   RelOptionType.REL_HOME),
+            'file.txt')
         with home_and_sds_with_act_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_sds:
             value_definitions = singleton_symbol_table(
@@ -157,9 +157,9 @@ class TestRelValueDefinition(unittest.TestCase):
 
     def test_existing_file__post_sds(self):
         file_reference = sut.rel_value_definition(
-            'file.txt',
             _value_reference_of_path_with_accepted('rel_tmp_user_path_value',
-                                                   RelOptionType.REL_TMP))
+                                                   RelOptionType.REL_TMP),
+            'file.txt')
         with home_and_sds_with_act_as_curr_dir(
                 sds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             value_definitions = singleton_symbol_table(
@@ -171,9 +171,9 @@ class TestRelValueDefinition(unittest.TestCase):
 
     def test_non_existing_file__pre_sds(self):
         file_reference = sut.rel_value_definition(
-            'file.txt',
             _value_reference_of_path_with_accepted('rel_home_path_value',
-                                                   RelOptionType.REL_HOME))
+                                                   RelOptionType.REL_HOME),
+            'file.txt')
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             value_definitions = singleton_symbol_table(
                 vd_tr.entry('rel_home_path_value',
@@ -184,9 +184,9 @@ class TestRelValueDefinition(unittest.TestCase):
 
     def test_non_existing_file__post_sds(self):
         file_reference = sut.rel_value_definition(
-            'file.txt',
             _value_reference_of_path_with_accepted('rel_tmp_user_path_value',
-                                                   RelOptionType.REL_TMP))
+                                                   RelOptionType.REL_TMP),
+            'file.txt')
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             value_definitions = singleton_symbol_table(
                 vd_tr.entry('rel_tmp_user_path_value',
