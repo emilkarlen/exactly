@@ -16,9 +16,7 @@ from exactly_lib_test.test_case.test_resources import value_definition as tr
 from exactly_lib_test.test_case.test_resources.value_definition import assert_symbol_table_is_singleton, \
     equals_file_ref_value
 from exactly_lib_test.test_resources.parse import remaining_source
-
-
-# from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -27,7 +25,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestSuccessfulParse))
     ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleValidOption))
     ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleDefaultOption))
-    # ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeValueDefinition))
+    ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeValueDefinition))
     return ret_val
 
 
@@ -104,28 +102,26 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                               equals_file_ref_value(expected_file_ref_value)))
                       )
 
-# class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
-#     def test(self):
-#         instruction_argument = 'ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component'
-#         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-#             expected_file_ref_value = tr.file_ref_value(
-#                 file_refs.rel_value_definition(
-#                     'component',
-#                     vd.ValueReferenceOfPath('REFERENCED_VAL_DEF',
-#                                             REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)))
-#             self._run(source,
-#                       Arrangement(),
-#                       Expectation(
-#                           value_definition_usages=asrt.matches_sequence([
-#                               tr.equals_value_reference(
-#                                   vd.ValueReferenceOfPath('REFERENCED_VAL_DEF',
-#                                                           REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
-#                               tr.equals_value_definition(
-#                                   vd.ValueDefinitionOfPath('ASSIGNED_NAME',
-#                                                            expected_file_ref_value),
-#                                   ignore_source_line=True)
-#                           ]),
-#                           value_definitions_after_main=assert_symbol_table_is_singleton(
-#                               'ASSIGNED_NAME',
-#                               equals_file_ref_value(expected_file_ref_value)))
-#                       )
+
+class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
+    def test(self):
+        instruction_argument = 'ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component'
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            expected_file_ref_value = tr.file_ref_value(
+                file_refs.rel_value_definition(
+                    vd.ValueReferenceOfPath('REFERENCED_VAL_DEF',
+                                            REL_OPTIONS_CONFIGURATION.accepted_relativity_variants),
+                    'component'))
+            self._run(source,
+                      Arrangement(),
+                      Expectation(
+                          value_definition_usages=asrt.matches_sequence([
+                              tr.equals_value_definition(
+                                  vd.ValueDefinitionOfPath('ASSIGNED_NAME',
+                                                           expected_file_ref_value),
+                                  ignore_source_line=True)
+                          ]),
+                          value_definitions_after_main=assert_symbol_table_is_singleton(
+                              'ASSIGNED_NAME',
+                              equals_file_ref_value(expected_file_ref_value)))
+                      )
