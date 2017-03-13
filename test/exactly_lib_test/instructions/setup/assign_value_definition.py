@@ -6,8 +6,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import file_refs
+from exactly_lib.test_case import value_definition as vd
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.test_case.value_definition import ValueDefinitionOfPath
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
@@ -18,12 +18,16 @@ from exactly_lib_test.test_case.test_resources.value_definition import assert_sy
 from exactly_lib_test.test_resources.parse import remaining_source
 
 
+# from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+
+
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestFailingParseDueToInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulParse))
     ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleValidOption))
     ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleDefaultOption))
+    # ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeValueDefinition))
     return ret_val
 
 
@@ -75,7 +79,7 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                       Expectation(
                           value_definition_usages=tr.assert_value_usages_is_singleton_list(
                               tr.equals_value_definition(
-                                  ValueDefinitionOfPath('name', expected_file_ref_value))),
+                                  vd.ValueDefinitionOfPath('name', expected_file_ref_value))),
                           value_definitions_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_file_ref_value(expected_file_ref_value)))
@@ -94,8 +98,34 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                       Expectation(
                           value_definition_usages=tr.assert_value_usages_is_singleton_list(
                               tr.equals_value_definition(
-                                  ValueDefinitionOfPath('name', expected_file_ref_value))),
+                                  vd.ValueDefinitionOfPath('name', expected_file_ref_value))),
                           value_definitions_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_file_ref_value(expected_file_ref_value)))
                       )
+
+# class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
+#     def test(self):
+#         instruction_argument = 'ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component'
+#         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+#             expected_file_ref_value = tr.file_ref_value(
+#                 file_refs.rel_value_definition(
+#                     'component',
+#                     vd.ValueReferenceOfPath('REFERENCED_VAL_DEF',
+#                                             REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)))
+#             self._run(source,
+#                       Arrangement(),
+#                       Expectation(
+#                           value_definition_usages=asrt.matches_sequence([
+#                               tr.equals_value_reference(
+#                                   vd.ValueReferenceOfPath('REFERENCED_VAL_DEF',
+#                                                           REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
+#                               tr.equals_value_definition(
+#                                   vd.ValueDefinitionOfPath('ASSIGNED_NAME',
+#                                                            expected_file_ref_value),
+#                                   ignore_source_line=True)
+#                           ]),
+#                           value_definitions_after_main=assert_symbol_table_is_singleton(
+#                               'ASSIGNED_NAME',
+#                               equals_file_ref_value(expected_file_ref_value)))
+#                       )
