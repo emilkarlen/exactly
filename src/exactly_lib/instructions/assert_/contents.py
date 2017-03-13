@@ -130,7 +130,7 @@ class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVar
 
 _ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX,
-                                                   True,
+                                                   False,  # TODO Change to true when val-defs available in assert phase
                                                    RelOptionType.REL_CWD),
     'PATH')
 
