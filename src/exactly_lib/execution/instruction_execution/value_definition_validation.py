@@ -25,6 +25,10 @@ def validate_pre_sds(value_usage: value_definition.ValueUsage,
                 PartialControlledFailureEnum.VALIDATION,
                 'Defined variable `{}\' has already been defined.'.format(value_usage.name))
         else:
+            for referenced_value in value_usage.referenced_values:
+                failure_info = validate_pre_sds(referenced_value, symbol_table)
+                if failure_info is not None:
+                    return failure_info
             symbol_table.add(value_usage.symbol_table_entry)
             return None
     else:
@@ -46,7 +50,7 @@ def _validate_reference_of_path(value_usage: value_definition.ValueReferenceOfPa
 
 def _invalid_relativity_error_message(value_usage: value_definition.ValueReferenceOfPath,
                                       actual_relativity: RelOptionType) -> str:
-    # TODO [val-def] Imrove error message -
+    # TODO [val-def] Improve error message -
     # - include valid relativities
     # - use option strings to display relativities (or environment variables)
     return 'Referenced variable {} is a path which is illegal, since it is relative {}'.format(
