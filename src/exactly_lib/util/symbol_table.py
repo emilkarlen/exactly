@@ -5,6 +5,7 @@ class Value:
 
 class Entry(tuple):
     """ A value together with the name that is assigned to it. """
+
     def __new__(cls,
                 name: str,
                 value: Value):
@@ -50,7 +51,10 @@ class SymbolTable:
         """
         :raises KeyError: The symbol table does not contain name.
         """
-        return self._name_2_value[name]
+        try:
+            return self._name_2_value[name]
+        except KeyError:
+            raise KeyError('Name not in symbol table: "{}"'.format(name))
 
 
 def empty_symbol_table() -> SymbolTable:
