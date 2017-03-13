@@ -1,8 +1,8 @@
 import pathlib
 
 from exactly_lib.instructions.utils import relativity_root
-from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.test_case.file_ref import FileRef
+from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.value_definition import ValueReference, FileRefValue

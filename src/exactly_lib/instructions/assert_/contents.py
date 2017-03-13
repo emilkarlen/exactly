@@ -15,11 +15,11 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.sandbox_directory_structure import \

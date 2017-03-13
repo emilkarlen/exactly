@@ -6,11 +6,10 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.instructions.utils.destination_path import DestinationPath
-from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
+from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure

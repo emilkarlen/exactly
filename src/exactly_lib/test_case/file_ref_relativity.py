@@ -1,3 +1,14 @@
+import enum
+
+
+class RelOptionType(enum.Enum):
+    REL_ACT = 0
+    REL_RESULT = 1
+    REL_TMP = 2
+    REL_HOME = 3
+    REL_CWD = 4
+
+
 class PathRelativityVariants(tuple):
     """
     A set of path relativities.
