@@ -6,7 +6,7 @@ from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.value_definition import ValueReference, FileRefValue
+from exactly_lib.test_case.value_definition import FileRefValue, ValueReferenceOfPath
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -85,8 +85,8 @@ def rel_tmp_user(file_name: str) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_tmp_user, file_name)
 
 
-def rel_value_definition(file_name: str, value_definition_name: str) -> FileRef:
-    return _FileRefRelValueDefinition(file_name, value_definition_name)
+def rel_value_definition(file_name: str, value_reference_of_path: ValueReferenceOfPath) -> FileRef:
+    return _FileRefRelValueDefinition(file_name, value_reference_of_path)
 
 
 class _FileRefAbsolute(_FileRefWithConstantLocationBase):
@@ -123,20 +123,18 @@ class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
 
 
 class _FileRefRelValueDefinition(FileRef):
-    def __init__(self, file_name: str, value_definition_name: str):
+    def __init__(self,
+                 file_name: str,
+                 value_reference_of_path: ValueReferenceOfPath):
         super().__init__(file_name)
-        self.value_definition_name = value_definition_name
+        self.value_reference_of_path = value_reference_of_path
 
     def value_references_of_paths(self) -> list:
-        return [ValueReference(self.value_definition_name)]
+        return [self.value_reference_of_path]
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
-        referenced_value = value_definitions.lookup(self.value_definition_name)
-        # TODO Is it possible that referenced variable is not a FileRefVal?
-        # Not sure.
-        # Framework should guarantee that referenced value is a FileRefValue
-        assert isinstance(referenced_value, FileRefValue)
-        return referenced_value.file_ref.relativity(value_definitions)
+        file_ref = self._lookup_file_ref(value_definitions)
+        return file_ref.relativity(value_definitions)
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         file_ref = self._lookup_file_ref(value_definitions)
@@ -151,7 +149,7 @@ class _FileRefRelValueDefinition(FileRef):
         return file_ref.file_path_pre_sds(environment)
 
     def _lookup_file_ref(self, value_definitions: SymbolTable) -> FileRef:
-        return lookup_file_ref_from_symbol_table(value_definitions, self.value_definition_name)
+        return lookup_file_ref_from_symbol_table(value_definitions, self.value_reference_of_path.name)
 
 
 def lookup_file_ref_from_symbol_table(value_definitions: SymbolTable, name: str) -> FileRef:

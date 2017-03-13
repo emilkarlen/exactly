@@ -13,6 +13,7 @@ from exactly_lib.section_document.parser_implementations.token_stream2 import To
 from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util.cli_syntax import option_parsing
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
@@ -130,3 +131,10 @@ def _raise_missing_option_argument_exception(option: str,
 def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):
     msg = 'Missing %s argument' % conf.argument_syntax_name
     raise SingleInstructionInvalidArgumentException(msg)
+
+
+def _from_relativity_info(relativity_info, path_argument: str) -> FileRef:
+    if isinstance(relativity_info, RelOptionType):
+        return file_refs.of_rel_option(relativity_info, path_argument)
+    elif isinstance(relativity_info, ValueReferenceOfPath):
+        return file_refs.rel_value_definition(relativity_info, path_argument)
