@@ -107,11 +107,11 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         raise _parse_exception('Unknown operator: {}'.format(next_arg_str))
 
     peek_source = source.copy
-    first_argument = token_parse.parse_plain_token_on_current_line(peek_source).string
+    first_argument = token_parse.parse_plain_token_on_current_line(peek_source, 'COMPARISON OPERATOR').string
     if first_argument == EMPTY_ARGUMENT:
         source.catch_up_with(peek_source)
         return _parse_empty(False, actual_file)
-    second_argument = token_parse.parse_token_on_current_line(peek_source)
+    second_argument = token_parse.parse_token_on_current_line(peek_source, 'COMPARISON OPERATOR')
     if second_argument.is_plain and [first_argument, second_argument.string] == [NOT_ARGUMENT, EMPTY_ARGUMENT]:
         source.catch_up_with(peek_source)
         return _parse_empty(True, actual_file)
