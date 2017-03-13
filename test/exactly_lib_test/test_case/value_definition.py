@@ -1,15 +1,49 @@
 import unittest
 
+from exactly_lib.test_case import file_refs
 from exactly_lib.test_case import value_definition as sut
+from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib_test.test_case.test_resources import value_definition as tr
+from exactly_lib_test.test_case.test_resources import value_definition as vd_tr
+from exactly_lib_test.test_case.test_resources.value_reference import equals_value_reference
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestValueDefinitionVisitor),
         unittest.makeSuite(TestValueReferenceVisitor),
+        unittest.makeSuite(TestValueDefinitionOfPathShouldReportAllReferencedValueDefinitions),
 
     ])
+
+
+class TestValueDefinitionOfPathShouldReportAllReferencedValueDefinitions(unittest.TestCase):
+    def test_no_references(self):
+        # ARRANGE #
+        value_definition = sut.ValueDefinitionOfPath('VAL_DEF',
+                                                     vd_tr.file_ref_value(file_refs.rel_home('path')))
+        # ACT #
+        actual = value_definition.referenced_values
+        # ASSERT #
+        self.assertListEqual([], actual,
+                             'A definition that references no value definitions should report an empty list')
+
+    def test_one_reference(self):
+        # ARRANGE #
+        value_reference = ValueReferenceOfPath('REFERENCED_DEF',
+                                               PathRelativityVariants({RelOptionType.REL_CWD},
+                                                                      True))
+        value_definition = sut.ValueDefinitionOfPath(
+            'VAL_DEF',
+            vd_tr.file_ref_value(file_refs.rel_value_definition(value_reference,
+                                                                'file-name')))
+        # ACT #
+        actual = value_definition.referenced_values
+        # ASSERT #
+        asrt.matches_sequence([equals_value_reference(value_reference)]).apply_with_message(self, actual,
+                                                                                            'referenced_values')
 
 
 class TestValueReferenceVisitor(unittest.TestCase):
