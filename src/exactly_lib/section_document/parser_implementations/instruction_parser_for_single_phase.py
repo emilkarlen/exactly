@@ -53,9 +53,7 @@ class UnknownInstructionException(InvalidInstructionException):
 
 class InvalidInstructionArgumentException(InvalidInstructionException):
     """
-    Indicates that an unknown instruction has been encountered.
-
-    The name of the instruction is unknown.
+    Indicates that an unknown instruction argument has been encountered.
     """
 
     def __init__(self,
