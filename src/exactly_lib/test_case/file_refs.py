@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.instructions.utils import relativity_root
+from exactly_lib.instructions.utils.relativity_root import RelOptionType
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
@@ -38,29 +39,11 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
         super().__init__(rel_root_resolver.is_rel_home, file_name)
         self._rel_root_resolver = rel_root_resolver
 
+    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+        return self._rel_root_resolver.relativity_type
+
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         return self._rel_root_resolver.from_home(environment.home_dir_path) / self._file_name
-
-    def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds):
-        if self._rel_root_resolver.is_rel_cwd:
-            root = self._rel_root_resolver.from_cwd()
-        else:
-            root = self._rel_root_resolver.from_sds(environment.sds)
-        return root / self._file_name
-
-
-class FileRefRelSds(_FileRefWithConstantLocationBase):
-    def __init__(self,
-                 rel_root_resolver: relativity_root.RelRootResolver,
-                 file_name: str):
-        super().__init__(False, file_name)
-        self._rel_root_resolver = rel_root_resolver
-
-    def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        """
-        Can only be used if the files exists pre-SDS.
-        """
-        raise ValueError('This file does not exist before SDS is constructed')
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds):
         if self._rel_root_resolver.is_rel_cwd:
@@ -139,6 +122,14 @@ class _FileRefRelValueDefinition(FileRef):
 
     def value_references_of_paths(self) -> list:
         return [ValueReference(self.value_definition_name)]
+
+    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+        referenced_value = value_definitions.lookup(self.value_definition_name)
+        # TODO Is it possible that referenced variable is not a FileRefVal?
+        # Not sure.
+        # Framework should guarantee that referenced value is a FileRefValue
+        assert isinstance(referenced_value, FileRefValue)
+        return referenced_value.file_ref.relativity(value_definitions)
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         file_ref = self._lookup_file_ref(value_definitions)
