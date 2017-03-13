@@ -40,6 +40,14 @@ class ValueDefinition(ValueUsage):
     def symbol_table_entry(self) -> symbol_table.Entry:
         return symbol_table.Entry(self.name, self.value)
 
+    @property
+    def referenced_values(self) -> list:
+        """
+        Gives all value definitions used for defining this definition
+        :rtype: [`ValueReference`]
+        """
+        return []
+
 
 class ValueReference(ValueUsage):
     pass
@@ -53,6 +61,10 @@ class ValueDefinitionOfPath(ValueDefinition):
     @property
     def value(self) -> FileRefValue:
         return self._value
+
+    @property
+    def referenced_values(self) -> list:
+        return self._value.file_ref.value_references_of_paths()
 
     @property
     def symbol_table_entry(self) -> symbol_table.Entry:
