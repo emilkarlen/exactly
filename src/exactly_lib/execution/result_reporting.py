@@ -5,6 +5,7 @@ from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
+from exactly_lib.util import error_message_format
 from exactly_lib.util import line_source
 from exactly_lib.util.std import FilePrinter
 
@@ -56,7 +57,7 @@ def output_location(printer: FilePrinter,
         printer.write_line('In %s "%s"' % (section_presentation_type_name, section_name))
         has_output_header = True
     if line:
-        printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
+        printer.write_line(error_message_format.source_line(line))
         has_output_header = True
     if description:
         printer.write_line('Described as `{}\''.format(description))
