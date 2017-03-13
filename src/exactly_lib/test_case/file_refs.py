@@ -154,5 +154,5 @@ class _FileRefRelValueDefinition(FileRef):
 
 def lookup_file_ref_from_symbol_table(value_definitions: SymbolTable, name: str) -> FileRef:
     value = value_definitions.lookup(name)
-    assert isinstance(value, FileRefValue)
+    assert isinstance(value, FileRefValue), 'Referenced definition must be FileRefValue'
     return value.file_ref
