@@ -2,10 +2,10 @@ from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.util import symbol_table
 from exactly_lib.util.line_source import Line
-from exactly_lib.util.symbol_table import Value
+from exactly_lib.util.symbol_table import SymbolTableValue
 
 
-class FileRefValue(Value):
+class FileRefValue(SymbolTableValue):
     def __init__(self, source: Line, file_ref: FileRef):
         self._source = source
         self._file_ref = file_ref
@@ -33,8 +33,8 @@ class ValueDefinition(ValueUsage):
         super().__init__(name)
 
     @property
-    def value(self) -> symbol_table.Value:
-        return symbol_table.Value()  # TODO Remove when have simpler sub classes than FileRef to use for test
+    def value(self) -> symbol_table.SymbolTableValue:
+        return symbol_table.SymbolTableValue()  # TODO Remove when have simpler sub classes than FileRef to use for test
 
     @property
     def symbol_table_entry(self) -> symbol_table.Entry:
