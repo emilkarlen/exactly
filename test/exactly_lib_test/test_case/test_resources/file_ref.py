@@ -11,6 +11,7 @@ from exactly_lib.test_case.path_resolving_environment import PathResolvingEnviro
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources import value_definition as vd_tr
+from exactly_lib_test.test_case.test_resources import value_reference as vr_tr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -61,7 +62,7 @@ class _FileRefAssertion(asrt.ValueAssertion):
         elements = {}
         for ref in self._expected.value_references_of_paths():
             assert isinstance(ref, vd.ValueReferenceOfPath)
-            elements[ref.name] = _file_ref_test_impl(ref.valid_relativities)
+            elements[ref.name] = file_ref_val_test_impl(ref.valid_relativities)
         return SymbolTable(elements)
 
     def _equals_value_references_of_paths(self,
@@ -75,14 +76,19 @@ class _FileRefAssertion(asrt.ValueAssertion):
         for idx, expected_ref in enumerate(self._expected.value_references_of_paths()):
             actual_ref = actual.value_references_of_paths()[idx]
             put.assertIsInstance(actual_ref, vd.ValueReferenceOfPath)
-            vd_tr.equals_value_reference(expected_ref).apply(put, actual_ref,
+            vr_tr.equals_value_reference(expected_ref).apply(put, actual_ref,
                                                              mb.for_sub_component('[%d]' % idx))
 
 
-def _file_ref_test_impl(valid_relativities: PathRelativityVariants) -> vd.FileRefValue:
+def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> vd.FileRefValue:
     relativity = list(valid_relativities.rel_option_types)[0]
     assert isinstance(relativity, RelOptionType)
-    return vd_tr.file_ref_value(_FileRefTestImpl(relativity))
+    return vd_tr.file_ref_value(_FileRefTestImpl('file_ref_test_impl', relativity))
+
+
+def file_ref_test_impl(file_name: str = 'file_ref_test_impl',
+                       relativity: RelOptionType = RelOptionType.REL_RESULT) -> vd.FileRef:
+    return _FileRefTestImpl(file_name, relativity)
 
 
 class _FileRefTestImpl(FileRef):
@@ -91,8 +97,8 @@ class _FileRefTestImpl(FileRef):
     and is as simple as possible.
     """
 
-    def __init__(self, relativity: RelOptionType):
-        super().__init__('_FileRefWithoutValRef-file_name')
+    def __init__(self, file_name: str, relativity: RelOptionType):
+        super().__init__(file_name)
         self._relativity = relativity
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
@@ -105,7 +111,7 @@ class _FileRefTestImpl(FileRef):
         return self._relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path')
+        return pathlib.Path('_FileRefWithoutValRef-path') / self.file_name
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path')
+        return pathlib.Path('_FileRefWithoutValRef-path') / self.file_name
