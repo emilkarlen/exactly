@@ -84,6 +84,60 @@ class TestValueDefinition(unittest.TestCase):
         self.assertTrue(symbol_table.contains('other'),
                         'definition in symbol table before definition should remain there')
 
+    def test_WHEN_defined_value_not_in_symbol_table_but_referenced_values_not_in_table_THEN_validation_error(self):
+        # ARRANGE #
+        symbol_table = singleton_symbol_table(value_definition_of('OTHER'))
+        value_usage = vd.ValueDefinitionOfPath(
+            'UNDEFINED',
+            file_ref_value(
+                file_refs.rel_value_definition(
+                    vd.ValueReferenceOfPath(
+                        'REFERENCED',
+                        _path_relativity_variants_with_accepted(RelOptionType.REL_HOME)),
+                    'file-name')))
+        # ACT #
+        actual = sut.validate_pre_sds(value_usage, symbol_table)
+        self.assertIsNotNone(actual, 'return value for indicating error')
+
+    def test_WHEN_defined_value_not_in_table_but_referenced_value_in_table_with_invalid_relativity_THEN_error(
+            self):
+        # ARRANGE #
+        referenced_definition = vd.ValueDefinitionOfPath('REFERENCED',
+                                                         file_ref_value(file_refs.rel_act('file-rel-act')))
+        symbol_table = singleton_symbol_table(referenced_definition.symbol_table_entry)
+        value_usage_to_check = vd.ValueDefinitionOfPath(
+            'UNDEFINED',
+            file_ref_value(
+                file_refs.rel_value_definition(
+                    vd.ValueReferenceOfPath(
+                        referenced_definition.name,
+                        _path_relativity_variants_with_accepted(RelOptionType.REL_HOME)),
+                    'file-name')))
+        # ACT #
+        actual = sut.validate_pre_sds(value_usage_to_check, symbol_table)
+        # ASSERT #
+        self.assertIsNotNone(actual, 'return value for indicating error')
+
+    def test_WHEN_defined_value_not_in_symbol_table_and_referenced_value_is_in_table_with_valid_relativity_THEN_ok(
+            self):
+        # ARRANGE #
+        referenced_definition = vd.ValueDefinitionOfPath('REFERENCED',
+                                                         file_ref_value(file_refs.rel_home('file-rel-home')))
+        symbol_table = singleton_symbol_table(referenced_definition.symbol_table_entry)
+        value_usage_to_check = vd.ValueDefinitionOfPath(
+            'UNDEFINED',
+            file_ref_value(
+                file_refs.rel_value_definition(
+                    vd.ValueReferenceOfPath(referenced_definition.name,
+                                            _path_relativity_variants_with_accepted(RelOptionType.REL_HOME)),
+                    'file-name')))
+        # ACT #
+        actual = sut.validate_pre_sds(value_usage_to_check, symbol_table)
+        # ASSERT #
+        self.assertIsNone(actual, 'return value for indicating success')
+        self.assertTrue(symbol_table.contains('UNDEFINED'),
+                        'definition should have been added')
+
 
 def value_definition_of(name: str) -> Entry:
     return vd.ValueDefinition(name).symbol_table_entry
@@ -91,6 +145,10 @@ def value_definition_of(name: str) -> Entry:
 
 def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
     return vd.ValueDefinitionOfPath(name, file_ref_value(file_ref)).symbol_table_entry
+
+
+def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRelativityVariants:
+    return PathRelativityVariants({accepted}, False)
 
 
 if __name__ == '__main__':
