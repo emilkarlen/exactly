@@ -2,6 +2,8 @@ from exactly_lib.execution.instruction_execution.single_instruction_executor imp
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.test_case import value_definition
 from exactly_lib.test_case.file_ref_relativity import RelOptionType
+from exactly_lib.test_case.value_definition import FileRefValue
+from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -21,9 +23,14 @@ def validate_pre_sds(value_usage: value_definition.ValueUsage,
     elif isinstance(value_usage, value_definition.ValueDefinition):
         assert isinstance(value_usage, value_definition.ValueDefinition)
         if symbol_table.contains(value_usage.name):
+            file_ref_value = symbol_table.lookup(value_usage.name)
+            assert isinstance(file_ref_value, FileRefValue), 'Currently only type FileRefValue:s are supported'
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
-                'Defined variable `{}\' has already been defined.'.format(value_usage.name))
+                'Name `{}\' has already been defined:\n\n{}'.format(
+                    value_usage.name,
+                    error_message_format.source_line(
+                        file_ref_value.source)))
         else:
             for referenced_value in value_usage.referenced_values:
                 failure_info = validate_pre_sds(referenced_value, symbol_table)
@@ -53,7 +60,8 @@ def _invalid_relativity_error_message(value_usage: value_definition.ValueReferen
     # TODO [val-def] Improve error message -
     # - include valid relativities
     # - use option strings to display relativities (or environment variables)
-    return 'Referenced variable {} is a path which is illegal, since it is relative {}'.format(
+    return ('Referenced variable `{}\' c,'
+            ' since it is relative {}'.format(
         value_usage.name,
         actual_relativity
-    )
+    ))
