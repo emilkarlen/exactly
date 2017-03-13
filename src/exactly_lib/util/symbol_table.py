@@ -1,4 +1,4 @@
-class Value:
+class SymbolTableValue:
     """A value in a symbol table, that is assigned to a name."""
     pass
 
@@ -8,7 +8,7 @@ class Entry(tuple):
 
     def __new__(cls,
                 name: str,
-                value: Value):
+                value: SymbolTableValue):
         return tuple.__new__(cls, (name,
                                    value))
 
@@ -17,7 +17,7 @@ class Entry(tuple):
         return self[0]
 
     @property
-    def value(self) -> Value:
+    def value(self) -> SymbolTableValue:
         return self[1]
 
 
@@ -37,7 +37,7 @@ class SymbolTable:
     def add(self, entry: Entry):
         self._name_2_value[entry.name] = entry.value
 
-    def put(self, name: str, x: Value):
+    def put(self, name: str, x: SymbolTableValue):
         self._name_2_value[name] = x
 
     def contains(self, name: str) -> bool:
@@ -47,7 +47,7 @@ class SymbolTable:
     def names_set(self) -> set:
         return set(self._name_2_value.keys())
 
-    def lookup(self, name: str) -> Value:
+    def lookup(self, name: str) -> SymbolTableValue:
         """
         :raises KeyError: The symbol table does not contain name.
         """

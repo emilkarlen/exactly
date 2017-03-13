@@ -1,5 +1,8 @@
 -*- org -*-
 
+* TODO [#C] DestinationPathFromRelRootResolver: Should be Path or PurePath?
+Returns type is invalid, but works: combining Path and PurePath in apparently
+incorrect way.
 * TODO Handling of relative paths
 Many paths to resources and sut:s are needed by a test.
 Currently (2017-02-26) there is no good way to handle these within Exactly
@@ -29,53 +32,26 @@ logic to work.  That kind of logic will make tests much more complicated.
 But what a built in preprocessor could help with is the functionallity to
 support knowledge of current-source file, so that references can be relative
 an included source file, e.g.
-** New option for instructions to specify base-path: --rel PATH_VAR
-A variant of
- --rel-home, --rel-act, ...
-
-Solution consits of two constructs:
- 1. New instruction option: --rel PATH_VAR
- 2. New instruction resolved-path PATH_VAR PATH
-
-The option should be usable whereever a "--rel-XYZ" can be used (at least)
-
-The argument PATH_VAR to the option must be a PATH_VAR that has previously
-been set by the "resolved-path" instruction.
-That instruction handles a repository of resolved paths (absolute) that each
-has a name (PATH_VAR) 
 
 For example:
 --------------------
 [setup]
-
-register-path GLOBAL_RESOURCE_DIR ../../global
-register-path GLOBAL_ICONS_DIR --rel GLOBAL_RESOURCE_DIR icons
-
-register-path GLOBAL_OUTPUT_DIR ...
-
-# Some option to register non-existing paths that cannot be
-# resolved to an absolute path.
-# (but if they are relative a previously resolved absolute path,
-# then this will be no problem.)
-register-path --non-existing ICONS_OUTPUT_DIR --rel GLOBAL_OUTPUT_DIR icons
-
-install --rel GLOBAL_RESOURCE_DIR icons
 
 env set --registered-path GLOB_R_DIR_VAR = GLOBAL_RESOURCE_DIR
 env set --registered-path --shell-quoted GLOB_R_DIR_VAR = GLOBAL_RESOURCE_DIR
 
 [act]
 
-my-sut --icons @<GLOBAL_ICONS_DIR>@
+my-sut --icons @[GLOBAL_ICONS_DIR]@
 /
-my-sut --icons @<GLOBAL_ICONS_DIR>@/the-icon.gif
+my-sut --icons @[GLOBAL_ICONS_DIR]@/the-icon.gif
 
 [assert]
 
 contents --rel GLOBAL_RESOURCE_DIR equals icon/x actal/x
 
-run my-assertion-prog @<GLOBAL_RESOURCE_DIR>@
-run my-assertion-prog @<GLOBAL_ICONS_DIR>@/the-icon.gif
+run my-assertion-prog @[GLOBAL_RESOURCE_DIR]@
+run my-assertion-prog @[GLOBAL_ICONS_DIR]@/the-icon.gif
 --------------------
 
 Some kind of syntax for giving registered paths as arguments to programs is
