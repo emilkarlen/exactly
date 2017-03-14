@@ -1,4 +1,6 @@
+from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition.concrete_values import FileRefValue
 from exactly_lib.value_definition.value_structure import ValueRestriction, Value
 
 
@@ -9,3 +11,19 @@ class NoRestriction(ValueRestriction):
 
     def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
         return None
+
+
+class FileRefRelativityRestriction(ValueRestriction):
+    """
+    Restricts to `FileRefValue` and `PathRelativityVariants`
+    """
+
+    def __init__(self, accepted: PathRelativityVariants):
+        self._accepted = accepted
+
+    def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
+        if not isinstance(value, FileRefValue):
+            #  TODO [val-def] Error message should be human readable
+            return 'Not a FileRefValue: ' + str(value)
+        file_ref = value.file_ref
+        raise NotImplementedError('[val-def] impl restriktion')
