@@ -6,8 +6,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import file_refs
-from exactly_lib.test_case import value_definition as vd
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.value_definition import value_definition_usage as vd
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \

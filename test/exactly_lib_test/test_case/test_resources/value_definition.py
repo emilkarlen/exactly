@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.test_case import file_ref as _file_ref
 from exactly_lib.test_case import file_refs
-from exactly_lib.test_case.value_definition import ValueReference, ValueDefinitionVisitor, \
-    ValueDefinitionOfPath, ValueDefinition
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, SymbolTableValue, Entry
 from exactly_lib.value_definition.symbol_table_contents import FileRefValue
+from exactly_lib.value_definition.value_definition_usage import ValueReference, ValueDefinitionVisitor, \
+    ValueDefinitionOfPath, ValueDefinition
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 from exactly_lib_test.test_case.test_resources import file_ref as fr_tr
 from exactly_lib_test.test_case.test_resources.value_reference import equals_value_reference
