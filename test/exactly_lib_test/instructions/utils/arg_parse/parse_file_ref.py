@@ -4,15 +4,15 @@ import unittest
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_CWD_OPTION, REL_TMP_OPTION
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.file_ref import FileRef
-from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.relative_path_options import REL_CWD_OPTION, REL_TMP_OPTION
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

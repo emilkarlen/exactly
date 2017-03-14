@@ -8,9 +8,9 @@ from exactly_lib import program_info
 from exactly_lib.execution import partial_execution as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.section_document.model import new_empty_section_contents
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ExitCodeOrHardError, new_eh_exit_code, \
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActPhaseHandling, ActSourceAndExecutorConstructor
-from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -18,6 +18,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \

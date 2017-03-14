@@ -4,13 +4,13 @@ import unittest
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
-from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution

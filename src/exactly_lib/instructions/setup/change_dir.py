@@ -6,6 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case_file_structure.destination_path import DestinationPath
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -21,7 +22,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class _Instruction(SetupPhaseInstruction):
-    def __init__(self, destination_directory: cd_utils.DestinationPath):
+    def __init__(self, destination_directory: DestinationPath):
         self.destination_directory = destination_directory
 
     def main(self,

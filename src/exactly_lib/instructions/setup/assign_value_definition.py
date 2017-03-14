@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.test_case.value_definition import ValueDefinition
+from exactly_lib.value_definition.value_definition_usage import ValueDefinition
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

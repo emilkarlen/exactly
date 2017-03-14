@@ -1,4 +1,5 @@
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ExitCodeOrHardError, new_eh_exit_code
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.process_execution.os_process_execution import Command, ProcessExecutionSettings
 from exactly_lib.util.std import StdFiles
 

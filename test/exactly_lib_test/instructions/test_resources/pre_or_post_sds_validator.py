@@ -2,7 +2,7 @@ import types
 import unittest
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
 class Expectation:

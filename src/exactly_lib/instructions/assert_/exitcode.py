@@ -14,7 +14,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.string import line_separated
 

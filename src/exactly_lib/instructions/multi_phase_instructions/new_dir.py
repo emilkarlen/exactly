@@ -3,7 +3,6 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path__token_stream
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
-from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -11,8 +10,9 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case_file_structure.destination_path import DestinationPath
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
