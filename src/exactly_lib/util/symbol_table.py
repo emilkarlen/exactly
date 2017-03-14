@@ -13,7 +13,7 @@ class Entry(tuple):
                                    value))
 
     @property
-    def name(self) -> str:
+    def key(self) -> str:
         return self[0]
 
     @property
@@ -32,27 +32,27 @@ class SymbolTable:
         """
         :param initial_values: dictionary str -> Value
         """
-        self._name_2_value = {} if initial_values is None else initial_values
+        self._key_2_value = {} if initial_values is None else initial_values
 
     def add(self, entry: Entry):
-        self._name_2_value[entry.name] = entry.value
+        self._key_2_value[entry.key] = entry.value
 
-    def put(self, name: str, x: SymbolTableValue):
-        self._name_2_value[name] = x
+    def put(self, key: str, x: SymbolTableValue):
+        self._key_2_value[key] = x
 
-    def contains(self, name: str) -> bool:
-        return name in self._name_2_value
+    def contains(self, key: str) -> bool:
+        return key in self._key_2_value
 
     @property
     def names_set(self) -> set:
-        return set(self._name_2_value.keys())
+        return set(self._key_2_value.keys())
 
     def lookup(self, name: str) -> SymbolTableValue:
         """
         :raises KeyError: The symbol table does not contain name.
         """
         try:
-            return self._name_2_value[name]
+            return self._key_2_value[name]
         except KeyError:
             raise KeyError('Name not in symbol table: "{}"'.format(name))
 
@@ -62,4 +62,4 @@ def empty_symbol_table() -> SymbolTable:
 
 
 def singleton_symbol_table(entry: Entry) -> SymbolTable:
-    return SymbolTable({entry.name: entry.value})
+    return SymbolTable({entry.key: entry.value})
