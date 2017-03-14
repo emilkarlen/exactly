@@ -1,8 +1,8 @@
 import pathlib
 
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
-from exactly_lib.test_case.home_and_sds import HomeAndSds
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator, \

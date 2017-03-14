@@ -1,4 +1,4 @@
-from exactly_lib.instructions.utils.relativity_root import RelOptionType, RelRootResolver, resolver_for_tmp_user, \
+from exactly_lib.test_case_file_structure.relativity_root import RelOptionType, RelRootResolver, resolver_for_tmp_user, \
     resolver_for_cwd, resolver_for_home, \
     resolver_for_act, resolver_for_result
 from exactly_lib.util.cli_syntax.elements import argument

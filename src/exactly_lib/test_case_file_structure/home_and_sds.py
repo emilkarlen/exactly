@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case import sandbox_directory_structure as _sds
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 
 
 class HomeAndSds:

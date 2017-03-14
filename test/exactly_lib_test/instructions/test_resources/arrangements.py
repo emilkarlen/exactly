@@ -1,5 +1,5 @@
-from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.value_definition import symbol_table_from_none_or_value

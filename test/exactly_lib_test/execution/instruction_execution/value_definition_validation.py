@@ -4,7 +4,7 @@ from exactly_lib.execution.instruction_execution import value_definition_validat
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.file_ref import FileRef
-from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib.value_definition import value_definition_usage as vd
 from exactly_lib_test.test_case.test_resources.value_definition import file_ref_value

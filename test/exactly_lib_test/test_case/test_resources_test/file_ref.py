@@ -2,9 +2,9 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case.file_ref import FileRef
-from exactly_lib.test_case.file_ref_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition import symbol_table_contents as sym_tbl
 from exactly_lib.value_definition import value_definition_usage as vd

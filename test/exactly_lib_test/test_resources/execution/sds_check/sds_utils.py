@@ -3,9 +3,9 @@ import tempfile
 from contextlib import contextmanager
 
 from exactly_lib import program_info
-from exactly_lib.test_case import sandbox_directory_structure as sds_module
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds_module
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.value_definition import symbol_table_from_none_or_value

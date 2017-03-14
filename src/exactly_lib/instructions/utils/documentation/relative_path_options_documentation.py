@@ -7,8 +7,8 @@ from exactly_lib.help.concepts.plain_concepts.current_working_directory import C
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
-from exactly_lib.test_case import sandbox_directory_structure as sds
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists

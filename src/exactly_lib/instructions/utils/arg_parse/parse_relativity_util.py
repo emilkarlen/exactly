@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_V
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 

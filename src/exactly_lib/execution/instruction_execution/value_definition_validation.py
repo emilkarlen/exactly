@@ -1,6 +1,6 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition import symbol_table_contents as sym_tbl, value_definition_usage

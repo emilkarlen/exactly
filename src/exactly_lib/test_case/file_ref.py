@@ -1,8 +1,8 @@
 import pathlib
 
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 
 

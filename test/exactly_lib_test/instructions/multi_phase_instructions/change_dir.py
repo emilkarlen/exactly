@@ -5,9 +5,9 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution.sds_check import sds_test

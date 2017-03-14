@@ -1,4 +1,4 @@
-from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
+from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants
 from exactly_lib.util import symbol_table
 from exactly_lib.value_definition.symbol_table_contents import FileRefValue
 

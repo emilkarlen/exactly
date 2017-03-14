@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 ENV_VAR_HOME = 'EXACTLY_HOME'
 ENV_VAR_ACT = 'EXACTLY_ACT'
