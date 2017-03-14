@@ -10,11 +10,11 @@ from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
-from exactly_lib_test.test_resources.execution.sds_check import sds_test
-from exactly_lib_test.test_resources.execution.sds_check import sds_utils
-from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import act_dir_contains_exactly, \
-    tmp_user_dir_contains_exactly
-from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_test
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_utils
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    act_dir_contains_exactly, tmp_user_dir_contains_exactly
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import argument_list_source, single_line_source
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone

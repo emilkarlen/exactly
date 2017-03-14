@@ -11,11 +11,13 @@ from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
-from exactly_lib_test.test_resources.execution.sds_check import sds_populator, sds_test
-from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import SubDirOfSdsContainsExactly
-from exactly_lib_test.test_resources.execution.sds_check.sds_populator import cwd_contents, SdsPopulator
-from exactly_lib_test.test_resources.execution.sds_check.sds_test import Arrangement, Expectation
-from exactly_lib_test.test_resources.execution.sds_check.sds_utils import SdsAction, mk_sub_dir_of_act_and_change_to_it
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator, sds_test
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    SubDirOfSdsContainsExactly
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents, SdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_test import Arrangement, Expectation
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction, \
+    mk_sub_dir_of_act_and_change_to_it
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 

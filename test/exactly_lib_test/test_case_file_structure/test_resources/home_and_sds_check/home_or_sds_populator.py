@@ -1,6 +1,6 @@
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 
 
 class HomeOrSdsPopulator:

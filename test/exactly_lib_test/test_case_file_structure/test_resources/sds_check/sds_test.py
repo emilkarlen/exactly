@@ -2,9 +2,10 @@ import unittest
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction, \
+    sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
-from exactly_lib_test.test_resources.execution.sds_check import sds_populator
-from exactly_lib_test.test_resources.execution.sds_check.sds_utils import SdsAction, sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 

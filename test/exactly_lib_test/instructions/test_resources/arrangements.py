@@ -5,8 +5,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     HomeAndSdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 
