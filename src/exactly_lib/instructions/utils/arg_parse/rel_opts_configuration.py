@@ -1,4 +1,4 @@
-from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
 
 
 class RelOptionsConfiguration(tuple):

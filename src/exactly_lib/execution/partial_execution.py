@@ -20,7 +20,7 @@ from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
-from exactly_lib.test_case.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
     stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception

@@ -7,12 +7,13 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
     OPTION_FOR_EXECUTING_ACT_PHASE, OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.execution import environment_variables, exit_values
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
+from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
-from exactly_lib_test.test_case.sandbox_directory_structure import \
+from exactly_lib_test.test_case_file_structure.sandbox_directory_structure import \
     is_sandbox_directory_structure_after_execution
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import \

@@ -1,11 +1,11 @@
 import pathlib
 
-from exactly_lib.instructions.utils import relativity_root
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
 from exactly_lib.test_case.file_ref import FileRef
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
+from exactly_lib.test_case_file_structure import relativity_root
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.symbol_table_contents import FileRefValue
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath

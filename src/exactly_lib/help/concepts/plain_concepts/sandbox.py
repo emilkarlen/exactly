@@ -9,7 +9,7 @@ from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
 from exactly_lib.instructions.utils.arg_parse import relative_path_options
-from exactly_lib.test_case import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists

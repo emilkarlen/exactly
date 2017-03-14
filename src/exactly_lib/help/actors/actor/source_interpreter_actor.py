@@ -11,7 +11,7 @@ from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils import suite_section_names
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.test_case import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import section_contents
 

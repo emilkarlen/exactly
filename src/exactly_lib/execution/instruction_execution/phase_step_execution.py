@@ -4,7 +4,7 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResult, InstructionFailureInfo, new_partial_result_pass, \
     PartialResultStatus
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 

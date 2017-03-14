@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case import file_refs
-from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.value_definition import value_definition_usage as sut
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 from exactly_lib_test.test_case.test_resources import value_definition as tr

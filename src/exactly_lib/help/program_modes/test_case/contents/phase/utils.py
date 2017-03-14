@@ -5,8 +5,8 @@ from exactly_lib.help.concepts.plain_concepts.current_working_directory import C
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import SectionName
-from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.test_case.execution_mode import NAME_SKIP
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs, table
 

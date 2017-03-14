@@ -10,7 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token import TokenType
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 
 

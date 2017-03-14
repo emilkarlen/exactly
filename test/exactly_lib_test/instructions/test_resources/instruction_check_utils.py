@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.test_case.home_and_sds import HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va

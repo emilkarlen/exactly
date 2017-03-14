@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.value_definition import symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker

@@ -2,10 +2,10 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case import file_refs as sut
-from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import empty_symbol_table, singleton_symbol_table
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 from exactly_lib_test.test_case.test_resources import value_definition as vd_tr
