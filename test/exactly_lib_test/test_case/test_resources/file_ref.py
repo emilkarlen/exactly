@@ -10,6 +10,7 @@ from exactly_lib.test_case.path_resolving_environment import PathResolvingEnviro
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition import symbol_table_contents as sym_tbl
 from exactly_lib_test.test_case.test_resources import value_definition as vd_tr
 from exactly_lib_test.test_case.test_resources import value_reference as vr_tr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -80,14 +81,14 @@ class _FileRefAssertion(asrt.ValueAssertion):
                                                              mb.for_sub_component('[%d]' % idx))
 
 
-def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> vd.FileRefValue:
+def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> sym_tbl.FileRefValue:
     relativity = list(valid_relativities.rel_option_types)[0]
     assert isinstance(relativity, RelOptionType)
     return vd_tr.file_ref_value(_FileRefTestImpl('file_ref_test_impl', relativity))
 
 
 def file_ref_test_impl(file_name: str = 'file_ref_test_impl',
-                       relativity: RelOptionType = RelOptionType.REL_RESULT) -> vd.FileRef:
+                       relativity: RelOptionType = RelOptionType.REL_RESULT) -> FileRef:
     return _FileRefTestImpl(file_name, relativity)
 
 

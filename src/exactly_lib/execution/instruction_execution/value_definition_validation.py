@@ -2,9 +2,10 @@ from exactly_lib.execution.instruction_execution.single_instruction_executor imp
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.test_case import value_definition
 from exactly_lib.test_case.file_ref_relativity import RelOptionType
-from exactly_lib.test_case.value_definition import FileRefValue
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition import symbol_table_contents as sym_tbl
+from exactly_lib.value_definition.symbol_table_contents import FileRefValue
 
 
 def validate_pre_sds(value_usage: value_definition.ValueUsage,
@@ -46,9 +47,9 @@ def validate_pre_sds(value_usage: value_definition.ValueUsage,
 def _validate_reference_of_path(value_usage: value_definition.ValueReferenceOfPath,
                                 value_definitions: SymbolTable) -> str:
     referenced_value = value_definitions.lookup(value_usage.name)
-    if not isinstance(referenced_value, value_definition.FileRefValue):
+    if not isinstance(referenced_value, sym_tbl.FileRefValue):
         return 'Referenced definition {} is not a path.'.format(value_usage.name)
-    assert isinstance(referenced_value, value_definition.FileRefValue)
+    assert isinstance(referenced_value, sym_tbl.FileRefValue)
     actual_relativity = referenced_value.file_ref.relativity(value_definitions)
     if actual_relativity not in value_usage.valid_relativities.rel_option_types:
         return _invalid_relativity_error_message(value_usage, actual_relativity)
@@ -61,7 +62,6 @@ def _invalid_relativity_error_message(value_usage: value_definition.ValueReferen
     # - include valid relativities
     # - use option strings to display relativities (or environment variables)
     return ('Referenced variable `{}\' c,'
-            ' since it is relative {}'.format(
-        value_usage.name,
-        actual_relativity
-    ))
+            ' since it is relative {}'.format(value_usage.name,
+                                              actual_relativity
+                                              ))
