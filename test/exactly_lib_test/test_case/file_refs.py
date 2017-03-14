@@ -148,7 +148,7 @@ class TestRelValueDefinition(unittest.TestCase):
         referenced_entry = vd_tr.entry('rel_home_path_value',
                                        vd_tr.file_ref_value(file_ref=sut.rel_home('home-sub-dir')))
         file_reference = sut.rel_value_definition(
-            _value_reference_of_path_with_accepted(referenced_entry.name,
+            _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_HOME),
             'file.txt')
         with home_and_sds_with_act_as_curr_dir(
@@ -166,7 +166,7 @@ class TestRelValueDefinition(unittest.TestCase):
         referenced_entry = vd_tr.entry('rel_tmp_user_path_value',
                                        vd_tr.file_ref_value(file_ref=sut.rel_tmp_user('referenced-component')))
         file_reference = sut.rel_value_definition(
-            _value_reference_of_path_with_accepted(referenced_entry.name,
+            _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_TMP),
             'file.txt')
         with home_and_sds_with_act_as_curr_dir(
@@ -210,7 +210,7 @@ class TestRelValueDefinition(unittest.TestCase):
         referenced_entry = vd_tr.entry('rel_home_path_value',
                                        vd_tr.file_ref_value(file_ref=sut.rel_home('first-component')))
         file_ref_using_val_ref = sut.rel_value_definition(
-            _value_reference_of_path_with_accepted(referenced_entry.name,
+            _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_HOME),
             'last-component')
         value_definitions = singleton_symbol_table(referenced_entry)
@@ -228,7 +228,7 @@ class TestRelValueDefinition(unittest.TestCase):
         referenced_entry = vd_tr.entry('rel_act_path_value',
                                        vd_tr.file_ref_value(file_ref=sut.rel_act('component-1')))
         file_ref_using_val_ref = sut.rel_value_definition(
-            _value_reference_of_path_with_accepted(referenced_entry.name,
+            _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_ACT),
             'component-2')
         value_definitions = singleton_symbol_table(referenced_entry)

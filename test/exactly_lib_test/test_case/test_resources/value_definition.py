@@ -48,7 +48,7 @@ def symbol_table_from_entries(entries: iter) -> SymbolTable:
     """
     :param entries: [`Entry`]
     """
-    elements = [(entry.name, entry.value)
+    elements = [(entry.key, entry.value)
                 for entry in entries]
     return SymbolTable(dict(elements))
 
