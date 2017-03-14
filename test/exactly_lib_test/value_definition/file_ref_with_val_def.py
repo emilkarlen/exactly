@@ -11,7 +11,7 @@ from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definit
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.execution.sds_check.sds_populator import tmp_user_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import value_definition as vd_tr

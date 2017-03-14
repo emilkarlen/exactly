@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure import relative_path_options as option
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
-from exactly_lib_test.test_resources.execution.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe

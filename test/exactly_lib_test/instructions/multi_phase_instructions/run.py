@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_test
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.test_resources.execution.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe

@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.test_resources.relativity_options import Rela
     RelativityOptionConfiguration
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.test_resources.execution.sds_check.sds_populator import SdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'

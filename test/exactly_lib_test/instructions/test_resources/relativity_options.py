@@ -8,7 +8,8 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import svh_che
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
     HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
-from exactly_lib_test.test_resources.execution.sds_check.sds_populator import act_dir_contents, tmp_user_dir_contents, \
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
+    tmp_user_dir_contents, \
     SdsPopulator, SdsPopulatorForFileWithContentsThatDependOnSds, cwd_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
