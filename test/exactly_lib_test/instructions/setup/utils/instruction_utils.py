@@ -3,15 +3,15 @@ import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
-from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 
 

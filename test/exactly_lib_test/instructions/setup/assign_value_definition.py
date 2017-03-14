@@ -5,18 +5,19 @@ from exactly_lib.instructions.setup import assign_value_definition as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.value_definition import value_definition_usage as vd
+from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.test_case.test_resources import value_definition as tr
-from exactly_lib_test.test_case.test_resources.value_definition import assert_symbol_table_is_singleton, \
-    equals_file_ref_value
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources import value_definition as tr
+from exactly_lib_test.value_definition.test_resources.value_definition import assert_symbol_table_is_singleton, \
+    equals_file_ref_value
 
 
 def suite() -> unittest.TestSuite:
@@ -108,7 +109,7 @@ class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
         instruction_argument = 'ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_value = tr.file_ref_value(
-                file_refs.rel_value_definition(
+                rel_value_definition(
                     vd.ValueReferenceOfPath('REFERENCED_VAL_DEF',
                                             REL_OPTIONS_CONFIGURATION.accepted_relativity_variants),
                     'component'))

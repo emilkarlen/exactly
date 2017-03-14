@@ -3,22 +3,24 @@ import sys
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
-from exactly_lib.instructions.utils.arg_parse import relative_path_options as option
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure import relative_path_options as option
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
-from exactly_lib_test.test_resources import quoting
-from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator as home_or_sds_pop
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
+    home_or_sds_populator as home_or_sds_pop
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator, \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
+    HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
+from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path

@@ -1,4 +1,4 @@
-from exactly_lib.test_case.file_ref import FileRef
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue
 

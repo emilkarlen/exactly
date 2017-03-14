@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
+from exactly_lib.test_case_file_structure import relative_path_options as options
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting

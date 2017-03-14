@@ -1,4 +1,4 @@
-from exactly_lib.instructions.utils.arg_parse import relative_path_options
+from exactly_lib.test_case_file_structure import relative_path_options
 
 
 def args_with_rel_ops(arg_str: str, **kwargs) -> str:

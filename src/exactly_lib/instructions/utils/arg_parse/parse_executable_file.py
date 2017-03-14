@@ -5,8 +5,7 @@ from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case import file_ref
-from exactly_lib.test_case import file_refs
+from exactly_lib.test_case_file_structure import file_ref, file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax

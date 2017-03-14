@@ -1,41 +1,14 @@
 import pathlib
 
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.test_case.file_ref import FileRef
-from exactly_lib.test_case.file_refs import lookup_file_ref_from_symbol_table
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.destination_path import DestinationPath
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+    PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition.file_ref_with_val_def import lookup_file_ref_from_symbol_table
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
-
-
-class DestinationPath:
-    def destination_type(self, value_definitions: SymbolTable) -> RelOptionType:
-        raise NotImplementedError()
-
-    def value_references_of_paths(self, ) -> list:
-        """
-        All `ValueReferenceOfPath`s that are _directly_ used by this object.
-        I.e, if value <name> is referenced, that in turn references <name2>,
-        then <name2> should not be included in the result because of this
-        reason.
-        :rtype [`ValueReferenceOfPath`]
-        """
-        raise NotImplementedError()
-
-    @property
-    def path_argument(self) -> pathlib.PurePath:
-        raise NotImplementedError()
-
-    def root_path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def resolved_path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def resolved_path_if_not_rel_home(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        raise NotImplementedError()
 
 
 class _DestinationPathFromRelRootResolver(DestinationPath):

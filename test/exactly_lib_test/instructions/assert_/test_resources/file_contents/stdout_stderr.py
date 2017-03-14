@@ -5,8 +5,10 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents import e
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
 from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
+    HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import ActResult
 
 

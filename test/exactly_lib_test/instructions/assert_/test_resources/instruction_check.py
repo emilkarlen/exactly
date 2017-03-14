@@ -4,21 +4,22 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
-from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction, \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va

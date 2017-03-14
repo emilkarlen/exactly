@@ -2,12 +2,13 @@ import unittest
 
 from exactly_lib.execution.instruction_execution import value_definition_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
-from exactly_lib.test_case import file_refs
-from exactly_lib.test_case.file_ref import FileRef
+from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib.value_definition import value_definition_usage as vd
-from exactly_lib_test.test_case.test_resources.value_definition import file_ref_value
+from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
+from exactly_lib_test.value_definition.test_resources.value_definition import file_ref_value
 
 
 def suite() -> unittest.TestSuite:
@@ -90,7 +91,7 @@ class TestValueDefinition(unittest.TestCase):
         value_usage = vd.ValueDefinitionOfPath(
             'UNDEFINED',
             file_ref_value(
-                file_refs.rel_value_definition(
+                rel_value_definition(
                     vd.ValueReferenceOfPath(
                         'REFERENCED',
                         _path_relativity_variants_with_accepted(RelOptionType.REL_HOME)),
@@ -108,7 +109,7 @@ class TestValueDefinition(unittest.TestCase):
         value_usage_to_check = vd.ValueDefinitionOfPath(
             'UNDEFINED',
             file_ref_value(
-                file_refs.rel_value_definition(
+                rel_value_definition(
                     vd.ValueReferenceOfPath(
                         referenced_definition.name,
                         _path_relativity_variants_with_accepted(RelOptionType.REL_HOME)),
@@ -127,7 +128,7 @@ class TestValueDefinition(unittest.TestCase):
         value_usage_to_check = vd.ValueDefinitionOfPath(
             'UNDEFINED',
             file_ref_value(
-                file_refs.rel_value_definition(
+                rel_value_definition(
                     vd.ValueReferenceOfPath(referenced_definition.name,
                                             _path_relativity_variants_with_accepted(RelOptionType.REL_HOME)),
                     'file-name')))

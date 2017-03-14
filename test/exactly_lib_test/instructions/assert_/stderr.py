@@ -9,8 +9,10 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.contains
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr import TestConfigurationForStdFile
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator as home_or_sds
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
+    home_or_sds_populator as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.utils import ActResult
 
 

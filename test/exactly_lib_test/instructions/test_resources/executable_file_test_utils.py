@@ -5,16 +5,17 @@ import unittest
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
-from exactly_lib_test.test_case.test_resources.value_definition import symbol_table_from_none_or_value
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
+    HomeOrSdsPopulator
 from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 
 
 class RelativityConfiguration:

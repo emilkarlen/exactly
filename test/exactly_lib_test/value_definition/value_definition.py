@@ -1,13 +1,14 @@
 import unittest
 
-from exactly_lib.test_case import file_refs
+from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.value_definition import value_definition_usage as sut
+from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
-from exactly_lib_test.test_case.test_resources import value_definition as tr
-from exactly_lib_test.test_case.test_resources import value_definition as vd_tr
-from exactly_lib_test.test_case.test_resources.value_reference import equals_value_reference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources import value_definition as tr
+from exactly_lib_test.value_definition.test_resources import value_definition as vd_tr
+from exactly_lib_test.value_definition.test_resources.value_reference import equals_value_reference
 
 
 def suite() -> unittest.TestSuite:
@@ -37,8 +38,8 @@ class TestValueDefinitionOfPathShouldReportAllReferencedValueDefinitions(unittes
                                                                       True))
         value_definition = sut.ValueDefinitionOfPath(
             'VAL_DEF',
-            vd_tr.file_ref_value(file_refs.rel_value_definition(value_reference,
-                                                                'file-name')))
+            vd_tr.file_ref_value(
+                rel_value_definition(value_reference, 'file-name')))
         # ACT #
         actual = value_definition.referenced_values
         # ASSERT #

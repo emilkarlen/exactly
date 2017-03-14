@@ -9,10 +9,10 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition import value_definition_usage as vd
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.test_case.test_resources import value_definition as vdtr
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources import value_definition as vdtr
 
 
 def suite() -> unittest.TestSuite:

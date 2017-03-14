@@ -1,8 +1,8 @@
 import pathlib
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case.file_ref import FileRef
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 
 
