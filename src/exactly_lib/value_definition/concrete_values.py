@@ -1,0 +1,28 @@
+from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.value_definition.value_structure import Value
+
+
+class FileRefValue(Value):
+    def __init__(self, file_ref: FileRef):
+        self._file_ref = file_ref
+
+    @property
+    def file_ref(self) -> FileRef:
+        return self._file_ref
+
+
+class ValueVisitor:
+    """
+    Visitor of `Value`
+    """
+
+    def visit(self, value: Value):
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(value, FileRefValue):
+            return self._visit_file_ref(value)
+        raise TypeError('Unknown {}: {}'.format(Value, str(value)))
+
+    def _visit_file_ref(self, value: FileRefValue):
+        raise NotImplementedError()
