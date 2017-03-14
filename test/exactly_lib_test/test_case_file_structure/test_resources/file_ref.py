@@ -4,13 +4,13 @@ import unittest
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
-    PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition import symbol_table_contents as sym_tbl
 from exactly_lib.value_definition import value_definition_usage as vd
+from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import _FileRefTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import value_definition as vd_tr
 from exactly_lib_test.value_definition.test_resources import value_reference as vr_tr
@@ -85,34 +85,3 @@ def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> sym_tb
     relativity = list(valid_relativities.rel_option_types)[0]
     assert isinstance(relativity, RelOptionType)
     return vd_tr.file_ref_value(_FileRefTestImpl('file_ref_test_impl', relativity))
-
-
-def file_ref_test_impl(file_name: str = 'file_ref_test_impl',
-                       relativity: RelOptionType = RelOptionType.REL_RESULT) -> FileRef:
-    return _FileRefTestImpl(file_name, relativity)
-
-
-class _FileRefTestImpl(FileRef):
-    """
-    A dummy FileRef that has a given relativity,
-    and is as simple as possible.
-    """
-
-    def __init__(self, file_name: str, relativity: RelOptionType):
-        super().__init__(file_name)
-        self._relativity = relativity
-
-    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
-        return self._relativity
-
-    def value_references_of_paths(self) -> list:
-        return []
-
-    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        return self._relativity == RelOptionType.REL_HOME
-
-    def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.file_name
-
-    def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.file_name
