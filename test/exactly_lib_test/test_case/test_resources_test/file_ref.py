@@ -7,6 +7,7 @@ from exactly_lib.test_case.file_ref_relativity import RelOptionType, PathRelativ
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition import symbol_table_contents as sym_tbl
 from exactly_lib_test.test_case.test_resources import file_ref as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
@@ -186,9 +187,9 @@ class _FileRefWithValRef(FileRef):
     def value_references_of_paths(self) -> list:
         return [self._value_references_of_path]
 
-    def _lookup(self, value_definitions: SymbolTable) -> vd.FileRef:
+    def _lookup(self, value_definitions: SymbolTable) -> FileRef:
         def_in_symbol_table = value_definitions.lookup(self._value_references_of_path.name)
-        assert isinstance(def_in_symbol_table, vd.FileRefValue)
+        assert isinstance(def_in_symbol_table, sym_tbl.FileRefValue)
         return def_in_symbol_table.file_ref
 
 
