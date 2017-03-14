@@ -3,9 +3,9 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutorConstructor, \
-    new_eh_exit_code, \
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, \
     ActSourceAndExecutor, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \

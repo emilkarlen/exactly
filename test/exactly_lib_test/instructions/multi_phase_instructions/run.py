@@ -3,20 +3,21 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.instructions.utils import sub_process_execution as spe
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_TMP_OPTION
 from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import SubProcessExecutionSetup, \
     MainStepExecutorForSubProcess
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.relative_path_options import REL_TMP_OPTION
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.test_resources.execution.home_and_sds_check import home_and_sds_test
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_test
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.parse import single_line_source

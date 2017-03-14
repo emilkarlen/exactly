@@ -10,7 +10,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -18,6 +17,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
@@ -25,9 +25,10 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsAction
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution.home_and_sds_check import home_or_sds_populator
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.sds_check import sds_populator
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 

@@ -1,14 +1,11 @@
 import unittest
 
-from exactly_lib_test.test_case.test_resources_test import file_ref_relativity, file_ref, \
-    value_reference, value_definition
+from exactly_lib_test.value_definition.test_resources_test import value_definition, value_reference
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(file_ref_relativity.suite())
     ret_val.addTest(value_reference.suite())
-    ret_val.addTest(file_ref.suite())
     ret_val.addTest(value_definition.suite())
     return ret_val
 

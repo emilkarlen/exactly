@@ -1,16 +1,15 @@
 import unittest
 
-from exactly_lib.test_case import file_ref as _file_ref
-from exactly_lib.test_case import file_refs
+from exactly_lib.test_case_file_structure import file_ref as _file_ref, file_refs
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, SymbolTableValue, Entry
 from exactly_lib.value_definition.symbol_table_contents import FileRefValue
 from exactly_lib.value_definition.value_definition_usage import ValueReference, ValueDefinitionVisitor, \
     ValueDefinitionOfPath, ValueDefinition
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
-from exactly_lib_test.test_case.test_resources import file_ref as fr_tr
-from exactly_lib_test.test_case.test_resources.value_reference import equals_value_reference
+from exactly_lib_test.test_case_file_structure.test_resources import file_ref as fr_tr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.value_reference import equals_value_reference
 
 
 def file_ref_value(file_ref: _file_ref.FileRef = file_refs.rel_cwd('file-name-rel-cd'),
@@ -22,10 +21,6 @@ def file_ref_value(file_ref: _file_ref.FileRef = file_refs.rel_cwd('file-name-re
 
 def entry(name: str, value_: SymbolTableValue = file_ref_value()) -> Entry:
     return Entry(name, value_)
-
-
-def symbol_table_from_none_or_value(symbol_table_or_none: SymbolTable) -> SymbolTable:
-    return SymbolTable() if symbol_table_or_none is None else symbol_table_or_none
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:

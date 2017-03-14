@@ -1,7 +1,8 @@
 import pathlib
 
-from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutor, \
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseHandling, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.eh import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh

@@ -1,8 +1,8 @@
 import shutil
 import subprocess
 
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ExitCodeOrHardError, new_eh_exit_code, \
-    new_eh_hard_error
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.failure_details import new_failure_details_from_exception
 from exactly_lib.util.process_execution.os_process_execution import Command, ProcessExecutionSettings

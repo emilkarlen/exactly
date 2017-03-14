@@ -3,10 +3,10 @@ import pathlib
 import subprocess
 
 from exactly_lib.instructions.utils import file_services
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings

@@ -2,15 +2,16 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.instructions.utils.arg_parse import relative_path_options
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure import relative_path_options
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfigurationForRelSds, \
     RelativityOptionConfiguration
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsAction
 from exactly_lib_test.test_resources.execution.sds_check.sds_populator import SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents
 
