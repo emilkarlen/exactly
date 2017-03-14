@@ -2,7 +2,6 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.relativity_root import RelOptionType
-from exactly_lib.test_case import value_definition as vd
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants
 from exactly_lib.test_case.home_and_sds import HomeAndSds
@@ -11,6 +10,7 @@ from exactly_lib.test_case.path_resolving_environment import PathResolvingEnviro
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition import symbol_table_contents as sym_tbl
+from exactly_lib.value_definition import value_definition_usage as vd
 from exactly_lib_test.test_case.test_resources import value_definition as vd_tr
 from exactly_lib_test.test_case.test_resources import value_reference as vr_tr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

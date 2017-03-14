@@ -6,8 +6,8 @@ from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.file_refs import lookup_file_ref_from_symbol_table
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 
 
 class DestinationPath:

@@ -6,8 +6,8 @@ from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, Re
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util.symbol_table import empty_symbol_table, singleton_symbol_table
+from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 from exactly_lib_test.test_case.test_resources import value_definition as vd_tr
 from exactly_lib_test.test_case.test_resources import value_reference as vr_tr
 from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import \

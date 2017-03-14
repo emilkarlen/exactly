@@ -12,7 +12,7 @@ from exactly_lib.section_document.parser_implementations.token_stream2 import To
 from exactly_lib.test_case import file_refs
 from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.file_ref_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case.value_definition import ValueReferenceOfPath
+from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
 

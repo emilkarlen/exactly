@@ -11,8 +11,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.file_ref_relativity import RelOptionType
-from exactly_lib.test_case.value_definition import ValueDefinitionOfPath
 from exactly_lib.value_definition.symbol_table_contents import FileRefValue
+from exactly_lib.value_definition.value_definition_usage import ValueDefinitionOfPath
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):

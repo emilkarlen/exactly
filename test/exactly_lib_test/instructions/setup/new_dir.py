@@ -5,8 +5,8 @@ from exactly_lib.instructions.multi_phase_instructions.new_dir import RELATIVITY
 from exactly_lib.instructions.setup import new_dir as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import file_refs
-from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util import symbol_table
+from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import new_dir_instruction_test
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.new_dir_instruction_test import \
     Configuration

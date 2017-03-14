@@ -6,9 +6,9 @@ from exactly_lib.test_case.file_ref import FileRef
 from exactly_lib.test_case.file_ref_relativity import RelOptionType
 from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.symbol_table_contents import FileRefValue
+from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 
 
 class _FileRefWithConstantLocationBase(FileRef):

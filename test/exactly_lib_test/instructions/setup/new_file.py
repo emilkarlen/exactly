@@ -4,9 +4,9 @@ from exactly_lib.instructions.multi_phase_instructions.new_file import RELATIVIT
 from exactly_lib.instructions.setup import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import file_refs
-from exactly_lib.test_case.value_definition import ValueReferenceOfPath
 from exactly_lib.util import symbol_table
 from exactly_lib.util.string import lines_content
+from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check

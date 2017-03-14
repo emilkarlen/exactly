@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.test_case import value_definition as vd
 from exactly_lib.util.line_source import Line
 from exactly_lib.value_definition import symbol_table_contents as sym_tbl
+from exactly_lib.value_definition import value_definition_usage as vd
 from exactly_lib_test.test_case.test_resources import file_ref as fr_tr
 from exactly_lib_test.test_case.test_resources import value_definition as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \

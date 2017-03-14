@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.value_definition import ValueReference, ValueReferenceVisitor, \
+from exactly_lib.value_definition.value_definition_usage import ValueReference, ValueReferenceVisitor, \
     ValueReferenceOfPath
 from exactly_lib_test.test_case.test_resources.file_ref_relativity import path_relativity_variants_equals
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
