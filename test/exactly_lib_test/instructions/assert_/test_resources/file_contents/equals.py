@@ -17,9 +17,11 @@ from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_and_sds_utils import HomeAndSdsAction
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import HomeOrSdsPopulator
-from exactly_lib_test.test_resources.execution.home_and_sds_check.home_or_sds_populator import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
+    HomeAndSdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
+    HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
     HomeOrSdsPopulatorForHomeContents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 

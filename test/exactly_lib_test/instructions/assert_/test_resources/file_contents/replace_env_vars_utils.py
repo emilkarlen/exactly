@@ -1,7 +1,7 @@
 import os
 
 from exactly_lib.execution import environment_variables
-from exactly_lib.test_case.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 
 
 class ReplacedEnvVarsFileContentsGenerator:

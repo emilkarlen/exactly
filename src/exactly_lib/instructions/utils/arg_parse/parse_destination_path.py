@@ -1,17 +1,17 @@
 import pathlib
 
-from exactly_lib.instructions.utils import destination_path as dp
+from exactly_lib.instructions.utils import destination_paths as dp
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_relativity_info
 from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.instructions.utils.destination_path import DestinationPath
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token import TokenType
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case.file_ref_relativity import RelOptionType
-from exactly_lib.test_case.value_definition import ValueReferenceOfPath
+from exactly_lib.test_case_file_structure.destination_path import DestinationPath
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
 
 
 def parse_destination__parse_source(options: RelOptionArgumentConfiguration,

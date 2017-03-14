@@ -4,18 +4,20 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
-from exactly_lib_test.test_resources.execution.sds_check import sds_populator, sds_test
-from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import SubDirOfSdsContainsExactly
-from exactly_lib_test.test_resources.execution.sds_check.sds_populator import cwd_contents, SdsPopulator
-from exactly_lib_test.test_resources.execution.sds_check.sds_test import Arrangement, Expectation
-from exactly_lib_test.test_resources.execution.sds_check.sds_utils import SdsAction, mk_sub_dir_of_act_and_change_to_it
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator, sds_test
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    SubDirOfSdsContainsExactly
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents, SdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_test import Arrangement, Expectation
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction, \
+    mk_sub_dir_of_act_and_change_to_it
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 

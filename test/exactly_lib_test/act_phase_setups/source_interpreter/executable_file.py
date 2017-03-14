@@ -13,7 +13,8 @@ from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor im
     Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_resources.execution.sds_check.sds_contents_check import test_case_dir_contains_exactly
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    test_case_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 

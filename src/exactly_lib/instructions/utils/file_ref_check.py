@@ -3,10 +3,10 @@ import pathlib
 from exactly_lib.instructions.utils.file_properties import FilePropertiesCheck, CheckResult
 from exactly_lib.instructions.utils.file_properties import render_failure
 from exactly_lib.instructions.utils.file_ref_validator import FileRefValidatorBase
-from exactly_lib.test_case.file_ref import FileRef
-from exactly_lib.test_case.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+    PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
 
 
 class FileRefCheck:
