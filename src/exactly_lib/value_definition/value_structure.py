@@ -1,12 +1,16 @@
 from exactly_lib.util.line_source import Line
-from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
+from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable, Entry
 
 
 class Value:
     """
     A value of a type that the type system supports
     """
-    pass
+
+    @property
+    def references(self) -> list:
+        """All `ValueReference` directly referenced by this object"""
+        raise NotImplementedError()
 
 
 class ValueRestriction:
@@ -61,6 +65,15 @@ class ValueDefinition2(ValueUsage2):
     @property
     def value_container(self) -> ValueContainer:
         return self._value_container
+
+    @property
+    def references(self) -> list:
+        """All `ValueReference` directly referenced by this object"""
+        return self._value_container.value.references
+
+    @property
+    def symbol_table_entry(self) -> Entry:
+        return Entry(self.name, self.value_container)
 
 
 class ValueReference2(ValueUsage2):
