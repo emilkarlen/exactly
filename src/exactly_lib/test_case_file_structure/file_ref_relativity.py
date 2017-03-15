@@ -9,6 +9,35 @@ class RelOptionType(enum.Enum):
     REL_CWD = 4
 
 
+class SpecificPathRelativity:
+    """
+    The relativity, or non-relativity, of a path.
+    """
+
+    def __init__(self,
+                 relative: RelOptionType):
+        self._relative = relative
+
+    @property
+    def is_relative(self) -> bool:
+        return self._relative is not None
+
+    @property
+    def is_absolute(self) -> bool:
+        return self._relative is None
+
+    @property
+    def relativity_type(self) -> RelOptionType:
+        return self._relative
+
+
+SPECIFIC_ABSOLUTE_RELATIVITY = SpecificPathRelativity(None)
+
+
+def specific_relative_relativity(relativity: RelOptionType) -> SpecificPathRelativity:
+    return SpecificPathRelativity(relativity)
+
+
 class PathRelativityVariants(tuple):
     """
     A set of path relativities.
