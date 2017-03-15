@@ -21,11 +21,11 @@ class FileRef:
 
     def value_references_of_paths(self) -> list:
         """
-        All `ValueReferenceOfPath`s that are _directly_ used by this object.
+        All `ValueReference`s that are _directly_ used by this object.
         I.e, if value <name> is referenced, that in turn references <name2>,
         then <name2> should not be included in the result because of this
         reason.
-        :rtype [`ValueReferenceOfPath`]
+        :rtype [`ValueReference`]
         """
         raise NotImplementedError()
 
