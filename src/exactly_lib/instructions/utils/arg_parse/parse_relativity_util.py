@@ -7,13 +7,14 @@ from exactly_lib.test_case_file_structure import relative_path_options as rel_op
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_VARIABLE_DEFINITION_OPTION_NAME
 from exactly_lib.util.cli_syntax import option_parsing
-from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.value_definition.value_structure import ValueReference2
 
 
 def parse_relativity_info(options: RelOptionsConfiguration,
                           source: TokenStream2):
     """
-    :return: Either a `RelOptionType` or a `ValueReferenceOfPath`
+    :return: Either a `RelOptionType` or a `ValueReference`
     """
     if source.is_null:
         return options.default_option
@@ -28,7 +29,7 @@ def parse_relativity_info(options: RelOptionsConfiguration,
 
 
 def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
-                                  source: TokenStream2) -> ValueReferenceOfPath:
+                                  source: TokenStream2) -> ValueReference2:
     option_str = source.head.string
     if not option_parsing.matches(REL_VARIABLE_DEFINITION_OPTION_NAME, option_str):
         return None
@@ -44,7 +45,7 @@ def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
                                                                                     val_def_name)
         raise SingleInstructionInvalidArgumentException(msg)
     source.consume()
-    return ValueReferenceOfPath(val_def_name, options.accepted_relativity_variants)
+    return ValueReference2(val_def_name, FileRefRelativityRestriction(options.accepted_relativity_variants))
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,

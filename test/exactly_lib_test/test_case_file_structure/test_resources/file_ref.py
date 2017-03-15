@@ -7,13 +7,18 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition import symbol_table_contents as sym_tbl
-from exactly_lib.value_definition import value_definition_usage as vd
-from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import _FileRefTestImpl
+from exactly_lib.value_definition import value_structure as vs
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.value_definition.value_structure import ValueReference2, ValueContainer
+from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import value_definition as vd_tr
-from exactly_lib_test.value_definition.test_resources import value_reference as vr_tr
+from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_tr
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
+    equals_file_ref_relativity_restriction
+from exactly_lib_test.value_definition.test_resources.values2 import file_ref_value
 
 
 def file_ref_equals(expected: FileRef) -> asrt.ValueAssertion:
@@ -62,8 +67,10 @@ class _FileRefAssertion(asrt.ValueAssertion):
     def _fake_value_definitions_according_to_expected(self) -> SymbolTable:
         elements = {}
         for ref in self._expected.value_references_of_paths():
-            assert isinstance(ref, vd.ValueReferenceOfPath)
-            elements[ref.name] = file_ref_val_test_impl(ref.valid_relativities)
+            assert isinstance(ref, vs.ValueReference2)
+            value_restriction = ref.value_restriction
+            assert isinstance(value_restriction, FileRefRelativityRestriction)
+            elements[ref.name] = _value_container(file_ref_val_test_impl(value_restriction.accepted))
         return SymbolTable(elements)
 
     def _equals_value_references_of_paths(self,
@@ -76,12 +83,22 @@ class _FileRefAssertion(asrt.ValueAssertion):
                         mb.apply('Number of value_references_of_paths'))
         for idx, expected_ref in enumerate(self._expected.value_references_of_paths()):
             actual_ref = actual.value_references_of_paths()[idx]
-            put.assertIsInstance(actual_ref, vd.ValueReferenceOfPath)
-            vr_tr.equals_value_reference(expected_ref).apply(put, actual_ref,
-                                                             mb.for_sub_component('[%d]' % idx))
+            put.assertIsInstance(actual_ref, ValueReference2)
+            assert isinstance(actual_ref, ValueReference2)
+            assert isinstance(expected_ref, ValueReference2)
+            expected_value_restriction = expected_ref.value_restriction
+            assert isinstance(expected_value_restriction, FileRefRelativityRestriction)
+            vs_tr.equals_value_reference(expected_ref.name,
+                                         equals_file_ref_relativity_restriction(expected_value_restriction)
+                                         ).apply(put, actual_ref,
+                                                 mb.for_sub_component('[%d]' % idx))
 
 
-def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> sym_tbl.FileRefValue:
+def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> vd_tr.FileRefValue:
     relativity = list(valid_relativities.rel_option_types)[0]
     assert isinstance(relativity, RelOptionType)
-    return vd_tr.file_ref_value(_FileRefTestImpl('file_ref_test_impl', relativity))
+    return file_ref_value(file_ref_test_impl('file_ref_test_impl', relativity))
+
+
+def _value_container(value: vd_tr.FileRefValue) -> ValueContainer:
+    return ValueContainer(Line(1, 'source line'), value)
