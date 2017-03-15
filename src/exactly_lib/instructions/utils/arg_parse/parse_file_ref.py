@@ -13,7 +13,7 @@ from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
+from exactly_lib.value_definition.value_structure import ValueReference2
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
 
@@ -106,5 +106,5 @@ def _from_relativity_info(relativity_info, path_argument: str) -> FileRef:
         return file_refs.absolute_file_name(path_argument)
     if isinstance(relativity_info, RelOptionType):
         return file_refs.of_rel_option(relativity_info, path_argument)
-    elif isinstance(relativity_info, ValueReferenceOfPath):
+    elif isinstance(relativity_info, ValueReference2):
         return rel_value_definition(relativity_info, path_argument)

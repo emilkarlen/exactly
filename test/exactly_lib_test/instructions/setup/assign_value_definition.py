@@ -7,17 +7,20 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.value_definition import value_definition_usage as vd
+from exactly_lib.util.line_source import Line
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
+from exactly_lib.value_definition.value_structure import ValueDefinition2, ValueContainer, Value, ValueReference2
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources import value_definition as tr
-from exactly_lib_test.value_definition.test_resources.value_definition import assert_symbol_table_is_singleton, \
-    equals_file_ref_value
+from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_asrt
+from exactly_lib_test.value_definition.test_resources import values2 as v2
+from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_container
+from exactly_lib_test.value_definition.test_resources.values2 import assert_symbol_table_is_singleton
 
 
 def suite() -> unittest.TestSuite:
@@ -72,16 +75,18 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = 'name = --rel-act component'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = tr.file_ref_value(file_refs.rel_act('component'))
+            expected_file_ref_value = v2.file_ref_value(file_refs.rel_act('component'))
+            expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          value_definition_usages=tr.assert_value_usages_is_singleton_list(
-                              tr.equals_value_definition(
-                                  vd.ValueDefinitionOfPath('name', expected_file_ref_value))),
+                          value_definition_usages=v2.assert_value_usages_is_singleton_list(
+                              vs_asrt.equals_value_definition(
+                                  ValueDefinition2('name', expected_value_container))),
                           value_definitions_after_main=assert_symbol_table_is_singleton(
                               'name',
-                              equals_file_ref_value(expected_file_ref_value)))
+                              equals_value_container(expected_value_container))
+                      )
                       )
 
 
@@ -89,18 +94,19 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = 'name = component'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = tr.file_ref_value(
+            expected_file_ref_value = v2.file_ref_value(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
                                         'component'))
+            expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          value_definition_usages=tr.assert_value_usages_is_singleton_list(
-                              tr.equals_value_definition(
-                                  vd.ValueDefinitionOfPath('name', expected_file_ref_value))),
+                          value_definition_usages=v2.assert_value_usages_is_singleton_list(
+                              vs_asrt.equals_value_definition(
+                                  ValueDefinition2('name', expected_value_container))),
                           value_definitions_after_main=assert_symbol_table_is_singleton(
                               'name',
-                              equals_file_ref_value(expected_file_ref_value)))
+                              equals_value_container(expected_value_container)))
                       )
 
 
@@ -108,21 +114,27 @@ class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
     def test(self):
         instruction_argument = 'ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = tr.file_ref_value(
+            expected_file_ref_value = v2.file_ref_value(
                 rel_value_definition(
-                    vd.ValueReferenceOfPath('REFERENCED_VAL_DEF',
-                                            REL_OPTIONS_CONFIGURATION.accepted_relativity_variants),
+                    ValueReference2('REFERENCED_VAL_DEF',
+                                    FileRefRelativityRestriction(
+                                        REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
                     'component'))
+            expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
                       Arrangement(),
                       Expectation(
                           value_definition_usages=asrt.matches_sequence([
-                              tr.equals_value_definition(
-                                  vd.ValueDefinitionOfPath('ASSIGNED_NAME',
-                                                           expected_file_ref_value),
+                              vs_asrt.equals_value_definition(
+                                  ValueDefinition2('ASSIGNED_NAME',
+                                                   expected_value_container),
                                   ignore_source_line=True)
                           ]),
                           value_definitions_after_main=assert_symbol_table_is_singleton(
                               'ASSIGNED_NAME',
-                              equals_file_ref_value(expected_file_ref_value)))
+                              equals_value_container(expected_value_container)))
                       )
+
+
+def _value_container(value: Value) -> ValueContainer:
+    return ValueContainer(Line(1, 'source line'), value)
