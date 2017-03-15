@@ -10,6 +10,10 @@ class StringValue(Value):
     def string(self) -> str:
         return self._string
 
+    @property
+    def references(self) -> list:
+        return []
+
 
 class FileRefValue(Value):
     def __init__(self, file_ref: FileRef):
@@ -18,6 +22,10 @@ class FileRefValue(Value):
     @property
     def file_ref(self) -> FileRef:
         return self._file_ref
+
+    @property
+    def references(self) -> list:
+        return self._file_ref.value_references_of_paths()
 
 
 class ValueVisitor:
