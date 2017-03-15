@@ -1,22 +1,27 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition.symbol_table_contents import FileRefValue
-from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.value_structure import ValueReference2, ValueContainer
 
 
-def rel_value_definition(value_reference_of_path: ValueReferenceOfPath, file_name: str) -> FileRef:
-    return _FileRefRelValueDefinition(file_name, value_reference_of_path)
+def rel_value_definition(value_reference2: ValueReference2, file_name: str) -> FileRef:
+    return _FileRefRelValueDefinition(file_name, value_reference2)
+
+
+def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityVariants) -> ValueReference2:
+    return ValueReference2(val_def_name, FileRefRelativityRestriction(accepted_relativities))
 
 
 class _FileRefRelValueDefinition(FileRef):
     def __init__(self,
                  file_name: str,
-                 value_reference_of_path: ValueReferenceOfPath):
+                 value_reference_of_path: ValueReference2):
         super().__init__(file_name)
         self.value_reference_of_path = value_reference_of_path
 
@@ -44,6 +49,8 @@ class _FileRefRelValueDefinition(FileRef):
 
 
 def lookup_file_ref_from_symbol_table(value_definitions: SymbolTable, name: str) -> FileRef:
-    value = value_definitions.lookup(name)
+    value_container = value_definitions.lookup(name)
+    assert isinstance(value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
+    value = value_container.value
     assert isinstance(value, FileRefValue), 'Referenced definition must be FileRefValue'
     return value.file_ref
