@@ -47,6 +47,10 @@ def assert_token(token_type: asrt.ValueAssertion = asrt.anything_goes(),
     ])
 
 
+def assert_token_string_is(expected: str) -> asrt.ValueAssertion:
+    return assert_token(string=asrt.equals(expected))
+
+
 def assert_quoted(string: str,
                   source_string: str) -> asrt.ValueAssertion:
     return assert_token(token_type=asrt.equals(TokenType.QUOTED),
