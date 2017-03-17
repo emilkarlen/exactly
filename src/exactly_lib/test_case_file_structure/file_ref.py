@@ -19,6 +19,10 @@ class FileRef:
     def file_name(self) -> str:
         return self._file_name
 
+    @property
+    def path_argument(self) -> pathlib.Path:
+        return pathlib.Path(self._file_name)
+
     def value_references_of_paths(self) -> list:
         """
         All `ValueReference`s that are _directly_ used by this object.
