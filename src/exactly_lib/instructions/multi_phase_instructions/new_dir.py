@@ -1,6 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path__token_stream
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -11,7 +11,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case_file_structure.destination_path import DestinationPath
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 
 
@@ -54,9 +54,9 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [concept.cross_reference_target for concept in concepts]
 
 
-def parse(argument: str) -> DestinationPath:
+def parse(argument: str) -> FileRef:
     source = TokenStream2(argument)
-    destination_path = parse_destination_path__token_stream(RELATIVITY_OPTIONS, True, source)
+    destination_path = parse_file_ref(source, RELATIVITY_OPTIONS)
 
     if not source.is_null:
         raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(source.remaining_source))
@@ -64,11 +64,11 @@ def parse(argument: str) -> DestinationPath:
 
 
 def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
-                            destination_path: DestinationPath) -> str:
+                            dir_path_resolver: FileRef) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path = destination_path.resolved_path_if_not_rel_home(environment)
+    dir_path = dir_path_resolver.file_path_post_sds(environment)
     try:
         if dir_path.is_dir():
             return None
@@ -84,8 +84,8 @@ def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
 
 
 def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
-                          destination_path: DestinationPath) -> sh.SuccessOrHardError:
-    error_message = make_dir_in_current_dir(environment, destination_path)
+                          dir_path_resolver: FileRef) -> sh.SuccessOrHardError:
+    error_message = make_dir_in_current_dir(environment, dir_path_resolver)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 
 

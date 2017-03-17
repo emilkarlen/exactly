@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case_file_structure.destination_path import DestinationPath
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -22,10 +22,10 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class _Instruction(BeforeAssertPhaseInstruction):
-    def __init__(self, destination_path: DestinationPath):
-        self.destination_path = destination_path
+    def __init__(self, dir_path_resolver: FileRef):
+        self.dir_path_resolver = dir_path_resolver
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return mkdir_utils.execute_and_return_sh(environment.path_resolving_environment, self.destination_path)
+        return mkdir_utils.execute_and_return_sh(environment.path_resolving_environment, self.dir_path_resolver)
