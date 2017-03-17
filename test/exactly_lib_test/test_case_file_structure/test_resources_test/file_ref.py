@@ -6,8 +6,9 @@ from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionTy
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition import symbol_table_contents as sym_tbl
-from exactly_lib.value_definition import value_definition_usage as vd
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
+from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference2
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
@@ -29,11 +30,12 @@ class TestEquals(unittest.TestCase):
             (_FileRefWithoutValRef(_NOT_EXISTS_PRE_SDS_RELATIVITY, 'a-file-name'),
              'NOT Exists pre SDS'
              ),
-            (_FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                        PathRelativityVariants({RelOptionType.REL_ACT}, False)),
-                                'file-name'),
+            (_FileRefWithValRef(
+                ValueReference2('reffed-name',
+                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                'file-name'),
              'NOT Exists pre SDS'
-             ),
+            ),
         ]
         for value, msg in test_cases:
             with self.subTest(msg=msg):
@@ -71,11 +73,24 @@ class TestNotEquals(unittest.TestCase):
     def test_value_ref__differs__relativity_variants(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                              PathRelativityVariants({RelOptionType.REL_ACT}, False)),
+        expected = _FileRefWithValRef(ValueReference2('reffed-name',
+                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                       'file-name')
-        actual = _FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                            PathRelativityVariants({RelOptionType.REL_HOME}, False)),
+        actual = _FileRefWithValRef(ValueReference2('reffed-name',
+                                                    _relativity_restriction({RelOptionType.REL_HOME}, False)),
+                                    'file-name')
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
+
+    def test_value_ref__differs__value_name(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = _FileRefWithValRef(ValueReference2('reffed-name',
+                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                                      'file-name')
+        actual = _FileRefWithValRef(ValueReference2('OTHER-reffed-name',
+                                                    _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                     'file-name')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -84,8 +99,8 @@ class TestNotEquals(unittest.TestCase):
     def test_differs__no_value_refs__value_refs(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                              PathRelativityVariants({RelOptionType.REL_HOME}, False)),
+        expected = _FileRefWithValRef(ValueReference2('reffed-name',
+                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                       'file-name')
         actual = _FileRefWithoutValRef(RelOptionType.REL_RESULT,
                                        'file-name')
@@ -98,34 +113,21 @@ class TestNotEquals(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = _FileRefWithoutValRef(RelOptionType.REL_RESULT,
                                          'file-name')
-        actual = _FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                            PathRelativityVariants({RelOptionType.REL_HOME}, False)),
+        actual = _FileRefWithValRef(ValueReference2('reffed-name',
+                                                    _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                     'file-name')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
 
-    def test_differs__value_refs_rel_option_types(self):
+    def test_value_ref__invalid_type_of_value_restriction(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                              PathRelativityVariants({RelOptionType.REL_CWD}, False)),
+        expected = _FileRefWithValRef(ValueReference2('reffed-name',
+                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                       'file-name')
-        actual = _FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                            PathRelativityVariants({RelOptionType.REL_HOME}, False)),
-                                    'file-name')
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-    def test_differs__value_refs_name(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(vd.ValueReferenceOfPath('reffed-name',
-                                                              PathRelativityVariants({RelOptionType.REL_CWD}, False)),
-                                      'file-name')
-        actual = _FileRefWithValRef(vd.ValueReferenceOfPath('OTHER-reffed-name',
-                                                            PathRelativityVariants({RelOptionType.REL_CWD}, False)),
+        actual = _FileRefWithValRef(ValueReference2('reffed-name',
+                                                    NoRestriction()),
                                     'file-name')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -167,10 +169,10 @@ class _FileRefWithValRef(FileRef):
     """
 
     def __init__(self,
-                 value_references_of_path: vd.ValueReferenceOfPath,
+                 value_reference: ValueReference2,
                  file_name: str):
         super().__init__(file_name)
-        self._value_references_of_path = value_references_of_path
+        self._value_references_of_path = value_reference
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
         return self._lookup(value_definitions).relativity(value_definitions)
@@ -189,9 +191,15 @@ class _FileRefWithValRef(FileRef):
 
     def _lookup(self, value_definitions: SymbolTable) -> FileRef:
         def_in_symbol_table = value_definitions.lookup(self._value_references_of_path.name)
-        assert isinstance(def_in_symbol_table, sym_tbl.FileRefValue)
-        return def_in_symbol_table.file_ref
+        assert isinstance(def_in_symbol_table, ValueContainer), 'Symbol Table is assumed to contain ValueContainer:s'
+        value = def_in_symbol_table.value
+        assert isinstance(value, FileRefValue), 'Referenced ValueContainer must contain a FileRefValue'
+        return value.file_ref
 
 
 _EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME
 _NOT_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_ACT
+
+
+def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool):
+    return FileRefRelativityRestriction(PathRelativityVariants(rel_option_types, absolute_is_valid))
