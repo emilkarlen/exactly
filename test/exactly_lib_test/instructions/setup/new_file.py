@@ -6,7 +6,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.util import symbol_table
 from exactly_lib.util.string import lines_content
-from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
@@ -19,8 +19,11 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_popu
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import argument_list_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources.value_definition import symbol_table_from_entries, \
-    assert_value_usages_is_singleton_list_with_value_reference, file_ref_value
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
+    equals_file_ref_relativity_restriction
+from exactly_lib_test.value_definition.test_resources.value_definition import symbol_table_from_entries
+from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_reference
+from exactly_lib_test.value_definition.test_resources.values2 import file_ref_value_container
 
 
 def suite() -> unittest.TestSuite:
@@ -84,16 +87,19 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                       Arrangement(
                           value_definitions=symbol_table_from_entries([
                               symbol_table.Entry('VALUE_DEF_NAME',
-                                                 file_ref_value(file_refs.rel_tmp_user('value-def-path-arg')))])
+                                                 file_ref_value_container(
+                                                     file_refs.rel_tmp_user('value-def-path-arg')))])
                       ),
                       Expectation(
                           main_side_effects_on_files=tmp_user_dir_contains_exactly(DirContents([
                               Dir('value-def-path-arg',
                                   [empty_file('file-name.txt')])
                           ])),
-                          value_definition_usages=assert_value_usages_is_singleton_list_with_value_reference(
-                              ValueReferenceOfPath('VALUE_DEF_NAME',
-                                                   RELATIVITY_VARIANTS)),
+                          value_definition_usages=asrt.matches_sequence([
+                              equals_value_reference('VALUE_DEF_NAME',
+                                                     equals_file_ref_relativity_restriction(
+                                                         FileRefRelativityRestriction(RELATIVITY_VARIANTS)))
+                          ]),
                       )
                       )
 

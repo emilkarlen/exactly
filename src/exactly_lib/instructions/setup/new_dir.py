@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.test_case_file_structure.destination_path import DestinationPath
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -22,14 +22,14 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class _Instruction(SetupPhaseInstruction):
-    def __init__(self, destination_path: DestinationPath):
-        self.destination_path = destination_path
+    def __init__(self, dir_path_resolver: FileRef):
+        self.dir_path_resolver = dir_path_resolver
 
     def value_usages(self) -> list:
-        return self.destination_path.value_references_of_paths()
+        return self.dir_path_resolver.value_references_of_paths()
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return new_dir_utils.execute_and_return_sh(environment.path_resolving_environment, self.destination_path)
+        return new_dir_utils.execute_and_return_sh(environment.path_resolving_environment, self.dir_path_resolver)

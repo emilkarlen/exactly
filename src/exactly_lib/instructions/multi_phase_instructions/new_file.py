@@ -1,7 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.utils.arg_parse import parse_here_document
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination__parse_source
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref_from_parse_source
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.instructions.utils.destination_paths import *
@@ -10,7 +10,6 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.destination_path import DestinationPath
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from exactly_lib.util.string import lines_content
@@ -56,12 +55,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class FileInfo(tuple):
     def __new__(cls,
-                destination_path: DestinationPath,
+                path_resolver: FileRef,
                 contents: str):
-        return tuple.__new__(cls, (destination_path, contents))
+        return tuple.__new__(cls, (path_resolver, contents))
 
     @property
-    def destination_path(self) -> DestinationPath:
+    def destination_path(self) -> FileRef:
         return self[0]
 
     @property
@@ -70,14 +69,14 @@ class FileInfo(tuple):
 
 
 def parse(source: ParseSource) -> FileInfo:
-    destination_path = parse_destination__parse_source(_RELATIVITY_OPTIONS, True, source)
+    file_ref = parse_file_ref_from_parse_source(source, _RELATIVITY_OPTIONS)
     contents = ''
     if source.is_at_eol__except_for_space:
         source.consume_current_line()
     else:
         lines = parse_here_document.parse_as_last_argument(False, source)
         contents = lines_content(lines)
-    return FileInfo(destination_path, contents)
+    return FileInfo(file_ref, contents)
 
 
 def create_file(file_info: FileInfo,
@@ -85,7 +84,7 @@ def create_file(file_info: FileInfo,
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.destination_path.resolved_path_if_not_rel_home(environment)
+    file_path = file_info.destination_path.file_path_post_sds(environment)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)

@@ -40,7 +40,7 @@ class TestParseWithNoContents(unittest.TestCase):
         arguments = 'single-argument'
         actual = sut.parse(single_line_source(arguments))
         self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.destination_type(empty_symbol_table()))
+                      actual.destination_path.relativity(empty_symbol_table()))
         self.assertEqual('single-argument',
                          str(actual.destination_path.path_argument))
         self.assertEqual('',
@@ -71,7 +71,7 @@ class TestParseWithContents(unittest.TestCase):
                                        'MARKER'])
         actual = sut.parse(source)
         self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.destination_type(empty_symbol_table()))
+                      actual.destination_path.relativity(empty_symbol_table()))
         self.assertEqual('file name',
                          str(actual.destination_path.path_argument))
         self.assertEqual(lines_content(['single line']),
@@ -85,7 +85,7 @@ class TestParseWithContents(unittest.TestCase):
                                        'following line'])
         actual = sut.parse(source)
         self.assertIs(RelOptionType.REL_TMP,
-                      actual.destination_path.destination_type(empty_symbol_table()))
+                      actual.destination_path.relativity(empty_symbol_table()))
         self.assertEqual('file name',
                          str(actual.destination_path.path_argument))
         self.assertEqual(lines_content(['single line']),
