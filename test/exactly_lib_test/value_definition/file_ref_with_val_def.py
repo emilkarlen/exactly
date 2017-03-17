@@ -7,15 +7,18 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import singleton_symbol_table
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
+from exactly_lib.value_definition.value_structure import ValueReference2
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources import value_definition as vd_tr
-from exactly_lib_test.value_definition.test_resources import value_reference as vr_tr
+from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_tr
+from exactly_lib_test.value_definition.test_resources import values2 as v2
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
+    equals_file_ref_relativity_restriction
 
 
 def suite() -> unittest.TestSuite:
@@ -27,16 +30,17 @@ def suite() -> unittest.TestSuite:
 class TestRelValueDefinition(unittest.TestCase):
     def test_should_reference_exactly_one_value_definition(self):
         # ARRANGE #
-        value_ref_of_path = ValueReferenceOfPath('value_definition_name',
-                                                 PathRelativityVariants({RelOptionType.REL_ACT,
-                                                                         RelOptionType.REL_HOME},
-                                                                        True))
+        expected_restriction = FileRefRelativityRestriction(
+            PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, True))
+        value_ref_of_path = ValueReference2('value_definition_name',
+                                            expected_restriction)
         file_reference = rel_value_definition(value_ref_of_path, 'file.txt')
         # ACT #
         actual = file_reference.value_references_of_paths()
         # ASSERT #
         asrt.matches_sequence([
-            vr_tr.equals_value_reference(value_ref_of_path)
+            vs_tr.equals_value_reference('value_definition_name',
+                                         equals_file_ref_relativity_restriction(expected_restriction))
         ]).apply_with_message(self, actual, 'value_references_of_paths')
 
     def test_exists_pre_sds_for_value_that_exists_pre_sds(self):
@@ -46,8 +50,8 @@ class TestRelValueDefinition(unittest.TestCase):
                                                    RelOptionType.REL_HOME),
             'file.txt')
         value_definitions = singleton_symbol_table(
-            vd_tr.entry('VAL_DEF_NAME',
-                        vd_tr.file_ref_value(file_ref=sut.rel_home('file-name'))))
+            v2.entry('VAL_DEF_NAME',
+                     v2.file_ref_value(file_ref=sut.rel_home('file-name'))))
         # ASSERT #
         self.assertTrue(file_reference.exists_pre_sds(value_definitions),
                         'File is expected to exist pre SDS')
@@ -59,15 +63,15 @@ class TestRelValueDefinition(unittest.TestCase):
                                                    RelOptionType.REL_TMP),
             'file.txt')
         value_definitions = singleton_symbol_table(
-            vd_tr.entry('VAL_DEF_NAME',
-                        vd_tr.file_ref_value(file_ref=sut.rel_tmp_user('file-name'))))
+            v2.entry('VAL_DEF_NAME',
+                     v2.file_ref_value(file_ref=sut.rel_tmp_user('file-name'))))
         # ASSERT #
         self.assertFalse(file_reference.exists_pre_sds(value_definitions),
                          'File is expected to not exist pre SDS')
 
     def test_existing_file__pre_sds(self):
-        referenced_entry = vd_tr.entry('rel_home_path_value',
-                                       vd_tr.file_ref_value(file_ref=sut.rel_home('home-sub-dir')))
+        referenced_entry = v2.entry('rel_home_path_value',
+                                    v2.file_ref_value(file_ref=sut.rel_home('home-sub-dir')))
         file_reference = rel_value_definition(
             _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_HOME),
@@ -84,8 +88,8 @@ class TestRelValueDefinition(unittest.TestCase):
             self.assertTrue(file_reference.file_path_pre_or_post_sds(environment).exists())
 
     def test_existing_file__post_sds(self):
-        referenced_entry = vd_tr.entry('rel_tmp_user_path_value',
-                                       vd_tr.file_ref_value(file_ref=sut.rel_tmp_user('referenced-component')))
+        referenced_entry = v2.entry('rel_tmp_user_path_value',
+                                    v2.file_ref_value(file_ref=sut.rel_tmp_user('referenced-component')))
         file_reference = rel_value_definition(
             _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_TMP),
@@ -107,8 +111,8 @@ class TestRelValueDefinition(unittest.TestCase):
             'file.txt')
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             value_definitions = singleton_symbol_table(
-                vd_tr.entry('rel_home_path_value',
-                            vd_tr.file_ref_value(file_ref=sut.rel_home('file.txt'))))
+                v2.entry('rel_home_path_value',
+                         v2.file_ref_value(file_ref=sut.rel_home('file.txt'))))
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, value_definitions)
             self.assertFalse(file_reference.file_path_pre_sds(environment).exists())
             self.assertFalse(file_reference.file_path_pre_or_post_sds(environment).exists())
@@ -120,16 +124,16 @@ class TestRelValueDefinition(unittest.TestCase):
             'file.txt')
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             value_definitions = singleton_symbol_table(
-                vd_tr.entry('rel_tmp_user_path_value',
-                            vd_tr.file_ref_value(file_ref=sut.rel_tmp_user('file.txt'))))
+                v2.entry('rel_tmp_user_path_value',
+                         v2.file_ref_value(file_ref=sut.rel_tmp_user('file.txt'))))
             environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, value_definitions)
             self.assertFalse(file_reference.file_path_post_sds(environment).exists())
             self.assertFalse(file_reference.file_path_pre_or_post_sds(environment).exists())
 
     def test_accumulation_of_path_components_pre_sds(self):
         # ARRANGE #
-        referenced_entry = vd_tr.entry('rel_home_path_value',
-                                       vd_tr.file_ref_value(file_ref=sut.rel_home('first-component')))
+        referenced_entry = v2.entry('rel_home_path_value',
+                                    v2.file_ref_value(file_ref=sut.rel_home('first-component')))
         file_ref_using_val_ref = rel_value_definition(
             _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_HOME),
@@ -146,8 +150,8 @@ class TestRelValueDefinition(unittest.TestCase):
 
     def test_accumulation_of_path_components_post_sds(self):
         # ARRANGE #
-        referenced_entry = vd_tr.entry('rel_act_path_value',
-                                       vd_tr.file_ref_value(file_ref=sut.rel_act('component-1')))
+        referenced_entry = v2.entry('rel_act_path_value',
+                                    v2.file_ref_value(file_ref=sut.rel_act('component-1')))
         file_ref_using_val_ref = rel_value_definition(
             _value_reference_of_path_with_accepted(referenced_entry.key,
                                                    RelOptionType.REL_ACT),
@@ -164,9 +168,9 @@ class TestRelValueDefinition(unittest.TestCase):
 
 
 def _value_reference_of_path_with_accepted(value_name: str,
-                                           accepted: RelOptionType) -> ValueReferenceOfPath:
-    return ValueReferenceOfPath(value_name,
-                                _path_relativity_variants_with(accepted))
+                                           accepted: RelOptionType) -> ValueReference2:
+    return ValueReference2(value_name,
+                           FileRefRelativityRestriction(_path_relativity_variants_with(accepted)))
 
 
 def _path_relativity_variants_with(accepted: RelOptionType) -> PathRelativityVariants:
