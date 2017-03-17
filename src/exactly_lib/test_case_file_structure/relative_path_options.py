@@ -33,7 +33,7 @@ REL_HOME_OPTION_NAME = argument.OptionName(long_name='rel-home')
 
 REL_VARIABLE_DEFINITION_OPTION_NAME = argument.OptionName(long_name='rel')
 
-# TODO [val-def] Derive desciption strings in better way
+# TODO [val-def] Derive description strings in better way
 REL_OPTIONS_MAP = {
     RelOptionType.REL_HOME: RelOptionInfo(REL_HOME_OPTION_NAME, resolver_for_home,
                                           'home directory'),
@@ -52,6 +52,7 @@ REL_ACT_OPTION = long_option_syntax(REL_ACT_OPTION_NAME.long)
 REL_RESULT_OPTION = long_option_syntax(REL_RESULT_OPTION_NAME.long)
 REL_CWD_OPTION = long_option_syntax(REL_CWD_OPTION_NAME.long)
 REL_HOME_OPTION = long_option_syntax(REL_HOME_OPTION_NAME.long)
+REL_VALUE_DEFINITION_OPTION = long_option_syntax(REL_VARIABLE_DEFINITION_OPTION_NAME.long)
 
 
 def option_for(option_name: argument.OptionName, argument_name: str = None) -> argument.Option:

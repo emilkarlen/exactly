@@ -38,6 +38,12 @@ class ValueAssertion:
         """
         return self.apply(put, value, MessageBuilder(message))
 
+    def apply_without_message(self, put: unittest.TestCase, value):
+        """
+        Short cut to 'apply' when using no message.
+        """
+        return self.apply(put, value, MessageBuilder())
+
 
 class OfCallable(ValueAssertion):
     def __init__(self,
@@ -493,3 +499,19 @@ is_empty = len_equals(0)
 
 def matches_sequence(element_assertions: list) -> ValueAssertion:
     return _MatchesSequence(element_assertions)
+
+
+def and_(assertions: list) -> ValueAssertion:
+    if not assertions:
+        return Constant(True)
+    if len(assertions) == 1:
+        return assertions[0]
+    return And(assertions)
+
+
+def or_(assertions: list) -> ValueAssertion:
+    if not assertions:
+        return Constant(False)
+    if len(assertions) == 1:
+        return assertions[0]
+    return Or(assertions)
