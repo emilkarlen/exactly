@@ -19,7 +19,7 @@ class TokenStream2:
         self._lexer = shlex.shlex(self._source_io, posix=True)
         self._lexer.whitespace_split = True
         self._start_pos = 0
-        self._token = None
+        self._head_token = None
         self.consume()
 
     @property
@@ -28,11 +28,14 @@ class TokenStream2:
 
     @property
     def is_null(self) -> bool:
-        return self._token is None
+        return self._head_token is None
 
     @property
     def head(self) -> Token:
-        return self._token
+        """
+        :rtype None: If is_null
+        """
+        return self._head_token
 
     @property
     def position(self) -> int:
@@ -67,19 +70,19 @@ class TokenStream2:
         Consumes current token and makes following token the head,
         or makes `is_null` become True if there is no following token.
         """
-        ret_val = self._token
+        ret_val = self._head_token
         self._start_pos = self._source_io.tell()
         try:
             s = self._lexer.get_token()
         except ValueError as ex:
             raise TokenSyntaxError(str(ex))
         if s is None:
-            self._token = None
+            self._head_token = None
         else:
             self._revert_reading_of_newline()
             s_source = self._source[self._start_pos:self._source_io.tell()].strip()
             t = TokenType.QUOTED if s_source[0] in self._lexer.quotes else TokenType.PLAIN
-            self._token = Token(t, s, s_source)
+            self._head_token = Token(t, s, s_source)
         return ret_val
 
     def _revert_reading_of_newline(self):
