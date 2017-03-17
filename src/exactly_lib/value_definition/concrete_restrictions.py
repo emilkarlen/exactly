@@ -27,3 +27,7 @@ class FileRefRelativityRestriction(ValueRestriction):
             return 'Not a FileRefValue: ' + str(value)
         file_ref = value.file_ref
         raise NotImplementedError('[val-def] impl restriktion')
+
+    @property
+    def accepted(self) -> PathRelativityVariants:
+        return self._accepted
