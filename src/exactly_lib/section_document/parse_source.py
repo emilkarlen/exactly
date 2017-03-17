@@ -114,6 +114,7 @@ class ParseSource:
         first_line_split = self.source_string.split(sep='\n', maxsplit=1)
         if len(first_line_split) == 1:
             self._current_line_number = None
+            self._current_line_text = None
             self.source_string = ''
         else:
             self.source_string = first_line_split[1]
