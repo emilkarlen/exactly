@@ -51,14 +51,6 @@ def non_home_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration
 
 NON_HOME_CONFIG = non_home_config('FILE')
 
-REL_VALUE_DEFINITION_OPTION = '--rel'
-VALUE_DEFINITION = 'value definition'
-REL_VALUE_DEFINITION_OPTION_ARGUMENT = 'VALUE-NAME'
-
-
-def _is_rel_variable_definition_option(option: str) -> bool:
-    return REL_VALUE_DEFINITION_OPTION == option
-
 
 def parse_file_ref_from_parse_source(source: ParseSource, conf: RelOptionArgumentConfiguration) -> FileRef:
     """
@@ -77,6 +69,7 @@ def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -
     """
     :param tokens: Argument list
     :return: The parsed FileRef, remaining arguments after file was parsed.
+    :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
 
     if tokens.is_null:
