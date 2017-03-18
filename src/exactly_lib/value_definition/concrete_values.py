@@ -14,6 +14,9 @@ class StringValue(Value):
     def references(self) -> list:
         return []
 
+    def __str__(self):
+        return str(type(self)) + '\'' + self._string + '\''
+
 
 class FileRefValue(Value):
     def __init__(self, file_ref: FileRef):
@@ -26,6 +29,9 @@ class FileRefValue(Value):
     @property
     def references(self) -> list:
         return self._file_ref.value_references_of_paths()
+
+    def __str__(self):
+        return str(type(self)) + '\'' + self._file_ref + '\''
 
 
 class ValueVisitor:
