@@ -56,7 +56,7 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
                                                                  p: Path,
                                                                  expected_number_of_files: int):
         self._assert_exists_dir(p)
-        self.assertEquals(
+        self.assertEqual(
             expected_number_of_files,
             len(list(p.iterdir())),
             'The directory should contain exactly %s files.' % expected_number_of_files)

@@ -30,14 +30,14 @@ class TestTokenStream(unittest.TestCase):
     def test_should_be_null_when_source_is_empty_string(self):
         actual = sut.TokenStream('')
         self.assertTrue(actual.is_null)
-        self.assertEquals('',
-                          actual.source)
+        self.assertEqual('',
+                         actual.source)
 
     def test_should_be_null_when_source_is_only_white_space(self):
         actual = sut.TokenStream('   ')
         self.assertTrue(actual.is_null)
-        self.assertEquals('   ',
-                          actual.source)
+        self.assertEqual('   ',
+                         actual.source)
 
     def test_single_token(self):
         actual = sut.TokenStream('a ')
@@ -47,8 +47,8 @@ class TestTokenStream(unittest.TestCase):
         self.assertEqual('a ',
                          actual.source)
         self.assertIsNone(actual.tail_source)
-        self.assertEquals('',
-                          actual.tail_source_or_empty_string)
+        self.assertEqual('',
+                         actual.tail_source_or_empty_string)
 
     def test_single_token_with_quoted_windows_file_name(self):
         actual = sut.TokenStream('c:\\\\dir ')
@@ -58,8 +58,8 @@ class TestTokenStream(unittest.TestCase):
         self.assertEqual('c:\\\\dir ',
                          actual.source)
         self.assertIsNone(actual.tail_source)
-        self.assertEquals('',
-                          actual.tail_source_or_empty_string)
+        self.assertEqual('',
+                         actual.tail_source_or_empty_string)
 
     def test_single_token_with_multiple_trailing_ws(self):
         actual = sut.TokenStream('a   ')
@@ -69,8 +69,8 @@ class TestTokenStream(unittest.TestCase):
         self.assertEqual('a   ',
                          actual.source)
         self.assertIsNone(actual.tail_source)
-        self.assertEquals('',
-                          actual.tail_source_or_empty_string)
+        self.assertEqual('',
+                         actual.tail_source_or_empty_string)
 
     def test_single_token_quoted(self):
         actual = sut.TokenStream('"a b" ')
@@ -80,8 +80,8 @@ class TestTokenStream(unittest.TestCase):
         self.assertEqual('"a b" ',
                          actual.source)
         self.assertIsNone(actual.tail_source)
-        self.assertEquals('',
-                          actual.tail_source_or_empty_string)
+        self.assertEqual('',
+                         actual.tail_source_or_empty_string)
 
     def test_single_token_quoted_empty_string(self):
         actual = sut.TokenStream('"" ')
@@ -91,8 +91,8 @@ class TestTokenStream(unittest.TestCase):
         self.assertEqual('"" ',
                          actual.source)
         self.assertIsNone(actual.tail_source)
-        self.assertEquals('',
-                          actual.tail_source_or_empty_string)
+        self.assertEqual('',
+                         actual.tail_source_or_empty_string)
 
     def test_multiple_tokens(self):
         actual = sut.TokenStream('a b  ')

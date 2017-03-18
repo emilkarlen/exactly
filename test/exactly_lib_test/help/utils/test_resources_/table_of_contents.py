@@ -33,9 +33,9 @@ class _IsTargetInfoAndEquals(va.ValueAssertion):
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         is_target_info.apply(put, value, message_builder)
         assert isinstance(value, TargetInfo)
-        put.assertEquals(self.expected.presentation_str,
-                         value.presentation_str,
-                         message_builder.apply('presentation_str'))
+        put.assertEqual(self.expected.presentation_str,
+                        value.presentation_str,
+                        message_builder.apply('presentation_str'))
         put.assertIsInstance(value.target, CrossReferenceId,
                              'Actual value is not a ' + str(CrossReferenceId))
         expected_target = self.expected.target

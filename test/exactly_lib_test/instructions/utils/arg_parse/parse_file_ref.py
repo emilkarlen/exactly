@@ -309,24 +309,24 @@ class TestParseFromParseSource(unittest.TestCase):
     def test_parse_without_option(self):
         file_ref = sut.parse_file_ref_from_parse_source(remaining_source('FILENAME arg2'),
                                                         sut.ALL_REL_OPTIONS_CONFIG)
-        self.assertEquals('FILENAME',
-                          file_ref.file_name)
+        self.assertEqual('FILENAME',
+                         file_ref.file_name)
         assert_source(remaining_part_of_current_line=asrt.equals(' arg2'))
 
     def test_parse_with_option(self):
         file_ref = sut.parse_file_ref_from_parse_source(
             remaining_source(REL_CWD_OPTION + ' FILENAME arg3 arg4'),
             sut.ALL_REL_OPTIONS_CONFIG)
-        self.assertEquals('FILENAME',
-                          file_ref.file_name)
+        self.assertEqual('FILENAME',
+                         file_ref.file_name)
         assert_source(remaining_part_of_current_line=asrt.equals(' arg3 arg4'))
 
     def test_parse_with_initial_space(self):
         file_ref = sut.parse_file_ref_from_parse_source(
             remaining_source('   FILENAME'),
             sut.ALL_REL_OPTIONS_CONFIG)
-        self.assertEquals('FILENAME',
-                          file_ref.file_name)
+        self.assertEqual('FILENAME',
+                         file_ref.file_name)
         assert_source(is_at_eol=asrt.is_true)
 
     def test_fail_when_option_is_only_argument(self):

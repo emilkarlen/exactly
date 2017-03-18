@@ -92,9 +92,9 @@ class ExitCodeIs(va.ValueAssertion):
               put: unittest.TestCase,
               value: spe.ResultAndStderr,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
-        put.assertEquals(self.exit_code,
-                         value.result.exit_code,
-                         message_builder.apply('Exit code'))
+        put.assertEqual(self.exit_code,
+                        value.result.exit_code,
+                        message_builder.apply('Exit code'))
 
 
 class StderrContentsIs(va.ValueAssertion):

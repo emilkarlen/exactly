@@ -59,7 +59,7 @@ class TestExecutionOfSuite(unittest.TestCase):
         # ASSERT #
         std_output_files.finish()
 
-        self.assertEquals(expected_exit_value.exit_code, exit_code)
+        self.assertEqual(expected_exit_value.exit_code, exit_code)
         self.assertEqual(expected_output, std_output_files.stdout_contents)
 
     def test_suite_with_single_case(self):
@@ -94,7 +94,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                 # ASSERT #
                 std_output_files.finish()
 
-                self.assertEquals(expected_suite_exit_value.exit_code, exit_code)
+                self.assertEqual(expected_suite_exit_value.exit_code, exit_code)
                 stdout_contents_prepared_for_assertion = _replace_seconds_with_const(std_output_files.stdout_contents)
                 self.assertEqual(expected_output,
                                  stdout_contents_prepared_for_assertion)

@@ -240,9 +240,9 @@ class TestTestCaseInstructionList(unittest.TestCase):
             self.assertIsInstance(list_item,
                                   tuple,
                                   'Each item in the list is expected to be a tuple')
-            self.assertEquals(2,
-                              len(list_item),
-                              'Each item in the list is expected to be a pair.')
+            self.assertEqual(2,
+                             len(list_item),
+                             'Each item in the list is expected to be a pair.')
             self.assertIsInstance(list_item[0],
                                   formatting.SectionName,
                                   'Each item in the list is expected to have a %s as first element' %
