@@ -6,10 +6,10 @@ from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.value_structure import ValueContainer
 
 
-def validate_pre_sds(value_usage: vs.ValueUsage2,
+def validate_pre_sds(value_usage: vs.ValueUsage,
                      symbol_table: SymbolTable) -> PartialInstructionControlledFailureInfo:
-    if isinstance(value_usage, vs.ValueReference2):
-        assert isinstance(value_usage, vs.ValueReference2)
+    if isinstance(value_usage, vs.ValueReference):
+        assert isinstance(value_usage, vs.ValueReference)
         if not symbol_table.contains(value_usage.name):
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
@@ -19,8 +19,8 @@ def validate_pre_sds(value_usage: vs.ValueUsage2,
             if err_msg is not None:
                 return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION, err_msg)
         return None
-    elif isinstance(value_usage, vs.ValueDefinition2):
-        assert isinstance(value_usage, vs.ValueDefinition2)
+    elif isinstance(value_usage, vs.ValueDefinition):
+        assert isinstance(value_usage, vs.ValueDefinition)
         if symbol_table.contains(value_usage.name):
             already_defined_value_container = symbol_table.lookup(value_usage.name)
             assert isinstance(already_defined_value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
@@ -38,11 +38,11 @@ def validate_pre_sds(value_usage: vs.ValueUsage2,
             symbol_table.add(value_usage.symbol_table_entry)
             return None
     else:
-        raise TypeError('Unknown variant of {}: {}'.format(str(vs.ValueUsage2),
+        raise TypeError('Unknown variant of {}: {}'.format(str(vs.ValueUsage),
                                                            str(value_usage)))
 
 
-def _validate_reference(value_usage: vs.ValueReference2,
+def _validate_reference(value_usage: vs.ValueReference,
                         value_definitions: SymbolTable) -> str:
     referenced_value_container = value_definitions.lookup(value_usage.name)
     assert isinstance(referenced_value_container, ValueContainer), 'Values in SymbolTable must be ValueContainer'

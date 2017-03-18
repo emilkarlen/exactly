@@ -9,7 +9,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.symbol_table import singleton_symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_structure import ValueReference2
+from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import tmp_user_dir_contents
@@ -32,8 +32,8 @@ class TestRelValueDefinition(unittest.TestCase):
         # ARRANGE #
         expected_restriction = FileRefRelativityRestriction(
             PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, True))
-        value_ref_of_path = ValueReference2('value_definition_name',
-                                            expected_restriction)
+        value_ref_of_path = ValueReference('value_definition_name',
+                                           expected_restriction)
         file_reference = rel_value_definition(value_ref_of_path, 'file.txt')
         # ACT #
         actual = file_reference.value_references_of_paths()
@@ -168,9 +168,9 @@ class TestRelValueDefinition(unittest.TestCase):
 
 
 def _value_reference_of_path_with_accepted(value_name: str,
-                                           accepted: RelOptionType) -> ValueReference2:
-    return ValueReference2(value_name,
-                           FileRefRelativityRestriction(_path_relativity_variants_with(accepted)))
+                                           accepted: RelOptionType) -> ValueReference:
+    return ValueReference(value_name,
+                          FileRefRelativityRestriction(_path_relativity_variants_with(accepted)))
 
 
 def _path_relativity_variants_with(accepted: RelOptionType) -> PathRelativityVariants:

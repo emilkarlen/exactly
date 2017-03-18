@@ -47,7 +47,7 @@ class ValueContainer(SymbolTableValue):
         return self._value
 
 
-class ValueUsage2:
+class ValueUsage:
     def __init__(self, name: str):
         self._name = name
 
@@ -56,7 +56,7 @@ class ValueUsage2:
         return self._name
 
 
-class ValueDefinition2(ValueUsage2):
+class ValueDefinition(ValueUsage):
     def __init__(self,
                  name: str,
                  value_container: ValueContainer):
@@ -77,7 +77,7 @@ class ValueDefinition2(ValueUsage2):
         return Entry(self.name, self.value_container)
 
 
-class ValueReference2(ValueUsage2):
+class ValueReference(ValueUsage):
     def __init__(self,
                  name: str,
                  value_restriction: ValueRestriction):
@@ -94,18 +94,18 @@ class ValueUsageVisitor:
     Visitor of `Value`
     """
 
-    def visit(self, value_usage: ValueUsage2):
+    def visit(self, value_usage: ValueUsage):
         """
         :return: Return value from _visit... method
         """
-        if isinstance(value_usage, ValueDefinition2):
+        if isinstance(value_usage, ValueDefinition):
             return self._visit_definition(value_usage)
-        if isinstance(value_usage, ValueReference2):
+        if isinstance(value_usage, ValueReference):
             return self._visit_reference(value_usage)
         raise TypeError('Unknown {}: {}'.format(Value, str(value_usage)))
 
-    def _visit_definition(self, value_usage: ValueDefinition2):
+    def _visit_definition(self, value_usage: ValueDefinition):
         raise NotImplementedError()
 
-    def _visit_reference(self, value_usage: ValueReference2):
+    def _visit_reference(self, value_usage: ValueReference):
         raise NotImplementedError()

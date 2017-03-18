@@ -158,7 +158,7 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(), {})
 
 
-def env_with_singleton_symbol_table(definition: vd_tr.ValueDefinition2) -> InstructionEnvironmentForPreSdsStep:
+def env_with_singleton_symbol_table(definition: vd_tr.ValueDefinition) -> InstructionEnvironmentForPreSdsStep:
     table = vd_tr.symbol_table_from_value_definitions([definition])
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
                                                {},
@@ -172,7 +172,7 @@ def env_with_symbol_table(value_definitions: list) -> InstructionEnvironmentForP
                                                value_definitions=value_definitions)
 
 
-def value_definition_of(name: str) -> vd_tr.ValueDefinition2:
+def value_definition_of(name: str) -> vd_tr.ValueDefinition:
     return vd_tr.string_value_definition(name)
 
 
