@@ -11,6 +11,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestEqualsString),
         unittest.makeSuite(TestEqualsFileRef),
+        unittest.makeSuite(TestEqualsValue),
     ])
 
 
@@ -58,3 +59,39 @@ class TestEqualsFileRef(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             sut.equals_file_ref_value(expected).apply_without_message(put, actual)
+
+
+class TestEqualsValue(unittest.TestCase):
+    def test_equals__file_ref(self):
+        # ARRANGE #
+        value = FileRefValue(file_ref_test_impl('file-name'))
+        sut.equals_value(value).apply_without_message(self, value)
+
+    def test_equals__string(self):
+        # ARRANGE #
+        value = StringValue('string')
+        sut.equals_value(value).apply_without_message(self, value)
+
+    def test_not_equals__different_types(self):
+        # ARRANGE #
+        expected = FileRefValue(file_ref_test_impl('file-name'))
+        actual = StringValue('string value')
+        put = test_case_with_failure_exception_set_to_test_exception()
+        with put.assertRaises(TestException):
+            sut.equals_value(expected).apply_without_message(put, actual)
+
+    def test_not_equals__file_ref(self):
+        # ARRANGE #
+        expected = FileRefValue(file_ref_test_impl('expected-file-name'))
+        actual = FileRefValue(file_ref_test_impl('actual-file-name'))
+        put = test_case_with_failure_exception_set_to_test_exception()
+        with put.assertRaises(TestException):
+            sut.equals_value(expected).apply_without_message(put, actual)
+
+    def test_not_equals__string(self):
+        # ARRANGE #
+        expected = StringValue('expected string')
+        actual = StringValue('actual string')
+        put = test_case_with_failure_exception_set_to_test_exception()
+        with put.assertRaises(TestException):
+            sut.equals_value(expected).apply_without_message(put, actual)
