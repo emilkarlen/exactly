@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.file_ref_with_val_def import lookup_file_ref_from_symbol_table
-from exactly_lib.value_definition.value_definition_usage import ValueReferenceOfPath
+from exactly_lib.value_definition.value_structure import ValueReference2
 
 
 class _DestinationPathFromRelRootResolver(DestinationPath):
@@ -40,16 +40,16 @@ class _DestinationPathFromRelRootResolver(DestinationPath):
 
 class _DestinationPathBasedOnValueDefinition(DestinationPath):
     def __init__(self,
-                 value_definition_reference: ValueReferenceOfPath,
+                 value_definition_reference: ValueReference2,
                  path_argument: pathlib.PurePath):
-        self._value_definition_reference = value_definition_reference
+        self._value_reference = value_definition_reference
         self._path_argument = path_argument
 
     def destination_type(self, value_definitions: SymbolTable) -> RelOptionType:
         raise NotImplementedError()
 
     def value_references_of_paths(self) -> list:
-        return [self._value_definition_reference]
+        return [self._value_reference]
 
     @property
     def path_argument(self) -> pathlib.PurePath:
@@ -68,7 +68,7 @@ class _DestinationPathBasedOnValueDefinition(DestinationPath):
         return root_path / self.path_argument
 
     def _lookup_file_ref(self, value_definitions: SymbolTable) -> FileRef:
-        return lookup_file_ref_from_symbol_table(value_definitions, self._value_definition_reference.name)
+        return lookup_file_ref_from_symbol_table(value_definitions, self._value_reference.name)
 
 
 def from_rel_option(destination_type: RelOptionType,
@@ -76,6 +76,6 @@ def from_rel_option(destination_type: RelOptionType,
     return _DestinationPathFromRelRootResolver(destination_type, path_argument)
 
 
-def from_value_definition(value_definition_reference: ValueReferenceOfPath,
-                          path_argument: pathlib.PurePath) -> DestinationPath:
-    return _DestinationPathBasedOnValueDefinition(value_definition_reference, path_argument)
+def from_value_reference(value_reference: ValueReference2,
+                         path_argument: pathlib.PurePath) -> DestinationPath:
+    return _DestinationPathBasedOnValueDefinition(value_reference, path_argument)
