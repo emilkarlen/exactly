@@ -38,7 +38,8 @@ class ValueContainer(SymbolTableValue):
         self._value = value
 
     @property
-    def source(self) -> Line:
+    def definition_source(self) -> Line:
+        """The source code of the definition of the value."""
         return self._source
 
     @property
