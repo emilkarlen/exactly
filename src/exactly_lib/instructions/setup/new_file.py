@@ -11,12 +11,13 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         Parser(),
-        new_file_utils.TheInstructionDocumentation(instruction_name))
+        new_file_utils.TheInstructionDocumentation(instruction_name,
+                                                   may_use_value_definitions=True))
 
 
 class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> SetupPhaseInstruction:
-        argument = new_file_utils.parse(source)
+        argument = new_file_utils.parse(source, may_use_value_definitions=True)
         return _Instruction(argument)
 
 

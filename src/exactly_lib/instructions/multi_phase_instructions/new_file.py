@@ -17,8 +17,10 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    def __init__(self, name: str):
+    def __init__(self, name: str, may_use_value_definitions: bool = False):
         super().__init__(name, {})
+        self.rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
+                                                                         may_use_value_definitions)
 
     def single_line_description(self) -> str:
         return 'Creates a file'
@@ -26,7 +28,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def main_description_rest(self) -> list:
         return (
             rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
-                                                             _RELATIVITY_OPTIONS.options.default_option) +
+                                                             self.rel_opt_arg_conf.options.default_option) +
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
@@ -42,13 +44,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         return [
             rel_path_doc.relativity_syntax_element_description(_PATH_ARGUMENT,
-                                                               _RELATIVITY_OPTIONS.options.accepted_options),
+                                                               self.rel_opt_arg_conf.options.accepted_options),
             dt.here_document_syntax_element_description(self.instruction_name(),
                                                         dt.HERE_DOCUMENT),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(_RELATIVITY_OPTIONS.options.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(self.rel_opt_arg_conf.options.accepted_options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]
 
@@ -68,8 +70,11 @@ class FileInfo(tuple):
         return self[1]
 
 
-def parse(source: ParseSource) -> FileInfo:
-    file_ref = parse_file_ref_from_parse_source(source, _RELATIVITY_OPTIONS)
+def parse(source: ParseSource,
+          may_use_value_definitions: bool = False) -> FileInfo:
+    rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
+                                                                may_use_value_definitions)
+    file_ref = parse_file_ref_from_parse_source(source, rel_opt_arg_conf)
     contents = ''
     if source.is_at_eol__except_for_space:
         source.consume_current_line()
@@ -101,7 +106,5 @@ def create_file(file_info: FileInfo,
 
 
 _PATH_ARGUMENT = dt.PATH_ARGUMENT
-
-_RELATIVITY_OPTIONS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
 
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION

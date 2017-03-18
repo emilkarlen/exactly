@@ -16,9 +16,11 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
-    def __init__(self, name: str, additional_format_map: dict = None, is_in_assert_phase: bool = False):
-        super().__init__(name, additional_format_map, is_in_assert_phase)
+    def __init__(self, name: str, may_use_value_definitions: bool = False, is_in_assert_phase: bool = False):
+        super().__init__(name, {}, is_in_assert_phase)
         self.path_arg = _PATH_ARGUMENT
+        self.rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
+                                                                         may_use_value_definitions)
 
     def single_line_description(self) -> str:
         return self._format('Creates a directory')
@@ -32,7 +34,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             """
         return (self._paragraphs(text) +
                 rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
-                                                                 RELATIVITY_OPTIONS.options.default_option) +
+                                                                 self.rel_opt_arg_conf.options.default_option) +
                 dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
@@ -45,18 +47,20 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def syntax_element_descriptions(self) -> list:
         return [
             rel_path_doc.relativity_syntax_element_description(_PATH_ARGUMENT,
-                                                               RELATIVITY_OPTIONS.options.accepted_options),
+                                                               self.rel_opt_arg_conf.options.accepted_options),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(RELATIVITY_OPTIONS.options.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(self.rel_opt_arg_conf.options.accepted_options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]
 
 
-def parse(argument: str) -> FileRef:
+def parse(argument: str,
+          may_use_value_definitions: bool = False) -> FileRef:
     source = TokenStream2(argument)
-    destination_path = parse_file_ref(source, RELATIVITY_OPTIONS)
+    rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, may_use_value_definitions)
+    destination_path = parse_file_ref(source, rel_opt_arg_conf)
 
     if not source.is_null:
         raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(source.remaining_source))
@@ -90,7 +94,5 @@ def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
 
 
 _PATH_ARGUMENT = dt.PATH_ARGUMENT
-
-RELATIVITY_OPTIONS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
 
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION

@@ -12,12 +12,12 @@ from exactly_lib.test_case_file_structure.file_ref import FileRef
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         Parser(),
-        new_dir_utils.TheInstructionDocumentation(instruction_name))
+        new_dir_utils.TheInstructionDocumentation(instruction_name, may_use_value_definitions=True))
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> SetupPhaseInstruction:
-        argument = new_dir_utils.parse(rest_of_line)
+        argument = new_dir_utils.parse(rest_of_line, may_use_value_definitions=True)
         return _Instruction(argument)
 
 
