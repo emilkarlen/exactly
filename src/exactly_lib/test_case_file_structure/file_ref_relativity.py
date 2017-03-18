@@ -14,8 +14,10 @@ class SpecificPathRelativity:
     The relativity, or non-relativity, of a path.
     """
 
-    def __init__(self,
-                 relative: RelOptionType):
+    def __init__(self, relative: RelOptionType):
+        """
+        :param relative: None if should denote that path is absolute
+        """
         self._relative = relative
 
     @property
@@ -28,6 +30,9 @@ class SpecificPathRelativity:
 
     @property
     def relativity_type(self) -> RelOptionType:
+        """
+        :rtype None: If this object denotes that the path is absolute
+        """
         return self._relative
 
 

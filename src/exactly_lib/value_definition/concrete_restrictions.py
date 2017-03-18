@@ -1,4 +1,5 @@
 from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants
+from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_values import FileRefValue
 from exactly_lib.value_definition.value_structure import ValueRestriction, Value
@@ -26,7 +27,8 @@ class FileRefRelativityRestriction(ValueRestriction):
             #  TODO [val-def] Error message should be human readable
             return 'Not a FileRefValue: ' + str(value)
         file_ref = value.file_ref
-        raise NotImplementedError('[val-def] impl restriktion')
+        actual_relativity = file_ref.specific_relativity(symbol_table)
+        return is_satisfied_by(actual_relativity, self._accepted)
 
     @property
     def accepted(self) -> PathRelativityVariants:
