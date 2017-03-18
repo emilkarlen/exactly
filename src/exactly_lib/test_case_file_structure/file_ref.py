@@ -1,6 +1,7 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType, SpecificPathRelativity, \
+    specific_relative_relativity
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable
@@ -39,6 +40,11 @@ class FileRef:
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
         # TODO [val-def] Return value should be able to denote absolute/no relativity
         raise NotImplementedError()
+
+    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+        # TODO [val-def] Rename to "relativity" when "relativity" can be replaced by this method.
+        rel_option_type = self.relativity(value_definitions)
+        return specific_relative_relativity(rel_option_type)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         """
