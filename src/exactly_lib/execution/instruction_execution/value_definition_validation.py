@@ -29,7 +29,7 @@ def validate_pre_sds(value_usage: vs.ValueUsage2,
                 'Name `{}\' has already been defined:\n\n{}'.format(
                     value_usage.name,
                     error_message_format.source_line(
-                        already_defined_value_container.source)))
+                        already_defined_value_container.definition_source)))
         else:
             for referenced_value in value_usage.references:
                 failure_info = validate_pre_sds(referenced_value, symbol_table)

@@ -9,8 +9,8 @@ def equals_value_container(expected: stc.ValueContainer,
     component_assertions = []
     if not ignore_source_line:
         component_assertions.append(asrt.sub_component('source',
-                                                       stc.ValueContainer.source.fget,
-                                                       equals_line(expected.source)))
+                                                       stc.ValueContainer.definition_source.fget,
+                                                       equals_line(expected.definition_source)))
     component_assertions.append(asrt.sub_component('value',
                                                    stc.ValueContainer.value.fget,
                                                    equals_value(expected.value)))
