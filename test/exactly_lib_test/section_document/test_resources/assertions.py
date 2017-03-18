@@ -29,6 +29,7 @@ def equals_line(expected: Line) -> asrt.ValueAssertion:
     return asrt.is_instance_with(Line,
                                  asrt.And([
                                      asrt.sub_component('line_number',
+                                                        Line.line_number.fget,
                                                         asrt.equals(expected.line_number)),
                                      asrt.sub_component('text',
                                                         Line.text.fget,
