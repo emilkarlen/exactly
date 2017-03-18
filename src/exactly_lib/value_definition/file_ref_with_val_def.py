@@ -7,21 +7,21 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.concrete_values import FileRefValue
-from exactly_lib.value_definition.value_structure import ValueReference2, ValueContainer
+from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
-def rel_value_definition(value_reference2: ValueReference2, file_name: str) -> FileRef:
+def rel_value_definition(value_reference2: ValueReference, file_name: str) -> FileRef:
     return _FileRefRelValueDefinition(file_name, value_reference2)
 
 
-def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityVariants) -> ValueReference2:
-    return ValueReference2(val_def_name, FileRefRelativityRestriction(accepted_relativities))
+def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityVariants) -> ValueReference:
+    return ValueReference(val_def_name, FileRefRelativityRestriction(accepted_relativities))
 
 
 class _FileRefRelValueDefinition(FileRef):
     def __init__(self,
                  file_name: str,
-                 value_reference_of_path: ValueReference2):
+                 value_reference_of_path: ValueReference):
         super().__init__(file_name)
         self.value_reference_of_path = value_reference_of_path
 

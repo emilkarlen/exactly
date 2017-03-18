@@ -14,10 +14,10 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
-        ret_val = visitor.visit(sut.ValueDefinition2('name', file_ref_value_container()))
+        ret_val = visitor.visit(sut.ValueDefinition('name', file_ref_value_container()))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
-                             [sut.ValueReference2],
+                             [sut.ValueReference],
                              'visited classes')
         self.assertEqual('name', ret_val,
                          'Visitor is expected to return return value of visit-method')
@@ -26,10 +26,10 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
-        ret_val = visitor.visit(sut.ValueReference2('name', NoRestriction()))
+        ret_val = visitor.visit(sut.ValueReference('name', NoRestriction()))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
-                             [sut.ValueReference2],
+                             [sut.ValueReference],
                              'visited classes')
         self.assertEqual('name', ret_val,
                          'Visitor is expected to return return value of visit-method')
@@ -46,10 +46,10 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.ValueUsageVisitor)
     def __init__(self):
         self.visited_classes = []
 
-    def _visit_reference(self, value_usage: sut.ValueReference2):
-        self.visited_classes.append(sut.ValueReference2)
+    def _visit_reference(self, value_usage: sut.ValueReference):
+        self.visited_classes.append(sut.ValueReference)
         return value_usage.name
 
-    def _visit_definition(self, value_usage: sut.ValueDefinition2):
-        self.visited_classes.append(sut.ValueReference2)
+    def _visit_definition(self, value_usage: sut.ValueDefinition):
+        self.visited_classes.append(sut.ValueReference)
         return value_usage.name

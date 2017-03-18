@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.value_definition.value_structure import ValueDefinition2
+from exactly_lib.value_definition.value_structure import ValueDefinition
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -23,7 +23,7 @@ class Parser(InstructionParser):
 
 class _Instruction(SetupPhaseInstruction):
     def __init__(self,
-                 value_definition: ValueDefinition2):
+                 value_definition: ValueDefinition):
         self.value_definition = value_definition
 
     def value_usages(self) -> list:

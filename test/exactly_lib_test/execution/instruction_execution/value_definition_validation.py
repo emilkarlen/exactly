@@ -25,7 +25,7 @@ class TestValueReference(unittest.TestCase):
     def test_WHEN_referenced_value_not_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        value_usage = vs.ValueReference2('undefined', NoRestriction())
+        value_usage = vs.ValueReference('undefined', NoRestriction())
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -36,8 +36,8 @@ class TestValueReference(unittest.TestCase):
             self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
-        value_usage = vs.ValueReference2('val_name',
-                                         RestrictionThatCannotBeSatisfied())
+        value_usage = vs.ValueReference('val_name',
+                                        RestrictionThatCannotBeSatisfied())
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -47,8 +47,8 @@ class TestValueReference(unittest.TestCase):
     def test_WHEN_referenced_value_is_in_symbol_table_and_satisfies_value_restriction_THEN_no_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
-        value_usage = vs.ValueReference2('val_name',
-                                         RestrictionThatIsAlwaysSatisfied())
+        value_usage = vs.ValueReference('val_name',
+                                        RestrictionThatIsAlwaysSatisfied())
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
         self.assertIsNone(actual, 'result should indicate success')
@@ -80,10 +80,10 @@ class TestValueDefinition(unittest.TestCase):
     def test_WHEN_defined_value_not_in_symbol_table_but_referenced_values_not_in_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('OTHER'))
-        value_usage = vs.ValueDefinition2(
+        value_usage = vs.ValueDefinition(
             'UNDEFINED',
             file_ref_value_container(
-                rel_value_definition(vs.ValueReference2('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
+                rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                                      'file-name')))
         # ACT #
         actual = sut.validate_pre_sds(value_usage, symbol_table)
@@ -94,10 +94,10 @@ class TestValueDefinition(unittest.TestCase):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
         symbol_table = singleton_symbol_table(referenced_entry)
-        value_usage_to_check = vs.ValueDefinition2(
+        value_usage_to_check = vs.ValueDefinition(
             'UNDEFINED',
             file_ref_value_container(
-                rel_value_definition(vs.ValueReference2('REFERENCED', RestrictionThatCannotBeSatisfied()),
+                rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatCannotBeSatisfied()),
                                      'file-name')))
         # ACT #
         actual = sut.validate_pre_sds(value_usage_to_check, symbol_table)
@@ -109,10 +109,10 @@ class TestValueDefinition(unittest.TestCase):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
         symbol_table = singleton_symbol_table(referenced_entry)
-        value_usage_to_check = vs.ValueDefinition2(
+        value_usage_to_check = vs.ValueDefinition(
             'UNDEFINED',
             file_ref_value_container(
-                rel_value_definition(vs.ValueReference2('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
+                rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                                      'file-name')))
         # ACT #
         actual = sut.validate_pre_sds(value_usage_to_check, symbol_table)
@@ -122,9 +122,9 @@ class TestValueDefinition(unittest.TestCase):
                         'definition should have been added')
 
 
-def value_definition_of(name: str) -> vs.ValueDefinition2:
-    return vs.ValueDefinition2(name,
-                               vs.ValueContainer(Line(1, 'source code'),
+def value_definition_of(name: str) -> vs.ValueDefinition:
+    return vs.ValueDefinition(name,
+                              vs.ValueContainer(Line(1, 'source code'),
                                                  StringValue('string value')))
 
 

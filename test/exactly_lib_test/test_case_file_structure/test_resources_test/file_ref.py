@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
 from exactly_lib.value_definition.concrete_values import FileRefValue
-from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference2
+from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
@@ -31,8 +31,8 @@ class TestEquals(unittest.TestCase):
              'NOT Exists pre SDS'
              ),
             (_FileRefWithValRef(
-                ValueReference2('reffed-name',
-                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                ValueReference('reffed-name',
+                               _relativity_restriction({RelOptionType.REL_ACT}, False)),
                 'file-name'),
              'NOT Exists pre SDS'
             ),
@@ -73,11 +73,11 @@ class TestNotEquals(unittest.TestCase):
     def test_value_ref__differs__relativity_variants(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(ValueReference2('reffed-name',
-                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
+        expected = _FileRefWithValRef(ValueReference('reffed-name',
+                                                     _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                       'file-name')
-        actual = _FileRefWithValRef(ValueReference2('reffed-name',
-                                                    _relativity_restriction({RelOptionType.REL_HOME}, False)),
+        actual = _FileRefWithValRef(ValueReference('reffed-name',
+                                                   _relativity_restriction({RelOptionType.REL_HOME}, False)),
                                     'file-name')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -86,11 +86,11 @@ class TestNotEquals(unittest.TestCase):
     def test_value_ref__differs__value_name(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(ValueReference2('reffed-name',
-                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
+        expected = _FileRefWithValRef(ValueReference('reffed-name',
+                                                     _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                       'file-name')
-        actual = _FileRefWithValRef(ValueReference2('OTHER-reffed-name',
-                                                    _relativity_restriction({RelOptionType.REL_ACT}, False)),
+        actual = _FileRefWithValRef(ValueReference('OTHER-reffed-name',
+                                                   _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                     'file-name')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -99,8 +99,8 @@ class TestNotEquals(unittest.TestCase):
     def test_differs__no_value_refs__value_refs(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(ValueReference2('reffed-name',
-                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
+        expected = _FileRefWithValRef(ValueReference('reffed-name',
+                                                     _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                       'file-name')
         actual = _FileRefWithoutValRef(RelOptionType.REL_RESULT,
                                        'file-name')
@@ -113,8 +113,8 @@ class TestNotEquals(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = _FileRefWithoutValRef(RelOptionType.REL_RESULT,
                                          'file-name')
-        actual = _FileRefWithValRef(ValueReference2('reffed-name',
-                                                    _relativity_restriction({RelOptionType.REL_ACT}, False)),
+        actual = _FileRefWithValRef(ValueReference('reffed-name',
+                                                   _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                     'file-name')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -123,11 +123,11 @@ class TestNotEquals(unittest.TestCase):
     def test_value_ref__invalid_type_of_value_restriction(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRef(ValueReference2('reffed-name',
-                                                      _relativity_restriction({RelOptionType.REL_ACT}, False)),
+        expected = _FileRefWithValRef(ValueReference('reffed-name',
+                                                     _relativity_restriction({RelOptionType.REL_ACT}, False)),
                                       'file-name')
-        actual = _FileRefWithValRef(ValueReference2('reffed-name',
-                                                    NoRestriction()),
+        actual = _FileRefWithValRef(ValueReference('reffed-name',
+                                                   NoRestriction()),
                                     'file-name')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -169,7 +169,7 @@ class _FileRefWithValRef(FileRef):
     """
 
     def __init__(self,
-                 value_reference: ValueReference2,
+                 value_reference: ValueReference,
                  file_name: str):
         super().__init__(file_name)
         self._value_references_of_path = value_reference

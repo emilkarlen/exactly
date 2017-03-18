@@ -11,7 +11,7 @@ from exactly_lib.section_document.parser_implementations.token import TokenType
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure.destination_path import DestinationPath
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
-from exactly_lib.value_definition.value_structure import ValueReference2
+from exactly_lib.value_definition.value_structure import ValueReference
 
 
 def parse_destination__parse_source(options: RelOptionArgumentConfiguration,
@@ -46,5 +46,5 @@ def parse_destination_path__token_stream(options: RelOptionArgumentConfiguration
 def _from_relativity_info(relativity_info, path_argument: pathlib.PurePath) -> DestinationPath:
     if isinstance(relativity_info, RelOptionType):
         return dp.from_rel_option(relativity_info, path_argument)
-    elif isinstance(relativity_info, ValueReference2):
+    elif isinstance(relativity_info, ValueReference):
         return dp.from_value_reference(relativity_info, path_argument)

@@ -17,7 +17,7 @@ from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_structure import ValueReference2
+from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
@@ -285,8 +285,8 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
                 PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, False),
             ]
             for accepted_relativities in accepted_relativities_variants:
-                expected_value_reference = ValueReference2(value_definition_name,
-                                                           FileRefRelativityRestriction(accepted_relativities))
+                expected_value_reference = ValueReference(value_definition_name,
+                                                          FileRefRelativityRestriction(accepted_relativities))
                 expected_file_ref = rel_value_definition(expected_value_reference, file_name_argument)
                 arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
                 with self.subTest(msg='source={}'.format(repr(source))):

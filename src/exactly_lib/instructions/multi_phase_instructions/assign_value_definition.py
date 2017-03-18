@@ -12,7 +12,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.value_definition.concrete_values import FileRefValue
-from exactly_lib.value_definition.value_structure import ValueDefinition2, ValueContainer
+from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -39,7 +39,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [concept.cross_reference_target for concept in concepts]
 
 
-def parse(source: ParseSource) -> ValueDefinition2:
+def parse(source: ParseSource) -> ValueDefinition:
     source_line = source.current_line
     token_stream = TokenStream2(source.remaining_part_of_current_line)
     source.consume_current_line()
@@ -57,7 +57,7 @@ def parse(source: ParseSource) -> ValueDefinition2:
     if not token_stream.is_null:
         msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return ValueDefinition2(name_str, ValueContainer(source_line, FileRefValue(file_ref)))
+    return ValueDefinition(name_str, ValueContainer(source_line, FileRefValue(file_ref)))
 
 
 REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTION_VARIANTS,

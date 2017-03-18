@@ -18,15 +18,15 @@ def equals_value_container(expected: stc.ValueContainer,
                                  asrt.and_(component_assertions))
 
 
-def equals_value_definition(expected: stc.ValueDefinition2,
+def equals_value_definition(expected: stc.ValueDefinition,
                             ignore_source_line: bool = True) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(stc.ValueDefinition2,
+    return asrt.is_instance_with(stc.ValueDefinition,
                                  asrt.And([
                                      asrt.sub_component('name',
-                                                        stc.ValueDefinition2.name.fget,
+                                                        stc.ValueDefinition.name.fget,
                                                         asrt.equals(expected.name)),
                                      asrt.sub_component('value_container',
-                                                        stc.ValueDefinition2.value_container.fget,
+                                                        stc.ValueDefinition.value_container.fget,
                                                         equals_value_container(expected.value_container,
                                                                                ignore_source_line)),
 
@@ -36,12 +36,12 @@ def equals_value_definition(expected: stc.ValueDefinition2,
 
 def equals_value_reference(expected_name: str,
                            value_restriction_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(stc.ValueReference2,
+    return asrt.is_instance_with(stc.ValueReference,
                                  asrt.and_([
                                      asrt.sub_component('name',
-                                                        stc.ValueReference2.name.fget,
+                                                        stc.ValueReference.name.fget,
                                                         asrt.equals(expected_name)),
                                      asrt.sub_component('value_restriction',
-                                                        stc.ValueReference2.value_restriction.fget,
+                                                        stc.ValueReference.value_restriction.fget,
                                                         value_restriction_assertion)
                                  ]))

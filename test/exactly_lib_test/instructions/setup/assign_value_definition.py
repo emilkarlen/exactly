@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.util.line_source import Line
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_structure import ValueDefinition2, ValueContainer, Value, ValueReference2
+from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer, Value, ValueReference
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
@@ -82,7 +82,7 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                       Expectation(
                           value_definition_usages=v2.assert_value_usages_is_singleton_list(
                               vs_asrt.equals_value_definition(
-                                  ValueDefinition2('name', expected_value_container))),
+                                  ValueDefinition('name', expected_value_container))),
                           value_definitions_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_value_container(expected_value_container))
@@ -103,7 +103,7 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                       Expectation(
                           value_definition_usages=v2.assert_value_usages_is_singleton_list(
                               vs_asrt.equals_value_definition(
-                                  ValueDefinition2('name', expected_value_container))),
+                                  ValueDefinition('name', expected_value_container))),
                           value_definitions_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_value_container(expected_value_container)))
@@ -116,8 +116,8 @@ class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_value = v2.file_ref_value(
                 rel_value_definition(
-                    ValueReference2('REFERENCED_VAL_DEF',
-                                    FileRefRelativityRestriction(
+                    ValueReference('REFERENCED_VAL_DEF',
+                                   FileRefRelativityRestriction(
                                         REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
                     'component'))
             expected_value_container = _value_container(expected_file_ref_value)
@@ -126,8 +126,8 @@ class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
                       Expectation(
                           value_definition_usages=asrt.matches_sequence([
                               vs_asrt.equals_value_definition(
-                                  ValueDefinition2('ASSIGNED_NAME',
-                                                   expected_value_container),
+                                  ValueDefinition('ASSIGNED_NAME',
+                                                  expected_value_container),
                                   ignore_source_line=True)
                           ]),
                           value_definitions_after_main=assert_symbol_table_is_singleton(

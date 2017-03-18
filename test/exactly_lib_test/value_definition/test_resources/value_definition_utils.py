@@ -6,8 +6,8 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.value_definition.concrete_restrictions import NoRestriction
 from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue
-from exactly_lib.value_definition.value_structure import ValueContainer, Value, ValueReference2, ValueRestriction, \
-    ValueDefinition2
+from exactly_lib.value_definition.value_structure import ValueContainer, Value, ValueReference, ValueRestriction, \
+    ValueDefinition
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -19,12 +19,12 @@ def string_value_container(string_value: str,
                           StringValue(string_value))
 
 
-def value_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> ValueReference2:
-    return ValueReference2(name, value_restriction)
+def value_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> ValueReference:
+    return ValueReference(name, value_restriction)
 
 
-def string_value_definition(name: str, string_value: str = 'string value') -> ValueDefinition2:
-    return ValueDefinition2(name, string_value_container(string_value))
+def string_value_definition(name: str, string_value: str = 'string value') -> ValueDefinition:
+    return ValueDefinition(name, string_value_container(string_value))
 
 
 def file_ref_value(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
