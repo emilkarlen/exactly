@@ -17,10 +17,10 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources import value_definition_utils as v2
 from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_asrt
-from exactly_lib_test.value_definition.test_resources import values2 as v2
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import assert_symbol_table_is_singleton
 from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_container
-from exactly_lib_test.value_definition.test_resources.values2 import assert_symbol_table_is_singleton
 
 
 def suite() -> unittest.TestSuite:

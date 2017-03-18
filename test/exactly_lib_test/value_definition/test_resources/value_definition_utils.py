@@ -4,12 +4,12 @@ from exactly_lib.test_case_file_structure import file_ref as _file_ref
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
+from exactly_lib.value_definition.concrete_restrictions import NoRestriction
 from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue
-from exactly_lib.value_definition.value_definition_usage import ValueReference
-from exactly_lib.value_definition.value_structure import ValueContainer, Value
+from exactly_lib.value_definition.value_structure import ValueContainer, Value, ValueReference2, ValueRestriction, \
+    ValueDefinition2
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources.value_reference import equals_value_reference
 
 
 def string_value_container(string_value: str,
@@ -17,6 +17,14 @@ def string_value_container(string_value: str,
                            source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
                           StringValue(string_value))
+
+
+def value_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> ValueReference2:
+    return ValueReference2(name, value_restriction)
+
+
+def string_value_definition(name: str, string_value: str = 'string value') -> ValueDefinition2:
+    return ValueDefinition2(name, string_value_container(string_value))
 
 
 def file_ref_value(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
@@ -63,24 +71,8 @@ def symbol_table_from_entries(entries: iter) -> SymbolTable:
     return SymbolTable(dict(elements))
 
 
-def assert_value_usages_is_singleton_list_with_value_reference(expected: ValueReference) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(list,
-                                 asrt.And([
-                                     asrt.len_equals(1),
-                                     asrt.sub_component('singleton element',
-                                                        lambda l: l[0],
-                                                        equals_value_reference(expected))
-                                 ]))
-
-
 def assert_value_usages_is_singleton_list(assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(list,
-                                 asrt.And([
-                                     asrt.len_equals(1),
-                                     asrt.sub_component('singleton element',
-                                                        lambda l: l[0],
-                                                        assertion)
-                                 ]))
+    return asrt.matches_sequence([assertion])
 
 
 class _AssertSymbolTableIsSingleton(asrt.ValueAssertion):

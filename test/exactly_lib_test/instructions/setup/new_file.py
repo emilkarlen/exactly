@@ -21,9 +21,9 @@ from exactly_lib_test.test_resources.parse import argument_list_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
-from exactly_lib_test.value_definition.test_resources.value_definition import symbol_table_from_entries
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value_container, \
+    symbol_table_from_entries
 from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_reference
-from exactly_lib_test.value_definition.test_resources.values2 import file_ref_value_container
 
 
 def suite() -> unittest.TestSuite:
