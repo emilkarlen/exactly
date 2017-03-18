@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.util.line_source import Line
 from exactly_lib.value_definition.concrete_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.value_definition.concrete_values import StringValue, FileRefValue
-from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference2
+from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference2, ValueDefinition2
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
@@ -15,6 +15,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestEqualsValueContainer),
         unittest.makeSuite(TestEqualsValueReference),
+        unittest.makeSuite(TestEqualsValueDefinition),
     ])
 
 
@@ -72,7 +73,64 @@ class TestEqualsValueReference(unittest.TestCase):
         # ARRANGE #
         common_name = 'actual value name'
         actual = ValueReference2(common_name, NoRestriction())
-        assertion = sut.equals_value_reference(common_name, asrt.is_instance(FileRefRelativityRestriction))
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
+            # ACT #
+            assertion = sut.equals_value_reference(common_name, asrt.is_instance(FileRefRelativityRestriction))
             assertion.apply_without_message(put, actual)
+
+
+class TestEqualsValueDefinition(unittest.TestCase):
+    def test_pass(self):
+        value_cases = [
+            StringValue('s'),
+            FileRefValue(file_ref_test_impl('file-name')),
+        ]
+        for value in value_cases:
+            for ignore_source_line in [False, True]:
+                with self.subTest():
+                    # ARRANGE #
+                    value_container = ValueContainer(Line(1, 'source code'), value)
+                    value_definition = ValueDefinition2('value name', value_container)
+                    # ACT #
+                    assertion = sut.equals_value_definition(value_definition, ignore_source_line=ignore_source_line)
+                    assertion.apply_without_message(self, value_definition)
+
+    def test_pass__different_string_but_source_line_check_is_ignored(self):
+        # ARRANGE #
+        common_value = StringValue('common string value')
+        expected_value_container = ValueContainer(Line(4, 'source code 4'), common_value)
+        actual_value_container = ValueContainer(Line(5, 'source code 5'), common_value)
+        common_name = 'value name'
+        expected_value_definition = ValueDefinition2(common_name, expected_value_container)
+        actual_value_definition = ValueDefinition2(common_name, actual_value_container)
+        # ACT #
+        assertion = sut.equals_value_definition(expected_value_definition, ignore_source_line=True)
+        assertion.apply_without_message(self, actual_value_definition)
+
+    def test_fail__different_name(self):
+        # ARRANGE #
+        common_value_container = ValueContainer(Line(1, 'source code'), StringValue('common string value'))
+        expected_value_definition = ValueDefinition2('expected value name', common_value_container)
+        actual_value_definition = ValueDefinition2('actual value name', common_value_container)
+        put = test_case_with_failure_exception_set_to_test_exception()
+        with put.assertRaises(TestException):
+            # ACT #
+            assertion = sut.equals_value_definition(expected_value_definition)
+            assertion.apply_without_message(put, actual_value_definition)
+
+    def test_fail__failing_assertion_on_value_container(self):
+        # ARRANGE #
+        common_name_source = Line(1, 'source code')
+        common_name = 'value name'
+        expected_value_definition = ValueDefinition2(common_name,
+                                                     ValueContainer(common_name_source,
+                                                                    StringValue('expected string value')))
+        actual_value_definition = ValueDefinition2(common_name,
+                                                   ValueContainer(common_name_source,
+                                                                  StringValue('actual string value')))
+        put = test_case_with_failure_exception_set_to_test_exception()
+        with put.assertRaises(TestException):
+            # ACT #
+            assertion = sut.equals_value_definition(expected_value_definition)
+            assertion.apply_without_message(put, actual_value_definition)
