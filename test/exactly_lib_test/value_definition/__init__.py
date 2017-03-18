@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.value_definition import test_resources_test, file_ref_with_val_def
-from exactly_lib_test.value_definition import value_structure, concrete_values
+from exactly_lib_test.value_definition import value_structure, concrete_values, concrete_restrictions
 
 
 def suite() -> unittest.TestSuite:
@@ -9,6 +9,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(test_resources_test.suite())
     ret_val.addTest(value_structure.suite())
     ret_val.addTest(concrete_values.suite())
+    ret_val.addTest(concrete_restrictions.suite())
     ret_val.addTest(file_ref_with_val_def.suite())
     return ret_val
 
