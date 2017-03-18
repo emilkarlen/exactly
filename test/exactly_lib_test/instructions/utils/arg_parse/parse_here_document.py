@@ -115,8 +115,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 with self.subTest(msg=repr((source_lines, expected_document_contents, source_assertion))):
                     source = remaining_source_lines(source_lines)
                     actual = sut.parse_as_last_argument(is_mandatory, source)
-                    self.assertEquals(expected_document_contents,
-                                      actual)
+                    self.assertEqual(expected_document_contents,
+                                     actual)
                     source_assertion.apply_with_message(self, source, 'source')
 
     def test_document_is_not_mandatory_and_not_present(self):

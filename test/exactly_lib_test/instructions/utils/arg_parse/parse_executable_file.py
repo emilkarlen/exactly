@@ -108,8 +108,8 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         self.assertEqual('FILE',
                          ef.file_reference.file_name)
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self.assertEquals('tail arguments',
-                          _remaining_source(ts))
+        self.assertEqual('tail arguments',
+                         _remaining_source(ts))
 
     def test_path_with_option(self):
         ts = TokenStream2('( %s FILE )' % option.REL_HOME_OPTION)
@@ -124,9 +124,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         self.assertEqual('FILE',
                          ef.file_reference.file_name)
-        self.assertEquals(['arg1', 'arg2'],
-                          ef.arguments,
-                          'Arguments to the executable')
+        self.assertEqual(['arg1', 'arg2'],
+                         ef.arguments,
+                         'Arguments to the executable')
         self.assertTrue(ts.is_null)
 
     def test_path_without_option_with_arguments(self):
@@ -134,9 +134,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         self.assertEqual('FILE',
                          ef.file_reference.file_name)
-        self.assertEquals(['arg1', 'arg2'],
-                          ef.arguments,
-                          'Arguments to the executable')
+        self.assertEqual(['arg1', 'arg2'],
+                         ef.arguments,
+                         'Arguments to the executable')
         self.assertTrue(ts.is_null)
 
     def test_path_without_option_with_arguments_with_tail(self):
@@ -144,12 +144,12 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         self.assertEqual('FILE',
                          ef.file_reference.file_name)
-        self.assertEquals(['arg1', 'arg2', 'arg3'],
-                          ef.arguments,
-                          'Arguments to the executable')
-        self.assertEquals('tail1 tail2',
-                          _remaining_source(ts),
-                          'Remaining arguments')
+        self.assertEqual(['arg1', 'arg2', 'arg3'],
+                         ef.arguments,
+                         'Arguments to the executable')
+        self.assertEqual('tail1 tail2',
+                         _remaining_source(ts),
+                         'Remaining arguments')
 
 
 class TestParseInvalidSyntaxWithArguments(unittest.TestCase):

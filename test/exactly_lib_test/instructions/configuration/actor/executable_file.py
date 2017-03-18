@@ -157,8 +157,8 @@ def is_interpreter_with_source_file_and_arguments(interpreter: str,
                   message_builder: va.MessageBuilder = va.MessageBuilder()):
             msg = 'Expecting cmd-and-args to be [interpreter, argument..., source-file]. Found: ' + str(
                 cmd_and_args)
-            put.assertEquals(1 + 1 + len(arguments), len(cmd_and_args),
-                             msg)
+            put.assertEqual(1 + 1 + len(arguments), len(cmd_and_args),
+                            msg)
             put.assertEqual(interpreter, cmd_and_args[0], 'First element should be the interpreter')
             put.assertEqual(arguments, cmd_and_args[1:-1], 'Interpreter arguments')
 

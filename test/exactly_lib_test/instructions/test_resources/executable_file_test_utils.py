@@ -87,9 +87,9 @@ def check(put: unittest.TestCase,
     put.assertListEqual(expectation.arguments_of_exe_file_ref,
                         actual_exe_file.arguments,
                         'Arguments of executable file')
-    put.assertEquals(expectation.exists_pre_eds,
-                     actual_exe_file.exists_pre_sds(arrangement.value_definitions),
-                     'Existence pre SDS')
+    put.assertEqual(expectation.exists_pre_eds,
+                    actual_exe_file.exists_pre_sds(arrangement.value_definitions),
+                    'Existence pre SDS')
     with home_and_sds_with_act_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as home_and_sds:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
@@ -105,9 +105,9 @@ class CheckBase(unittest.TestCase):
         self.configuration = configuration
 
     def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFile, value_definitions: SymbolTable):
-        self.assertEquals(self.configuration.exists_pre_sds,
-                          actual.exists_pre_sds(value_definitions),
-                          'Existence pre SDS')
+        self.assertEqual(self.configuration.exists_pre_sds,
+                         actual.exists_pre_sds(value_definitions),
+                         'Existence pre SDS')
 
     def _check_file_path(self, file_name: str, actual: ExecutableFile,
                          environment: PathResolvingEnvironmentPreOrPostSds):

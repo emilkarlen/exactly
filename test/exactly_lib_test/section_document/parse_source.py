@@ -73,35 +73,35 @@ class TestParseSource(unittest.TestCase):
                                                          line_text: str,
                                                          source: ParseSource):
         self._assert_current_line_is(line_number, line_text, source)
-        self.assertEquals(line_text,
-                          source.remaining_part_of_current_line,
-                          'Remaining part of current line')
+        self.assertEqual(line_text,
+                         source.remaining_part_of_current_line,
+                         'Remaining part of current line')
 
     def _assert_current_line_is(self, line_number: int,
                                 line_text: str,
                                 source: ParseSource):
-        self.assertEquals(line_text,
-                          source.current_line_text,
-                          'Text of current line')
-        self.assertEquals(line_number,
-                          source.current_line_number,
-                          'Line number of current line')
-        self.assertEquals(line_text,
-                          source.current_line.text,
-                          'Text of current line (extracted via Line)')
-        self.assertEquals(line_number,
-                          source.current_line.line_number,
-                          'Line number of current line (extracted via Line)')
+        self.assertEqual(line_text,
+                         source.current_line_text,
+                         'Text of current line')
+        self.assertEqual(line_number,
+                         source.current_line_number,
+                         'Line number of current line')
+        self.assertEqual(line_text,
+                         source.current_line.text,
+                         'Text of current line (extracted via Line)')
+        self.assertEqual(line_number,
+                         source.current_line.line_number,
+                         'Line number of current line (extracted via Line)')
 
     def _assert_is_at_eof(self, source: ParseSource):
         self.assertTrue(source.is_at_eof)
-        self.assertEquals('', source.remaining_source,
-                          'remaining source')
+        self.assertEqual('', source.remaining_source,
+                         'remaining source')
 
     def _assert_is_at_eol(self, source: ParseSource):
         self.assertTrue(source.is_at_eol)
-        self.assertEquals('', source.remaining_part_of_current_line,
-                          'remaining_part_of_current_line')
+        self.assertEqual('', source.remaining_part_of_current_line,
+                         'remaining_part_of_current_line')
 
     def test_construction(self):
         test_cases = [
@@ -299,8 +299,8 @@ class TestParseSource(unittest.TestCase):
     def test_single_line_source(self):
         source = ParseSource('single line')
         self._assert_current_line_and_remaining_part_of_it_is(1, 'single line', source)
-        self.assertEquals('single line', source.remaining_source,
-                          'remaining source')
+        self.assertEqual('single line', source.remaining_source,
+                         'remaining source')
         source.consume_current_line()
         self._assert_is_at_eof(source)
 
@@ -308,12 +308,12 @@ class TestParseSource(unittest.TestCase):
         original_source = 'first line' + '\n' + 'second line'
         source = ParseSource(original_source)
         self._assert_current_line_and_remaining_part_of_it_is(1, 'first line', source)
-        self.assertEquals(original_source, source.remaining_source,
-                          'remaining source')
+        self.assertEqual(original_source, source.remaining_source,
+                         'remaining source')
         source.consume_current_line()
         self._assert_current_line_and_remaining_part_of_it_is(2, 'second line', source)
-        self.assertEquals('second line', source.remaining_source,
-                          'remaining source')
+        self.assertEqual('second line', source.remaining_source,
+                         'remaining source')
         source.consume_current_line()
         self._assert_is_at_eof(source)
 
@@ -322,8 +322,8 @@ class TestParseSource(unittest.TestCase):
         self._assert_current_line_and_remaining_part_of_it_is(1, '', source)
         source.consume_current_line()
         self._assert_current_line_and_remaining_part_of_it_is(2, 'second line', source)
-        self.assertEquals('second line', source.remaining_source,
-                          'remaining source')
+        self.assertEqual('second line', source.remaining_source,
+                         'remaining source')
         source.consume_current_line()
         self._assert_is_at_eof(source)
 
@@ -363,8 +363,8 @@ class TestParseSource(unittest.TestCase):
         source = ParseSource('first line' + '\n' + 'second line')
         with self.assertRaises(ValueError):
             source.consume_part_of_current_line(len('first line') + 1)
-            self.assertEquals('first line', source.remaining_part_of_current_line,
-                              'remaining_part_of_current_line should not have been updated')
+            self.assertEqual('first line', source.remaining_part_of_current_line,
+                             'remaining_part_of_current_line should not have been updated')
 
     def test_consume_initial_space(self):
         test_cases = [

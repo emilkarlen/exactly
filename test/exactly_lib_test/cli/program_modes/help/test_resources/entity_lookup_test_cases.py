@@ -151,9 +151,9 @@ def _assert_result_is_individual_entity(self: unittest.TestCase,
                           'Individual {} is expected to an instance of {}'.format(entity_setup.entity_type_name,
                                                                                   str(ActorDocumentation)))
     if check_is_include_entity_name_in_output is not None:
-        self.assertEquals(check_is_include_entity_name_in_output,
-                          actual.do_include_name_in_output,
-                          'do_include_name_in_output')
+        self.assertEqual(check_is_include_entity_name_in_output,
+                         actual.do_include_name_in_output,
+                         'do_include_name_in_output')
     self.assertEqual(actor_name,
                      actual.individual_entity.singular_name())
 

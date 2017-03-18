@@ -235,9 +235,9 @@ class Equals(ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
-        put.assertEquals(self.expected,
-                         value,
-                         message_builder.apply(self.message))
+        put.assertEqual(self.expected,
+                        value,
+                        message_builder.apply(self.message))
 
 
 class _LenEquals(ValueAssertion):
@@ -251,9 +251,9 @@ class _LenEquals(ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
-        put.assertEquals(self.expected,
-                         len(value),
-                         message_builder.apply(self.message))
+        put.assertEqual(self.expected,
+                        len(value),
+                        message_builder.apply(self.message))
 
 
 class OnTransformed(ValueAssertion):
@@ -448,9 +448,9 @@ class _MatchesSequence(ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
-        put.assertEquals(len(value),
-                         len(self.element_assertions),
-                         message_builder.apply('Number of elements'))
+        put.assertEqual(len(value),
+                        len(self.element_assertions),
+                        message_builder.apply('Number of elements'))
         for idx, element in enumerate(value):
             element_message_builder = sub_component_builder('[' + str(idx) + ']',
                                                             message_builder,

@@ -83,12 +83,12 @@ def is_interpreter_file_and_args(interpreter: str,
                   put: unittest.TestCase,
                   actual_cmd_and_args: str,
                   message_builder: va.MessageBuilder = va.MessageBuilder()):
-            put.assertEquals(interpreter + ' ',
-                             actual_cmd_and_args[:len(interpreter) + 1],
-                             'First part of string should be equal to the interpreter')
-            put.assertEquals(' ' + args,
-                             actual_cmd_and_args[-(len(args) + 1):],
-                             'Last part of string should be equal to the arguments')
+            put.assertEqual(interpreter + ' ',
+                            actual_cmd_and_args[:len(interpreter) + 1],
+                            'First part of string should be equal to the interpreter')
+            put.assertEqual(' ' + args,
+                            actual_cmd_and_args[-(len(args) + 1):],
+                            'Last part of string should be equal to the arguments')
             file_ref_part = actual_cmd_and_args[len(interpreter):-(len(args) + 1)]
             put.assertTrue(file_name_base in file_ref_part,
                            'File ref base name should appear in the file reference')

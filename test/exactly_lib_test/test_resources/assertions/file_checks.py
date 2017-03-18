@@ -23,7 +23,7 @@ class FileChecker:
                                                            expected_number_of_files: int):
         self.assert_exists_dir(p)
         directory_contents = list(p.iterdir())
-        self.put.assertEquals(
+        self.put.assertEqual(
             expected_number_of_files,
             len(directory_contents),
             self._msg('The directory "%s" should contain exactly %s files. Found %s' % (str(p),

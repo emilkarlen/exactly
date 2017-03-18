@@ -49,9 +49,9 @@ class SubProcessExitValueAssertion(va.ValueAssertion):
                                  'Expects ' + str(SubProcessResult)))
         msg_info = 'Info from actual value:\nstdout = "{stdout}"\nstderr="{stderr}"'.format(stdout=value.stdout,
                                                                                             stderr=value.stderr)
-        put.assertEquals(self.expected.exit_code,
-                         value.exitcode,
-                         message_builder.for_sub_component('exitcode').apply(msg_info))
-        put.assertEquals(self.expected.exit_identifier + os.linesep,
-                         value.stdout,
-                         message_builder.for_sub_component('exit identifier').apply(msg_info))
+        put.assertEqual(self.expected.exit_code,
+                        value.exitcode,
+                        message_builder.for_sub_component('exitcode').apply(msg_info))
+        put.assertEqual(self.expected.exit_identifier + os.linesep,
+                        value.stdout,
+                        message_builder.for_sub_component('exit identifier').apply(msg_info))

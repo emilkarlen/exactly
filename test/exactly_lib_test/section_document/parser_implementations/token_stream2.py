@@ -161,7 +161,7 @@ class TestMisc(unittest.TestCase):
             with self.subTest(msg=repr(source)):
                 ts = sut.TokenStream2(source)
                 actual = ts.remaining_part_of_current_line
-                self.assertEquals(expected, actual)
+                self.assertEqual(expected, actual)
 
     def test_remaining_part_of_current_line_after_consumption_of_first_token(self):
         test_cases = [
@@ -177,4 +177,4 @@ class TestMisc(unittest.TestCase):
                 ts = sut.TokenStream2(source)
                 ts.consume()
                 actual = ts.remaining_part_of_current_line
-                self.assertEquals(expected, actual)
+                self.assertEqual(expected, actual)
