@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case_file_structure.destination_path import DestinationPath
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -22,11 +22,11 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class _Instruction(AssertPhaseInstruction):
-    def __init__(self, destination_path: DestinationPath):
-        self.destination_path = destination_path
+    def __init__(self, destination_path_resolver: FileRef):
+        self.destination_path_resolver = destination_path_resolver
 
     def main(self, environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         error_message = mkdir_utils.make_dir_in_current_dir(environment.path_resolving_environment,
-                                                            self.destination_path)
+                                                            self.destination_path_resolver)
         return pfh.new_pfh_pass() if error_message is None else pfh.new_pfh_hard_error(error_message)
