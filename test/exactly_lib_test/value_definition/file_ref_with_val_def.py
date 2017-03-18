@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources import value_definition_utils as v2
 from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_tr
-from exactly_lib_test.value_definition.test_resources import values2 as v2
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
 

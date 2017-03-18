@@ -11,14 +11,14 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.value_definition.concrete_values import FileRefValue
 from exactly_lib.value_definition.value_structure import ValueReference2, ValueContainer
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources import value_definition as vd_tr
 from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_tr
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
-from exactly_lib_test.value_definition.test_resources.values2 import file_ref_value
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value
 
 
 def file_ref_equals(expected: FileRef) -> asrt.ValueAssertion:
@@ -94,11 +94,11 @@ class _FileRefAssertion(asrt.ValueAssertion):
                                                  mb.for_sub_component('[%d]' % idx))
 
 
-def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> vd_tr.FileRefValue:
+def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> FileRefValue:
     relativity = list(valid_relativities.rel_option_types)[0]
     assert isinstance(relativity, RelOptionType)
     return file_ref_value(file_ref_test_impl('file_ref_test_impl', relativity))
 
 
-def _value_container(value: vd_tr.FileRefValue) -> ValueContainer:
+def _value_container(value: FileRefValue) -> ValueContainer:
     return ValueContainer(Line(1, 'source line'), value)

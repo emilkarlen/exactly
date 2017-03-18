@@ -11,7 +11,7 @@ from exactly_lib.value_definition.concrete_restrictions import NoRestriction
 from exactly_lib.value_definition.concrete_values import StringValue
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueRestriction
-from exactly_lib_test.value_definition.test_resources.values2 import file_ref_value_container
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value_container
 
 
 def suite() -> unittest.TestSuite:

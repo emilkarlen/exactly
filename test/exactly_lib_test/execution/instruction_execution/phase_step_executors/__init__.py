@@ -1,6 +1,6 @@
 import unittest
 
-from . import setup
+from exactly_lib_test.execution.instruction_execution.phase_step_executors import setup
 
 
 def suite() -> unittest.TestSuite:
