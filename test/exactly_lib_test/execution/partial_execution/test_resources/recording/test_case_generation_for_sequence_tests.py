@@ -8,7 +8,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.test_case_gener
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.execution_recording.recording_instructions import \
-    RecordingInstructions
+    RecordingInstructionsFactory
 from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
@@ -22,7 +22,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
         if self.__recorder is None:
             self.__recorder = ListRecorder()
         self.ilc = instruction_line_constructor()
-        recording_instructions = RecordingInstructions(self.__recorder)
+        recording_instructions = RecordingInstructionsFactory(self.__recorder)
         self.__recorders = {
             PartialPhase.SETUP:
                 recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_SYMBOLS,
