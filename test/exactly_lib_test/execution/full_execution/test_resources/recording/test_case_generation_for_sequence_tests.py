@@ -23,28 +23,14 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             self.__recorder = ListRecorder()
         self.ilc = instruction_line_constructor()
 
-        recording_instructions = RecordingInstructionsFactory(self.__recorder)
+        self.__recording_instructions = RecordingInstructionsFactory(self.__recorder)
         self.__recorders = {
-            phase_identifier.CONFIGURATION:
-                recording_instructions.new_configuration_instruction(phase_step.CONFIGURATION__MAIN),
-            phase_identifier.SETUP:
-                recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_SYMBOLS,
-                                                             phase_step.SETUP__VALIDATE_PRE_SDS,
-                                                             phase_step.SETUP__MAIN,
-                                                             phase_step.SETUP__VALIDATE_POST_SETUP),
-            phase_identifier.ACT:
-                act_phase_instruction_with_source(),
-            phase_identifier.BEFORE_ASSERT:
-                recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
-                                                                     phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                                                                     phase_step.BEFORE_ASSERT__MAIN),
-            phase_identifier.ASSERT:
-                recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_SDS,
-                                                              phase_step.ASSERT__VALIDATE_POST_SETUP,
-                                                              phase_step.ASSERT__MAIN),
-            phase_identifier.CLEANUP:
-                recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_SDS,
-                                                               phase_step.CLEANUP__MAIN)
+            phase_identifier.CONFIGURATION: self._new_configuration_instruction,
+            phase_identifier.SETUP: self._new_setup_instruction,
+            phase_identifier.ACT: act_phase_instruction_with_source,
+            phase_identifier.BEFORE_ASSERT: self._new_before_assert_instruction,
+            phase_identifier.ASSERT: self._new_assert_instruction,
+            phase_identifier.CLEANUP: self._new_cleanup_instruction
         }
 
         self.__extra = {}
@@ -65,7 +51,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
         return self.__the_extra[phase]
 
     def recorder_for(self, phase: phase_identifier.Phase) -> SectionContentElement:
-        return self.ilc.apply(self.__recorders[phase])
+        return self.ilc.apply(self.__recorders[phase]())
 
     @property
     def recorder(self) -> ListRecorder:
@@ -83,6 +69,29 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
 
     def __recorder_of(self, element: str) -> ListElementRecorder:
         return self.__recorder.recording_of(element)
+
+    def _new_configuration_instruction(self):
+        return self.__recording_instructions.new_configuration_instruction(phase_step.CONFIGURATION__MAIN)
+
+    def _new_setup_instruction(self):
+        return self.__recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_SYMBOLS,
+                                                                   phase_step.SETUP__VALIDATE_PRE_SDS,
+                                                                   phase_step.SETUP__MAIN,
+                                                                   phase_step.SETUP__VALIDATE_POST_SETUP)
+
+    def _new_before_assert_instruction(self):
+        return self.__recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
+                                                                           phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                                                                           phase_step.BEFORE_ASSERT__MAIN)
+
+    def _new_assert_instruction(self):
+        return self.__recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_SDS,
+                                                                    phase_step.ASSERT__VALIDATE_POST_SETUP,
+                                                                    phase_step.ASSERT__MAIN)
+
+    def _new_cleanup_instruction(self):
+        return self.__recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_SDS,
+                                                                     phase_step.CLEANUP__MAIN)
 
 
 class TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase(TestCaseGeneratorForExecutionRecording):

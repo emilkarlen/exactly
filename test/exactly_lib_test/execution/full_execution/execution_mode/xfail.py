@@ -12,7 +12,8 @@ from exactly_lib_test.execution.full_execution.test_resources.recording.test_cas
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
-from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE
+from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
+    SYMBOL_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.instruction_test_resources import do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
@@ -42,6 +43,7 @@ class Test(TestCaseBase):
                                     'fail message'),
                                 [phase_step.CONFIGURATION__MAIN,
                                  phase_step.CONFIGURATION__MAIN] +
+                                SYMBOL_VALIDATION_STEPS__TWICE +
                                 PRE_SDS_VALIDATION_STEPS__TWICE +
                                 [phase_step.SETUP__MAIN,
                                  phase_step.SETUP__MAIN,
@@ -75,6 +77,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForNoFailure(),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
@@ -131,6 +134,7 @@ class Test(TestCaseBase):
                             test.ImplementationErrorTestException),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,

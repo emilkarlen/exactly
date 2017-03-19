@@ -11,7 +11,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
-    PRE_SDS_VALIDATION_STEPS__ONCE
+    PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
     prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises
@@ -38,6 +38,7 @@ class Test(TestCaseBase):
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
                         [
+                            phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
@@ -54,6 +55,7 @@ class Test(TestCaseBase):
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
                         [
+                            phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
@@ -70,6 +72,7 @@ class Test(TestCaseBase):
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             test.ImplementationErrorTestException),
                         [
+                            phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
@@ -85,6 +88,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__MAIN,
@@ -106,6 +110,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__MAIN,
@@ -127,6 +132,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__MAIN,
@@ -148,6 +154,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__PREPARE,
                             'error in act/prepare'),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 
@@ -172,6 +179,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__PREPARE,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 
@@ -196,6 +204,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__EXECUTE,
                             'error in execute'),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 
@@ -221,6 +230,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__EXECUTE,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 

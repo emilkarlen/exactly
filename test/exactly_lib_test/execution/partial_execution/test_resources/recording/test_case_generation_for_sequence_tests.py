@@ -22,24 +22,12 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
         if self.__recorder is None:
             self.__recorder = ListRecorder()
         self.ilc = instruction_line_constructor()
-        recording_instructions = RecordingInstructionsFactory(self.__recorder)
+        self.recording_instructions = RecordingInstructionsFactory(self.__recorder)
         self.__recorders = {
-            PartialPhase.SETUP:
-                recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_SYMBOLS,
-                                                             phase_step.SETUP__VALIDATE_PRE_SDS,
-                                                             phase_step.SETUP__MAIN,
-                                                             phase_step.SETUP__VALIDATE_POST_SETUP),
-            PartialPhase.BEFORE_ASSERT:
-                recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
-                                                                     phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                                                                     phase_step.BEFORE_ASSERT__MAIN),
-            PartialPhase.ASSERT:
-                recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_SDS,
-                                                              phase_step.ASSERT__VALIDATE_POST_SETUP,
-                                                              phase_step.ASSERT__MAIN),
-            PartialPhase.CLEANUP:
-                recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_SDS,
-                                                               phase_step.CLEANUP__MAIN)
+            PartialPhase.SETUP: self._new_setup_instruction,
+            PartialPhase.BEFORE_ASSERT: self._new_before_assert_instruction,
+            PartialPhase.ASSERT: self._new_assert_instruction,
+            PartialPhase.CLEANUP: self._new_cleanup_instruction
         }
         self.__extra = {}
         for ph in PartialPhase:
@@ -59,7 +47,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
         return self.__the_extra[phase]
 
     def recorder_for(self, phase: PartialPhase) -> model.SectionContentElement:
-        return self.ilc.apply(self.__recorders[phase])
+        return self.ilc.apply(self.__recorders[phase]())
 
     @property
     def recorder(self) -> ListRecorder:
@@ -77,6 +65,26 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
         :rtype [PhaseContentElement]
         """
         raise NotImplementedError()
+
+    def _new_setup_instruction(self):
+        return self.recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_SYMBOLS,
+                                                                 phase_step.SETUP__VALIDATE_PRE_SDS,
+                                                                 phase_step.SETUP__MAIN,
+                                                                 phase_step.SETUP__VALIDATE_POST_SETUP)
+
+    def _new_before_assert_instruction(self):
+        return self.recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
+                                                                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                                                                         phase_step.BEFORE_ASSERT__MAIN)
+
+    def _new_assert_instruction(self):
+        return self.recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_SDS,
+                                                                  phase_step.ASSERT__VALIDATE_POST_SETUP,
+                                                                  phase_step.ASSERT__MAIN)
+
+    def _new_cleanup_instruction(self):
+        return self.recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_SDS,
+                                                                   phase_step.CLEANUP__MAIN)
 
 
 class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):

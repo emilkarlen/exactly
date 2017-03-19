@@ -20,7 +20,9 @@ class ConfigForSetupValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
                          phase_step.SETUP__VALIDATE_PRE_SDS,
-                         expected_steps=[phase_step.SETUP__VALIDATE_PRE_SDS])
+                         expected_steps=[phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_PRE_SDS])
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(
@@ -34,7 +36,9 @@ class ConfigForBeforeAssertValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
-                         expected_steps=[phase_step.SETUP__VALIDATE_PRE_SDS,
+                         expected_steps=[phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_PRE_SDS,
                                          phase_step.SETUP__VALIDATE_PRE_SDS,
                                          phase_step.ACT__VALIDATE_PRE_SDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS])
@@ -51,7 +55,9 @@ class ConfigForAssertValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT__VALIDATE_PRE_SDS,
-                         expected_steps=[phase_step.SETUP__VALIDATE_PRE_SDS,
+                         expected_steps=[phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_PRE_SDS,
                                          phase_step.SETUP__VALIDATE_PRE_SDS,
                                          phase_step.ACT__VALIDATE_PRE_SDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
@@ -70,7 +76,9 @@ class ConfigForCleanupValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP__VALIDATE_PRE_SDS,
-                         expected_steps=[phase_step.SETUP__VALIDATE_PRE_SDS,
+                         expected_steps=[phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_SYMBOLS,
+                                         phase_step.SETUP__VALIDATE_PRE_SDS,
                                          phase_step.SETUP__VALIDATE_PRE_SDS,
                                          phase_step.ACT__VALIDATE_PRE_SDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,

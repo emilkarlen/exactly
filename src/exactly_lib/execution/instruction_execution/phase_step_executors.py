@@ -52,7 +52,7 @@ class ConfigurationMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__phase_environment))
 
 
-class SetupSymbolValidatePreSdsExecutor(ControlledInstructionExecutor):
+class SetupValidateSymbolsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
         self.__instruction_environment = instruction_environment
