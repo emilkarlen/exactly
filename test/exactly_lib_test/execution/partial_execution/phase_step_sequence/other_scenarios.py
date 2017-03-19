@@ -11,7 +11,8 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
-from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE
+from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
+    SYMBOL_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 
@@ -37,6 +38,7 @@ class Test(TestCaseBase):
                             phase_step.SETUP__MAIN,
                             test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                             'hard error msg from setup'),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
@@ -56,6 +58,7 @@ class Test(TestCaseBase):
                             phase_step.SETUP__MAIN,
                             test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
@@ -75,6 +78,7 @@ class Test(TestCaseBase):
                             phase_step.BEFORE_ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
                             'hard error msg'),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
@@ -108,6 +112,7 @@ class Test(TestCaseBase):
                             phase_step.BEFORE_ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
@@ -141,6 +146,7 @@ class Test(TestCaseBase):
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                             'fail msg from ASSERT'),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
@@ -176,6 +182,7 @@ class Test(TestCaseBase):
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                             'hard error msg from ASSERT'),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
@@ -211,6 +218,7 @@ class Test(TestCaseBase):
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
@@ -246,6 +254,7 @@ class Test(TestCaseBase):
                             phase_step.CLEANUP__MAIN,
                             test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                             'hard error msg from CLEANUP'),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
@@ -281,6 +290,7 @@ class Test(TestCaseBase):
                             phase_step.CLEANUP__MAIN,
                             test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,

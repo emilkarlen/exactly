@@ -112,9 +112,9 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         self.__expectation.failure_info.assertions(self.utc,
                                                    self.full_result.failure_info)
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
-        self.utc.assertEqual(self.__expectation.internal_recording,
-                             self.__recorder.recorded_elements,
-                             msg)
+        self.utc.assertListEqual(self.__expectation.internal_recording,
+                                 self.__recorder.recorded_elements,
+                                 msg)
         if self.__expectation.sandbox_directory_structure_should_exist:
             self.utc.assertIsNotNone(self.sds)
             self.utc.assertTrue(

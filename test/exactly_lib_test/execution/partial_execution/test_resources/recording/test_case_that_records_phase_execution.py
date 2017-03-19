@@ -113,9 +113,9 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
         self.__expectation.failure_info.assertions(self.put,
                                                    self.partial_result.failure_info)
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
-        self.put.assertEqual(self.__expectation.internal_recording,
-                             self.__recorder.recorded_elements,
-                             msg)
+        self.put.assertListEqual(self.__expectation.internal_recording,
+                                 self.__recorder.recorded_elements,
+                                 msg)
         if self.__expectation.sandbox_directory_structure_should_exist:
             self.put.assertTrue(self.partial_result.has_sandbox_directory_structure)
             self.put.assertIsNotNone(self.partial_result.sandbox_directory_structure)

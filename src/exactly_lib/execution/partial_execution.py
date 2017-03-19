@@ -203,6 +203,7 @@ class _PartialExecutor:
     def execute(self) -> PartialResult:
         self.__set_pre_sds_environment_variables()
         res = self._sequence([
+            self.__setup__validate_symbols,
             self.__setup__validate_pre_sds,
             self.__act__create_executor_and_validate_pre_sds,
             self.__before_assert__validate_pre_sds,
@@ -269,6 +270,12 @@ class _PartialExecutor:
         self.os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_sds_environment_variables()
+
+    def __setup__validate_symbols(self) -> PartialResult:
+        return self.__run_instructions_phase_step(phase_step.SETUP__VALIDATE_SYMBOLS,
+                                                  phase_step_executors.SetupValidateSymbolsExecutor(
+                                                      self.__instruction_environment_pre_sds),
+                                                  self.__test_case.setup_phase)
 
     def __setup__validate_pre_sds(self) -> PartialResult:
         return self.__run_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_SDS,
