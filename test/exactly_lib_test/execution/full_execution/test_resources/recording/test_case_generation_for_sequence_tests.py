@@ -28,7 +28,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             phase_identifier.CONFIGURATION:
                 recording_instructions.new_configuration_instruction(phase_step.CONFIGURATION__MAIN),
             phase_identifier.SETUP:
-                recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_PRE_SDS,
+                recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_SYMBOLS,
+                                                             phase_step.SETUP__VALIDATE_PRE_SDS,
                                                              phase_step.SETUP__MAIN,
                                                              phase_step.SETUP__VALIDATE_POST_SETUP),
             phase_identifier.ACT:

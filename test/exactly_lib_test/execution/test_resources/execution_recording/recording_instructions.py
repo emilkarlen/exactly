@@ -20,10 +20,14 @@ class RecordingInstructions:
         return configuration_phase_instruction_that(main=self._do_record_and_return_sh(value))
 
     def new_setup_instruction(self,
+                              value_for_value_usages,
                               value_for_validate_pre_sds,
                               value_for_main,
-                              value_for_validate_post_sds) -> SetupPhaseInstruction:
-        return setup_phase_instruction_that(validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
+                              value_for_validate_post_sds,
+                              ) -> SetupPhaseInstruction:
+        return setup_phase_instruction_that(
+            value_usages_initial_action=self._do_record_first_invokation(value_for_value_usages),
+            validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
                                             validate_post_setup=self._do_record_and_return_svh(
                                                 value_for_validate_post_sds),
                                             main=self._do_record_and_return_sh(value_for_main))
@@ -79,3 +83,16 @@ class RecordingInstructions:
             return return_value
 
         return ret_val
+
+    def _do_record_first_invokation(self, element):
+        class RetVal:
+            def __init__(self, recorder: ListRecorder):
+                self.recorder = recorder
+                self.has_recorded = False
+
+            def __call__(self, *args, **kwargs):
+                if not self.has_recorded:
+                    self.recorder.recording_of(element).record()
+                    self.has_recorded = True
+
+        return RetVal(self.recorder)
