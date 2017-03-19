@@ -12,7 +12,6 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.util.symbol_table import SymbolTable
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
@@ -58,8 +57,8 @@ class SetupValidateSymbolsExecutor(ControlledInstructionExecutor):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
-        return _validate_symbol_usages(instruction.value_usages(),
-                                       self.__instruction_environment.value_definitions)
+        return validate_symbol_usages(instruction.value_usages(),
+                                      self.__instruction_environment.value_definitions)
 
 
 class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):
@@ -186,12 +185,3 @@ class CleanupMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__environment,
                              self.__os_services,
                              self.__previous_phase))
-
-
-def _validate_symbol_usages(value_usages: list,
-                            value_definitions: SymbolTable) -> PartialInstructionControlledFailureInfo:
-    for value_usage in value_usages:
-        result = validate_symbol_usages(value_usage, value_definitions)
-        if result is not None:
-            return result
-    return None
