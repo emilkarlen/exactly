@@ -12,7 +12,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that
 
 
-class RecordingInstructions:
+class RecordingInstructionsFactory:
     def __init__(self, recorder: ListRecorder):
         self.recorder = recorder
 
@@ -28,9 +28,9 @@ class RecordingInstructions:
         return setup_phase_instruction_that(
             value_usages_initial_action=self._do_record_first_invokation(value_for_value_usages),
             validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
-                                            validate_post_setup=self._do_record_and_return_svh(
-                                                value_for_validate_post_sds),
-                                            main=self._do_record_and_return_sh(value_for_main))
+            validate_post_setup=self._do_record_and_return_svh(
+                value_for_validate_post_sds),
+            main=self._do_record_and_return_sh(value_for_main))
 
     def new_before_assert_instruction(self,
                                       value_for_validate_pre_sds,

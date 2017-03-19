@@ -8,7 +8,7 @@ from exactly_lib_test.execution.full_execution.test_resources.test_case_generato
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder, ListElementRecorder
 from exactly_lib_test.execution.test_resources.execution_recording.recording_instructions import \
-    RecordingInstructions
+    RecordingInstructionsFactory
 from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
@@ -23,7 +23,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             self.__recorder = ListRecorder()
         self.ilc = instruction_line_constructor()
 
-        recording_instructions = RecordingInstructions(self.__recorder)
+        recording_instructions = RecordingInstructionsFactory(self.__recorder)
         self.__recorders = {
             phase_identifier.CONFIGURATION:
                 recording_instructions.new_configuration_instruction(phase_step.CONFIGURATION__MAIN),
