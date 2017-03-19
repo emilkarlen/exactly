@@ -18,6 +18,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestValueReference),
         unittest.makeSuite(TestValueDefinition),
+        unittest.makeSuite(TestValidationOfList),
     ])
 
 
@@ -122,10 +123,50 @@ class TestValueDefinition(unittest.TestCase):
                         'definition should have been added')
 
 
+class TestValidationOfList(unittest.TestCase):
+    def test_WHEN_no_usages_to_validate_THEN_validation_ok(
+            self):
+        # ARRANGE #
+        symbol_table = empty_symbol_table()
+        value_usages = []
+        # ACT #
+        actual = sut.validate_symbol_usages(value_usages, symbol_table)
+        self.assertIsNone(actual, 'result should indicate ok')
+
+    def test_WHEN_all_usages_are_valid_THEN_validation_ok(
+            self):
+        # ARRANGE #
+        symbol_table = empty_symbol_table()
+        valid_definition = value_definition_of('symbol')
+        valid__reference = vs.ValueReference('symbol', NoRestriction())
+        value_usages = [
+            valid_definition,
+            valid__reference,
+        ]
+        # ACT #
+        actual = sut.validate_symbol_usages(value_usages, symbol_table)
+        self.assertIsNone(actual, 'result should indicate ok')
+
+    def test_WHEN_2nd_element_fails_to_validate_THEN_validation_error(self):
+        # ARRANGE #
+        symbol_table = empty_symbol_table()
+        valid_definition = value_definition_of('name-of-definition')
+        invalid__reference = vs.ValueReference('undefined', NoRestriction())
+        value_usages = [
+            valid_definition,
+            invalid__reference,
+        ]
+        # ACT #
+        actual = sut.validate_symbol_usages(value_usages, symbol_table)
+        self.assertIsNotNone(actual, 'result should indicate error')
+        self.assertIs(PartialControlledFailureEnum.VALIDATION,
+                      actual.status)
+
+
 def value_definition_of(name: str) -> vs.ValueDefinition:
     return vs.ValueDefinition(name,
                               vs.ValueContainer(Line(1, 'source code'),
-                                                 StringValue('string value')))
+                                                StringValue('string value')))
 
 
 def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
