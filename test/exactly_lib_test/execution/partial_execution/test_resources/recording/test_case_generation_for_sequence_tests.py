@@ -57,7 +57,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
             self.__the_extra[phase] = self.ilc.apply_list(self.__extra[phase])
         return self.__the_extra[phase]
 
-    def recorder_for(self, phase: PartialPhase) -> list:
+    def recorder_for(self, phase: PartialPhase) -> model.SectionContentElement:
         return self.ilc.apply(self.__recorders[phase])
 
     @property
