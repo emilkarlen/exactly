@@ -7,17 +7,21 @@ from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 from exactly_lib_test.test_resources.assertions.assert_utils import assertion_message
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class ExpectedFailureDetails(tuple):
     def __new__(cls,
-                error_message_or_none: str,
+                error_message_or_none: asrt.ValueAssertion,
                 exception_class_or_none):
+        if error_message_or_none is not None:
+            if isinstance(error_message_or_none, str):
+                raise TypeError(error_message_or_none)
         return tuple.__new__(cls, (error_message_or_none,
                                    exception_class_or_none))
 
     @property
-    def error_message_or_none(self) -> str:
+    def error_message_or_none(self) -> asrt.ValueAssertion:
         return self[0]
 
     @property
@@ -32,9 +36,10 @@ class ExpectedFailureDetails(tuple):
             unittest_case.assertIsNone(actual,
                                        message_header)
         elif self.error_message_or_none is not None:
-            unittest_case.assertEqual(self.error_message_or_none,
-                                      actual.failure_message,
-                                      assertion_message('failure message', message_header))
+            self.error_message_or_none.apply_with_message(unittest_case,
+                                                          actual.failure_message,
+                                                          assertion_message('failure message',
+                                                                            message_header))
         else:
             unittest_case.assertIsInstance(actual.exception,
                                            self.exception_class_or_none,
@@ -42,7 +47,7 @@ class ExpectedFailureDetails(tuple):
 
 
 def new_expected_failure_message(msg: str):
-    return ExpectedFailureDetails(msg, None)
+    return ExpectedFailureDetails(asrt.equals(msg), None)
 
 
 def new_expected_exception(exception_class):
@@ -100,7 +105,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
     def __new__(cls,
                 phase_step: PhaseStep,
                 source_line: line_source.Line,
-                error_message_or_none: str,
+                error_message_or_none: asrt.ValueAssertion,
                 exception_class_or_none):
         return tuple.__new__(cls, (phase_step,
                                    source_line,
@@ -111,6 +116,15 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
     def new_with_message(phase_step: PhaseStep,
                          source_line: line_source.Line,
                          error_message: str):
+        return ExpectedFailureForInstructionFailure(phase_step,
+                                                    source_line,
+                                                    asrt.equals(error_message),
+                                                    None)
+
+    @staticmethod
+    def new_with_message_assertion(phase_step: PhaseStep,
+                                   source_line: line_source.Line,
+                                   error_message: asrt.ValueAssertion):
         return ExpectedFailureForInstructionFailure(phase_step,
                                                     source_line,
                                                     error_message,
@@ -171,7 +185,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
 class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
     def __new__(cls,
                 phase_step: PhaseStep,
-                error_message_or_none: str,
+                error_message_or_none: asrt.ValueAssertion,
                 exception_class_or_none):
         return tuple.__new__(cls, (phase_step,
                                    ExpectedFailureDetails(error_message_or_none,
@@ -181,7 +195,7 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
     def new_with_message(phase_step: PhaseStep,
                          error_message: str):
         return ExpectedFailureForPhaseFailure(phase_step,
-                                              error_message,
+                                              asrt.equals(error_message),
                                               None)
 
     @staticmethod
