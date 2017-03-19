@@ -27,7 +27,7 @@ class TestValueReference(unittest.TestCase):
         symbol_table = empty_symbol_table()
         value_usage = vs.ValueReference('undefined', NoRestriction())
         # ACT #
-        actual = sut.validate_pre_sds(value_usage, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
@@ -39,7 +39,7 @@ class TestValueReference(unittest.TestCase):
         value_usage = vs.ValueReference('val_name',
                                         RestrictionThatCannotBeSatisfied())
         # ACT #
-        actual = sut.validate_pre_sds(value_usage, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
@@ -50,7 +50,7 @@ class TestValueReference(unittest.TestCase):
         value_usage = vs.ValueReference('val_name',
                                         RestrictionThatIsAlwaysSatisfied())
         # ACT #
-        actual = sut.validate_pre_sds(value_usage, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage, symbol_table)
         self.assertIsNone(actual, 'result should indicate success')
 
 
@@ -60,7 +60,7 @@ class TestValueDefinition(unittest.TestCase):
         symbol_table = singleton_symbol_table(string_entry('already-defined'))
         value_usage = value_definition_of('already-defined')
         # ACT #
-        actual = sut.validate_pre_sds(value_usage, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
@@ -70,7 +70,7 @@ class TestValueDefinition(unittest.TestCase):
         symbol_table = singleton_symbol_table(string_entry('other'))
         value_usage = value_definition_of('undefined')
         # ACT #
-        actual = sut.validate_pre_sds(value_usage, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage, symbol_table)
         self.assertIsNone(actual, 'return value for indicating')
         self.assertTrue(symbol_table.contains('undefined'),
                         'definition should be added to symbol table')
@@ -86,7 +86,7 @@ class TestValueDefinition(unittest.TestCase):
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                                      'file-name')))
         # ACT #
-        actual = sut.validate_pre_sds(value_usage, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'return value for indicating error')
 
     def test_WHEN_defined_value_not_in_table_but_referenced_value_in_table_does_not_satisfy_restriction_THEN_error(
@@ -100,7 +100,7 @@ class TestValueDefinition(unittest.TestCase):
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatCannotBeSatisfied()),
                                      'file-name')))
         # ACT #
-        actual = sut.validate_pre_sds(value_usage_to_check, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage_to_check, symbol_table)
         # ASSERT #
         self.assertIsNotNone(actual, 'return value for indicating error')
 
@@ -115,7 +115,7 @@ class TestValueDefinition(unittest.TestCase):
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                                      'file-name')))
         # ACT #
-        actual = sut.validate_pre_sds(value_usage_to_check, symbol_table)
+        actual = sut.validate_symbol_usages(value_usage_to_check, symbol_table)
         # ASSERT #
         self.assertIsNone(actual, 'return value for indicating success')
         self.assertTrue(symbol_table.contains('UNDEFINED'),

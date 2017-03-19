@@ -6,8 +6,8 @@ from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.value_structure import ValueContainer
 
 
-def validate_pre_sds(value_usage: vs.ValueUsage,
-                     symbol_table: SymbolTable) -> PartialInstructionControlledFailureInfo:
+def validate_symbol_usages(value_usage: vs.ValueUsage,
+                           symbol_table: SymbolTable) -> PartialInstructionControlledFailureInfo:
     if isinstance(value_usage, vs.ValueReference):
         assert isinstance(value_usage, vs.ValueReference)
         if not symbol_table.contains(value_usage.name):
@@ -32,7 +32,7 @@ def validate_pre_sds(value_usage: vs.ValueUsage,
                         already_defined_value_container.definition_source)))
         else:
             for referenced_value in value_usage.references:
-                failure_info = validate_pre_sds(referenced_value, symbol_table)
+                failure_info = validate_symbol_usages(referenced_value, symbol_table)
                 if failure_info is not None:
                     return failure_info
             symbol_table.add(value_usage.symbol_table_entry)

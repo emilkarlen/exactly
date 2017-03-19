@@ -1,6 +1,6 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.execution.instruction_execution.value_definition_validation import validate_pre_sds
+from exactly_lib.execution.instruction_execution.value_definition_validation import validate_symbol_usages
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instr
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -52,16 +52,22 @@ class ConfigurationMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__phase_environment))
 
 
+class SetupSymbolValidatePreSdsExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
+        self.__instruction_environment = instruction_environment
+
+    def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _validate_symbol_usages(instruction.value_usages(),
+                                       self.__instruction_environment.value_definitions)
+
+
 class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
-        handling_result = _handle_value_usages(instruction.value_usages(),
-                                               self.__instruction_environment.value_definitions)
-        if handling_result is not None:
-            return handling_result
         return _from_success_or_validation_error_or_hard_error(
             instruction.validate_pre_sds(self.__instruction_environment))
 
@@ -182,10 +188,10 @@ class CleanupMainExecutor(ControlledInstructionExecutor):
                              self.__previous_phase))
 
 
-def _handle_value_usages(value_usages: list,
-                         value_definitions: SymbolTable) -> PartialInstructionControlledFailureInfo:
+def _validate_symbol_usages(value_usages: list,
+                            value_definitions: SymbolTable) -> PartialInstructionControlledFailureInfo:
     for value_usage in value_usages:
-        result = validate_pre_sds(value_usage, value_definitions)
+        result = validate_symbol_usages(value_usage, value_definitions)
         if result is not None:
             return result
     return None
