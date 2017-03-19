@@ -60,6 +60,11 @@ SUITE_REPORTER_CONCEPT_INFO = name_and_ref_target(
     'Reports the outcome of a test suite via stdout, stderr and exit code.'
 )
 
+SYMBOL_CONCEPT_INFO = name_and_ref_target(
+    Name('symbol', 'symbols'),
+    'A named value that can be used by many instructions.'
+)
+
 ACTOR_CONCEPT_INFO = name_and_ref_target(
     Name('actor', 'actors'),
     _format('Interprets the contents of the {phase[act]} phase, and executes it.')
