@@ -49,6 +49,10 @@ def _main_step(phase: phase_identifier.Phase) -> PhaseStep:
     return PhaseStep(phase, 'main')
 
 
+def _validate_symbols_step(phase: phase_identifier.Phase) -> PhaseStep:
+    return PhaseStep(phase, 'validate-symbols')
+
+
 def _validate_pre_sds_step(phase: phase_identifier.Phase) -> PhaseStep:
     return PhaseStep(phase, 'validate-pre-sds')
 
@@ -59,6 +63,7 @@ def _validate_post_setup_step(phase: phase_identifier.Phase) -> PhaseStep:
 
 CONFIGURATION__MAIN = _main_step(phase_identifier.CONFIGURATION)
 
+SETUP__VALIDATE_SYMBOLS = _validate_symbols_step(phase_identifier.SETUP)
 SETUP__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.SETUP)
 SETUP__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.SETUP)
 SETUP__MAIN = _main_step(phase_identifier.SETUP)
