@@ -405,7 +405,7 @@ class _PartialExecutor:
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._sds.act_dir))
 
-    def __construct_and_set_sds(self) -> SandboxDirectoryStructure:
+    def __construct_and_set_sds(self):
         sds_root_dir_name = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
         self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
 
