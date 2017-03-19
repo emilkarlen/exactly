@@ -99,7 +99,9 @@ def execute_element(executor: ControlledInstructionExecutor,
     """
 
     try:
-        fail_info = executor.apply(element.instruction)
+        instruction = element.instruction
+        assert isinstance(instruction, TestCaseInstruction), _INSTRUCTION_TYPE_ERROR_MESSAGE
+        fail_info = executor.apply(instruction)
         if fail_info is None:
             return None
         return SingleInstructionExecutionFailure(result.PartialResultStatus(fail_info.status.value),
@@ -111,3 +113,6 @@ def execute_element(executor: ControlledInstructionExecutor,
                                                  element.first_line,
                                                  exactly_lib.util.failure_details.new_failure_details_from_exception(
                                                      ex))
+
+
+_INSTRUCTION_TYPE_ERROR_MESSAGE = 'Instruction in test-case must be ' + str(TestCaseInstruction)
