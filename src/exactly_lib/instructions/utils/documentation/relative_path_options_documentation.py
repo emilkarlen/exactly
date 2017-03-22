@@ -10,6 +10,7 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.test_case_file_structure import relative_path_options as options
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists
@@ -38,10 +39,9 @@ def relativity_syntax_element_description(
         path_that_may_be_relative: a.Named,
         rel_options_conf: RelOptionsConfiguration,
         relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
-    relativity_variants = rel_options_conf.accepted_relativity_variants
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     return SyntaxElementDescription(relativity_argument.name,
-                                    [renderer.list_for(relativity_variants.rel_option_types)])
+                                    [renderer.list_for(rel_options_conf)])
 
 
 def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
@@ -133,6 +133,7 @@ class RelOptionRenderer:
             'DIR_TMP': sds.PATH__TMP_USER,
             'DIR_ACT': sds.SUB_DIRECTORY__ACT,
             'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
+            'SYMBOL_NAME': _SYMBOL_NAME,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'sandbox_concept': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
@@ -149,10 +150,12 @@ class RelOptionRenderer:
                               self.paragraphs(option_type_info.paragraph_items_text),
                               option_type_info.see_also)
 
-    def list_for(self, rel_option_types: iter) -> lists.HeaderContentList:
+    def list_for(self, rel_options_conf: RelOptionsConfiguration) -> lists.HeaderContentList:
         items = []
-        for rel_option_type in rel_option_types:
+        for rel_option_type in rel_options_conf.accepted_relativity_variants.rel_option_types:
             items.append(self.item_for(self.option_info_for(rel_option_type)))
+        if rel_options_conf.is_rel_val_def_option_accepted:
+            items.append(self._rel_symbol_item())
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
@@ -163,6 +166,10 @@ class RelOptionRenderer:
 
     def option_info_for(self, option_type: RelOptionType) -> _RelOptionInfo:
         return self.option_info(_ALL[option_type])
+
+    def _rel_symbol_item(self) -> lists.HeaderContentListItem:
+        return lists.HeaderContentListItem(docs.text(self.arg_renderer.visit(_REL_SYMBOL_OPTION)),
+                                           self.paragraphs(_REL_SYMBOL_DESCRIPTION))
 
 
 _REL_TMP_DESCRIPTION = """\
@@ -183,6 +190,10 @@ _REL_CWD_DESCRIPTION = """\
 
 _REL_HOME_DESCRIPTION = """\
 {PATH} is relative the {home_directory}.
+"""
+
+_REL_SYMBOL_DESCRIPTION = """\
+{PATH} is relative the path denoted by the symbol {SYMBOL_NAME}.
 """
 
 _ALL = {
@@ -214,3 +225,7 @@ _ALL = {
 _DEFAULT_RELATIVITY = """\
 By default, {path} is relative the {default_relativity_location}.
 """
+
+_SYMBOL_NAME = 'SYMBOL'
+
+_REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME, _SYMBOL_NAME)
