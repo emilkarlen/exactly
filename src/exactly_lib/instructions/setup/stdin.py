@@ -63,13 +63,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             rel_path_doc.relativity_syntax_element_description(
                 self.path_arg,
-                parse_here_doc_or_file_ref.CONFIGURATION.options.accepted_options),
+                parse_here_doc_or_file_ref.CONFIGURATION.options),
             dt.here_document_syntax_element_description(self.instruction_name(),
                                                         dt.HERE_DOCUMENT),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)
         return [concept.cross_reference_target for concept in concepts]
 
 

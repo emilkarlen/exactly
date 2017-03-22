@@ -56,11 +56,11 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [
             relative_path_options_documentation.relativity_syntax_element_description(
                 _DIR_ARGUMENT,
-                self.relativity_options.options.accepted_options),
+                self.relativity_options.options),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(self.relativity_options.options.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(self.relativity_options.options)
         from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
         from exactly_lib.help.concepts.names_and_cross_references import SANDBOX_CONCEPT_INFO
         rel_path_doc.add_concepts_if_not_listed(concepts,

@@ -101,7 +101,7 @@ class FileContentsHelpParts:
                                      ),
             rel_opts.relativity_syntax_element_description(
                 dt.FILE_ARGUMENT,
-                parse_here_doc_or_file_ref.CONFIGURATION.options.accepted_options,
+                parse_here_doc_or_file_ref.CONFIGURATION.options,
                 relativity_of_expected_arg),
             SyntaxElementDescription(dt.REG_EX.name,
                                      self._parser.fnap('A Python regular expression.')),
@@ -120,7 +120,7 @@ class FileContentsHelpParts:
 
     @staticmethod
     def _see_also_cross_refs() -> list:
-        concepts = rel_opts.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options.accepted_options)
+        concepts = rel_opts.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)
         if ENVIRONMENT_VARIABLE_CONCEPT_INFO not in concepts:
             concepts.append(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
         return list(map(SingularAndPluralNameAndCrossReferenceId.cross_reference_target.fget, concepts))
