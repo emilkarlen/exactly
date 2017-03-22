@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_VARIABLE_DEFINITION_OPTION_NAME
+from exactly_lib.test_case_file_structure.relative_path_options import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.value_structure import ValueReference
@@ -31,7 +31,7 @@ def parse_relativity_info(options: RelOptionsConfiguration,
 def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
                                   source: TokenStream2) -> ValueReference:
     option_str = source.head.string
-    if not option_parsing.matches(REL_VARIABLE_DEFINITION_OPTION_NAME, option_str):
+    if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
     if not options.is_rel_val_def_option_accepted:
         return _raise_invalid_option(option_str, options)
@@ -80,7 +80,7 @@ def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
     ret_val = []
     if options.is_rel_val_def_option_accepted:
         ret_val.append('  {} VALUE-DEFINITION-NAME'.format(
-            option_parsing.long_option_syntax(REL_VARIABLE_DEFINITION_OPTION_NAME.long)))
+            option_parsing.long_option_syntax(REL_SYMBOL_OPTION_NAME.long)))
     for option_type in options.accepted_options:
         option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
         option_str = option_parsing.long_option_syntax(option_name.long)
