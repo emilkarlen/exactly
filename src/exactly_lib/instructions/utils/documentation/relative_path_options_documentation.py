@@ -2,10 +2,11 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
-    HOME_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO
+    HOME_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO, SYMBOL_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.test_case_file_structure import relative_path_options as options
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
@@ -35,23 +36,28 @@ def default_relativity_for_rel_opt_type(path_arg_name: str,
 
 def relativity_syntax_element_description(
         path_that_may_be_relative: a.Named,
-        iter_of_rel_option_type: iter,
+        rel_options_conf: RelOptionsConfiguration,
         relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+    relativity_variants = rel_options_conf.accepted_relativity_variants
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     return SyntaxElementDescription(relativity_argument.name,
-                                    [renderer.list_for(iter_of_rel_option_type)])
+                                    [renderer.list_for(relativity_variants.rel_option_types)])
 
 
-def see_also_concepts(iter_of_rel_option_type: iter) -> list:
+def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
     """
-    :rtype: [`ConceptDocumentation`]
+    :rtype: [`SingularAndPluralNameAndCrossReferenceId`]
     """
+    relativity_variants = rel_options_conf.accepted_relativity_variants
     ret_val = []
-    for rel_option_type in iter_of_rel_option_type:
+    for rel_option_type in relativity_variants.rel_option_types:
         concepts_for_type = _ALL[rel_option_type].see_also
         for concept in concepts_for_type:
             if concept not in ret_val:
                 ret_val.append(concept)
+    if rel_options_conf.is_rel_val_def_option_accepted:
+        if SYMBOL_CONCEPT_INFO not in ret_val:
+            ret_val.append(SYMBOL_CONCEPT_INFO)
     return ret_val
 
 
@@ -143,7 +149,7 @@ class RelOptionRenderer:
                               self.paragraphs(option_type_info.paragraph_items_text),
                               option_type_info.see_also)
 
-    def list_for(self, rel_option_types: list) -> lists.HeaderContentList:
+    def list_for(self, rel_option_types: iter) -> lists.HeaderContentList:
         items = []
         for rel_option_type in rel_option_types:
             items.append(self.item_for(self.option_info_for(rel_option_type)))

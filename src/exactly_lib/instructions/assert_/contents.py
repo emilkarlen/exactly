@@ -80,7 +80,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                              _ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
                                      ),
             rel_opts.relativity_syntax_element_description(dt.PATH_ARGUMENT,
-                                                           _ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_options,
+                                                           _ACTUAL_RELATIVITY_CONFIGURATION.options,
                                                            relativity_of_actual_arg),
         ]
         return additional_syntax_element_descriptions + self._help_parts.syntax_element_descriptions()

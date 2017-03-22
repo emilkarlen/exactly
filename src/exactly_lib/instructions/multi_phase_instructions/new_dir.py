@@ -47,11 +47,11 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def syntax_element_descriptions(self) -> list:
         return [
             rel_path_doc.relativity_syntax_element_description(_PATH_ARGUMENT,
-                                                               self.rel_opt_arg_conf.options.accepted_options),
+                                                               self.rel_opt_arg_conf.options),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(self.rel_opt_arg_conf.options.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(self.rel_opt_arg_conf.options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]
 

@@ -51,13 +51,13 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [
             rel_path_doc.relativity_syntax_element_description(
                 _PATH_ARGUMENT,
-                REL_OPTION_ARGUMENT_CONFIGURATION.options.accepted_options),
+                REL_OPTION_ARGUMENT_CONFIGURATION.options),
         ]
 
     def _see_also_cross_refs(self) -> list:
         concepts = []
         concepts.append(SYMBOL_CONCEPT_INFO)
-        concepts.extend(rel_path_doc.see_also_concepts(REL_OPTIONS_CONFIGURATION.accepted_options))
+        concepts.extend(rel_path_doc.see_also_concepts(REL_OPTIONS_CONFIGURATION))
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]
 

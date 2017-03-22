@@ -161,11 +161,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                        ' (Must be inside literal parentheses.)')),
                 ]),
             rel_path_doc.relativity_syntax_element_description(self.relativity_arg_path,
-                                                               PARSE_FILE_REF_CONFIGURATION.options.accepted_options),
+                                                               PARSE_FILE_REF_CONFIGURATION.options),
         ]
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.options.accepted_options)
+        concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.options)
         concepts.append(SHELL_SYNTAX_CONCEPT_INFO)
         return [concept.cross_reference_target for concept in concepts]
 
