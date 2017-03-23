@@ -55,7 +55,7 @@ def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
         for concept in concepts_for_type:
             if concept not in ret_val:
                 ret_val.append(concept)
-    if rel_options_conf.is_rel_val_def_option_accepted:
+    if rel_options_conf.is_rel_symbol_option_accepted:
         if SYMBOL_CONCEPT_INFO not in ret_val:
             ret_val.append(SYMBOL_CONCEPT_INFO)
     return ret_val
@@ -154,7 +154,7 @@ class RelOptionRenderer:
         items = []
         for rel_option_type in rel_options_conf.accepted_relativity_variants.rel_option_types:
             items.append(self.item_for(self.option_info_for(rel_option_type)))
-        if rel_options_conf.is_rel_val_def_option_accepted:
+        if rel_options_conf.is_rel_symbol_option_accepted:
             items.append(self._rel_symbol_item())
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
