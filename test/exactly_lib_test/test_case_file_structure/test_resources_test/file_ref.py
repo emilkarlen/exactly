@@ -153,10 +153,10 @@ class _FileRefWithoutValRef(FileRef):
         return self.relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path(str(self.relativity)) / self.file_name
+        return pathlib.Path(str(self.relativity)) / self.path_suffix_path(environment.value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path(str(self.relativity)) / self.file_name
+        return pathlib.Path(str(self.relativity)) / self.path_suffix_path(environment.value_definitions)
 
     def value_references_of_paths(self) -> list:
         return []

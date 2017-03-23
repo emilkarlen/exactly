@@ -11,6 +11,7 @@ from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
+from exactly_lib_test.test_case_file_structure.test_resources.file_ref import equals_path_suffix_string
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator, sds_test
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
@@ -43,20 +44,20 @@ class TestParse(unittest.TestCase):
     def test_strip_trailing_space(self):
         arguments = '  expected-argument  '
         result = sut.parse(arguments)
-        self.assertEqual('expected-argument',
-                         str(result.path_argument))
+        equals_path_suffix_string('expected-argument').apply_with_message(self, result.path_suffix,
+                                                                          'path_suffix')
 
     def test_success_when_correct_number_of_arguments(self):
         arguments = 'expected-argument'
         result = sut.parse(arguments)
-        self.assertEqual('expected-argument',
-                         str(result.path_argument))
+        equals_path_suffix_string('expected-argument').apply_with_message(self, result.path_suffix,
+                                                                          'path_suffix')
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
         result = sut.parse(arguments)
-        self.assertEqual('expected argument',
-                         str(result.path_argument))
+        equals_path_suffix_string('expected argument').apply_with_message(self, result.path_suffix,
+                                                                          'path_suffix')
 
 
 class ParseAndMkDirAction(SdsAction):
