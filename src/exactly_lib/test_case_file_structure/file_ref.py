@@ -2,53 +2,10 @@ import pathlib
 
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType, SpecificPathRelativity, \
     specific_relative_relativity
+from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-class PathSuffix:
-    """
-    The relative path that follows the root path of the `FileRef`.
-    """
-
-    def resolve(self, symbols: SymbolTable) -> str:
-        raise NotImplementedError()
-
-    @property
-    def value_references(self) -> list:
-        """
-        :rtype: [ValueReference]
-        """
-        raise NotImplementedError()
-
-
-class PathSuffixAsFixedPath(PathSuffix):
-    def __init__(self, file_name: str):
-        self._file_name = file_name
-
-    @property
-    def file_name(self) -> str:
-        return self._file_name
-
-    def resolve(self, symbols: SymbolTable) -> str:
-        return self._file_name
-
-    @property
-    def value_references(self) -> list:
-        return []
-
-
-class PathSuffixAsStringSymbolReference(PathSuffix):
-    def __init__(self, symbol_name: str):
-        self.symbol_name = symbol_name
-
-    def resolve(self, symbols: SymbolTable) -> str:
-        raise NotImplementedError()
-
-    @property
-    def value_references(self) -> list:
-        raise NotImplementedError()
 
 
 class FileRef:
@@ -57,12 +14,11 @@ class FileRef:
     and information about whether it exists pre SDS or not.
     """
 
-    def __init__(self, file_name: str):
-        self._path_suffix = PathSuffixAsFixedPath(file_name)
-        self._file_name = file_name
+    def __init__(self, path_part: PathPart):
+        self._path_suffix = path_part
 
     @property
-    def path_suffix(self) -> PathSuffix:
+    def path_suffix(self) -> PathPart:
         return self._path_suffix
 
     def path_suffix_str(self, symbols: SymbolTable) -> str:
@@ -110,18 +66,3 @@ class FileRef:
             return self.file_path_pre_sds(environment)
         else:
             return self.file_path_post_sds(environment)
-
-
-class PathSuffixVisitor:
-    def visit(self, path_suffix: PathSuffix):
-        if isinstance(path_suffix, PathSuffixAsFixedPath):
-            return self.visit_fixed_path(path_suffix)
-        elif isinstance(path_suffix, PathSuffixAsStringSymbolReference):
-            return self.visit_symbol_reference(path_suffix)
-        raise TypeError('Not a {}: {}'.format(str(PathSuffix), path_suffix))
-
-    def visit_fixed_path(self, path_suffix: PathSuffixAsFixedPath):
-        raise NotImplementedError()
-
-    def visit_symbol_reference(self, path_suffix: PathSuffixAsStringSymbolReference):
-        raise NotImplementedError()

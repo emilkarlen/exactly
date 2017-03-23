@@ -1,7 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure.file_ref import FileRef, PathSuffix, PathSuffixAsFixedPath
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.file_ref import FileRef, PathPart
 from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -26,15 +27,14 @@ def file_ref_equals(expected: FileRef) -> asrt.ValueAssertion:
 
 
 def equals_path_suffix_string(file_name: str) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(PathSuffix,
+    return asrt.is_instance_with(PathPart,
                                  asrt.sub_component('file_name',
-                                                    PathSuffixAsFixedPath.file_name.fget,
+                                                    PathPartAsFixedPath.file_name.fget,
                                                     asrt.equals(file_name)))
 
 
 class _FileRefAssertion(asrt.ValueAssertion):
-    def __init__(self,
-                 expected: FileRef):
+    def __init__(self, expected: FileRef):
         self._expected = expected
 
     def apply(self,
@@ -44,9 +44,9 @@ class _FileRefAssertion(asrt.ValueAssertion):
         put.assertIsInstance(value, FileRef,
                              'Actual value is expected to be a ' + str(FileRef))
         assert isinstance(value, FileRef)
-        put.assertIsInstance(self._expected.path_suffix, PathSuffixAsFixedPath)
+        put.assertIsInstance(self._expected.path_suffix, PathPartAsFixedPath)
         expected_path_suffix_as_fixed_path = self._expected.path_suffix
-        assert isinstance(expected_path_suffix_as_fixed_path, PathSuffixAsFixedPath), 'Informs the IDE of the type'
+        assert isinstance(expected_path_suffix_as_fixed_path, PathPartAsFixedPath), 'Informs the IDE of the type'
         equals_path_suffix_string(expected_path_suffix_as_fixed_path.file_name).apply_with_message(put,
                                                                                                    value.path_suffix,
                                                                                                    'path_suffix')
