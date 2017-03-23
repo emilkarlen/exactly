@@ -32,7 +32,7 @@ class _FileRefTestImpl(FileRef):
         return self._relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.file_name
+        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path(environment.value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.file_name
+        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path(environment.value_definitions)
