@@ -498,6 +498,11 @@ is_empty = len_equals(0)
 
 
 def matches_sequence(element_assertions: list) -> ValueAssertion:
+    """
+    :param element_assertions: The element at index i is an assertion on element at index i
+        in the list of acutal values.
+    :type element_assertions: [`ValueAssertion`]
+    """
     return _MatchesSequence(element_assertions)
 
 
