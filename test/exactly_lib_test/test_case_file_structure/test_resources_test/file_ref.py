@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
@@ -34,7 +35,7 @@ class TestEquals(unittest.TestCase):
                 ValueReference('reffed-name',
                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
                 'file-name'),
-             'NOT Exists pre SDS'
+             'symbol-ref/NOT Exists pre SDS'
             ),
         ]
         for value, msg in test_cases:
@@ -143,7 +144,7 @@ class _FileRefWithoutValRef(FileRef):
     def __init__(self,
                  relativity: RelOptionType,
                  file_name: str):
-        super().__init__(file_name)
+        super().__init__(PathPartAsFixedPath(file_name))
         self._relativity = relativity
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
@@ -171,7 +172,7 @@ class _FileRefWithValRef(FileRef):
     def __init__(self,
                  value_reference: ValueReference,
                  file_name: str):
-        super().__init__(file_name)
+        super().__init__(PathPartAsFixedPath(file_name))
         self._value_references_of_path = value_reference
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:

@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
@@ -19,7 +20,7 @@ class _FileRefTestImpl(FileRef):
     """
 
     def __init__(self, file_name: str, relativity: RelOptionType):
-        super().__init__(file_name)
+        super().__init__(PathPartAsFixedPath(file_name))
         self._relativity = relativity
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:

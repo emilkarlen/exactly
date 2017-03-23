@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure import relativity_root, relative_path_options
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
@@ -14,7 +15,7 @@ class _FileRefWithConstantLocationBase(FileRef):
     """
 
     def __init__(self, exists_pre_sds: bool, file_name: str):
-        super().__init__(file_name)
+        super().__init__(PathPartAsFixedPath(file_name))
         self.__exists_pre_sds = exists_pre_sds
 
     def value_references_of_paths(self) -> list:
@@ -42,14 +43,16 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
         return self._rel_root_resolver.relativity_type
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return self._rel_root_resolver.from_home(environment.home_dir_path) / self._file_name
+        suffix = self.path_suffix_path(environment.value_definitions)
+        return self._rel_root_resolver.from_home(environment.home_dir_path) / suffix
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds):
+        suffix = self.path_suffix_path(environment.value_definitions)
         if self._rel_root_resolver.is_rel_cwd:
             root = self._rel_root_resolver.from_cwd()
         else:
             root = self._rel_root_resolver.from_sds(environment.sds)
-        return root / self._file_name
+        return root / suffix
 
 
 def of_rel_root(rel_root_resolver: relativity_root.RelRootResolver,
@@ -83,12 +86,21 @@ def rel_tmp_user(file_name: str) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_tmp_user, file_name)
 
 
-class _FileRefAbsolute(_FileRefWithConstantLocationBase):
+class _FileRefAbsolute(FileRef):
     def __init__(self, file_name: str):
-        super().__init__(True, file_name)
+        super().__init__(PathPartAsFixedPath(file_name))
+
+    def value_references_of_paths(self) -> list:
+        return []
+
+    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
+        return True
+
+    def file_path_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
+        return self.file_path_pre_sds(environment)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path(self._file_name)
+        return self.path_suffix_path(environment.value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
@@ -99,7 +111,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         super().__init__(True, file_name)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return environment.home_dir_path / self._file_name
+        return environment.home_dir_path / self.path_suffix_path(environment.value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
@@ -113,4 +125,4 @@ class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
         raise ValueError('This file does not exist pre-SDS')
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds):
-        return environment.sds.tmp.internal_dir / self._file_name
+        return environment.sds.tmp.internal_dir / self.path_suffix_path(environment.value_definitions)

@@ -395,8 +395,9 @@ class TestParseAbsolutePath(unittest.TestCase):
                         'File is expected to exist pre SDS')
         with home_and_sds_with_act_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assertEqual(sys.executable,
-                             exe_file.path_string(home_and_sds),
+                             exe_file.path_string(environment),
                              'Path string')
             validator_util.check(self, exe_file.validator, PathResolvingEnvironmentPreOrPostSds(home_and_sds))
 
@@ -413,8 +414,9 @@ class TestParseAbsolutePath(unittest.TestCase):
                         'File is expected to exist pre SDS')
         with home_and_sds_with_act_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
+            environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
             self.assertEqual(non_existing_file_path_str,
-                             exe_file.path_string(home_and_sds),
+                             exe_file.path_string(environment),
                              'Path string')
             validator_util.check(self, exe_file.validator, PathResolvingEnvironmentPreOrPostSds(home_and_sds),
                                  passes_pre_sds=False)
