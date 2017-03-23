@@ -25,9 +25,9 @@ class RelOptionsConfiguration(tuple):
         return self.accepted_relativity_variants.rel_option_types
 
     @property
-    def is_rel_val_def_option_accepted(self) -> bool:
+    def is_rel_symbol_option_accepted(self) -> bool:
         """
-        Tells if the option for relativity of a value definition is accepted.
+        Tells if the option for relativity of a symbol definition is accepted.
         """
         return self[1]
 

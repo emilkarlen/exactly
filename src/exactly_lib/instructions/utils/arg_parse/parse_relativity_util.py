@@ -33,7 +33,7 @@ def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
     option_str = source.head.string
     if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
-    if not options.is_rel_val_def_option_accepted:
+    if not options.is_rel_symbol_option_accepted:
         return _raise_invalid_option(option_str, options)
     source.consume()
     if source.is_null:
@@ -78,7 +78,7 @@ def _resolve_relativity_option_type(option_argument: str) -> RelOptionType:
 
 def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
     ret_val = []
-    if options.is_rel_val_def_option_accepted:
+    if options.is_rel_symbol_option_accepted:
         ret_val.append('  {} VALUE-DEFINITION-NAME'.format(
             option_parsing.long_option_syntax(REL_SYMBOL_OPTION_NAME.long)))
     for option_type in options.accepted_options:
