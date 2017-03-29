@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure import relativity_validation as sut
-from exactly_lib.test_case_file_structure.file_ref_relativity import SPECIFIC_ABSOLUTE_RELATIVITY, RelOptionType, \
+from exactly_lib.test_case_file_structure.path_relativity import SPECIFIC_ABSOLUTE_RELATIVITY, RelOptionType, \
     specific_relative_relativity
 
 

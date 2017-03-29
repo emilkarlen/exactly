@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType, SpecificPathRelativity, \
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
     specific_relative_relativity
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \

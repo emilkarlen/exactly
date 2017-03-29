@@ -21,7 +21,8 @@ from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.test_case_file_structure.test_resources.file_ref import file_ref_equals, equals_path_suffix_string
+from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
+from exactly_lib_test.test_case_file_structure.test_resources.file_ref import file_ref_equals
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -309,24 +310,24 @@ class TestParseFromParseSource(unittest.TestCase):
     def test_parse_without_option(self):
         file_ref = sut.parse_file_ref_from_parse_source(remaining_source('FILENAME arg2'),
                                                         sut.ALL_REL_OPTIONS_CONFIG)
-        equals_path_suffix_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
-                                                                 'file_reference/path_suffix')
+        equals_path_part_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
+                                                               'file_reference/path_suffix')
         assert_source(remaining_part_of_current_line=asrt.equals(' arg2'))
 
     def test_parse_with_option(self):
         file_ref = sut.parse_file_ref_from_parse_source(
             remaining_source(REL_CWD_OPTION + ' FILENAME arg3 arg4'),
             sut.ALL_REL_OPTIONS_CONFIG)
-        equals_path_suffix_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
-                                                                 'file_reference/path_suffix')
+        equals_path_part_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
+                                                               'file_reference/path_suffix')
         assert_source(remaining_part_of_current_line=asrt.equals(' arg3 arg4'))
 
     def test_parse_with_initial_space(self):
         file_ref = sut.parse_file_ref_from_parse_source(
             remaining_source('   FILENAME'),
             sut.ALL_REL_OPTIONS_CONFIG)
-        equals_path_suffix_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
-                                                                 'file_reference/path_suffix')
+        equals_path_part_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
+                                                               'file_reference/path_suffix')
         assert_source(is_at_eol=asrt.is_true)
 
     def test_fail_when_option_is_only_argument(self):

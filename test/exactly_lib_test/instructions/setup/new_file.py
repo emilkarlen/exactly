@@ -23,7 +23,7 @@ from exactly_lib_test.value_definition.test_resources.concrete_restriction_asser
     equals_file_ref_relativity_restriction
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value_container, \
     symbol_table_from_entries
-from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_reference
+from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
 
 
 def suite() -> unittest.TestSuite:

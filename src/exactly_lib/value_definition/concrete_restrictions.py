@@ -1,4 +1,4 @@
-from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants
+from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue

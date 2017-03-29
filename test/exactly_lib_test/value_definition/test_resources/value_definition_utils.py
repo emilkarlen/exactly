@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure import file_ref as _file_ref
-from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.value_definition.concrete_restrictions import NoRestriction
