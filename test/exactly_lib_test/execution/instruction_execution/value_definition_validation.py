@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.execution.instruction_execution import value_definition_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib.value_definition import value_structure as vs

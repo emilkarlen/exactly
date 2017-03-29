@@ -1,9 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef, PathPart
-from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants
+from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
@@ -14,9 +13,10 @@ from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.concrete_values import FileRefValue
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
+from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_tr
+from exactly_lib_test.value_definition.test_resources import value_reference_assertions as vr_tr
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value
@@ -24,13 +24,6 @@ from exactly_lib_test.value_definition.test_resources.value_definition_utils imp
 
 def file_ref_equals(expected: FileRef) -> asrt.ValueAssertion:
     return _FileRefAssertion(expected)
-
-
-def equals_path_suffix_string(file_name: str) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(PathPart,
-                                 asrt.sub_component('file_name',
-                                                    PathPartAsFixedPath.file_name.fget,
-                                                    asrt.equals(file_name)))
 
 
 class _FileRefAssertion(asrt.ValueAssertion):
@@ -44,13 +37,10 @@ class _FileRefAssertion(asrt.ValueAssertion):
         put.assertIsInstance(value, FileRef,
                              'Actual value is expected to be a ' + str(FileRef))
         assert isinstance(value, FileRef)
-        put.assertIsInstance(self._expected.path_suffix, PathPartAsFixedPath)
-        expected_path_suffix_as_fixed_path = self._expected.path_suffix
-        assert isinstance(expected_path_suffix_as_fixed_path, PathPartAsFixedPath), 'Informs the IDE of the type'
-        equals_path_suffix_string(expected_path_suffix_as_fixed_path.file_name).apply_with_message(put,
-                                                                                                   value.path_suffix,
-                                                                                                   'path_suffix')
-        self._equals_value_references_of_paths(put, message_builder, value)
+        equals_path_part(self._expected.path_suffix).apply_with_message(put,
+                                                                        value.path_suffix,
+                                                                        'path_suffix')
+        self._equals_value_references(put, message_builder, value)
         environment = self._fake_environment()
         put.assertEqual(self._expected.relativity(environment.value_definitions),
                         value.relativity(environment.value_definitions),
@@ -84,14 +74,14 @@ class _FileRefAssertion(asrt.ValueAssertion):
             elements[ref.name] = _value_container(file_ref_val_test_impl(value_restriction.accepted))
         return SymbolTable(elements)
 
-    def _equals_value_references_of_paths(self,
-                                          put: unittest.TestCase,
-                                          message_builder: asrt.MessageBuilder,
-                                          actual: FileRef):
-        mb = message_builder.for_sub_component('value_references_of_paths')
+    def _equals_value_references(self,
+                                 put: unittest.TestCase,
+                                 message_builder: asrt.MessageBuilder,
+                                 actual: FileRef):
+        mb = message_builder.for_sub_component('value_references')
         put.assertEqual(len(self._expected.value_references_of_paths()),
                         len(actual.value_references_of_paths()),
-                        mb.apply('Number of value_references_of_paths'))
+                        mb.apply('Number of value_references'))
         for idx, expected_ref in enumerate(self._expected.value_references_of_paths()):
             actual_ref = actual.value_references_of_paths()[idx]
             put.assertIsInstance(actual_ref, ValueReference)
@@ -99,7 +89,7 @@ class _FileRefAssertion(asrt.ValueAssertion):
             assert isinstance(expected_ref, ValueReference)
             expected_value_restriction = expected_ref.value_restriction
             assert isinstance(expected_value_restriction, FileRefRelativityRestriction)
-            vs_tr.equals_value_reference(expected_ref.name,
+            vr_tr.equals_value_reference(expected_ref.name,
                                          equals_file_ref_relativity_restriction(expected_value_restriction)
                                          ).apply(put, actual_ref,
                                                  mb.for_sub_component('[%d]' % idx))

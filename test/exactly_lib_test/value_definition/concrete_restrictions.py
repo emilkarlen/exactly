@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib.value_definition import concrete_restrictions as sut
 from exactly_lib.value_definition.concrete_values import StringValue

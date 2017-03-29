@@ -1,20 +1,17 @@
 import unittest
 
 from exactly_lib.util.line_source import Line
-from exactly_lib.value_definition.concrete_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.value_definition.concrete_values import StringValue, FileRefValue
-from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference, ValueDefinition
+from exactly_lib.value_definition.value_structure import ValueContainer, ValueDefinition
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import value_structure_assertions as sut
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestEqualsValueContainer),
-        unittest.makeSuite(TestEqualsValueReference),
         unittest.makeSuite(TestEqualsValueDefinition),
     ])
 
@@ -50,34 +47,6 @@ class TestEqualsValueContainer(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             sut.equals_value_container(expected, ignore_source_line=False).apply_without_message(put, actual)
-
-
-class TestEqualsValueReference(unittest.TestCase):
-    def test_pass(self):
-        # ARRANGE #
-        value_name = 'value name'
-        value_reference = ValueReference(value_name, NoRestriction())
-        assertion = sut.equals_value_reference(value_name, asrt.is_instance(NoRestriction))
-        # ACT & ASSERT #
-        assertion.apply_without_message(self, value_reference)
-
-    def test_fail__different_name(self):
-        # ARRANGE #
-        actual = ValueReference('actual value name', NoRestriction())
-        assertion = sut.equals_value_reference('expected value name', asrt.is_instance(NoRestriction))
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            assertion.apply_without_message(put, actual)
-
-    def test_fail__failing_assertion_on_value_restriction(self):
-        # ARRANGE #
-        common_name = 'actual value name'
-        actual = ValueReference(common_name, NoRestriction())
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            # ACT #
-            assertion = sut.equals_value_reference(common_name, asrt.is_instance(FileRefRelativityRestriction))
-            assertion.apply_without_message(put, actual)
 
 
 class TestEqualsValueDefinition(unittest.TestCase):
@@ -125,10 +94,10 @@ class TestEqualsValueDefinition(unittest.TestCase):
         common_name = 'value name'
         expected_value_definition = ValueDefinition(common_name,
                                                     ValueContainer(common_name_source,
-                                                                    StringValue('expected string value')))
+                                                                   StringValue('expected string value')))
         actual_value_definition = ValueDefinition(common_name,
                                                   ValueContainer(common_name_source,
-                                                                  StringValue('actual string value')))
+                                                                 StringValue('actual string value')))
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             # ACT #

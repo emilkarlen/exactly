@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case_file_structure import file_refs as sut
-from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -16,7 +16,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_popu
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import value_definition_utils as v2
-from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_tr
+from exactly_lib_test.value_definition.test_resources import value_reference_assertions as vr_tr
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
 
@@ -39,7 +39,7 @@ class TestRelValueDefinition(unittest.TestCase):
         actual = file_reference.value_references_of_paths()
         # ASSERT #
         asrt.matches_sequence([
-            vs_tr.equals_value_reference('value_definition_name',
+            vr_tr.equals_value_reference('value_definition_name',
                                          equals_file_ref_relativity_restriction(expected_restriction))
         ]).apply_with_message(self, actual, 'value_references_of_paths')
 

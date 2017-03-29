@@ -1,11 +1,12 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsStringSymbolReference, \
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
+    PathPartAsStringSymbolReference, \
     PathPart, PathPartVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     is_string_value_restriction
-from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_reference
+from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
 
 
 def equals_path_part_string(file_name: str) -> asrt.ValueAssertion:

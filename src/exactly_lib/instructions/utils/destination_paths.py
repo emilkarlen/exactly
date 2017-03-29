@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.test_case_file_structure.destination_path import DestinationPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP

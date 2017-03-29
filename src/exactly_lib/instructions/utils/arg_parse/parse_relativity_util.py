@@ -4,7 +4,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
-from exactly_lib.test_case_file_structure.file_ref_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction

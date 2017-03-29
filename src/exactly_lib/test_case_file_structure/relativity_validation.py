@@ -1,4 +1,4 @@
-from exactly_lib.test_case_file_structure.file_ref_relativity import SpecificPathRelativity, PathRelativityVariants
+from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, PathRelativityVariants
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 
 
