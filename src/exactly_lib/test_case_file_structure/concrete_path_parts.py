@@ -1,7 +1,8 @@
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import StringRestriction
-from exactly_lib.value_definition.value_structure import ValueReference
+from exactly_lib.value_definition.concrete_values import StringValue
+from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
 class PathPartAsFixedPath(PathPart):
@@ -25,7 +26,11 @@ class PathPartAsStringSymbolReference(PathPart):
         self._value_reference = ValueReference(symbol_name, StringRestriction())
 
     def resolve(self, symbols: SymbolTable) -> str:
-        raise NotImplementedError()
+        value_container = symbols.lookup(self.symbol_name)
+        assert isinstance(value_container, ValueContainer)
+        string_value = value_container.value
+        assert isinstance(string_value, StringValue)
+        return string_value.string
 
     @property
     def value_references(self) -> list:

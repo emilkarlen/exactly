@@ -1,12 +1,17 @@
 import unittest
 
 from exactly_lib.test_case_file_structure import concrete_path_parts as sut
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib.util import symbol_table as st
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import is_string_value_restriction
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import string_value_container
+from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestPathPartAsFixedPath),
+        unittest.makeSuite(TestPathPartAsStringSymbolReference),
         unittest.makeSuite(TestPathPartVisitor),
     ])
 
@@ -36,9 +41,45 @@ class TestPathPartAsFixedPath(unittest.TestCase):
         # ARRANGE #
         path_part = sut.PathPartAsFixedPath('the file name')
         # ACT #
-        actual = path_part.resolve(empty_symbol_table())
+        actual = path_part.resolve(st.empty_symbol_table())
         # ASSERT #
         self.assertEquals('the file name',
+                          actual,
+                          'resolved file name')
+
+
+class TestPathPartAsStringSymbolReference(unittest.TestCase):
+    def test_symbol_name(self):
+        # ARRANGE #
+        path_part = sut.PathPartAsStringSymbolReference('the symbol name')
+        # ACT #
+        actual = path_part.symbol_name
+        # ASSERT #
+        self.assertEquals('the symbol name',
+                          actual,
+                          'symbol name')
+
+    def test_value_references(self):
+        # ARRANGE #
+        path_part = sut.PathPartAsStringSymbolReference('the symbol name')
+        # ACT #
+        actual = path_part.value_references
+        # ASSERT #
+        assertion = asrt.matches_sequence([
+            equals_value_reference('the symbol name',
+                                   is_string_value_restriction)
+        ])
+        assertion.apply_with_message(self, actual, 'value references')
+
+    def test_resolve(self):
+        # ARRANGE #
+        path_part = sut.PathPartAsStringSymbolReference('the symbol name')
+        symbol_table = st.singleton_symbol_table(st.Entry('the symbol name',
+                                                          string_value_container('symbol value')))
+        # ACT #
+        actual = path_part.resolve(symbol_table)
+        # ASSERT #
+        self.assertEquals('symbol value',
                           actual,
                           'resolved file name')
 
