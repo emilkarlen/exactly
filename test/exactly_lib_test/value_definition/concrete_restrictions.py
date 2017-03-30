@@ -9,7 +9,11 @@ from exactly_lib_test.value_definition.test_resources.value_definition_utils imp
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestNoRestriction)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestNoRestriction),
+        unittest.makeSuite(TestFileRefRelativityRestriction),
+        unittest.makeSuite(TestValueRestrictionVisitor),
+    ])
 
 
 class TestNoRestriction(unittest.TestCase):
@@ -64,3 +68,74 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
+
+
+class TestValueRestrictionVisitor(unittest.TestCase):
+    def test_none(self):
+        # ARRANGE #
+        expected_return_value = 72
+        visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
+        # ACT #
+        actual_return_value = visitor.visit(sut.NoRestriction())
+        # ASSERT #
+        self.assertEquals([sut.NoRestriction],
+                          visitor.visited_classes,
+                          'visited classes')
+        self.assertEquals(expected_return_value,
+                          actual_return_value,
+                          'return value')
+
+    def test_string(self):
+        # ARRANGE #
+        expected_return_value = 87
+        visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
+        # ACT #
+        actual_return_value = visitor.visit(sut.StringRestriction())
+        # ASSERT #
+        self.assertEquals([sut.StringRestriction],
+                          visitor.visited_classes,
+                          'visited classes')
+        self.assertEquals(expected_return_value,
+                          actual_return_value,
+                          'return value')
+
+    def test_file_ref(self):
+        # ARRANGE #
+        expected_return_value = 69
+        visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
+        # ACT #
+        actual_return_value = visitor.visit(sut.FileRefRelativityRestriction(
+            sut.PathRelativityVariants(set(), False)))
+        # ASSERT #
+        self.assertEquals([sut.FileRefRelativityRestriction],
+                          visitor.visited_classes,
+                          'visited classes')
+        self.assertEquals(expected_return_value,
+                          actual_return_value,
+                          'return value')
+
+    def test_visit_invalid_object_should_raise_exception(self):
+        # ARRANGE #
+        visitor = _VisitorThatRegisterClassOfVisitMethod("not used")
+        non_concept = 'a string is not a sub class of ' + str(sut.ValueRestriction)
+        # ACT & ASSERT #
+        with self.assertRaises(TypeError):
+            visitor.visit(non_concept)
+
+
+class _VisitorThatRegisterClassOfVisitMethod(sut.ValueRestrictionVisitor):
+    def __init__(self, return_value):
+        self.visited_classes = []
+        self.return_value = return_value
+
+    def visit_none(self, x: sut.NoRestriction):
+        self.visited_classes.append(sut.NoRestriction)
+        return self.return_value
+
+    def visit_string(self, x: sut.StringRestriction):
+        self.visited_classes.append(sut.StringRestriction)
+        return self.return_value
+
+    def visit_file_ref_relativity(self, x: sut.FileRefRelativityRestriction):
+        self.visited_classes.append(sut.FileRefRelativityRestriction)
+        return self.return_value

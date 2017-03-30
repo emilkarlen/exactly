@@ -45,3 +45,23 @@ class FileRefRelativityRestriction(ValueRestriction):
     @property
     def accepted(self) -> PathRelativityVariants:
         return self._accepted
+
+
+class ValueRestrictionVisitor:
+    def visit(self, x: ValueRestriction):
+        if isinstance(x, NoRestriction):
+            return self.visit_none(x)
+        if isinstance(x, StringRestriction):
+            return self.visit_string(x)
+        if isinstance(x, FileRefRelativityRestriction):
+            return self.visit_file_ref_relativity(x)
+        raise TypeError('%s is not an instance of %s' % (str(x), str(ValueRestriction)))
+
+    def visit_none(self, x: NoRestriction):
+        raise NotImplementedError()
+
+    def visit_string(self, x: StringRestriction):
+        raise NotImplementedError()
+
+    def visit_file_ref_relativity(self, x: FileRefRelativityRestriction):
+        raise NotImplementedError()
