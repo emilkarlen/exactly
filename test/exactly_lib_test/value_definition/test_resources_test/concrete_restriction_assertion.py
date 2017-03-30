@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsStringRestriction),
         unittest.makeSuite(TestEqualsStringRestriction),
         unittest.makeSuite(TestEqualsFileRefRelativityRestriction),
+        unittest.makeSuite(TestEqualsValueRestriction),
     ])
 
 
@@ -90,3 +91,37 @@ class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
         actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         with put.assertRaises(TestException):
             sut.equals_file_ref_relativity_restriction(expected).apply_without_message(put, actual)
+
+
+class TestEqualsValueRestriction(unittest.TestCase):
+    def test_equals(self):
+        test_cases = [
+            FileRefRelativityRestriction(PathRelativityVariants(set(), False)),
+            FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, True)),
+            StringRestriction(),
+            NoRestriction(),
+        ]
+        for restriction in test_cases:
+            with self.subTest():
+                sut.equals_value_restriction(restriction).apply_without_message(self, restriction)
+
+    def test_not_equals__different__types__one_is_file_ref_relativity_variants(self):
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        actual = NoRestriction()
+        with put.assertRaises(TestException):
+            sut.equals_value_restriction(expected).apply_without_message(put, actual)
+
+    def test_not_equals__different__types__one_is_string_restriction(self):
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = StringRestriction()
+        actual = NoRestriction()
+        with put.assertRaises(TestException):
+            sut.equals_value_restriction(expected).apply_without_message(put, actual)
+
+    def test_not_equals__same_type__different_accepted_relativity_variants(self):
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
+        with put.assertRaises(TestException):
+            sut.equals_value_restriction(expected).apply_without_message(put, actual)
