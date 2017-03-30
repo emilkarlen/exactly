@@ -1,7 +1,10 @@
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, StringRestriction
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
+    NoRestriction
 from exactly_lib.value_definition.value_structure import ValueRestriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources.path_relativity import equals_path_relativity_variants
+
+is_no_restriction = asrt.is_instance(NoRestriction)
 
 is_string_value_restriction = asrt.is_instance(StringRestriction)
 

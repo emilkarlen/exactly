@@ -10,9 +10,43 @@ from exactly_lib_test.value_definition.test_resources import concrete_restrictio
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestIsNoRestriction),
+        unittest.makeSuite(TestIsStringRestriction),
         unittest.makeSuite(TestEqualsStringRestriction),
         unittest.makeSuite(TestEqualsFileRefRelativityRestriction),
     ])
+
+
+class TestIsNoRestriction(unittest.TestCase):
+    def test_equals(self):
+        test_cases = [
+            NoRestriction(),
+        ]
+        for restriction in test_cases:
+            with self.subTest():
+                sut.is_no_restriction.apply_without_message(self, restriction)
+
+    def test_not_equals__different__types(self):
+        put = test_case_with_failure_exception_set_to_test_exception()
+        actual = StringRestriction()
+        with put.assertRaises(TestException):
+            sut.is_no_restriction.apply_without_message(put, actual)
+
+
+class TestIsStringRestriction(unittest.TestCase):
+    def test_equals(self):
+        test_cases = [
+            StringRestriction(),
+        ]
+        for restriction in test_cases:
+            with self.subTest():
+                sut.is_string_value_restriction.apply_without_message(self, restriction)
+
+    def test_not_equals__different__types(self):
+        put = test_case_with_failure_exception_set_to_test_exception()
+        actual = NoRestriction()
+        with put.assertRaises(TestException):
+            sut.is_string_value_restriction.apply_without_message(put, actual)
 
 
 class TestEqualsStringRestriction(unittest.TestCase):
