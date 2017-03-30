@@ -1,5 +1,7 @@
+import unittest
+
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
-    NoRestriction
+    NoRestriction, ValueRestrictionVisitor
 from exactly_lib.value_definition.value_structure import ValueRestriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources.path_relativity import equals_path_relativity_variants
@@ -21,4 +23,34 @@ def equals_file_ref_relativity_restriction(expected: FileRefRelativityRestrictio
 
 
 def equals_value_restriction(expected: ValueRestriction) -> asrt.ValueAssertion:
-    raise NotImplementedError()
+    return _EqualsValueRestriction(expected)
+
+
+class _EqualsValueRestriction(asrt.ValueAssertion):
+    def __init__(self, expected: ValueRestriction):
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        _EqualsValueRestrictionVisitor(value, put, message_builder).visit(self.expected)
+
+
+class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
+    def __init__(self,
+                 actual,
+                 put: unittest.TestCase,
+                 message_builder: asrt.MessageBuilder):
+        self.message_builder = message_builder
+        self.actual = actual
+        self.put = put
+
+    def visit_none(self, expected: NoRestriction):
+        is_no_restriction.apply(self.put, self.actual, self.message_builder)
+
+    def visit_string(self, expected: StringRestriction):
+        equals_string_restriction(expected).apply(self.put, self.actual, self.message_builder)
+
+    def visit_file_ref_relativity(self, expected: FileRefRelativityRestriction):
+        equals_file_ref_relativity_restriction(expected).apply(self.put, self.actual, self.message_builder)
