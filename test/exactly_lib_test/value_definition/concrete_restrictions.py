@@ -11,6 +11,7 @@ from exactly_lib_test.value_definition.test_resources.value_definition_utils imp
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestNoRestriction),
+        unittest.makeSuite(TestStringRestriction),
         unittest.makeSuite(TestFileRefRelativityRestriction),
         unittest.makeSuite(TestValueRestrictionVisitor),
     ])
@@ -31,6 +32,38 @@ class TestNoRestriction(unittest.TestCase):
                 actual = restriction.is_satisfied_by(value_definitions, value)
                 # ASSERT #
                 self.assertIsNone(actual)
+
+
+class TestStringRestriction(unittest.TestCase):
+    def test_pass(self):
+        # ARRANGE #
+        test_cases = [
+            StringValue('string'),
+            StringValue(''),
+        ]
+        restriction = sut.StringRestriction()
+        value_definitions = empty_symbol_table()
+        for value in test_cases:
+            with self.subTest(msg='value=' + str(value)):
+                # ACT #
+                actual = restriction.is_satisfied_by(value_definitions, value)
+                # ASSERT #
+                self.assertIsNone(actual)
+
+    def test_fail__not_a_string(self):
+        # ARRANGE #
+        test_cases = [
+            file_ref_value(),
+        ]
+        restriction = sut.StringRestriction()
+        value_definitions = empty_symbol_table()
+        for value in test_cases:
+            with self.subTest(msg='value=' + str(value)):
+                # ACT #
+                actual = restriction.is_satisfied_by(value_definitions, value)
+                # ASSERT #
+                self.assertIsNotNone(actual,
+                                     'Result should denote failing validation')
 
 
 class TestFileRefRelativityRestriction(unittest.TestCase):
