@@ -5,6 +5,7 @@ import types
 
 from exactly_lib.test_case_file_structure import file_refs as sut
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -65,14 +66,14 @@ class TestForFixedRelativityBase(TestCaseBaseWithShortDescriptionOfTestClassAndA
 
 class TestShouldReferenceNoValueDefinitions(TestForFixedRelativityBase):
     def runTest(self):
-        file_reference = self.config.file_name_2_file_ref('file.txt')
+        file_reference = self.config.file_name_2_file_ref(PathPartAsFixedPath('file.txt'))
         self.assertTrue(len(file_reference.value_references_of_paths()) == 0,
                         'File is expected to reference no variable definitions')
 
 
 class TestExistsPreOrPostSds(TestForFixedRelativityBase):
     def runTest(self):
-        file_reference = self.config.file_name_2_file_ref('file.txt')
+        file_reference = self.config.file_name_2_file_ref(PathPartAsFixedPath('file.txt'))
         self.assertEquals(self.config.exists_pre_sds,
                           file_reference.exists_pre_sds(empty_symbol_table()),
                           'exist pre SDS')
@@ -81,7 +82,7 @@ class TestExistsPreOrPostSds(TestForFixedRelativityBase):
 class TestFilePath(TestForFixedRelativityBase):
     def runTest(self):
         file_name = 'file.txt'
-        file_reference = self.config.file_name_2_file_ref(file_name)
+        file_reference = self.config.file_name_2_file_ref(PathPartAsFixedPath(file_name))
         assert isinstance(file_reference, FileRef)
         home_and_sds = _home_and_sds()
         environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, empty_symbol_table())
@@ -98,7 +99,7 @@ class TestFilePath(TestForFixedRelativityBase):
 
 class TestFilePathPreOrPostSds(TestForFixedRelativityBase):
     def runTest(self):
-        file_reference = self.config.file_name_2_file_ref('file.txt')
+        file_reference = self.config.file_name_2_file_ref(PathPartAsFixedPath('file.txt'))
         assert isinstance(file_reference, FileRef)
         home_and_sds = _home_and_sds()
         environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, empty_symbol_table())

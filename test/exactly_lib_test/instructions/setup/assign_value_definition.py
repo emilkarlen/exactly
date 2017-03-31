@@ -7,6 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.line_source import Line
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
@@ -75,7 +76,7 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = 'name = --rel-act component'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = v2.file_ref_value(file_refs.rel_act('component'))
+            expected_file_ref_value = v2.file_ref_value(file_refs.rel_act(PathPartAsFixedPath('component')))
             expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
                       Arrangement(),
@@ -96,7 +97,7 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_value = v2.file_ref_value(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
-                                        'component'))
+                                        PathPartAsFixedPath('component')))
             expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
                       Arrangement(),
