@@ -3,6 +3,7 @@ import pathlib
 from exactly_lib.test_case_file_structure import relativity_root, relative_path_options
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
@@ -14,8 +15,8 @@ class _FileRefWithConstantLocationBase(FileRef):
     Base class for `FileRef`s who's "relativity" is constant.
     """
 
-    def __init__(self, exists_pre_sds: bool, file_name: str):
-        super().__init__(PathPartAsFixedPath(file_name))
+    def __init__(self, exists_pre_sds: bool, path_suffix: PathPart):
+        super().__init__(path_suffix)
         self.__exists_pre_sds = exists_pre_sds
 
     def value_references_of_paths(self) -> list:
@@ -36,7 +37,7 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
                  rel_root_resolver: relativity_root.RelRootResolver,
                  file_name: str
                  ):
-        super().__init__(rel_root_resolver.is_rel_home, file_name)
+        super().__init__(rel_root_resolver.is_rel_home, PathPartAsFixedPath(file_name))
         self._rel_root_resolver = rel_root_resolver
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
@@ -86,6 +87,10 @@ def rel_tmp_user(file_name: str) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_tmp_user, file_name)
 
 
+def rel_result(file_name: str) -> FileRef:
+    return of_rel_root(relativity_root.resolver_for_result, file_name)
+
+
 class _FileRefAbsolute(FileRef):
     def __init__(self, file_name: str):
         super().__init__(PathPartAsFixedPath(file_name))
@@ -108,7 +113,7 @@ class _FileRefAbsolute(FileRef):
 
 class _FileRefRelHome(_FileRefWithConstantLocationBase):
     def __init__(self, file_name: str):
-        super().__init__(True, file_name)
+        super().__init__(True, PathPartAsFixedPath(file_name))
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         return environment.home_dir_path / self.path_suffix_path(environment.value_definitions)
@@ -119,7 +124,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
 
 class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
     def __init__(self, file_name: str):
-        super().__init__(False, file_name)
+        super().__init__(False, PathPartAsFixedPath(file_name))
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         raise ValueError('This file does not exist pre-SDS')
