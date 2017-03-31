@@ -11,7 +11,7 @@ from exactly_lib.section_document.parser_implementations.token import TokenType
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueReference
 
