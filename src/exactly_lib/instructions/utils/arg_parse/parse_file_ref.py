@@ -10,6 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token import TokenType
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
@@ -98,6 +99,6 @@ def _from_relativity_info(relativity_info, path_argument: str) -> FileRef:
     if argument_path.is_absolute():
         return file_refs.absolute_file_name(path_argument)
     if isinstance(relativity_info, RelOptionType):
-        return file_refs.of_rel_option(relativity_info, path_argument)
+        return file_refs.of_rel_option(relativity_info, PathPartAsFixedPath(path_argument))
     elif isinstance(relativity_info, ValueReference):
         return rel_value_definition(relativity_info, path_argument)
