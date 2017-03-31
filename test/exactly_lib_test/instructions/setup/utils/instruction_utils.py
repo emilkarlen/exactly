@@ -9,6 +9,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
@@ -35,7 +36,7 @@ class TestInstruction(InstructionWithFileRefsBase):
 
 class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
-        instruction = TestInstruction((FileRefCheck(file_refs.rel_home('file.txt'),
+        instruction = TestInstruction((FileRefCheck(file_refs.rel_home(PathPartAsFixedPath('file.txt')),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
@@ -46,7 +47,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
-        instruction = TestInstruction((FileRefCheck(file_refs.rel_home('file.txt'),
+        instruction = TestInstruction((FileRefCheck(file_refs.rel_home(PathPartAsFixedPath('file.txt')),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
@@ -59,7 +60,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
 
 class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
-        instruction = TestInstruction((FileRefCheck(file_refs.rel_cwd('file.txt'),
+        instruction = TestInstruction((FileRefCheck(file_refs.rel_cwd(PathPartAsFixedPath('file.txt')),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
@@ -70,7 +71,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
-        instruction = TestInstruction((FileRefCheck(file_refs.rel_cwd('file.txt'),
+        instruction = TestInstruction((FileRefCheck(file_refs.rel_cwd(PathPartAsFixedPath('file.txt')),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_with_act_as_curr_dir() as home_and_sds:
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))

@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
@@ -11,8 +12,8 @@ from exactly_lib.value_definition.concrete_values import FileRefValue
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
-def rel_value_definition(value_reference2: ValueReference, file_name: str) -> FileRef:
-    return _FileRefRelValueDefinition(file_name, value_reference2)
+def rel_value_definition(value_reference2: ValueReference, path_suffix: PathPart) -> FileRef:
+    return _FileRefRelValueDefinition(path_suffix, value_reference2)
 
 
 def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityVariants) -> ValueReference:
@@ -21,9 +22,9 @@ def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityV
 
 class _FileRefRelValueDefinition(FileRef):
     def __init__(self,
-                 file_name: str,
+                 path_suffix: PathPart,
                  value_reference_of_path: ValueReference):
-        super().__init__(PathPartAsFixedPath(file_name))
+        super().__init__(path_suffix)
         self.value_reference_of_path = value_reference_of_path
 
     def value_references_of_paths(self) -> list:

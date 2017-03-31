@@ -8,6 +8,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -100,7 +101,7 @@ class TestParseFromTokenStream2CasesWithoutRelValueDefinitionRelativity(TestPars
              {RelOptionType.REL_RESULT, RelOptionType.REL_TMP}),
         ]
         for default_option, accepted_options in default_and_accepted_options_variants:
-            expected_file_ref = file_refs.of_rel_option(default_option, file_name_argument)
+            expected_file_ref = file_refs.of_rel_option(default_option, PathPartAsFixedPath(file_name_argument))
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -141,7 +142,7 @@ class TestParseFromTokenStream2CasesWithoutRelValueDefinitionRelativity(TestPars
     def test_parse_with_relativity_option(self):
         file_name_argument = 'file-name'
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
-            expected_file_ref = file_refs.of_rel_option(rel_option_type, file_name_argument)
+            expected_file_ref = file_refs.of_rel_option(rel_option_type, PathPartAsFixedPath(file_name_argument))
             option_str = _option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
@@ -238,8 +239,8 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
         rel_val_def_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '"{rel_val_def_option}" VARIABLE_NAME file_name'.format(rel_val_def_option=rel_val_def_option)
         expected_file_ref = file_refs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
-                                                    '{rel_val_def_option}'.format(
-                                                        rel_val_def_option=rel_val_def_option))
+                                                    PathPartAsFixedPath('{rel_val_def_option}'.format(
+                                                        rel_val_def_option=rel_val_def_option)))
         self._check(
             Arrangement(source,
                         _ARG_CONFIG_FOR_ALL_RELATIVITIES),
@@ -288,7 +289,8 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
             for accepted_relativities in accepted_relativities_variants:
                 expected_value_reference = ValueReference(value_definition_name,
                                                           FileRefRelativityRestriction(accepted_relativities))
-                expected_file_ref = rel_value_definition(expected_value_reference, file_name_argument)
+                expected_file_ref = rel_value_definition(expected_value_reference,
+                                                         PathPartAsFixedPath(file_name_argument))
                 arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
                 with self.subTest(msg='source={}'.format(repr(source))):
                     argument_string = source.format(option_str=option_str,

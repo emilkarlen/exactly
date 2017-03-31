@@ -5,6 +5,7 @@ from exactly_lib.instructions.multi_phase_instructions.new_dir import RELATIVITY
 from exactly_lib.instructions.setup import new_dir as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util import symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import new_dir_instruction_test
@@ -59,7 +60,8 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                           value_definitions=symbol_table_from_entries([
                               symbol_table.Entry('VALUE_DEF_NAME',
                                                  file_ref_value_container(
-                                                     file_refs.rel_tmp_user('value-def-path-arg')))])
+                                                     file_refs.rel_tmp_user(
+                                                         PathPartAsFixedPath('value-def-path-arg'))))])
                       ),
                       Expectation(
                           main_side_effects_on_files=tmp_user_dir_contains_exactly(DirContents([

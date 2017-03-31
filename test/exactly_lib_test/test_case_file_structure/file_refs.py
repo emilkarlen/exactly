@@ -5,12 +5,18 @@ import types
 
 from exactly_lib.test_case_file_structure import file_refs as sut
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
+    PathPartAsStringSymbolReference
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib.util.symbol_table import empty_symbol_table, singleton_symbol_table, Entry
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import is_string_value_restriction
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import string_value_container
+from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
 
 
 def suite() -> unittest.TestSuite:
@@ -50,7 +56,7 @@ class _RelativityConfig:
 
 def _suite_for_config(config: _RelativityConfig) -> unittest.TestSuite:
     return unittest.TestSuite([
-        TestShouldReferenceNoValueDefinitions(config),
+        TestSymbolReferences(config),
         TestExistsPreOrPostSds(config),
         TestFilePath(config),
         TestFilePathPreOrPostSds(config),
@@ -63,51 +69,94 @@ class TestForFixedRelativityBase(TestCaseBaseWithShortDescriptionOfTestClassAndA
         self.config = config
 
 
-class TestShouldReferenceNoValueDefinitions(TestForFixedRelativityBase):
+class TestSymbolReferences(TestForFixedRelativityBase):
     def runTest(self):
-        file_reference = self.config.file_name_2_file_ref('file.txt')
-        self.assertTrue(len(file_reference.value_references_of_paths()) == 0,
-                        'File is expected to reference no variable definitions')
+        test_cases = [
+            (PathPartAsFixedPath('file.txt'),
+             asrt.matches_sequence([])
+             ),
+            (PathPartAsStringSymbolReference('the symbol'),
+             asrt.matches_sequence([
+                 equals_value_reference('the symbol',
+                                        is_string_value_restriction)
+             ])
+             ),
+        ]
+        for path_suffix, expectation in test_cases:
+            with self.subTest():
+                actual_file_ref = self.config.file_name_2_file_ref(path_suffix)
+                expectation.apply_without_message(self, actual_file_ref.value_references_of_paths())
 
 
 class TestExistsPreOrPostSds(TestForFixedRelativityBase):
     def runTest(self):
-        file_reference = self.config.file_name_2_file_ref('file.txt')
-        self.assertEquals(self.config.exists_pre_sds,
-                          file_reference.exists_pre_sds(empty_symbol_table()),
-                          'exist pre SDS')
+        test_cases = [
+            PathPartAsFixedPath('file.txt'),
+            PathPartAsStringSymbolReference('the symbol'),
+        ]
+        for path_suffix in test_cases:
+            with self.subTest():
+                file_reference = self.config.file_name_2_file_ref(path_suffix)
+                self.assertEquals(self.config.exists_pre_sds,
+                                  file_reference.exists_pre_sds(empty_symbol_table()),
+                                  'exist pre SDS')
 
 
 class TestFilePath(TestForFixedRelativityBase):
     def runTest(self):
-        file_name = 'file.txt'
-        file_reference = self.config.file_name_2_file_ref(file_name)
-        assert isinstance(file_reference, FileRef)
-        home_and_sds = _home_and_sds()
-        environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, empty_symbol_table())
-        if self.config.exists_pre_sds:
-            actual_path = file_reference.file_path_pre_sds(environment)
-        else:
-            actual_path = file_reference.file_path_post_sds(environment)
-        expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
-        expected_path = expected_relativity_root / file_name
-        self.assertEquals(str(expected_path),
-                          str(actual_path),
-                          'file_path')
+        test_cases = [
+            (PathPartAsFixedPath('file.txt'),
+             empty_symbol_table(),
+             'file.txt'
+             ),
+            (PathPartAsStringSymbolReference('the symbol'),
+             singleton_symbol_table(Entry('the symbol',
+                                          string_value_container('file-pointed-to-by-symbol.txt'))),
+             'file-pointed-to-by-symbol.txt'
+             ),
+        ]
+        for path_suffix, symbol_table, expected_path_suffix in test_cases:
+            with self.subTest():
+                file_reference = self.config.file_name_2_file_ref(path_suffix)
+                assert isinstance(file_reference, FileRef)
+                home_and_sds = _home_and_sds()
+                environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table)
+                if self.config.exists_pre_sds:
+                    actual_path = file_reference.file_path_pre_sds(environment)
+                else:
+                    actual_path = file_reference.file_path_post_sds(environment)
+                expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
+                expected_path = expected_relativity_root / expected_path_suffix
+                self.assertEquals(str(expected_path),
+                                  str(actual_path),
+                                  'file_path')
 
 
 class TestFilePathPreOrPostSds(TestForFixedRelativityBase):
     def runTest(self):
-        file_reference = self.config.file_name_2_file_ref('file.txt')
-        assert isinstance(file_reference, FileRef)
-        home_and_sds = _home_and_sds()
-        environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, empty_symbol_table())
-        actual_path = file_reference.file_path_pre_or_post_sds(environment)
-        expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
-        expected_path = expected_relativity_root / 'file.txt'
-        self.assertEquals(str(expected_path),
-                          str(actual_path),
-                          'file_path')
+        test_cases = [
+            (PathPartAsFixedPath('file.txt'),
+             empty_symbol_table(),
+             'file.txt'
+             ),
+            (PathPartAsStringSymbolReference('the symbol'),
+             singleton_symbol_table(Entry('the symbol',
+                                          string_value_container('file-pointed-to-by-symbol.txt'))),
+             'file-pointed-to-by-symbol.txt'
+             ),
+        ]
+        for path_suffix, symbol_table, expected_path_suffix in test_cases:
+            with self.subTest():
+                file_reference = self.config.file_name_2_file_ref(path_suffix)
+                assert isinstance(file_reference, FileRef)
+                home_and_sds = _home_and_sds()
+                environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table)
+                actual_path = file_reference.file_path_pre_or_post_sds(environment)
+                expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
+                expected_path = expected_relativity_root / expected_path_suffix
+                self.assertEquals(str(expected_path),
+                                  str(actual_path),
+                                  'file_path_pre_or_post_sds')
 
 
 def _home_and_sds() -> HomeAndSds:
