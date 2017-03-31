@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.execution.instruction_execution import value_definition_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.line_source import Line
@@ -85,7 +86,7 @@ class TestValueDefinition(unittest.TestCase):
             'UNDEFINED',
             file_ref_value_container(
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
-                                     'file-name')))
+                                     PathPartAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'return value for indicating error')
@@ -99,7 +100,7 @@ class TestValueDefinition(unittest.TestCase):
             'UNDEFINED',
             file_ref_value_container(
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatCannotBeSatisfied()),
-                                     'file-name')))
+                                     PathPartAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(value_usage_to_check, symbol_table)
         # ASSERT #
@@ -114,7 +115,7 @@ class TestValueDefinition(unittest.TestCase):
             'UNDEFINED',
             file_ref_value_container(
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
-                                     'file-name')))
+                                     PathPartAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(value_usage_to_check, symbol_table)
         # ASSERT #
