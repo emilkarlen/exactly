@@ -37,6 +37,10 @@ class SymbolTable:
     def add(self, entry: Entry):
         self._key_2_value[entry.key] = entry.value
 
+    def add_all(self, entries: iter):
+        for entry in entries:
+            self.add(entry)
+
     def put(self, key: str, x: SymbolTableValue):
         self._key_2_value[key] = x
 

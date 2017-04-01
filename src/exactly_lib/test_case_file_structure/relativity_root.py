@@ -21,7 +21,7 @@ class RelRootResolver:
         """
         Precondition: `is_rel_home`
         """
-        raise ValueError('Root is not relative the home directory')
+        raise ValueError('Root does not exist pre SDS')
 
     def from_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         """
