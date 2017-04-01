@@ -28,7 +28,7 @@ class _FileRefRelValueDefinition(FileRef):
         self.value_reference_of_path = value_reference_of_path
 
     def value_references_of_paths(self) -> list:
-        return [self.value_reference_of_path]
+        return [self.value_reference_of_path] + self.path_suffix.value_references
 
     def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
         file_ref = self._lookup_file_ref(value_definitions)
