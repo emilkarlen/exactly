@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
+from exactly_lib.instructions.utils.arg_parse.symbol import symbol_reference_syntax_for_name
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
@@ -350,16 +351,33 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
     def test_with_explicit_relativity(self):
         symbol_name = 'PATH_SUFFIX_SYMBOL'
         test_cases = [
-            ('Symbol reference after explicit relativity SHOULD become a path suffix that must be a string',
+            ('Symbol reference after explicit relativity '
+             'SHOULD '
+             'become a symbol reference path suffix that must be a string',
              Arrangement(
                  source='{rel_home_option} {symbol_reference}'.format(
                      rel_home_option=_option_string_for_relativity(RelOptionType.REL_HOME),
-                     symbol_reference=sut.symbol_reference_syntax_for_name(symbol_name)),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
                  file_ref=file_ref_equals(file_refs.of_rel_option(RelOptionType.REL_HOME,
                                                                   PathPartAsStringSymbolReference(symbol_name))),
+                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             )),
+            ('Quoted symbol reference after explicit relativity'
+             ' SHOULD '
+             'become a path suffix that is the literal quoted symbol reference',
+             Arrangement(
+                 source='{rel_home_option} \'{symbol_reference}\''.format(
+                     rel_home_option=_option_string_for_relativity(RelOptionType.REL_HOME),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
+             ),
+             Expectation2(
+                 file_ref=file_ref_equals(file_refs.of_rel_option(
+                     RelOptionType.REL_HOME,
+                     PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol_name)))),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
         ]
@@ -375,7 +393,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
              'be file ref with default relativity and suffix as string reference',
              Arrangement(
                  source='{symbol_reference}'.format(
-                     symbol_reference=sut.symbol_reference_syntax_for_name(symbol_name)),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
