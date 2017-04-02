@@ -28,6 +28,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import is_string_value_restriction
 
 
 def suite() -> unittest.TestSuite:
@@ -296,6 +297,80 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
                     argument_string = source.format(option_str=option_str,
                                                     value_definition_name=value_definition_name,
                                                     file_name_argument=file_name_argument)
+                    self._check(
+                        Arrangement(argument_string,
+                                    arg_config),
+                        Expectation(expected_file_ref,
+                                    token_stream_assertion)
+                    )
+
+
+class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativityWithReferenceInPathSuffix(TestParsesBase):
+    def test_WHEN_rel_val_def_option_is_not_accepted_THEN_parse_SHOULD_fail(self):
+        test_cases = [
+            ('Symbol reference as only argument SHOULD be equal to only giving a file argument',
+             '{symbol_reference}'.format(
+                 symbol_reference=sut.symbol_reference_syntax_for_name('TEST_SYMBOL'))
+             ),
+            ('Symbol reference as file argument after valid relativity option',
+             '{rel_option} {symbol_reference}'.format(
+                 rel_option=_option_string_for(REL_OPTIONS_MAP[RelOptionType.REL_ACT].option_name),
+                 symbol_reference=sut.symbol_reference_syntax_for_name('TEST_SYMBOL'))
+             ),
+
+        ]
+        arg_config = RelOptionArgumentConfiguration(
+            RelOptionsConfiguration(
+                PathRelativityVariants({RelOptionType.REL_ACT}, True),
+                False,
+                RelOptionType.REL_ACT),
+            'argument_syntax_name')
+        for test_name, source_str in test_cases:
+            token_stream = TokenStream2(source_str)
+            with self.subTest(msg=test_name):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_file_ref(token_stream, arg_config)
+
+    def test_WHEN_symbol_reference_is_quoted_THEN_parse_SHOULD_treat_that_string_as_file_name(self):
+        rel_val_def_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        symbol_reference_str = sut.symbol_reference_syntax_for_name('TEST_SYMBOL')
+        source = '\'{symbol_reference}\''.format(symbol_reference=symbol_reference_str)
+        path_suffix = PathPartAsFixedPath('{rel_val_def_option}'.format(rel_val_def_option=rel_val_def_option))
+        expected_file_ref = file_refs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
+                                                    path_suffix)
+        self._check(
+            Arrangement(source,
+                        _ARG_CONFIG_FOR_ALL_RELATIVITIES),
+            Expectation(expected_file_ref,
+                        assert_token_stream2(head_token=assert_token_string_is(symbol_reference_str)))
+        )
+
+    def test_parse_with_relativity_option(self):
+        file_name_argument = 'file-name'
+        value_definition_name = 'SYMBOL_NAME'
+        rel_symbol_option_str = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        source_and_token_stream_assertion_variants = [
+            (
+                '{symbol_name}',
+                assert_token_stream2(is_null=asrt.is_true)
+            ),
+        ]
+        accepted_relativities_variants = [
+            PathRelativityVariants({RelOptionType.REL_ACT}, True),
+            PathRelativityVariants({RelOptionType.REL_ACT}, False),
+            PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, False),
+        ]
+        for source, token_stream_assertion in source_and_token_stream_assertion_variants:
+            for accepted_relativities in accepted_relativities_variants:
+                expected_value_reference = ValueReference(value_definition_name,
+                                                          is_string_value_restriction)
+                arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
+                with self.subTest(msg='source={}'.format(repr(source))):
+                    argument_string = source.format(rel_symbol_option_str=rel_symbol_option_str,
+                                                    symbol_name=value_definition_name,
+                                                    file_name_argument=file_name_argument)
+                    expected_path_suffix = PathPartAsFixedPath(file_name_argument)
+                    expected_file_ref = rel_value_definition(expected_value_reference, expected_path_suffix)
                     self._check(
                         Arrangement(argument_string,
                                     arg_config),

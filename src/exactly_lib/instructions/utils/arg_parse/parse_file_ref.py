@@ -26,6 +26,13 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
     ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
     False)
 
+SYMBOL_REFERENCE_BEGIN = '§['
+SYMBOL_REFERENCE_END = ']§'
+
+
+def symbol_reference_syntax_for_name(name: str) -> str:
+    return SYMBOL_REFERENCE_BEGIN + name + SYMBOL_REFERENCE_END
+
 
 def all_rel_options_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
