@@ -14,6 +14,7 @@ from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer, Value
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part
+from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import equals_path_relativity
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import value_reference_assertions as vr_tr
@@ -41,10 +42,10 @@ class _FileRefAssertion(asrt.ValueAssertion):
                                                                         value.path_suffix,
                                                                         'path_suffix')
         self._equals_value_references(put, message_builder, value)
+
         environment = self._fake_environment()
-        put.assertEqual(self._expected.relativity(environment.value_definitions),
-                        value.relativity(environment.value_definitions),
-                        message_builder.apply('relativity'))
+
+        self._equals_relativity(put, message_builder, environment, value)
 
         expected_exists_pre_sds = self._expected.exists_pre_sds(environment.value_definitions)
         put.assertEqual(expected_exists_pre_sds,
@@ -75,6 +76,22 @@ class _FileRefAssertion(asrt.ValueAssertion):
             value = value_constructor.visit(value_restriction)
             elements[ref.name] = _value_container(value)
         return SymbolTable(elements)
+
+    def _equals_relativity(self,
+                           put: unittest.TestCase,
+                           message_builder: asrt.MessageBuilder,
+                           environment: PathResolvingEnvironmentPreOrPostSds,
+                           actual_file_ref: FileRef):
+        # check relativity
+        # remove this when specific_relativity replaces "relativity" method
+        put.assertEqual(self._expected.relativity(environment.value_definitions),
+                        actual_file_ref.relativity(environment.value_definitions),
+                        message_builder.apply('relativity'))
+        # check specific_relativity
+        expected = self._expected.specific_relativity(environment.value_definitions)
+        actual = actual_file_ref.specific_relativity(environment.value_definitions)
+        assertion = equals_path_relativity(expected)
+        assertion.apply(put, actual, message_builder.for_sub_component('specific_relativity'))
 
     def _equals_value_references(self,
                                  put: unittest.TestCase,
