@@ -28,6 +28,25 @@ def parse_relativity_info(options: RelOptionsConfiguration,
     return _parse_rel_option_type(options, source)
 
 
+def parse_explicit_relativity_info(options: RelOptionsConfiguration,
+                                   source: TokenStream2):
+    """
+    :return None if relativity is not given explicitly
+    
+    :rtype: None|`RelOptionType`|`ValueReference`
+    """
+    if source.is_null:
+        return None
+    token = source.head
+    if not is_option_argument(token.source_string):
+        return None
+
+    info = _try_parse_rel_val_def_option(options, source)
+    if info is not None:
+        return info
+    return _parse_rel_option_type(options, source)
+
+
 def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
                                   source: TokenStream2) -> ValueReference:
     option_str = source.head.string
