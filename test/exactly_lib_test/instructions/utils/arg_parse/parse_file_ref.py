@@ -61,8 +61,11 @@ class Expectation:
 class TestParsesBase(unittest.TestCase):
     def _check(self, arrangement: Arrangement,
                expectation: Expectation):
+        # ARRANGE #
         ts = TokenStream2(arrangement.source)
+        # ACT #
         actual = sut.parse_file_ref(ts, arrangement.rel_option_argument_configuration)
+        # ASSERT #
         file_ref_equals(expectation.file_ref).apply_with_message(self, actual, 'file-ref')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
