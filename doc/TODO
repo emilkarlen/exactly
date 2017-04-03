@@ -1,6 +1,11 @@
 -*- org -*-
 
 * symbols
+** def of string should be able to reference symbols in the value
+A la
+--------------------------------
+str §[sym1]§ more text and finally §[sym2]§
+--------------------------------
 ** def of FileRef should let context of use determine default relativity
 The "def" instruction should not specify default relativity.
 The default relativity is determined by instructions that use file refs -
