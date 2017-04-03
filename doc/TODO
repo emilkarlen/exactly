@@ -1,5 +1,22 @@
 -*- org -*-
 
+* symbols
+** def of FileRef should let context of use determine default relativity
+The "def" instruction should not specify default relativity.
+The default relativity is determined by instructions that use file refs -
+they try to make a default that is probably most convenient.
+Since the "def" instruction does not use the file-ref, it cannot know what
+the best default is.
+Also, since use-instructions specify a default, it is confusing to let
+the "def" instruction specify it
+
+At the same time, the "def" instruction may set relativity, by giving
+it explicitly.
+
+A solution may need to let two kind of file-refs reside in the sym-tbl:
+ - ordinary FileRef (with fixed relativity)
+ - relative paths only consisting of a relative path-suffix
+   Relativity of the path-suffix is determined by each using instruction.
 * TODO [#C] DestinationPathFromRelRootResolver: Should be Path or PurePath?
 Returns type is invalid, but works: combining Path and PurePath in apparently
 incorrect way.
