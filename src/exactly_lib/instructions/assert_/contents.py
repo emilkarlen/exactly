@@ -69,21 +69,24 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         relativity_of_actual_arg = a.Named('RELATIVITY-OF-ACTUAL-FILE')
         optional_relativity_of_actual = a.Single(a.Multiplicity.OPTIONAL,
                                                  relativity_of_actual_arg)
-        additional_syntax_element_descriptions = [
-            SyntaxElementDescription(self.actual_file_arg.name,
-                                     self._paragraphs("The file who's contents is checked."),
-                                     [InvokationVariant(self._cl_syntax_for_args(
-                                         [optional_relativity_of_actual,
-                                          mandatory_path]),
-                                         rel_opts.default_relativity_for_rel_opt_type(
-                                             dt.PATH_ARGUMENT.name,
-                                             _ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
-                                     ),
-            rel_opts.relativity_syntax_element_description(dt.PATH_ARGUMENT,
-                                                           _ACTUAL_RELATIVITY_CONFIGURATION.options,
-                                                           relativity_of_actual_arg),
-        ]
-        return additional_syntax_element_descriptions + self._help_parts.syntax_element_descriptions()
+        actual_file_arg_sed = SyntaxElementDescription(
+            self.actual_file_arg.name,
+            self._paragraphs(
+                "The file who's contents is checked."),
+            [InvokationVariant(
+                self._cl_syntax_for_args(
+                    [optional_relativity_of_actual,
+                     mandatory_path]),
+                rel_opts.default_relativity_for_rel_opt_type(
+                    dt.PATH_ARGUMENT.name,
+                    _ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
+        )
+
+        relativity_seds = rel_opts.relativity_syntax_element_descriptions(dt.PATH_ARGUMENT,
+                                                                          _ACTUAL_RELATIVITY_CONFIGURATION.options,
+                                                                          relativity_of_actual_arg)
+
+        return [actual_file_arg_sed] + relativity_seds + self._help_parts.syntax_element_descriptions()
 
     def see_also_items(self) -> list:
         return self._help_parts.see_also_items()

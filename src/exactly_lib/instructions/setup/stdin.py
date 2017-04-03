@@ -60,13 +60,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return [
-            rel_path_doc.relativity_syntax_element_description(
+        return (
+            rel_path_doc.relativity_syntax_element_descriptions(
                 self.path_arg,
-                parse_here_doc_or_file_ref.CONFIGURATION.options),
-            dt.here_document_syntax_element_description(self.instruction_name(),
-                                                        dt.HERE_DOCUMENT),
-        ]
+                parse_here_doc_or_file_ref.CONFIGURATION.options) +
+            [
+                dt.here_document_syntax_element_description(self.instruction_name(),
+                                                            dt.HERE_DOCUMENT),
+            ]
+        )
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)

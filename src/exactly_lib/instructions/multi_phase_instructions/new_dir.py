@@ -18,6 +18,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, may_use_value_definitions: bool = False, is_in_assert_phase: bool = False):
         super().__init__(name, {}, is_in_assert_phase)
+        self.may_use_value_definitions = may_use_value_definitions
         self.path_arg = _PATH_ARGUMENT
         self.rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
                                                                          may_use_value_definitions)
@@ -38,17 +39,16 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                 dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT)
+        arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
+                                                                         self.may_use_value_definitions)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               []),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return [
-            rel_path_doc.relativity_syntax_element_description(_PATH_ARGUMENT,
-                                                               self.rel_opt_arg_conf.options),
-        ]
+        return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
+                                                                   self.rel_opt_arg_conf.options)
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(self.rel_opt_arg_conf.options)

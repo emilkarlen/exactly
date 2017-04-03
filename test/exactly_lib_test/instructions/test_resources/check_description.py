@@ -29,6 +29,9 @@ class WithDescriptionBase(unittest.TestCase):
         super().__init__()
         self.description = description
 
+    def shortDescription(self):
+        return str(type(self.description))
+
 
 class TestIsDescriptionInstance(WithDescriptionBase):
     def runTest(self):

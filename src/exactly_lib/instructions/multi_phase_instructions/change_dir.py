@@ -53,11 +53,9 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return [
-            relative_path_options_documentation.relativity_syntax_element_description(
-                _DIR_ARGUMENT,
-                self.relativity_options.options),
-        ]
+        return relative_path_options_documentation.relativity_syntax_element_descriptions(
+            _DIR_ARGUMENT,
+            self.relativity_options.options)
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(self.relativity_options.options)
