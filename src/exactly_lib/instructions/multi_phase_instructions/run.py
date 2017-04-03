@@ -144,25 +144,25 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                        self.zero_or_more_generic_args,
                                                        right_parenthesis]
         return [
-            SyntaxElementDescription(
-                self.executable_arg.name,
-                self._paragraphs(_DESCRIPTION_OF_EXECUTABLE_ARG),
-                [
-                    InvokationVariant(self._cl_syntax_for_args(executable_path_arguments),
-                                      default_relativity_desc),
-                    InvokationVariant(self._cl_syntax_for_args(executable_in_parenthesis_arguments),
-                                      self._paragraphs('An executable program with arguments. '
-                                                       '(Must be inside parentheses.)') +
-                                      default_relativity_desc),
-                    InvokationVariant(self._cl_syntax_for_args(python_interpreter_arguments),
-                                      self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM)),
-                    InvokationVariant(self._cl_syntax_for_args(python_interpreter_in_parenthesis_arguments),
-                                      self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM +
-                                                       ' (Must be inside literal parentheses.)')),
-                ]),
-            rel_path_doc.relativity_syntax_element_description(self.relativity_arg_path,
-                                                               PARSE_FILE_REF_CONFIGURATION.options),
-        ]
+                   SyntaxElementDescription(
+                       self.executable_arg.name,
+                       self._paragraphs(_DESCRIPTION_OF_EXECUTABLE_ARG),
+                       [
+                           InvokationVariant(self._cl_syntax_for_args(executable_path_arguments),
+                                             default_relativity_desc),
+                           InvokationVariant(self._cl_syntax_for_args(executable_in_parenthesis_arguments),
+                                             self._paragraphs('An executable program with arguments. '
+                                                              '(Must be inside parentheses.)') +
+                                             default_relativity_desc),
+                           InvokationVariant(self._cl_syntax_for_args(python_interpreter_arguments),
+                                             self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM)),
+                           InvokationVariant(self._cl_syntax_for_args(python_interpreter_in_parenthesis_arguments),
+                                             self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM +
+                                                              ' (Must be inside literal parentheses.)')),
+                       ])
+               ] + \
+               rel_path_doc.relativity_syntax_element_descriptions(self.relativity_arg_path,
+                                                                   PARSE_FILE_REF_CONFIGURATION.options)
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.options)

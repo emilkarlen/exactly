@@ -1,9 +1,10 @@
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
+from exactly_lib.instructions.utils.arg_parse.symbol import is_symbol_name
 from exactly_lib.instructions.utils.destination_paths import *
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -25,6 +26,7 @@ STRING_TYPE = 'string'
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
         self.name = a.Named('NAME')
+        self.string_value = a.Named('STRING')
         super().__init__(name, {
             'NAME': self.name.name,
         }, is_in_assert_phase)
@@ -41,21 +43,36 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [
-            a.Single(a.Multiplicity.MANDATORY, self.name),
-            a.Single(a.Multiplicity.MANDATORY, a.Constant(_EQUALS_ARGUMENT)),
+        symbol_name = a.Single(a.Multiplicity.MANDATORY, self.name)
+        equals = a.Single(a.Multiplicity.MANDATORY, a.Constant(_EQUALS_ARGUMENT))
+        path_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(PATH_TYPE))
+        string_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(STRING_TYPE))
+        string_value = a.Single(a.Multiplicity.MANDATORY, self.string_value)
+        arguments_for_string_type = [
+            string_type,
+            symbol_name,
+            equals,
+            string_value,
         ]
-        arguments.extend(rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT))
+        arguments_for_path_type = [
+            path_type,
+            symbol_name,
+            equals,
+        ]
+        arguments_for_path_type.extend(rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT, True))
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments)),
+            InvokationVariant(self._cl_syntax_for_args(arguments_for_string_type)),
+            InvokationVariant(self._cl_syntax_for_args(arguments_for_path_type)),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return [
-            rel_path_doc.relativity_syntax_element_description(
-                _PATH_ARGUMENT,
-                REL_OPTION_ARGUMENT_CONFIGURATION.options),
-        ]
+        return rel_path_doc.relativity_syntax_element_descriptions(
+            _PATH_ARGUMENT,
+            REL_OPTION_ARGUMENT_CONFIGURATION.options) + \
+               [
+                   SyntaxElementDescription(self.string_value.name,
+                                            self._paragraphs(_STRING_SYNTAX_ELEMENT_DESCRIPTION)),
+               ]
 
     def _see_also_cross_refs(self) -> list:
         concepts = []
@@ -85,6 +102,9 @@ def parse(source: ParseSource) -> ValueDefinition:
     if name_token.is_quoted:
         raise SingleInstructionInvalidArgumentException('Name cannot be quoted: ' + name_token.source_string)
     name_str = name_token.string
+    if not is_symbol_name(name_str):
+        err_msg = 'Invalid symbol name: {}.\nA symbol name must only contain alphanum and _'.format(name_str)
+        raise SingleInstructionInvalidArgumentException(err_msg)
     token_stream.consume()
     if token_stream.is_null or token_stream.head.source_string != _EQUALS_ARGUMENT:
         raise SingleInstructionInvalidArgumentException('Missing ' + _EQUALS_ARGUMENT)
@@ -109,10 +129,14 @@ REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_C
                                                                    dt.PATH_ARGUMENT)
 
 _MAIN_DESCRIPTION_REST = """\
-Defines the symbol {NAME} to be the given path.
+Defines the symbol {NAME} to be the given string or path.
 
 
 {NAME} must not have been defined earlier.
+"""
+
+_STRING_SYNTAX_ELEMENT_DESCRIPTION = """\
+A single word, or a single quoted text.
 """
 
 
@@ -124,8 +148,9 @@ def _parse_path(token_stream: TokenStream2) -> Value:
 def _parse_string(token_stream: TokenStream2) -> Value:
     if token_stream.is_null:
         raise SingleInstructionInvalidArgumentException('Missing {} value'.format(STRING_TYPE))
-
-    return StringValue('TODO value')
+    ret_val = StringValue(token_stream.head.string)
+    token_stream.consume()
+    return ret_val
 
 
 _TYPE_SETUPS = {

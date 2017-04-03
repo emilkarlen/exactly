@@ -1,4 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.default.program_modes.test_case.default_instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
@@ -6,13 +7,16 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.instructions.multi_phase_instructions.assign_value_definition import PATH_TYPE
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
+from exactly_lib.instructions.utils.arg_parse.symbol import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure import relative_path_options as options
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
+from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -20,11 +24,17 @@ RELATIVITY_ARGUMENT = a.Named('RELATIVITY')
 OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
                                               RELATIVITY_ARGUMENT)
 
+SYMBOL_REFERENCE = a.Named('SYMBOL-REFERENCE')
 
-def mandatory_path_with_optional_relativity(path_argument: a.Named) -> list:
+
+def mandatory_path_with_optional_relativity(path_argument: a.Named,
+                                            may_use_value_definitions: bool = False) -> list:
+    path_part = a.Single(a.Multiplicity.MANDATORY, path_argument)
+    if may_use_value_definitions:
+        path_part = a.Choice(a.Multiplicity.MANDATORY, [path_argument, SYMBOL_REFERENCE])
     return [
         OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-        a.Single(a.Multiplicity.MANDATORY, path_argument),
+        path_part,
     ]
 
 
@@ -35,13 +45,23 @@ def default_relativity_for_rel_opt_type(path_arg_name: str,
                               default_relativity_location=_ALL[default_relativity_type].relativity_root_description))
 
 
-def relativity_syntax_element_description(
+def relativity_syntax_element_descriptions(
         path_that_may_be_relative: a.Named,
         rel_options_conf: RelOptionsConfiguration,
-        relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+        relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> list:
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
-    return SyntaxElementDescription(relativity_argument.name,
-                                    [renderer.list_for(rel_options_conf)])
+    ret_val = [
+        SyntaxElementDescription(relativity_argument.name,
+                                 [renderer.list_for(rel_options_conf)]),
+    ]
+    if rel_options_conf.is_rel_symbol_option_accepted:
+        ret_val.append(SyntaxElementDescription(SYMBOL_REFERENCE.name,
+                                                normalize_and_parse(_SYMBOL_REFERENCE_DESCRIPTION.format(
+                                                    symbol_reference=symbol_reference_syntax_for_name('SYMBOL'),
+                                                    symbol_name='SYMBOL',
+                                                    def_instruction=SYMBOL_DEFINITION_INSTRUCTION_NAME,
+                                                ))))
+    return ret_val
 
 
 def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
@@ -134,6 +154,7 @@ class RelOptionRenderer:
             'DIR_ACT': sds.SUB_DIRECTORY__ACT,
             'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
             'SYMBOL_NAME': _SYMBOL_NAME,
+            'PATH_SYMBOL_TYPE': PATH_TYPE,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'sandbox_concept': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
@@ -193,7 +214,7 @@ _REL_HOME_DESCRIPTION = """\
 """
 
 _REL_SYMBOL_DESCRIPTION = """\
-{PATH} is relative the path denoted by the symbol {SYMBOL_NAME}.
+{PATH} is relative the path denoted by the symbol {SYMBOL_NAME} (which must be a {PATH_SYMBOL_TYPE}).
 """
 
 _ALL = {
@@ -229,3 +250,12 @@ By default, {path} is relative the {default_relativity_location}.
 _SYMBOL_NAME = 'SYMBOL'
 
 _REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME, _SYMBOL_NAME)
+
+_SYMBOL_REFERENCE_DESCRIPTION = """\
+A reference to a symbol {symbol_name} using the syntax
+
+{symbol_reference}
+
+
+The symbol must have been defined using the {def_instruction} instruction.
+"""

@@ -89,28 +89,30 @@ class FileContentsHelpParts:
         optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
                                                    relativity_of_expected_arg)
         return [
-            SyntaxElementDescription(self.expected_file_arg.name,
-                                     self._paragraphs("The file that contains the expected contents."),
-                                     [InvokationVariant(self.clr.cl_syntax_for_args(
-                                         [optional_relativity_of_expected,
-                                          mandatory_path]),
-                                         rel_opts.default_relativity_for_rel_opt_type(
-                                             parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name,
-                                             parse_here_doc_or_file_ref.CONFIGURATION.options.default_option)
-                                     )]
-                                     ),
-            rel_opts.relativity_syntax_element_description(
-                dt.FILE_ARGUMENT,
-                parse_here_doc_or_file_ref.CONFIGURATION.options,
-                relativity_of_expected_arg),
-            SyntaxElementDescription(dt.REG_EX.name,
-                                     self._parser.fnap('A Python regular expression.')),
-            self.clr.cli_argument_syntax_element_description(
-                self.with_replaced_env_vars_option,
-                with_replaced_env_vars_help(self._parser.format('the contents of {checked_file}'))),
-            dt.here_document_syntax_element_description(self.instruction_name,
-                                                        dt.HERE_DOCUMENT),
-        ]
+                   SyntaxElementDescription(self.expected_file_arg.name,
+                                            self._paragraphs("The file that contains the expected contents."),
+                                            [InvokationVariant(self.clr.cl_syntax_for_args(
+                                                [optional_relativity_of_expected,
+                                                 mandatory_path]),
+                                                rel_opts.default_relativity_for_rel_opt_type(
+                                                    parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name,
+                                                    parse_here_doc_or_file_ref.CONFIGURATION.options.default_option)
+                                            )]
+                                            ),
+               ] + \
+               rel_opts.relativity_syntax_element_descriptions(
+                   dt.FILE_ARGUMENT,
+                   parse_here_doc_or_file_ref.CONFIGURATION.options,
+                   relativity_of_expected_arg) + \
+               [
+                   SyntaxElementDescription(dt.REG_EX.name,
+                                            self._parser.fnap('A Python regular expression.')),
+                   self.clr.cli_argument_syntax_element_description(
+                       self.with_replaced_env_vars_option,
+                       with_replaced_env_vars_help(self._parser.format('the contents of {checked_file}'))),
+                   dt.here_document_syntax_element_description(self.instruction_name,
+                                                               dt.HERE_DOCUMENT),
+               ]
 
     def see_also_items(self) -> list:
         cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]

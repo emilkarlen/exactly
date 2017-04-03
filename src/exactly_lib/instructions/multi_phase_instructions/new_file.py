@@ -19,6 +19,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str, may_use_value_definitions: bool = False):
         super().__init__(name, {})
+        self.may_use_value_definitions = may_use_value_definitions
         self.rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
                                                                          may_use_value_definitions)
 
@@ -32,7 +33,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT)
+        arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
+                                                                         self.may_use_value_definitions)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
@@ -42,12 +44,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return [
-            rel_path_doc.relativity_syntax_element_description(_PATH_ARGUMENT,
-                                                               self.rel_opt_arg_conf.options),
-            dt.here_document_syntax_element_description(self.instruction_name(),
-                                                        dt.HERE_DOCUMENT),
-        ]
+        return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
+                                                                   self.rel_opt_arg_conf.options) + \
+               [
+                   dt.here_document_syntax_element_description(self.instruction_name(),
+                                                               dt.HERE_DOCUMENT),
+               ]
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(self.rel_opt_arg_conf.options)
