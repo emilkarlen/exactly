@@ -1,6 +1,7 @@
 import os
-import types
 import unittest
+
+import types
 
 
 class MessageBuilder:
@@ -495,6 +496,7 @@ def is_boolean(expected: bool) -> ValueAssertion:
 
 
 is_empty = len_equals(0)
+ignore = Constant(True)
 
 
 def matches_sequence(element_assertions: list) -> ValueAssertion:

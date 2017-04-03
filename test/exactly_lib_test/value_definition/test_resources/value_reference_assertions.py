@@ -1,5 +1,8 @@
+import unittest
+
 from exactly_lib.value_definition import value_structure as stc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import equals_value_restriction
 
 
 def equals_value_reference(expected_name: str,
@@ -12,4 +15,38 @@ def equals_value_reference(expected_name: str,
                                      asrt.sub_component('value_restriction',
                                                         stc.ValueReference.value_restriction.fget,
                                                         value_restriction_assertion)
+
                                  ]))
+
+
+def equals_value_references(expected: list) -> asrt.ValueAssertion:
+    return _EqualsValueReferences(expected)
+
+
+class _EqualsValueReferences(asrt.ValueAssertion):
+    def __init__(self, expected: list):
+        self._expected = expected
+        assert isinstance(expected, list), 'Value reference list must be a list'
+        for idx, element in enumerate(expected):
+            assert isinstance(element, stc.ValueReference), 'Element must be a ValueReference #' + str(idx)
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        put.assertIsInstance(value, list,
+                             'Expects a list of value references')
+        put.assertEqual(len(self._expected),
+                        len(value),
+                        message_builder.apply('Number of value references'))
+        for idx, expected_ref in enumerate(self._expected):
+            actual_ref = value[idx]
+            put.assertIsInstance(actual_ref, stc.ValueReference)
+            assert isinstance(actual_ref, stc.ValueReference)
+            assert isinstance(expected_ref, stc.ValueReference)
+            expected_value_restriction = expected_ref.value_restriction
+            element_assertion = equals_value_reference(expected_ref.name,
+                                                       equals_value_restriction(expected_value_restriction))
+            element_assertion.apply(put,
+                                    actual_ref,
+                                    message_builder.for_sub_component('[%d]' % idx))
