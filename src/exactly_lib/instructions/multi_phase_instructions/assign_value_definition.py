@@ -15,8 +15,11 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.value_definition.concrete_values import FileRefValue
-from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer
+from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue
+from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer, Value
+
+PATH_TYPE = 'path'
+STRING_TYPE = 'string'
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -67,7 +70,17 @@ def parse(source: ParseSource) -> ValueDefinition:
     token_stream = TokenStream2(source.remaining_part_of_current_line)
     source.consume_current_line()
     if token_stream.is_null:
-        raise SingleInstructionInvalidArgumentException('Missing value name')
+        err_msg = 'Missing symbol type.\nExpecting one of ' + _TYPES_LIST_IN_ERR_MSG
+        raise SingleInstructionInvalidArgumentException(err_msg)
+    type_token = token_stream.head
+    if type_token.source_string not in _TYPE_SETUPS:
+        err_msg = 'Invalid type :{}\nExpecting one of {}'.format(type_token.source_string, _TYPES_LIST_IN_ERR_MSG)
+        raise SingleInstructionInvalidArgumentException(err_msg)
+    value_parser = _TYPE_SETUPS[type_token.source_string]
+    token_stream.consume()
+    if token_stream.is_null:
+        err_msg = 'Missing symbol name.'
+        raise SingleInstructionInvalidArgumentException(err_msg)
     name_token = token_stream.head
     if name_token.is_quoted:
         raise SingleInstructionInvalidArgumentException('Name cannot be quoted: ' + name_token.source_string)
@@ -76,11 +89,11 @@ def parse(source: ParseSource) -> ValueDefinition:
     if token_stream.is_null or token_stream.head.source_string != _EQUALS_ARGUMENT:
         raise SingleInstructionInvalidArgumentException('Missing ' + _EQUALS_ARGUMENT)
     token_stream.consume()
-    file_ref = parse_file_ref.parse_file_ref(token_stream, REL_OPTION_ARGUMENT_CONFIGURATION)
+    value = value_parser(token_stream)
     if not token_stream.is_null:
         msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return ValueDefinition(name_str, ValueContainer(source_line, FileRefValue(file_ref)))
+    return ValueDefinition(name_str, ValueContainer(source_line, value))
 
 
 _EQUALS_ARGUMENT = '='
@@ -101,3 +114,23 @@ Defines the symbol {NAME} to be the given path.
 
 {NAME} must not have been defined earlier.
 """
+
+
+def _parse_path(token_stream: TokenStream2) -> Value:
+    file_ref = parse_file_ref.parse_file_ref(token_stream, REL_OPTION_ARGUMENT_CONFIGURATION)
+    return FileRefValue(file_ref)
+
+
+def _parse_string(token_stream: TokenStream2) -> Value:
+    if token_stream.is_null:
+        raise SingleInstructionInvalidArgumentException('Missing {} value'.format(STRING_TYPE))
+
+    return StringValue('TODO value')
+
+
+_TYPE_SETUPS = {
+    PATH_TYPE: _parse_path,
+    STRING_TYPE: _parse_string,
+}
+
+_TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
