@@ -205,3 +205,7 @@ class _ValueCorrespondingToValueRestriction(concrete_restrictions.ValueRestricti
 
     def visit_file_ref_relativity(self, x: concrete_restrictions.FileRefRelativityRestriction) -> Value:
         return file_ref_val_test_impl(x.accepted)
+
+    def visit_string_or_file_ref_relativity(self, x: concrete_restrictions.EitherStringOrFileRefRelativityRestriction
+                                            ) -> Value:
+        return self.visit_file_ref_relativity(x.file_ref_restriction)
