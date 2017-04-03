@@ -25,11 +25,15 @@ from exactly_lib_test.section_document.parser_implementations.test_resources imp
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
-from exactly_lib_test.test_case_file_structure.test_resources.file_ref import file_ref_equals
+from exactly_lib_test.test_case_file_structure.test_resources.file_ref import file_ref_equals, equals_file_ref2
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import is_string_value_restriction
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
+    symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
+from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
 
 
 def suite() -> unittest.TestSuite:
@@ -371,6 +375,8 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
 
     def test_no_explicit_relativity(self):
         symbol_name = 'THE_SYMBOL'
+        file_ref_rel_home = file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                                    PathPartAsFixedPath('file-in-home-dir'))
         test_cases = [
             ('Symbol reference as only argument'
              ' SHOULD '
@@ -383,8 +389,31 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=file_ref_equals(file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                                                  PathPartAsStringSymbolReference(symbol_name))),
+                 file_ref=equals_file_ref2(file_refs.of_rel_option(RelOptionType.REL_ACT,
+                                                                   PathPartAsStringSymbolReference(symbol_name)),
+                                           #  TODO replace assertion on string-or-file-ref
+                                           asrt.matches_sequence([
+                                               equals_value_reference(symbol_name,
+                                                                      is_string_value_restriction),
+                                           ]),
+                                           symbol_table_with_single_string_value(symbol_name, 'string-value')),
+                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             )),
+            ('Symbol reference as only argument'
+             ' SHOULD '
+             'be file ref identical to referenced symbol'
+             ' GIVEN '
+             'referenced symbol is a file ref',
+             Arrangement(
+                 source='{symbol_reference}'.format(
+                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
+             ),
+             Expectation2(
+                 file_ref=equals_file_ref2(file_ref_rel_home,
+                                           asrt.ignore,  # TODO add assertion on string-or-file-ref
+                                           symbol_table_with_single_file_ref_value(symbol_name,
+                                                                                   file_ref_rel_home)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
         ]
