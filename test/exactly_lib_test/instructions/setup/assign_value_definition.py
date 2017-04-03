@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.instructions.multi_phase_instructions.assign_value_definition import REL_OPTIONS_CONFIGURATION
+from exactly_lib.instructions.multi_phase_instructions.assign_value_definition import REL_OPTIONS_CONFIGURATION, \
+    PATH_TYPE, STRING_TYPE
 from exactly_lib.instructions.setup import assign_value_definition as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -20,17 +21,21 @@ from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import value_definition_utils as v2
 from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_asrt
-from exactly_lib_test.value_definition.test_resources.value_definition_utils import assert_symbol_table_is_singleton
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import assert_symbol_table_is_singleton, \
+    string_value_container
 from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_container
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestFailingParseDueToInvalidSyntax))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulParse))
-    ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleValidOption))
-    ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeSingleDefaultOption))
-    ret_val.addTest(unittest.makeSuite(TestAssignmentRelativeValueDefinition))
+    ret_val.addTest(unittest.makeSuite(TestFailingParsePerTypeDueToInvalidSyntax))
+    ret_val.addTest(unittest.makeSuite(TestPathFailingParseDueToInvalidSyntax))
+    ret_val.addTest(unittest.makeSuite(TestStringSuccessfulParse))
+    ret_val.addTest(unittest.makeSuite(TestPathSuccessfulParse))
+    ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleValidOption))
+    ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleDefaultOption))
+    ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeValueDefinition))
     return ret_val
 
 
@@ -46,11 +51,7 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
     def runTest(self):
         test_cases = [
             ('', 'Empty source'),
-            ('val_name', 'Only VAL-NAME'),
-            ('val_name --rel-home x', 'Missing ='),
-            ('"val_name" = --rel-act x', 'VAL-NAME must not be quoted'),
-            ('name = --rel-act x superfluous-arg', 'Superfluous arguments'),
-            ('name SuperfluousName = --rel-act x', 'Superfluous name'),
+            ('not_a_type val_name = value', 'Invalid type name'),
         ]
         setup = sut.setup('instruction-name')
         for (source_str, case_name) in test_cases:
@@ -60,11 +61,74 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
                     setup.parse(source)
 
 
-class TestSuccessfulParse(unittest.TestCase):
+class TestFailingParsePerTypeDueToInvalidSyntax(unittest.TestCase):
+    def runTest(self):
+        test_cases = [
+            ('{valid_type} name {valid_value}', 'Missing ='),
+            ('{valid_type} "val_name" = {valid_value}', 'VAL-NAME must not be quoted'),
+            ('{valid_type} val-name = {valid_value}', 'VAL-NAME must only contain alphanum and _'),
+            ('{valid_type} name SuperfluousName = {valid_value}', 'Superfluous name'),
+        ]
+        type_setups = [
+            (PATH_TYPE, '--rel-act f'),
+            (STRING_TYPE, 'string-value'),
+        ]
+        setup = sut.setup('instruction-name')
+        for type_name, valid_type_value in type_setups:
+            for source_template, test_case_name in test_cases:
+                source_str = source_template.format(valid_type=type_name,
+                                                    valid_value=valid_type_value)
+                source = remaining_source(source_str)
+                with self.subTest(msg=test_case_name):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        setup.parse(source)
+
+
+class TestPathFailingParseDueToInvalidSyntax(unittest.TestCase):
+    def runTest(self):
+        test_cases = [
+            (_src('{path_type} name = --invalid-option x'), 'Invalid file ref syntax'),
+            (_src('{path_type} name = --rel-act x superfluous-arg'), 'Superfluous arguments'),
+        ]
+        setup = sut.setup('instruction-name')
+        for (source_str, case_name) in test_cases:
+            source = remaining_source(source_str)
+            with self.subTest(msg=case_name):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    setup.parse(source)
+
+
+class TestStringSuccessfulParse(TestCaseBaseForParser):
+    def runTest(self):
+        # ARRANGE #
+        test_cases = [
+            ('Valid assignment of single word',
+             '{string_type} name1 = v1',
+             Expectation(
+                 value_definition_usages=asrt.matches_sequence([
+                     vs_asrt.equals_value_definition(ValueDefinition('name1', string_value_container('v1')),
+                                                     ignore_source_line=True)
+                 ]),
+                 value_definitions_after_main=assert_symbol_table_is_singleton(
+                     'name1',
+                     equals_value_container(string_value_container('v1')),
+                 )
+             )),
+        ]
+        for test_case_name, source_template, expectation in test_cases:
+            with self.subTest(msg=test_case_name):
+                source = _remaining_source(source_template)
+                # ACT & ASSERT#
+                self._run(source,
+                          Arrangement(),
+                          expectation)
+
+
+class TestPathSuccessfulParse(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         setup = sut.setup('instruction-name')
-        source = remaining_source('name = --rel-act component')
+        source = _remaining_source('{path_type} name = --rel-act component')
         # ACT #
         instruction = setup.parse(source)
         # ASSERT #
@@ -72,9 +136,9 @@ class TestSuccessfulParse(unittest.TestCase):
                               'Instruction must be an ' + str(SetupPhaseInstruction))
 
 
-class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
+class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = 'name = --rel-act component'
+        instruction_argument = _src('{path_type} name = --rel-act component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_value = v2.file_ref_value(file_refs.rel_act(PathPartAsFixedPath('component')))
             expected_value_container = _value_container(expected_file_ref_value)
@@ -91,9 +155,9 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                       )
 
 
-class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
+class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = 'name = component'
+        instruction_argument = _src('{path_type} name = component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_value = v2.file_ref_value(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
@@ -111,15 +175,15 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                       )
 
 
-class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
+class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = 'ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component'
+        instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_value = v2.file_ref_value(
                 rel_value_definition(
                     ValueReference('REFERENCED_VAL_DEF',
                                    FileRefRelativityRestriction(
-                                        REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
+                                       REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
                     PathPartAsFixedPath('component')))
             expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
@@ -135,6 +199,17 @@ class TestAssignmentRelativeValueDefinition(TestCaseBaseForParser):
                               'ASSIGNED_NAME',
                               equals_value_container(expected_value_container)))
                       )
+
+
+def _src(s: str) -> str:
+    return s.format(
+        path_type=PATH_TYPE,
+        string_type=STRING_TYPE,
+    )
+
+
+def _remaining_source(s: str) -> ParseSource:
+    return remaining_source(_src(s))
 
 
 def _value_container(value: Value) -> ValueContainer:
