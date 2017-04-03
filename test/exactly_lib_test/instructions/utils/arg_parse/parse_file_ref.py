@@ -331,22 +331,6 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
                     )
 
 
-# test_cases = [
-#     ('Symbol reference as only argument SHOULD be equal to only giving a file argument',
-#      Arrangement(),
-#      Expectation(),
-#      '{symbol_reference}'.format(
-#          symbol_reference=sut.symbol_reference_syntax_for_name('TEST_SYMBOL'))
-#      ),
-#     ('Symbol reference as file argument after valid relativity option',
-#      '{rel_option} {symbol_reference}'.format(
-#          rel_option=_option_string_for(REL_OPTIONS_MAP[RelOptionType.REL_ACT].option_name),
-#          symbol_reference=sut.symbol_reference_syntax_for_name('TEST_SYMBOL'))
-#      ),
-#
-# ]
-
-
 class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
     def test_with_explicit_relativity(self):
         symbol_name = 'PATH_SUFFIX_SYMBOL'
@@ -405,52 +389,6 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
         for test_name, arrangement, expectation in test_cases:
             with self.subTest(msg=test_name):
                 self._check2(arrangement, expectation)
-
-                # def test_WHEN_symbol_reference_is_quoted_THEN_parse_SHOULD_treat_that_string_as_file_name(self):
-                #     symbol_reference_str = sut.symbol_reference_syntax_for_name('TEST_SYMBOL')
-                #     source = '\'{symbol_reference}\''.format(symbol_reference=symbol_reference_str)
-                #     path_suffix = PathPartAsFixedPath(symbol_reference_str)
-                #     expected_file_ref = file_refs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
-                #                                                 path_suffix)
-                #     self._check(
-                #         Arrangement(source,
-                #                     _ARG_CONFIG_FOR_ALL_RELATIVITIES),
-                #         Expectation(expected_file_ref,
-                #                     assert_token_stream2(is_null=assert_token_string_is(symbol_reference_str)))
-                #     )
-                #
-                # def test_parse_with_relativity_option(self):
-                #     file_name_argument = 'file-name'
-                #     value_definition_name = 'SYMBOL_NAME'
-                #     rel_symbol_option_str = _option_string_for(REL_SYMBOL_OPTION_NAME)
-                #     source_and_token_stream_assertion_variants = [
-                #         (
-                #             '{symbol_name}',
-                #             assert_token_stream2(is_null=asrt.is_true)
-                #         ),
-                #     ]
-                #     accepted_relativities_variants = [
-                #         PathRelativityVariants({RelOptionType.REL_ACT}, True),
-                #         PathRelativityVariants({RelOptionType.REL_ACT}, False),
-                #         PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, False),
-                #     ]
-                #     for source, token_stream_assertion in source_and_token_stream_assertion_variants:
-                #         for accepted_relativities in accepted_relativities_variants:
-                #             expected_value_reference = ValueReference(value_definition_name,
-                #                                                       is_string_value_restriction)
-                #             arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
-                #             with self.subTest(msg='source={}'.format(repr(source))):
-                #                 argument_string = source.format(rel_symbol_option_str=rel_symbol_option_str,
-                #                                                 symbol_name=value_definition_name,
-                #                                                 file_name_argument=file_name_argument)
-                #                 expected_path_suffix = PathPartAsFixedPath(file_name_argument)
-                #                 expected_file_ref = rel_value_definition(expected_value_reference, expected_path_suffix)
-                #                 self._check(
-                #                     Arrangement(argument_string,
-                #                                 arg_config),
-                #                     Expectation(expected_file_ref,
-                #                                 token_stream_assertion)
-                #                 )
 
 
 class TestParseFromParseSource(unittest.TestCase):
