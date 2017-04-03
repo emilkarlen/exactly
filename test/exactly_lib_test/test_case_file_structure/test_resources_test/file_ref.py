@@ -4,63 +4,151 @@ import unittest
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsStringSymbolReference
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_part import PathPart
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
 from exactly_lib.value_definition.concrete_values import FileRefValue
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
+    symbol_table_with_single_string_value, symbol_table_from_value_definitions, string_value_definition, \
+    file_ref_value_definition, symbol_table_with_single_file_ref_value
+from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_references
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        TestEquals(),
+        TestEqualsCommonToBothAssertionMethods(),
+        TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(),
         unittest.makeSuite(TestNotEquals_PathSuffixAsFixedPath),
         unittest.makeSuite(TestNotEquals_PathSuffixAsSymbolReference),
         unittest.makeSuite(TestNotEquals_DifferentTypeOfPathSuffix),
+        unittest.makeSuite(Test2NotEquals),
     ])
 
 
-class TestEquals(unittest.TestCase):
+class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
     def runTest(self):
         test_cases = [
-            (_FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
+            ('Exists pre SDS/fixed path suffix',
+             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
                                              PathPartAsFixedPath('file-name')),
-             'Exists pre SDS/fixed path suffix'
+             empty_symbol_table(),
              ),
-            (_FileRefWithoutValRefInRootPart(_NOT_EXISTS_PRE_SDS_RELATIVITY,
+            ('NOT Exists pre SDS/fixed path suffix',
+             _FileRefWithoutValRefInRootPart(_NOT_EXISTS_PRE_SDS_RELATIVITY,
                                              PathPartAsFixedPath('a-file-name')),
-             'NOT Exists pre SDS/fixed path suffix'
+             empty_symbol_table(),
              ),
-            (_FileRefWithValRefInRootPart(
-                ValueReference('reffed-name',
-                               _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                PathPartAsFixedPath('file-name')),
-             'symbol-ref/NOT Exists pre SDS/fixed path suffix'
-            ),
-            (_FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
+            ('symbol-ref/NOT Exists pre SDS/fixed path suffix',
+             _FileRefWithValRefInRootPart(
+                 ValueReference('reffed-name',
+                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                 PathPartAsFixedPath('file-name')),
+             symbol_table_with_single_file_ref_value('reffed-name'),
+             ),
+            ('Exists pre SDS/fixed path suffix',
+             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
                                              PathPartAsStringSymbolReference('symbol-name')),
-             'Exists pre SDS/fixed path suffix'
+             symbol_table_with_single_string_value('symbol-name', 'value'),
              ),
-            (_FileRefWithoutValRefInRootPart(_NOT_EXISTS_PRE_SDS_RELATIVITY,
+            ('NOT Exists pre SDS/fixed path suffix',
+             _FileRefWithoutValRefInRootPart(_NOT_EXISTS_PRE_SDS_RELATIVITY,
                                              PathPartAsStringSymbolReference('a-symbol-name')),
-             'NOT Exists pre SDS/fixed path suffix'
+             symbol_table_with_single_string_value('a-symbol-name', 'value'),
              ),
-            (_FileRefWithValRefInRootPart(
-                ValueReference('reffed-name',
-                               _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                PathPartAsStringSymbolReference('symbol-name')),
-             'symbol-ref/NOT Exists pre SDS/fixed path suffix'
-            ),
+            ('symbol-ref/NOT Exists pre SDS/fixed path suffix',
+             _FileRefWithValRefInRootPart(
+                 ValueReference('reffed-name',
+                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                 PathPartAsStringSymbolReference('symbol-name')),
+             symbol_table_from_value_definitions([
+                 string_value_definition('symbol-name', 'string-value'),
+                 file_ref_value_definition('reffed-name')]),
+             ),
         ]
-        for value, msg in test_cases:
-            with self.subTest(msg=msg):
-                sut.file_ref_equals(value).apply_with_message(self, value, msg)
+        for test_case_name, value, symbol_table_for_method2 in test_cases:
+            assert isinstance(value, FileRef), 'Type info for IDE'
+            with self.subTest(msg='file_ref_equals::' + test_case_name):
+                assertion = sut.file_ref_equals(value)
+                assertion.apply_with_message(self, value, test_case_name)
+            with self.subTest(msg='equals_file_ref2::' + test_case_name):
+                assertion = sut.equals_file_ref2(value,
+                                                 equals_value_references(value.value_references_of_paths()),
+                                                 symbol_table_for_method2)
+                assertion.apply_with_message(self, value, test_case_name)
+
+
+class TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(unittest.TestCase):
+    def runTest(self):
+        test_cases = [
+            ('Different kind of path suffixes',
+             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
+                                             PathPartAsFixedPath('file-name')),
+             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
+                                             PathPartAsStringSymbolReference('path_suffix_symbol')),
+             symbol_table_with_single_string_value('path_suffix_symbol', 'file-name'),
+             ),
+            ('Different symbol references in path suffixes',
+             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
+                                             PathPartAsStringSymbolReference('path_suffix_symbol_1')),
+             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
+                                             PathPartAsStringSymbolReference('path_suffix_symbol_2')),
+             symbol_table_from_value_definitions([
+                 string_value_definition('path_suffix_symbol_1', 'suffix-file-name'),
+                 string_value_definition('path_suffix_symbol_2', 'suffix-file-name'),
+             ])
+             ),
+            ('Different symbol references in root',
+             _FileRefWithValRefInRootPart(
+                 ValueReference('path_root_symbol_1',
+                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                 PathPartAsFixedPath('file-name')),
+             _FileRefWithValRefInRootPart(
+                 ValueReference('path_root_symbol_2',
+                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                 PathPartAsFixedPath('file-name')),
+             symbol_table_from_value_definitions([
+                 file_ref_value_definition('path_root_symbol_1',
+                                           _FileRefWithoutValRefInRootPart(RelOptionType.REL_TMP,
+                                                                           PathPartAsFixedPath('suffix-of-root'))),
+                 file_ref_value_definition('path_root_symbol_2',
+                                           _FileRefWithoutValRefInRootPart(RelOptionType.REL_TMP,
+                                                                           PathPartAsFixedPath('suffix-of-root'))
+                                           ),
+             ])
+             ),
+            ('Different kind of root resolving',
+             _FileRefWithValRefInRootPart(
+                 ValueReference('reffed_file_ref_name',
+                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                 PathPartAsFixedPath('2')),
+             _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
+                                             PathPartAsFixedPath('1/2')),
+             symbol_table_with_single_file_ref_value('reffed_file_ref_name',
+                                                     _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
+                                                                                     PathPartAsFixedPath('1'))),
+             ),
+        ]
+        for test_case_name, first, second, symbol_table_for_method2 in test_cases:
+            assert isinstance(first, FileRef), 'Type info for IDE (first)'
+            assert isinstance(second, FileRef), 'Type info for IDE (second)'
+            with self.subTest(msg='1::' + test_case_name):
+                assertion = sut.equals_file_ref2(first,
+                                                 asrt.ignore,
+                                                 symbol_table_for_method2)
+                assertion.apply_with_message(self, second, test_case_name)
+            with self.subTest(msg='2::' + test_case_name):
+                assertion = sut.equals_file_ref2(second,
+                                                 asrt.ignore,
+                                                 symbol_table_for_method2)
+                assertion.apply_with_message(self, first, test_case_name)
 
 
 class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
@@ -288,6 +376,38 @@ class TestNotEquals_DifferentTypeOfPathSuffix(unittest.TestCase):
             sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
 
 
+class Test2NotEquals(unittest.TestCase):
+    def test_differs__file_name(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
+        actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_file_ref2(expected, asrt.ignore, empty_symbol_table())
+            assertion.apply_with_message(put, actual, 'NotEquals')
+
+    def test_differs__exists_pre_sds(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
+        actual = _FileRefWithoutValRefInRootPart(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_file_ref2(expected, asrt.ignore, empty_symbol_table())
+            assertion.apply_with_message(put, actual, 'NotEquals')
+
+    def test_differs__relativity(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
+        actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_file_ref2(expected, asrt.ignore, empty_symbol_table())
+            assertion.apply_with_message(put, actual, 'NotEquals')
+
+
 class _FileRefWithoutValRefInRootPart(FileRef):
     """
     A dummy FileRef that has a given relativity,
@@ -308,10 +428,10 @@ class _FileRefWithoutValRefInRootPart(FileRef):
         return self.relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path(str(self.relativity)) / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path(str(self._relativity)) / self.path_suffix_path(environment.value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path(str(self.relativity)) / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path(str(self._relativity)) / self.path_suffix_path(environment.value_definitions)
 
     def value_references_of_paths(self) -> list:
         return self.__path_suffix.value_references
@@ -337,10 +457,12 @@ class _FileRefWithValRefInRootPart(FileRef):
         return self._lookup(value_definitions).exists_pre_sds(value_definitions)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return self._lookup(environment.value_definitions).file_path_pre_sds(environment)
+        prefix = self._lookup(environment.value_definitions).file_path_pre_sds(environment)
+        return prefix / self.path_suffix_path(environment.value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return self._lookup(environment.value_definitions).file_path_post_sds(environment)
+        prefix = self._lookup(environment.value_definitions).file_path_post_sds(environment)
+        return prefix / self.path_suffix_path(environment.value_definitions)
 
     def value_references_of_paths(self) -> list:
         return [self._value_references_of_path] + self.__path_suffix.value_references

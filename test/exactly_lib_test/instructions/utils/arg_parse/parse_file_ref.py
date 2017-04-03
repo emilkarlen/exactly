@@ -374,7 +374,9 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
         test_cases = [
             ('Symbol reference as only argument'
              ' SHOULD '
-             'be file ref with default relativity and suffix as string reference',
+             'be file ref with default relativity and suffix as string reference'
+             ' GIVEN '
+             'referenced symbol is a string',
              Arrangement(
                  source='{symbol_reference}'.format(
                      symbol_reference=symbol_reference_syntax_for_name(symbol_name)),

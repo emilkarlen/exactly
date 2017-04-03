@@ -27,6 +27,18 @@ def string_value_definition(name: str, string_value: str = 'string value') -> Va
     return ValueDefinition(name, string_value_container(string_value))
 
 
+def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
+    return symbol_table_from_value_definitions([string_value_definition(name, string_value)])
+
+
+def symbol_table_with_single_file_ref_value(name: str,
+                                            file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                                                             relativity=RelOptionType.REL_CWD),
+                                            line_num: int = 1,
+                                            source_line: str = 'value def line') -> SymbolTable:
+    return symbol_table_from_value_definitions([file_ref_value_definition(name, file_ref, line_num, source_line)])
+
+
 def file_ref_value(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                     relativity=RelOptionType.REL_CWD)
                    ) -> FileRefValue:
@@ -39,6 +51,14 @@ def file_ref_value_container(file_ref: _file_ref.FileRef = file_ref_test_impl('f
                              source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
                           FileRefValue(file_ref))
+
+
+def file_ref_value_definition(name: str,
+                              file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                                               relativity=RelOptionType.REL_CWD),
+                              line_num: int = 1,
+                              source_line: str = 'value def line') -> ValueDefinition:
+    return ValueDefinition(name, file_ref_value_container(file_ref, line_num, source_line))
 
 
 def entry(name: str, value: Value = StringValue('string value'),
