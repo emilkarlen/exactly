@@ -103,6 +103,52 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
                                      'Result should denote failing validation')
 
 
+class TestEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
+    def test_pass(self):
+        # ARRANGE #
+        test_cases = [
+            StringValue('string'),
+            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
+            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
+        ]
+
+        restriction = sut.EitherStringOrFileRefRelativityRestriction(
+            sut.StringRestriction(),
+            sut.FileRefRelativityRestriction(PathRelativityVariants(
+                {RelOptionType.REL_ACT,
+                 RelOptionType.REL_HOME,
+                 RelOptionType.REL_RESULT},
+                False))
+        )
+        value_definitions = empty_symbol_table()
+        for value in test_cases:
+            with self.subTest(msg='value=' + str(value)):
+                # ACT #
+                actual = restriction.is_satisfied_by(value_definitions, value)
+                # ASSERT #
+                self.assertIsNone(actual)
+
+    def test_fail__failing_file_refs(self):
+        # ARRANGE #
+        test_cases = [
+            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
+            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
+        ]
+        restriction = sut.EitherStringOrFileRefRelativityRestriction(
+            sut.StringRestriction(),
+            sut.FileRefRelativityRestriction(PathRelativityVariants(
+                {RelOptionType.REL_RESULT},
+                False)))
+        value_definitions = empty_symbol_table()
+        for value in test_cases:
+            with self.subTest(msg='value=' + str(value)):
+                # ACT #
+                actual = restriction.is_satisfied_by(value_definitions, value)
+                # ASSERT #
+                self.assertIsNotNone(actual,
+                                     'Result should denote failing validation')
+
+
 class TestValueRestrictionVisitor(unittest.TestCase):
     def test_none(self):
         # ARRANGE #
@@ -147,6 +193,23 @@ class TestValueRestrictionVisitor(unittest.TestCase):
                           actual_return_value,
                           'return value')
 
+    def test_string_or_file_ref(self):
+        # ARRANGE #
+        expected_return_value = 99
+        visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
+        restriction = sut.EitherStringOrFileRefRelativityRestriction(
+            sut.StringRestriction(),
+            sut.FileRefRelativityRestriction(sut.PathRelativityVariants(set(), False)))
+        # ACT #
+        actual_return_value = visitor.visit(restriction)
+        # ASSERT #
+        self.assertEquals([sut.EitherStringOrFileRefRelativityRestriction],
+                          visitor.visited_classes,
+                          'visited classes')
+        self.assertEquals(expected_return_value,
+                          actual_return_value,
+                          'return value')
+
     def test_visit_invalid_object_should_raise_exception(self):
         # ARRANGE #
         visitor = _VisitorThatRegisterClassOfVisitMethod("not used")
@@ -171,4 +234,8 @@ class _VisitorThatRegisterClassOfVisitMethod(sut.ValueRestrictionVisitor):
 
     def visit_file_ref_relativity(self, x: sut.FileRefRelativityRestriction):
         self.visited_classes.append(sut.FileRefRelativityRestriction)
+        return self.return_value
+
+    def visit_string_or_file_ref_relativity(self, x: sut.EitherStringOrFileRefRelativityRestriction):
+        self.visited_classes.append(sut.EitherStringOrFileRefRelativityRestriction)
         return self.return_value

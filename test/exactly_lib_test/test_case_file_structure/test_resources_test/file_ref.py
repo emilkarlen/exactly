@@ -9,7 +9,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
+    EitherStringOrFileRefRelativityRestriction, StringRestriction
 from exactly_lib.value_definition.concrete_values import FileRefValue
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
@@ -50,6 +51,26 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
              _FileRefWithValRefInRootPart(
                  ValueReference('reffed-name',
                                 _relativity_restriction({RelOptionType.REL_ACT}, False)),
+                 PathPartAsFixedPath('file-name')),
+             symbol_table_with_single_file_ref_value('reffed-name'),
+             ),
+            ('symbol-ref(either-string-or-file-ref actual is file-ref)/NOT Exists pre SDS/fixed path suffix',
+             _FileRefWithValRefInRootPart(
+                 ValueReference('reffed-name',
+                                EitherStringOrFileRefRelativityRestriction(
+                                    StringRestriction(),
+                                    _relativity_restriction({RelOptionType.REL_ACT}, False))
+                                ),
+                 PathPartAsFixedPath('file-name')),
+             symbol_table_with_single_file_ref_value('reffed-name'),
+             ),
+            ('symbol-ref(either-string-or-file-ref actual is string)/NOT Exists pre SDS/fixed path suffix',
+             _FileRefWithValRefInRootPart(
+                 ValueReference('reffed-name',
+                                EitherStringOrFileRefRelativityRestriction(
+                                    StringRestriction(),
+                                    _relativity_restriction({RelOptionType.REL_ACT}, False))
+                                ),
                  PathPartAsFixedPath('file-name')),
              symbol_table_with_single_file_ref_value('reffed-name'),
              ),
@@ -471,7 +492,8 @@ class _FileRefWithValRefInRootPart(FileRef):
         def_in_symbol_table = value_definitions.lookup(self._value_references_of_path.name)
         assert isinstance(def_in_symbol_table, ValueContainer), 'Symbol Table is assumed to contain ValueContainer:s'
         value = def_in_symbol_table.value
-        assert isinstance(value, FileRefValue), 'Referenced ValueContainer must contain a FileRefValue'
+        if not isinstance(value, FileRefValue):
+            assert isinstance(value, FileRefValue), 'Referenced ValueContainer must contain a FileRefValue: ' + str(value)
         return value.file_ref
 
 
@@ -479,5 +501,5 @@ _EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME
 _NOT_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_ACT
 
 
-def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool):
+def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> FileRefRelativityRestriction:
     return FileRefRelativityRestriction(PathRelativityVariants(rel_option_types, absolute_is_valid))
