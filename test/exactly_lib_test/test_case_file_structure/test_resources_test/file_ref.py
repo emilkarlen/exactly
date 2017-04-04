@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsStringSymbolReference
-from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
@@ -429,7 +429,7 @@ class Test2NotEquals(unittest.TestCase):
             assertion.apply_with_message(put, actual, 'NotEquals')
 
 
-class _FileRefWithoutValRefInRootPart(FileRef):
+class _FileRefWithoutValRefInRootPart(FileRefWithPathSuffixBase):
     """
     A dummy FileRef that has a given relativity,
     and is as simple as possible.
@@ -458,7 +458,7 @@ class _FileRefWithoutValRefInRootPart(FileRef):
         return self.__path_suffix.value_references
 
 
-class _FileRefWithValRefInRootPart(FileRef):
+class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
     """
     A dummy FileRef that has a given relativity,
     and is as simple as possible.
@@ -493,7 +493,8 @@ class _FileRefWithValRefInRootPart(FileRef):
         assert isinstance(def_in_symbol_table, ValueContainer), 'Symbol Table is assumed to contain ValueContainer:s'
         value = def_in_symbol_table.value
         if not isinstance(value, FileRefValue):
-            assert isinstance(value, FileRefValue), 'Referenced ValueContainer must contain a FileRefValue: ' + str(value)
+            assert isinstance(value, FileRefValue), 'Referenced ValueContainer must contain a FileRefValue: ' + str(
+                value)
         return value.file_ref
 
 

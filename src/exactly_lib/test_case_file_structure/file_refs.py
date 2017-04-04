@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.test_case_file_structure import relativity_root, relative_path_options
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class _FileRefWithConstantLocationBase(FileRef):
+class _FileRefWithConstantLocationBase(FileRefWithPathSuffixBase):
     """
     Base class for `FileRef`s who's "relativity" is constant.
     """
@@ -90,7 +90,7 @@ def rel_result(path_suffix: PathPart) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_result, path_suffix)
 
 
-class _FileRefAbsolute(FileRef):
+class _FileRefAbsolute(FileRefWithPathSuffixBase):
     def __init__(self, path_suffix: PathPart):
         super().__init__(path_suffix)
 

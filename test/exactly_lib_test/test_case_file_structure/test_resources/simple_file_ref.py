@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
@@ -13,7 +13,7 @@ def file_ref_test_impl(file_name: str = 'file_ref_test_impl',
     return _FileRefTestImpl(file_name, relativity)
 
 
-class _FileRefTestImpl(FileRef):
+class _FileRefTestImpl(FileRefWithPathSuffixBase):
     """
     A dummy FileRef that has a given relativity,
     and is as simple as possible.
