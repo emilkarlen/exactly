@@ -3,6 +3,8 @@ import pathlib
 
 import types
 
+from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference import \
+    _IdenticalToReferencedFileRefOrWithStringValueAsSuffix
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
 from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -100,10 +102,9 @@ def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -
 def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> FileRef:
     symbol_name_of_symbol_reference = parse_symbol_reference(path_argument)
     if symbol_name_of_symbol_reference is None:
-        path_suffix = PathPartAsFixedPath(path_argument.string)
+        return _just_string_argument(path_argument.string, conf)
     else:
-        path_suffix = PathPartAsStringSymbolReference(symbol_name_of_symbol_reference)
-    return file_refs.of_rel_option(conf.options.default_option, path_suffix)
+        return _just_symbol_reference_argument(symbol_name_of_symbol_reference, conf)
 
 
 def _with_explicit_relativity(path_argument_token: Token, path_part_2_file_ref: types.FunctionType) -> FileRef:
@@ -118,6 +119,19 @@ def _with_explicit_relativity(path_argument_token: Token, path_part_2_file_ref: 
             return file_refs.absolute_file_name(path_argument_str)
     path_suffix = PathPartAsFixedPath(path_argument_str)
     return path_part_2_file_ref(path_suffix)
+
+
+def _just_string_argument(argument: str,
+                          conf: RelOptionArgumentConfiguration) -> FileRef:
+    path_suffix = PathPartAsFixedPath(argument)
+    return file_refs.of_rel_option(conf.options.default_option, path_suffix)
+
+
+def _just_symbol_reference_argument(symbol_name: str,
+                                    conf: RelOptionArgumentConfiguration) -> FileRef:
+    return _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(symbol_name,
+                                                                  conf.options.default_option,
+                                                                  conf.options.accepted_relativity_variants)
 
 
 def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):
