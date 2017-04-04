@@ -415,6 +415,33 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
              )),
             ('Symbol reference as only argument'
              ' SHOULD '
+             'be an absolute file ref'
+             ' GIVEN '
+             'referenced symbol is a string that is an absolute path',
+             Arrangement(
+                 source='{symbol_reference}'.format(
+                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                 rel_option_argument_configuration=_arg_config_for_rel_val_def_config(accepted_relativities,
+                                                                                      RelOptionType.REL_ACT),
+             ),
+             Expectation2(
+                 file_ref=equals_file_ref2(
+                     file_refs.absolute_file_name('/absolute/path'),
+                     asrt.matches_sequence([
+                         equals_value_reference(
+                             symbol_name,
+                             equals_either_string_or_file_ref_relativity_restriction(
+                                 EitherStringOrFileRefRelativityRestriction(
+                                     StringRestriction(),
+                                     FileRefRelativityRestriction(accepted_relativities)
+                                 )
+                             )),
+                     ]),
+                     symbol_table_with_single_string_value(symbol_name, '/absolute/path')),
+                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             )),
+            ('Symbol reference as only argument'
+             ' SHOULD '
              'be file ref identical to referenced symbol'
              ' GIVEN '
              'referenced symbol is a file ref',
