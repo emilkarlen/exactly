@@ -157,12 +157,12 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         # ACT #
         actual_return_value = visitor.visit(sut.NoRestriction())
         # ASSERT #
-        self.assertEquals([sut.NoRestriction],
-                          visitor.visited_classes,
-                          'visited classes')
-        self.assertEquals(expected_return_value,
-                          actual_return_value,
-                          'return value')
+        self.assertEqual([sut.NoRestriction],
+                         visitor.visited_classes,
+                         'visited classes')
+        self.assertEqual(expected_return_value,
+                         actual_return_value,
+                         'return value')
 
     def test_string(self):
         # ARRANGE #
@@ -171,12 +171,12 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         # ACT #
         actual_return_value = visitor.visit(sut.StringRestriction())
         # ASSERT #
-        self.assertEquals([sut.StringRestriction],
-                          visitor.visited_classes,
-                          'visited classes')
-        self.assertEquals(expected_return_value,
-                          actual_return_value,
-                          'return value')
+        self.assertEqual([sut.StringRestriction],
+                         visitor.visited_classes,
+                         'visited classes')
+        self.assertEqual(expected_return_value,
+                         actual_return_value,
+                         'return value')
 
     def test_file_ref(self):
         # ARRANGE #
@@ -186,12 +186,12 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         actual_return_value = visitor.visit(sut.FileRefRelativityRestriction(
             sut.PathRelativityVariants(set(), False)))
         # ASSERT #
-        self.assertEquals([sut.FileRefRelativityRestriction],
-                          visitor.visited_classes,
-                          'visited classes')
-        self.assertEquals(expected_return_value,
-                          actual_return_value,
-                          'return value')
+        self.assertEqual([sut.FileRefRelativityRestriction],
+                         visitor.visited_classes,
+                         'visited classes')
+        self.assertEqual(expected_return_value,
+                         actual_return_value,
+                         'return value')
 
     def test_string_or_file_ref(self):
         # ARRANGE #
@@ -203,12 +203,12 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         # ACT #
         actual_return_value = visitor.visit(restriction)
         # ASSERT #
-        self.assertEquals([sut.EitherStringOrFileRefRelativityRestriction],
-                          visitor.visited_classes,
-                          'visited classes')
-        self.assertEquals(expected_return_value,
-                          actual_return_value,
-                          'return value')
+        self.assertEqual([sut.EitherStringOrFileRefRelativityRestriction],
+                         visitor.visited_classes,
+                         'visited classes')
+        self.assertEqual(expected_return_value,
+                         actual_return_value,
+                         'return value')
 
     def test_visit_invalid_object_should_raise_exception(self):
         # ARRANGE #
