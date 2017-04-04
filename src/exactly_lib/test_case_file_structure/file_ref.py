@@ -36,14 +36,8 @@ class FileRef:
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         raise NotImplementedError()
 
-    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
-        # TODO [val-def] Return value should be able to denote absolute/no relativity
-        raise NotImplementedError()
-
     def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
-        # TODO [val-def] Rename to "relativity" when "relativity" can be replaced by this method.
-        rel_option_type = self.relativity(value_definitions)
-        return specific_relative_relativity(rel_option_type)
+        raise NotImplementedError()
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         """
@@ -76,3 +70,15 @@ class FileRefWithPathSuffixBase(FileRef):
 
     def path_suffix_path(self, symbols: SymbolTable) -> pathlib.Path:
         return pathlib.Path(self.path_suffix_str(symbols))
+
+
+class FileRefWithPathSuffixAndIsNotAbsoluteBase(FileRefWithPathSuffixBase):
+    def __init__(self, path_part: PathPart):
+        super().__init__(path_part)
+
+    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+        rel_option_type = self._relativity(value_definitions)
+        return specific_relative_relativity(rel_option_type)
+
+    def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+        raise NotImplementedError()

@@ -2,15 +2,17 @@ import pathlib
 
 from exactly_lib.test_case_file_structure import relativity_root, relative_path_options
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
+from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase, \
+    FileRefWithPathSuffixAndIsNotAbsoluteBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
+    SPECIFIC_ABSOLUTE_RELATIVITY
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class _FileRefWithConstantLocationBase(FileRefWithPathSuffixBase):
+class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase):
     """
     Base class for `FileRef`s who's "relativity" is constant.
     """
@@ -39,7 +41,7 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
         super().__init__(rel_root_resolver.is_rel_home, path_suffix)
         self._rel_root_resolver = rel_root_resolver
 
-    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+    def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
         return self._rel_root_resolver.relativity_type
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
@@ -96,6 +98,9 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
 
     def value_references_of_paths(self) -> list:
         return []
+
+    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+        return SPECIFIC_ABSOLUTE_RELATIVITY
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         return True

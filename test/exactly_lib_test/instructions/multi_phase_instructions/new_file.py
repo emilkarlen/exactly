@@ -4,13 +4,14 @@ from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, specific_relative_relativity
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
+from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import equals_path_relativity
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_test
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -41,8 +42,9 @@ class TestParseWithNoContents(unittest.TestCase):
         arguments = 'single-argument'
         actual = sut.parse(single_line_source(arguments))
         symbol_table = empty_symbol_table()
-        self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.relativity(symbol_table))
+        relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
+        relativity_assertion.apply_with_message(self, actual.destination_path.specific_relativity(symbol_table),
+                                                'relativity')
         equals_path_part_string('single-argument').apply_with_message(self,
                                                                       actual.destination_path.path_suffix(symbol_table),
                                                                       'destination_path/path_suffix')
@@ -74,8 +76,9 @@ class TestParseWithContents(unittest.TestCase):
                                        'MARKER'])
         actual = sut.parse(source)
         symbol_table = empty_symbol_table()
-        self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.relativity(symbol_table))
+        relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
+        relativity_assertion.apply_with_message(self, actual.destination_path.specific_relativity(symbol_table),
+                                                'relativity')
         equals_path_part_string('file name').apply_with_message(self, actual.destination_path.path_suffix(symbol_table),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
@@ -89,8 +92,9 @@ class TestParseWithContents(unittest.TestCase):
                                        'following line'])
         actual = sut.parse(source)
         symbol_table = empty_symbol_table()
-        self.assertIs(RelOptionType.REL_TMP,
-                      actual.destination_path.relativity(symbol_table))
+        relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_TMP))
+        relativity_assertion.apply_with_message(self, actual.destination_path.specific_relativity(symbol_table),
+                                                'relativity')
         equals_path_part_string('file name').apply_with_message(self, actual.destination_path.path_suffix(symbol_table),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),

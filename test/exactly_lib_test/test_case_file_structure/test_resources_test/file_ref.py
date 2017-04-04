@@ -3,9 +3,11 @@ import unittest
 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsStringSymbolReference
-from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
+from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase, \
+    FileRefWithPathSuffixAndIsNotAbsoluteBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
+    SpecificPathRelativity
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
@@ -429,7 +431,7 @@ class Test2NotEquals(unittest.TestCase):
             assertion.apply_with_message(put, actual, 'NotEquals')
 
 
-class _FileRefWithoutValRefInRootPart(FileRefWithPathSuffixBase):
+class _FileRefWithoutValRefInRootPart(FileRefWithPathSuffixAndIsNotAbsoluteBase):
     """
     A dummy FileRef that has a given relativity,
     and is as simple as possible.
@@ -439,23 +441,23 @@ class _FileRefWithoutValRefInRootPart(FileRefWithPathSuffixBase):
                  relativity: RelOptionType,
                  path_suffix: PathPart):
         super().__init__(path_suffix)
-        self._relativity = relativity
+        self.__relativity = relativity
         self.__path_suffix = path_suffix
 
-    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
-        return self._relativity
-
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        return self.relativity == RelOptionType.REL_HOME
+        return self.__relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path(str(self._relativity)) / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path(environment.value_definitions)
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path(str(self._relativity)) / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path(environment.value_definitions)
 
     def value_references_of_paths(self) -> list:
         return self.__path_suffix.value_references
+
+    def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+        return self.__relativity
 
 
 class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
@@ -471,8 +473,8 @@ class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
         self._value_references_of_path = value_reference
         self.__path_suffix = path_suffix
 
-    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
-        return self._lookup(value_definitions).relativity(value_definitions)
+    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+        return self._lookup(value_definitions).specific_relativity(value_definitions)
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         return self._lookup(value_definitions).exists_pre_sds(value_definitions)
