@@ -64,7 +64,7 @@ class FileInfo(tuple):
         return tuple.__new__(cls, (path_resolver, contents))
 
     @property
-    def destination_path(self) -> FileRef:
+    def file_ref(self) -> FileRef:
         return self[0]
 
     @property
@@ -91,7 +91,7 @@ def create_file(file_info: FileInfo,
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.destination_path.file_path_post_sds(environment)
+    file_path = file_info.file_ref.file_path_post_sds(environment)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)
