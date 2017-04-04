@@ -1,9 +1,9 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
+from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
+from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
     SpecificPathRelativity
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
