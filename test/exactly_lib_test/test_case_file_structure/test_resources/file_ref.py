@@ -49,7 +49,7 @@ class _FileRefAssertionBase(asrt.ValueAssertion):
                                 value.path_suffix,
                                 message_builder.for_sub_component('path_suffix'))
 
-        self._check_value_references(put, message_builder,
+        self._check_value_references(put, message_builder.for_sub_component('value_references'),
                                      value.value_references_of_paths())
 
         environment = self._get_environment()

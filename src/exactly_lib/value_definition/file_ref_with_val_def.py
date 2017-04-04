@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
@@ -20,7 +20,7 @@ def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityV
     return ValueReference(val_def_name, FileRefRelativityRestriction(accepted_relativities))
 
 
-class _FileRefRelValueDefinition(FileRef):
+class _FileRefRelValueDefinition(FileRefWithPathSuffixBase):
     def __init__(self,
                  path_suffix: PathPart,
                  value_reference_of_path: ValueReference):
