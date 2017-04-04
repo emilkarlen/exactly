@@ -20,7 +20,7 @@ class _FileRefWithConstantLocationBase(FileRefWithPathSuffixBase):
         self.__exists_pre_sds = exists_pre_sds
 
     def value_references_of_paths(self) -> list:
-        return self.path_suffix.value_references
+        return self._path_suffix.value_references
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         return self.__exists_pre_sds
