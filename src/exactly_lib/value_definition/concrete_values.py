@@ -28,7 +28,7 @@ class FileRefValue(Value):
 
     @property
     def references(self) -> list:
-        return self._file_ref.value_references_of_paths()
+        return self._file_ref.value_references()
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._file_ref) + '\''

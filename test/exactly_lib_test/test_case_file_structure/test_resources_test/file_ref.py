@@ -104,7 +104,7 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                 assertion.apply_with_message(self, value, test_case_name)
             with self.subTest(msg='equals_file_ref2::' + test_case_name):
                 assertion = sut.equals_file_ref2(value,
-                                                 equals_value_references(value.value_references_of_paths()),
+                                                 equals_value_references(value.value_references()),
                                                  symbol_table_for_method2)
                 assertion.apply_with_message(self, value, test_case_name)
 
@@ -454,7 +454,7 @@ class _FileRefWithoutValRefInRootPart(FileRefWithPathSuffixAndIsNotAbsoluteBase)
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         return pathlib.Path(str(self.__relativity)) / self.path_suffix_path(environment.value_definitions)
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         return self.__path_suffix.value_references
 
     def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
@@ -488,7 +488,7 @@ class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
         prefix = self._lookup(environment.value_definitions).file_path_post_sds(environment)
         return prefix / self.path_suffix_path(environment.value_definitions)
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         return [self._value_references_of_path] + self.__path_suffix.value_references
 
     def _lookup(self, value_definitions: SymbolTable) -> FileRef:

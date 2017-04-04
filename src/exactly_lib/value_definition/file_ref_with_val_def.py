@@ -28,7 +28,7 @@ class _FileRefRelValueDefinition(FileRefWithPathSuffixBase):
         super().__init__(path_suffix)
         self.value_reference_of_path = value_reference_of_path
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         return [self.value_reference_of_path] + self._path_suffix.value_references
 
     def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:

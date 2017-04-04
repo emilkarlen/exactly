@@ -47,7 +47,7 @@ class TestRelValueDefinition(unittest.TestCase):
         for path_suffix, additional_expected_references in path_suffix_test_cases:
             file_reference = sut.rel_value_definition(value_ref_of_path, path_suffix)
             # ACT #
-            actual = file_reference.value_references_of_paths()
+            actual = file_reference.value_references()
             # ASSERT #
             expected_references = expected_mandatory_references + additional_expected_references
             assertion = asrt.matches_sequence(expected_references)

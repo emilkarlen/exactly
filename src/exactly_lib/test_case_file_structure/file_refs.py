@@ -22,7 +22,7 @@ class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase
         super().__init__(path_suffix)
         self.__exists_pre_sds = exists_pre_sds
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         return self._path_suffix.value_references
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
@@ -97,7 +97,7 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
     def __init__(self, path_suffix: PathPart):
         super().__init__(path_suffix)
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         return []
 
     def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
