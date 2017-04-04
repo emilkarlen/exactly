@@ -3,7 +3,8 @@ import pathlib
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef, FileRefWithPathSuffixBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
+    SpecificPathRelativity
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable
@@ -30,9 +31,9 @@ class _FileRefRelValueDefinition(FileRefWithPathSuffixBase):
     def value_references_of_paths(self) -> list:
         return [self.value_reference_of_path] + self._path_suffix.value_references
 
-    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         file_ref = self._lookup_file_ref(value_definitions)
-        return file_ref.relativity(value_definitions)
+        return file_ref.specific_relativity(value_definitions)
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         file_ref = self._lookup_file_ref(value_definitions)

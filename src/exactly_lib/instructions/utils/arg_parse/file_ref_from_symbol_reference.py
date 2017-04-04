@@ -4,7 +4,8 @@ from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
+    SpecificPathRelativity
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable
@@ -38,8 +39,8 @@ class _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileRef):
                                           ))
         return [symbol_reference]
 
-    def relativity(self, value_definitions: SymbolTable) -> RelOptionType:
-        return self._file_ref_for_actual_symbol(value_definitions).relativity(value_definitions)
+    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+        return self._file_ref_for_actual_symbol(value_definitions).specific_relativity(value_definitions)
 
     def path_suffix(self, symbols: SymbolTable) -> PathPart:
         return self._file_ref_for_actual_symbol(symbols).path_suffix(symbols)

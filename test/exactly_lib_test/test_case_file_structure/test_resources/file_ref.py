@@ -112,12 +112,6 @@ class _FileRefAssertionBase(asrt.ValueAssertion):
                           actual_file_ref: FileRef,
                           message_builder: asrt.MessageBuilder,
                           environment: PathResolvingEnvironmentPreOrPostSds):
-        # check relativity
-        # remove this when specific_relativity replaces "relativity" method
-        put.assertEqual(self._expected.relativity(environment.value_definitions),
-                        actual_file_ref.relativity(environment.value_definitions),
-                        message_builder.apply('relativity'))
-        # check specific_relativity
         expected = self._expected.specific_relativity(environment.value_definitions)
         actual = actual_file_ref.specific_relativity(environment.value_definitions)
         assertion = equals_path_relativity(expected)
