@@ -18,7 +18,8 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_CWD_O
     REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, \
+    EitherStringOrFileRefRelativityRestriction, StringRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
@@ -30,7 +31,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import is_string_value_restriction
+from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
+    equals_either_string_or_file_ref_relativity_restriction
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
 from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
@@ -375,6 +377,10 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
 
     def test_no_explicit_relativity(self):
         symbol_name = 'THE_SYMBOL'
+        accepted_relativities = PathRelativityVariants({RelOptionType.REL_HOME,
+                                                        RelOptionType.REL_TMP},
+                                                       True)
+        _arg_config_for_rel_val_def_config(accepted_relativities)
         file_ref_rel_home = file_refs.of_rel_option(RelOptionType.REL_HOME,
                                                     PathPartAsFixedPath('file-in-home-dir'))
         test_cases = [
@@ -386,17 +392,24 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
              Arrangement(
                  source='{symbol_reference}'.format(
                      symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
-                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
+                 rel_option_argument_configuration=_arg_config_for_rel_val_def_config(accepted_relativities,
+                                                                                      RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=equals_file_ref2(file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                                                   PathPartAsStringSymbolReference(symbol_name)),
-                                           #  TODO replace assertion on string-or-file-ref
-                                           asrt.matches_sequence([
-                                               equals_value_reference(symbol_name,
-                                                                      is_string_value_restriction),
-                                           ]),
-                                           symbol_table_with_single_string_value(symbol_name, 'string-value')),
+                 file_ref=equals_file_ref2(
+                     file_refs.of_rel_option(RelOptionType.REL_ACT,
+                                             PathPartAsStringSymbolReference(symbol_name)),
+                     asrt.matches_sequence([
+                         equals_value_reference(
+                             symbol_name,
+                             equals_either_string_or_file_ref_relativity_restriction(
+                                 EitherStringOrFileRefRelativityRestriction(
+                                     StringRestriction(),
+                                     FileRefRelativityRestriction(accepted_relativities)
+                                 )
+                             )),
+                     ]),
+                     symbol_table_with_single_string_value(symbol_name, 'string-value')),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Symbol reference as only argument'
@@ -407,13 +420,24 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
              Arrangement(
                  source='{symbol_reference}'.format(
                      symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
-                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
+                 rel_option_argument_configuration=_arg_config_for_rel_val_def_config(accepted_relativities,
+                                                                                      RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=equals_file_ref2(file_ref_rel_home,
-                                           asrt.ignore,  # TODO add assertion on string-or-file-ref
-                                           symbol_table_with_single_file_ref_value(symbol_name,
-                                                                                   file_ref_rel_home)),
+                 file_ref=equals_file_ref2(
+                     file_ref_rel_home,
+                     asrt.matches_sequence([
+                         equals_value_reference(
+                             symbol_name,
+                             equals_either_string_or_file_ref_relativity_restriction(
+                                 EitherStringOrFileRefRelativityRestriction(
+                                     StringRestriction(),
+                                     FileRefRelativityRestriction(accepted_relativities)
+                                 )
+                             )),
+                     ]),
+                     symbol_table_with_single_file_ref_value(symbol_name,
+                                                             file_ref_rel_home)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
         ]
@@ -503,12 +527,15 @@ def _arg_config_with_all_accepted_and_default(default: RelOptionType) -> RelOpti
         'argument_syntax_name')
 
 
-def _arg_config_for_rel_val_def_config(relativity_variants: PathRelativityVariants) -> RelOptionArgumentConfiguration:
+def _arg_config_for_rel_val_def_config(relativity_variants: PathRelativityVariants,
+                                       default: RelOptionType = None) -> RelOptionArgumentConfiguration:
+    if default is None:
+        default = list(relativity_variants.rel_option_types)[0]
     return RelOptionArgumentConfiguration(
         RelOptionsConfiguration(
             relativity_variants,
             True,
-            list(relativity_variants)[0]),
+            default),
         'argument_syntax_name')
 
 
