@@ -23,9 +23,9 @@ class TestPathPartAsFixedPath(unittest.TestCase):
         # ACT #
         actual = path_part.file_name
         # ASSERT #
-        self.assertEquals('the file name',
-                          actual,
-                          'file name')
+        self.assertEqual('the file name',
+                         actual,
+                         'file name')
 
     def test_value_references(self):
         # ARRANGE #
@@ -33,9 +33,9 @@ class TestPathPartAsFixedPath(unittest.TestCase):
         # ACT #
         actual = path_part.value_references
         # ASSERT #
-        self.assertEquals([],
-                          actual,
-                          'value references')
+        self.assertEqual([],
+                         actual,
+                         'value references')
 
     def test_resolve(self):
         # ARRANGE #
@@ -43,9 +43,9 @@ class TestPathPartAsFixedPath(unittest.TestCase):
         # ACT #
         actual = path_part.resolve(st.empty_symbol_table())
         # ASSERT #
-        self.assertEquals('the file name',
-                          actual,
-                          'resolved file name')
+        self.assertEqual('the file name',
+                         actual,
+                         'resolved file name')
 
 
 class TestPathPartAsStringSymbolReference(unittest.TestCase):
@@ -55,9 +55,9 @@ class TestPathPartAsStringSymbolReference(unittest.TestCase):
         # ACT #
         actual = path_part.symbol_name
         # ASSERT #
-        self.assertEquals('the symbol name',
-                          actual,
-                          'symbol name')
+        self.assertEqual('the symbol name',
+                         actual,
+                         'symbol name')
 
     def test_value_references(self):
         # ARRANGE #
@@ -79,9 +79,9 @@ class TestPathPartAsStringSymbolReference(unittest.TestCase):
         # ACT #
         actual = path_part.resolve(symbol_table)
         # ASSERT #
-        self.assertEquals('symbol value',
-                          actual,
-                          'resolved file name')
+        self.assertEqual('symbol value',
+                         actual,
+                         'resolved file name')
 
 
 class TestPathPartVisitor(unittest.TestCase):

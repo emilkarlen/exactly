@@ -96,9 +96,9 @@ class TestExistsPreOrPostSds(TestForFixedRelativityBase):
         for path_suffix in test_cases:
             with self.subTest():
                 file_reference = self.config.path_suffix_2_file_ref(path_suffix)
-                self.assertEquals(self.config.exists_pre_sds,
-                                  file_reference.exists_pre_sds(empty_symbol_table()),
-                                  'exist pre SDS')
+                self.assertEqual(self.config.exists_pre_sds,
+                                 file_reference.exists_pre_sds(empty_symbol_table()),
+                                 'exist pre SDS')
 
 
 class TestFilePath(TestForFixedRelativityBase):
@@ -132,12 +132,12 @@ class TestFilePath(TestForFixedRelativityBase):
                 # ASSERT #
                 expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
                 expected_path = expected_relativity_root / expected_path_suffix
-                self.assertEquals(str(expected_path),
-                                  str(actual_path),
-                                  tested_path_msg)
-                self.assertEquals(str(expected_path),
-                                  str(actual_path_pre_or_post_sds),
-                                  'file_path_pre_or_post_sds')
+                self.assertEqual(str(expected_path),
+                                 str(actual_path),
+                                 tested_path_msg)
+                self.assertEqual(str(expected_path),
+                                 str(actual_path_pre_or_post_sds),
+                                 'file_path_pre_or_post_sds')
 
 
 def _home_and_sds() -> HomeAndSds:
