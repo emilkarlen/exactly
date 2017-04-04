@@ -40,9 +40,11 @@ class TestParseWithNoContents(unittest.TestCase):
     def test_when_no_option_path_should_be_relative_cwd(self):
         arguments = 'single-argument'
         actual = sut.parse(single_line_source(arguments))
+        symbol_table = empty_symbol_table()
         self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.relativity(empty_symbol_table()))
-        equals_path_part_string('single-argument').apply_with_message(self, actual.destination_path.path_suffix,
+                      actual.destination_path.relativity(symbol_table))
+        equals_path_part_string('single-argument').apply_with_message(self,
+                                                                      actual.destination_path.path_suffix(symbol_table),
                                                                       'destination_path/path_suffix')
         self.assertEqual('',
                          actual.contents)
@@ -71,9 +73,10 @@ class TestParseWithContents(unittest.TestCase):
                                       ['single line',
                                        'MARKER'])
         actual = sut.parse(source)
+        symbol_table = empty_symbol_table()
         self.assertIs(RelOptionType.REL_CWD,
-                      actual.destination_path.relativity(empty_symbol_table()))
-        equals_path_part_string('file name').apply_with_message(self, actual.destination_path.path_suffix,
+                      actual.destination_path.relativity(symbol_table))
+        equals_path_part_string('file name').apply_with_message(self, actual.destination_path.path_suffix(symbol_table),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
                          actual.contents)
@@ -85,9 +88,10 @@ class TestParseWithContents(unittest.TestCase):
                                        'MARKER',
                                        'following line'])
         actual = sut.parse(source)
+        symbol_table = empty_symbol_table()
         self.assertIs(RelOptionType.REL_TMP,
-                      actual.destination_path.relativity(empty_symbol_table()))
-        equals_path_part_string('file name').apply_with_message(self, actual.destination_path.path_suffix,
+                      actual.destination_path.relativity(symbol_table))
+        equals_path_part_string('file name').apply_with_message(self, actual.destination_path.path_suffix(symbol_table),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
                          actual.contents)

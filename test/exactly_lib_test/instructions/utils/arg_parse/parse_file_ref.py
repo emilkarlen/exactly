@@ -18,6 +18,7 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_CWD_O
     REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, \
     EitherStringOrFileRefRelativityRestriction, StringRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
@@ -454,7 +455,8 @@ class TestParseFromParseSource(unittest.TestCase):
     def test_parse_without_option(self):
         file_ref = sut.parse_file_ref_from_parse_source(remaining_source('FILENAME arg2'),
                                                         sut.ALL_REL_OPTIONS_CONFIG)
-        equals_path_part_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
+        equals_path_part_string('FILENAME').apply_with_message(self,
+                                                               file_ref.path_suffix(empty_symbol_table()),
                                                                'file_reference/path_suffix')
         assert_source(remaining_part_of_current_line=asrt.equals(' arg2'))
 
@@ -462,7 +464,8 @@ class TestParseFromParseSource(unittest.TestCase):
         file_ref = sut.parse_file_ref_from_parse_source(
             remaining_source(REL_CWD_OPTION + ' FILENAME arg3 arg4'),
             sut.ALL_REL_OPTIONS_CONFIG)
-        equals_path_part_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
+        equals_path_part_string('FILENAME').apply_with_message(self,
+                                                               file_ref.path_suffix(empty_symbol_table()),
                                                                'file_reference/path_suffix')
         assert_source(remaining_part_of_current_line=asrt.equals(' arg3 arg4'))
 
@@ -470,7 +473,8 @@ class TestParseFromParseSource(unittest.TestCase):
         file_ref = sut.parse_file_ref_from_parse_source(
             remaining_source('   FILENAME'),
             sut.ALL_REL_OPTIONS_CONFIG)
-        equals_path_part_string('FILENAME').apply_with_message(self, file_ref.path_suffix,
+        equals_path_part_string('FILENAME').apply_with_message(self,
+                                                               file_ref.path_suffix(empty_symbol_table()),
                                                                'file_reference/path_suffix')
         assert_source(is_at_eol=asrt.is_true)
 

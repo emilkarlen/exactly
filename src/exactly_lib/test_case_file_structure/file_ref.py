@@ -14,8 +14,7 @@ class FileRef:
     and information about whether it exists pre SDS or not.
     """
 
-    @property
-    def path_suffix(self) -> PathPart:
+    def path_suffix(self, symbols: SymbolTable) -> PathPart:
         raise NotImplementedError()
 
     def path_suffix_str(self, symbols: SymbolTable) -> str:
@@ -69,8 +68,7 @@ class FileRefWithPathSuffixBase(FileRef):
     def __init__(self, path_part: PathPart):
         self._path_suffix = path_part
 
-    @property
-    def path_suffix(self) -> PathPart:
+    def path_suffix(self, symbols: SymbolTable) -> PathPart:
         return self._path_suffix
 
     def path_suffix_str(self, symbols: SymbolTable) -> str:

@@ -6,6 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
@@ -44,19 +45,22 @@ class TestParse(unittest.TestCase):
     def test_strip_trailing_space(self):
         arguments = '  expected-argument  '
         result = sut.parse(arguments)
-        equals_path_part_string('expected-argument').apply_with_message(self, result.path_suffix,
+        equals_path_part_string('expected-argument').apply_with_message(self,
+                                                                        result.path_suffix(empty_symbol_table()),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments(self):
         arguments = 'expected-argument'
         result = sut.parse(arguments)
-        equals_path_part_string('expected-argument').apply_with_message(self, result.path_suffix,
+        equals_path_part_string('expected-argument').apply_with_message(self,
+                                                                        result.path_suffix(empty_symbol_table()),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
         result = sut.parse(arguments)
-        equals_path_part_string('expected argument').apply_with_message(self, result.path_suffix,
+        equals_path_part_string('expected argument').apply_with_message(self,
+                                                                        result.path_suffix(empty_symbol_table()),
                                                                         'path_suffix')
 
 
