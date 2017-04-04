@@ -25,7 +25,7 @@ class FileRefWithPathSuffixAndIsNotAbsoluteBase(FileRefWithPathSuffixBase):
     def __init__(self, path_part: PathPart):
         super().__init__(path_part)
 
-    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         rel_option_type = self._relativity(value_definitions)
         return specific_relative_relativity(rel_option_type)
 

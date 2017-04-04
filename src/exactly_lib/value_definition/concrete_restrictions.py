@@ -39,7 +39,7 @@ class FileRefRelativityRestriction(ValueRestriction):
             #  TODO [val-def] Error message should be human readable
             return 'Not a FileRefValue: ' + str(value)
         file_ref = value.file_ref
-        actual_relativity = file_ref.specific_relativity(symbol_table)
+        actual_relativity = file_ref.relativity(symbol_table)
         return is_satisfied_by(actual_relativity, self._accepted)
 
     @property

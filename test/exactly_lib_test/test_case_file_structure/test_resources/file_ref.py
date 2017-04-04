@@ -112,8 +112,8 @@ class _FileRefAssertionBase(asrt.ValueAssertion):
                           actual_file_ref: FileRef,
                           message_builder: asrt.MessageBuilder,
                           environment: PathResolvingEnvironmentPreOrPostSds):
-        expected = self._expected.specific_relativity(environment.value_definitions)
-        actual = actual_file_ref.specific_relativity(environment.value_definitions)
+        expected = self._expected.relativity(environment.value_definitions)
+        actual = actual_file_ref.relativity(environment.value_definitions)
         assertion = equals_path_relativity(expected)
         assertion.apply(put, actual, message_builder.for_sub_component('specific_relativity'))
 

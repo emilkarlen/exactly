@@ -31,9 +31,9 @@ class _FileRefRelValueDefinition(FileRefWithPathSuffixBase):
     def value_references_of_paths(self) -> list:
         return [self.value_reference_of_path] + self._path_suffix.value_references
 
-    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         file_ref = self._lookup_file_ref(value_definitions)
-        return file_ref.specific_relativity(value_definitions)
+        return file_ref.relativity(value_definitions)
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         file_ref = self._lookup_file_ref(value_definitions)
