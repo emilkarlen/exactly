@@ -26,7 +26,7 @@ class _Instruction(SetupPhaseInstruction):
         self.file_info = file_info
 
     def value_usages(self) -> list:
-        return self.file_info.destination_path.value_references_of_paths()
+        return self.file_info.file_ref.value_references_of_paths()
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
