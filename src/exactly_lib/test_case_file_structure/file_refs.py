@@ -100,7 +100,7 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
     def value_references_of_paths(self) -> list:
         return []
 
-    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         return SPECIFIC_ABSOLUTE_RELATIVITY
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:

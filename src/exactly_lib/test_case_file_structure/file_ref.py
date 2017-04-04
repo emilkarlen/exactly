@@ -35,7 +35,7 @@ class FileRef:
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         raise NotImplementedError()
 
-    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         raise NotImplementedError()
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:

@@ -39,8 +39,8 @@ class _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileRef):
                                           ))
         return [symbol_reference]
 
-    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
-        return self._file_ref_for_actual_symbol(value_definitions).specific_relativity(value_definitions)
+    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+        return self._file_ref_for_actual_symbol(value_definitions).relativity(value_definitions)
 
     def path_suffix(self, symbols: SymbolTable) -> PathPart:
         return self._file_ref_for_actual_symbol(symbols).path_suffix(symbols)

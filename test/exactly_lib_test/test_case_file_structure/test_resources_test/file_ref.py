@@ -474,8 +474,8 @@ class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
         self._value_references_of_path = value_reference
         self.__path_suffix = path_suffix
 
-    def specific_relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
-        return self._lookup(value_definitions).specific_relativity(value_definitions)
+    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
+        return self._lookup(value_definitions).relativity(value_definitions)
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         return self._lookup(value_definitions).exists_pre_sds(value_definitions)
