@@ -84,7 +84,7 @@ class TestSymbolReferences(TestForFixedRelativityBase):
         for path_suffix, expectation in test_cases:
             with self.subTest():
                 actual_file_ref = self.config.path_suffix_2_file_ref(path_suffix)
-                expectation.apply_without_message(self, actual_file_ref.value_references_of_paths())
+                expectation.apply_without_message(self, actual_file_ref.value_references())
 
 
 class TestExistsPreOrPostSds(TestForFixedRelativityBase):

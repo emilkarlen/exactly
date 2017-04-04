@@ -30,7 +30,7 @@ class _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileRef):
         self.accepted_relativity_variants = accepted_relativity_variants
         self.file_ref_resolver = _SymbolValue2FileRefVisitor(default_relativity)
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         symbol_reference = ValueReference(self.symbol_name,
                                           EitherStringOrFileRefRelativityRestriction(
                                               StringRestriction(),

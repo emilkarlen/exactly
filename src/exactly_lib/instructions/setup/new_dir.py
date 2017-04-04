@@ -26,7 +26,7 @@ class _Instruction(SetupPhaseInstruction):
         self.dir_path_resolver = dir_path_resolver
 
     def value_usages(self) -> list:
-        return self.dir_path_resolver.value_references_of_paths()
+        return self.dir_path_resolver.value_references()
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,

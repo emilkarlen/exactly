@@ -24,7 +24,7 @@ class _FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
         super().__init__(PathPartAsFixedPath(file_name))
         self.__relativity = relativity
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         return []
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:

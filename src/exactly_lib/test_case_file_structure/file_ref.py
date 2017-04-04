@@ -22,7 +22,7 @@ class FileRef:
     def path_suffix_path(self, symbols: SymbolTable) -> pathlib.Path:
         raise NotImplementedError()
 
-    def value_references_of_paths(self) -> list:
+    def value_references(self) -> list:
         """
         All `ValueReference`s that are _directly_ used by this object.
         I.e, if value <name> is referenced, that in turn references <name2>,
