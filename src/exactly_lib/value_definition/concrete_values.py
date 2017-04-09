@@ -3,7 +3,25 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.value_structure import Value
 
 
-class StringValue(Value):
+class SymbolValue(Value):
+    """
+    TODO Improve name, description
+    """
+
+    @property
+    def references(self) -> list:
+        """Values in the symbol table used by this object."""
+        raise NotImplementedError()
+
+    def resolve(self, symbols: SymbolTable):
+        """
+        Resolves the value given a symbol table.
+        :rtype: Depends on the concrete value.
+        """
+        raise NotImplementedError()
+
+
+class StringValue(SymbolValue):
     def __init__(self, string: str):
         self._string = string
 
@@ -22,7 +40,7 @@ class StringValue(Value):
         return str(type(self)) + '\'' + self._string + '\''
 
 
-class FileRefValue(Value):
+class FileRefValue(SymbolValue):
     def __init__(self, file_ref: FileRef):
         self._file_ref = file_ref
 
