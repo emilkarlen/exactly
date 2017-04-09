@@ -30,7 +30,7 @@ class PathPartAsStringSymbolReference(PathPart):
         assert isinstance(value_container, ValueContainer)
         string_value = value_container.value
         assert isinstance(string_value, StringValue)
-        return string_value.string
+        return string_value.resolve(symbols)
 
     @property
     def value_references(self) -> list:
