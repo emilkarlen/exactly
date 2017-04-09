@@ -1,10 +1,14 @@
 from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.value_structure import Value
 
 
 class StringValue(Value):
     def __init__(self, string: str):
         self._string = string
+
+    def resolve(self, symbols: SymbolTable) -> str:
+        return self._string
 
     @property
     def string(self) -> str:
@@ -21,6 +25,9 @@ class StringValue(Value):
 class FileRefValue(Value):
     def __init__(self, file_ref: FileRef):
         self._file_ref = file_ref
+
+    def resolve(self, symbols: SymbolTable) -> FileRef:
+        return self._file_ref
 
     @property
     def file_ref(self) -> FileRef:
