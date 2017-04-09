@@ -4,6 +4,7 @@ from exactly_lib.value_definition import value_structure as stc
 from exactly_lib.value_definition.concrete_values import FileRefValue, ValueVisitor, StringValue
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as fr_tr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_references
 
 
 def equals_value(expected: stc.Value) -> asrt.ValueAssertion:
@@ -12,16 +13,28 @@ def equals_value(expected: stc.Value) -> asrt.ValueAssertion:
 
 def equals_file_ref_value(expected: FileRefValue) -> asrt.ValueAssertion:
     return asrt.is_instance_with(FileRefValue,
-                                 asrt.sub_component('file_ref',
-                                                    FileRefValue.file_ref.fget,
-                                                    fr_tr.file_ref_equals(expected.file_ref)))
+                                 asrt.and_([
+                                     asrt.sub_component('file_ref',
+                                                        FileRefValue.file_ref.fget,
+                                                        fr_tr.file_ref_equals(expected.file_ref)),
+                                     asrt.sub_component('references',
+                                                        lambda x: x.references,
+                                                        equals_value_references(expected.references)),
+                                 ])
+                                 )
 
 
 def equals_string_value(expected: StringValue) -> asrt.ValueAssertion:
     return asrt.is_instance_with(StringValue,
-                                 asrt.sub_component('string',
-                                                    StringValue.string.fget,
-                                                    asrt.equals(expected.string)))
+                                 asrt.and_([
+                                     asrt.sub_component('string',
+                                                        StringValue.string.fget,
+                                                        asrt.equals(expected.string)),
+                                     asrt.sub_component('references',
+                                                        lambda x: x.references,
+                                                        equals_value_references(expected.references)),
+                                 ])
+                                 )
 
 
 class _EqualsValueVisitor(ValueVisitor):

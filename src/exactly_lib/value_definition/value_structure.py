@@ -57,6 +57,9 @@ class ValueUsage:
 
 
 class ValueDefinition(ValueUsage):
+    """
+    Defines a symbol so that it can be used via references to it.
+    """
     def __init__(self,
                  name: str,
                  value_container: ValueContainer):
@@ -78,6 +81,9 @@ class ValueDefinition(ValueUsage):
 
 
 class ValueReference(ValueUsage):
+    """
+    A reference to a symbol that is assumed to have been previously defined.
+    """
     def __init__(self,
                  name: str,
                  value_restriction: ValueRestriction):
@@ -91,7 +97,7 @@ class ValueReference(ValueUsage):
 
 class ValueUsageVisitor:
     """
-    Visitor of `Value`
+    Visitor of `ValueUsage`
     """
 
     def visit(self, value_usage: ValueUsage):
