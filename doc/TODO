@@ -1,5 +1,10 @@
 -*- org -*-
 
+* type instruction should use standard parse_file_ref
+Currently it only supports paths relative CD.
+* Replace DestinationPath with FileRef
+Needs to implement FileRef with "empty" path-suffix, and parsing of this,
+since the "cd" instruction uses this.
 * symbols
 ** def of string should be able to reference symbols in the value
 A la
