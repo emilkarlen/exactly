@@ -6,32 +6,34 @@ from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsVa
 from exactly_lib.test_case_file_structure import file_ref
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition.concrete_values import FileRefValue
 
 
 class ExecutableFile:
     def __init__(self,
-                 file_reference: file_ref.FileRef,
+                 file_reference_resolver: FileRefValue,
                  arguments: list):
-        self._file_reference = file_reference
+        self._file_reference_resolver = file_reference_resolver
         self._arguments = arguments
-        self._validator = ExistingExecutableFileValidator(file_reference)
+        self._validator = ExistingExecutableFileValidator(file_reference_resolver)
 
     def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        return self._file_reference.file_path_pre_or_post_sds(environment)
+        fr = self._file_reference_resolver.resolve(environment.value_definitions)
+        return fr.file_path_pre_or_post_sds(environment)
 
     def path_string(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         return str(self.path(environment))
 
-    @property
-    def file_reference(self) -> file_ref.FileRef:
-        return self._file_reference
+    def file_reference(self, symbols: SymbolTable) -> file_ref.FileRef:
+        return self._file_reference_resolver.resolve(symbols)
 
     @property
     def arguments(self) -> list:
         return self._arguments
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        return self._file_reference.exists_pre_sds(value_definitions)
+        fr = self._file_reference_resolver.resolve(value_definitions)
+        return fr.exists_pre_sds(value_definitions)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

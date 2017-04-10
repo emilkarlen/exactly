@@ -34,8 +34,9 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
     def test_absolute_path(self):
         ts = TokenStream2(quoting.file_name(sys.executable))
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string(sys.executable).apply_with_message(self,
-                                                                   ef.file_reference.path_suffix(empty_symbol_table()),
+                                                                   ef.file_reference(symbols).path_suffix(symbols),
                                                                    'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -43,8 +44,9 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
     def test_without_option(self):
         ts = TokenStream2('file arg2')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('file').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self._has_head_with_string(ts, 'arg2')
@@ -52,16 +54,18 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
     def test_relative_file_name_with_space(self):
         ts = TokenStream2('"the file"')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('the file').apply_with_message(self,
-                                                               ef.file_reference.path_suffix(empty_symbol_table()),
+                                                               ef.file_reference(symbols).path_suffix(symbols),
                                                                'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
 
     def test_relative_file_name_with_space_and_arguments(self):
         ts = TokenStream2('"the file" "an argument"')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('the file').apply_with_message(self,
-                                                               ef.file_reference.path_suffix(empty_symbol_table()),
+                                                               ef.file_reference(symbols).path_suffix(symbols),
                                                                'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self._has_head_with_string(ts, 'an argument')
@@ -69,8 +73,9 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
     def test_option_without_tail(self):
         ts = TokenStream2('%s THE_FILE' % option.REL_HOME_OPTION)
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('THE_FILE').apply_with_message(self,
-                                                               ef.file_reference.path_suffix(empty_symbol_table()),
+                                                               ef.file_reference(symbols).path_suffix(symbols),
                                                                'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -78,8 +83,9 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
     def test_option_with_tail(self):
         ts = TokenStream2('%s FILE tail' % option.REL_CWD_OPTION)
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
 
@@ -96,8 +102,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_plain_path_without_tail(self):
         ts = TokenStream2('( FILE )')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -105,8 +112,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_plain_path_with_space(self):
         ts = TokenStream2('( "A FILE" )')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('A FILE').apply_with_message(self,
-                                                             ef.file_reference.path_suffix(empty_symbol_table()),
+                                                             ef.file_reference(symbols).path_suffix(symbols),
                                                              'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -114,8 +122,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_plain_path_with_tail(self):
         ts = TokenStream2('( FILE ) tail arguments')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertEqual('tail arguments',
@@ -124,8 +133,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_path_with_option(self):
         ts = TokenStream2('( %s FILE )' % option.REL_HOME_OPTION)
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -133,8 +143,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_path_with_option_and_arguments(self):
         ts = TokenStream2('( %s FILE arg1 arg2 )' % option.REL_HOME_OPTION)
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertEqual(['arg1', 'arg2'],
                          ef.arguments,
@@ -144,8 +155,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_path_without_option_with_arguments(self):
         ts = TokenStream2('( FILE arg1 arg2 )')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertEqual(['arg1', 'arg2'],
                          ef.arguments,
@@ -155,8 +167,9 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_path_without_option_with_arguments_with_tail(self):
         ts = TokenStream2('( FILE arg1 arg2 arg3 ) tail1 tail2')
         ef = sut.parse(ts)
+        symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference.path_suffix(empty_symbol_table()),
+                                                           ef.file_reference(symbols).path_suffix(symbols),
                                                            'file_reference/path_suffix')
         self.assertEqual(['arg1', 'arg2', 'arg3'],
                          ef.arguments,
