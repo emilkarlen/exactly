@@ -15,6 +15,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestEquals),
         unittest.makeSuite(TestNotEquals),
+        unittest.makeSuite(TestNotEquals3),
     ])
 
 
@@ -35,11 +36,14 @@ class TestEquals(unittest.TestCase):
         for test_case_name, plain_string, string_value, symbol_table in test_cases:
             assert isinstance(plain_string, str), 'Type info for IDE'
             assert isinstance(string_value, StringValue), 'Type info for IDE'
-            with self.subTest(msg=test_case_name):
+            with self.subTest(msg='equals_string_value2::' + test_case_name):
                 assertion = sut.equals_string_value2(plain_string, asrt.ignore, symbol_table)
                 assertion.apply_with_message(self, string_value, test_case_name)
-            with self.subTest(msg='with checked references::' + test_case_name):
+            with self.subTest(msg='equals_string_value2::with checked references::' + test_case_name):
                 assertion = sut.equals_string_value2(plain_string, asrt.ignore, symbol_table)
+                assertion.apply_with_message(self, string_value, test_case_name)
+            with self.subTest(msg='equals_string_value2::with checked references::' + test_case_name):
+                assertion = sut.equals_string_value3(string_value)
                 assertion.apply_with_message(self, string_value, test_case_name)
 
     def test_with_used_reference_checks(self):
@@ -103,6 +107,44 @@ class TestNotEquals(unittest.TestCase):
                                                  equals_value_references(expected_references),
                                                  empty_symbol_table())
             assertion.apply_with_message(put, actual, 'NotEquals')
+
+
+class TestNotEquals3(unittest.TestCase):
+    def test_differs__resolved_value(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected_string = 'expected value'
+        expected = StringValue(expected_string)
+        actual = StringValue('actual value')
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_value3(expected)
+            assertion.apply_without_message(put, actual)
+
+    def test_differs__number_of_references(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected_string = 'expected value'
+        expected = StringValue(expected_string)
+        actual = _StringValueTestImpl(expected_string,
+                                      [ValueReference('symbol_name', NoRestriction())])
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_value3(expected)
+            assertion.apply_without_message(put, actual)
+
+    def test_differs__different_number_of_references(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected_string = 'expected value'
+        expected_references = [ValueReference('expected_symbol_name', NoRestriction())]
+        actual_references = [ValueReference('actual_symbol_name', NoRestriction())]
+        expected = _StringValueTestImpl(expected_string, expected_references)
+        actual = _StringValueTestImpl(expected_string, actual_references)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_value3(expected)
+            assertion.apply_without_message(put, actual)
 
 
 class _StringValueTestImpl(StringValue):
