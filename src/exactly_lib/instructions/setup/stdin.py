@@ -18,10 +18,10 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.test_case_file_structure import file_ref
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.value_definition.concrete_values import FileRefValue
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -90,7 +90,7 @@ class Parser(InstructionParser):
         if here_doc_or_file_ref.is_here_document:
             content = lines_content(here_doc_or_file_ref.here_document)
             return _InstructionForHereDocument(content)
-        return _InstructionForFileRef(here_doc_or_file_ref.file_reference)
+        return _InstructionForFileRef(here_doc_or_file_ref.file_reference_resolver)
 
 
 class _InstructionForHereDocument(SetupPhaseInstruction):
@@ -106,7 +106,7 @@ class _InstructionForHereDocument(SetupPhaseInstruction):
 
 
 class _InstructionForFileRef(InstructionWithFileRefsBase):
-    def __init__(self, redirect_file: file_ref.FileRef):
+    def __init__(self, redirect_file: FileRefValue):
         super().__init__((FileRefCheck(redirect_file,
                                        file_properties.must_exist_as(FileType.REGULAR)),))
         self.redirect_file = redirect_file
@@ -116,5 +116,6 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         env = environment.path_resolving_environment_pre_or_post_sds
-        settings_builder.stdin.file_name = str(self.redirect_file.file_path_pre_or_post_sds(env))
+        file_ref = self.redirect_file.resolve(environment.value_definitions)
+        settings_builder.stdin.file_name = str(file_ref.file_path_pre_or_post_sds(env))
         return sh.new_sh_success()

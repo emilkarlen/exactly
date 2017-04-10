@@ -42,6 +42,7 @@ class StringValue(SymbolValue):
 
 class FileRefValue(SymbolValue):
     def __init__(self, file_ref: FileRef):
+        file_ref.value_references()
         self._file_ref = file_ref
 
     def resolve(self, symbols: SymbolTable) -> FileRef:

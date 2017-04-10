@@ -22,6 +22,7 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure import lists
+from exactly_lib.value_definition.concrete_values import FileRefValue
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -110,10 +111,10 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             raise SingleInstructionInvalidArgumentException('Expecting exactly two arguments.')
         file_argument = arguments[0]
         ensure_is_not_option_argument(file_argument)
-        file_reference = file_refs.rel_cwd(PathPartAsFixedPath(file_argument))
+        file_ref_resolver = FileRefValue(file_refs.rel_cwd(PathPartAsFixedPath(file_argument)))
         del arguments[0]
         expected_properties = self._parse_properties(arguments)
-        return _Instruction(file_reference, expected_properties)
+        return _Instruction(file_ref_resolver, expected_properties)
 
     @staticmethod
     def _parse_properties(arguments: list) -> FilePropertiesCheck:
@@ -136,16 +137,16 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 class _Instruction(AssertPhaseInstruction):
     def __init__(self,
-                 file_reference: file_ref.FileRef,
+                 file_ref_resolver: FileRefValue,
                  expected_file_properties: FilePropertiesCheck):
-        self._file_reference = file_reference
+        self._file_ref_resolver = file_ref_resolver
         self._expected_file_properties = expected_file_properties
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         failure_message = pre_or_post_sds_failure_message_or_none(
-            FileRefCheck(self._file_reference,
+            FileRefCheck(self._file_ref_resolver,
                          self._expected_file_properties),
             environment.path_resolving_environment_pre_or_post_sds)
         if failure_message is not None:
