@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure import file_ref
+from exactly_lib.value_definition.concrete_values import FileRefValue
 
 CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
@@ -13,7 +13,7 @@ CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 class HereDocOrFileRef(tuple):
     def __new__(cls,
                 here_document: list,
-                file_reference: file_ref.FileRef):
+                file_reference: FileRefValue):
         return tuple.__new__(cls, (here_document, file_reference))
 
     @property
@@ -29,7 +29,7 @@ class HereDocOrFileRef(tuple):
         return self[0]
 
     @property
-    def file_reference(self) -> file_ref.FileRef:
+    def file_reference_resolver(self) -> FileRefValue:
         return self[1]
 
 
