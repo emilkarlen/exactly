@@ -43,10 +43,11 @@ class TestParseWithNoContents(unittest.TestCase):
         actual = sut.parse(single_line_source(arguments))
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
-        relativity_assertion.apply_with_message(self, actual.file_ref.relativity(symbol_table),
+        actual_file_ref = actual.file_ref.resolve(symbol_table)
+        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
                                                 'relativity')
         equals_path_part_string('single-argument').apply_with_message(self,
-                                                                      actual.file_ref.path_suffix(symbol_table),
+                                                                      actual_file_ref.path_suffix(symbol_table),
                                                                       'destination_path/path_suffix')
         self.assertEqual('',
                          actual.contents)
@@ -77,9 +78,10 @@ class TestParseWithContents(unittest.TestCase):
         actual = sut.parse(source)
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
-        relativity_assertion.apply_with_message(self, actual.file_ref.relativity(symbol_table),
+        actual_file_ref = actual.file_ref.resolve(symbol_table)
+        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
                                                 'relativity')
-        equals_path_part_string('file name').apply_with_message(self, actual.file_ref.path_suffix(symbol_table),
+        equals_path_part_string('file name').apply_with_message(self, actual_file_ref.path_suffix(symbol_table),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
                          actual.contents)
@@ -93,9 +95,11 @@ class TestParseWithContents(unittest.TestCase):
         actual = sut.parse(source)
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_TMP))
-        relativity_assertion.apply_with_message(self, actual.file_ref.relativity(symbol_table),
+        actual_file_ref = actual.file_ref.resolve(symbol_table)
+        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
                                                 'relativity')
-        equals_path_part_string('file name').apply_with_message(self, actual.file_ref.path_suffix(symbol_table),
+        equals_path_part_string('file name').apply_with_message(self,
+                                                                actual_file_ref.path_suffix(symbol_table),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
                          actual.contents)

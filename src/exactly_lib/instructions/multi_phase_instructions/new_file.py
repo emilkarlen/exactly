@@ -14,6 +14,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.value_definition.concrete_values import FileRefValue
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -59,12 +60,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class FileInfo(tuple):
     def __new__(cls,
-                path_resolver: FileRef,
+                path_resolver: FileRefValue,
                 contents: str):
         return tuple.__new__(cls, (path_resolver, contents))
 
     @property
-    def file_ref(self) -> FileRef:
+    def file_ref(self) -> FileRefValue:
         return self[0]
 
     @property
@@ -91,7 +92,7 @@ def create_file(file_info: FileInfo,
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.file_ref.file_path_post_sds(environment)
+    file_path = file_info.file_ref.resolve(environment.value_definitions).file_path_post_sds(environment)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)

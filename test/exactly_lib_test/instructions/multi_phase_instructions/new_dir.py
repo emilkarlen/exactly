@@ -45,22 +45,28 @@ class TestParse(unittest.TestCase):
     def test_strip_trailing_space(self):
         arguments = '  expected-argument  '
         result = sut.parse(arguments)
+        symbols = empty_symbol_table()
+        file_ref = result.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
-                                                                        result.path_suffix(empty_symbol_table()),
+                                                                        file_ref.path_suffix(symbols),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments(self):
         arguments = 'expected-argument'
         result = sut.parse(arguments)
+        symbols = empty_symbol_table()
+        file_ref = result.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
-                                                                        result.path_suffix(empty_symbol_table()),
+                                                                        file_ref.path_suffix(symbols),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
         result = sut.parse(arguments)
+        symbols = empty_symbol_table()
+        file_ref = result.resolve(symbols)
         equals_path_part_string('expected argument').apply_with_message(self,
-                                                                        result.path_suffix(empty_symbol_table()),
+                                                                        file_ref.path_suffix(symbols),
                                                                         'path_suffix')
 
 

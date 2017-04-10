@@ -24,10 +24,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.value_definition.concrete_values import FileRefValue
 
 
 def instruction_parser(
@@ -184,14 +184,15 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
 class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
     def __init__(self,
                  executable: ExecutableFile,
-                 file_to_interpret: FileRef,
+                 file_to_interpret: FileRefValue,
                  argument_list: list):
         super().__init__(executable)
         self.file_to_interpret = file_to_interpret
         self.argument_list = argument_list
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
-        return [str(self.file_to_interpret.file_path_pre_or_post_sds(environment))] + self.argument_list
+        file_ref = self.file_to_interpret.resolve(environment.value_definitions)
+        return [str(file_ref.file_path_pre_or_post_sds(environment))] + self.argument_list
 
 
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
