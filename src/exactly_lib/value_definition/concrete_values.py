@@ -49,10 +49,6 @@ class FileRefValue(SymbolValue):
         return self._file_ref
 
     @property
-    def file_ref(self) -> FileRef:
-        return self._file_ref
-
-    @property
     def references(self) -> list:
         return self._file_ref.value_references()
 

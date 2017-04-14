@@ -51,9 +51,9 @@ class _FileRefRelValueDefinition(FileRefWithPathSuffixBase):
         return lookup_file_ref_from_symbol_table(value_definitions, self.value_reference_of_path.name)
 
 
-def lookup_file_ref_from_symbol_table(value_definitions: SymbolTable, name: str) -> FileRef:
-    value_container = value_definitions.lookup(name)
+def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:
+    value_container = symbols.lookup(name)
     assert isinstance(value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
     value = value_container.value
     assert isinstance(value, FileRefValue), 'Referenced definition must be FileRefValue'
-    return value.file_ref
+    return value.resolve(symbols)
