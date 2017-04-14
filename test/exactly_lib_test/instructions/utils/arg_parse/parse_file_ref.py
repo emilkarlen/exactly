@@ -320,9 +320,8 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
             for accepted_relativities in accepted_relativities_variants:
                 expected_value_reference = ValueReference(value_definition_name,
                                                           FileRefRelativityRestriction(accepted_relativities))
-                expected_file_ref = rel_value_definition(expected_value_reference,
-                                                         PathPartAsFixedPath(file_name_argument))
-                expected_file_ref_value = FileRefConstant(expected_file_ref)
+                expected_file_ref_resolver = rel_value_definition(expected_value_reference,
+                                                                  PathPartAsFixedPath(file_name_argument))
                 arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
                 with self.subTest(msg='source={}'.format(repr(source))):
                     argument_string = source.format(option_str=option_str,
@@ -331,7 +330,7 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
                     self._check(
                         Arrangement(argument_string,
                                     arg_config),
-                        Expectation(expected_file_ref_value,
+                        Expectation(expected_file_ref_resolver,
                                     token_stream_assertion)
                     )
 

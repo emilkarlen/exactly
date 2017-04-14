@@ -4,7 +4,7 @@ import pathlib
 import types
 
 from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference import \
-    _IdenticalToReferencedFileRefOrWithStringValueAsSuffix
+    _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
 from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -18,7 +18,6 @@ from exactly_lib.section_document.parser_implementations.token_stream2 import To
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsStringSymbolReference
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
@@ -95,13 +94,13 @@ def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -
     if token.type is TokenType.PLAIN:
         ensure_is_not_option_argument(token.string)
     if relativity_info is None:
-        return FileRefConstant(_without_explicit_relativity(token, conf))
+        return _without_explicit_relativity(token, conf)
     else:
-        path_part_2_file_ref = _file_ref_constructor(relativity_info)
-        return FileRefConstant(_with_explicit_relativity(token, path_part_2_file_ref))
+        path_part_2_file_ref_resolver = _file_ref_constructor(relativity_info)
+        return _with_explicit_relativity(token, path_part_2_file_ref_resolver)
 
 
-def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> FileRef:
+def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     symbol_name_of_symbol_reference = parse_symbol_reference(path_argument)
     if symbol_name_of_symbol_reference is None:
         return _just_string_argument(path_argument.string, conf)
@@ -109,31 +108,33 @@ def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentCo
         return _just_symbol_reference_argument(symbol_name_of_symbol_reference, conf)
 
 
-def _with_explicit_relativity(path_argument_token: Token, path_part_2_file_ref: types.FunctionType) -> FileRef:
+def _with_explicit_relativity(path_argument_token: Token,
+                              path_part_2_file_ref_resolver: types.FunctionType) -> FileRefResolver:
     symbol_name_of_symbol_reference = parse_symbol_reference(path_argument_token)
     if symbol_name_of_symbol_reference:
         path_suffix = PathPartAsStringSymbolReference(symbol_name_of_symbol_reference)
-        return path_part_2_file_ref(path_suffix)
+        return path_part_2_file_ref_resolver(path_suffix)
     else:
         path_argument_str = path_argument_token.string
         path_argument_path = pathlib.PurePath(path_argument_str)
         if path_argument_path.is_absolute():
-            return file_refs.absolute_file_name(path_argument_str)
+            return FileRefConstant(file_refs.absolute_file_name(path_argument_str))
     path_suffix = PathPartAsFixedPath(path_argument_str)
-    return path_part_2_file_ref(path_suffix)
+    return path_part_2_file_ref_resolver(path_suffix)
 
 
 def _just_string_argument(argument: str,
-                          conf: RelOptionArgumentConfiguration) -> FileRef:
+                          conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     path_suffix = PathPartAsFixedPath(argument)
-    return file_refs.of_rel_option(conf.options.default_option, path_suffix)
+    return FileRefConstant(file_refs.of_rel_option(conf.options.default_option, path_suffix))
 
 
 def _just_symbol_reference_argument(symbol_name: str,
-                                    conf: RelOptionArgumentConfiguration) -> FileRef:
-    return _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(symbol_name,
-                                                                  conf.options.default_option,
-                                                                  conf.options.accepted_relativity_variants)
+                                    conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+    return _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(
+        symbol_name,
+        conf.options.default_option,
+        conf.options.accepted_relativity_variants)
 
 
 def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):
@@ -141,22 +142,12 @@ def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):
     raise SingleInstructionInvalidArgumentException(msg)
 
 
-def _from_relativity_info(relativity_info, path_argument: str) -> FileRef:
-    argument_path = pathlib.PurePath(path_argument)
-    if argument_path.is_absolute():
-        return file_refs.absolute_file_name(path_argument)
-    if isinstance(relativity_info, RelOptionType):
-        return file_refs.of_rel_option(relativity_info, PathPartAsFixedPath(path_argument))
-    elif isinstance(relativity_info, ValueReference):
-        return rel_value_definition(relativity_info, PathPartAsFixedPath(path_argument))
-
-
 def _file_ref_constructor(relativity_info) -> types.FunctionType:
     """
-    :rtype PathPart -> FileRef: 
+    :rtype PathPart -> FileRefResolver: 
     """
     if isinstance(relativity_info, RelOptionType):
-        return functools.partial(file_refs.of_rel_option, relativity_info)
+        return lambda path_suffix: FileRefConstant(file_refs.of_rel_option(relativity_info, path_suffix))
     elif isinstance(relativity_info, ValueReference):
         return functools.partial(rel_value_definition, relativity_info)
     else:

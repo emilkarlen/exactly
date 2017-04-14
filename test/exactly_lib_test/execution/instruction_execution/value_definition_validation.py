@@ -12,7 +12,8 @@ from exactly_lib.value_definition.concrete_restrictions import NoRestriction
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.value_definition.value_structure import ValueRestriction
-from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value_container
+from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value_container, \
+    file_ref_resolver_container
 
 
 def suite() -> unittest.TestSuite:
@@ -84,7 +85,7 @@ class TestValueDefinition(unittest.TestCase):
         symbol_table = singleton_symbol_table(string_entry('OTHER'))
         value_usage = vs.ValueDefinition(
             'UNDEFINED',
-            file_ref_value_container(
+            file_ref_resolver_container(
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                                      PathPartAsFixedPath('file-name'))))
         # ACT #
@@ -98,7 +99,7 @@ class TestValueDefinition(unittest.TestCase):
         symbol_table = singleton_symbol_table(referenced_entry)
         value_usage_to_check = vs.ValueDefinition(
             'UNDEFINED',
-            file_ref_value_container(
+            file_ref_resolver_container(
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatCannotBeSatisfied()),
                                      PathPartAsFixedPath('file-name'))))
         # ACT #
@@ -113,7 +114,7 @@ class TestValueDefinition(unittest.TestCase):
         symbol_table = singleton_symbol_table(referenced_entry)
         value_usage_to_check = vs.ValueDefinition(
             'UNDEFINED',
-            file_ref_value_container(
+            file_ref_resolver_container(
                 rel_value_definition(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                                      PathPartAsFixedPath('file-name'))))
         # ACT #

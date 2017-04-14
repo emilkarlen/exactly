@@ -13,12 +13,26 @@ from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
-def rel_value_definition(value_reference2: ValueReference, path_suffix: PathPart) -> FileRef:
-    return _FileRefRelValueDefinition(path_suffix, value_reference2)
+def rel_value_definition(value_reference2: ValueReference, path_suffix: PathPart) -> FileRefResolver:
+    return _FileRefResolverRelValueDefinition(path_suffix, value_reference2)
 
 
 def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityVariants) -> ValueReference:
     return ValueReference(val_def_name, FileRefRelativityRestriction(accepted_relativities))
+
+
+class _FileRefResolverRelValueDefinition(FileRefResolver):
+    def __init__(self,
+                 path_suffix: PathPart,
+                 value_reference_of_path: ValueReference):
+        self.file_ref = _FileRefRelValueDefinition(path_suffix, value_reference_of_path)
+
+    def resolve(self, symbols: SymbolTable) -> FileRef:
+        return self.file_ref
+
+    @property
+    def references(self) -> list:
+        return self.file_ref.value_references()
 
 
 class _FileRefRelValueDefinition(FileRefWithPathSuffixBase):

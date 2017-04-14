@@ -17,6 +17,29 @@ from exactly_lib.value_definition.value_structure import ValueReference, ValueCo
 
 # Do not want to have this class as public - but want it in a separate file ...
 # so lets it have a "protected" name.
+class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileRefResolver):
+    """
+    A file-ref from a symbol reference, that can be either a string or a file-ref
+    """
+
+    def __init__(self,
+                 symbol_name: str,
+                 default_relativity: RelOptionType,
+                 accepted_relativity_variants: PathRelativityVariants):
+        self.file_ref = _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(symbol_name,
+                                                                               default_relativity,
+                                                                               accepted_relativity_variants)
+
+    def resolve(self, symbols: SymbolTable) -> FileRef:
+        return self.file_ref
+
+    @property
+    def references(self) -> list:
+        return self.file_ref.value_references()
+
+
+# Do not want to have this class as public - but want it in a separate file ...
+# so lets it have a "protected" name.
 class _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileRef):
     """
     A file-ref from a symbol reference, that can be either a string or a file-ref
