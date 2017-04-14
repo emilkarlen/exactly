@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
-    PathPartAsStringSymbolReference
+    PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixBase, \
     FileRefWithPathSuffixAndIsNotAbsoluteBase
@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, \
     EitherStringOrFileRefRelativityRestriction, StringRestriction
 from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import file_ref as
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
-    symbol_table_with_single_string_value, symbol_table_from_value_definitions, string_value_definition, \
+    symbol_table_from_value_definitions, string_value_definition, \
     file_ref_value_definition, symbol_table_with_single_file_ref_value
 
 
@@ -29,7 +29,6 @@ def suite() -> unittest.TestSuite:
         TestEqualsCommonToBothAssertionMethods(),
         TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(),
         unittest.makeSuite(TestNotEquals_PathSuffixAsFixedPath),
-        unittest.makeSuite(TestNotEquals_PathSuffixAsSymbolReference),
         unittest.makeSuite(TestNotEquals_DifferentTypeOfPathSuffix),
         unittest.makeSuite(Test2NotEquals),
     ])
@@ -75,25 +74,6 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                  PathPartAsFixedPath('file-name')),
              symbol_table_with_single_file_ref_value('reffed-name'),
              ),
-            ('Exists pre SDS/fixed path suffix',
-             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
-                                             PathPartAsStringSymbolReference('symbol-name')),
-             symbol_table_with_single_string_value('symbol-name', 'value'),
-             ),
-            ('NOT Exists pre SDS/fixed path suffix',
-             _FileRefWithoutValRefInRootPart(_NOT_EXISTS_PRE_SDS_RELATIVITY,
-                                             PathPartAsStringSymbolReference('a-symbol-name')),
-             symbol_table_with_single_string_value('a-symbol-name', 'value'),
-             ),
-            ('symbol-ref/NOT Exists pre SDS/fixed path suffix',
-             _FileRefWithValRefInRootPart(
-                 ValueReference('reffed-name',
-                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                 PathPartAsStringSymbolReference('symbol-name')),
-             symbol_table_from_value_definitions([
-                 string_value_definition('symbol-name', 'string-value'),
-                 file_ref_value_definition('reffed-name')]),
-             ),
         ]
         for test_case_name, value, symbol_table_for_method2 in test_cases:
             assert isinstance(value, FileRef), 'Type info for IDE'
@@ -109,18 +89,11 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
 class TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(unittest.TestCase):
     def runTest(self):
         test_cases = [
-            ('Different kind of path suffixes',
+            ('Nothing path suffixes',
              _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
-                                             PathPartAsFixedPath('file-name')),
+                                             PathPartAsNothing()),
              _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
-                                             PathPartAsStringSymbolReference('path_suffix_symbol')),
-             symbol_table_with_single_string_value('path_suffix_symbol', 'file-name'),
-             ),
-            ('Different symbol references in path suffixes',
-             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
-                                             PathPartAsStringSymbolReference('path_suffix_symbol_1')),
-             _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
-                                             PathPartAsStringSymbolReference('path_suffix_symbol_2')),
+                                             PathPartAsNothing()),
              symbol_table_from_value_definitions([
                  string_value_definition('path_suffix_symbol_1', 'suffix-file-name'),
                  string_value_definition('path_suffix_symbol_2', 'suffix-file-name'),
@@ -211,86 +184,19 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
             sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
 
 
-class TestNotEquals_PathSuffixAsSymbolReference(unittest.TestCase):
-    def test_differs__symbol_name(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-                                                   PathPartAsStringSymbolReference('symbol-name'))
-        actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-                                                 PathPartAsStringSymbolReference('other-symbol-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-    def test_differs__exists_pre_sds(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithoutValRefInRootPart(_EXISTS_PRE_SDS_RELATIVITY,
-                                                   PathPartAsStringSymbolReference('symbol-name'))
-        actual = _FileRefWithoutValRefInRootPart(_NOT_EXISTS_PRE_SDS_RELATIVITY,
-                                                 PathPartAsStringSymbolReference('symbol-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-    def test_differs__relativity(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-                                                   PathPartAsStringSymbolReference('symbol-name'))
-        actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_HOME,
-                                                 PathPartAsStringSymbolReference('symbol-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-    def test_differs__no_value_refs__value_refs(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRefInRootPart(ValueReference('reffed-name',
-                                                               _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                                                PathPartAsStringSymbolReference('symbol-name'))
-        actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_RESULT,
-                                                 PathPartAsStringSymbolReference('symbol-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-
 class TestNotEquals_DifferentTypeOfPathSuffix(unittest.TestCase):
-    def test_without_symbol_ref_in_root_part__expected_is_symbol_reference(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-                                                   PathPartAsStringSymbolReference('name'))
-        actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-                                                 PathPartAsFixedPath('name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-    def test_without_symbol_ref_in_root_part__expected_is_fixed_path(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-                                                   PathPartAsFixedPath('name'))
-        actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-                                                 PathPartAsStringSymbolReference('name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-    def test_with_symbol_ref_in_root_part(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = _FileRefWithValRefInRootPart(ValueReference('reffed-name', NoRestriction()),
-                                                PathPartAsStringSymbolReference('name'))
-        actual = _FileRefWithValRefInRootPart(ValueReference('reffed-name', NoRestriction()),
-                                              PathPartAsFixedPath('name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
+    def runTest(self):
+        pass
+        # def test_without_symbol_ref_in_root_part__expected_is_fixed_path(self):
+        #     # ARRANGE #
+        #     put = test_case_with_failure_exception_set_to_test_exception()
+        #     expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
+        #                                                PathPartAsFixedPath('name'))
+        #     actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
+        #                                              PathPartAsStringSymbolReference('name'))
+        #     # ACT & ASSERT #
+        #     with put.assertRaises(TestException):
+        #         sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
 
 
 class Test2NotEquals(unittest.TestCase):
