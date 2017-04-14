@@ -29,10 +29,6 @@ class StringValue(SymbolValue):
         return self._string
 
     @property
-    def string(self) -> str:
-        return self._string
-
-    @property
     def references(self) -> list:
         return []
 
