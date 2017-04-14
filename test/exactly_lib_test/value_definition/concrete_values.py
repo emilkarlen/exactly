@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.value_definition import concrete_values as sut
 from exactly_lib.value_definition.concrete_values import StringResolver
+from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 
@@ -14,7 +15,7 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('ret-val')
         # ACT #
-        ret_val = visitor.visit(sut.FileRefResolver(file_ref_test_impl()))
+        ret_val = visitor.visit(FileRefConstant(file_ref_test_impl()))
         # ASSERT #
         self.assertEqual('ret-val', ret_val,
                          'Visitor is expected to return value from visit-method')
@@ -48,9 +49,9 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.ValueVisitor):
         self.visited_classes = []
 
     def _visit_file_ref(self, value: sut.FileRefResolver):
-        self.visited_classes.append(type(value))
+        self.visited_classes.append(sut.FileRefResolver)
         return self.ret_val
 
     def _visit_string(self, value: sut.StringResolver):
-        self.visited_classes.append(type(value))
+        self.visited_classes.append(sut.StringResolver)
         return self.ret_val

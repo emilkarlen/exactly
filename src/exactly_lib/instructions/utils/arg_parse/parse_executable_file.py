@@ -10,6 +10,7 @@ from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.value_definition.concrete_values import FileRefResolver
+from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
 
 LIST_DELIMITER_START = '('
 LIST_DELIMITER_END = ')'
@@ -42,7 +43,7 @@ def _parse_exe_file_ref(tokens: TokenStream2) -> FileRefResolver:
     token = tokens.head
     if token.is_plain and option_parsing.matches(PYTHON_EXECUTABLE_OPTION_NAME, token.string):
         tokens.consume()
-        return FileRefResolver(file_refs.absolute_file_name(sys.executable))
+        return FileRefConstant(file_refs.absolute_file_name(sys.executable))
     else:
         return parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)
 

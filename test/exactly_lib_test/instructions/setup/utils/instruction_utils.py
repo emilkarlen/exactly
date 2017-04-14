@@ -12,6 +12,7 @@ from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.value_definition.concrete_values import FileRefResolver
+from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
 from exactly_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
@@ -92,7 +93,7 @@ def _env_from(home_and_sds: HomeAndSds,
 
 
 def _resolver_of(file_ref: file_refs.FileRef) -> FileRefResolver:
-    return FileRefResolver(file_ref)
+    return FileRefConstant(file_ref)
 
 
 if __name__ == '__main__':

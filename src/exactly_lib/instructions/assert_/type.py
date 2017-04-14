@@ -17,12 +17,13 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case_file_structure import file_ref, file_refs
+from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.value_definition.concrete_values import FileRefResolver
+from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -111,7 +112,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             raise SingleInstructionInvalidArgumentException('Expecting exactly two arguments.')
         file_argument = arguments[0]
         ensure_is_not_option_argument(file_argument)
-        file_ref_resolver = FileRefResolver(file_refs.rel_cwd(PathPartAsFixedPath(file_argument)))
+        file_ref_resolver = FileRefConstant(file_refs.rel_cwd(PathPartAsFixedPath(file_argument)))
         del arguments[0]
         expected_properties = self._parse_properties(arguments)
         return _Instruction(file_ref_resolver, expected_properties)
