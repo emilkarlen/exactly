@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib.value_definition import concrete_restrictions as sut
-from exactly_lib.value_definition.concrete_values import StringResolver
+from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value
 
@@ -21,7 +21,7 @@ class TestNoRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            StringResolver('string'),
+            StringConstant('string'),
             file_ref_value(),
         ]
         restriction = sut.NoRestriction()
@@ -38,8 +38,8 @@ class TestStringRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            StringResolver('string'),
-            StringResolver(''),
+            StringConstant('string'),
+            StringConstant(''),
         ]
         restriction = sut.StringRestriction()
         value_definitions = empty_symbol_table()
@@ -107,7 +107,7 @@ class TestEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            StringResolver('string'),
+            StringConstant('string'),
             file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
             file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
         ]

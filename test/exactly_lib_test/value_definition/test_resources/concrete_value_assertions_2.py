@@ -13,6 +13,7 @@ from exactly_lib.value_definition import concrete_restrictions
 from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_values import FileRefResolver, StringResolver, ValueVisitor, \
     SymbolValueResolver
+from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.value_definition.value_structure import ValueContainer, Value
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part
 from exactly_lib_test.test_case_file_structure.test_resources.file_ref import file_ref_equals, equals_file_ref2
@@ -227,10 +228,10 @@ def _symbol_table_with_values_matching_references(references: list) -> SymbolTab
 
 class _ValueCorrespondingToValueRestriction(concrete_restrictions.ValueRestrictionVisitor):
     def visit_none(self, x: concrete_restrictions.NoRestriction) -> Value:
-        return StringResolver('a string (from <no restriction>)')
+        return StringConstant('a string (from <no restriction>)')
 
     def visit_string(self, x: concrete_restrictions.StringRestriction) -> Value:
-        return StringResolver('a string (from <string value restriction>)')
+        return StringConstant('a string (from <string value restriction>)')
 
     def visit_file_ref_relativity(self, x: concrete_restrictions.FileRefRelativityRestriction) -> Value:
         return file_ref_val_test_impl(x.accepted)

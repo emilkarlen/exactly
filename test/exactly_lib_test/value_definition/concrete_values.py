@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.value_definition import concrete_values as sut
-from exactly_lib.value_definition.concrete_values import StringResolver
 from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 
@@ -27,7 +27,7 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
-        ret_val = visitor.visit(StringResolver('string'))
+        ret_val = visitor.visit(StringConstant('string'))
         # ASSERT #
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')
