@@ -11,14 +11,14 @@ class FileRefWithPathSuffixBase(FileRef):
     def __init__(self, path_part: PathPart):
         self._path_suffix = path_part
 
-    def path_suffix(self, symbols: SymbolTable) -> PathPart:
+    def path_suffix(self) -> PathPart:
         return self._path_suffix
 
-    def path_suffix_str(self, symbols: SymbolTable) -> str:
-        return self._path_suffix.resolve(symbols)
+    def path_suffix_str(self) -> str:
+        return self._path_suffix.resolve()
 
-    def path_suffix_path(self, symbols: SymbolTable) -> pathlib.Path:
-        return pathlib.Path(self.path_suffix_str(symbols))
+    def path_suffix_path(self) -> pathlib.Path:
+        return pathlib.Path(self.path_suffix_str())
 
 
 class FileRefWithPathSuffixAndIsNotAbsoluteBase(FileRefWithPathSuffixBase):

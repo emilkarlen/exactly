@@ -47,7 +47,7 @@ class TestParseWithNoContents(unittest.TestCase):
         relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
                                                 'relativity')
         equals_path_part_string('single-argument').apply_with_message(self,
-                                                                      actual_file_ref.path_suffix(symbol_table),
+                                                                      actual_file_ref.path_suffix(),
                                                                       'destination_path/path_suffix')
         self.assertEqual('',
                          actual.contents)
@@ -81,7 +81,7 @@ class TestParseWithContents(unittest.TestCase):
         actual_file_ref = actual.file_ref.resolve(symbol_table)
         relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
                                                 'relativity')
-        equals_path_part_string('file name').apply_with_message(self, actual_file_ref.path_suffix(symbol_table),
+        equals_path_part_string('file name').apply_with_message(self, actual_file_ref.path_suffix(),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
                          actual.contents)
@@ -99,7 +99,7 @@ class TestParseWithContents(unittest.TestCase):
         relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
                                                 'relativity')
         equals_path_part_string('file name').apply_with_message(self,
-                                                                actual_file_ref.path_suffix(symbol_table),
+                                                                actual_file_ref.path_suffix(),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
                          actual.contents)

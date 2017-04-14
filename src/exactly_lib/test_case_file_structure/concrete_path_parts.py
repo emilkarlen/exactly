@@ -1,5 +1,4 @@
 from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.util.symbol_table import SymbolTable
 
 
 class PathPartAsFixedPath(PathPart):
@@ -10,21 +9,13 @@ class PathPartAsFixedPath(PathPart):
     def file_name(self) -> str:
         return self._file_name
 
-    def resolve(self, symbols: SymbolTable) -> str:
+    def resolve(self) -> str:
         return self._file_name
-
-    @property
-    def value_references(self) -> list:
-        return []
 
 
 class PathPartAsNothing(PathPart):
-    def resolve(self, symbols: SymbolTable) -> str:
+    def resolve(self) -> str:
         return ''
-
-    @property
-    def value_references(self) -> list:
-        return []
 
 
 class PathPartVisitor:

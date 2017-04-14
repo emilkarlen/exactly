@@ -489,7 +489,7 @@ class TestParseFromParseSource(unittest.TestCase):
         file_ref = sut.parse_file_ref_from_parse_source(remaining_source('FILENAME arg2'),
                                                         sut.ALL_REL_OPTIONS_CONFIG)
         symbols = empty_symbol_table()
-        actual_path_suffix = file_ref.resolve(symbols).path_suffix(symbols)
+        actual_path_suffix = file_ref.resolve(symbols).path_suffix()
         equals_path_part_string('FILENAME').apply_with_message(self,
                                                                actual_path_suffix,
                                                                'file_reference/path_suffix')
@@ -500,7 +500,7 @@ class TestParseFromParseSource(unittest.TestCase):
             remaining_source(REL_CWD_OPTION + ' FILENAME arg3 arg4'),
             sut.ALL_REL_OPTIONS_CONFIG)
         symbols = empty_symbol_table()
-        actual_path_suffix = file_ref.resolve(symbols).path_suffix(symbols)
+        actual_path_suffix = file_ref.resolve(symbols).path_suffix()
         equals_path_part_string('FILENAME').apply_with_message(self,
                                                                actual_path_suffix,
                                                                'file_reference/path_suffix')
@@ -511,7 +511,7 @@ class TestParseFromParseSource(unittest.TestCase):
             remaining_source('   FILENAME'),
             sut.ALL_REL_OPTIONS_CONFIG)
         symbols = empty_symbol_table()
-        actual_path_suffix = file_ref.resolve(symbols).path_suffix(symbols)
+        actual_path_suffix = file_ref.resolve(symbols).path_suffix()
         equals_path_part_string('FILENAME').apply_with_message(self,
                                                                actual_path_suffix,
                                                                'file_reference/path_suffix')

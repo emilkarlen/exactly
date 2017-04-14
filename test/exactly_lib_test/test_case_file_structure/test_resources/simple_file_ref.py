@@ -31,10 +31,10 @@ class _FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
         return self.__relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path()
 
     def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
         return self.__relativity

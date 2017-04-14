@@ -23,7 +23,7 @@ class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase
         self.__exists_pre_sds = exists_pre_sds
 
     def value_references(self) -> list:
-        return self._path_suffix.value_references
+        return []
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         return self.__exists_pre_sds
@@ -46,11 +46,11 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
         return self._rel_root_resolver.relativity_type
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        suffix = self.path_suffix_path(environment.value_definitions)
+        suffix = self.path_suffix_path()
         return self._rel_root_resolver.from_home(environment.home_dir_path) / suffix
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds):
-        suffix = self.path_suffix_path(environment.value_definitions)
+        suffix = self.path_suffix_path()
         if self._rel_root_resolver.is_rel_cwd:
             root = self._rel_root_resolver.from_cwd()
         else:
@@ -110,7 +110,7 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
         return self.file_path_pre_sds(environment)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return self.path_suffix_path(environment.value_definitions)
+        return self.path_suffix_path()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
@@ -121,7 +121,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         super().__init__(True, path_suffix)
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return environment.home_dir_path / self.path_suffix_path(environment.value_definitions)
+        return environment.home_dir_path / self.path_suffix_path()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
@@ -135,4 +135,4 @@ class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
         raise ValueError('This file does not exist pre-SDS')
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds):
-        return environment.sds.tmp.internal_dir / self.path_suffix_path(environment.value_definitions)
+        return environment.sds.tmp.internal_dir / self.path_suffix_path()
