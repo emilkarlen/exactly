@@ -9,8 +9,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
-    PathPartAsStringSymbolReference
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relative_path_options import REL_CWD_OPTION, REL_TMP_OPTION, REL_OPTIONS_MAP, \
@@ -384,6 +383,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
 
     def test_no_explicit_relativity(self):
         symbol_name = 'THE_SYMBOL'
+        symbol_string_value = 'symbol-string-value'
         accepted_relativities = PathRelativityVariants({RelOptionType.REL_HOME,
                                                         RelOptionType.REL_TMP},
                                                        True)
@@ -405,7 +405,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
              Expectation2(
                  file_ref=equals_file_ref_resolver2(
                      file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                             PathPartAsStringSymbolReference(symbol_name)),
+                                             PathPartAsFixedPath(symbol_string_value)),
                      asrt.matches_sequence([
                          equals_value_reference(
                              symbol_name,
@@ -416,7 +416,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                                  )
                              )),
                      ]),
-                     symbol_table_with_single_string_value(symbol_name, 'string-value')),
+                     symbol_table_with_single_string_value(symbol_name, symbol_string_value)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Symbol reference as only argument'

@@ -5,18 +5,14 @@ import types
 
 from exactly_lib.test_case_file_structure import file_refs as sut
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
-    PathPartAsStringSymbolReference
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.util.symbol_table import empty_symbol_table, singleton_symbol_table, Entry
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import is_string_value_restriction
-from exactly_lib_test.value_definition.test_resources.value_definition_utils import string_value_container
-from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
 
 
 def suite() -> unittest.TestSuite:
@@ -74,12 +70,6 @@ class TestSymbolReferences(TestForFixedRelativityBase):
             (PathPartAsFixedPath('file.txt'),
              asrt.matches_sequence([])
              ),
-            (PathPartAsStringSymbolReference('the symbol'),
-             asrt.matches_sequence([
-                 equals_value_reference('the symbol',
-                                        is_string_value_restriction)
-             ])
-             ),
         ]
         for path_suffix, expectation in test_cases:
             with self.subTest():
@@ -91,7 +81,6 @@ class TestExistsPreOrPostSds(TestForFixedRelativityBase):
     def runTest(self):
         test_cases = [
             PathPartAsFixedPath('file.txt'),
-            PathPartAsStringSymbolReference('the symbol'),
         ]
         for path_suffix in test_cases:
             with self.subTest():
@@ -108,11 +97,6 @@ class TestFilePath(TestForFixedRelativityBase):
             (PathPartAsFixedPath('file.txt'),
              empty_symbol_table(),
              'file.txt'
-             ),
-            (PathPartAsStringSymbolReference('the symbol'),
-             singleton_symbol_table(Entry('the symbol',
-                                          string_value_container('file-pointed-to-by-symbol.txt'))),
-             'file-pointed-to-by-symbol.txt'
              ),
         ]
         home_and_sds = _home_and_sds()
