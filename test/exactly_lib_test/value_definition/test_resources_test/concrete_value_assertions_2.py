@@ -1,8 +1,7 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition.concrete_values import StringResolver, FileRefResolver
+from exactly_lib.value_definition.concrete_values import StringResolver
 from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
@@ -54,22 +53,6 @@ class TestEqualsValue(unittest.TestCase):
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.value_equals3(expected).apply_without_message(put, actual)
-
-
-class _FileRefResolverTestImpl(FileRefResolver):
-    def __init__(self,
-                 file_ref: FileRef,
-                 explicit_references: list):
-        super().__init__(file_ref)
-        self.explicit_references = explicit_references
-
-    @property
-    def file_ref(self) -> FileRef:
-        return self._file_ref
-
-    @property
-    def references(self) -> list:
-        return self.explicit_references
 
 
 class _StringResolverTestImpl(StringResolver):
