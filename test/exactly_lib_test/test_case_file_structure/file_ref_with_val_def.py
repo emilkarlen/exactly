@@ -45,9 +45,9 @@ class TestRelValueDefinition(unittest.TestCase):
              ),
         ]
         for path_suffix, additional_expected_references in path_suffix_test_cases:
-            file_reference = sut.rel_value_definition(value_ref_of_path, path_suffix)
+            file_ref_resolver = sut.rel_value_definition(value_ref_of_path, path_suffix)
             # ACT #
-            actual = file_reference.value_references()
+            actual = file_ref_resolver.references
             # ASSERT #
             expected_references = expected_mandatory_references + additional_expected_references
             assertion = asrt.matches_sequence(expected_references)
@@ -78,12 +78,12 @@ class TestRelValueDefinition(unittest.TestCase):
                 with self.subTest(msg='rel_option_type={} ,path_suffix_type={}'.format(
                         rel_option_type_of_referenced_symbol,
                         path_suffix)):
-                    file_reference_to_check = sut.rel_value_definition(
+                    file_ref_resolver_to_check = sut.rel_value_definition(
                         _value_reference_of_path_with_accepted(file_ref_symbol_name,
                                                                rel_option_type_of_referenced_symbol),
                         path_suffix)
                     # ACT #
-                    actual = file_reference_to_check.exists_pre_sds(symbol_table)
+                    actual = file_ref_resolver_to_check.resolve(symbol_table).exists_pre_sds(symbol_table)
                     # ASSERT #
                     self.assertEqual(expected_exists_pre_sds,
                                      actual,
@@ -114,7 +114,7 @@ class TestRelValueDefinition(unittest.TestCase):
                                                      PathPartAsFixedPath(
                                                          path_component_from_referenced_file_ref))))
             for path_suffix, symbol_table_entries in path_suffix_test_cases:
-                file_reference_to_check = sut.rel_value_definition(
+                fr_resolver_to_check = sut.rel_value_definition(
                     _value_reference_of_path_with_accepted(file_ref_symbol_name,
                                                            rel_option),
                     path_suffix)
@@ -127,13 +127,14 @@ class TestRelValueDefinition(unittest.TestCase):
                 environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table)
                 with self.subTest(msg=str(rel_option)):
                     # ACT #
+                    file_ref_to_check = fr_resolver_to_check.resolve(symbol_table)
                     if exists_pre_sds:
                         tested_path_msg = 'file_path_pre_sds'
-                        actual_path = file_reference_to_check.file_path_pre_sds(environment)
+                        actual_path = file_ref_to_check.file_path_pre_sds(environment)
                     else:
                         tested_path_msg = 'file_path_post_sds'
-                        actual_path = file_reference_to_check.file_path_post_sds(environment)
-                    actual_path_pre_or_post_sds = file_reference_to_check.file_path_pre_or_post_sds(environment)
+                        actual_path = file_ref_to_check.file_path_post_sds(environment)
+                    actual_path_pre_or_post_sds = file_ref_to_check.file_path_pre_or_post_sds(environment)
                     # ASSERT #
                     self.assertEqual(expected_path_str,
                                      str(actual_path),

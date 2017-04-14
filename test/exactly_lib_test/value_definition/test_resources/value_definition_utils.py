@@ -55,6 +55,13 @@ def file_ref_value_container(file_ref: _file_ref.FileRef = file_ref_test_impl('f
                           FileRefConstant(file_ref))
 
 
+def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
+                                line_num: int = 1,
+                                source_line: str = 'value def line') -> ValueContainer:
+    return ValueContainer(Line(line_num, source_line),
+                          file_ref_resolver)
+
+
 def file_ref_value_definition(name: str,
                               file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                                relativity=RelOptionType.REL_CWD),

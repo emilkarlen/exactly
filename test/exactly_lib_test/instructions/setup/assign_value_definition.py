@@ -179,13 +179,12 @@ class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
     def test(self):
         instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = v2.file_ref_value(
-                rel_value_definition(
-                    ValueReference('REFERENCED_VAL_DEF',
-                                   FileRefRelativityRestriction(
-                                       REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
-                    PathPartAsFixedPath('component')))
-            expected_value_container = _value_container(expected_file_ref_value)
+            expected_file_ref_resolver = rel_value_definition(
+                ValueReference('REFERENCED_VAL_DEF',
+                               FileRefRelativityRestriction(
+                                   REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
+                PathPartAsFixedPath('component'))
+            expected_value_container = _value_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
