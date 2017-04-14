@@ -6,6 +6,7 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.value_definition.concrete_restrictions import NoRestriction
 from exactly_lib.value_definition.concrete_values import FileRefResolver, StringResolver
+from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.value_structure import ValueContainer, Value, ValueReference, ValueRestriction, \
     ValueDefinition
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
@@ -42,7 +43,7 @@ def symbol_table_with_single_file_ref_value(name: str,
 def file_ref_value(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                     relativity=RelOptionType.REL_CWD)
                    ) -> FileRefResolver:
-    return FileRefResolver(file_ref)
+    return FileRefConstant(file_ref)
 
 
 def file_ref_value_container(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
@@ -50,7 +51,7 @@ def file_ref_value_container(file_ref: _file_ref.FileRef = file_ref_test_impl('f
                              line_num: int = 1,
                              source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
-                          FileRefResolver(file_ref))
+                          FileRefConstant(file_ref))
 
 
 def file_ref_value_definition(name: str,

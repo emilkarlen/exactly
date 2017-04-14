@@ -37,19 +37,15 @@ class StringResolver(SymbolValueResolver):
 
 
 class FileRefResolver(SymbolValueResolver):
-    def __init__(self, file_ref: FileRef):
-        file_ref.value_references()
-        self._file_ref = file_ref
-
     def resolve(self, symbols: SymbolTable) -> FileRef:
-        return self._file_ref
+        raise NotImplementedError()
 
     @property
     def references(self) -> list:
-        return self._file_ref.value_references()
+        raise NotImplementedError()
 
     def __str__(self):
-        return str(type(self)) + '\'' + str(self._file_ref) + '\''
+        return str(type(self))
 
 
 class ValueVisitor:

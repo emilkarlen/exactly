@@ -6,7 +6,6 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 

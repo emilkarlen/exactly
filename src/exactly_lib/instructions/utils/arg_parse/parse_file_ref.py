@@ -21,6 +21,7 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.value_definition.concrete_values import FileRefResolver
+from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueReference
 
@@ -94,10 +95,10 @@ def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -
     if token.type is TokenType.PLAIN:
         ensure_is_not_option_argument(token.string)
     if relativity_info is None:
-        return FileRefResolver(_without_explicit_relativity(token, conf))
+        return FileRefConstant(_without_explicit_relativity(token, conf))
     else:
         path_part_2_file_ref = _file_ref_constructor(relativity_info)
-        return FileRefResolver(_with_explicit_relativity(token, path_part_2_file_ref))
+        return FileRefConstant(_with_explicit_relativity(token, path_part_2_file_ref))
 
 
 def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> FileRef:
