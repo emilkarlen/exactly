@@ -35,8 +35,8 @@ from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
-from exactly_lib_test.value_definition.test_resources.concrete_value_assertions_2 import file_ref_value_equals, \
-    equals_file_ref_value2
+from exactly_lib_test.value_definition.test_resources.concrete_value_assertions_2 import file_ref_resolver_equals, \
+    equals_file_ref_resolver2
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
 from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
@@ -89,7 +89,7 @@ class TestParsesBase(unittest.TestCase):
         # ACT #
         actual = sut.parse_file_ref(ts, arrangement.rel_option_argument_configuration)
         # ASSERT #
-        file_ref_value_equals(expectation.file_ref).apply_with_message(self, actual, 'file-ref')
+        file_ref_resolver_equals(expectation.file_ref).apply_with_message(self, actual, 'file-ref')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
     def _check2(self, arrangement: Arrangement,
@@ -351,14 +351,14 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=equals_file_ref_value2(file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                                                         PathPartAsFixedPath(symbol_string_value)),
-                                                 asrt.matches_sequence([
+                 file_ref=equals_file_ref_resolver2(file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                                                            PathPartAsFixedPath(symbol_string_value)),
+                                                    asrt.matches_sequence([
                                                      equals_value_reference(symbol_name,
                                                                             is_string_value_restriction)
                                                  ]),
-                                                 symbol_table_with_single_string_value(symbol_name,
-                                                                                       symbol_string_value)),
+                                                    symbol_table_with_single_string_value(symbol_name,
+                                                                                          symbol_string_value)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Quoted symbol reference after explicit relativity'
@@ -371,7 +371,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=file_ref_value_equals(
+                 file_ref=file_ref_resolver_equals(
                      FileRefConstant(file_refs.of_rel_option(
                          RelOptionType.REL_HOME,
                          PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol_name))))),
@@ -403,7 +403,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                                                                                       RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=equals_file_ref_value2(
+                 file_ref=equals_file_ref_resolver2(
                      file_refs.of_rel_option(RelOptionType.REL_ACT,
                                              PathPartAsStringSymbolReference(symbol_name)),
                      asrt.matches_sequence([
@@ -431,7 +431,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                                                                                       RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=equals_file_ref_value2(
+                 file_ref=equals_file_ref_resolver2(
                      file_refs.absolute_file_name('/absolute/path'),
                      asrt.matches_sequence([
                          equals_value_reference(
@@ -458,7 +458,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                                                                                       RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=equals_file_ref_value2(
+                 file_ref=equals_file_ref_resolver2(
                      file_ref_rel_home,
                      asrt.matches_sequence([
                          equals_value_reference(
