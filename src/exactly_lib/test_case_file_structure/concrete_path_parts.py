@@ -1,7 +1,7 @@
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import StringRestriction
-from exactly_lib.value_definition.concrete_values import StringValue
+from exactly_lib.value_definition.concrete_values import StringResolver
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
@@ -29,7 +29,7 @@ class PathPartAsStringSymbolReference(PathPart):
         value_container = symbols.lookup(self.symbol_name)
         assert isinstance(value_container, ValueContainer)
         string_value = value_container.value
-        assert isinstance(string_value, StringValue)
+        assert isinstance(string_value, StringResolver)
         return string_value.resolve(symbols)
 
     @property

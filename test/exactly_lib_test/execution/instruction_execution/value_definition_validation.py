@@ -9,7 +9,7 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_restrictions import NoRestriction
-from exactly_lib.value_definition.concrete_values import StringValue
+from exactly_lib.value_definition.concrete_values import StringResolver
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueRestriction
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value_container
@@ -167,7 +167,7 @@ class TestValidationOfList(unittest.TestCase):
 def value_definition_of(name: str) -> vs.ValueDefinition:
     return vs.ValueDefinition(name,
                               vs.ValueContainer(Line(1, 'source code'),
-                                                StringValue('string value')))
+                                                StringResolver('string value')))
 
 
 def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
@@ -177,7 +177,7 @@ def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
 def string_entry(name: str, value: str = 'string value') -> Entry:
     return Entry(name,
                  vs.ValueContainer(Line(1, 'source code'),
-                                   StringValue(value)))
+                                   StringResolver(value)))
 
 
 def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRelativityVariants:

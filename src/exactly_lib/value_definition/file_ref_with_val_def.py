@@ -9,7 +9,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
@@ -55,5 +55,5 @@ def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRe
     value_container = symbols.lookup(name)
     assert isinstance(value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
     value = value_container.value
-    assert isinstance(value, FileRefValue), 'Referenced definition must be FileRefValue'
+    assert isinstance(value, FileRefResolver), 'Referenced definition must be FileRefValue'
     return value.resolve(symbols)

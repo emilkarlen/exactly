@@ -20,7 +20,7 @@ from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, \
     EitherStringOrFileRefRelativityRestriction, StringRestriction
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
@@ -63,9 +63,9 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 file_ref: FileRefValue,
+                 file_ref: FileRefResolver,
                  token_stream: asrt.ValueAssertion):
-        assert isinstance(file_ref, FileRefValue)
+        assert isinstance(file_ref, FileRefResolver)
         self.file_ref = file_ref
         self.token_stream = token_stream
 
@@ -104,7 +104,7 @@ class TestParsesBase(unittest.TestCase):
     def assert_is_file_that_does_not_exist_pre_sds(self,
                                                    expected_path: pathlib.Path,
                                                    environment: PathResolvingEnvironmentPreOrPostSds,
-                                                   actual: FileRefValue):
+                                                   actual: FileRefResolver):
         actual_file_ref = actual.resolve(environment.value_definitions)
         self.assertFalse(actual_file_ref.exists_pre_sds(environment.value_definitions))
         self.assertEqual(actual_file_ref.file_path_post_sds(environment),
@@ -129,7 +129,7 @@ class TestParseFromTokenStream2CasesWithoutRelValueDefinitionRelativity(TestPars
         ]
         for default_option, accepted_options in default_and_accepted_options_variants:
             expected_file_ref = file_refs.of_rel_option(default_option, PathPartAsFixedPath(file_name_argument))
-            expected_file_ref_value = FileRefValue(expected_file_ref)
+            expected_file_ref_value = FileRefResolver(expected_file_ref)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -171,7 +171,7 @@ class TestParseFromTokenStream2CasesWithoutRelValueDefinitionRelativity(TestPars
         file_name_argument = 'file-name'
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_file_ref = file_refs.of_rel_option(rel_option_type, PathPartAsFixedPath(file_name_argument))
-            expected_file_ref_value = FileRefValue(expected_file_ref)
+            expected_file_ref_value = FileRefResolver(expected_file_ref)
             option_str = _option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
@@ -270,7 +270,7 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
         expected_file_ref = file_refs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
                                                     PathPartAsFixedPath('{rel_val_def_option}'.format(
                                                         rel_val_def_option=rel_val_def_option)))
-        expected_file_ref_value = FileRefValue(expected_file_ref)
+        expected_file_ref_value = FileRefResolver(expected_file_ref)
         self._check(
             Arrangement(source,
                         _ARG_CONFIG_FOR_ALL_RELATIVITIES),
@@ -321,7 +321,7 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
                                                           FileRefRelativityRestriction(accepted_relativities))
                 expected_file_ref = rel_value_definition(expected_value_reference,
                                                          PathPartAsFixedPath(file_name_argument))
-                expected_file_ref_value = FileRefValue(expected_file_ref)
+                expected_file_ref_value = FileRefResolver(expected_file_ref)
                 arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
                 with self.subTest(msg='source={}'.format(repr(source))):
                     argument_string = source.format(option_str=option_str,
@@ -350,8 +350,8 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
              ),
              Expectation2(
                  file_ref=file_ref_value_equals(
-                     FileRefValue(file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                                          PathPartAsStringSymbolReference(symbol_name)))),
+                     FileRefResolver(file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                                             PathPartAsStringSymbolReference(symbol_name)))),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Quoted symbol reference after explicit relativity'
@@ -365,7 +365,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
              ),
              Expectation2(
                  file_ref=file_ref_value_equals(
-                     FileRefValue(file_refs.of_rel_option(
+                     FileRefResolver(file_refs.of_rel_option(
                          RelOptionType.REL_HOME,
                          PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol_name))))),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),

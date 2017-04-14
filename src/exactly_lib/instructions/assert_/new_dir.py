@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -23,7 +23,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class _Instruction(AssertPhaseInstruction):
-    def __init__(self, destination_path_resolver: FileRefValue):
+    def __init__(self, destination_path_resolver: FileRefResolver):
         self.destination_path_resolver = destination_path_resolver
 
     def main(self, environment: InstructionEnvironmentForPostSdsStep,

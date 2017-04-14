@@ -1,7 +1,7 @@
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver, StringResolver
 from exactly_lib.value_definition.value_structure import ValueRestriction, Value
 
 
@@ -20,7 +20,7 @@ class StringRestriction(ValueRestriction):
     """
 
     def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
-        if not isinstance(value, StringValue):
+        if not isinstance(value, StringResolver):
             #  TODO [val-def] Error message should be human readable
             return 'Not a StringValue: ' + str(value)
         return None
@@ -35,7 +35,7 @@ class FileRefRelativityRestriction(ValueRestriction):
         self._accepted = accepted
 
     def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
-        if not isinstance(value, FileRefValue):
+        if not isinstance(value, FileRefResolver):
             #  TODO [val-def] Error message should be human readable
             return 'Not a FileRefValue: ' + str(value)
         file_ref = value.resolve(symbol_table)

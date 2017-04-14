@@ -3,9 +3,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.value_structure import Value
 
 
-class SymbolValue(Value):
+class SymbolValueResolver(Value):
     """
-    TODO Improve name, description
+    Base class for values in the symbol table used by Exactly.
     """
 
     @property
@@ -21,7 +21,7 @@ class SymbolValue(Value):
         raise NotImplementedError()
 
 
-class StringValue(SymbolValue):
+class StringResolver(SymbolValueResolver):
     def __init__(self, string: str):
         self._string = string
 
@@ -36,7 +36,7 @@ class StringValue(SymbolValue):
         return str(type(self)) + '\'' + self._string + '\''
 
 
-class FileRefValue(SymbolValue):
+class FileRefResolver(SymbolValueResolver):
     def __init__(self, file_ref: FileRef):
         file_ref.value_references()
         self._file_ref = file_ref
@@ -61,14 +61,14 @@ class ValueVisitor:
         """
         :return: Return value from _visit... method
         """
-        if isinstance(value, FileRefValue):
+        if isinstance(value, FileRefResolver):
             return self._visit_file_ref(value)
-        if isinstance(value, StringValue):
+        if isinstance(value, StringResolver):
             return self._visit_string(value)
         raise TypeError('Unknown {}: {}'.format(Value, str(value)))
 
-    def _visit_string(self, value: StringValue):
+    def _visit_string(self, value: StringResolver):
         raise NotImplementedError()
 
-    def _visit_file_ref(self, value: FileRefValue):
+    def _visit_file_ref(self, value: FileRefResolver):
         raise NotImplementedError()

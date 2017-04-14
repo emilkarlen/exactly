@@ -20,7 +20,7 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
     PathPartAsStringSymbolReference
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueReference
 
@@ -61,7 +61,7 @@ def non_home_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration
 NON_HOME_CONFIG = non_home_config('FILE')
 
 
-def parse_file_ref_from_parse_source(source: ParseSource, conf: RelOptionArgumentConfiguration) -> FileRefValue:
+def parse_file_ref_from_parse_source(source: ParseSource, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     """
     :param source: Has a current line
     :return: The parsed FileRef, remaining arguments after file was parsed.
@@ -74,7 +74,7 @@ def parse_file_ref_from_parse_source(source: ParseSource, conf: RelOptionArgumen
     return ret_val
 
 
-def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -> FileRefValue:
+def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     """
     :param tokens: Argument list
     :return: The parsed FileRef, remaining arguments after file was parsed.
@@ -94,10 +94,10 @@ def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -
     if token.type is TokenType.PLAIN:
         ensure_is_not_option_argument(token.string)
     if relativity_info is None:
-        return FileRefValue(_without_explicit_relativity(token, conf))
+        return FileRefResolver(_without_explicit_relativity(token, conf))
     else:
         path_part_2_file_ref = _file_ref_constructor(relativity_info)
-        return FileRefValue(_with_explicit_relativity(token, path_part_2_file_ref))
+        return FileRefResolver(_with_explicit_relativity(token, path_part_2_file_ref))
 
 
 def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> FileRef:

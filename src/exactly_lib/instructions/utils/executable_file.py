@@ -6,12 +6,12 @@ from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsVa
 from exactly_lib.test_case_file_structure import file_ref
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 class ExecutableFile:
     def __init__(self,
-                 file_reference_resolver: FileRefValue,
+                 file_reference_resolver: FileRefResolver,
                  arguments: list):
         self._file_reference_resolver = file_reference_resolver
         self._arguments = arguments

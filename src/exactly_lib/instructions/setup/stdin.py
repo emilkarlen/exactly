@@ -21,7 +21,7 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -106,7 +106,7 @@ class _InstructionForHereDocument(SetupPhaseInstruction):
 
 
 class _InstructionForFileRef(InstructionWithFileRefsBase):
-    def __init__(self, redirect_file: FileRefValue):
+    def __init__(self, redirect_file: FileRefResolver):
         super().__init__((FileRefCheck(redirect_file,
                                        file_properties.must_exist_as(FileType.REGULAR)),))
         self.redirect_file = redirect_file

@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.value_definition.concrete_restrictions import NoRestriction
-from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver, StringResolver
 from exactly_lib.value_definition.value_structure import ValueContainer, Value, ValueReference, ValueRestriction, \
     ValueDefinition
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
@@ -16,7 +16,7 @@ def string_value_container(string_value: str,
                            line_num: int = 1,
                            source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
-                          StringValue(string_value))
+                          StringResolver(string_value))
 
 
 def value_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> ValueReference:
@@ -41,8 +41,8 @@ def symbol_table_with_single_file_ref_value(name: str,
 
 def file_ref_value(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                     relativity=RelOptionType.REL_CWD)
-                   ) -> FileRefValue:
-    return FileRefValue(file_ref)
+                   ) -> FileRefResolver:
+    return FileRefResolver(file_ref)
 
 
 def file_ref_value_container(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
@@ -50,7 +50,7 @@ def file_ref_value_container(file_ref: _file_ref.FileRef = file_ref_test_impl('f
                              line_num: int = 1,
                              source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
-                          FileRefValue(file_ref))
+                          FileRefResolver(file_ref))
 
 
 def file_ref_value_definition(name: str,
@@ -61,7 +61,7 @@ def file_ref_value_definition(name: str,
     return ValueDefinition(name, file_ref_value_container(file_ref, line_num, source_line))
 
 
-def entry(name: str, value: Value = StringValue('string value'),
+def entry(name: str, value: Value = StringResolver('string value'),
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
     return Entry(name, ValueContainer(Line(line_num, source_line), value))

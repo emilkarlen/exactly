@@ -5,11 +5,11 @@ from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case_file_structure import file_ref, file_refs
+from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 LIST_DELIMITER_START = '('
 LIST_DELIMITER_END = ')'
@@ -36,13 +36,13 @@ def parse(tokens: TokenStream2) -> ExecutableFile:
         return ExecutableFile(the_file_ref, [])
 
 
-def _parse_exe_file_ref(tokens: TokenStream2) -> FileRefValue:
+def _parse_exe_file_ref(tokens: TokenStream2) -> FileRefResolver:
     if tokens.is_null:
         parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
     token = tokens.head
     if token.is_plain and option_parsing.matches(PYTHON_EXECUTABLE_OPTION_NAME, token.string):
         tokens.consume()
-        return FileRefValue(file_refs.absolute_file_name(sys.executable))
+        return FileRefResolver(file_refs.absolute_file_name(sys.executable))
     else:
         return parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)
 

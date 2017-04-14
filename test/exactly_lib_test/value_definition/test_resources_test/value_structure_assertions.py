@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.util.line_source import Line
-from exactly_lib.value_definition.concrete_values import StringValue, FileRefValue
+from exactly_lib.value_definition.concrete_values import StringResolver, FileRefResolver
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueDefinition
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
@@ -19,8 +19,8 @@ def suite() -> unittest.TestSuite:
 class TestEqualsValueContainer(unittest.TestCase):
     def test_pass(self):
         value_cases = [
-            StringValue('s'),
-            FileRefValue(file_ref_test_impl('file-name')),
+            StringResolver('s'),
+            FileRefResolver(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
             for ignore_source_line in [False, True]:
@@ -33,7 +33,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
-        common_value = StringValue('common string value')
+        common_value = StringResolver('common string value')
         expected = ValueContainer(Line(4, 'source code 4'), common_value)
         actual = ValueContainer(Line(5, 'source code 5'), common_value)
         put = test_case_with_failure_exception_set_to_test_exception()
@@ -41,7 +41,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 
     def test_fail__different_source_line_and_source_line_check_is_not_ignored(self):
         # ARRANGE #
-        common_value = FileRefValue(file_ref_test_impl('common file-name'))
+        common_value = FileRefResolver(file_ref_test_impl('common file-name'))
         expected = ValueContainer(Line(1, 'source code 1'), common_value)
         actual = ValueContainer(Line(2, 'source code 2'), common_value)
         put = test_case_with_failure_exception_set_to_test_exception()
@@ -52,8 +52,8 @@ class TestEqualsValueContainer(unittest.TestCase):
 class TestEqualsValueDefinition(unittest.TestCase):
     def test_pass(self):
         value_cases = [
-            StringValue('s'),
-            FileRefValue(file_ref_test_impl('file-name')),
+            StringResolver('s'),
+            FileRefResolver(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
             for ignore_source_line in [False, True]:
@@ -67,7 +67,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
 
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
-        common_value = StringValue('common string value')
+        common_value = StringResolver('common string value')
         expected_value_container = ValueContainer(Line(4, 'source code 4'), common_value)
         actual_value_container = ValueContainer(Line(5, 'source code 5'), common_value)
         common_name = 'value name'
@@ -79,7 +79,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
 
     def test_fail__different_name(self):
         # ARRANGE #
-        common_value_container = ValueContainer(Line(1, 'source code'), StringValue('common string value'))
+        common_value_container = ValueContainer(Line(1, 'source code'), StringResolver('common string value'))
         expected_value_definition = ValueDefinition('expected value name', common_value_container)
         actual_value_definition = ValueDefinition('actual value name', common_value_container)
         put = test_case_with_failure_exception_set_to_test_exception()
@@ -94,10 +94,10 @@ class TestEqualsValueDefinition(unittest.TestCase):
         common_name = 'value name'
         expected_value_definition = ValueDefinition(common_name,
                                                     ValueContainer(common_name_source,
-                                                                   StringValue('expected string value')))
+                                                                   StringResolver('expected string value')))
         actual_value_definition = ValueDefinition(common_name,
                                                   ValueContainer(common_name_source,
-                                                                 StringValue('actual string value')))
+                                                                 StringResolver('actual string value')))
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             # ACT #

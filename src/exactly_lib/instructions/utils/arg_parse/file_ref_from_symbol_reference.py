@@ -11,7 +11,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import EitherStringOrFileRefRelativityRestriction, \
     StringRestriction, FileRefRelativityRestriction
-from exactly_lib.value_definition.concrete_values import ValueVisitor, FileRefValue, StringValue
+from exactly_lib.value_definition.concrete_values import ValueVisitor, FileRefResolver, StringResolver
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
@@ -81,10 +81,10 @@ class _SymbolValue2FileRefVisitor(ValueVisitor):
         self.symbols = symbols
         self.default_relativity = default_relativity
 
-    def _visit_file_ref(self, value: FileRefValue) -> FileRef:
+    def _visit_file_ref(self, value: FileRefResolver) -> FileRef:
         return value.resolve(self.symbols)
 
-    def _visit_string(self, value: StringValue) -> FileRef:
+    def _visit_string(self, value: StringResolver) -> FileRef:
         s = value.resolve(self.symbols)
         path_value = pathlib.Path(s)
         if path_value.is_absolute():

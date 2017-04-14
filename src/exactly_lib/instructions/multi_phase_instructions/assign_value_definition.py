@@ -16,8 +16,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.value_definition.concrete_values import FileRefValue, StringValue, SymbolValue
-from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer, Value
+from exactly_lib.value_definition.concrete_values import StringResolver, SymbolValueResolver
+from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer
 
 PATH_TYPE = 'path'
 STRING_TYPE = 'string'
@@ -140,14 +140,14 @@ A single word, or a single quoted text.
 """
 
 
-def _parse_path(token_stream: TokenStream2) -> SymbolValue:
+def _parse_path(token_stream: TokenStream2) -> SymbolValueResolver:
     return parse_file_ref.parse_file_ref(token_stream, REL_OPTION_ARGUMENT_CONFIGURATION)
 
 
-def _parse_string(token_stream: TokenStream2) -> SymbolValue:
+def _parse_string(token_stream: TokenStream2) -> SymbolValueResolver:
     if token_stream.is_null:
         raise SingleInstructionInvalidArgumentException('Missing {} value'.format(STRING_TYPE))
-    ret_val = StringValue(token_stream.head.string)
+    ret_val = StringResolver(token_stream.head.string)
     token_stream.consume()
     return ret_val
 
