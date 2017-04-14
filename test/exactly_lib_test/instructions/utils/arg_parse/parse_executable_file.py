@@ -36,7 +36,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string(sys.executable).apply_with_message(self,
-                                                                   ef.file_reference(symbols).path_suffix(symbols),
+                                                                   ef.file_reference(symbols).path_suffix(),
                                                                    'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -46,7 +46,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('file').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self._has_head_with_string(ts, 'arg2')
@@ -56,7 +56,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('the file').apply_with_message(self,
-                                                               ef.file_reference(symbols).path_suffix(symbols),
+                                                               ef.file_reference(symbols).path_suffix(),
                                                                'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
 
@@ -65,7 +65,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('the file').apply_with_message(self,
-                                                               ef.file_reference(symbols).path_suffix(symbols),
+                                                               ef.file_reference(symbols).path_suffix(),
                                                                'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self._has_head_with_string(ts, 'an argument')
@@ -75,7 +75,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('THE_FILE').apply_with_message(self,
-                                                               ef.file_reference(symbols).path_suffix(symbols),
+                                                               ef.file_reference(symbols).path_suffix(),
                                                                'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -85,7 +85,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
 
@@ -104,7 +104,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -114,7 +114,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('A FILE').apply_with_message(self,
-                                                             ef.file_reference(symbols).path_suffix(symbols),
+                                                             ef.file_reference(symbols).path_suffix(),
                                                              'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -124,7 +124,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertEqual('tail arguments',
@@ -135,7 +135,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(ts.is_null)
@@ -145,7 +145,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertEqual(['arg1', 'arg2'],
                          ef.arguments,
@@ -157,7 +157,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertEqual(['arg1', 'arg2'],
                          ef.arguments,
@@ -169,7 +169,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(symbols),
+                                                           ef.file_reference(symbols).path_suffix(),
                                                            'file_reference/path_suffix')
         self.assertEqual(['arg1', 'arg2', 'arg3'],
                          ef.arguments,

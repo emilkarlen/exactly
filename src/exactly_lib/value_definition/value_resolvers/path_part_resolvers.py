@@ -38,3 +38,6 @@ class PathPartResolverAsStringSymbolReference(PathPartResolver):
     @property
     def _symbol_name(self) -> str:
         return self._value_reference.name
+
+    def __str__(self):
+        return '{}({})'.format(type(self), repr(self._symbol_name))

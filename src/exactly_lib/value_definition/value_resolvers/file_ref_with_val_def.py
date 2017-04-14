@@ -25,38 +25,40 @@ class _FileRefResolverRelValueDefinition(FileRefResolver):
     def __init__(self,
                  path_suffix: PathPartResolver,
                  value_reference_of_path: ValueReference):
-        self.file_ref = _FileRefRelValueDefinition(path_suffix, value_reference_of_path)
+        self.path_suffix = path_suffix
+        self.value_reference_of_path = value_reference_of_path
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
-        return self.file_ref
+        return _FileRefRelValueDefinition(self.path_suffix.resolve(symbols),
+                                          self.value_reference_of_path)
 
     @property
     def references(self) -> list:
-        return self.file_ref.value_references()
+        return [self.value_reference_of_path] + self.path_suffix.references
 
 
 class _FileRefRelValueDefinition(FileRef):
     def __init__(self,
-                 path_suffix: PathPartResolver,
+                 path_suffix: PathPart,
                  value_reference_of_path: ValueReference):
         self._path_suffix = path_suffix
         self.value_reference_of_path = value_reference_of_path
 
     def value_references(self) -> list:
-        return [self.value_reference_of_path] + self._path_suffix.references
+        return [self.value_reference_of_path]
 
     def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         file_ref = self._lookup_file_ref(value_definitions)
         return file_ref.relativity(value_definitions)
 
-    def path_suffix(self, symbols: SymbolTable) -> PathPart:
-        return self._path_suffix.resolve(symbols)
+    def path_suffix(self) -> PathPart:
+        return self._path_suffix
 
-    def path_suffix_str(self, symbols: SymbolTable) -> str:
-        return self._path_suffix.resolve(symbols).resolve(symbols)
+    def path_suffix_str(self) -> str:
+        return self._path_suffix.resolve()
 
-    def path_suffix_path(self, symbols: SymbolTable) -> pathlib.Path:
-        return pathlib.Path(self.path_suffix_str(symbols))
+    def path_suffix_path(self) -> pathlib.Path:
+        return pathlib.Path(self.path_suffix_str())
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         file_ref = self._lookup_file_ref(value_definitions)
@@ -64,11 +66,11 @@ class _FileRefRelValueDefinition(FileRef):
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         file_ref = self._lookup_file_ref(environment.value_definitions)
-        return file_ref.file_path_pre_sds(environment) / self.path_suffix_path(environment.value_definitions)
+        return file_ref.file_path_pre_sds(environment) / self.path_suffix_path()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         file_ref = self._lookup_file_ref(environment.value_definitions)
-        return file_ref.file_path_post_sds(environment) / self.path_suffix_path(environment.value_definitions)
+        return file_ref.file_path_post_sds(environment) / self.path_suffix_path()
 
     def _lookup_file_ref(self, value_definitions: SymbolTable) -> FileRef:
         return lookup_file_ref_from_symbol_table(value_definitions, self.value_reference_of_path.name)

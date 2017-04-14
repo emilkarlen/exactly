@@ -36,7 +36,7 @@ class TestPathPartAsFixedPath(unittest.TestCase):
         # ASSERT #
         self.assertIsInstance(actual, PathPart)
         self.assertEqual('the file name',
-                         actual.resolve(symbols),
+                         actual.resolve(),
                          'resolved file name')
 
 
@@ -63,5 +63,5 @@ class TestPathPartAsStringSymbolReference(unittest.TestCase):
         self.assertIsInstance(actual, PathPart)
         # ASSERT #
         self.assertEqual('symbol value',
-                         actual.resolve(symbol_table),
+                         actual.resolve(),
                          'resolved file name')

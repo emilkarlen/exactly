@@ -65,17 +65,23 @@ class TestRelValueDefinition(unittest.TestCase):
              ),
         ]
         path_suffix_test_cases = [
-            PathPartResolverAsFixedPath('file.txt'),
-            PathPartResolverAsStringSymbolReference('path_suffix_symbol_name'),
+            (PathPartResolverAsFixedPath('file.txt'),
+             ()
+             ),
+            (PathPartResolverAsStringSymbolReference('path_suffix_symbol_name'),
+             (Entry('path_suffix_symbol_name',
+                    string_value_container('path-suffix')),),
+             ),
         ]
         file_ref_symbol_name = 'VAL_DEF_NAME'
         for rel_option_type_of_referenced_symbol, expected_exists_pre_sds in relativity_test_cases:
             referenced_file_ref = file_refs.of_rel_option(rel_option_type_of_referenced_symbol,
                                                           PathPartAsFixedPath('referenced-file-name'))
-            symbol_table = singleton_symbol_table(
-                sym_utils.entry(file_ref_symbol_name,
-                                sym_utils.file_ref_value(file_ref=referenced_file_ref)))
-            for path_suffix in path_suffix_test_cases:
+            for path_suffix, sym_tbl_entries in path_suffix_test_cases:
+                symbol_table = singleton_symbol_table(
+                    sym_utils.entry(file_ref_symbol_name,
+                                    sym_utils.file_ref_value(file_ref=referenced_file_ref)))
+                symbol_table.add_all(sym_tbl_entries)
                 with self.subTest(msg='rel_option_type={} ,path_suffix_type={}'.format(
                         rel_option_type_of_referenced_symbol,
                         path_suffix)):

@@ -453,13 +453,13 @@ class _FileRefWithoutValRefInRootPart(FileRefWithPathSuffixAndIsNotAbsoluteBase)
         return self.__relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path(environment.value_definitions)
+        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
     def value_references(self) -> list:
-        return self.__path_suffix.value_references
+        return []
 
     def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
         return self.__relativity
@@ -486,14 +486,14 @@ class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
         prefix = self._lookup(environment.value_definitions).file_path_pre_sds(environment)
-        return prefix / self.path_suffix_path(environment.value_definitions)
+        return prefix / self.path_suffix_path()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
         prefix = self._lookup(environment.value_definitions).file_path_post_sds(environment)
-        return prefix / self.path_suffix_path(environment.value_definitions)
+        return prefix / self.path_suffix_path()
 
     def value_references(self) -> list:
-        return [self._value_references_of_path] + self.__path_suffix.value_references
+        return [self._value_references_of_path]
 
     def _lookup(self, symbols: SymbolTable) -> FileRef:
         def_in_symbol_table = symbols.lookup(self._value_references_of_path.name)

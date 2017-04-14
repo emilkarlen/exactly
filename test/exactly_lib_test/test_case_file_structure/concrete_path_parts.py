@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.test_case_file_structure import concrete_path_parts as sut
-from exactly_lib.util import symbol_table as st
 
 
 def suite() -> unittest.TestSuite:
@@ -23,21 +22,11 @@ class TestPathPartAsFixedPath(unittest.TestCase):
                          actual,
                          'file name')
 
-    def test_value_references(self):
-        # ARRANGE #
-        path_part = sut.PathPartAsFixedPath('the file name')
-        # ACT #
-        actual = path_part.value_references
-        # ASSERT #
-        self.assertEqual([],
-                         actual,
-                         'value references')
-
     def test_resolve(self):
         # ARRANGE #
         path_part = sut.PathPartAsFixedPath('the file name')
         # ACT #
-        actual = path_part.resolve(st.empty_symbol_table())
+        actual = path_part.resolve()
         # ASSERT #
         self.assertEqual('the file name',
                          actual,
@@ -49,7 +38,7 @@ class TestPathPartAsNothing(unittest.TestCase):
         # ARRANGE #
         path_part = sut.PathPartAsNothing()
         # ACT #
-        actual = path_part.resolve(st.empty_symbol_table())
+        actual = path_part.resolve()
         # ASSERT #
         self.assertEqual('',
                          actual,

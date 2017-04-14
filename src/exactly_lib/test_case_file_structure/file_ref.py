@@ -13,13 +13,13 @@ class FileRef:
     and information about whether it exists pre SDS or not.
     """
 
-    def path_suffix(self, symbols: SymbolTable) -> PathPart:
+    def path_suffix(self) -> PathPart:
         raise NotImplementedError()
 
-    def path_suffix_str(self, symbols: SymbolTable) -> str:
+    def path_suffix_str(self) -> str:
         raise NotImplementedError()
 
-    def path_suffix_path(self, symbols: SymbolTable) -> pathlib.Path:
+    def path_suffix_path(self) -> pathlib.Path:
         raise NotImplementedError()
 
     def value_references(self) -> list:
