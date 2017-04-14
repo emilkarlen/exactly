@@ -22,18 +22,15 @@ class SymbolValueResolver(Value):
 
 
 class StringResolver(SymbolValueResolver):
-    def __init__(self, string: str):
-        self._string = string
-
     def resolve(self, symbols: SymbolTable) -> str:
-        return self._string
+        raise NotImplementedError()
 
     @property
     def references(self) -> list:
-        return []
+        raise NotImplementedError()
 
     def __str__(self):
-        return str(type(self)) + '\'' + self._string + '\''
+        return str(type(self))
 
 
 class FileRefResolver(SymbolValueResolver):

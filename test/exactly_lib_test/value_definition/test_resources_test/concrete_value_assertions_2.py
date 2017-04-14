@@ -1,8 +1,10 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_values import StringResolver, FileRefResolver
 from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
@@ -22,14 +24,14 @@ class TestEqualsValue(unittest.TestCase):
 
     def test_equals__string(self):
         # ARRANGE #
-        value = StringResolver('string')
+        value = StringConstant('string')
         # ACT & ASSERT #
         sut.value_equals3(value).apply_without_message(self, value)
 
     def test_not_equals__different_types(self):
         # ARRANGE #
         expected = FileRefConstant(file_ref_test_impl('file-name'))
-        actual = StringResolver('string value')
+        actual = StringConstant('string value')
         put = test_case_with_failure_exception_set_to_test_exception()
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -46,8 +48,8 @@ class TestEqualsValue(unittest.TestCase):
 
     def test_not_equals__string(self):
         # ARRANGE #
-        expected = StringResolver('expected string')
-        actual = StringResolver('actual string')
+        expected = StringConstant('expected string')
+        actual = StringConstant('actual string')
         put = test_case_with_failure_exception_set_to_test_exception()
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -74,8 +76,11 @@ class _StringResolverTestImpl(StringResolver):
     def __init__(self,
                  value: str,
                  explicit_references: list):
-        super().__init__(value)
+        self.value = value
         self.explicit_references = explicit_references
+
+    def resolve(self, symbols: SymbolTable) -> str:
+        return self.value
 
     @property
     def references(self) -> list:

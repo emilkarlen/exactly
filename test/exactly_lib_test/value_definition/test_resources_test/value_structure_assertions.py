@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.util.line_source import Line
-from exactly_lib.value_definition.concrete_values import StringResolver
 from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueDefinition
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
@@ -20,7 +20,7 @@ def suite() -> unittest.TestSuite:
 class TestEqualsValueContainer(unittest.TestCase):
     def test_pass(self):
         value_cases = [
-            StringResolver('s'),
+            StringConstant('s'),
             FileRefConstant(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
@@ -34,7 +34,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
-        common_value = StringResolver('common string value')
+        common_value = StringConstant('common string value')
         expected = ValueContainer(Line(4, 'source code 4'), common_value)
         actual = ValueContainer(Line(5, 'source code 5'), common_value)
         put = test_case_with_failure_exception_set_to_test_exception()
@@ -53,7 +53,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 class TestEqualsValueDefinition(unittest.TestCase):
     def test_pass(self):
         value_cases = [
-            StringResolver('s'),
+            StringConstant('s'),
             FileRefConstant(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
@@ -68,7 +68,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
 
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
-        common_value = StringResolver('common string value')
+        common_value = StringConstant('common string value')
         expected_value_container = ValueContainer(Line(4, 'source code 4'), common_value)
         actual_value_container = ValueContainer(Line(5, 'source code 5'), common_value)
         common_name = 'value name'
@@ -80,7 +80,8 @@ class TestEqualsValueDefinition(unittest.TestCase):
 
     def test_fail__different_name(self):
         # ARRANGE #
-        common_value_container = ValueContainer(Line(1, 'source code'), StringResolver('common string value'))
+        common_value_container = ValueContainer(Line(1, 'source code'),
+                                                StringConstant('common string value'))
         expected_value_definition = ValueDefinition('expected value name', common_value_container)
         actual_value_definition = ValueDefinition('actual value name', common_value_container)
         put = test_case_with_failure_exception_set_to_test_exception()
@@ -95,10 +96,10 @@ class TestEqualsValueDefinition(unittest.TestCase):
         common_name = 'value name'
         expected_value_definition = ValueDefinition(common_name,
                                                     ValueContainer(common_name_source,
-                                                                   StringResolver('expected string value')))
+                                                                   StringConstant('expected string value')))
         actual_value_definition = ValueDefinition(common_name,
                                                   ValueContainer(common_name_source,
-                                                                 StringResolver('actual string value')))
+                                                                 StringConstant('actual string value')))
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             # ACT #
