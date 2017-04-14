@@ -26,9 +26,9 @@ class _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileRef):
                  symbol_name: str,
                  default_relativity: RelOptionType,
                  accepted_relativity_variants: PathRelativityVariants):
+        self._default_relativity = default_relativity
         self.symbol_name = symbol_name
         self.accepted_relativity_variants = accepted_relativity_variants
-        self.file_ref_resolver = _SymbolValue2FileRefVisitor(default_relativity)
 
     def value_references(self) -> list:
         symbol_reference = ValueReference(self.symbol_name,
@@ -70,16 +70,19 @@ class _IdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileRef):
     def _file_ref_for_actual_symbol(self, symbols: SymbolTable) -> FileRef:
         symbol = symbols.lookup(self.symbol_name)
         assert isinstance(symbol, ValueContainer), 'Implementation consistency/ValueContainer'
-        return self.file_ref_resolver.visit(symbol.value)
+        symbol_value_2_file_ref = _SymbolValue2FileRefVisitor(self._default_relativity, symbols)
+        return symbol_value_2_file_ref.visit(symbol.value)
 
 
 class _SymbolValue2FileRefVisitor(ValueVisitor):
     def __init__(self,
-                 default_relativity: RelOptionType):
+                 default_relativity: RelOptionType,
+                 symbols: SymbolTable):
+        self.symbols = symbols
         self.default_relativity = default_relativity
 
     def _visit_file_ref(self, value: FileRefValue) -> FileRef:
-        return value.file_ref
+        return value.resolve(self.symbols)
 
     def _visit_string(self, value: StringValue) -> FileRef:
         s = value.string

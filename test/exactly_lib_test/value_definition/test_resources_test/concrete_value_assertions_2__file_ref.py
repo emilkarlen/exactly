@@ -513,14 +513,14 @@ class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
     def value_references(self) -> list:
         return [self._value_references_of_path] + self.__path_suffix.value_references
 
-    def _lookup(self, value_definitions: SymbolTable) -> FileRef:
-        def_in_symbol_table = value_definitions.lookup(self._value_references_of_path.name)
+    def _lookup(self, symbols: SymbolTable) -> FileRef:
+        def_in_symbol_table = symbols.lookup(self._value_references_of_path.name)
         assert isinstance(def_in_symbol_table, ValueContainer), 'Symbol Table is assumed to contain ValueContainer:s'
         value = def_in_symbol_table.value
         if not isinstance(value, FileRefValue):
             assert isinstance(value, FileRefValue), 'Referenced ValueContainer must contain a FileRefValue: ' + str(
                 value)
-        return value.file_ref
+        return value.resolve(symbols)
 
 
 _EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME
