@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.util.line_source import Line
-from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueDefinition
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl

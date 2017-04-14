@@ -10,7 +10,7 @@ from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 
 LIST_DELIMITER_START = '('
 LIST_DELIMITER_END = ')'

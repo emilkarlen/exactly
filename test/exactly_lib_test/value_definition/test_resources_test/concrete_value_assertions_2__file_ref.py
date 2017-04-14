@@ -15,7 +15,7 @@ from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
     EitherStringOrFileRefRelativityRestriction, StringRestriction
 from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException

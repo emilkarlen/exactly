@@ -23,7 +23,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

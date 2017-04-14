@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_values import StringResolver, FileRefResolver
-from exactly_lib.value_definition.file_ref_resolvers import FileRefConstant
+from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
