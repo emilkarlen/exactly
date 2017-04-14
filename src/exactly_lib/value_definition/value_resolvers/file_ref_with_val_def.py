@@ -1,7 +1,6 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
     SpecificPathRelativity
@@ -10,10 +9,11 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.concrete_values import FileRefResolver
+from exactly_lib.value_definition.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
-def rel_value_definition(value_reference2: ValueReference, path_suffix: PathPart) -> FileRefResolver:
+def rel_value_definition(value_reference2: ValueReference, path_suffix: PathPartResolver) -> FileRefResolver:
     return _FileRefResolverRelValueDefinition(path_suffix, value_reference2)
 
 
@@ -23,7 +23,7 @@ def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityV
 
 class _FileRefResolverRelValueDefinition(FileRefResolver):
     def __init__(self,
-                 path_suffix: PathPart,
+                 path_suffix: PathPartResolver,
                  value_reference_of_path: ValueReference):
         self.file_ref = _FileRefRelValueDefinition(path_suffix, value_reference_of_path)
 
@@ -35,19 +35,28 @@ class _FileRefResolverRelValueDefinition(FileRefResolver):
         return self.file_ref.value_references()
 
 
-class _FileRefRelValueDefinition(FileRefWithPathSuffixBase):
+class _FileRefRelValueDefinition(FileRef):
     def __init__(self,
-                 path_suffix: PathPart,
+                 path_suffix: PathPartResolver,
                  value_reference_of_path: ValueReference):
-        super().__init__(path_suffix)
+        self._path_suffix = path_suffix
         self.value_reference_of_path = value_reference_of_path
 
     def value_references(self) -> list:
-        return [self.value_reference_of_path] + self._path_suffix.value_references
+        return [self.value_reference_of_path] + self._path_suffix.references
 
     def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         file_ref = self._lookup_file_ref(value_definitions)
         return file_ref.relativity(value_definitions)
+
+    def path_suffix(self, symbols: SymbolTable) -> PathPart:
+        return self._path_suffix.resolve(symbols)
+
+    def path_suffix_str(self, symbols: SymbolTable) -> str:
+        return self._path_suffix.resolve(symbols).resolve(symbols)
+
+    def path_suffix_path(self, symbols: SymbolTable) -> pathlib.Path:
+        return pathlib.Path(self.path_suffix_str(symbols))
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         file_ref = self._lookup_file_ref(value_definitions)

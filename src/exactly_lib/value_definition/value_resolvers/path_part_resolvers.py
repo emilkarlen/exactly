@@ -24,7 +24,7 @@ class PathPartResolverAsStringSymbolReference(PathPartResolver):
         self._value_reference = ValueReference(symbol_name, StringRestriction())
 
     def resolve(self, symbols: SymbolTable) -> PathPart:
-        value_container = symbols.lookup(self.symbol_name)
+        value_container = symbols.lookup(self._symbol_name)
         assert isinstance(value_container, ValueContainer)
         string_value = value_container.value
         assert isinstance(string_value, StringResolver)
@@ -36,5 +36,5 @@ class PathPartResolverAsStringSymbolReference(PathPartResolver):
         return [self._value_reference]
 
     @property
-    def symbol_name(self) -> str:
+    def _symbol_name(self) -> str:
         return self._value_reference.name

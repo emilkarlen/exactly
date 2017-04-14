@@ -23,6 +23,7 @@ from exactly_lib.value_definition.concrete_restrictions import FileRefRelativity
 from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
+from exactly_lib.value_definition.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
@@ -33,7 +34,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
-    equals_either_string_or_file_ref_relativity_restriction
+    equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
 from exactly_lib_test.value_definition.test_resources.concrete_value_assertions_2 import file_ref_value_equals, \
     equals_file_ref_value2
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
@@ -321,7 +322,7 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
                 expected_value_reference = ValueReference(value_definition_name,
                                                           FileRefRelativityRestriction(accepted_relativities))
                 expected_file_ref_resolver = rel_value_definition(expected_value_reference,
-                                                                  PathPartAsFixedPath(file_name_argument))
+                                                                  PathPartResolverAsFixedPath(file_name_argument))
                 arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
                 with self.subTest(msg='source={}'.format(repr(source))):
                     argument_string = source.format(option_str=option_str,
@@ -338,6 +339,7 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
 class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
     def test_with_explicit_relativity(self):
         symbol_name = 'PATH_SUFFIX_SYMBOL'
+        symbol_string_value = 'symbol-string-value'
         test_cases = [
             ('Symbol reference after explicit relativity '
              'SHOULD '
@@ -349,9 +351,14 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref=file_ref_value_equals(
-                     FileRefConstant(file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                                             PathPartAsStringSymbolReference(symbol_name)))),
+                 file_ref=equals_file_ref_value2(file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                                                         PathPartAsFixedPath(symbol_string_value)),
+                                                 asrt.matches_sequence([
+                                                     equals_value_reference(symbol_name,
+                                                                            is_string_value_restriction)
+                                                 ]),
+                                                 symbol_table_with_single_string_value(symbol_name,
+                                                                                       symbol_string_value)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Quoted symbol reference after explicit relativity'
