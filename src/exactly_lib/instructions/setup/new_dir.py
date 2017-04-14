@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -22,7 +22,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class _Instruction(SetupPhaseInstruction):
-    def __init__(self, dir_path_resolver: FileRefValue):
+    def __init__(self, dir_path_resolver: FileRefResolver):
         self.dir_path_resolver = dir_path_resolver
 
     def value_usages(self) -> list:

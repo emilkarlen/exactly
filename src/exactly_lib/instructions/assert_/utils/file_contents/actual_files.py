@@ -3,8 +3,7 @@ import pathlib
 from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
 from exactly_lib.instructions.utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 class ComparisonActualFile:
@@ -20,7 +19,7 @@ class ComparisonActualFile:
 
 class ActComparisonActualFileForFileRef(ComparisonActualFile):
     def __init__(self,
-                 file_ref_resolver: FileRefValue):
+                 file_ref_resolver: FileRefResolver):
         self.file_ref_resolver = file_ref_resolver
 
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:

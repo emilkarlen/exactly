@@ -6,12 +6,12 @@ from exactly_lib.instructions.utils.file_ref_validator import FileRefValidatorBa
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 class FileRefCheck:
     def __init__(self,
-                 file_ref_resolver: FileRefValue,
+                 file_ref_resolver: FileRefResolver,
                  file_properties: FilePropertiesCheck):
         self.file_ref_resolver = file_ref_resolver
         self.file_properties = file_properties

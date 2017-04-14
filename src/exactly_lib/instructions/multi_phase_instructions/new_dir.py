@@ -13,7 +13,7 @@ from exactly_lib.section_document.parser_implementations.token_stream2 import To
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -58,7 +58,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 
 def parse(argument: str,
-          may_use_value_definitions: bool = False) -> FileRefValue:
+          may_use_value_definitions: bool = False) -> FileRefResolver:
     source = TokenStream2(argument)
     rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, may_use_value_definitions)
     destination_path = parse_file_ref(source, rel_opt_arg_conf)
@@ -69,7 +69,7 @@ def parse(argument: str,
 
 
 def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
-                            dir_path_resolver: FileRefValue) -> str:
+                            dir_path_resolver: FileRefResolver) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
@@ -89,7 +89,7 @@ def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
 
 
 def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
-                          dir_path_resolver: FileRefValue) -> sh.SuccessOrHardError:
+                          dir_path_resolver: FileRefResolver) -> sh.SuccessOrHardError:
     error_message = make_dir_in_current_dir(environment, dir_path_resolver)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 

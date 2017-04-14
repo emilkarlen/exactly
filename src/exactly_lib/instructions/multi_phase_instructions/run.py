@@ -27,7 +27,7 @@ from exactly_lib.section_document.parser_implementations.token_stream2 import To
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 def instruction_parser(
@@ -184,7 +184,7 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
 class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
     def __init__(self,
                  executable: ExecutableFile,
-                 file_to_interpret: FileRefValue,
+                 file_to_interpret: FileRefResolver,
                  argument_list: list):
         super().__init__(executable)
         self.file_to_interpret = file_to_interpret

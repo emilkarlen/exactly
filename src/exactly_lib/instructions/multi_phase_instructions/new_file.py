@@ -14,7 +14,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -60,12 +60,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class FileInfo(tuple):
     def __new__(cls,
-                path_resolver: FileRefValue,
+                path_resolver: FileRefResolver,
                 contents: str):
         return tuple.__new__(cls, (path_resolver, contents))
 
     @property
-    def file_ref(self) -> FileRefValue:
+    def file_ref(self) -> FileRefResolver:
         return self[0]
 
     @property

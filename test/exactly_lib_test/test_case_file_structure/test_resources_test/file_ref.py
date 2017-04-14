@@ -14,7 +14,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
     EitherStringOrFileRefRelativityRestriction, StringRestriction
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
@@ -495,8 +495,8 @@ class _FileRefWithValRefInRootPart(FileRefWithPathSuffixBase):
         def_in_symbol_table = symbols.lookup(self._value_references_of_path.name)
         assert isinstance(def_in_symbol_table, ValueContainer), 'Symbol Table is assumed to contain ValueContainer:s'
         value = def_in_symbol_table.value
-        if not isinstance(value, FileRefValue):
-            assert isinstance(value, FileRefValue), 'Referenced ValueContainer must contain a FileRefValue: ' + str(
+        if not isinstance(value, FileRefResolver):
+            assert isinstance(value, FileRefResolver), 'Referenced ValueContainer must contain a FileRefValue: ' + str(
                 value)
         return value.resolve(symbols)
 

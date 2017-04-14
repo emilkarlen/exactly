@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.value_definition.concrete_values import FileRefValue
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 class FileRefValidatorBase(PreOrPostSdsValidator):
@@ -12,7 +12,7 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
     """
 
     def __init__(self,
-                 file_ref_resolver: FileRefValue):
+                 file_ref_resolver: FileRefResolver):
         self._file_ref_resolver = file_ref_resolver
 
     def _validate_path(self, file_path: pathlib.Path) -> str:
