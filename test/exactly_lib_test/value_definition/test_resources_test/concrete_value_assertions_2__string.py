@@ -38,13 +38,13 @@ class TestEquals(unittest.TestCase):
             assert isinstance(plain_string, str), 'Type info for IDE'
             assert isinstance(string_value, StringResolver), 'Type info for IDE'
             with self.subTest(msg='equals_string_value2::' + test_case_name):
-                assertion = sut.equals_string_value2(plain_string, asrt.ignore, symbol_table)
+                assertion = sut.equals_string_resolver2(plain_string, asrt.ignore, symbol_table)
                 assertion.apply_with_message(self, string_value, test_case_name)
             with self.subTest(msg='equals_string_value2::with checked references::' + test_case_name):
-                assertion = sut.equals_string_value2(plain_string, asrt.ignore, symbol_table)
+                assertion = sut.equals_string_resolver2(plain_string, asrt.ignore, symbol_table)
                 assertion.apply_with_message(self, string_value, test_case_name)
             with self.subTest(msg='equals_string_value2::with checked references::' + test_case_name):
-                assertion = sut.equals_string_value3(string_value)
+                assertion = sut.equals_string_resolver3(string_value)
                 assertion.apply_with_message(self, string_value, test_case_name)
 
     def test_with_used_reference_checks(self):
@@ -64,9 +64,9 @@ class TestEquals(unittest.TestCase):
             assert isinstance(plain_string, str), 'Type info for IDE'
             string_value = _StringResolverTestImpl(plain_string, references)
             with self.subTest(msg=test_case_name):
-                assertion = sut.equals_string_value2(plain_string,
-                                                     equals_value_references(references),
-                                                     symbol_table)
+                assertion = sut.equals_string_resolver2(plain_string,
+                                                        equals_value_references(references),
+                                                        symbol_table)
                 assertion.apply_with_message(self, string_value, test_case_name)
 
 
@@ -78,9 +78,9 @@ class TestNotEquals(unittest.TestCase):
         actual = StringConstant('actual value')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_value2(expected_string,
-                                                 asrt.ignore,
-                                                 empty_symbol_table())
+            assertion = sut.equals_string_resolver2(expected_string,
+                                                    asrt.ignore,
+                                                    empty_symbol_table())
             assertion.apply_with_message(put, actual, 'NotEquals')
 
     def test_differs__given_assertion_on_references(self):
@@ -90,9 +90,9 @@ class TestNotEquals(unittest.TestCase):
         actual = StringConstant(expected_string)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_value2(expected_string,
-                                                 asrt.fail('expected failure'),
-                                                 empty_symbol_table())
+            assertion = sut.equals_string_resolver2(expected_string,
+                                                    asrt.fail('expected failure'),
+                                                    empty_symbol_table())
             assertion.apply_with_message(put, actual, 'NotEquals')
 
     def test_differs__different_number_of_references(self):
@@ -104,9 +104,9 @@ class TestNotEquals(unittest.TestCase):
         actual = _StringResolverTestImpl(expected_string, actual_references)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_value2(expected_string,
-                                                 equals_value_references(expected_references),
-                                                 empty_symbol_table())
+            assertion = sut.equals_string_resolver2(expected_string,
+                                                    equals_value_references(expected_references),
+                                                    empty_symbol_table())
             assertion.apply_with_message(put, actual, 'NotEquals')
 
 
@@ -119,7 +119,7 @@ class TestNotEquals3(unittest.TestCase):
         actual = StringConstant('actual value')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_value3(expected)
+            assertion = sut.equals_string_resolver3(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__number_of_references(self):
@@ -131,7 +131,7 @@ class TestNotEquals3(unittest.TestCase):
                                          [ValueReference('symbol_name', NoRestriction())])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_value3(expected)
+            assertion = sut.equals_string_resolver3(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__different_number_of_references(self):
@@ -144,7 +144,7 @@ class TestNotEquals3(unittest.TestCase):
         actual = _StringResolverTestImpl(expected_string, actual_references)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_value3(expected)
+            assertion = sut.equals_string_resolver3(expected)
             assertion.apply_without_message(put, actual)
 
 
