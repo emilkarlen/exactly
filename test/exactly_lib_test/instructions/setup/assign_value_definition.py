@@ -11,7 +11,7 @@ from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.line_source import Line
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
+from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer, Value, ValueReference
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation

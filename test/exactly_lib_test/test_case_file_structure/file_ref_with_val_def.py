@@ -10,8 +10,8 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
-from exactly_lib.value_definition import file_ref_with_val_def as sut
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.value_definition.value_resolvers import file_ref_with_val_def as sut
 from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import concrete_restriction_assertion as restrictions
