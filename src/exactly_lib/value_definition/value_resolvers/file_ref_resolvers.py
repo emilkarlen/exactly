@@ -9,7 +9,7 @@ class FileRefConstant(FileRefResolver):
     """
 
     def __init__(self, file_ref: FileRef):
-        file_ref.value_references()
+        file_ref.value_references()  # TODO DEBUG
         self._file_ref = file_ref
 
     def resolve(self, symbols: SymbolTable) -> FileRef:

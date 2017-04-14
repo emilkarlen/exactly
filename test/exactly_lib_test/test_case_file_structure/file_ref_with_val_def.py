@@ -3,8 +3,7 @@ import unittest
 
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
-    PathPartAsStringSymbolReference
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -12,6 +11,8 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIO
 from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.value_resolvers import file_ref_with_val_def as sut
+from exactly_lib.value_definition.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
+    PathPartResolverAsStringSymbolReference
 from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources import concrete_restriction_assertion as restrictions
@@ -37,10 +38,10 @@ class TestRelValueDefinition(unittest.TestCase):
         ]
         value_ref_of_path = ValueReference('value_definition_name', expected_restriction)
         path_suffix_test_cases = [
-            (PathPartAsFixedPath('file.txt'),
+            (PathPartResolverAsFixedPath('file.txt'),
              [],
              ),
-            (PathPartAsStringSymbolReference('symbol_name'),
+            (PathPartResolverAsStringSymbolReference('symbol_name'),
              [vr_tr.equals_value_reference('symbol_name', restrictions.is_string_value_restriction)],
              ),
         ]
@@ -64,8 +65,8 @@ class TestRelValueDefinition(unittest.TestCase):
              ),
         ]
         path_suffix_test_cases = [
-            PathPartAsFixedPath('file.txt'),
-            PathPartAsStringSymbolReference('path_suffix_symbol_name'),
+            PathPartResolverAsFixedPath('file.txt'),
+            PathPartResolverAsStringSymbolReference('path_suffix_symbol_name'),
         ]
         file_ref_symbol_name = 'VAL_DEF_NAME'
         for rel_option_type_of_referenced_symbol, expected_exists_pre_sds in relativity_test_cases:
@@ -96,9 +97,9 @@ class TestRelValueDefinition(unittest.TestCase):
         ]
         path_suffix_str = 'path-suffix-file.txt'
         path_suffix_test_cases = [
-            (PathPartAsFixedPath(path_suffix_str), ()
+            (PathPartResolverAsFixedPath(path_suffix_str), ()
              ),
-            (PathPartAsStringSymbolReference('path_suffix_symbol'),
+            (PathPartResolverAsStringSymbolReference('path_suffix_symbol'),
              (Entry('path_suffix_symbol',
                     string_value_container(path_suffix_str)),)
              ),
