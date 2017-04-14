@@ -3,6 +3,7 @@ import pathlib
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
+from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
@@ -11,30 +12,33 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 def file_ref_test_impl(file_name: str = 'file_ref_test_impl',
                        relativity: RelOptionType = RelOptionType.REL_RESULT) -> FileRef:
-    return _FileRefTestImpl(file_name, relativity)
+    return FileRefTestImpl(relativity, PathPartAsFixedPath(file_name))
 
 
-class _FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
+class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
     """
     A dummy FileRef that has a given relativity,
     and is as simple as possible.
     """
 
-    def __init__(self, file_name: str, relativity: RelOptionType):
-        super().__init__(PathPartAsFixedPath(file_name))
+    def __init__(self,
+                 relativity: RelOptionType,
+                 path_suffix: PathPart):
+        super().__init__(path_suffix)
         self.__relativity = relativity
-
-    def value_references(self) -> list:
-        return []
+        self.__path_suffix = path_suffix
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         return self.__relativity == RelOptionType.REL_HOME
 
     def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path()
+        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
     def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return pathlib.Path('_FileRefWithoutValRef-path') / self.path_suffix_path()
+        return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
+
+    def value_references(self) -> list:
+        return []
 
     def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
         return self.__relativity
