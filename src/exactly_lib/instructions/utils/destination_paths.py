@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition.file_ref_with_val_def import lookup_file_ref_from_symbol_table
+from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import lookup_file_ref_from_symbol_table
 from exactly_lib.value_definition.value_structure import ValueReference
 
 

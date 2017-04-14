@@ -9,7 +9,7 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_restrictions import NoRestriction
-from exactly_lib.value_definition.file_ref_with_val_def import rel_value_definition
+from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.value_definition.value_structure import ValueRestriction
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import file_ref_value_container, \
