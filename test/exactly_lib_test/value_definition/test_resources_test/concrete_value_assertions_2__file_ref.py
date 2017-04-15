@@ -23,6 +23,9 @@ from exactly_lib_test.value_definition.test_resources.value_reference_assertions
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        TestEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(),
+
+
         TestEqualsCommonToBothAssertionMethods(),
         TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(),
         unittest.makeSuite(TestNotEquals_PathSuffixAsFixedPath),
@@ -72,12 +75,12 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                  PathPartAsFixedPath('file-name')),
              symbol_table_with_single_file_ref_value('reffed-name'),
              ),
-            ('Exists pre SDS/fixed path suffix',
+            ('Exists pre SDS/no path suffix',
              FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY,
                              PathPartAsNothing()),
              symbol_table_with_single_string_value('symbol-name', 'value'),
              ),
-            ('NOT Exists pre SDS/fixed path suffix',
+            ('NOT Exists pre SDS/no path suffix',
              FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY,
                              PathPartAsNothing()),
              symbol_table_with_single_string_value('a-symbol-name', 'value'),
@@ -103,6 +106,32 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                                                           equals_value_references(value.references),
                                                           symbol_table_for_method2)
                 assertion.apply_with_message(self, value, test_case_name)
+
+
+class TestEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.TestCase):
+    def runTest(self):
+        path_suffix_variants = [
+            PathPartAsFixedPath('file-name'),
+            PathPartAsNothing(),
+        ]
+        relativity_variants = [
+            _EXISTS_PRE_SDS_RELATIVITY,
+            _NOT_EXISTS_PRE_SDS_RELATIVITY,
+        ]
+        symbols = empty_symbol_table()
+        for relativity in relativity_variants:
+            for path_suffix in path_suffix_variants:
+                test_case_descr = 'relativity:{}, path-suffix: {}'.format(relativity, type(path_suffix))
+                file_ref = FileRefTestImpl(relativity, path_suffix)
+                file_ref_resolver = FileRefConstant(file_ref)
+                with self.subTest(msg=sut.file_ref_resolver_equals.__name__ + ' :: ' + test_case_descr):
+                    assertion = sut.file_ref_resolver_equals(file_ref_resolver)
+                    assertion.apply_without_message(self, file_ref_resolver)
+                with self.subTest(msg=sut.equals_file_ref_resolver2.__name__ + ' :: ' + test_case_descr):
+                    assertion = sut.equals_file_ref_resolver2(file_ref,
+                                                              equals_value_references(file_ref_resolver.references),
+                                                              symbols)
+                    assertion.apply_without_message(self, file_ref_resolver)
 
 
 class TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(unittest.TestCase):
