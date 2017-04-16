@@ -3,7 +3,7 @@ import os
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path__token_stream
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.destination_paths import *
@@ -15,9 +15,9 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case_file_structure.destination_path import DestinationPath
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -72,33 +72,32 @@ Omitting the {dir_argument} is the same as giving ".".
 """
 
 
-def parse(argument: str, is_after_act_phase: bool) -> DestinationPath:
+def parse(argument: str, is_after_act_phase: bool) -> FileRefResolver:
     relativity_options = _relativity_options(is_after_act_phase)
     source = TokenStream2(argument)
-    destination_path = parse_destination_path__token_stream(relativity_options,
-                                                            False,
-                                                            source)
+    destination_path = parse_file_ref(source, relativity_options, False)
     if not source.is_null:
         raise SingleInstructionInvalidArgumentException('Superfluous arguments: {}'.format(source.remaining_source))
     return destination_path
 
 
-def change_dir(destination: DestinationPath,
+def change_dir(destination: FileRefResolver,
                environment: PathResolvingEnvironmentPostSds) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path = destination.resolved_path_if_not_rel_home(environment)
+    dir_path_ref = destination.resolve(environment.value_definitions)
+    dir_path = dir_path_ref.file_path_post_sds(environment.sds)
     try:
         os.chdir(str(dir_path))
     except FileNotFoundError:
-        return 'Directory does not exist: {}'.format(dir_path)
+        return 'Directory does not exist: {}'.format(dir_path_ref)
     except NotADirectoryError:
-        return 'Not a directory: {}'.format(dir_path)
+        return 'Not a directory: {}'.format(dir_path_ref)
     return None
 
 
-def execute_with_sh_result(destination: DestinationPath,
+def execute_with_sh_result(destination: FileRefResolver,
                            environment: PathResolvingEnvironmentPostSds) -> sh.SuccessOrHardError:
     error_message = change_dir(destination, environment)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)

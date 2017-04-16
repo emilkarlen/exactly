@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.line_source import Line
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib.value_definition import concrete_restrictions
 from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_values import FileRefResolver, StringResolver, ValueVisitor, \
@@ -33,7 +33,9 @@ def file_ref_resolver_equals(expected: FileRefResolver) -> asrt.ValueAssertion:
 
 def equals_file_ref_resolver2(expected_relativity_and_paths: FileRef,
                               expected_symbol_references: asrt.ValueAssertion,
-                              symbol_table: SymbolTable) -> asrt.ValueAssertion:
+                              symbol_table: SymbolTable = None) -> asrt.ValueAssertion:
+    if symbol_table is None:
+        symbol_table = empty_symbol_table()
     return _AssertFileRefResolverHasSpecifiedProperties(expected_relativity_and_paths,
                                                         expected_symbol_references,
                                                         symbol_table)
