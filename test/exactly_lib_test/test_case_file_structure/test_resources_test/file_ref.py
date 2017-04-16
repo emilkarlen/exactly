@@ -1,19 +1,11 @@
-import pathlib
 import unittest
 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixBase
-from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
-    SpecificPathRelativity
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
-from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl
@@ -159,46 +151,6 @@ class Test2NotEquals(unittest.TestCase):
         with put.assertRaises(TestException):
             assertion = sut.equals_file_ref2(expected, empty_symbol_table())
             assertion.apply_with_message(put, actual, 'NotEquals')
-
-
-class FileRefWithValRefInRootPartTestImpl(FileRefWithPathSuffixBase):
-    """
-    A dummy FileRef that has a given relativity,
-    and is as simple as possible.
-    """
-
-    def __init__(self,
-                 value_reference: ValueReference,
-                 path_suffix: PathPart):
-        super().__init__(path_suffix)
-        self._value_references_of_path = value_reference
-        self.__path_suffix = path_suffix
-
-    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
-        return self._lookup(value_definitions).relativity(value_definitions)
-
-    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        return self._lookup(value_definitions).exists_pre_sds(value_definitions)
-
-    def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        prefix = self._lookup(environment.value_definitions).file_path_pre_sds(environment)
-        return prefix / self.path_suffix_path()
-
-    def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        prefix = self._lookup(environment.value_definitions).file_path_post_sds(environment)
-        return prefix / self.path_suffix_path()
-
-    def value_references(self) -> list:
-        return [self._value_references_of_path]
-
-    def _lookup(self, symbols: SymbolTable) -> FileRef:
-        def_in_symbol_table = symbols.lookup(self._value_references_of_path.name)
-        assert isinstance(def_in_symbol_table, ValueContainer), 'Symbol Table is assumed to contain ValueContainer:s'
-        value = def_in_symbol_table.value
-        if not isinstance(value, FileRefResolver):
-            assert isinstance(value, FileRefResolver), 'Referenced ValueContainer must contain a FileRefValue: ' + str(
-                value)
-        return value.resolve(symbols)
 
 
 _EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME
