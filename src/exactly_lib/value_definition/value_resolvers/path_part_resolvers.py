@@ -1,4 +1,4 @@
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import StringRestriction
@@ -13,6 +13,15 @@ class PathPartResolverAsFixedPath(PathPartResolver):
 
     def resolve(self, symbols: SymbolTable) -> PathPart:
         return self._path_part
+
+    @property
+    def references(self) -> list:
+        return []
+
+
+class PathPartResolverAsNothing(PathPartResolver):
+    def resolve(self, symbols: SymbolTable) -> PathPart:
+        return PathPartAsNothing()
 
     @property
     def references(self) -> list:

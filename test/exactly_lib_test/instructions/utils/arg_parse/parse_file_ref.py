@@ -513,6 +513,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
 
 class TestParseWithoutRequiredPathSuffix(TestParsesBase):
     def test_no_argument_at_all(self):
+        path_suffix_is_required = False
         default_and_accepted_options_variants = [
             (RelOptionType.REL_HOME,
              {RelOptionType.REL_HOME, RelOptionType.REL_ACT}),
@@ -528,16 +529,15 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
                     True,
                     default_option),
                 'argument_syntax_name')
-            for path_suffix_is_required in [False, True]:
-                with self.subTest(' / path_suffix_is_required=' + str(path_suffix_is_required)):
-                    argument_string = ''
-                    self._check(
-                        Arrangement(argument_string,
-                                    arg_config),
-                        path_suffix_is_required,
-                        Expectation(expected_file_ref_value,
-                                    token_stream=assert_token_stream2(is_null=asrt.is_true))
-                    )
+            with self.subTest(' / path_suffix_is_required=' + str(path_suffix_is_required)):
+                argument_string = ''
+                self._check(
+                    Arrangement(argument_string,
+                                arg_config),
+                    path_suffix_is_required,
+                    Expectation(expected_file_ref_value,
+                                token_stream=assert_token_stream2(is_null=asrt.is_true))
+                )
 
     def test_only_relativity_argument(self):
         used_and_default_and_accepted_options_variants = [
@@ -565,9 +565,8 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
                  assert_token_stream2(is_null=asrt.is_true)),
                 ('   {option_str}',
                  assert_token_stream2(is_null=asrt.is_true)),
-                ('{option_str} \nnext line',
-                 assert_token_stream2(is_null=asrt.is_false,
-                                      remaining_part_of_current_line=asrt.equals(''))),
+                ('{option_str}   ',
+                 assert_token_stream2(is_null=asrt.is_true)),
             ]
             expected_file_ref = file_refs.of_rel_option(used_option, PathPartAsNothing())
             for source, token_stream_assertion in source_variants:
