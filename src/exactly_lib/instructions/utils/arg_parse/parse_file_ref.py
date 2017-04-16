@@ -16,7 +16,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token import TokenType, Token
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import SymbolTable
@@ -25,7 +25,7 @@ from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import File
 from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.value_definition.value_resolvers.path_part_resolvers import PathPartResolverAsStringSymbolReference, \
-    PathPartResolverAsFixedPath
+    PathPartResolverAsFixedPath, PathPartResolverAsNothing
 from exactly_lib.value_definition.value_structure import ValueReference
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
@@ -89,15 +89,30 @@ def parse_file_ref(tokens: TokenStream2,
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
 
+    def result_from_no_arguments() -> FileRefResolver:
+        return FileRefConstant(file_refs.of_rel_option(conf.options.default_option,
+                                                       PathPartAsNothing()))
+
     if tokens.is_null:
-        _raise_missing_arguments_exception(conf)
+        if path_suffix_is_required:
+            _raise_missing_arguments_exception(conf)
+        else:
+            return result_from_no_arguments()
 
     initial_argument_string = tokens.remaining_part_of_current_line
     relativity_info = parse_explicit_relativity_info(conf.options, tokens)
     if tokens.is_null:
-        raise SingleInstructionInvalidArgumentException(
-            'Missing {} argument: {}'.format(conf.argument_syntax_name,
-                                             initial_argument_string))
+        if path_suffix_is_required:
+            raise SingleInstructionInvalidArgumentException(
+                'Missing {} argument: {}'.format(conf.argument_syntax_name,
+                                                 initial_argument_string))
+        else:
+            if relativity_info is None:
+                return result_from_no_arguments()
+            else:
+                path_part_resolver2_file_ref_resolver = _file_ref_constructor(relativity_info)
+                return path_part_resolver2_file_ref_resolver(PathPartResolverAsNothing())
+
     token = tokens.consume()
     if token.type is TokenType.PLAIN:
         ensure_is_not_option_argument(token.string)
