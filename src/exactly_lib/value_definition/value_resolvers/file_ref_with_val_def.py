@@ -4,8 +4,7 @@ from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
     SpecificPathRelativity
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.concrete_values import FileRefResolver
@@ -42,11 +41,8 @@ class _StackedFileRef(FileRef):
         self._path_suffix = path_suffix
         self.base_file_ref = base_file_ref
 
-    def value_references(self) -> list:
-        return []
-
-    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
-        return self.base_file_ref.relativity(value_definitions)
+    def relativity(self) -> SpecificPathRelativity:
+        return self.base_file_ref.relativity()
 
     def path_suffix(self) -> PathPart:
         return self._path_suffix
@@ -57,14 +53,14 @@ class _StackedFileRef(FileRef):
     def path_suffix_path(self) -> pathlib.Path:
         return pathlib.Path(self.path_suffix_str())
 
-    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        return self.base_file_ref.exists_pre_sds(value_definitions)
+    def exists_pre_sds(self) -> bool:
+        return self.base_file_ref.exists_pre_sds()
 
-    def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
-        return self.base_file_ref.file_path_pre_sds(environment) / self.path_suffix_path()
+    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        return self.base_file_ref.file_path_pre_sds(home_dir_path) / self.path_suffix_path()
 
-    def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
-        return self.base_file_ref.file_path_post_sds(environment) / self.path_suffix_path()
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.base_file_ref.file_path_post_sds(sds) / self.path_suffix_path()
 
 
 def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:

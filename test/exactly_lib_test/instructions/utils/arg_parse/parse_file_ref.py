@@ -107,10 +107,10 @@ class TestParsesBase(unittest.TestCase):
                                                    environment: PathResolvingEnvironmentPreOrPostSds,
                                                    actual: FileRefResolver):
         actual_file_ref = actual.resolve(environment.value_definitions)
-        self.assertFalse(actual_file_ref.exists_pre_sds(environment.value_definitions))
-        self.assertEqual(actual_file_ref.file_path_post_sds(environment),
+        self.assertFalse(actual_file_ref.exists_pre_sds())
+        self.assertEqual(actual_file_ref.file_path_post_sds(environment.sds),
                          expected_path)
-        self.assertEqual(actual_file_ref.file_path_pre_or_post_sds(environment),
+        self.assertEqual(actual_file_ref.file_path_pre_or_post_sds(environment.home_and_sds),
                          expected_path)
 
 

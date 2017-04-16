@@ -33,7 +33,7 @@ class ExecutableFile:
 
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         fr = self._file_reference_resolver.resolve(value_definitions)
-        return fr.exists_pre_sds(value_definitions)
+        return fr.exists_pre_sds()
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

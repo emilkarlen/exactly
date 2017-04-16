@@ -5,9 +5,7 @@ from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 def file_ref_test_impl(file_name: str = 'file_ref_test_impl',
@@ -28,17 +26,14 @@ class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
         self.__relativity = relativity
         self.__path_suffix = path_suffix
 
-    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
+    def exists_pre_sds(self) -> bool:
         return self.__relativity == RelOptionType.REL_HOME
 
-    def file_path_pre_sds(self, environment: PathResolvingEnvironmentPreSds) -> pathlib.Path:
+    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
-    def file_path_post_sds(self, environment: PathResolvingEnvironmentPostSds) -> pathlib.Path:
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
-    def value_references(self) -> list:
-        return []
-
-    def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+    def _relativity(self) -> RelOptionType:
         return self.__relativity

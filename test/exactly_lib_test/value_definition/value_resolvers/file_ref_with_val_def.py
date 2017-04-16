@@ -90,7 +90,7 @@ class TestRelValueDefinition(unittest.TestCase):
                                                                rel_option_type_of_referenced_symbol),
                         path_suffix)
                     # ACT #
-                    actual = file_ref_resolver_to_check.resolve(symbol_table).exists_pre_sds(symbol_table)
+                    actual = file_ref_resolver_to_check.resolve(symbol_table).exists_pre_sds()
                     # ASSERT #
                     self.assertEqual(expected_exists_pre_sds,
                                      actual,
@@ -134,14 +134,14 @@ class TestRelValueDefinition(unittest.TestCase):
                 environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table)
                 with self.subTest(msg=str(rel_option)):
                     # ACT #
-                    file_ref_to_check = fr_resolver_to_check.resolve(symbol_table)
+                    file_ref_to_check = fr_resolver_to_check.resolve(environment.value_definitions)
                     if exists_pre_sds:
                         tested_path_msg = 'file_path_pre_sds'
-                        actual_path = file_ref_to_check.file_path_pre_sds(environment)
+                        actual_path = file_ref_to_check.file_path_pre_sds(environment.home_dir_path)
                     else:
                         tested_path_msg = 'file_path_post_sds'
-                        actual_path = file_ref_to_check.file_path_post_sds(environment)
-                    actual_path_pre_or_post_sds = file_ref_to_check.file_path_pre_or_post_sds(environment)
+                        actual_path = file_ref_to_check.file_path_post_sds(environment.sds)
+                    actual_path_pre_or_post_sds = file_ref_to_check.file_path_pre_or_post_sds(environment.home_and_sds)
                     # ASSERT #
                     self.assertEqual(expected_path_str,
                                      str(actual_path),

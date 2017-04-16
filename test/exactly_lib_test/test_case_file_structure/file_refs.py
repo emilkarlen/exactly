@@ -8,7 +8,6 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -71,7 +70,7 @@ class TestExistsPreOrPostSds(TestForFixedRelativityBase):
             with self.subTest():
                 file_reference = self.config.path_suffix_2_file_ref(path_suffix)
                 self.assertEqual(self.config.exists_pre_sds,
-                                 file_reference.exists_pre_sds(empty_symbol_table()),
+                                 file_reference.exists_pre_sds(),
                                  'exist pre SDS')
 
 
@@ -89,15 +88,14 @@ class TestFilePath(TestForFixedRelativityBase):
             with self.subTest():
                 file_reference = self.config.path_suffix_2_file_ref(path_suffix)
                 assert isinstance(file_reference, FileRef)
-                environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table)
                 # ACT #
                 if self.config.exists_pre_sds:
                     tested_path_msg = 'file_path_pre_sds'
-                    actual_path = file_reference.file_path_pre_sds(environment)
+                    actual_path = file_reference.file_path_pre_sds(home_and_sds.home_dir_path)
                 else:
                     tested_path_msg = 'file_path_post_sds'
-                    actual_path = file_reference.file_path_post_sds(environment)
-                actual_path_pre_or_post_sds = file_reference.file_path_pre_or_post_sds(environment)
+                    actual_path = file_reference.file_path_post_sds(home_and_sds.sds)
+                actual_path_pre_or_post_sds = file_reference.file_path_pre_or_post_sds(home_and_sds)
                 # ASSERT #
                 expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
                 expected_path = expected_relativity_root / expected_path_suffix

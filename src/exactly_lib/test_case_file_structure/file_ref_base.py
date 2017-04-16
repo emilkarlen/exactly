@@ -4,7 +4,6 @@ from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
     RelOptionType
-from exactly_lib.util.symbol_table import SymbolTable
 
 
 class FileRefWithPathSuffixBase(FileRef):
@@ -25,9 +24,9 @@ class FileRefWithPathSuffixAndIsNotAbsoluteBase(FileRefWithPathSuffixBase):
     def __init__(self, path_part: PathPart):
         super().__init__(path_part)
 
-    def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
-        rel_option_type = self._relativity(value_definitions)
+    def relativity(self) -> SpecificPathRelativity:
+        rel_option_type = self._relativity()
         return specific_relative_relativity(rel_option_type)
 
-    def _relativity(self, value_definitions: SymbolTable) -> RelOptionType:
+    def _relativity(self) -> RelOptionType:
         raise NotImplementedError()
