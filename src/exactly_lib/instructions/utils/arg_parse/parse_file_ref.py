@@ -65,7 +65,9 @@ def non_home_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration
 NON_HOME_CONFIG = non_home_config('FILE')
 
 
-def parse_file_ref_from_parse_source(source: ParseSource, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+def parse_file_ref_from_parse_source(source: ParseSource,
+                                     conf: RelOptionArgumentConfiguration,
+                                     path_suffix_is_required: bool = True) -> FileRefResolver:
     """
     :param source: Has a current line
     :return: The parsed FileRef, remaining arguments after file was parsed.
@@ -73,12 +75,14 @@ def parse_file_ref_from_parse_source(source: ParseSource, conf: RelOptionArgumen
     """
 
     ts = TokenStream2(source.remaining_part_of_current_line)
-    ret_val = parse_file_ref(ts, conf)
+    ret_val = parse_file_ref(ts, conf, path_suffix_is_required)
     source.consume(ts.position)
     return ret_val
 
 
-def parse_file_ref(tokens: TokenStream2, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+def parse_file_ref(tokens: TokenStream2,
+                   conf: RelOptionArgumentConfiguration,
+                   path_suffix_is_required: bool = True) -> FileRefResolver:
     """
     :param tokens: Argument list
     :return: The parsed FileRef, remaining arguments after file was parsed.
