@@ -9,7 +9,6 @@ class FileRefConstant(FileRefResolver):
     """
 
     def __init__(self, file_ref: FileRef):
-        file_ref.value_references()  # TODO DEBUG
         self._file_ref = file_ref
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
@@ -17,7 +16,7 @@ class FileRefConstant(FileRefResolver):
 
     @property
     def references(self) -> list:
-        return self._file_ref.value_references()
+        return []
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._file_ref) + '\''

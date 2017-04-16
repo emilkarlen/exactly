@@ -22,16 +22,6 @@ class FileRef:
     def path_suffix_path(self) -> pathlib.Path:
         raise NotImplementedError()
 
-    def value_references(self) -> list:
-        """
-        All `ValueReference`s that are _directly_ used by this object.
-        I.e, if value <name> is referenced, that in turn references <name2>,
-        then <name2> should not be included in the result because of this
-        reason.
-        :rtype [`ValueReference`]
-        """
-        raise NotImplementedError()
-
     def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
         raise NotImplementedError()
 

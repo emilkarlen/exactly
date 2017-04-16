@@ -43,7 +43,7 @@ class _StackedFileRef(FileRef):
         self.base_file_ref = base_file_ref
 
     def value_references(self) -> list:
-        return self.base_file_ref.value_references()
+        return []
 
     def relativity(self, value_definitions: SymbolTable) -> SpecificPathRelativity:
         return self.base_file_ref.relativity(value_definitions)
