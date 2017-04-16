@@ -108,17 +108,15 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
 
 class TestNotEquals_DifferentTypeOfPathSuffix(unittest.TestCase):
     def runTest(self):
-        pass
-        # def test_without_symbol_ref_in_root_part__expected_is_fixed_path(self):
-        #     # ARRANGE #
-        #     put = test_case_with_failure_exception_set_to_test_exception()
-        #     expected = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-        #                                                PathPartAsFixedPath('name'))
-        #     actual = _FileRefWithoutValRefInRootPart(RelOptionType.REL_ACT,
-        #                                              PathPartAsStringSymbolReference('name'))
-        #     # ACT & ASSERT #
-        #     with put.assertRaises(TestException):
-        #         sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = FileRefTestImpl(RelOptionType.REL_ACT,
+                                   PathPartAsFixedPath('name'))
+        actual = FileRefTestImpl(RelOptionType.REL_ACT,
+                                 PathPartAsNothing())
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
 
 
 class Test2NotEquals(unittest.TestCase):
