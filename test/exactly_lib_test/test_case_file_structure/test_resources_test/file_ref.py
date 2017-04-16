@@ -11,8 +11,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, \
-    EitherStringOrFileRefRelativityRestriction, StringRestriction
+from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_structure import ValueContainer, ValueReference
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
@@ -21,8 +20,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
-    symbol_table_from_value_definitions, string_value_definition, \
-    file_ref_value_definition, symbol_table_with_single_file_ref_value
+    symbol_table_from_value_definitions, string_value_definition
 
 
 def suite() -> unittest.TestSuite:
@@ -48,33 +46,6 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                              PathPartAsFixedPath('a-file-name')),
              empty_symbol_table(),
              ),
-            ('symbol-ref/NOT Exists pre SDS/fixed path suffix',
-             FileRefWithValRefInRootPartTestImpl(
-                 ValueReference('reffed-name',
-                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                 PathPartAsFixedPath('file-name')),
-             symbol_table_with_single_file_ref_value('reffed-name'),
-             ),
-            ('symbol-ref(either-string-or-file-ref actual is file-ref)/NOT Exists pre SDS/fixed path suffix',
-             FileRefWithValRefInRootPartTestImpl(
-                 ValueReference('reffed-name',
-                                EitherStringOrFileRefRelativityRestriction(
-                                    StringRestriction(),
-                                    _relativity_restriction({RelOptionType.REL_ACT}, False))
-                                ),
-                 PathPartAsFixedPath('file-name')),
-             symbol_table_with_single_file_ref_value('reffed-name'),
-             ),
-            ('symbol-ref(either-string-or-file-ref actual is string)/NOT Exists pre SDS/fixed path suffix',
-             FileRefWithValRefInRootPartTestImpl(
-                 ValueReference('reffed-name',
-                                EitherStringOrFileRefRelativityRestriction(
-                                    StringRestriction(),
-                                    _relativity_restriction({RelOptionType.REL_ACT}, False))
-                                ),
-                 PathPartAsFixedPath('file-name')),
-             symbol_table_with_single_file_ref_value('reffed-name'),
-             ),
         ]
         for test_case_name, value, symbol_table_for_method2 in test_cases:
             assert isinstance(value, FileRef), 'Type info for IDE'
@@ -99,36 +70,6 @@ class TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(unittest.T
                  string_value_definition('path_suffix_symbol_1', 'suffix-file-name'),
                  string_value_definition('path_suffix_symbol_2', 'suffix-file-name'),
              ])
-             ),
-            ('Different symbol references in root',
-             FileRefWithValRefInRootPartTestImpl(
-                 ValueReference('path_root_symbol_1',
-                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                 PathPartAsFixedPath('file-name')),
-             FileRefWithValRefInRootPartTestImpl(
-                 ValueReference('path_root_symbol_2',
-                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                 PathPartAsFixedPath('file-name')),
-             symbol_table_from_value_definitions([
-                 file_ref_value_definition('path_root_symbol_1',
-                                           FileRefTestImpl(RelOptionType.REL_TMP,
-                                                           PathPartAsFixedPath('suffix-of-root'))),
-                 file_ref_value_definition('path_root_symbol_2',
-                                           FileRefTestImpl(RelOptionType.REL_TMP,
-                                                           PathPartAsFixedPath('suffix-of-root'))
-                                           ),
-             ])
-             ),
-            ('Different kind of root resolving',
-             FileRefWithValRefInRootPartTestImpl(
-                 ValueReference('reffed_file_ref_name',
-                                _relativity_restriction({RelOptionType.REL_ACT}, False)),
-                 PathPartAsFixedPath('2')),
-             FileRefTestImpl(RelOptionType.REL_ACT,
-                             PathPartAsFixedPath('1/2')),
-             symbol_table_with_single_file_ref_value('reffed_file_ref_name',
-                                                     FileRefTestImpl(RelOptionType.REL_ACT,
-                                                                     PathPartAsFixedPath('1'))),
              ),
         ]
         for test_case_name, first, second, symbol_table_for_method2 in test_cases:
@@ -168,19 +109,6 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
         actual = FileRefTestImpl(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-    def test_differs__no_value_refs__value_refs(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = FileRefWithValRefInRootPartTestImpl(ValueReference('reffed-name',
-                                                                      _relativity_restriction({RelOptionType.REL_ACT},
-                                                                                              False)),
-                                                       PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_RESULT,
-                                 PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
