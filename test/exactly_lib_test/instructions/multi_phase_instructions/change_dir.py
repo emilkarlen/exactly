@@ -1,22 +1,42 @@
 import os
-import pathlib
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_test
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
     tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNotNone
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
+from exactly_lib_test.value_definition.test_resources.concrete_value_assertions_2 import equals_file_ref_resolver2
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParseSet),
+        unittest.makeSuite(TestSuccessfulScenarios),
+        unittest.makeSuite(TestFailingScenarios),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
+                                                                            is_after_act_phase=False,
+                                                                            is_in_assert_phase=False)),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
+                                                                            is_after_act_phase=True,
+                                                                            is_in_assert_phase=False)),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
+                                                                            is_after_act_phase=True,
+                                                                            is_in_assert_phase=True)),
+    ])
 
 
 class TestParseSet(unittest.TestCase):
@@ -24,34 +44,40 @@ class TestParseSet(unittest.TestCase):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-act'
+                # ACT #
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(RelOptionType.REL_ACT,
-                              actual.destination_type(empty_symbol_table()))
+                # ASSERT #
+                expected_file_ref = _file_ref_of(RelOptionType.REL_ACT)
+                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion.apply_without_message(self, actual)
 
     def test_no_relativity_option_should_use_default_option(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = 'single-argument'
+                # ACT #
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type(empty_symbol_table()))
-                self.assertEqual('single-argument',
-                                 str(actual.path_argument))
+                # ASSERT #
+                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD, PathPartAsFixedPath(arguments))
+                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion.apply_without_message(self, actual)
 
     def test_no_arguments_is_rel_default_option(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = ''
+                # ACT #
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type(empty_symbol_table()))
-                self.assertEqual(str(pathlib.PurePath()),
-                                 str(actual.path_argument))
+                # ASSERT #
+                expected_file_ref = _file_ref_of(RelOptionType.REL_CWD)
+                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion.apply_without_message(self, actual)
 
     def test_fail_when_superfluous_arguments(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = 'expected-argument superfluous-argument'
+                # ACT & ASSERT #
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parse(arguments, is_after_act_phase=is_after_act_phase)
 
@@ -59,52 +85,61 @@ class TestParseSet(unittest.TestCase):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '  expected-argument  '
+                # ACT #
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type(empty_symbol_table()))
-                self.assertEqual('expected-argument',
-                                 str(actual.path_argument))
+                # ASSERT #
+                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
+                                                            PathPartAsFixedPath(arguments.strip()))
+                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion.apply_without_message(self, actual)
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '"expected argument"'
+                # ACT #
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(RelOptionType.REL_CWD,
-                              actual.destination_type(empty_symbol_table()))
-                self.assertEqual('expected argument',
-                                 str(actual.path_argument))
+                # ASSERT #
+                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
+                                                            PathPartAsFixedPath('expected argument'))
+                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion.apply_without_message(self, actual)
 
     def test_rel_tmp_without_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-tmp'
+                # ACT #
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(RelOptionType.REL_TMP,
-                              actual.destination_type(empty_symbol_table()))
-                self.assertEqual(str(pathlib.PurePosixPath()),
-                                 str(actual.path_argument))
+                # ASSERT #
+                expected_file_ref = _file_ref_of(RelOptionType.REL_TMP)
+                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion.apply_without_message(self, actual)
 
     def test_rel_tmp_with_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-tmp subdir'
+                # ACT #
                 actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
-                self.assertIs(RelOptionType.REL_TMP,
-                              actual.destination_type(empty_symbol_table()))
-                self.assertEqual('subdir',
-                                 str(actual.path_argument))
+                # ASSERT #
+                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                                            PathPartAsFixedPath('subdir'))
+                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion.apply_without_message(self, actual)
 
     def test_rel_tmp_with_superfluous_argument(self):
         arguments = '--rel-tmp subdir superfluous'
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    # ACT #
                     sut.parse(arguments, is_after_act_phase=is_after_act_phase)
 
     def test_rel_result_should_not_be_available_pre_act_phase(self):
         arguments = '--rel-result'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
+            # ACT #
             sut.parse(arguments, is_after_act_phase=False)
 
 
@@ -291,21 +326,8 @@ class TestFailingScenarios(TestCaseBase):
                              sds_test.Expectation(expected_action_result=is_failure()))
 
 
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParseSet),
-        unittest.makeSuite(TestSuccessfulScenarios),
-        unittest.makeSuite(TestFailingScenarios),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
-                                                                            is_after_act_phase=False,
-                                                                            is_in_assert_phase=False)),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
-                                                                            is_after_act_phase=True,
-                                                                            is_in_assert_phase=False)),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
-                                                                            is_after_act_phase=True,
-                                                                            is_in_assert_phase=True)),
-    ])
+def _file_ref_of(relativity=RelOptionType.REL_ACT) -> FileRef:
+    return file_refs.of_rel_option(relativity, PathPartAsNothing())
 
 
 if __name__ == '__main__':
