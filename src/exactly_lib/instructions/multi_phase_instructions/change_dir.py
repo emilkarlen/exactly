@@ -6,7 +6,6 @@ from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.instructions.utils.destination_paths import *
 from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -16,6 +15,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.value_definition.concrete_values import FileRefResolver
 
