@@ -12,7 +12,6 @@ from exactly_lib.test_case_file_structure.path_resolving_environment import Path
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -52,7 +51,6 @@ class _RelativityConfig:
 
 def _suite_for_config(config: _RelativityConfig) -> unittest.TestSuite:
     return unittest.TestSuite([
-        TestSymbolReferences(config),
         TestExistsPreOrPostSds(config),
         TestFilePath(config),
     ])
@@ -62,19 +60,6 @@ class TestForFixedRelativityBase(TestCaseBaseWithShortDescriptionOfTestClassAndA
     def __init__(self, config: _RelativityConfig):
         super().__init__(config)
         self.config = config
-
-
-class TestSymbolReferences(TestForFixedRelativityBase):
-    def runTest(self):
-        test_cases = [
-            (PathPartAsFixedPath('file.txt'),
-             asrt.matches_sequence([])
-             ),
-        ]
-        for path_suffix, expectation in test_cases:
-            with self.subTest():
-                actual_file_ref = self.config.path_suffix_2_file_ref(path_suffix)
-                expectation.apply_without_message(self, actual_file_ref.value_references())
 
 
 class TestExistsPreOrPostSds(TestForFixedRelativityBase):
