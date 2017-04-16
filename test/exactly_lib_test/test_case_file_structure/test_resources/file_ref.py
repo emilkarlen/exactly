@@ -4,11 +4,10 @@ import unittest
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.line_source import Line
-from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.value_definition import concrete_restrictions
 from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
@@ -49,23 +48,22 @@ class _FileRefAssertionBase(asrt.ValueAssertion):
                                 message_builder.for_sub_component('path_suffix'),
                                 environment)
 
-        self._check_relativity(put, value, message_builder, environment)
+        self._check_relativity(put, value, message_builder)
 
-        self._check_exists_pre_sds(put, value, message_builder, environment)
+        self._check_exists_pre_sds(put, value, message_builder)
 
         self._check_paths(put, value, message_builder, environment)
 
-    def _get_environment(self) -> PathResolvingEnvironmentPreOrPostSds:
+    def _get_environment(self) -> HomeAndSds:
         home_dir_path = pathlib.Path('home')
         sds = SandboxDirectoryStructure('sds')
-        return PathResolvingEnvironmentPreOrPostSds(HomeAndSds(home_dir_path, sds),
-                                                    empty_symbol_table())
+        return HomeAndSds(home_dir_path, sds)
 
     def _check_path_suffix(self,
                            put: unittest.TestCase,
                            actual: FileRef,
                            message_builder: asrt.MessageBuilder,
-                           environment: PathResolvingEnvironmentPreOrPostSds):
+                           home_and_sds: HomeAndSds):
         raise NotImplementedError()
 
     def _check_value_references(self,
@@ -77,35 +75,33 @@ class _FileRefAssertionBase(asrt.ValueAssertion):
     def _check_exists_pre_sds(self,
                               put: unittest.TestCase,
                               actual: FileRef,
-                              message_builder: asrt.MessageBuilder,
-                              environment: PathResolvingEnvironmentPreOrPostSds):
-        expected_exists_pre_sds = self._expected.exists_pre_sds(environment.value_definitions)
+                              message_builder: asrt.MessageBuilder):
+        expected_exists_pre_sds = self._expected.exists_pre_sds()
         put.assertEqual(expected_exists_pre_sds,
-                        actual.exists_pre_sds(environment.value_definitions),
+                        actual.exists_pre_sds(),
                         message_builder.apply('exists_pre_sds'))
 
     def _check_paths(self,
                      put: unittest.TestCase,
                      actual: FileRef,
                      message_builder: asrt.MessageBuilder,
-                     environment: PathResolvingEnvironmentPreOrPostSds):
-        expected_exists_pre_sds = self._expected.exists_pre_sds(environment.value_definitions)
+                     home_and_sds: HomeAndSds):
+        expected_exists_pre_sds = self._expected.exists_pre_sds()
         if expected_exists_pre_sds:
-            put.assertEqual(self._expected.file_path_pre_sds(environment),
-                            actual.file_path_pre_sds(environment),
+            put.assertEqual(self._expected.file_path_pre_sds(home_and_sds.home_dir_path),
+                            actual.file_path_pre_sds(home_and_sds.home_dir_path),
                             message_builder.apply('file_path_pre_sds'))
         else:
-            put.assertEqual(self._expected.file_path_post_sds(environment),
-                            actual.file_path_post_sds(environment),
+            put.assertEqual(self._expected.file_path_post_sds(home_and_sds.sds),
+                            actual.file_path_post_sds(home_and_sds.sds),
                             message_builder.apply('file_path_post_sds'))
 
     def _check_relativity(self,
                           put: unittest.TestCase,
                           actual_file_ref: FileRef,
-                          message_builder: asrt.MessageBuilder,
-                          environment: PathResolvingEnvironmentPreOrPostSds):
-        expected = self._expected.relativity(environment.value_definitions)
-        actual = actual_file_ref.relativity(environment.value_definitions)
+                          message_builder: asrt.MessageBuilder):
+        expected = self._expected.relativity()
+        actual = actual_file_ref.relativity()
         assertion = equals_path_relativity(expected)
         assertion.apply(put, actual, message_builder.for_sub_component('specific_relativity'))
 
@@ -122,8 +118,9 @@ class _AssertFileRefHasSpecifiedProperties(_FileRefAssertionBase):
                            put: unittest.TestCase,
                            actual: FileRef,
                            message_builder: asrt.MessageBuilder,
-                           environment: PathResolvingEnvironmentPreOrPostSds):
+                           home_and_sds: HomeAndSds):
         pass
+
 
 class _AssertFileRefIsIdenticalToInAutoGeneratedFakeEnvironment(_FileRefAssertionBase):
     def __init__(self, expected: FileRef):
@@ -133,18 +130,11 @@ class _AssertFileRefIsIdenticalToInAutoGeneratedFakeEnvironment(_FileRefAssertio
                            put: unittest.TestCase,
                            actual: FileRef,
                            message_builder: asrt.MessageBuilder,
-                           environment: PathResolvingEnvironmentPreOrPostSds):
-        sym_tbl = environment.value_definitions
+                           home_and_sds: HomeAndSds):
         path_suffix = self._expected.path_suffix()
         equals_path_part(path_suffix).apply(put,
                                             actual.path_suffix(),
                                             message_builder)
-
-    def _get_environment(self) -> PathResolvingEnvironmentPreOrPostSds:
-        home_dir_path = pathlib.Path('home')
-        sds = SandboxDirectoryStructure('sds')
-        return PathResolvingEnvironmentPreOrPostSds(HomeAndSds(home_dir_path, sds),
-                                                    empty_symbol_table())
 
 
 def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> FileRefResolver:

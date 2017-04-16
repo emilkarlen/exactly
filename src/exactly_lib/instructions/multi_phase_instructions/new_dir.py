@@ -72,7 +72,7 @@ def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path = dir_path_resolver.resolve(environment.value_definitions).file_path_post_sds(environment)
+    dir_path = dir_path_resolver.resolve(environment.value_definitions).file_path_post_sds(environment.sds)
     try:
         if dir_path.is_dir():
             return None

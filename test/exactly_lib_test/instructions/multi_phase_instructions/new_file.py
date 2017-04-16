@@ -44,7 +44,7 @@ class TestParseWithNoContents(unittest.TestCase):
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
         actual_file_ref = actual.file_ref.resolve(symbol_table)
-        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
+        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(),
                                                 'relativity')
         equals_path_part_string('single-argument').apply_with_message(self,
                                                                       actual_file_ref.path_suffix(),
@@ -79,7 +79,7 @@ class TestParseWithContents(unittest.TestCase):
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
         actual_file_ref = actual.file_ref.resolve(symbol_table)
-        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
+        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(),
                                                 'relativity')
         equals_path_part_string('file name').apply_with_message(self, actual_file_ref.path_suffix(),
                                                                 'destination_path/path_suffix')
@@ -96,7 +96,7 @@ class TestParseWithContents(unittest.TestCase):
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_TMP))
         actual_file_ref = actual.file_ref.resolve(symbol_table)
-        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(symbol_table),
+        relativity_assertion.apply_with_message(self, actual_file_ref.relativity(),
                                                 'relativity')
         equals_path_part_string('file name').apply_with_message(self,
                                                                 actual_file_ref.path_suffix(),
