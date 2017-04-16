@@ -9,7 +9,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relative_path_options import REL_CWD_OPTION, REL_TMP_OPTION, REL_OPTIONS_MAP, \
@@ -50,6 +50,8 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromParseSource))
 
     ret_val.addTest(unittest.makeSuite(TestParseWithReferenceEmbeddedInArgument))
+
+    ret_val.addTest(unittest.makeSuite(TestParseWithoutRequiredPathSuffix))
     return ret_val
 
 
@@ -123,7 +125,8 @@ class TestParseFromTokenStream2CasesWithoutRelValueDefinitionRelativity(TestPars
     def test_fail_when_no_arguments(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref(TokenStream2(''),
-                               _ARG_CONFIG_FOR_ALL_RELATIVITIES)
+                               _ARG_CONFIG_FOR_ALL_RELATIVITIES,
+                               True)
 
     def test_WHEN_no_relativity_option_is_given_THEN_default_relativity_SHOULD_be_used(self):
         file_name_argument = 'file-name'
@@ -346,8 +349,9 @@ class TestParseFromTokenStream2CasesWithRelValueDefinitionRelativity(TestParsesB
                                                                   PathPartResolverAsFixedPath(file_name_argument))
                 arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
                 for path_suffix_is_required in [False, True]:
-                    with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required) +
-                            ' / source={}'.format(repr(source))):
+                    test_descr = 'path_suffix_is_required={} / source={}'.format(path_suffix_is_required,
+                                                                                 repr(source))
+                    with self.subTest(msg=test_descr):
                         argument_string = source.format(option_str=option_str,
                                                         value_definition_name=value_definition_name,
                                                         file_name_argument=file_name_argument)
@@ -505,6 +509,79 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
             for path_suffix_is_required in [False, True]:
                 with self.subTest(msg=test_name + '/path_suffix_is_required=' + str(path_suffix_is_required)):
                     self._check2(arrangement, path_suffix_is_required, expectation)
+
+
+class TestParseWithoutRequiredPathSuffix(TestParsesBase):
+    def test_no_argument_at_all(self):
+        default_and_accepted_options_variants = [
+            (RelOptionType.REL_HOME,
+             {RelOptionType.REL_HOME, RelOptionType.REL_ACT}),
+            (RelOptionType.REL_RESULT,
+             {RelOptionType.REL_RESULT, RelOptionType.REL_TMP}),
+        ]
+        for default_option, accepted_options in default_and_accepted_options_variants:
+            expected_file_ref = file_refs.of_rel_option(default_option, PathPartAsNothing())
+            expected_file_ref_value = FileRefConstant(expected_file_ref)
+            arg_config = RelOptionArgumentConfiguration(
+                RelOptionsConfiguration(
+                    PathRelativityVariants(accepted_options, True),
+                    True,
+                    default_option),
+                'argument_syntax_name')
+            for path_suffix_is_required in [False, True]:
+                with self.subTest(' / path_suffix_is_required=' + str(path_suffix_is_required)):
+                    argument_string = ''
+                    self._check(
+                        Arrangement(argument_string,
+                                    arg_config),
+                        path_suffix_is_required,
+                        Expectation(expected_file_ref_value,
+                                    token_stream=assert_token_stream2(is_null=asrt.is_true))
+                    )
+
+    def test_only_relativity_argument(self):
+        used_and_default_and_accepted_options_variants = [
+            (
+                RelOptionType.REL_ACT,
+                RelOptionType.REL_HOME,
+                {RelOptionType.REL_HOME, RelOptionType.REL_ACT}
+            ),
+            (
+                RelOptionType.REL_HOME,
+                RelOptionType.REL_ACT,
+                {RelOptionType.REL_HOME, RelOptionType.REL_ACT}),
+        ]
+
+        for used_option, default_option, accepted_options in used_and_default_and_accepted_options_variants:
+            option_str = _option_string_for(REL_OPTIONS_MAP[used_option].option_name)
+            arg_config = RelOptionArgumentConfiguration(
+                RelOptionsConfiguration(
+                    PathRelativityVariants(accepted_options, True),
+                    True,
+                    default_option),
+                'argument_syntax_name')
+            source_variants = [
+                ('{option_str}',
+                 assert_token_stream2(is_null=asrt.is_true)),
+                ('   {option_str}',
+                 assert_token_stream2(is_null=asrt.is_true)),
+                ('{option_str} \nnext line',
+                 assert_token_stream2(is_null=asrt.is_false,
+                                      remaining_part_of_current_line=asrt.equals(''))),
+            ]
+            expected_file_ref = file_refs.of_rel_option(used_option, PathPartAsNothing())
+            for source, token_stream_assertion in source_variants:
+                with self.subTest(msg='used_option={} source={}'.format(option_str, repr(source))):
+                    argument_string = source.format(option_str=option_str)
+                    token_stream = TokenStream2(argument_string)
+                    # ACT #
+                    actual_file_ref_resolver = sut.parse_file_ref(token_stream, arg_config, False)
+                    # ASSERT #
+                    resolver_assertion = equals_file_ref_resolver2(expected_file_ref,
+                                                                   asrt.matches_sequence([]),
+                                                                   empty_symbol_table())
+                    resolver_assertion.apply_with_message(self, actual_file_ref_resolver, 'file-ref-resolver')
+                    token_stream_assertion.apply_with_message(self, token_stream, 'token stream')
 
 
 class TestParseFromParseSource(unittest.TestCase):
