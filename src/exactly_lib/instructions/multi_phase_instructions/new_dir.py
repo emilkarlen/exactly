@@ -11,8 +11,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.value_definition.concrete_values import FileRefResolver
+from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):

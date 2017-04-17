@@ -15,10 +15,10 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh, pfh
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing
 from exactly_lib.util.string import lines_content
+from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
 class EqualsAssertionInstruction(AssertPhaseInstruction):

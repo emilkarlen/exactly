@@ -12,10 +12,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.string import lines_content
+from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds
 from exactly_lib_test.act_phase_setups.test_resources import py_program as py
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase

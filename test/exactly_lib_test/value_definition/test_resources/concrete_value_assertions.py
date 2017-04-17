@@ -4,7 +4,6 @@ import unittest
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.line_source import Line
@@ -13,6 +12,7 @@ from exactly_lib.value_definition import concrete_restrictions
 from exactly_lib.value_definition import value_structure as vs
 from exactly_lib.value_definition.concrete_values import FileRefResolver, StringResolver, ValueVisitor, \
     SymbolValueResolver
+from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.value_definition.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.value_definition.value_structure import ValueContainer, Value
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part
