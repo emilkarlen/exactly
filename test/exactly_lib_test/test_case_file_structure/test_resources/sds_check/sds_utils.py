@@ -4,10 +4,10 @@ from contextlib import contextmanager
 
 from exactly_lib import program_info
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds_module
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.file_utils import write_file

@@ -11,7 +11,6 @@ from exactly_lib.section_document.parser_implementations.token_stream2 import To
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.test_case_file_structure.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.relative_path_options import REL_CWD_OPTION, REL_TMP_OPTION, REL_OPTIONS_MAP, \
     REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument
@@ -23,6 +22,7 @@ from exactly_lib.value_definition.concrete_values import FileRefResolver
 from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
 from exactly_lib.value_definition.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
