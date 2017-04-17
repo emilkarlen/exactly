@@ -39,13 +39,19 @@ class RelOptionsConfiguration(tuple):
 class RelOptionArgumentConfiguration(tuple):
     def __new__(cls,
                 options_configuration: RelOptionsConfiguration,
-                argument_syntax_name: str):
+                argument_syntax_name: str,
+                path_suffix_is_required: bool):
         return tuple.__new__(cls, (options_configuration,
-                                   argument_syntax_name))
+                                   argument_syntax_name,
+                                   path_suffix_is_required))
 
     @property
     def options(self) -> RelOptionsConfiguration:
         return self[0]
+
+    @property
+    def path_suffix_is_required(self) -> bool:
+        return self[2]
 
     @property
     def argument_syntax_name(self) -> str:
@@ -67,4 +73,5 @@ def argument_configuration_for_file_creation(argument_syntax_element_name: str,
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION,
                                                                   may_use_value_definitions,
                                                                   RelOptionType.REL_CWD),
-                                          argument_syntax_element_name)
+                                          argument_syntax_element_name,
+                                          True)

@@ -39,11 +39,13 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
     False)
 
 
-def all_rel_options_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
+def all_rel_options_config(argument_syntax_name: str,
+                           path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
                                                                   True,
                                                                   RelOptionType.REL_HOME),
-                                          argument_syntax_name)
+                                          argument_syntax_name,
+                                          path_suffix_is_required)
 
 
 ALL_REL_OPTIONS_CONFIG = all_rel_options_config('FILE')
@@ -57,17 +59,18 @@ STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HOME_RELATIVITY
                                                     RelOptionType.REL_CWD)
 
 
-def non_home_config(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
+def non_home_config(argument_syntax_name: str,
+                    path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(STANDARD_NON_HOME_OPTIONS,
-                                          argument_syntax_name)
+                                          argument_syntax_name,
+                                          path_suffix_is_required)
 
 
 NON_HOME_CONFIG = non_home_config('FILE')
 
 
 def parse_file_ref_from_parse_source(source: ParseSource,
-                                     conf: RelOptionArgumentConfiguration,
-                                     path_suffix_is_required: bool = True) -> FileRefResolver:
+                                     conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     """
     :param source: Has a current line
     :return: The parsed FileRef, remaining arguments after file was parsed.
@@ -75,14 +78,13 @@ def parse_file_ref_from_parse_source(source: ParseSource,
     """
 
     ts = TokenStream2(source.remaining_part_of_current_line)
-    ret_val = parse_file_ref(ts, conf, path_suffix_is_required)
+    ret_val = parse_file_ref(ts, conf)
     source.consume(ts.position)
     return ret_val
 
 
 def parse_file_ref(tokens: TokenStream2,
-                   conf: RelOptionArgumentConfiguration,
-                   path_suffix_is_required: bool = True) -> FileRefResolver:
+                   conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     """
     :param tokens: Argument list
     :return: The parsed FileRef, remaining arguments after file was parsed.
@@ -94,7 +96,7 @@ def parse_file_ref(tokens: TokenStream2,
                                                        PathPartAsNothing()))
 
     if tokens.is_null:
-        if path_suffix_is_required:
+        if conf.path_suffix_is_required:
             _raise_missing_arguments_exception(conf)
         else:
             return result_from_no_arguments()
@@ -102,7 +104,7 @@ def parse_file_ref(tokens: TokenStream2,
     initial_argument_string = tokens.remaining_part_of_current_line
     relativity_info = parse_explicit_relativity_info(conf.options, tokens)
     if tokens.is_null:
-        if path_suffix_is_required:
+        if conf.path_suffix_is_required:
             raise SingleInstructionInvalidArgumentException(
                 'Missing {} argument: {}'.format(conf.argument_syntax_name,
                                                  initial_argument_string))
