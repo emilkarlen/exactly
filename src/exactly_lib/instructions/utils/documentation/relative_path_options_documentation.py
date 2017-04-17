@@ -28,10 +28,12 @@ SYMBOL_REFERENCE = a.Named('SYMBOL-REFERENCE')
 
 
 def mandatory_path_with_optional_relativity(path_argument: a.Named,
-                                            may_use_value_definitions: bool = False) -> list:
-    path_part = a.Single(a.Multiplicity.MANDATORY, path_argument)
+                                            may_use_value_definitions: bool = False,
+                                            path_suffix_is_required: bool = True) -> list:
+    multiplicity = a.Multiplicity.MANDATORY if path_suffix_is_required else a.Multiplicity.OPTIONAL
+    path_part = a.Single(multiplicity, path_argument)
     if may_use_value_definitions:
-        path_part = a.Choice(a.Multiplicity.MANDATORY, [path_argument, SYMBOL_REFERENCE])
+        path_part = a.Choice(multiplicity, [path_argument, SYMBOL_REFERENCE])
     return [
         OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
         path_part,
