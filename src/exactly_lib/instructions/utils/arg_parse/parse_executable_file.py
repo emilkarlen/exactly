@@ -5,12 +5,12 @@ from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 
 LIST_DELIMITER_START = '('
 LIST_DELIMITER_END = ')'

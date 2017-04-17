@@ -4,13 +4,14 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver2
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_test
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
@@ -19,7 +20,6 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_di
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNotNone
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
-from exactly_lib_test.value_definition.test_resources.concrete_value_assertions import equals_file_ref_resolver2
 
 
 def suite() -> unittest.TestSuite:

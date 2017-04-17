@@ -6,25 +6,25 @@ from exactly_lib.instructions.setup import assign_value_definition as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_value_definition
+from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.symbol.value_structure import ValueDefinition, ValueContainer, Value, ValueReference
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.line_source import Line
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.value_definition.value_structure import ValueDefinition, ValueContainer, Value, ValueReference
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.symbol.test_resources import value_definition_utils as v2
+from exactly_lib_test.symbol.test_resources import value_structure_assertions as vs_asrt
+from exactly_lib_test.symbol.test_resources.value_definition_utils import assert_symbol_table_is_singleton, \
+    string_value_container
+from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_value_container
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources import value_definition_utils as v2
-from exactly_lib_test.value_definition.test_resources import value_structure_assertions as vs_asrt
-from exactly_lib_test.value_definition.test_resources.value_definition_utils import assert_symbol_table_is_singleton, \
-    string_value_container
-from exactly_lib_test.value_definition.test_resources.value_structure_assertions import equals_value_container
 
 
 def suite() -> unittest.TestSuite:

@@ -8,6 +8,14 @@ from exactly_lib.instructions.utils.arg_parse.symbol import symbol_reference_syn
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
+    EitherStringOrFileRefRelativityRestriction, StringRestriction
+from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_value_definition
+from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.value_structure import ValueReference
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
@@ -16,28 +24,20 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_CWD_O
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction, \
-    EitherStringOrFileRefRelativityRestriction, StringRestriction
-from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
+    equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
+from exactly_lib_test.symbol.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
+    equals_file_ref_resolver2
+from exactly_lib_test.symbol.test_resources.value_definition_utils import \
+    symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
+from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_reference
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
-    equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
-from exactly_lib_test.value_definition.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
-    equals_file_ref_resolver2
-from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
-    symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
-from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_reference
 
 
 def suite() -> unittest.TestSuite:

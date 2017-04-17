@@ -1,14 +1,14 @@
 import pathlib
 
+from exactly_lib.symbol.concrete_restrictions import EitherStringOrFileRefRelativityRestriction, \
+    StringRestriction, FileRefRelativityRestriction
+from exactly_lib.symbol.concrete_values import ValueVisitor, FileRefResolver, StringResolver
+from exactly_lib.symbol.value_structure import ValueReference, ValueContainer
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition.concrete_restrictions import EitherStringOrFileRefRelativityRestriction, \
-    StringRestriction, FileRefRelativityRestriction
-from exactly_lib.value_definition.concrete_values import ValueVisitor, FileRefResolver, StringResolver
-from exactly_lib.value_definition.value_structure import ValueReference, ValueContainer
 
 
 # Do not want to have this class as public - but want it in a separate file ...

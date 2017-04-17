@@ -1,18 +1,18 @@
 import unittest
 
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib.value_definition.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib_test.symbol.test_resources.value_definition_utils import \
+    symbol_table_from_value_definitions, string_value_definition
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
-from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
-    symbol_table_from_value_definitions, string_value_definition
 
 
 def suite() -> unittest.TestSuite:

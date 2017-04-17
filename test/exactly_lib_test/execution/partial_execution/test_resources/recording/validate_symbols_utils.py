@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
+from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.value_structure import ValueReference
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.value_definition.concrete_restrictions import NoRestriction
-from exactly_lib.value_definition.value_structure import ValueReference
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
