@@ -35,7 +35,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
-                                                                         self.may_use_value_definitions)
+                                                                         self.may_use_value_definitions,
+                                                                         self.rel_opt_arg_conf.path_suffix_is_required)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),

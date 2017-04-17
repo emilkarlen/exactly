@@ -59,7 +59,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             symbol_name,
             equals,
         ]
-        arguments_for_path_type.extend(rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT, True))
+        arguments_for_path_type.extend(rel_path_doc.mandatory_path_with_optional_relativity(
+            _PATH_ARGUMENT,
+            True,
+            REL_OPTION_ARGUMENT_CONFIGURATION.path_suffix_is_required))
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments_for_string_type)),
             InvokationVariant(self._cl_syntax_for_args(arguments_for_path_type)),
