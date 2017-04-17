@@ -135,7 +135,8 @@ _ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfi
     rel_opts_configuration.RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX,
                                                    False,  # TODO Change to true when val-defs available in assert phase
                                                    RelOptionType.REL_CWD),
-    'PATH')
+    'PATH',
+    True)
 
 
 def parse_actual_file_argument(source: ParseSource) -> ComparisonActualFile:

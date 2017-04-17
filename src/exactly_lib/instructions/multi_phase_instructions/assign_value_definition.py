@@ -126,7 +126,8 @@ REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
     RelOptionType.REL_CWD)
 
 REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
-                                                                   dt.PATH_ARGUMENT)
+                                                                   dt.PATH_ARGUMENT,
+                                                                   False)
 
 _MAIN_DESCRIPTION_REST = """\
 Defines the symbol {NAME} to be the given string or path.

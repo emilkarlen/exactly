@@ -75,7 +75,7 @@ Omitting the {dir_argument} is the same as giving ".".
 def parse(argument: str, is_after_act_phase: bool) -> FileRefResolver:
     relativity_options = _relativity_options(is_after_act_phase)
     source = TokenStream2(argument)
-    destination_path = parse_file_ref(source, relativity_options, False)
+    destination_path = parse_file_ref(source, relativity_options)
     if not source.is_null:
         raise SingleInstructionInvalidArgumentException('Superfluous arguments: {}'.format(source.remaining_source))
     return destination_path
@@ -115,4 +115,5 @@ def _relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfigurat
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(variants,
                                                                   True,
                                                                   RelOptionType.REL_CWD),
-                                          _DIR_ARGUMENT.name)
+                                          _DIR_ARGUMENT.name,
+                                          False)
