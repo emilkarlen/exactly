@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_di
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNotNone
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
-from exactly_lib_test.value_definition.test_resources.concrete_value_assertions_2 import equals_file_ref_resolver2
+from exactly_lib_test.value_definition.test_resources.concrete_value_assertions import equals_file_ref_resolver2
 
 
 def suite() -> unittest.TestSuite:
