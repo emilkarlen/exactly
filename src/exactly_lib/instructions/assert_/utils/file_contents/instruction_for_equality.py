@@ -10,6 +10,7 @@ from exactly_lib.instructions.utils.file_properties import must_exist_as, FileTy
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -18,7 +19,6 @@ from exactly_lib.test_case.phases.result import svh, pfh
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing
 from exactly_lib.util.string import lines_content
-from exactly_lib.value_definition.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
 class EqualsAssertionInstruction(AssertPhaseInstruction):

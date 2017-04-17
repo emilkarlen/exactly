@@ -14,6 +14,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -21,7 +22,6 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.value_definition.concrete_values import FileRefResolver
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

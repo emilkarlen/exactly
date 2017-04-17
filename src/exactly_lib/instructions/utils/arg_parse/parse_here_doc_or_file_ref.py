@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.value_definition.concrete_values import FileRefResolver
+from exactly_lib.symbol.concrete_values import FileRefResolver
 
 CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 

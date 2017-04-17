@@ -13,6 +13,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
+from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -22,8 +24,6 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure import lists
-from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

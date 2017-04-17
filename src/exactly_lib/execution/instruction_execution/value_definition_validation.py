@@ -1,9 +1,9 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
+from exactly_lib.symbol import value_structure as vs
+from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition import value_structure as vs
-from exactly_lib.value_definition.value_structure import ValueContainer
 
 
 def validate_symbol_usages(value_usages: list,

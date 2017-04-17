@@ -15,18 +15,18 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token import TokenType, Token
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_value_definition
+from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
+from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsStringSymbolReference, \
+    PathPartResolverAsFixedPath, PathPartResolverAsNothing
+from exactly_lib.symbol.value_structure import ValueReference
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.value_definition.concrete_values import FileRefResolver
-from exactly_lib.value_definition.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.value_definition.value_resolvers.file_ref_with_val_def import rel_value_definition
-from exactly_lib.value_definition.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.value_definition.value_resolvers.path_part_resolvers import PathPartResolverAsStringSymbolReference, \
-    PathPartResolverAsFixedPath, PathPartResolverAsNothing
-from exactly_lib.value_definition.value_structure import ValueReference
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
 
