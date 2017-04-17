@@ -33,7 +33,7 @@ from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.value_definition.test_resources.concrete_restriction_assertion import \
     equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
-from exactly_lib_test.value_definition.test_resources.concrete_value_assertions_2 import file_ref_resolver_equals, \
+from exactly_lib_test.value_definition.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
     equals_file_ref_resolver2
 from exactly_lib_test.value_definition.test_resources.value_definition_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value

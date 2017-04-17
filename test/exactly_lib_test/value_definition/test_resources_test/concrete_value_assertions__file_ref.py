@@ -13,7 +13,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.value_definition.test_resources import concrete_value_assertions_2 as sut
+from exactly_lib_test.value_definition.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.value_definition.test_resources.value_reference_assertions import equals_value_references
 
 
