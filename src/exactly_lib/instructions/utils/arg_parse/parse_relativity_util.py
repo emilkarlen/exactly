@@ -11,23 +11,6 @@ from exactly_lib.value_definition.concrete_restrictions import FileRefRelativity
 from exactly_lib.value_definition.value_structure import ValueReference
 
 
-def parse_relativity_info(options: RelOptionsConfiguration,
-                          source: TokenStream2):
-    """
-    :return: Either a `RelOptionType` or a `ValueReference`
-    """
-    if source.is_null:
-        return options.default_option
-    token = source.head
-    if not is_option_argument(token.source_string):
-        return options.default_option
-
-    info = _try_parse_rel_val_def_option(options, source)
-    if info is not None:
-        return info
-    return _parse_rel_option_type(options, source)
-
-
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,
                                    source: TokenStream2):
     """
