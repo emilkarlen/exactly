@@ -28,6 +28,7 @@ class SectionRendererNode:
     def section(self, environment: RenderingEnvironment) -> doc.Section:
         return self.section_renderer().apply(environment)
 
+
 class SectionGenerator:
     """
     A section that can be put anywhere in the section hierarchy, since
