@@ -6,8 +6,6 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.symbol.test_resources.value_definition_utils import \
-    symbol_table_from_value_definitions, string_value_definition
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl
@@ -45,8 +43,7 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                 assertion = sut.file_ref_equals(value)
                 assertion.apply_with_message(self, value, test_case_name)
             with self.subTest(msg='equals_file_ref2::' + test_case_name):
-                assertion = sut.equals_file_ref2(value,
-                                                 symbol_table_for_method2)
+                assertion = sut.equals_file_ref2(value)
                 assertion.apply_with_message(self, value, test_case_name)
 
 
@@ -58,22 +55,16 @@ class TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(unittest.T
                              PathPartAsNothing()),
              FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY,
                              PathPartAsNothing()),
-             symbol_table_from_value_definitions([
-                 string_value_definition('path_suffix_symbol_1', 'suffix-file-name'),
-                 string_value_definition('path_suffix_symbol_2', 'suffix-file-name'),
-             ])
              ),
         ]
-        for test_case_name, first, second, symbol_table_for_method2 in test_cases:
+        for test_case_name, first, second in test_cases:
             assert isinstance(first, FileRef), 'Type info for IDE (first)'
             assert isinstance(second, FileRef), 'Type info for IDE (second)'
             with self.subTest(msg='1::' + test_case_name):
-                assertion = sut.equals_file_ref2(first,
-                                                 symbol_table_for_method2)
+                assertion = sut.equals_file_ref2(first)
                 assertion.apply_with_message(self, second, test_case_name)
             with self.subTest(msg='2::' + test_case_name):
-                assertion = sut.equals_file_ref2(second,
-                                                 symbol_table_for_method2)
+                assertion = sut.equals_file_ref2(second)
                 assertion.apply_with_message(self, first, test_case_name)
 
 
@@ -127,7 +118,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref2(expected, empty_symbol_table())
+            assertion = sut.equals_file_ref2(expected)
             assertion.apply_with_message(put, actual, 'NotEquals')
 
     def test_differs__exists_pre_sds(self):
@@ -137,7 +128,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref2(expected, empty_symbol_table())
+            assertion = sut.equals_file_ref2(expected)
             assertion.apply_with_message(put, actual, 'NotEquals')
 
     def test_differs__relativity(self):
@@ -147,7 +138,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref2(expected, empty_symbol_table())
+            assertion = sut.equals_file_ref2(expected)
             assertion.apply_with_message(put, actual, 'NotEquals')
 
 

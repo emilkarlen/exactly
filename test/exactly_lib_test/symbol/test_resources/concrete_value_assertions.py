@@ -110,7 +110,7 @@ class _AssertFileRefResolverHasSpecifiedProperties(_FileRefResolverAssertionBase
         self.symbol_table = symbol_table
 
     def _file_ref_assertion(self, expected_file_ref: FileRef) -> asrt.ValueAssertion:
-        return equals_file_ref2(expected_file_ref, self.symbol_table)
+        return equals_file_ref2(expected_file_ref)
 
     def _expected_file_ref(self, symbol_table: SymbolTable) -> FileRef:
         return self.expected_relativity_and_paths
