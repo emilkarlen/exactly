@@ -49,17 +49,3 @@ def write_act_result(sds: SandboxDirectoryStructure,
     write_file(sds.result.exitcode_file, str(result.exitcode))
     write_file(sds.result.stdout_file, result.stdout_contents)
     write_file(sds.result.stderr_file, result.stderr_contents)
-
-
-class MkDirIfNotExistsAndChangeToIt(SdsAction):
-    def __init__(self, sds_2_dir_path):
-        self.sds_2_dir_path = sds_2_dir_path
-
-    def apply(self, environment: PathResolvingEnvironmentPostSds):
-        dir_path = self.sds_2_dir_path(environment.sds)
-        dir_path.mkdir(parents=True, exist_ok=True)
-        os.chdir(str(dir_path))
-
-
-def mk_sub_dir_of_act_and_change_to_it(sub_dir_name: str) -> SdsAction:
-    return MkDirIfNotExistsAndChangeToIt(lambda sds: sds.act_dir / sub_dir_name)
