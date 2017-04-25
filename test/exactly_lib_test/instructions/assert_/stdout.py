@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_s
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
-    home_or_sds_populator as home_or_sds
+    home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction

@@ -14,7 +14,7 @@ from exactly_lib.util.process_execution.os_process_execution import with_no_time
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_resources import file_structure
@@ -27,7 +27,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                home_or_sds_contents_before_main: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                home_or_sds_contents_before_main: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
                 process_execution_settings=with_no_timeout(),

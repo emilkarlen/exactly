@@ -14,8 +14,8 @@ from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validat
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
-    home_or_sds_populator as home_or_sds_pop
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
+    home_and_sds_populators as home_or_sds_pop
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
