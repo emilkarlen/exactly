@@ -15,8 +15,6 @@ from exactly_lib_test.instructions.test_resources.executable_file_test_utils imp
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_or_sds_populator as home_or_sds_pop
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
-    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
     HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
@@ -27,6 +25,8 @@ from exactly_lib_test.test_resources.files.paths import non_existing_absolute_pa
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+    home_and_sds_with_act_as_curr_dir
 
 
 class TestParseValidSyntaxWithoutArguments(unittest.TestCase):

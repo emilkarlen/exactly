@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
-    HomeAndSdsAction, \
-    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+    HomeAndSdsAction, \
+    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
 from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
