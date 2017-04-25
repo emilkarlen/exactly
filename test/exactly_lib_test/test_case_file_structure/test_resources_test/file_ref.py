@@ -5,7 +5,6 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
     PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl
@@ -29,20 +28,18 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
             ('Exists pre SDS/fixed path suffix',
              FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY,
                              PathPartAsFixedPath('file-name')),
-             empty_symbol_table(),
              ),
             ('NOT Exists pre SDS/fixed path suffix',
              FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY,
                              PathPartAsFixedPath('a-file-name')),
-             empty_symbol_table(),
              ),
         ]
-        for test_case_name, value, symbol_table_for_method2 in test_cases:
+        for test_case_name, value in test_cases:
             assert isinstance(value, FileRef), 'Type info for IDE'
-            with self.subTest(msg='file_ref_equals::' + test_case_name):
+            with self.subTest(msg=sut.file_ref_equals.__name__ + '::' + test_case_name):
                 assertion = sut.file_ref_equals(value)
                 assertion.apply_with_message(self, value, test_case_name)
-            with self.subTest(msg='equals_file_ref2::' + test_case_name):
+            with self.subTest(msg=sut.equals_file_ref2.__name__ + '::' + test_case_name):
                 assertion = sut.equals_file_ref2(value)
                 assertion.apply_with_message(self, value, test_case_name)
 
