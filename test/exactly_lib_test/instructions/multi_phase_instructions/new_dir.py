@@ -1,3 +1,4 @@
+import os
 import pathlib
 import unittest
 
@@ -18,8 +19,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents, SdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_test import Arrangement, Expectation
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction, \
-    mk_sub_dir_of_act_and_change_to_it
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
@@ -298,6 +298,20 @@ def arrangement_with_sub_dir_of_act_as_cwd(
         sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty()) -> Arrangement:
     return Arrangement(sds_contents_before=sds_contents_before,
                        pre_contents_population_action=SETUP_CWD_ACTION)
+
+
+class MkDirIfNotExistsAndChangeToIt(SdsAction):
+    def __init__(self, sds_2_dir_path):
+        self.sds_2_dir_path = sds_2_dir_path
+
+    def apply(self, environment: PathResolvingEnvironmentPostSds):
+        dir_path = self.sds_2_dir_path(environment.sds)
+        dir_path.mkdir(parents=True, exist_ok=True)
+        os.chdir(str(dir_path))
+
+
+def mk_sub_dir_of_act_and_change_to_it(sub_dir_name: str) -> SdsAction:
+    return MkDirIfNotExistsAndChangeToIt(lambda sds: sds.act_dir / sub_dir_name)
 
 
 SETUP_CWD_ACTION = mk_sub_dir_of_act_and_change_to_it(_SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
