@@ -15,7 +15,7 @@ from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import tmp_dir as fs_utils
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor

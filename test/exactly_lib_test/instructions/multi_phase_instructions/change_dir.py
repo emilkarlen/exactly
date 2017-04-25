@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver2
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_utils
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_env_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
     tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -143,7 +143,7 @@ class TestParseSet(unittest.TestCase):
             sut.parse(arguments, is_after_act_phase=False)
 
 
-class ParseAndChangeDirAction(sds_utils.SdsAction):
+class ParseAndChangeDirAction(sds_env_utils.SdsAction):
     def __init__(self,
                  arguments: str,
                  is_after_act_phase: bool):
@@ -186,7 +186,7 @@ def is_failure() -> ValueAssertion:
     return ValueIsNotNone()
 
 
-class ChangeDirTo(sds_utils.SdsAction):
+class ChangeDirTo(sds_env_utils.SdsAction):
     def __init__(self, sds2dir_fun):
         self.sds2dir_fun = sds2dir_fun
 
