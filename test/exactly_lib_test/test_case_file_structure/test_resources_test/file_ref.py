@@ -15,10 +15,8 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import \
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestEqualsCommonToBothAssertionMethods(),
-        TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(),
         unittest.makeSuite(TestNotEquals_PathSuffixAsFixedPath),
         unittest.makeSuite(TestNotEquals_DifferentTypeOfPathSuffix),
-        unittest.makeSuite(Test2NotEquals),
     ])
 
 
@@ -36,33 +34,9 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
         ]
         for test_case_name, value in test_cases:
             assert isinstance(value, FileRef), 'Type info for IDE'
-            with self.subTest(msg=sut.file_ref_equals.__name__ + '::' + test_case_name):
-                assertion = sut.file_ref_equals(value)
+            with self.subTest(msg=sut.equals_file_ref.__name__ + '::' + test_case_name):
+                assertion = sut.equals_file_ref(value)
                 assertion.apply_with_message(self, value, test_case_name)
-            with self.subTest(msg=sut.equals_file_ref2.__name__ + '::' + test_case_name):
-                assertion = sut.equals_file_ref2(value)
-                assertion.apply_with_message(self, value, test_case_name)
-
-
-class TestEqualsSpecificForAssertionMethod2WithIgnoredValueReferences(unittest.TestCase):
-    def runTest(self):
-        test_cases = [
-            ('Nothing path suffixes',
-             FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY,
-                             PathPartAsNothing()),
-             FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY,
-                             PathPartAsNothing()),
-             ),
-        ]
-        for test_case_name, first, second in test_cases:
-            assert isinstance(first, FileRef), 'Type info for IDE (first)'
-            assert isinstance(second, FileRef), 'Type info for IDE (second)'
-            with self.subTest(msg='1::' + test_case_name):
-                assertion = sut.equals_file_ref2(first)
-                assertion.apply_with_message(self, second, test_case_name)
-            with self.subTest(msg='2::' + test_case_name):
-                assertion = sut.equals_file_ref2(second)
-                assertion.apply_with_message(self, first, test_case_name)
 
 
 class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
@@ -73,7 +47,7 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
+            sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
 
     def test_differs__exists_pre_sds(self):
         # ARRANGE #
@@ -82,7 +56,7 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
         actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
+            sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
 
     def test_differs__relativity(self):
         # ARRANGE #
@@ -91,7 +65,7 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
+            sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
 
 
 class TestNotEquals_DifferentTypeOfPathSuffix(unittest.TestCase):
@@ -104,39 +78,7 @@ class TestNotEquals_DifferentTypeOfPathSuffix(unittest.TestCase):
                                  PathPartAsNothing())
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            sut.file_ref_equals(expected).apply_with_message(put, actual, 'NotEquals')
-
-
-class Test2NotEquals(unittest.TestCase):
-    def test_differs__file_name(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref2(expected)
-            assertion.apply_with_message(put, actual, 'NotEquals')
-
-    def test_differs__exists_pre_sds(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref2(expected)
-            assertion.apply_with_message(put, actual, 'NotEquals')
-
-    def test_differs__relativity(self):
-        # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
-        # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref2(expected)
-            assertion.apply_with_message(put, actual, 'NotEquals')
+            sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
 
 
 _EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME
