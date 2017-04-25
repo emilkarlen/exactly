@@ -9,9 +9,9 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
     Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
-    HomeAndSdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+    HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

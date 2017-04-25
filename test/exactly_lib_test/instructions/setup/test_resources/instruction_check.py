@@ -26,10 +26,10 @@ from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
-    HomeAndSdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+    HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 

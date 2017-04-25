@@ -15,12 +15,12 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
     ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
-    HomeAndSdsAction, \
-    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+    HomeAndSdsAction, \
+    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
