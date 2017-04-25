@@ -247,7 +247,7 @@ class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
                                         token_stream_assertion))
 
     def test_parse_with_relativity_option_and_absolute_path_suffix(self):
-        file_name_argument = '/and/absolute/path'
+        file_name_argument = '/an/absolute/path'
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_file_ref = file_refs.absolute_file_name(file_name_argument)
             expected_file_ref_resolver = FileRefConstant(expected_file_ref)
@@ -284,6 +284,42 @@ class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
                                         _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
                             Expectation(expected_file_ref_resolver,
                                         token_stream_assertion))
+
+    def test_parse_with_only_absolute_path_suffix(self):
+        file_name_argument = '/an/absolute/path'
+        expected_file_ref = file_refs.absolute_file_name(file_name_argument)
+        expected_file_ref_resolver = FileRefConstant(expected_file_ref)
+        source_and_token_stream_assertion_variants = [
+            (
+                '{file_name_argument} arg3 arg4',
+                assert_token_stream2(is_null=asrt.is_false,
+                                     head_token=assert_token_string_is('arg3')
+                                     )
+            ),
+            (
+                '{file_name_argument}',
+                assert_token_stream2(is_null=asrt.is_true)
+            ),
+            (
+                '      {file_name_argument}',
+                assert_token_stream2(is_null=asrt.is_true)
+            ),
+            (
+                '{file_name_argument}\nnext line',
+                assert_token_stream2(is_null=asrt.is_false,
+                                     head_token=assert_token_string_is('next'))
+            ),
+        ]
+        for source, token_stream_assertion in source_and_token_stream_assertion_variants:
+            for path_suffix_is_required in [False, True]:
+                argument_string = source.format(file_name_argument=file_name_argument)
+                with self.subTest(msg='path_suffix_is_required={}, source="{}"'.format(path_suffix_is_required,
+                                                                                       argument_string)):
+                    self._check(
+                        Arrangement(argument_string,
+                                    _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(path_suffix_is_required)),
+                        Expectation(expected_file_ref_resolver,
+                                    token_stream_assertion))
 
     def test_WHEN_relativity_option_is_not_one_of_accepted_options_THEN_parse_SHOULD_fail(self):
         file_name_argument = 'file-name'

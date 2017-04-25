@@ -150,6 +150,9 @@ def _with_explicit_relativity(path_argument_token: Token,
 
 def _just_string_argument(argument: str,
                           conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+    argument_path = pathlib.PurePath(argument)
+    if argument_path.is_absolute():
+        return FileRefConstant(file_refs.absolute_file_name(argument))
     path_suffix = PathPartAsFixedPath(argument)
     return FileRefConstant(file_refs.of_rel_option(conf.options.default_option, path_suffix))
 
