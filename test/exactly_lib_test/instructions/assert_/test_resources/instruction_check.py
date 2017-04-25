@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
@@ -103,9 +102,9 @@ class Executor:
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
-                home_or_sds_contents=self.arrangement.home_or_sds_contents) as home_and_sds:
-            path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
-                                                                              self.arrangement.value_definitions)
+                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                value_definitions=self.arrangement.value_definitions) as path_resolving_environment:
+            home_and_sds = path_resolving_environment.home_and_sds
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)

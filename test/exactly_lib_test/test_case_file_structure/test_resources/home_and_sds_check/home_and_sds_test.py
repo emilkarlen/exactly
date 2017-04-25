@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_utils import \
     HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
@@ -8,6 +9,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
+from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 
 
 class PostActionCheck:
@@ -22,11 +24,13 @@ class Arrangement:
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  home_dir_contents_before: DirContents = empty_dir_contents(),
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
-                 pre_action_action: HomeAndSdsAction = HomeAndSdsAction()):
+                 pre_action_action: HomeAndSdsAction = HomeAndSdsAction(),
+                 value_definitions: SymbolTable = None):
         self.pre_contents_population_action = pre_contents_population_action
         self.home_dir_contents_before = home_dir_contents_before
         self.sds_contents_before = sds_contents_before
         self.pre_action_action = pre_action_action
+        self.value_definitions = symbol_table_from_none_or_value(value_definitions)
 
 
 class Expectation:
@@ -57,9 +61,10 @@ def check(put: unittest.TestCase,
     with home_and_sds_with_act_as_curr_dir(pre_contents_population_action=arrangement.pre_contents_population_action,
                                            home_dir_contents=arrangement.home_dir_contents_before,
                                            sds_contents=arrangement.sds_contents_before,
-                                           ) as home_and_sds:
-        arrangement.pre_action_action.apply(home_and_sds)
-        result = action.apply(home_and_sds)
+                                           value_definitions=arrangement.value_definitions,
+                                           ) as environment:
+        arrangement.pre_action_action.apply(environment)
+        result = action.apply(environment)
         expectation.expected_action_result.apply(put, result)
-        expectation.expected_sds_contents_after.apply(put, home_and_sds.sds)
-        expectation.post_action_check.apply(put, home_and_sds.sds)
+        expectation.expected_sds_contents_after.apply(put, environment.sds)
+        expectation.post_action_check.apply(put, environment.sds)
