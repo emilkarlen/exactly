@@ -14,13 +14,14 @@ from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator, sds_test
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents, SdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'cwd-dir'
