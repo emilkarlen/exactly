@@ -14,12 +14,12 @@ from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_check
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 
 
 class TestCaseSourceSetup:

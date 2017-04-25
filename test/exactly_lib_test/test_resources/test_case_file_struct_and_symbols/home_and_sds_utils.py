@@ -10,9 +10,9 @@ from exactly_lib.util.file_utils import resolved_path, preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_env_utils import SdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction
 from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 
 
