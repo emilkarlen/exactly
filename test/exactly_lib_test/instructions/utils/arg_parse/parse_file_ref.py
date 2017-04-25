@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
@@ -14,7 +13,6 @@ from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_value_definition
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.value_structure import ValueReference
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
@@ -35,7 +33,6 @@ from exactly_lib_test.symbol.test_resources.value_definition_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
 from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_reference
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -124,7 +121,8 @@ class TestParsesBase(unittest.TestCase):
         actual = sut.parse_file_ref(ts,
                                     arrangement.rel_option_argument_configuration)
         # ASSERT #
-        file_ref_resolver_equals(expectation.file_ref_resolver).apply_with_message(self, actual, 'file-ref')
+        file_ref_resolver_equals(expectation.file_ref_resolver).apply_with_message(self, actual,
+                                                                                   'file-ref-resolver')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
     def _check2(self, arrangement: Arrangement,
@@ -137,18 +135,6 @@ class TestParsesBase(unittest.TestCase):
         # ASSERT #
         expectation.file_ref_resolver.apply_with_message(self, actual, 'file-ref-resolver')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
-
-    # TODO remove this - replace with better test
-    def assert_is_file_that_does_not_exist_pre_sds(self,
-                                                   expected_path: pathlib.Path,
-                                                   environment: PathResolvingEnvironmentPreOrPostSds,
-                                                   actual: FileRefResolver):
-        actual_file_ref = actual.resolve(environment.value_definitions)
-        self.assertFalse(actual_file_ref.exists_pre_sds())
-        self.assertEqual(actual_file_ref.file_path_post_sds(environment.sds),
-                         expected_path)
-        self.assertEqual(actual_file_ref.file_path_pre_or_post_sds(environment.home_and_sds),
-                         expected_path)
 
 
 class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
@@ -756,15 +742,12 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
             'FILE')
         for path_suffix_is_required in [False, True]:
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
-                file_reference = sut.parse_file_ref_from_parse_source(
+                actual_resolver = sut.parse_file_ref_from_parse_source(
                     remaining_source('file.txt'),
                     custom_configuration.config_for(path_suffix_is_required))
-                home_and_sds = dummy_home_and_sds()
-                expected_path = home_and_sds.sds.act_dir / 'file.txt'
-                environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds)
-                self.assert_is_file_that_does_not_exist_pre_sds(expected_path,
-                                                                environment,
-                                                                file_reference)
+                expected_resolver = FileRefConstant(file_refs.rel_act(PathPartAsFixedPath('file.txt')))
+                assertion = file_ref_resolver_equals(expected_resolver)
+                assertion.apply_with_message(self, actual_resolver, 'file-ref-resolver')
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
         custom_configuration = RelOptionArgumentConfigurationWoSuffixRequirement(
