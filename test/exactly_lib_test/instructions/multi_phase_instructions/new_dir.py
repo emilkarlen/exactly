@@ -17,8 +17,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_env_utils import SdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents, SdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation

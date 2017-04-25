@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import equals_path_relativity
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_utils
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_env_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
@@ -108,7 +108,7 @@ class TestParseWithContents(unittest.TestCase):
                          source.current_line_text)
 
 
-class ParseAndCreateFileAction(sds_utils.SdsAction):
+class ParseAndCreateFileAction(sds_env_utils.SdsAction):
     def __init__(self,
                  source: ParseSource):
         self.source = source

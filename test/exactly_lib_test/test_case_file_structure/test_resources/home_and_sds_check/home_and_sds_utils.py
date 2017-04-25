@@ -9,8 +9,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.file_utils import resolved_path, preserved_cwd
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import SdsAction, \
-    sandbox_directory_structure
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_env_utils import SdsAction
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 
 
@@ -25,22 +25,6 @@ class HomeAndSdsActionFromSdsAction(HomeAndSdsAction):
 
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
         return self.sds_action.apply(environment)
-
-
-class HomeAndSdsContents(tuple):
-    def __new__(cls,
-                home_dir_contents: DirContents = empty_dir_contents(),
-                sds_contents: sds_populator.SdsPopulator = sds_populator.empty()):
-        return tuple.__new__(cls, (home_dir_contents,
-                                   sds_contents))
-
-    @property
-    def home_dir_contents(self) -> DirContents:
-        return self[0]
-
-    @property
-    def sds_contents(self) -> sds_populator.SdsPopulator:
-        return self[1]
 
 
 @contextmanager
