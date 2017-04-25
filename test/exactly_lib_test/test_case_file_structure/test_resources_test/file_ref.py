@@ -14,13 +14,13 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import \
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        TestEqualsCommonToBothAssertionMethods(),
+        TestEquals(),
         unittest.makeSuite(TestNotEquals_PathSuffixAsFixedPath),
         unittest.makeSuite(TestNotEquals_DifferentTypeOfPathSuffix),
     ])
 
 
-class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
+class TestEquals(unittest.TestCase):
     def runTest(self):
         test_cases = [
             ('Exists pre SDS/fixed path suffix',
@@ -34,9 +34,9 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
         ]
         for test_case_name, value in test_cases:
             assert isinstance(value, FileRef), 'Type info for IDE'
-            with self.subTest(msg=sut.equals_file_ref.__name__ + '::' + test_case_name):
+            with self.subTest(test_case_name):
                 assertion = sut.equals_file_ref(value)
-                assertion.apply_with_message(self, value, test_case_name)
+                assertion.apply_without_message(self, value)
 
 
 class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
