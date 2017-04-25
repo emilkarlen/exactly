@@ -2,7 +2,7 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_or_sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution.utils import ActResult
@@ -50,7 +50,7 @@ class ArrangementWithSds(ArrangementBase):
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings=with_no_timeout(),
-                 home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                 home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  value_definitions: SymbolTable = None,
                  ):
@@ -73,7 +73,7 @@ class ArrangementPostAct(ArrangementWithSds):
                  act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
-                 home_or_sds_contents: home_or_sds_populator.HomeOrSdsPopulator = home_or_sds_populator.empty(),
+                 home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,

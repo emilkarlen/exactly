@@ -1,6 +1,7 @@
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 
 
 class HomeOrSdsPopulator:
@@ -39,3 +40,19 @@ class _ListOfPopulators(HomeOrSdsPopulator):
     def write_to(self, home_and_sds: HomeAndSds):
         for populator in self.__populator_list:
             populator.write_to(home_and_sds)
+
+
+class HomeAndSdsContents(tuple):
+    def __new__(cls,
+                home_dir_contents: DirContents = empty_dir_contents(),
+                sds_contents: sds_populator.SdsPopulator = sds_populator.empty()):
+        return tuple.__new__(cls, (home_dir_contents,
+                                   sds_contents))
+
+    @property
+    def home_dir_contents(self) -> DirContents:
+        return self[0]
+
+    @property
+    def sds_contents(self) -> sds_populator.SdsPopulator:
+        return self[1]

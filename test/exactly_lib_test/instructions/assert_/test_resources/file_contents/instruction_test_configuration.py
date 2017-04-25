@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
-    home_or_sds_populator as home_or_sds
+    home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType

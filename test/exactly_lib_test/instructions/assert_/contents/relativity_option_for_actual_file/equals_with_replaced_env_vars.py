@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfigurationForRelTmp
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import multiple
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import multiple
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:

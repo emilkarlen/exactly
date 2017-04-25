@@ -6,8 +6,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals i
     InstructionTestConfigurationForEquals
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
-    home_or_sds_populator as home_or_sds
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_or_sds_populator import \
+    home_and_sds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources.execution.utils import ActResult
