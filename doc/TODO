@@ -2,6 +2,10 @@
 
 * type instruction should use standard parse_file_ref
 Currently it only supports paths relative CD.
+* install instruction
+** should parse file name using parse_file_ref
+** should check parsed file using FileRefCheck
+As done by InstructionWithFileRefsBase
 * symbols
 ** def of string should be able to reference symbols in the value
 A la
