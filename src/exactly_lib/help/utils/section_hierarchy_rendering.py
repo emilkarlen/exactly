@@ -2,6 +2,7 @@ from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode
 from exactly_lib.help.utils.section_contents_renderer import SectionRenderer, SectionContentsRenderer, \
     RenderingEnvironment
+from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.textformat.structure import document as doc
 
 
@@ -173,3 +174,17 @@ class _SectionGeneratorWithSubSections(SectionGenerator):
                                                    self._initial_paragraphs,
                                                    sub_sections,
                                                    target_factory)
+
+
+class SectionFromGeneratorAsSectionContentsRenderer(SectionContentsRenderer):
+    """
+    Transforms a `SectionGenerator` to a `SectionContentsRenderer`,
+    for usages where section header and target hierarchy is irrelevant.
+    """
+
+    def __init__(self, generator: SectionGenerator):
+        self.generator = generator
+
+    def apply(self, environment: RenderingEnvironment) -> SectionContents:
+        target_factory = CustomTargetInfoFactory('arbitrary')
+        return self.generator.section_renderer_node(target_factory).section(environment).contents
