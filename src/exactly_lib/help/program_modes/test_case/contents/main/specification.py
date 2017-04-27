@@ -3,10 +3,10 @@ from exactly_lib.help.program_modes.test_case.contents.main import ref_test_case
 from exactly_lib.help.program_modes.test_case.contents.main import test_outcome
 from exactly_lib.help.program_modes.test_case.contents.main.overview import renderer as overview
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.help.program_modes.test_case.contents.util import SectionFromGeneratorAsSectionContentsRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.help.utils.section_hierarchy_rendering import SectionFromGeneratorAsSectionContentsRenderer
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
