@@ -14,6 +14,21 @@ class SectionRendererNode:
     and one method for getting the corresponding contents.
     """
 
+    def target_info_node(self, ) -> TargetInfoNode:
+        raise NotImplementedError()
+
+    def section_renderer(self) -> SectionRenderer:
+        raise NotImplementedError()
+
+    def section(self, environment: RenderingEnvironment) -> doc.Section:
+        return self.section_renderer().apply(environment)
+
+
+class SectionRendererNodeForCustomNode(SectionRendererNode):
+    """
+    A node with a root `TargetInfo` that is a custom target.
+    """
+
     def __init__(self,
                  header: str,
                  target_factory: CustomTargetInfoFactory):
@@ -59,7 +74,7 @@ def parent(header: str,
     return _SectionGeneratorWithSubSections(header, initial_paragraphs, local_target_name__sub_section__list)
 
 
-class _LeafSectionRendererNode(SectionRendererNode):
+class _LeafSectionRendererNode(SectionRendererNodeForCustomNode):
     """
     A section without sub sections that appear in the target-hierarchy.
     """
@@ -86,7 +101,7 @@ class _LeafSectionRendererNode(SectionRendererNode):
         return RetVal()
 
 
-class _SectionRendererNodeWithSubSections(SectionRendererNode):
+class _SectionRendererNodeWithSubSections(SectionRendererNodeForCustomNode):
     """
     A section with sub sections that appear in the target-hierarchy.
     """
