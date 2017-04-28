@@ -85,7 +85,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         renderer = ProgramDocumentationSectionContentsRenderer(SuiteCliSyntaxDocumentation())
         return renderer.apply(self.rendering_environment)
 
-    def _section_cross_ref_target(self, section):
+    def _section_cross_ref_target(self, section) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionCrossReference(section.name.plain)
 
     def _instruction_cross_ref_target(self, instruction_doc, section) -> CrossReferenceId:
