@@ -74,7 +74,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         generator = HtmlDocGeneratorForEntitiesHelp(IndividualActorRenderer, ALL_ACTOR_DOCS, self.rendering_environment)
         return generator.apply(targets_factory)
 
-    def _section_cross_ref_target(self, phase):
+    def _section_cross_ref_target(self, phase) -> CrossReferenceId:
         return cross_ref.TestCasePhaseCrossReference(phase.name.plain)
 
     def _instruction_cross_ref_target(self, instruction_doc, section) -> CrossReferenceId:
