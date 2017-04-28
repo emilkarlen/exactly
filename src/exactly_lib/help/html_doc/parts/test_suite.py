@@ -1,7 +1,8 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
-from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import HtmlDocGeneratorForSectionDocumentBase
+from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
+    HtmlDocGeneratorForSectionDocumentBase, generator_for_sections
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
@@ -28,10 +29,11 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         cli_syntax_target = cli_syntax_targets_factory.root('Command line syntax')
         cli_syntax_contents = self._cli_syntax_contents()
 
-        sections_targets_factory = cross_ref.sub_component_factory('sections', targets_factory)
-        sections_target = sections_targets_factory.root('Sections')
-        sections_sub_targets, sections_contents = self._sections_contents(sections_targets_factory,
-                                                                          self.test_suite_help.section_helps)
+        sections_generator = generator_for_sections('Sections',
+                                                    self.test_suite_help.section_helps,
+                                                    self)
+        sections_node = sections_generator.section_renderer_node(targets_factory.sub_factory('sections'))
+
         reporters_targets_factory = cross_ref.sub_component_factory('reporters', targets_factory)
         reporters_target = reporters_targets_factory.root('Reporters')
         reporters_sub_targets, reporters_contents = self._reporters_contents(reporters_targets_factory)
@@ -47,8 +49,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
             [
                 doc.Section(specification_target.anchor_text(),
                             overview_contents),
-                doc.Section(sections_target.anchor_text(),
-                            sections_contents),
+                sections_node.section(self.rendering_environment),
                 doc.Section(reporters_target.anchor_text(),
                             reporters_contents),
                 doc.Section(cli_syntax_target.anchor_text(),
@@ -60,8 +61,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         ret_val_targets = [
             cross_ref.TargetInfoNode(specification_target,
                                      specification_sub_targets),
-            cross_ref.TargetInfoNode(sections_target,
-                                     sections_sub_targets),
+            sections_node.target_info_node(),
             cross_ref.TargetInfoNode(reporters_target,
                                      reporters_sub_targets),
             cross_ref.TargetInfoNode(cli_syntax_target, []),
