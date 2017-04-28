@@ -193,8 +193,7 @@ class CustomTargetInfoFactory:
         return TargetInfo(presentation,
                           CustomCrossReferenceId(self.prefix + _COMPONENT_SEPARATOR + local_target_name))
 
-    def root(self,
-             presentation: str) -> TargetInfo:
+    def root(self, presentation: str) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceId(self.prefix))
 
