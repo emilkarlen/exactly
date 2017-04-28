@@ -15,25 +15,6 @@ class HtmlDocGeneratorForSectionDocumentBase:
                  rendering_environment: RenderingEnvironment):
         self.rendering_environment = rendering_environment
 
-    def _sections_contents(self, targets_factory: CustomTargetInfoFactory,
-                           sections: list) -> (list, doc.SectionContents):
-        ret_val_sections = []
-        ret_val_targets = []
-        for phase in sections:
-            assert isinstance(phase, SectionDocumentation)
-            phase_presentation_str = phase.name.syntax
-            cross_reference_target = self._section_cross_ref_target(phase)
-            header = docs.anchor_text(docs.text(phase_presentation_str),
-                                      cross_reference_target)
-            section = doc.Section(header,
-                                  phase.render(self.rendering_environment))
-            target_info_node = cross_ref.TargetInfoNode(cross_ref.TargetInfo(phase_presentation_str,
-                                                                             cross_reference_target),
-                                                        [])
-            ret_val_sections.append(section)
-            ret_val_targets.append(target_info_node)
-        return ret_val_targets, doc.SectionContents([], ret_val_sections)
-
     def sections_renderer_node(self,
                                header: str,
                                targets_factory: CustomTargetInfoFactory,
