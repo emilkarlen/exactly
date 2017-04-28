@@ -3,7 +3,8 @@ from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, 
 from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
-from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import HtmlDocGeneratorForSectionDocumentBase
+from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
+    HtmlDocGeneratorForSectionDocumentBase, generator_for_sections
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
@@ -27,12 +28,10 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         cli_syntax_generator = cli_syntax.generator('Command line syntax')
         cli_syntax_node = cli_syntax_generator.section_renderer_node(targets_factory.sub_factory('cli-syntax'))
 
-        phases_targets_factory = cross_ref.sub_component_factory('phases',
-                                                                 targets_factory)
-        phases_target = phases_targets_factory.root('Phases')
-        phases_sub_targets, phases_contents = self._sections_contents(
-            phases_targets_factory,
-            self.test_case_help.phase_helps_in_order_of_execution)
+        phases_generator = generator_for_sections('Phases',
+                                                  self.test_case_help.phase_helps_in_order_of_execution,
+                                                  self)
+        phases_node = phases_generator.section_renderer_node(targets_factory.sub_factory('phases'))
 
         actors_targets_factory = cross_ref.sub_component_factory('actors', targets_factory)
         actors_target = actors_targets_factory.root('Actors')
@@ -49,8 +48,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
             [],
             [
                 specification_node.section(self.rendering_environment),
-                doc.Section(phases_target.anchor_text(),
-                            phases_contents),
+                phases_node.section(self.rendering_environment),
                 doc.Section(actors_target.anchor_text(),
                             actors_contents),
                 cli_syntax_node.section(self.rendering_environment),
@@ -60,8 +58,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         )
         ret_val_targets = [
             specification_node.target_info_node(),
-            cross_ref.TargetInfoNode(phases_target,
-                                     phases_sub_targets),
+            phases_node.target_info_node(),
             cross_ref.TargetInfoNode(actors_target,
                                      actors_sub_targets),
             cli_syntax_node.target_info_node(),
