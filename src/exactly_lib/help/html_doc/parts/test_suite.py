@@ -3,7 +3,7 @@ from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
-    HtmlDocGeneratorForSectionDocumentBase, generator_for_sections
+    HtmlDocGeneratorForSectionDocumentBase, generator_for_sections, generator_for_instructions_per_section
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationRenderer
@@ -40,11 +40,10 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         reporters_target = reporters_targets_factory.root('Reporters')
         reporters_sub_targets, reporters_contents = self._reporters_contents(reporters_targets_factory)
 
-        instructions_targets_factory = cross_ref.sub_component_factory('instructions', targets_factory)
-        instructions_target = instructions_targets_factory.root('Instructions per section')
-        instructions_sub_targets, instructions_contents = self._instructions_contents(
-            instructions_targets_factory,
-            self.test_suite_help.section_helps)
+        instructions_generator = generator_for_instructions_per_section('Instructions per section',
+                                                                        self.test_suite_help.section_helps,
+                                                                        self)
+        instructions_node = instructions_generator.section_renderer_node(targets_factory.sub_factory('instructions'))
 
         ret_val_contents = doc.SectionContents(
             [],
@@ -56,8 +55,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
                             reporters_contents),
                 doc.Section(cli_syntax_target.anchor_text(),
                             cli_syntax_contents),
-                doc.Section(instructions_target.anchor_text(),
-                            instructions_contents),
+                instructions_node.section(self.rendering_environment),
             ]
         )
         ret_val_targets = [
@@ -67,8 +65,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
             cross_ref.TargetInfoNode(reporters_target,
                                      reporters_sub_targets),
             cross_ref.TargetInfoNode(cli_syntax_target, []),
-            cross_ref.TargetInfoNode(instructions_target,
-                                     instructions_sub_targets),
+            instructions_node.target_info_node(),
         ]
         return ret_val_targets, ret_val_contents
 
