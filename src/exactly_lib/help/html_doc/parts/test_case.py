@@ -5,7 +5,7 @@ from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
-    HtmlDocGeneratorForSectionDocumentBase, generator_for_sections
+    HtmlDocGeneratorForSectionDocumentBase, generator_for_sections, generator_for_instructions_per_section
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
@@ -39,12 +39,10 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         actors_target = actors_targets_factory.root('Actors')
         actors_sub_targets, actors_contents = self._actors_contents(actors_targets_factory)
 
-        instructions_targets_factory = cross_ref.sub_component_factory('instructions',
-                                                                       targets_factory)
-        instructions_target = instructions_targets_factory.root('Instructions per phase')
-        instructions_sub_targets, instructions_contents = self._instructions_contents(
-            instructions_targets_factory,
-            self.test_case_help.phase_helps_in_order_of_execution)
+        instructions_generator = generator_for_instructions_per_section('Instructions per phase',
+                                                                        self.test_case_help.phase_helps_in_order_of_execution,
+                                                                        self)
+        instructions_node = instructions_generator.section_renderer_node(targets_factory.sub_factory('instructions'))
 
         ret_val_contents = doc.SectionContents(
             [],
@@ -54,8 +52,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
                 doc.Section(actors_target.anchor_text(),
                             actors_contents),
                 cli_syntax_node.section(self.rendering_environment),
-                doc.Section(instructions_target.anchor_text(),
-                            instructions_contents),
+                instructions_node.section(self.rendering_environment),
             ]
         )
         ret_val_targets = [
@@ -64,8 +61,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
             cross_ref.TargetInfoNode(actors_target,
                                      actors_sub_targets),
             cli_syntax_node.target_info_node(),
-            cross_ref.TargetInfoNode(instructions_target,
-                                     instructions_sub_targets),
+            instructions_node.target_info_node(),
         ]
         return ret_val_targets, ret_val_contents
 
