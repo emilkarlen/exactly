@@ -1,8 +1,10 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase, generator_for_sections
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
@@ -85,10 +87,12 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         renderer = ProgramDocumentationSectionContentsRenderer(SuiteCliSyntaxDocumentation())
         return renderer.apply(self.rendering_environment)
 
-    def _section_cross_ref_target(self, section) -> CrossReferenceId:
+    def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionCrossReference(section.name.plain)
 
-    def _instruction_cross_ref_target(self, instruction_doc, section) -> CrossReferenceId:
+    def _instruction_cross_ref_target(self,
+                                      instruction: InstructionDocumentation,
+                                      section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionInstructionCrossReference(
             section.name.plain,
-            instruction_doc.instruction_name())
+            instruction.instruction_name())
