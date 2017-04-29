@@ -1,6 +1,7 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.help import texts
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
@@ -10,7 +11,6 @@ from exactly_lib.help.program_modes.test_suite.contents.specification import Spe
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
-from exactly_lib.help.utils.cli_program_documentation_rendering import ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 
@@ -27,7 +27,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         specification_target = specification_targets_factory.root('Specification of test suite functionality')
         specification_sub_targets, overview_contents = self._specification_contents(specification_targets_factory)
 
-        cli_syntax_generator = cli_syntax.generator('Command line syntax')
+        cli_syntax_generator = cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
         cli_syntax_node = cli_syntax_generator.section_renderer_node(targets_factory.sub_factory('cli-syntax'))
 
         sections_generator = self.generator_for_sections('Sections')
@@ -58,7 +58,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
             sections_node.target_info_node(),
             cross_ref.TargetInfoNode(reporters_target,
                                      reporters_sub_targets),
-            cross_ref.TargetInfoNode(cli_syntax_target, []),
+            cli_syntax_node.target_info_node(),
             instructions_node.target_info_node(),
         ]
         return ret_val_targets, ret_val_contents
@@ -74,10 +74,6 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
                                                     ALL_SUITE_REPORTERS,
                                                     self.rendering_environment)
         return generator.apply(targets_factory)
-
-    def _cli_syntax_contents(self) -> doc.SectionContents:
-        renderer = ProgramDocumentationSectionContentsRenderer(SuiteCliSyntaxDocumentation())
-        return renderer.apply(self.rendering_environment)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionCrossReference(section.name.plain)
