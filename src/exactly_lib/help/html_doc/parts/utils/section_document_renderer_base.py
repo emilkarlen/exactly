@@ -1,5 +1,5 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
-from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
+from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId, TargetInfo
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
@@ -79,6 +79,44 @@ class HtmlDocGeneratorForSectionDocumentBase:
             [])
         return instruction_section, instruction_target_info
 
+    def instructions_per_section_node(self,
+                                      header: str,
+                                      targets_factory: CustomTargetInfoFactory,
+                                      sections: list) -> SectionRendererNode:
+        root_target_info = targets_factory.root(header)
+        section_nodes = []
+        for section in sections:
+            assert isinstance(section, SectionDocumentation)
+            if not section.has_instructions:
+                continue
+            section_target_factory = targets_factory.sub_factory(section.name.plain)
+            section_target_info = section_target_factory.root(section.name.syntax)
+            section_nodes.append(self._section_instructions_node(section_target_info,
+                                                                 section))
+        return SectionRendererNodeWithSubSections(root_target_info,
+                                                  [],
+                                                  section_nodes)
+
+    def _section_instructions_node(self,
+                                   section_target_info: TargetInfo,
+                                   section: SectionDocumentation) -> SectionRendererNode:
+        instruction_nodes = [
+            self._instruction_node(instruction, section)
+            for instruction in section.instruction_set.instruction_descriptions
+        ]
+        return SectionRendererNodeWithSubSections(section_target_info,
+                                                  [],
+                                                  instruction_nodes)
+
+    def _instruction_node(self,
+                          instruction: InstructionDocumentation,
+                          section: SectionDocumentation) -> SectionRendererNode:
+        cross_ref_target = self._instruction_cross_ref_target(instruction, section)
+        target_info = TargetInfo(instruction.instruction_name(),
+                                 cross_ref_target)
+        return LeafSectionRendererNode(target_info,
+                                       InstructionManPageRenderer(instruction))
+
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
 
@@ -94,6 +132,12 @@ def generator_for_sections(header: str,
     return _GeneratorForSections(header, sections, doc)
 
 
+def generator_for_instructions_per_section(header: str,
+                                           sections: list,
+                                           doc: HtmlDocGeneratorForSectionDocumentBase) -> SectionGenerator:
+    return _GeneratorForInstructionsPerSection(header, sections, doc)
+
+
 class _GeneratorForSections(SectionGenerator):
     def __init__(self,
                  header: str,
@@ -105,6 +149,19 @@ class _GeneratorForSections(SectionGenerator):
 
     def section_renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionRendererNode:
         return self.doc_generator.sections_renderer_node(self.header, target_factory, self.sections)
+
+
+class _GeneratorForInstructionsPerSection(SectionGenerator):
+    def __init__(self,
+                 header: str,
+                 sections: list,
+                 doc_generator: HtmlDocGeneratorForSectionDocumentBase):
+        self.header = header
+        self.sections = sections
+        self.doc_generator = doc_generator
+
+    def section_renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionRendererNode:
+        return self.doc_generator.instructions_per_section_node(self.header, target_factory, self.sections)
 
 
 class SectionContentsRendererForSectionDocumentSection(SectionContentsRenderer):
