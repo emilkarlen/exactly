@@ -1,6 +1,7 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.help import texts
 from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
@@ -27,7 +28,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
             self.test_case_help)
         specification_node = specification_generator.section_renderer_node(targets_factory.sub_factory('spec'))
 
-        cli_syntax_generator = cli_syntax.generator('Command line syntax')
+        cli_syntax_generator = cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
         cli_syntax_node = cli_syntax_generator.section_renderer_node(targets_factory.sub_factory('cli-syntax'))
 
         phases_generator = self.generator_for_sections('Phases')

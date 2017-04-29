@@ -1,5 +1,6 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory
+from exactly_lib.help import texts
 from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocumentation
 from exactly_lib.help.utils.cli_program_documentation_rendering import ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
@@ -13,7 +14,7 @@ class HtmlDocGeneratorForHelpHelp:
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax',
                                                                      targets_factory)
-        cli_syntax_target = cli_syntax_targets_factory.root('Command line syntax')
+        cli_syntax_target = cli_syntax_targets_factory.root(texts.COMMAND_LINE_SYNTAX)
         cli_syntax_contents = self._cli_syntax_contents()
 
         ret_val_contents = doc.SectionContents(
