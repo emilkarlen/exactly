@@ -3,7 +3,7 @@ from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
-    HtmlDocGeneratorForSectionDocumentBase, generator_for_sections, generator_for_instructions_per_section
+    HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationRenderer
@@ -19,7 +19,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
     def __init__(self,
                  rendering_environment: RenderingEnvironment,
                  test_suite_help: TestSuiteHelp):
-        super().__init__(rendering_environment)
+        super().__init__(rendering_environment, test_suite_help.section_helps)
         self.test_suite_help = test_suite_help
 
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
@@ -31,18 +31,14 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         cli_syntax_target = cli_syntax_targets_factory.root('Command line syntax')
         cli_syntax_contents = self._cli_syntax_contents()
 
-        sections_generator = generator_for_sections('Sections',
-                                                    self.test_suite_help.section_helps,
-                                                    self)
+        sections_generator = self.generator_for_sections('Sections')
         sections_node = sections_generator.section_renderer_node(targets_factory.sub_factory('sections'))
 
         reporters_targets_factory = cross_ref.sub_component_factory('reporters', targets_factory)
         reporters_target = reporters_targets_factory.root('Reporters')
         reporters_sub_targets, reporters_contents = self._reporters_contents(reporters_targets_factory)
 
-        instructions_generator = generator_for_instructions_per_section('Instructions per section',
-                                                                        self.test_suite_help.section_helps,
-                                                                        self)
+        instructions_generator = self.generator_for_instructions_per_section('Instructions per section')
         instructions_node = instructions_generator.section_renderer_node(targets_factory.sub_factory('instructions'))
 
         ret_val_contents = doc.SectionContents(
