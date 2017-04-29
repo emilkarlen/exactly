@@ -33,9 +33,8 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         phases_generator = self.generator_for_sections('Phases')
         phases_node = phases_generator.section_renderer_node(targets_factory.sub_factory('phases'))
 
-        actors_targets_factory = cross_ref.sub_component_factory('actors', targets_factory)
-        actors_target = actors_targets_factory.root('Actors')
-        actors_sub_targets, actors_contents = self._actors_contents(actors_targets_factory)
+        actors_generator = self._actors_generator('Actors')
+        actors_node = actors_generator.section_renderer_node(targets_factory.sub_factory('actors'))
 
         instructions_generator = self.generator_for_instructions_per_section('Instructions per phase')
         instructions_node = instructions_generator.section_renderer_node(targets_factory.sub_factory('instructions'))
@@ -45,8 +44,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
             [
                 specification_node.section(self.rendering_environment),
                 phases_node.section(self.rendering_environment),
-                doc.Section(actors_target.anchor_text(),
-                            actors_contents),
+                actors_node.section(self.rendering_environment),
                 cli_syntax_node.section(self.rendering_environment),
                 instructions_node.section(self.rendering_environment),
             ]
@@ -54,16 +52,17 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         ret_val_targets = [
             specification_node.target_info_node(),
             phases_node.target_info_node(),
-            cross_ref.TargetInfoNode(actors_target,
-                                     actors_sub_targets),
+            actors_node.target_info_node(),
             cli_syntax_node.target_info_node(),
             instructions_node.target_info_node(),
         ]
         return ret_val_targets, ret_val_contents
 
-    def _actors_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = HtmlDocGeneratorForEntitiesHelp(IndividualActorRenderer, ALL_ACTOR_DOCS, self.rendering_environment)
-        return generator.apply(targets_factory)
+    def _actors_generator(self, header: str) -> HtmlDocGeneratorForEntitiesHelp:
+        return HtmlDocGeneratorForEntitiesHelp(header,
+                                               IndividualActorRenderer,
+                                               ALL_ACTOR_DOCS,
+                                               self.rendering_environment)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestCasePhaseCrossReference(section.name.plain)

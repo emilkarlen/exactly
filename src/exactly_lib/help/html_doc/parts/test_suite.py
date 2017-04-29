@@ -71,7 +71,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         return generator.target_info_hierarchy(), section_contents
 
     def _reporters_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = HtmlDocGeneratorForEntitiesHelp(IndividualSuiteReporterRenderer,
+        generator = HtmlDocGeneratorForEntitiesHelp('Reporters',
+                                                    IndividualSuiteReporterRenderer,
                                                     ALL_SUITE_REPORTERS,
                                                     self.rendering_environment)
         return generator.apply(targets_factory)

@@ -41,7 +41,8 @@ class HtmlDocContentsRenderer:
                                                                    application_help.test_case_help)
         self.test_suite_generator = HtmlDocGeneratorForTestSuiteHelp(rendering_environment,
                                                                      application_help.test_suite_help)
-        self.concepts_generator = HtmlDocGeneratorForEntitiesHelp(IndividualConceptRenderer,
+        self.concepts_generator = HtmlDocGeneratorForEntitiesHelp('Concepts',
+                                                                  IndividualConceptRenderer,
                                                                   application_help.concepts_help.all_entities,
                                                                   rendering_environment)
         self.help_generator = HtmlDocGeneratorForHelpHelp(rendering_environment)
