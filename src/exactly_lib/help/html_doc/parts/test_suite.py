@@ -5,7 +5,7 @@ from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDoc
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
+from exactly_lib.help.program_modes.test_suite.contents import cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
@@ -27,9 +27,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         specification_target = specification_targets_factory.root('Specification of test suite functionality')
         specification_sub_targets, overview_contents = self._specification_contents(specification_targets_factory)
 
-        cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax', targets_factory)
-        cli_syntax_target = cli_syntax_targets_factory.root('Command line syntax')
-        cli_syntax_contents = self._cli_syntax_contents()
+        cli_syntax_generator = cli_syntax.generator('Command line syntax')
+        cli_syntax_node = cli_syntax_generator.section_renderer_node(targets_factory.sub_factory('cli-syntax'))
 
         sections_generator = self.generator_for_sections('Sections')
         sections_node = sections_generator.section_renderer_node(targets_factory.sub_factory('sections'))
@@ -49,8 +48,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
                 sections_node.section(self.rendering_environment),
                 doc.Section(reporters_target.anchor_text(),
                             reporters_contents),
-                doc.Section(cli_syntax_target.anchor_text(),
-                            cli_syntax_contents),
+                cli_syntax_node.section(self.rendering_environment),
                 instructions_node.section(self.rendering_environment),
             ]
         )
