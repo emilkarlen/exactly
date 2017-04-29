@@ -1,20 +1,30 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
-from exactly_lib.common.help import cross_reference_id as cross_ref
+from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer, \
+    SectionContentsRendererForConstantContents
+from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, parent, leaf, \
+    SectionFromGeneratorAsSectionContentsRenderer
 from exactly_lib.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class SpecificationRenderer(SectionContentsRenderer):
-    def __init__(self, suite_help: TestSuiteHelp,
-                 target_factory: cross_ref.CustomTargetInfoFactory = None):
+def specification_renderer(suite_help: TestSuiteHelp) -> SectionContentsRenderer:
+    return SectionFromGeneratorAsSectionContentsRenderer(
+        SpecificationGenerator('unused section header', suite_help)
+    )
+
+
+class SpecificationGenerator(SectionGenerator):
+    def __init__(self,
+                 header: str,
+                 suite_help: TestSuiteHelp):
+        self.header = header
         self._suite_help = suite_help
         self._format_map = {
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
@@ -22,41 +32,34 @@ class SpecificationRenderer(SectionContentsRenderer):
             'suite_program_mode': SUITE_COMMAND,
             'reporter_concept': formatting.concept(SUITE_REPORTER_CONCEPT.singular_name()),
         }
-        if target_factory is None:
-            target_factory = cross_ref.CustomTargetInfoFactory('')
 
-        self._FILES_AND_EXECUTION_TI = target_factory.sub('Suite files and execution',
-                                                          'files-and-execution')
+    def section_renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionRendererNode:
+        generator = parent(self.header,
+                           [],
+                           [
+                               ('files-and-execution',
+                                leaf('Suite files and execution',
+                                     self._section_of_parsed(_FILES_AND_EXECUTION_TEXT))
+                                ),
+                               ('sections-overview',
+                                leaf('Sections overview',
+                                     self._suite_structure_contents())
+                                ),
+                               ('file-syntax',
+                                leaf('Suite file syntax',
+                                     self._section_of_parsed(_FILE_SYNTAX))
+                                ),
+                           ])
+        return generator.section_renderer_node(target_factory)
 
-        self._STRUCTURE_TI = target_factory.sub('Sections',
-                                                'sections')
-
-        self._FILE_SYNTAX_TI = target_factory.sub('Suite file syntax',
-                                                  'file-syntax')
-
-    def target_info_hierarchy(self) -> list:
-        return [
-            _leaf(self._FILES_AND_EXECUTION_TI),
-            _leaf(self._STRUCTURE_TI),
-            _leaf(self._FILE_SYNTAX_TI),
-        ]
-
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents(
-            self._parse(_INTRODUCTION_SUMMARY),
-            [
-                docs.section(self._FILES_AND_EXECUTION_TI.anchor_text(),
-                             self._parse(_FILES_AND_EXECUTION_TEXT)),
-                docs.section(self._STRUCTURE_TI.anchor_text(),
-                             self._suite_structure()),
-                docs.section(self._FILE_SYNTAX_TI.anchor_text(),
-                             self._parse(_FILE_SYNTAX)),
-            ])
+    def _section_of_parsed(self, contents: str) -> SectionContentsRenderer:
+        return SectionContentsRendererForConstantContents(
+            docs.section_contents(self._parse(contents)))
 
     def _parse(self, s: str) -> list:
         return normalize_and_parse(s.format_map(self._format_map))
 
-    def _suite_structure(self) -> list:
+    def _suite_structure_paragraphs(self) -> list:
         ret_val = []
         ret_val.extend(self._parse(_STRUCTURE_INTRO))
         ret_val.append(sections_short_list(self._suite_help.section_helps,
@@ -64,8 +67,10 @@ class SpecificationRenderer(SectionContentsRenderer):
                                            section_concept_name='section'))
         return ret_val
 
+    def _suite_structure_contents(self) -> SectionContentsRenderer:
+        return SectionContentsRendererForConstantContents(
+            docs.section_contents(self._suite_structure_paragraphs()))
 
-_leaf = cross_ref.target_info_leaf
 
 _INTRODUCTION_SUMMARY = """\
 {program_name} has functionality for organizing test cases in test suites.

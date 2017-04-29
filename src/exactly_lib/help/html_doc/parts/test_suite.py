@@ -7,7 +7,7 @@ from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax
-from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationRenderer
+from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
@@ -24,9 +24,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         self.test_suite_help = test_suite_help
 
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        specification_targets_factory = cross_ref.sub_component_factory('spec', targets_factory)
-        specification_target = specification_targets_factory.root('Specification of test suite functionality')
-        specification_sub_targets, overview_contents = self._specification_contents(specification_targets_factory)
+        specification_generator = self._specification_generator('Specification of test suite functionality')
+        specification_node = specification_generator.section_renderer_node(targets_factory.sub_factory('spec'))
 
         cli_syntax_generator = cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
         cli_syntax_node = cli_syntax_generator.section_renderer_node(targets_factory.sub_factory('cli-syntax'))
@@ -43,8 +42,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         ret_val_contents = doc.SectionContents(
             [],
             [
-                doc.Section(specification_target.anchor_text(),
-                            overview_contents),
+                specification_node.section(self.rendering_environment),
                 sections_node.section(self.rendering_environment),
                 reporters_node.section(self.rendering_environment),
                 cli_syntax_node.section(self.rendering_environment),
@@ -52,8 +50,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
             ]
         )
         ret_val_targets = [
-            cross_ref.TargetInfoNode(specification_target,
-                                     specification_sub_targets),
+            specification_node.target_info_node(),
             sections_node.target_info_node(),
             reporters_node.target_info_node(),
             cli_syntax_node.target_info_node(),
@@ -61,10 +58,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         ]
         return ret_val_targets, ret_val_contents
 
-    def _specification_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = SpecificationRenderer(self.test_suite_help, targets_factory)
-        section_contents = generator.apply(self.rendering_environment)
-        return generator.target_info_hierarchy(), section_contents
+    def _specification_generator(self, header: str) -> SectionGenerator:
+        return SpecificationGenerator(header, self.test_suite_help)
 
     def _reporters_generator(self, header: str) -> SectionGenerator:
         return HtmlDocGeneratorForEntitiesHelp(header,

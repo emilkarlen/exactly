@@ -26,3 +26,11 @@ class SectionContentsRenderer:
 class SectionRenderer:
     def apply(self, environment: RenderingEnvironment) -> doc.Section:
         raise NotImplementedError()
+
+
+class SectionContentsRendererForConstantContents(SectionContentsRenderer):
+    def __init__(self, section_contents: doc.SectionContents):
+        self.section_contents = section_contents
+
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        return self.section_contents
