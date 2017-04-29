@@ -12,6 +12,7 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator
 from exactly_lib.util.textformat.structure import document as doc
 
 
@@ -33,9 +34,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         sections_generator = self.generator_for_sections('Sections')
         sections_node = sections_generator.section_renderer_node(targets_factory.sub_factory('sections'))
 
-        reporters_targets_factory = cross_ref.sub_component_factory('reporters', targets_factory)
-        reporters_target = reporters_targets_factory.root('Reporters')
-        reporters_sub_targets, reporters_contents = self._reporters_contents(reporters_targets_factory)
+        reporters_generator = self._reporters_generator('Reporters')
+        reporters_node = reporters_generator.section_renderer_node(targets_factory.sub_factory('reporters'))
 
         instructions_generator = self.generator_for_instructions_per_section('Instructions per section')
         instructions_node = instructions_generator.section_renderer_node(targets_factory.sub_factory('instructions'))
@@ -46,8 +46,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
                 doc.Section(specification_target.anchor_text(),
                             overview_contents),
                 sections_node.section(self.rendering_environment),
-                doc.Section(reporters_target.anchor_text(),
-                            reporters_contents),
+                reporters_node.section(self.rendering_environment),
                 cli_syntax_node.section(self.rendering_environment),
                 instructions_node.section(self.rendering_environment),
             ]
@@ -56,8 +55,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
             cross_ref.TargetInfoNode(specification_target,
                                      specification_sub_targets),
             sections_node.target_info_node(),
-            cross_ref.TargetInfoNode(reporters_target,
-                                     reporters_sub_targets),
+            reporters_node.target_info_node(),
             cli_syntax_node.target_info_node(),
             instructions_node.target_info_node(),
         ]
@@ -68,12 +66,11 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         section_contents = generator.apply(self.rendering_environment)
         return generator.target_info_hierarchy(), section_contents
 
-    def _reporters_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = HtmlDocGeneratorForEntitiesHelp('Reporters',
-                                                    IndividualSuiteReporterRenderer,
-                                                    ALL_SUITE_REPORTERS,
-                                                    self.rendering_environment)
-        return generator.apply(targets_factory)
+    def _reporters_generator(self, header: str) -> SectionGenerator:
+        return HtmlDocGeneratorForEntitiesHelp(header,
+                                               IndividualSuiteReporterRenderer,
+                                               ALL_SUITE_REPORTERS,
+                                               self.rendering_environment)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionCrossReference(section.name.plain)
