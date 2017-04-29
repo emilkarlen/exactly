@@ -1,10 +1,12 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase, generator_for_sections
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
@@ -71,10 +73,12 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         generator = HtmlDocGeneratorForEntitiesHelp(IndividualActorRenderer, ALL_ACTOR_DOCS, self.rendering_environment)
         return generator.apply(targets_factory)
 
-    def _section_cross_ref_target(self, phase) -> CrossReferenceId:
-        return cross_ref.TestCasePhaseCrossReference(phase.name.plain)
+    def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
+        return cross_ref.TestCasePhaseCrossReference(section.name.plain)
 
-    def _instruction_cross_ref_target(self, instruction_doc, section) -> CrossReferenceId:
+    def _instruction_cross_ref_target(self,
+                                      instruction: InstructionDocumentation,
+                                      section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestCasePhaseInstructionCrossReference(
             section.name.plain,
-            instruction_doc.instruction_name())
+            instruction.instruction_name())

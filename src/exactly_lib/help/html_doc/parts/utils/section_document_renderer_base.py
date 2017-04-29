@@ -79,10 +79,12 @@ class HtmlDocGeneratorForSectionDocumentBase:
             [])
         return instruction_section, instruction_target_info
 
-    def _section_cross_ref_target(self, phase) -> CrossReferenceId:
+    def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
 
-    def _instruction_cross_ref_target(self, instruction_doc, section) -> CrossReferenceId:
+    def _instruction_cross_ref_target(self,
+                                      instruction: InstructionDocumentation,
+                                      section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
 
 
