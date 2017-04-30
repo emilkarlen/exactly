@@ -1,12 +1,13 @@
 import unittest
 
-from exactly_lib_test.util.textformat.formatting.html import paragraph_item, section, document, utils, entity_conversion
+from exactly_lib_test.util.textformat.formatting.html import text, paragraph_item, \
+    section, document, utils
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        entity_conversion.suite(),
         utils.suite(),
+        text.suite(),
         paragraph_item.suite(),
         section.suite(),
         document.suite(),

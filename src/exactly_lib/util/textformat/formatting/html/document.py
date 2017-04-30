@@ -1,4 +1,4 @@
-from xml.etree.ElementTree import Element, SubElement, ElementTree
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 from exactly_lib.util.textformat.formatting.html.section import SectionRenderer, Environment
 from exactly_lib.util.textformat.formatting.html.utils import ElementPopulator
@@ -31,8 +31,12 @@ class DocumentRenderer:
               document_setup: DocumentSetup,
               section_contents: SectionContents):
         html = self._element_tree(document_setup, section_contents)
+        us_ascii_bytes = tostring(html,
+                                  encoding='us-ascii',
+                                  short_empty_elements=True)
+        s = us_ascii_bytes.decode(encoding='us-ascii')
         output_file.write(DOCTYPE_XHTML1_0)
-        ElementTree(html).write(output_file, encoding="unicode")
+        output_file.write(s)
 
     def _element_tree(self,
                       document_setup: DocumentSetup,
