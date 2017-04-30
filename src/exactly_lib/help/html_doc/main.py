@@ -1,12 +1,11 @@
-from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.concepts.render import IndividualConceptRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
+from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
-from exactly_lib.help.html_doc.parts.help import HtmlDocGeneratorForHelpHelp
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
@@ -42,7 +41,7 @@ class HtmlDocContentsRenderer:
         self.concepts_generator = HtmlDocGeneratorForEntitiesHelp('Concepts',
                                                                   IndividualConceptRenderer,
                                                                   application_help.concepts_help.all_entities)
-        self.help_generator = HtmlDocGeneratorForHelpHelp(self.rendering_environment)
+        self.help_generator = help.generator('Getting Help')
 
     def apply(self) -> doc.SectionContents:
         root_targets_factory = CustomTargetInfoFactory('')
@@ -58,10 +57,7 @@ class HtmlDocContentsRenderer:
 
         concepts_node = self.concepts_generator.section_renderer_node(targets_factory.sub_factory('concepts'))
 
-        help_targets_factory = cross_ref.sub_component_factory('help',
-                                                               targets_factory)
-        help_target = help_targets_factory.root('Getting Help')
-        help_sub_targets, help_contents = self.help_generator.apply(help_targets_factory)
+        help_node = self.help_generator.section_renderer_node(targets_factory.sub_factory('help'))
 
         ret_val_contents = doc.SectionContents(
             [],
@@ -69,16 +65,14 @@ class HtmlDocContentsRenderer:
                 test_cases_node.section(self.rendering_environment),
                 test_suites_node.section(self.rendering_environment),
                 concepts_node.section(self.rendering_environment),
-                doc.Section(help_target.anchor_text(),
-                            help_contents),
+                help_node.section(self.rendering_environment),
             ]
         )
         ret_val_targets = [
             test_cases_node.target_info_node(),
             test_suites_node.target_info_node(),
             concepts_node.target_info_node(),
-            cross_ref.TargetInfoNode(help_target,
-                                     help_sub_targets),
+            help_node.target_info_node(),
         ]
         return ret_val_targets, ret_val_contents
 

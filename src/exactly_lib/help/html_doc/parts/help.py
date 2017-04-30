@@ -4,7 +4,21 @@ from exactly_lib.help import texts
 from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocumentation
 from exactly_lib.help.utils.cli_program_documentation_rendering import ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator, leaf, parent
 from exactly_lib.util.textformat.structure import document as doc
+
+
+def generator(header: str) -> SectionGenerator:
+    return parent(
+        header,
+        [],
+        [
+            ('cli-syntax',
+             leaf(texts.COMMAND_LINE_SYNTAX,
+                  ProgramDocumentationSectionContentsRenderer(HelpCliSyntaxDocumentation()))
+             ),
+        ]
+    )
 
 
 class HtmlDocGeneratorForHelpHelp:
