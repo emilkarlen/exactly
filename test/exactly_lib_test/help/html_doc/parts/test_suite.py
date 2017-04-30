@@ -13,7 +13,6 @@ def suite() -> unittest.TestSuite:
 
 class Test(unittest.TestCase):
     def runTest(self):
-        # ARRANGE #
         setup = test_suite_help()
         generator = sut.generator('header', setup, RENDERING_ENVIRONMENT)
         generator_generates_valid_data(self, generator)
