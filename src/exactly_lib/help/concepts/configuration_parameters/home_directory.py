@@ -3,9 +3,9 @@ from exactly_lib.default.program_modes.test_case.default_instruction_names impor
 from exactly_lib.execution.environment_variables import ENV_VAR_HOME
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import HOME_DIRECTORY_CONCEPT_INFO
-from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.name_and_cross_ref import Name
-from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
+from exactly_lib.help.utils.names import formatting
+from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTION
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.parse import normalize_and_parse

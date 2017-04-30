@@ -7,9 +7,8 @@ from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_r
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_INFO
-from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils import suite_section_names
-from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
+from exactly_lib.help.utils.names import suite_section_names, formatting
+from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs

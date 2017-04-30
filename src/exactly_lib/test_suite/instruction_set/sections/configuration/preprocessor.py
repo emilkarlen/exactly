@@ -4,7 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
-from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.names import formatting
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram

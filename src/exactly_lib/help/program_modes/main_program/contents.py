@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as 
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as test_case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as test_suite_cli_syntax
-from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
+from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections

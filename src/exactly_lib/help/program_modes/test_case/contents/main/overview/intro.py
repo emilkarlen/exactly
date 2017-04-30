@@ -1,5 +1,5 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
 from exactly_lib.program_info import PROGRAM_NAME

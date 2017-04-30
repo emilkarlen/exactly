@@ -4,9 +4,9 @@ from exactly_lib.default.program_modes.test_case.default_instruction_names impor
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.formatting import InstructionName
-from exactly_lib.help.utils.phase_names import phase_name_dictionary
+from exactly_lib.help.utils.names import formatting
+from exactly_lib.help.utils.names.formatting import InstructionName
+from exactly_lib.help.utils.names.phase_names import phase_name_dictionary
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description

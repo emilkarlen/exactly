@@ -12,7 +12,7 @@ from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCE
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
-from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.names import formatting
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
