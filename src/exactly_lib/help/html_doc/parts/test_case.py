@@ -12,14 +12,11 @@ from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils import section_hierarchy_rendering
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
 
 
 def generator(header: str,
-              test_case_help: TestCaseHelp,
-              rendering_environment: RenderingEnvironment,
-              ) -> section_hierarchy_rendering.SectionGenerator:
-    sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help, rendering_environment)
+              test_case_help: TestCaseHelp) -> section_hierarchy_rendering.SectionGenerator:
+    sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help)
     return section_hierarchy_rendering.parent(
         header,
         [],
@@ -48,12 +45,8 @@ def generator(header: str,
 
 
 class _HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
-    def __init__(self,
-                 test_case_help: TestCaseHelp,
-                 rendering_environment: RenderingEnvironment):
-        super().__init__(test_case_help.phase_helps_in_order_of_execution,
-                         rendering_environment)
-        self.test_case_help = test_case_help
+    def __init__(self, test_case_help: TestCaseHelp):
+        super().__init__(test_case_help.phase_helps_in_order_of_execution)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestCasePhaseCrossReference(section.name.plain)

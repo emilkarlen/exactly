@@ -37,12 +37,8 @@ class HtmlDocContentsRenderer:
         self.application_help = application_help
         self.rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
                                                           render_simple_header_value_lists_as_tables=True)
-        self.test_case_generator = test_case.generator('Test Cases',
-                                                       application_help.test_case_help,
-                                                       self.rendering_environment)
-        self.test_suite_generator = test_suite.generator('Test Suites',
-                                                         application_help.test_suite_help,
-                                                         self.rendering_environment)
+        self.test_case_generator = test_case.generator('Test Cases', application_help.test_case_help)
+        self.test_suite_generator = test_suite.generator('Test Suites', application_help.test_suite_help)
         self.concepts_generator = HtmlDocGeneratorForEntitiesHelp('Concepts',
                                                                   IndividualConceptRenderer,
                                                                   application_help.concepts_help.all_entities)

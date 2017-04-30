@@ -10,11 +10,8 @@ from exactly_lib.util.textformat.structure import document  as doc
 
 
 class HtmlDocGeneratorForSectionDocumentBase:
-    def __init__(self,
-                 sections: list,
-                 rendering_environment: RenderingEnvironment):
+    def __init__(self, sections: list):
         self.sections = sections
-        self.rendering_environment = rendering_environment
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
