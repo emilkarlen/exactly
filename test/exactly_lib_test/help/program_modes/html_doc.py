@@ -24,9 +24,8 @@ class TestHtmlDoc(unittest.TestCase):
     def test_that_html_doc_renderer_returns_valid_section_contents(self):
         # ARRANGE #
         application_help = application_help_for(self.INSTRUCTION_SET)
-        renderer = sut.HtmlDocContentsRenderer(application_help)
         # ACT #
-        actual = renderer.apply()
+        actual = sut.section_contents(application_help)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 

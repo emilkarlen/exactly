@@ -201,6 +201,10 @@ class CustomTargetInfoFactory:
         return sub_component_factory(local_name, self)
 
 
+def root_factory() -> CustomTargetInfoFactory:
+    return CustomTargetInfoFactory('')
+
+
 def sub_component_factory(local_name: str,
                           root: CustomTargetInfoFactory) -> CustomTargetInfoFactory:
     if not root.prefix:
