@@ -11,8 +11,8 @@ from exactly_lib.util.textformat.structure import document  as doc
 
 class HtmlDocGeneratorForSectionDocumentBase:
     def __init__(self,
-                 rendering_environment: RenderingEnvironment,
-                 sections: list):
+                 sections: list,
+                 rendering_environment: RenderingEnvironment):
         self.sections = sections
         self.rendering_environment = rendering_environment
 
