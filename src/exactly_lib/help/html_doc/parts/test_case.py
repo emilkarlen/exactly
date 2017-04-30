@@ -12,14 +12,16 @@ from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator
 from exactly_lib.util.textformat.structure import document as doc
 
 
 class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
     def __init__(self,
-                 rendering_environment: RenderingEnvironment,
-                 test_case_help: TestCaseHelp):
-        super().__init__(rendering_environment, test_case_help.phase_helps_in_order_of_execution)
+                 test_case_help: TestCaseHelp,
+                 rendering_environment: RenderingEnvironment):
+        super().__init__(test_case_help.phase_helps_in_order_of_execution,
+                         rendering_environment)
         self.test_case_help = test_case_help
 
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
@@ -59,11 +61,8 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         ]
         return ret_val_targets, ret_val_contents
 
-    def _actors_generator(self, header: str) -> HtmlDocGeneratorForEntitiesHelp:
-        return HtmlDocGeneratorForEntitiesHelp(header,
-                                               IndividualActorRenderer,
-                                               ALL_ACTOR_DOCS,
-                                               self.rendering_environment)
+    def _actors_generator(self, header: str) -> SectionGenerator:
+        return HtmlDocGeneratorForEntitiesHelp(header, IndividualActorRenderer, ALL_ACTOR_DOCS)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestCasePhaseCrossReference(section.name.plain)

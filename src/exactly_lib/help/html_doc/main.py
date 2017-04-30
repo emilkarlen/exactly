@@ -4,9 +4,9 @@ from exactly_lib.help.concepts.render import IndividualConceptRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
+from exactly_lib.help.html_doc.parts import test_suite
 from exactly_lib.help.html_doc.parts.help import HtmlDocGeneratorForHelpHelp
 from exactly_lib.help.html_doc.parts.test_case import HtmlDocGeneratorForTestCaseHelp
-from exactly_lib.help.html_doc.parts.test_suite import HtmlDocGeneratorForTestSuiteHelp
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
@@ -35,17 +35,16 @@ class HtmlDocContentsRenderer:
     def __init__(self,
                  application_help: ApplicationHelp):
         self.application_help = application_help
-        rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
-                                                     render_simple_header_value_lists_as_tables=True)
-        self.test_case_generator = HtmlDocGeneratorForTestCaseHelp(rendering_environment,
-                                                                   application_help.test_case_help)
-        self.test_suite_generator = HtmlDocGeneratorForTestSuiteHelp(rendering_environment,
-                                                                     application_help.test_suite_help)
-        self.concepts_generator = HtmlDocGeneratorForEntitiesHelp('Concepts',
-                                                                  IndividualConceptRenderer,
-                                                                  application_help.concepts_help.all_entities,
-                                                                  rendering_environment)
-        self.help_generator = HtmlDocGeneratorForHelpHelp(rendering_environment)
+        self.rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
+                                                          render_simple_header_value_lists_as_tables=True)
+        self.test_case_generator = HtmlDocGeneratorForTestCaseHelp(application_help.test_case_help,
+                                                                   self.rendering_environment)
+        self.test_suite_generator = test_suite.generator('Test Suites',
+                                                         application_help.test_suite_help,
+                                                         self.rendering_environment)
+        self.concepts_generator = HtmlDocGeneratorForEntitiesHelp('Concepts', IndividualConceptRenderer,
+                                                                  application_help.concepts_help.all_entities)
+        self.help_generator = HtmlDocGeneratorForHelpHelp(self.rendering_environment)
 
     def apply(self) -> doc.SectionContents:
         root_targets_factory = CustomTargetInfoFactory('')
@@ -60,15 +59,9 @@ class HtmlDocContentsRenderer:
         test_case_target = test_case_targets_factory.root('Test Cases')
         test_case_sub_targets, test_case_contents = self.test_case_generator.apply(test_case_targets_factory)
 
-        test_suite_targets_factory = cross_ref.sub_component_factory('test-suite',
-                                                                     targets_factory)
-        test_suite_target = test_suite_targets_factory.root('Test Suites')
-        test_suite_sub_targets, test_suite_contents = self.test_suite_generator.apply(test_suite_targets_factory)
+        test_suites_node = self.test_suite_generator.section_renderer_node(targets_factory.sub_factory('test-suite'))
 
-        concepts_targets_factory = cross_ref.sub_component_factory('concepts',
-                                                                   targets_factory)
-        concepts_target = concepts_targets_factory.root('Concepts')
-        concepts_sub_targets, concepts_contents = self.concepts_generator.apply(concepts_targets_factory)
+        concepts_node = self.concepts_generator.section_renderer_node(targets_factory.sub_factory('concepts'))
 
         help_targets_factory = cross_ref.sub_component_factory('help',
                                                                targets_factory)
@@ -80,10 +73,8 @@ class HtmlDocContentsRenderer:
             [
                 doc.Section(test_case_target.anchor_text(),
                             test_case_contents),
-                doc.Section(test_suite_target.anchor_text(),
-                            test_suite_contents),
-                doc.Section(concepts_target.anchor_text(),
-                            concepts_contents),
+                test_suites_node.section(self.rendering_environment),
+                concepts_node.section(self.rendering_environment),
                 doc.Section(help_target.anchor_text(),
                             help_contents),
             ]
@@ -91,10 +82,8 @@ class HtmlDocContentsRenderer:
         ret_val_targets = [
             cross_ref.TargetInfoNode(test_case_target,
                                      test_case_sub_targets),
-            cross_ref.TargetInfoNode(test_suite_target,
-                                     test_suite_sub_targets),
-            cross_ref.TargetInfoNode(concepts_target,
-                                     concepts_sub_targets),
+            test_suites_node.target_info_node(),
+            concepts_node.target_info_node(),
             cross_ref.TargetInfoNode(help_target,
                                      help_sub_targets),
         ]

@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_document_structure(self):
         # ARRANGE #
-        generator = sut.HtmlDocGeneratorForTestCaseHelp(RENDERING_ENVIRONMENT, TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
+        generator = sut.HtmlDocGeneratorForTestCaseHelp(TEST_CASE_HELP_WITH_PRODUCTION_PHASES, RENDERING_ENVIRONMENT)
         # ACT #
         targets, contents = generator.apply(CustomTargetInfoFactory('target-prefix'))
         # ASSERT #
@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
 
     def test_target_info_hierarchy(self):
         # ARRANGE #
-        generator = sut.HtmlDocGeneratorForTestCaseHelp(RENDERING_ENVIRONMENT, TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
+        generator = sut.HtmlDocGeneratorForTestCaseHelp(TEST_CASE_HELP_WITH_PRODUCTION_PHASES, RENDERING_ENVIRONMENT)
         # ACT #
         targets, contents = generator.apply(CustomTargetInfoFactory('target-prefix'))
         # ASSERT #
