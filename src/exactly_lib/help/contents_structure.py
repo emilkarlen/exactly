@@ -66,14 +66,18 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
                            concepts_help(all_concepts()),
                            actors_help(ALL_ACTOR_DOCS),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
-                           TestSuiteHelp([
-                               ConfigurationSectionDocumentation(SECTION_NAME__CONF,
-                                                                 instruction_set_help(
-                                                                     CONFIGURATION_INSTRUCTIONS)),
-                               CasesSectionDocumentation(SECTION_NAME__CASES),
-                               SuitesSectionDocumentation(SECTION_NAME__SUITS),
-                           ]),
+                           test_suite_help(),
                            suite_reporters_help(ALL_SUITE_REPORTERS))
+
+
+def test_suite_help() -> TestSuiteHelp:
+    return TestSuiteHelp([
+        ConfigurationSectionDocumentation(SECTION_NAME__CONF,
+                                          instruction_set_help(
+                                              CONFIGURATION_INSTRUCTIONS)),
+        CasesSectionDocumentation(SECTION_NAME__CASES),
+        SuitesSectionDocumentation(SECTION_NAME__SUITS),
+    ])
 
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:

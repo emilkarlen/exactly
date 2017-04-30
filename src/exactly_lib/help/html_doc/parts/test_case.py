@@ -1,5 +1,5 @@
 from exactly_lib.common.help import cross_reference_id as cross_ref
-from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
+from exactly_lib.common.help.cross_reference_id import CrossReferenceId
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import texts
 from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
@@ -11,58 +11,49 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.utils import section_hierarchy_rendering
 from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
-from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator
-from exactly_lib.util.textformat.structure import document as doc
 
 
-class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
+def generator(header: str,
+              test_case_help: TestCaseHelp,
+              rendering_environment: RenderingEnvironment,
+              ) -> section_hierarchy_rendering.SectionGenerator:
+    sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help, rendering_environment)
+    return section_hierarchy_rendering.parent(
+        header,
+        [],
+        [
+            ('spec',
+             test_case_specification_rendering.generator(
+                 'Specification of test case functionality',
+                 test_case_help)
+             ),
+            ('phases',
+             sections_helper.generator_for_sections('Phases')
+             ),
+            ('actors',
+             HtmlDocGeneratorForEntitiesHelp('Actors',
+                                             IndividualActorRenderer,
+                                             ALL_ACTOR_DOCS)
+             ),
+            ('cli-syntax',
+             cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
+             ),
+            ('instructions',
+             sections_helper.generator_for_instructions_per_section('Instructions per phase')
+             ),
+        ]
+    )
+
+
+class _HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
     def __init__(self,
                  test_case_help: TestCaseHelp,
                  rendering_environment: RenderingEnvironment):
         super().__init__(test_case_help.phase_helps_in_order_of_execution,
                          rendering_environment)
         self.test_case_help = test_case_help
-
-    def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        specification_generator = test_case_specification_rendering.generator(
-            'Specification of test case functionality',
-            self.test_case_help)
-        specification_node = specification_generator.section_renderer_node(targets_factory.sub_factory('spec'))
-
-        cli_syntax_generator = cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
-        cli_syntax_node = cli_syntax_generator.section_renderer_node(targets_factory.sub_factory('cli-syntax'))
-
-        phases_generator = self.generator_for_sections('Phases')
-        phases_node = phases_generator.section_renderer_node(targets_factory.sub_factory('phases'))
-
-        actors_generator = self._actors_generator('Actors')
-        actors_node = actors_generator.section_renderer_node(targets_factory.sub_factory('actors'))
-
-        instructions_generator = self.generator_for_instructions_per_section('Instructions per phase')
-        instructions_node = instructions_generator.section_renderer_node(targets_factory.sub_factory('instructions'))
-
-        ret_val_contents = doc.SectionContents(
-            [],
-            [
-                specification_node.section(self.rendering_environment),
-                phases_node.section(self.rendering_environment),
-                actors_node.section(self.rendering_environment),
-                cli_syntax_node.section(self.rendering_environment),
-                instructions_node.section(self.rendering_environment),
-            ]
-        )
-        ret_val_targets = [
-            specification_node.target_info_node(),
-            phases_node.target_info_node(),
-            actors_node.target_info_node(),
-            cli_syntax_node.target_info_node(),
-            instructions_node.target_info_node(),
-        ]
-        return ret_val_targets, ret_val_contents
-
-    def _actors_generator(self, header: str) -> SectionGenerator:
-        return HtmlDocGeneratorForEntitiesHelp(header, IndividualActorRenderer, ALL_ACTOR_DOCS)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestCasePhaseCrossReference(section.name.plain)
