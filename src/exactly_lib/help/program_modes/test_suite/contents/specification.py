@@ -5,9 +5,10 @@ from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORT
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer, \
+from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, \
     SectionContentsRendererForConstantContents
-from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, parent, leaf, \
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, parent, \
+    leaf, \
     SectionFromGeneratorAsSectionContentsRenderer
 from exactly_lib.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse

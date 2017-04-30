@@ -1,5 +1,5 @@
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis

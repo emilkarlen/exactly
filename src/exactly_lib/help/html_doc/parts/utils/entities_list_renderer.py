@@ -8,7 +8,7 @@ import types
 from exactly_lib.common.help import cross_reference_id as cross_ref
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.utils.entity_documentation import sorted_entity_list, EntityDocumentation
-from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, \
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, \
     LeafSectionRendererNode, SectionRendererNodeWithSubSections
 
 

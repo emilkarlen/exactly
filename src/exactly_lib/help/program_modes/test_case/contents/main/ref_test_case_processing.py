@@ -4,7 +4,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, 
     step_with_single_exit_value
 from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsRendererWithSetup
 from exactly_lib.help.utils.formatting import cli_option
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

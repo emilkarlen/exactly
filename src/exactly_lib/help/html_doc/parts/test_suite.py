@@ -11,7 +11,7 @@ from exactly_lib.help.program_modes.test_suite.contents.specification import Spe
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
-from exactly_lib.help.utils import section_hierarchy_rendering
+from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 
 
 def generator(header: str,

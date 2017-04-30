@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.program_modes.test_case.contents.main import specification as sut
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_CASE_HELP_WITH_PRODUCTION_PHASES
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_node
