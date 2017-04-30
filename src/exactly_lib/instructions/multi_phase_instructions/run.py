@@ -3,7 +3,7 @@ import shlex
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
-from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.names import formatting
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file

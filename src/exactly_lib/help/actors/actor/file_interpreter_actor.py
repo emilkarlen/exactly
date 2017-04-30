@@ -11,9 +11,8 @@ from exactly_lib.help.concepts.configuration_parameters.home_directory import HO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
-from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils import suite_section_names
-from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME, ACT_PHASE_NAME
+from exactly_lib.help.utils.names import suite_section_names, formatting
+from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.instructions.utils.documentation import documentation_text as doc_text
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER

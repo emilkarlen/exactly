@@ -1,7 +1,7 @@
 from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_INFO
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
+from exactly_lib.help.utils.names import formatting
+from exactly_lib.help.utils.names.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.textformat_parser import TextParser

@@ -10,8 +10,8 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.phase_names import phase_name_dictionary, ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
+from exactly_lib.help.utils.names import formatting
+from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
 from exactly_lib.test_case.execution_mode import NAME_SKIP
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse

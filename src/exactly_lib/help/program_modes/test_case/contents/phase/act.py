@@ -15,9 +15,8 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
-from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils import suite_section_names
-from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME, \
+from exactly_lib.help.utils.names import suite_section_names, formatting
+from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME, \
     ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description

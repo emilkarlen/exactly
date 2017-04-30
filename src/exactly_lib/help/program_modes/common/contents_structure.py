@@ -1,6 +1,6 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
-from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc, structures as docs

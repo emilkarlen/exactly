@@ -2,7 +2,7 @@ import re
 
 from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
-from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.names import formatting
 from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformers
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
