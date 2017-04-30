@@ -3,8 +3,8 @@ from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
-from exactly_lib.help.utils.section_hierarchy_rendering import SectionRendererNode, \
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
     SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionGenerator
 from exactly_lib.util.textformat.structure import document  as doc
 

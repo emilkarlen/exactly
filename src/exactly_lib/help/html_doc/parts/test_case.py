@@ -11,7 +11,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.utils import section_hierarchy_rendering
+from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 
 
 def generator(header: str,

@@ -6,7 +6,7 @@ from exactly_lib.help.concepts.plain_concepts.current_working_directory import C
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import emphasis
-from exactly_lib.help.utils.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc

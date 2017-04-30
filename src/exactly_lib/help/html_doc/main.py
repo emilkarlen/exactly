@@ -8,8 +8,8 @@ from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help.utils.section_contents_renderer import RenderingEnvironment
-from exactly_lib.help.utils.section_hierarchy_rendering import SectionGenerator, parent, SectionRendererNode
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, parent, SectionRendererNode
 from exactly_lib.help.utils.table_of_contents import toc_list
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
