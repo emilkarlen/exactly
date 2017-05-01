@@ -16,6 +16,7 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
+from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.symbol.test_resources import symbol_utils as v2
@@ -37,6 +38,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleValidOption))
     ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleDefaultOption))
     ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeValueDefinition))
+    ret_val.addTest(suite_for_instruction_documentation(sut.setup('instruction name').documentation))
     return ret_val
 
 
