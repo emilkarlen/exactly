@@ -43,12 +43,12 @@ def setup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success(
                                  validate_post_setup_initial_action=None,
                                  main=do_return(sh.new_sh_success()),
                                  main_initial_action=None,
-                                 value_usages_initial_action=None,
-                                 value_usages=do_return([])) -> SetupPhaseInstruction:
+                                 symbol_usages_initial_action=None,
+                                 symbol_usages=do_return([])) -> SetupPhaseInstruction:
     return _SetupPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                       _action_of(validate_post_setup_initial_action, validate_post_setup),
                                       _action_of(main_initial_action, main),
-                                      _action_of(value_usages_initial_action, value_usages))
+                                      _action_of(symbol_usages_initial_action, symbol_usages))
 
 
 def act_phase_instruction_with_source(source_code: LineSequence = LineSequence(72, (

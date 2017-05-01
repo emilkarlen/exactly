@@ -148,7 +148,7 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          symbol_usages=v2.assert_value_usages_is_singleton_list(
+                          symbol_usages=v2.assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
                                   SymbolDefinition('name', expected_value_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
@@ -169,7 +169,7 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          symbol_usages=v2.assert_value_usages_is_singleton_list(
+                          symbol_usages=v2.assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
                                   SymbolDefinition('name', expected_value_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(

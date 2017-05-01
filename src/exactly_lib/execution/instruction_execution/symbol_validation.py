@@ -6,10 +6,10 @@ from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def validate_symbol_usages(value_usages: list,
+def validate_symbol_usages(symbol_usages: list,
                            symbols: SymbolTable) -> PartialInstructionControlledFailureInfo:
-    for value_usage in value_usages:
-        result = validate_symbol_usage(value_usage, symbols)
+    for symbol_usage in symbol_usages:
+        result = validate_symbol_usage(symbol_usage, symbols)
         if result is not None:
             return result
     return None
@@ -51,8 +51,8 @@ def validate_symbol_usage(usage: vs.SymbolUsage,
                                                            str(usage)))
 
 
-def _validate_reference(value_usage: vs.SymbolReference,
+def _validate_reference(symbol_usage: vs.SymbolReference,
                         symbols: SymbolTable) -> str:
-    referenced_value_container = symbols.lookup(value_usage.name)
+    referenced_value_container = symbols.lookup(symbol_usage.name)
     assert isinstance(referenced_value_container, ValueContainer), 'Values in SymbolTable must be ValueContainer'
-    return value_usage.value_restriction.is_satisfied_by(symbols, value_usage.name, referenced_value_container)
+    return symbol_usage.value_restriction.is_satisfied_by(symbols, symbol_usage.name, referenced_value_container)

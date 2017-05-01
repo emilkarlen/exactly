@@ -107,7 +107,7 @@ def symbol_table_from_entries(entries: iter) -> SymbolTable:
     return SymbolTable(dict(elements))
 
 
-def assert_value_usages_is_singleton_list(assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
+def assert_symbol_usages_is_singleton_list(assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return asrt.matches_sequence([assertion])
 
 

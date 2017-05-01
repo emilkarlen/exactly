@@ -22,10 +22,10 @@ class ConfigForSetupValidateSymbols(validate_symbols_utils.Configuration):
                          expected_steps=[phase_step.SETUP__VALIDATE_SYMBOLS])
 
     def instruction_that_returns(self, return_value: list) -> TestCaseInstruction:
-        return test.setup_phase_instruction_that(value_usages=do_return(return_value))
+        return test.setup_phase_instruction_that(symbol_usages=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.setup_phase_instruction_that(value_usages=do_raise(exception))
+        return test.setup_phase_instruction_that(symbol_usages=do_raise(exception))
 
 
 def _configurations() -> list:
