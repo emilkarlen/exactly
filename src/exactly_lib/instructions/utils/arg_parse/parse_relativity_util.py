@@ -62,8 +62,8 @@ def _parse_rel_option_type(options: RelOptionsConfiguration,
 
 def _raise_invalid_option(actual: str, options: RelOptionsConfiguration):
     lines = [
-        'Option cannot be used in this context: {}'.format(actual),
-        'Valid options are:'
+        'Unaccepted relativity option: {}'.format(actual),
+        'Accepted relativity options:'
     ]
     lines.extend(_valid_options_info_lines(options))
     msg = '\n'.join(lines)
