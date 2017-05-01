@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
         # ARRANGE #
         renderer = sut.TextRenderer(sut.TargetRenderer())
         root = Element('root')
-        source_text = 'source text §'
+        source_text = 'source text'
         text = StringText(source_text)
         # ACT #
         actual = renderer.apply(root, root, sut.Position.INSIDE, text)
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         renderer = sut.TextRenderer(sut.TargetRenderer())
         root = Element('root')
         sub = SubElement(root, 'sub')
-        source_text = 'source text §'
+        source_text = 'source text'
         text = StringText(source_text)
         # ACT #
         actual = renderer.apply(root, sub, sut.Position.AFTER, text)
@@ -51,7 +51,7 @@ class Test(unittest.TestCase):
         target_str = 'target-name'
         renderer = sut.TextRenderer(_ConstantTargetRenderer(target_str))
         root = Element('root')
-        title_text = 'source text §'
+        title_text = 'source text'
         text = CrossReferenceText(title_text,
                                   CrossReferenceTarget())
         # ACT #
@@ -72,7 +72,7 @@ class Test(unittest.TestCase):
         target_str = 'target-name'
         renderer = sut.TextRenderer(_ConstantTargetRenderer(target_str))
         root = Element('root')
-        title_text = 'source text §'
+        title_text = 'source text'
         text = CrossReferenceText(title_text,
                                   CrossReferenceTarget(),
                                   target_is_id_in_same_document=False)
