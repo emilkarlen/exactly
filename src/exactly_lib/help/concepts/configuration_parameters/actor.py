@@ -2,7 +2,6 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs, SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
@@ -10,6 +9,7 @@ from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_I
 from exactly_lib.help.utils.names import suite_section_names, formatting
 from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 

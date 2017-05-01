@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
-from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
+from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase

@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION, \
-    PATH_TYPE, STRING_TYPE
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE, STRING_TYPE
+from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import assign_symbol as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \

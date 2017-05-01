@@ -2,7 +2,6 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
-from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.actors.actor.common import ARGUMENT_SYNTAX_ELEMENT, \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
@@ -14,6 +13,7 @@ from exactly_lib.help.program_modes.common.render_syntax_contents import invokat
 from exactly_lib.help.utils.names import suite_section_names, formatting
 from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.instructions.utils.documentation import documentation_text as doc_text
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
