@@ -3,10 +3,10 @@ from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_al
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.utils.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
-from exactly_lib.help.utils.names.formatting import InstructionName
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref

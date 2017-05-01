@@ -6,8 +6,8 @@ Makes it possible to reuse some code for generating documentation.
 
 from exactly_lib.common.help.cross_reference_id import CrossReferenceId
 from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

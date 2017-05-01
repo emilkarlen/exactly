@@ -13,9 +13,9 @@ from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProg
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, leaf
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.parser import SECTION_NAME__CONF
 from exactly_lib.util.cli_syntax.elements import argument as arg

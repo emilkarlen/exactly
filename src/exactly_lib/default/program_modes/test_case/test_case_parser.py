@@ -1,3 +1,4 @@
+from exactly_lib.help_texts.test_case import phase_names_plain
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -57,6 +58,6 @@ def new_parser(instruction_name_extractor_function,
                                                      instructions_setup.cleanup_instruction_set)),
         ),
         default_section_name=phase_identifier.DEFAULT_PHASE.section_name,
-        section_element_name_for_error_messages=phase_identifier.SECTION_CONCEPT_NAME,
+        section_element_name_for_error_messages=phase_names_plain.SECTION_CONCEPT_NAME,
     )
     return Parser(document_parser.new_parser_for(configuration))

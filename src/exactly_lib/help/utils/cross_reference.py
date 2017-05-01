@@ -1,8 +1,8 @@
 from exactly_lib.common.help import cross_reference_id
 from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
-from exactly_lib.help.utils.names.formatting import AnyInstructionNameDictionary
-from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, phase_name_dict_key_for
-from exactly_lib.help.utils.names.suite_section_names import suite_section_name_dictionary, \
+from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary
+from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, phase_name_dict_key_for
+from exactly_lib.help_texts.test_suite.formatted_section_names import suite_section_name_dictionary, \
     suite_section_name_dict_key_for
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget
 

@@ -1,7 +1,7 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib import program_info
-from exactly_lib.help.utils.names import formatting
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
 
 PAGE_TITLE = 'Reference Manual for %s' % program_info.PROGRAM_NAME.capitalize()

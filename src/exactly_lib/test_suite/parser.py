@@ -1,11 +1,12 @@
+from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, \
+    SECTION_NAME__CASES, \
+    DEFAULT_SECTION_NAME
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.instruction_set.sections import cases
 from exactly_lib.test_suite.instruction_set.sections import suites
 from exactly_lib.test_suite.instruction_set.sections.configuration import instruction_set
-from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES, \
-    DEFAULT_SECTION_NAME
 
 PARSER_CONFIGURATION = document_parser.SectionsConfiguration(
     (

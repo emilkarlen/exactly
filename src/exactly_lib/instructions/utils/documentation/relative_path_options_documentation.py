@@ -4,9 +4,9 @@ from exactly_lib.help.concepts.configuration_parameters.home_directory import HO
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     HOME_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO, SYMBOL_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.argument_rendering.path_syntax import SYMBOL_REFERENCE, RELATIVITY_ARGUMENT
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration

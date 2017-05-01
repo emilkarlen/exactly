@@ -8,8 +8,8 @@ from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_proces
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
 from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsRendererWithSetup
-from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import *

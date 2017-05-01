@@ -1,4 +1,4 @@
-from exactly_lib.help.utils.names.formatting import SectionName
+from exactly_lib.help_texts.names.formatting import SectionName
 from exactly_lib.test_case import phase_identifier
 
 CONFIGURATION_PHASE_NAME = SectionName(phase_identifier.CONFIGURATION.identifier)

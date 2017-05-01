@@ -5,8 +5,8 @@ from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentati
 from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
     SANDBOX_CONCEPT_INFO, \
     HOME_DIRECTORY_CONCEPT_INFO
-from exactly_lib.help.utils.names import formatting
-from exactly_lib.help.utils.names.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
+from exactly_lib.help_texts.names import formatting
+from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
