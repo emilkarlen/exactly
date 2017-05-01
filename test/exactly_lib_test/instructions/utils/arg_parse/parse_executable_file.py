@@ -2,11 +2,11 @@ import pathlib
 import sys
 import unittest
 
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.test_case_file_structure import relative_path_options as option
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
@@ -70,7 +70,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         self._has_head_with_string(ts, 'an argument')
 
     def test_option_without_tail(self):
-        ts = TokenStream2('%s THE_FILE' % option.REL_HOME_OPTION)
+        ts = TokenStream2('%s THE_FILE' % file_ref_texts.REL_HOME_OPTION)
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('THE_FILE').apply_with_message(self,
@@ -80,7 +80,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         self.assertTrue(ts.is_null)
 
     def test_option_with_tail(self):
-        ts = TokenStream2('%s FILE tail' % option.REL_CWD_OPTION)
+        ts = TokenStream2('%s FILE tail' % file_ref_texts.REL_CWD_OPTION)
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
@@ -130,7 +130,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                          _remaining_source(ts))
 
     def test_path_with_option(self):
-        ts = TokenStream2('( %s FILE )' % option.REL_HOME_OPTION)
+        ts = TokenStream2('( %s FILE )' % file_ref_texts.REL_HOME_OPTION)
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
@@ -140,7 +140,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
         self.assertTrue(ts.is_null)
 
     def test_path_with_option_and_arguments(self):
-        ts = TokenStream2('( %s FILE arg1 arg2 )' % option.REL_HOME_OPTION)
+        ts = TokenStream2('( %s FILE arg1 arg2 )' % file_ref_texts.REL_HOME_OPTION)
         ef = sut.parse(ts)
         symbols = empty_symbol_table()
         equals_path_part_string('FILE').apply_with_message(self,
@@ -195,7 +195,7 @@ class TestParseInvalidSyntaxWithArguments(unittest.TestCase):
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream2(option.REL_HOME_OPTION))
+            sut.parse(TokenStream2(file_ref_texts.REL_HOME_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -325,14 +325,14 @@ def suite_for_test_case_configuration(configuration: TestCaseConfiguration) -> u
         ParenthesesWithArgumentsInsideAndWithFollowingArguments,
     ]
     return unittest.TestSuite([
-                                  tc(configuration)
-                                  for tc in cases
-                                  ])
+        tc(configuration)
+        for tc in cases
+    ])
 
 
 class RelHomeConfiguration(RelativityConfiguration):
     def __init__(self):
-        super().__init__(option.REL_HOME_OPTION, True)
+        super().__init__(file_ref_texts.REL_HOME_OPTION, True)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForHomeContents(DirContents([file]))
@@ -358,7 +358,7 @@ class DefaultConfiguration(RelativityConfiguration):
 
 class RelActConfiguration(RelativityConfiguration):
     def __init__(self):
-        super().__init__(option.REL_ACT_OPTION, False)
+        super().__init__(file_ref_texts.REL_ACT_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForSdsContents(
@@ -372,7 +372,7 @@ class RelActConfiguration(RelativityConfiguration):
 
 class RelTmpConfiguration(RelativityConfiguration):
     def __init__(self):
-        super().__init__(option.REL_TMP_OPTION, False)
+        super().__init__(file_ref_texts.REL_TMP_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForSdsContents(
@@ -386,7 +386,7 @@ class RelTmpConfiguration(RelativityConfiguration):
 
 class RelCwdConfiguration(RelativityConfiguration):
     def __init__(self):
-        super().__init__(option.REL_CWD_OPTION, False)
+        super().__init__(file_ref_texts.REL_CWD_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForSdsContents(

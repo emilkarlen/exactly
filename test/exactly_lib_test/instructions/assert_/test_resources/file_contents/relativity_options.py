@@ -2,8 +2,8 @@ import os
 import pathlib
 import unittest
 
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
@@ -75,7 +75,7 @@ def suite_for__conf__rel_opts__negations(instruction_configuration: InstructionT
 
 class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfigurationForRelSds):
     def __init__(self):
-        super().__init__(relative_path_options.REL_CWD_OPTION)
+        super().__init__(file_ref_texts.REL_CWD_OPTION)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return _test_cwd_dir(sds)

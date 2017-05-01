@@ -1,9 +1,9 @@
 import unittest
 
 import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
@@ -99,7 +99,7 @@ _FORMAT_MAP = {
     'not': exactly_lib.instructions.assert_.utils.file_contents.instruction_options.NOT_ARGUMENT,
     'replace_env_vars_option': long_option_syntax(
         exactly_lib.instructions.assert_.utils.file_contents.instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
-    'rel_home_option': relative_path_options.REL_HOME_OPTION,
-    'rel_cwd_option': relative_path_options.REL_CWD_OPTION,
-    'rel_tmp_option': relative_path_options.REL_TMP_OPTION,
+    'rel_home_option': file_ref_texts.REL_HOME_OPTION,
+    'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
+    'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
 }

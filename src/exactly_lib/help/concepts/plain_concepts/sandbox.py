@@ -4,11 +4,12 @@ from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import SANDBOX_CONCEPT_INFO, ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, relative_path_options
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
@@ -77,7 +78,7 @@ def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, p
                                     cwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT_NAME.singular),
                                     cd_instruction=InstructionName(CHANGE_DIR_INSTRUCTION_NAME))))
     ret_val.extend(_dir_env_variables_and_rel_options(env_var_name=environment_variables.ENV_VAR_ACT,
-                                                      rel_option=relative_path_options.REL_ACT_OPTION))
+                                                      rel_option=file_ref_texts.REL_ACT_OPTION))
     return ret_val
 
 
@@ -97,7 +98,7 @@ def _tmp_user_dir_description_paragraphs():
     ret_val.extend(normalize_and_parse(
         _USR_TMP_DIR_DESCRIPTION.format(program_name=formatting.program_name(program_info.PROGRAM_NAME))))
     ret_val.extend(_dir_env_variables_and_rel_options(env_var_name=environment_variables.ENV_VAR_TMP,
-                                                      rel_option=relative_path_options.REL_TMP_OPTION))
+                                                      rel_option=file_ref_texts.REL_TMP_OPTION))
     return ret_val
 
 
@@ -130,7 +131,7 @@ the risk of clashes with files from other program.
 
 def _result_dir_env_variable_and_rel_option(phase: dict) -> list:
     return [_dir_info_items_table(environment_variables.ENV_VAR_RESULT,
-                                  relative_path_options.REL_RESULT_OPTION,
+                                  file_ref_texts.REL_RESULT_OPTION,
                                   _RESULT_DIR_ENV_VARIABLE.format(phase=phase))
             ]
 
