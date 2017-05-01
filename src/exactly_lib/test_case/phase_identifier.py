@@ -1,5 +1,7 @@
 from enum import Enum
 
+from exactly_lib.help_texts.test_case import phase_names_plain as names
+
 
 class PhaseEnum(Enum):
     CONFIGURATION = 0
@@ -34,12 +36,12 @@ class Phase(tuple):
         return self[2]
 
 
-CONFIGURATION = Phase(PhaseEnum.CONFIGURATION, 'conf', 'conf')
-SETUP = Phase(PhaseEnum.SETUP, 'setup', 'setup')
-ACT = Phase(PhaseEnum.ACT, 'act', 'act')
-BEFORE_ASSERT = Phase(PhaseEnum.BEFORE_ASSERT, 'before-assert', 'before-assert')
-ASSERT = Phase(PhaseEnum.ASSERT, 'assert', 'assert')
-CLEANUP = Phase(PhaseEnum.CLEANUP, 'cleanup', 'cleanup')
+CONFIGURATION = Phase(PhaseEnum.CONFIGURATION, names.CONFIGURATION_PHASE_NAME, names.CONFIGURATION_PHASE_NAME)
+SETUP = Phase(PhaseEnum.SETUP, names.SETUP_PHASE_NAME, names.SETUP_PHASE_NAME)
+ACT = Phase(PhaseEnum.ACT, names.ACT_PHASE_NAME, names.ACT_PHASE_NAME)
+BEFORE_ASSERT = Phase(PhaseEnum.BEFORE_ASSERT, names.BEFORE_ASSERT_PHASE_NAME, names.BEFORE_ASSERT_PHASE_NAME)
+ASSERT = Phase(PhaseEnum.ASSERT, names.ASSERT_PHASE_NAME, names.ASSERT_PHASE_NAME)
+CLEANUP = Phase(PhaseEnum.CLEANUP, names.CLEANUP_PHASE_NAME, names.CLEANUP_PHASE_NAME)
 
 ALL_NAMED = (SETUP, ACT, BEFORE_ASSERT, ASSERT, CLEANUP)
 
@@ -48,5 +50,3 @@ ALL = (CONFIGURATION,) + ALL_NAMED
 ALL_WITH_INSTRUCTIONS = (CONFIGURATION, SETUP, BEFORE_ASSERT, ASSERT, CLEANUP)
 
 DEFAULT_PHASE = ACT
-
-SECTION_CONCEPT_NAME = 'phase'

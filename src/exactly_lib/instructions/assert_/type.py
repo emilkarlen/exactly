@@ -1,8 +1,8 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.utils.names import formatting
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string, \
     ensure_is_not_option_argument
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \

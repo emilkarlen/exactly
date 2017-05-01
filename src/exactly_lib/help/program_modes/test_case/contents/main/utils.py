@@ -1,7 +1,7 @@
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.utils.names.phase_names import phase_name_dictionary
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import first_column_is_header_table, para
 

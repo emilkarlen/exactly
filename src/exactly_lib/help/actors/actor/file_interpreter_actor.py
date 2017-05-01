@@ -10,11 +10,12 @@ from exactly_lib.help.concepts.configuration_parameters.home_directory import HO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
-from exactly_lib.help.utils.names import suite_section_names, formatting
-from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
+from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME, ACT_PHASE_NAME
+from exactly_lib.help_texts.test_suite import formatted_section_names
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -63,7 +64,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
             SHELL_SYNTAX_CONCEPT.cross_reference_target(),
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    ACTOR_INSTRUCTION_NAME),
-            TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
+            TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,
                                                       ACTOR_INSTRUCTION_NAME),
         ]
 

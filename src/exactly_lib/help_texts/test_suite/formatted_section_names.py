@@ -1,5 +1,5 @@
-from exactly_lib.help.utils.names.formatting import SectionName
-from exactly_lib.test_suite import section_names
+from exactly_lib.help_texts.names.formatting import SectionName
+from exactly_lib.help_texts.test_suite import section_names
 
 CONFIGURATION_SECTION_NAME = SectionName(section_names.SECTION_NAME__CONF)
 CASES_SECTION_NAME = SectionName(section_names.SECTION_NAME__CASES)
@@ -14,10 +14,10 @@ ALL = (
 
 def suite_section_name_dictionary() -> dict:
     phase_names = {}
-    for phase in ALL:
-        phase_names[suite_section_name_dict_key_for(phase.plain)] = phase
+    for section in ALL:
+        phase_names[suite_section_name_dict_key_for(section.plain)] = section
     return phase_names
 
 
-def suite_section_name_dict_key_for(phase_name: str) -> str:
-    return phase_name.replace('-', '_')
+def suite_section_name_dict_key_for(section_name: str) -> str:
+    return section_name.replace('-', '_')

@@ -2,7 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.timeout import TIMEOUT_CONFIGURATION_PARAMETER, \
     WHAT_THE_TIMEOUT_APPLIES_TO
-from exactly_lib.help.utils.names.phase_names import phase_name_dictionary
+from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase

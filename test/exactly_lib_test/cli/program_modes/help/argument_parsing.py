@@ -20,7 +20,7 @@ from exactly_lib.help.program_modes.main_program.contents_structure import MainP
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help.utils.names import formatting
+from exactly_lib.help_texts.names import formatting
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
 from exactly_lib_test.help.actors.test_resources import documentation as actor_doc
 from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl

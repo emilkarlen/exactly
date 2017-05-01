@@ -1,6 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help.utils.names import formatting
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs

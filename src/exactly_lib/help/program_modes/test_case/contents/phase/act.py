@@ -14,10 +14,12 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
-from exactly_lib.help.utils.names import suite_section_names, formatting
-from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME, \
-    ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
+from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, \
+    BEFORE_ASSERT_PHASE_NAME, \
+    ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
+from exactly_lib.help_texts.test_suite import formatted_section_names
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -82,7 +84,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                    TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
                    TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                           ACTOR_INSTRUCTION_NAME),
-                   TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
+                   TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,
                                                              ACTOR_INSTRUCTION_NAME),
                ] + all_actor_cross_refs()
 
