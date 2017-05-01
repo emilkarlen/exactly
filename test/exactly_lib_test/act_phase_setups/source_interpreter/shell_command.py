@@ -7,11 +7,12 @@ from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
     Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_resources.programs.python_program_execution import file_name_of_interpreter
 
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        self.setup = sut.handling_for_interpreter_command('python')
+        self.setup = sut.handling_for_interpreter_command(file_name_of_interpreter())
         super().__init__(self.setup.source_and_executor_constructor)
 
     @contextmanager
