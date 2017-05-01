@@ -1,6 +1,8 @@
 from exactly_lib.util.cli_syntax.elements import argument as a
 
-PATH_ARGUMENT = a.Named('PATH')
+PATH_SYNTAX_ELEMENT_NAME = 'PATH'
+
+PATH_ARGUMENT = a.Named(PATH_SYNTAX_ELEMENT_NAME)
 FILE_ARGUMENT = a.Named('FILE')
 DIR_ARGUMENT = a.Named('DIR')
 
