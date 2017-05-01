@@ -49,6 +49,10 @@ class StringResolver(SymbolValueResolver):
 
 
 class FileRefResolver(SymbolValueResolver):
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.PATH
+
     def resolve(self, symbols: SymbolTable) -> FileRef:
         raise NotImplementedError()
 

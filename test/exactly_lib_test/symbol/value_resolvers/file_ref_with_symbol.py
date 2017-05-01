@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.concrete_values import ValueType
 from exactly_lib.symbol.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringSymbolReference
@@ -96,7 +97,7 @@ class TestRelSymbol(unittest.TestCase):
                                      actual,
                                      'existence pre SDS')
 
-    def test_file_path(self):
+    def test_file_path_and_value_type(self):
         relativity_test_cases = [
             (RelOptionType.REL_HOME, True),
             (RelOptionType.REL_ACT, False),
@@ -143,6 +144,9 @@ class TestRelSymbol(unittest.TestCase):
                         actual_path = file_ref_to_check.file_path_post_sds(environment.sds)
                     actual_path_pre_or_post_sds = file_ref_to_check.file_path_pre_or_post_sds(environment.home_and_sds)
                     # ASSERT #
+                    self.assertIs(ValueType.PATH,
+                                  fr_resolver_to_check.value_type,
+                                  'value type of resolver')
                     self.assertEqual(expected_path_str,
                                      str(actual_path),
                                      tested_path_msg)
