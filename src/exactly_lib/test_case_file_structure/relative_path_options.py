@@ -52,7 +52,7 @@ REL_ACT_OPTION = long_option_syntax(REL_ACT_OPTION_NAME.long)
 REL_RESULT_OPTION = long_option_syntax(REL_RESULT_OPTION_NAME.long)
 REL_CWD_OPTION = long_option_syntax(REL_CWD_OPTION_NAME.long)
 REL_HOME_OPTION = long_option_syntax(REL_HOME_OPTION_NAME.long)
-REL_VALUE_DEFINITION_OPTION = long_option_syntax(REL_SYMBOL_OPTION_NAME.long)
+REL_symbol_OPTION = long_option_syntax(REL_SYMBOL_OPTION_NAME.long)
 
 
 def option_for(option_name: argument.OptionName, argument_name: str = None) -> argument.Option:

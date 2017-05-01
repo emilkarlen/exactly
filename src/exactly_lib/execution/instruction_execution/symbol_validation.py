@@ -7,9 +7,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def validate_symbol_usages(value_usages: list,
-                           value_definitions: SymbolTable) -> PartialInstructionControlledFailureInfo:
+                           symbols: SymbolTable) -> PartialInstructionControlledFailureInfo:
     for value_usage in value_usages:
-        result = validate_symbol_usage(value_usage, value_definitions)
+        result = validate_symbol_usage(value_usage, symbols)
         if result is not None:
             return result
     return None
@@ -52,7 +52,7 @@ def validate_symbol_usage(value_usage: vs.ValueUsage,
 
 
 def _validate_reference(value_usage: vs.ValueReference,
-                        value_definitions: SymbolTable) -> str:
-    referenced_value_container = value_definitions.lookup(value_usage.name)
+                        symbols: SymbolTable) -> str:
+    referenced_value_container = symbols.lookup(value_usage.name)
     assert isinstance(referenced_value_container, ValueContainer), 'Values in SymbolTable must be ValueContainer'
-    return value_usage.value_restriction.is_satisfied_by(value_definitions, referenced_value_container.value)
+    return value_usage.value_restriction.is_satisfied_by(symbols, referenced_value_container.value)

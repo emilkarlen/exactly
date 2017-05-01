@@ -42,7 +42,7 @@ class Arrangement(ArrangementWithSds):
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
                  home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
-                 value_definitions: SymbolTable = None,
+                 symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          home_contents=home_dir_contents,
@@ -50,7 +50,7 @@ class Arrangement(ArrangementWithSds):
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
                          home_or_sds_contents=home_or_sds_contents,
-                         value_definitions=value_definitions)
+                         symbols=symbols)
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -66,8 +66,8 @@ class Expectation:
                  post_validation_result: va.ValueAssertion = svh_check.is_success(),
                  side_effects_check: va.ValueAssertion = va.anything_goes(),
                  source: va.ValueAssertion = va.anything_goes(),
-                 value_definition_usages: va.ValueAssertion = va.anything_goes(),
-                 value_definitions_after_main: va.ValueAssertion = va.anything_goes(),
+                 symbol_usages: va.ValueAssertion = va.anything_goes(),
+                 symbols_after_main: va.ValueAssertion = va.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result
@@ -76,8 +76,8 @@ class Expectation:
         self.post_validation_result = post_validation_result
         self.side_effects_check = side_effects_check
         self.source = source
-        self.value_definition_usages = value_definition_usages
-        self.value_definitions_after_main = value_definitions_after_main
+        self.symbol_usages = symbol_usages
+        self.symbols_after_main = symbols_after_main
 
 
 is_success = Expectation
@@ -120,7 +120,7 @@ class Executor:
                                   'The instruction must be an instance of ' + str(SetupPhaseInstruction))
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, SetupPhaseInstruction)
-        self.expectation.value_definition_usages.apply_with_message(self.put, instruction.value_usages(),
+        self.expectation.symbol_usages.apply_with_message(self.put, instruction.value_usages(),
                                                                     'value-definition-usages')
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         initial_cwd = os.getcwd()
@@ -130,7 +130,7 @@ class Executor:
                 self.arrangement.home_contents.write_to(home_dir_path)
                 environment = InstructionEnvironmentForPreSdsStep(home_dir_path,
                                                                   self.arrangement.process_execution_settings.environ,
-                                                                  value_definitions=self.arrangement.value_definitions)
+                                                                  symbols=self.arrangement.symbols)
                 pre_validate_result = self._execute_pre_validate(environment, instruction)
                 if not pre_validate_result.is_success:
                     return
@@ -143,10 +143,10 @@ class Executor:
                         sds,
                         phase_identifier.SETUP.identifier,
                         timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                        value_definitions=self.arrangement.value_definitions)
+                        symbols=self.arrangement.symbols)
                     home_and_sds = HomeAndSds(home_dir_path, sds)
                     path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
-                                                                                      self.arrangement.value_definitions)
+                                                                                      self.arrangement.symbols)
                     self.arrangement.pre_contents_population_action.apply(path_resolving_environment)
                     self.arrangement.sds_contents.apply(sds)
                     self.arrangement.home_or_sds_contents.write_to(home_and_sds)
@@ -154,10 +154,10 @@ class Executor:
                     main_result = self._execute_main(sds, instruction_environment, instruction)
                     if not main_result.is_success:
                         return
-                    self.expectation.value_definitions_after_main.apply_with_message(
+                    self.expectation.symbols_after_main.apply_with_message(
                         self.put,
-                        instruction_environment.value_definitions,
-                        'value_definitions_after_main')
+                        instruction_environment.symbols,
+                        'symbols_after_main')
                     self._execute_post_validate(instruction_environment, instruction)
                     self.expectation.side_effects_check.apply(self.put, instruction_environment.home_and_sds)
         finally:

@@ -15,9 +15,9 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as restrictions
-from exactly_lib_test.symbol.test_resources import value_definition_utils as sym_utils
+from exactly_lib_test.symbol.test_resources import symbol_utils as sym_utils
 from exactly_lib_test.symbol.test_resources import value_reference_assertions as vr_tr
-from exactly_lib_test.symbol.test_resources.value_definition_utils import string_value_container
+from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_container
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -33,10 +33,10 @@ class TestRelValueDefinition(unittest.TestCase):
         expected_restriction = FileRefRelativityRestriction(
             PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, True))
         expected_mandatory_references = [
-            vr_tr.equals_value_reference('value_definition_name',
+            vr_tr.equals_value_reference('symbol_name',
                                          restrictions.equals_file_ref_relativity_restriction(expected_restriction))
         ]
-        value_ref_of_path = ValueReference('value_definition_name', expected_restriction)
+        value_ref_of_path = ValueReference('symbol_name', expected_restriction)
         path_suffix_test_cases = [
             (PathPartResolverAsFixedPath('file.txt'),
              [],
@@ -46,7 +46,7 @@ class TestRelValueDefinition(unittest.TestCase):
              ),
         ]
         for path_suffix, additional_expected_references in path_suffix_test_cases:
-            file_ref_resolver = sut.rel_value_definition(value_ref_of_path, path_suffix)
+            file_ref_resolver = sut.rel_symbol(value_ref_of_path, path_suffix)
             # ACT #
             actual = file_ref_resolver.references
             # ASSERT #
@@ -85,7 +85,7 @@ class TestRelValueDefinition(unittest.TestCase):
                 with self.subTest(msg='rel_option_type={} ,path_suffix_type={}'.format(
                         rel_option_type_of_referenced_symbol,
                         path_suffix)):
-                    file_ref_resolver_to_check = sut.rel_value_definition(
+                    file_ref_resolver_to_check = sut.rel_symbol(
                         _value_reference_of_path_with_accepted(file_ref_symbol_name,
                                                                rel_option_type_of_referenced_symbol),
                         path_suffix)
@@ -121,7 +121,7 @@ class TestRelValueDefinition(unittest.TestCase):
                                                      PathPartAsFixedPath(
                                                          path_component_from_referenced_file_ref))))
             for path_suffix, symbol_table_entries in path_suffix_test_cases:
-                fr_resolver_to_check = sut.rel_value_definition(
+                fr_resolver_to_check = sut.rel_symbol(
                     _value_reference_of_path_with_accepted(file_ref_symbol_name,
                                                            rel_option),
                     path_suffix)
@@ -134,7 +134,7 @@ class TestRelValueDefinition(unittest.TestCase):
                 environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbol_table)
                 with self.subTest(msg=str(rel_option)):
                     # ACT #
-                    file_ref_to_check = fr_resolver_to_check.resolve(environment.value_definitions)
+                    file_ref_to_check = fr_resolver_to_check.resolve(environment.symbols)
                     if exists_pre_sds:
                         tested_path_msg = 'file_path_pre_sds'
                         actual_path = file_ref_to_check.file_path_pre_sds(environment.home_dir_path)

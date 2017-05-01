@@ -22,11 +22,11 @@ class Arrangement:
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
                  pre_contents_population_action: SdsAction = SdsAction(),
                  pre_action_action: SdsAction = SdsAction(),
-                 value_definitions: SymbolTable = None):
+                 symbols: SymbolTable = None):
         self.pre_contents_population_action = pre_contents_population_action
         self.sds_contents_before = sds_contents_before
         self.pre_action_action = pre_action_action
-        self.value_definitions = symbol_table_from_none_or_value(value_definitions)
+        self.symbols = symbol_table_from_none_or_value(symbols)
 
 
 class Expectation:
@@ -56,7 +56,7 @@ def check(put: unittest.TestCase,
           expectation: Expectation):
     with sds_with_act_as_curr_dir(contents=arrangement.sds_contents_before,
                                   pre_contents_population_action=arrangement.pre_contents_population_action,
-                                  value_definitions=arrangement.value_definitions) as path_resolving_env:
+                                  symbols=arrangement.symbols) as path_resolving_env:
         arrangement.pre_action_action.apply(path_resolving_env)
         result = action.apply(path_resolving_env)
         expectation.expected_action_result.apply(put, result)

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import value_structure as sut
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
-from exactly_lib_test.symbol.test_resources.value_definition_utils import file_ref_value_container
+from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container
 
 
 def suite() -> unittest.TestSuite:

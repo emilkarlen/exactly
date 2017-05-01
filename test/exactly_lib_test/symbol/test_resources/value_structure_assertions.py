@@ -21,8 +21,8 @@ def equals_value_container(expected: stc.ValueContainer,
                                  asrt.and_(component_assertions))
 
 
-def equals_value_definition(expected: stc.ValueDefinition,
-                            ignore_source_line: bool = True) -> asrt.ValueAssertion:
+def equals_symbol(expected: stc.ValueDefinition,
+                  ignore_source_line: bool = True) -> asrt.ValueAssertion:
     return asrt.is_instance_with(stc.ValueDefinition,
                                  asrt.And([
                                      asrt.sub_component('name',

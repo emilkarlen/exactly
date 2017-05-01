@@ -105,12 +105,12 @@ class Executor(InstructionExecutionBase):
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents,
-                value_definitions=self.arrangement.value_definitions) as path_resolving_environment:
+                symbols=self.arrangement.symbols) as path_resolving_environment:
             home_and_sds = path_resolving_environment.home_and_sds
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
                                                               self.arrangement.process_execution_settings.environ,
-                                                              value_definitions=self.arrangement.value_definitions)
+                                                              symbols=self.arrangement.symbols)
             result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)
             if not result_of_validate_pre_sds.is_success:
                 return
@@ -120,7 +120,7 @@ class Executor(InstructionExecutionBase):
                 home_and_sds.sds,
                 phase_identifier.CLEANUP.identifier,
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                value_definitions=self.arrangement.value_definitions)
+                symbols=self.arrangement.symbols)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)

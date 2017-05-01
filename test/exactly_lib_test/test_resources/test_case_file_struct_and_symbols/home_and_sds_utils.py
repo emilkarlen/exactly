@@ -35,14 +35,14 @@ def home_and_sds_with_act_as_curr_dir(
         sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
         home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
         pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-        value_definitions: SymbolTable = None) -> PathResolvingEnvironmentPreOrPostSds:
-    value_definitions = symbol_table_from_none_or_value(value_definitions)
+        symbols: SymbolTable = None) -> PathResolvingEnvironmentPreOrPostSds:
+    symbols = symbol_table_from_none_or_value(symbols)
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = resolved_path(home_dir)
         with sandbox_directory_structure(prefix=prefix + "-sds-") as sds:
             home_and_sds = HomeAndSds(home_dir_path, sds)
-            ret_val = PathResolvingEnvironmentPreOrPostSds(home_and_sds, value_definitions)
+            ret_val = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbols)
             with preserved_cwd():
                 os.chdir(str(sds.act_dir))
                 pre_contents_population_action.apply(ret_val)

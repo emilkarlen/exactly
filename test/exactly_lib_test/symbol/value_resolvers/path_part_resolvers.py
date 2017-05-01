@@ -4,7 +4,7 @@ from exactly_lib.symbol.value_resolvers import path_part_resolvers as sut
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.util import symbol_table as st
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import is_string_value_restriction
-from exactly_lib_test.symbol.test_resources.value_definition_utils import string_value_container
+from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_container
 from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_reference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

@@ -18,11 +18,11 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    def __init__(self, name: str, may_use_value_definitions: bool = False):
+    def __init__(self, name: str, may_use_symbols: bool = False):
         super().__init__(name, {})
-        self.may_use_value_definitions = may_use_value_definitions
+        self.may_use_symbols = may_use_symbols
         self.rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
-                                                                         may_use_value_definitions)
+                                                                         may_use_symbols)
 
     def single_line_description(self) -> str:
         return 'Creates a file'
@@ -35,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
-                                                                         self.may_use_value_definitions,
+                                                                         self.may_use_symbols,
                                                                          self.rel_opt_arg_conf.path_suffix_is_required)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
@@ -75,9 +75,9 @@ class FileInfo(tuple):
 
 
 def parse(source: ParseSource,
-          may_use_value_definitions: bool = False) -> FileInfo:
+          may_use_symbols: bool = False) -> FileInfo:
     rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
-                                                                may_use_value_definitions)
+                                                                may_use_symbols)
     file_ref = parse_file_ref_from_parse_source(source, rel_opt_arg_conf)
     contents = ''
     if source.is_at_eol__except_for_space:
@@ -93,7 +93,7 @@ def create_file(file_info: FileInfo,
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.file_ref.resolve(environment.value_definitions).file_path_post_sds(environment.sds)
+    file_path = file_info.file_ref.resolve(environment.symbols).file_path_post_sds(environment.sds)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)

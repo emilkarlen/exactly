@@ -16,7 +16,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
-from exactly_lib_test.symbol.test_resources.value_definition_utils import file_ref_value_container, \
+from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container, \
     symbol_table_from_entries
 from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_reference
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -81,12 +81,12 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
 
 
 class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBaseForParser):
-    def test_value_definition_with_relativity_that_is_not_default_relativity(self):
+    def test_symbol_with_relativity_that_is_not_default_relativity(self):
         instruction_argument = '--rel VALUE_DEF_NAME file-name.txt'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._run(source,
                       Arrangement(
-                          value_definitions=symbol_table_from_entries([
+                          symbols=symbol_table_from_entries([
                               symbol_table.Entry('VALUE_DEF_NAME',
                                                  file_ref_value_container(
                                                      file_refs.rel_tmp_user(
@@ -97,7 +97,7 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                               Dir('value-def-path-arg',
                                   [empty_file('file-name.txt')])
                           ])),
-                          value_definition_usages=asrt.matches_sequence([
+                          symbol_usages=asrt.matches_sequence([
                               equals_value_reference('VALUE_DEF_NAME',
                                                      equals_file_ref_relativity_restriction(
                                                          FileRefRelativityRestriction(RELATIVITY_VARIANTS)))
@@ -111,7 +111,7 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          value_definition_usages=asrt.is_empty),
+                          symbol_usages=asrt.is_empty),
                       )
 
 

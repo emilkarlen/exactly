@@ -37,9 +37,9 @@ class RelativityConfiguration:
 class Arrangement:
     def __init__(self,
                  home_or_sds_populator: HomeOrSdsPopulator,
-                 value_definitions: SymbolTable = None):
+                 symbols: SymbolTable = None):
         self.home_or_sds_populator = home_or_sds_populator
-        self.value_definitions = symbol_table_from_none_or_value(value_definitions)
+        self.symbols = symbol_table_from_none_or_value(symbols)
 
 
 token_stream2_is_null = va.sub_component('is_null',
@@ -88,7 +88,7 @@ def check(put: unittest.TestCase,
                         actual_exe_file.arguments,
                         'Arguments of executable file')
     put.assertEqual(expectation.exists_pre_eds,
-                    actual_exe_file.exists_pre_sds(arrangement.value_definitions),
+                    actual_exe_file.exists_pre_sds(arrangement.symbols),
                     'Existence pre SDS')
     with home_and_sds_with_act_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as environment:
         os.mkdir('act-cwd')
@@ -104,9 +104,9 @@ class CheckBase(unittest.TestCase):
         super().__init__()
         self.configuration = configuration
 
-    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFile, value_definitions: SymbolTable):
+    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFile, symbols: SymbolTable):
         self.assertEqual(self.configuration.exists_pre_sds,
-                         actual.exists_pre_sds(value_definitions),
+                         actual.exists_pre_sds(symbols),
                          'Existence pre SDS')
 
     def _check_file_path(self, file_name: str, actual: ExecutableFile,
@@ -198,7 +198,7 @@ class CheckNonExistingFile(CheckBase):
                          'Remaining arguments')
         symbols = empty_symbol_table()
         self._check_expectance_to_exist_pre_sds(exe_file, symbols)
-        with home_and_sds_with_act_as_curr_dir(value_definitions=symbols) as environment:
+        with home_and_sds_with_act_as_curr_dir(symbols=symbols) as environment:
             self._check_file_path('file.exe', exe_file, environment)
             self._assert_does_not_pass_validation(exe_file, environment)
 

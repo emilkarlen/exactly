@@ -107,12 +107,12 @@ class Executor(InstructionExecutionBase):
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents,
-                value_definitions=self.arrangement.value_definitions) as path_resolving_environment:
+                symbols=self.arrangement.symbols) as path_resolving_environment:
             home_and_sds = path_resolving_environment.home_and_sds
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
                                                                 self.arrangement.process_execution_settings.environ,
-                                                                value_definitions=self.arrangement.value_definitions)
+                                                                symbols=self.arrangement.symbols)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return
@@ -122,7 +122,7 @@ class Executor(InstructionExecutionBase):
                 home_and_sds.sds,
                 phase_identifier.BEFORE_ASSERT.identifier,
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                value_definitions=self.arrangement.value_definitions)
+                symbols=self.arrangement.symbols)
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return

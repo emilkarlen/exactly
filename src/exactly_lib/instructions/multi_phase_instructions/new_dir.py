@@ -16,12 +16,12 @@ from exactly_lib.test_case.phases.result import sh
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
-    def __init__(self, name: str, may_use_value_definitions: bool = False, is_in_assert_phase: bool = False):
+    def __init__(self, name: str, may_use_symbols: bool = False, is_in_assert_phase: bool = False):
         super().__init__(name, {}, is_in_assert_phase)
-        self.may_use_value_definitions = may_use_value_definitions
+        self.may_use_symbols = may_use_symbols
         self.path_arg = _PATH_ARGUMENT
         self.rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
-                                                                         may_use_value_definitions)
+                                                                         may_use_symbols)
 
     def single_line_description(self) -> str:
         return self._format('Creates a directory')
@@ -40,7 +40,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def invokation_variants(self) -> list:
         arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
-                                                                         self.may_use_value_definitions,
+                                                                         self.may_use_symbols,
                                                                          self.rel_opt_arg_conf.path_suffix_is_required)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
@@ -58,9 +58,9 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 
 def parse(argument: str,
-          may_use_value_definitions: bool = False) -> FileRefResolver:
+          may_use_symbols: bool = False) -> FileRefResolver:
     source = TokenStream2(argument)
-    rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, may_use_value_definitions)
+    rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, may_use_symbols)
     destination_path = parse_file_ref(source, rel_opt_arg_conf)
 
     if not source.is_null:
@@ -73,7 +73,7 @@ def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path = dir_path_resolver.resolve(environment.value_definitions).file_path_post_sds(environment.sds)
+    dir_path = dir_path_resolver.resolve(environment.symbols).file_path_post_sds(environment.sds)
     try:
         if dir_path.is_dir():
             return None

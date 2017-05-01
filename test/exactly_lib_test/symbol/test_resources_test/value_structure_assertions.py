@@ -61,10 +61,10 @@ class TestEqualsValueDefinition(unittest.TestCase):
                 with self.subTest():
                     # ARRANGE #
                     value_container = ValueContainer(Line(1, 'source code'), value)
-                    value_definition = ValueDefinition('value name', value_container)
+                    symbol = ValueDefinition('value name', value_container)
                     # ACT #
-                    assertion = sut.equals_value_definition(value_definition, ignore_source_line=ignore_source_line)
-                    assertion.apply_without_message(self, value_definition)
+                    assertion = sut.equals_symbol(symbol, ignore_source_line=ignore_source_line)
+                    assertion.apply_without_message(self, symbol)
 
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
@@ -72,36 +72,36 @@ class TestEqualsValueDefinition(unittest.TestCase):
         expected_value_container = ValueContainer(Line(4, 'source code 4'), common_value)
         actual_value_container = ValueContainer(Line(5, 'source code 5'), common_value)
         common_name = 'value name'
-        expected_value_definition = ValueDefinition(common_name, expected_value_container)
-        actual_value_definition = ValueDefinition(common_name, actual_value_container)
+        expected_symbol = ValueDefinition(common_name, expected_value_container)
+        actual_symbol = ValueDefinition(common_name, actual_value_container)
         # ACT #
-        assertion = sut.equals_value_definition(expected_value_definition, ignore_source_line=True)
-        assertion.apply_without_message(self, actual_value_definition)
+        assertion = sut.equals_symbol(expected_symbol, ignore_source_line=True)
+        assertion.apply_without_message(self, actual_symbol)
 
     def test_fail__different_name(self):
         # ARRANGE #
         common_value_container = ValueContainer(Line(1, 'source code'),
                                                 StringConstant('common string value'))
-        expected_value_definition = ValueDefinition('expected value name', common_value_container)
-        actual_value_definition = ValueDefinition('actual value name', common_value_container)
+        expected_symbol = ValueDefinition('expected value name', common_value_container)
+        actual_symbol = ValueDefinition('actual value name', common_value_container)
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             # ACT #
-            assertion = sut.equals_value_definition(expected_value_definition)
-            assertion.apply_without_message(put, actual_value_definition)
+            assertion = sut.equals_symbol(expected_symbol)
+            assertion.apply_without_message(put, actual_symbol)
 
     def test_fail__failing_assertion_on_value_container(self):
         # ARRANGE #
         common_name_source = Line(1, 'source code')
         common_name = 'value name'
-        expected_value_definition = ValueDefinition(common_name,
-                                                    ValueContainer(common_name_source,
+        expected_symbol = ValueDefinition(common_name,
+                                          ValueContainer(common_name_source,
                                                                    StringConstant('expected string value')))
-        actual_value_definition = ValueDefinition(common_name,
-                                                  ValueContainer(common_name_source,
+        actual_symbol = ValueDefinition(common_name,
+                                        ValueContainer(common_name_source,
                                                                  StringConstant('actual string value')))
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             # ACT #
-            assertion = sut.equals_value_definition(expected_value_definition)
-            assertion.apply_without_message(put, actual_value_definition)
+            assertion = sut.equals_symbol(expected_symbol)
+            assertion.apply_without_message(put, actual_symbol)

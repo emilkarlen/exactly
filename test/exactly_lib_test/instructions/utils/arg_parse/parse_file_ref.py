@@ -11,7 +11,7 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
     EitherStringOrFileRefRelativityRestriction, StringRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_value_definition
+from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_structure import ValueReference
 from exactly_lib.test_case_file_structure import file_refs
@@ -29,7 +29,7 @@ from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion impor
     equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
     equals_file_ref_resolver2
-from exactly_lib_test.symbol.test_resources.value_definition_utils import \
+from exactly_lib_test.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
 from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_reference
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
@@ -405,25 +405,25 @@ class TestParseFromTokenStream2CasesWithRelSymbolRelativity(TestParsesBase):
 
     def test_parse_with_relativity_option(self):
         file_name_argument = 'file-name'
-        value_definition_name = 'VALUE_DEFINITION_NAME'
+        symbol_name = 'symbol_NAME'
         option_str = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source_and_token_stream_assertion_variants = [
             (
-                '{option_str} {value_definition_name} {file_name_argument} arg3 arg4',
+                '{option_str} {symbol_name} {file_name_argument} arg3 arg4',
                 assert_token_stream2(is_null=asrt.is_false,
                                      head_token=assert_token_string_is('arg3')
                                      )
             ),
             (
-                '{option_str} {value_definition_name} {file_name_argument}',
+                '{option_str} {symbol_name} {file_name_argument}',
                 assert_token_stream2(is_null=asrt.is_true)
             ),
             (
-                '   {option_str}   {value_definition_name}  {file_name_argument}',
+                '   {option_str}   {symbol_name}  {file_name_argument}',
                 assert_token_stream2(is_null=asrt.is_true)
             ),
             (
-                '{option_str} {value_definition_name}  {file_name_argument}\nnext line',
+                '{option_str} {symbol_name}  {file_name_argument}\nnext line',
                 assert_token_stream2(is_null=asrt.is_false,
                                      head_token=assert_token_string_is('next'))
             ),
@@ -435,17 +435,17 @@ class TestParseFromTokenStream2CasesWithRelSymbolRelativity(TestParsesBase):
                 PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, False),
             ]
             for accepted_relativities in accepted_relativities_variants:
-                expected_value_reference = ValueReference(value_definition_name,
+                expected_value_reference = ValueReference(symbol_name,
                                                           FileRefRelativityRestriction(accepted_relativities))
-                expected_file_ref_resolver = rel_value_definition(expected_value_reference,
-                                                                  PathPartResolverAsFixedPath(file_name_argument))
+                expected_file_ref_resolver = rel_symbol(expected_value_reference,
+                                                        PathPartResolverAsFixedPath(file_name_argument))
                 for path_suffix_is_required in [False, True]:
                     arg_config = _arg_config_for_rel_val_def_config(accepted_relativities)
                     test_descr = 'path_suffix_is_required={} / source={}'.format(path_suffix_is_required,
                                                                                  repr(source))
                     with self.subTest(msg=test_descr):
                         argument_string = source.format(option_str=option_str,
-                                                        value_definition_name=value_definition_name,
+                                                        symbol_name=symbol_name,
                                                         file_name_argument=file_name_argument)
                         self._check(
                             Arrangement(argument_string,

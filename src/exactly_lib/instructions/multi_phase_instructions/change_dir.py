@@ -86,7 +86,7 @@ def change_dir(destination: FileRefResolver,
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path_ref = destination.resolve(environment.value_definitions)
+    dir_path_ref = destination.resolve(environment.symbols)
     dir_path = dir_path_ref.file_path_post_sds(environment.sds)
     try:
         os.chdir(str(dir_path))

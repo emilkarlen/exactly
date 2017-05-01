@@ -25,12 +25,12 @@ def value_reference(name: str, value_restriction: ValueRestriction = NoRestricti
     return ValueReference(name, value_restriction)
 
 
-def string_value_definition(name: str, string_value: str = 'string value') -> ValueDefinition:
+def string_symbol(name: str, string_value: str = 'string value') -> ValueDefinition:
     return ValueDefinition(name, string_value_container(string_value))
 
 
 def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
-    return symbol_table_from_value_definitions([string_value_definition(name, string_value)])
+    return symbol_table_from_symbols([string_symbol(name, string_value)])
 
 
 def symbol_table_with_single_file_ref_value(name: str,
@@ -38,7 +38,7 @@ def symbol_table_with_single_file_ref_value(name: str,
                                                                                              relativity=RelOptionType.REL_CWD),
                                             line_num: int = 1,
                                             source_line: str = 'value def line') -> SymbolTable:
-    return symbol_table_from_value_definitions([file_ref_value_definition(name, file_ref, line_num, source_line)])
+    return symbol_table_from_symbols([file_ref_symbol(name, file_ref, line_num, source_line)])
 
 
 def file_ref_value(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
@@ -62,11 +62,11 @@ def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
                           file_ref_resolver)
 
 
-def file_ref_value_definition(name: str,
-                              file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+def file_ref_symbol(name: str,
+                    file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                                relativity=RelOptionType.REL_CWD),
-                              line_num: int = 1,
-                              source_line: str = 'value def line') -> ValueDefinition:
+                    line_num: int = 1,
+                    source_line: str = 'value def line') -> ValueDefinition:
     return ValueDefinition(name, file_ref_value_container(file_ref, line_num, source_line))
 
 
@@ -82,12 +82,12 @@ def symbol_table_from_names(names: iter) -> SymbolTable:
     return SymbolTable(dict(elements))
 
 
-def symbol_table_from_value_definitions(value_definitions: iter) -> SymbolTable:
+def symbol_table_from_symbols(symbols: iter) -> SymbolTable:
     """
-    :param value_definitions: [`ValueDefinition`]
+    :param symbols: [`ValueDefinition`]
     """
     elements = [(vd.name, vd.value_container)
-                for vd in value_definitions]
+                for vd in symbols]
     return SymbolTable(dict(elements))
 
 
