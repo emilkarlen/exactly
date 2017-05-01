@@ -1,4 +1,4 @@
-from exactly_lib.test_case_file_structure import relative_path_options
+from exactly_lib.help_texts import file_ref as file_ref_texts
 
 
 def args_with_rel_ops(arg_str: str, **kwargs) -> str:
@@ -9,9 +9,9 @@ def args_with_rel_ops(arg_str: str, **kwargs) -> str:
 
 
 _FORMAT_MAP = {
-    'rel_home_option': relative_path_options.REL_HOME_OPTION,
-    'rel_cwd_option': relative_path_options.REL_CWD_OPTION,
-    'rel_tmp_option': relative_path_options.REL_TMP_OPTION,
-    'rel_act_option': relative_path_options.REL_ACT_OPTION,
-    'rel_result_option': relative_path_options.REL_RESULT_OPTION,
+    'rel_home_option': file_ref_texts.REL_HOME_OPTION,
+    'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
+    'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
+    'rel_act_option': file_ref_texts.REL_ACT_OPTION,
+    'rel_result_option': file_ref_texts.REL_RESULT_OPTION,
 }

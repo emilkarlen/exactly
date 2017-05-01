@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure import relative_path_options
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -39,7 +39,7 @@ class RelativityOptionConfiguration:
 
 class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
     def __init__(self):
-        super().__init__(relative_path_options.REL_HOME_OPTION)
+        super().__init__(file_ref_texts.REL_HOME_OPTION)
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForHomeContents(contents)
@@ -72,7 +72,7 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfiguration):
 
 class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRelSds):
     def __init__(self):
-        super().__init__(relative_path_options.REL_CWD_OPTION)
+        super().__init__(file_ref_texts.REL_CWD_OPTION)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return pathlib.Path().cwd()
@@ -83,7 +83,7 @@ class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRel
 
 class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRelSds):
     def __init__(self):
-        super().__init__(relative_path_options.REL_ACT_OPTION)
+        super().__init__(file_ref_texts.REL_ACT_OPTION)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return sds.act_dir
@@ -94,7 +94,7 @@ class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRel
 
 class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRelSds):
     def __init__(self):
-        super().__init__(relative_path_options.REL_TMP_OPTION)
+        super().__init__(file_ref_texts.REL_TMP_OPTION)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return sds.tmp.user_dir

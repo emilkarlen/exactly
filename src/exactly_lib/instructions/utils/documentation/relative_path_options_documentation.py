@@ -5,16 +5,16 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
     HOME_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO, SYMBOL_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.argument_rendering.path_syntax import SYMBOL_REFERENCE, RELATIVITY_ARGUMENT
+from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.symbol import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure import relative_path_options as options
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -202,25 +202,25 @@ _REL_SYMBOL_DESCRIPTION = """\
 """
 
 _ALL = {
-    RelOptionType.REL_TMP: _RelOptionTypeInfo(options.REL_TMP_OPTION_NAME,
+    RelOptionType.REL_TMP: _RelOptionTypeInfo(file_ref_texts.REL_TMP_OPTION_NAME,
                                               env.ENV_VAR_TMP,
                                               _REL_TMP_DESCRIPTION,
                                               [SANDBOX_CONCEPT_INFO],
                                               ),
-    RelOptionType.REL_ACT: _RelOptionTypeInfo(options.REL_ACT_OPTION_NAME,
+    RelOptionType.REL_ACT: _RelOptionTypeInfo(file_ref_texts.REL_ACT_OPTION_NAME,
                                               env.ENV_VAR_ACT,
                                               _REL_ACT_DESCRIPTION,
                                               [SANDBOX_CONCEPT_INFO]),
-    RelOptionType.REL_RESULT: _RelOptionTypeInfo(options.REL_RESULT_OPTION_NAME,
+    RelOptionType.REL_RESULT: _RelOptionTypeInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
                                                  env.ENV_VAR_RESULT,
                                                  _REL_RESULT_DESCRIPTION,
                                                  [SANDBOX_CONCEPT_INFO]),
-    RelOptionType.REL_CWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
+    RelOptionType.REL_CWD: _RelOptionTypeInfo(file_ref_texts.REL_CWD_OPTION_NAME,
                                               formatting.concept(
                                                   CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
                                               _REL_CWD_DESCRIPTION,
                                               [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
-    RelOptionType.REL_HOME: _RelOptionTypeInfo(options.REL_HOME_OPTION_NAME,
+    RelOptionType.REL_HOME: _RelOptionTypeInfo(file_ref_texts.REL_HOME_OPTION_NAME,
                                                formatting.concept(
                                                    HOME_DIRECTORY_CONCEPT_INFO.singular_name),
                                                _REL_HOME_DESCRIPTION,

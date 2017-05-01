@@ -1,3 +1,4 @@
+from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -7,7 +8,6 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
 from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax import option_parsing
 
 

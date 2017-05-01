@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure import relative_path_options as options
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
@@ -56,7 +56,7 @@ class TestFailingValidationOfRelHomePath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(options.REL_HOME_OPTION, 'non-existing-file.py'),
+            source_for_interpreting(file_ref_texts.REL_HOME_OPTION, 'non-existing-file.py'),
             self.conf.empty_arrangement(),
             self.conf.expect_failing_validation_pre_sds(),
         )
@@ -66,7 +66,7 @@ class TestFailingValidationOfRelTmpPath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(options.REL_TMP_OPTION, 'non-existing-file.py'),
+            source_for_interpreting(file_ref_texts.REL_TMP_OPTION, 'non-existing-file.py'),
             self.conf.empty_arrangement(),
             self.conf.expect_failure_because_specified_file_under_sds_is_missing(),
         )
@@ -76,7 +76,7 @@ class TestSuccessfulValidation(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(options.REL_TMP_OPTION, 'existing-file.py'),
+            source_for_interpreting(file_ref_texts.REL_TMP_OPTION, 'existing-file.py'),
             self.conf.arrangement(sds_contents_before_main=sds_populator.tmp_user_dir_contents(
                 DirContents([empty_file('existing-file.py')]))),
             self.conf.expect_success(),

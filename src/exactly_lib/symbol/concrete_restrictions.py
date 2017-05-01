@@ -155,14 +155,14 @@ def _unsatisfied_path_relativity(symbol_name: str,
 
     def _render_actual_relativity() -> str:
         if actual_relativity.is_absolute:
-            return file_ref_texts.ABSOLUTE_RELATIVITY
+            return file_ref_texts.RELATIVITY_DESCRIPTION_ABSOLUTE
         return option_description(actual_relativity.relativity_type)
 
     def _accepted_relativities_lines() -> list:
         ret_val = []
         header = '   '
         if accepted.absolute:
-            ret_val.append(header + file_ref_texts.ABSOLUTE_RELATIVITY)
+            ret_val.append(header + file_ref_texts.RELATIVITY_DESCRIPTION_ABSOLUTE)
         for rel_opt in accepted.rel_option_types:
             ret_val.append(header + option_description(rel_opt))
 
