@@ -37,7 +37,7 @@ RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_file_ref.CONFIGURATION
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {})
-        self.path_arg = path_syntax.FILE_ARGUMENT
+        self.path_arg = path_syntax.PATH_ARGUMENT
 
     def single_line_description(self) -> str:
         return 'Sets the contents of stdin for the act phase program'
@@ -55,7 +55,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
-                              docs.paras('Sets stdin to be the contents of a file.')),
+                              docs.paras('Sets stdin to be the contents of file {}.'.format(self.path_arg.name))),
             InvokationVariant(self._cl_syntax_for_args([here_doc_arg]),
                               docs.paras('Sets stdin to be the contents of a "here document".')),
         ]

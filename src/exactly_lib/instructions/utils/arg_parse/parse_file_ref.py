@@ -3,6 +3,7 @@ import pathlib
 
 import types
 
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
@@ -48,7 +49,7 @@ def all_rel_options_config(argument_syntax_name: str,
                                           path_suffix_is_required)
 
 
-ALL_REL_OPTIONS_CONFIG = all_rel_options_config('FILE')
+ALL_REL_OPTIONS_CONFIG = all_rel_options_config(path_syntax.PATH_SYNTAX_ELEMENT_NAME)
 
 STANDARD_NON_HOME_RELATIVITY_VARIANTS = PathRelativityVariants(
     ALL_REL_OPTIONS - {RelOptionType.REL_HOME},
@@ -66,7 +67,7 @@ def non_home_config(argument_syntax_name: str,
                                           path_suffix_is_required)
 
 
-NON_HOME_CONFIG = non_home_config('FILE')
+NON_HOME_CONFIG = non_home_config(path_syntax.PATH_SYNTAX_ELEMENT_NAME)
 
 
 def parse_file_ref_from_parse_source(source: ParseSource,

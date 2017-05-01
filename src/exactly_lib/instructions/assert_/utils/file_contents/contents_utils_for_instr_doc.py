@@ -1,4 +1,3 @@
-import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO
@@ -7,6 +6,7 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names.formatting import InstructionName
+from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
@@ -25,9 +25,9 @@ class FileContentsHelpParts:
                  initial_args_of_invokation_variants: list):
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
-        self.expected_file_arg = a.Named('EXPECTED-FILE')
+        self.expected_file_arg = a.Named('EXPECTED-PATH')
         self.with_replaced_env_vars_option = a.Option(
-            exactly_lib.instructions.assert_.utils.file_contents.instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+            instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
         format_map = {
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,
@@ -47,10 +47,10 @@ class FileContentsHelpParts:
                                     NOT_ARGUMENT_CONSTANT)
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(
-                                  exactly_lib.instructions.assert_.utils.file_contents.instruction_options.EQUALS_ARGUMENT))
+                                  instruction_options.EQUALS_ARGUMENT))
         contains_arg = a.Single(a.Multiplicity.MANDATORY,
                                 a.Constant(
-                                    exactly_lib.instructions.assert_.utils.file_contents.instruction_options.CONTAINS_ARGUMENT))
+                                    instruction_options.CONTAINS_ARGUMENT))
         reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
                               dt.REG_EX)
         expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -84,7 +84,7 @@ class FileContentsHelpParts:
 
     def syntax_element_descriptions(self) -> list:
         mandatory_path = a.Single(a.Multiplicity.MANDATORY,
-                                  path_syntax.FILE_ARGUMENT)
+                                  path_syntax.PATH_ARGUMENT)
         relativity_of_expected_arg = a.Named('RELATIVITY-OF-EXPECTED-FILE')
         optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
                                                    relativity_of_expected_arg)
@@ -101,7 +101,7 @@ class FileContentsHelpParts:
                                             ),
                ] + \
                rel_opts.relativity_syntax_element_descriptions(
-                   path_syntax.FILE_ARGUMENT,
+                   path_syntax.PATH_ARGUMENT,
                    parse_here_doc_or_file_ref.CONFIGURATION.options,
                    relativity_of_expected_arg) + \
                [
@@ -143,13 +143,13 @@ Asserts that {checked_file} is empty.
 """ + _DESCRIPTION_TAL_FOR_NEGATION
 
 _DESCRIPTION_OF_EQUALS_HERE_DOC = """\
-Asserts that the contents of {checked_file} is equal to the contents of a "here document".
+Asserts that the contents of file {checked_file} is equal to the contents of a "here document".
 """ + _DESCRIPTION_TAL_FOR_NEGATION
 
 _DESCRIPTION_OF_EQUALS_FILE = """\
-Asserts that the contents of {checked_file} is equal to the contents of a file.
+Asserts that the contents of file {checked_file} is equal to the contents of file {expected_file_arg}.
 """ + _DESCRIPTION_TAL_FOR_NEGATION
 
 _DESCRIPTION_OF_CONTAINS = """\
-Asserts that the contents of {checked_file} contains a line matching a regular expression.
+Asserts that the contents of file {checked_file} contains a line matching a regular expression.
 """ + _DESCRIPTION_TAL_FOR_NEGATION
