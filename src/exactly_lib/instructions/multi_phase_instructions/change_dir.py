@@ -3,6 +3,7 @@ import os
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.names import formatting
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -46,7 +47,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                relative_path_options_documentation.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+                path_syntax.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
                 a.Single(a.Multiplicity.OPTIONAL,
                          _DIR_ARGUMENT),
             ])),
@@ -103,7 +104,7 @@ def execute_with_sh_result(destination: FileRefResolver,
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 
 
-_DIR_ARGUMENT = dt.DIR_ARGUMENT
+_DIR_ARGUMENT = path_syntax.DIR_ARGUMENT
 
 
 def _relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfiguration:

@@ -5,6 +5,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.names import formatting
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -63,12 +64,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         dst_arg_usage = a.Single(a.Multiplicity.OPTIONAL, self.dst_arg)
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY, dt.FILE_ARGUMENT),
+                a.Single(a.Multiplicity.MANDATORY, path_syntax.FILE_ARGUMENT),
                 dst_arg_usage,
             ]),
                 paras('Installs a plain file.')),
             InvokationVariant(self._cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY, dt.DIR_ARGUMENT),
+                a.Single(a.Multiplicity.MANDATORY, path_syntax.DIR_ARGUMENT),
                 dst_arg_usage,
             ]),
                 paras("Installs a directory and its contents.")),
@@ -76,9 +77,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         return [
-            dt.a_path_that_is_relative_the(dt.FILE_ARGUMENT,
+            dt.a_path_that_is_relative_the(path_syntax.FILE_ARGUMENT,
                                            HOME_DIRECTORY_CONFIGURATION_PARAMETER),
-            dt.a_path_that_is_relative_the(dt.DIR_ARGUMENT,
+            dt.a_path_that_is_relative_the(path_syntax.DIR_ARGUMENT,
                                            HOME_DIRECTORY_CONFIGURATION_PARAMETER),
             dt.a_path_that_is_relative_the(self.dst_arg,
                                            CURRENT_WORKING_DIRECTORY_CONCEPT),

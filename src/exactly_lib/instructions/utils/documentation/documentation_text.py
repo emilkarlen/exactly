@@ -2,35 +2,8 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.utils.names import formatting
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
-
-
-class CommandLineRenderingHelper:
-    """
-    Utility class for rendering command lines.
-    """
-
-    CL_SYNTAX_RENDERER = cli_program_syntax.CommandLineSyntaxRenderer()
-
-    ARG_SYNTAX_RENDERER = cli_program_syntax.ArgumentInArgumentDescriptionRenderer()
-
-    def cl_syntax_for_args(self, argument_usages: list) -> str:
-        cl = a.CommandLine(argument_usages)
-        return self.cl_syntax(cl)
-
-    def cl_syntax(self, command_line: a.CommandLine) -> str:
-        return self.CL_SYNTAX_RENDERER.as_str(command_line)
-
-    def arg_syntax(self, arg: a.Argument) -> str:
-        return self.ARG_SYNTAX_RENDERER.visit(arg)
-
-    def cli_argument_syntax_element_description(self,
-                                                argument: a.Argument,
-                                                description_rest: list) -> SyntaxElementDescription:
-        return SyntaxElementDescription(self.arg_syntax(argument),
-                                        description_rest)
 
 
 def paths_uses_posix_syntax() -> list:
@@ -43,12 +16,6 @@ def here_document_syntax_element_description(instruction_name: str,
     return SyntaxElementDescription(here_document_argument.name,
                                     normalize_and_parse(s))
 
-
-PATH_ARGUMENT = a.Named('PATH')
-
-FILE_ARGUMENT = a.Named('FILE')
-
-DIR_ARGUMENT = a.Named('DIR')
 
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 

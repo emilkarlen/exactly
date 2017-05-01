@@ -6,6 +6,7 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.argument_rendering.path_syntax import SYMBOL_REFERENCE, RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
@@ -19,25 +20,6 @@ from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgu
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
-
-RELATIVITY_ARGUMENT = a.Named('RELATIVITY')
-OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
-                                              RELATIVITY_ARGUMENT)
-
-SYMBOL_REFERENCE = a.Named('SYMBOL-REFERENCE')
-
-
-def mandatory_path_with_optional_relativity(path_argument: a.Named,
-                                            may_use_symbols: bool = False,
-                                            path_suffix_is_required: bool = True) -> list:
-    multiplicity = a.Multiplicity.MANDATORY if path_suffix_is_required else a.Multiplicity.OPTIONAL
-    path_part = a.Single(multiplicity, path_argument)
-    if may_use_symbols:
-        path_part = a.Choice(multiplicity, [path_argument, SYMBOL_REFERENCE])
-    return [
-        OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-        path_part,
-    ]
 
 
 def default_relativity_for_rel_opt_type(path_arg_name: str,

@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.concepts.names_and_cross_references import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils.names import formatting
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file
@@ -11,7 +12,6 @@ from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -66,10 +66,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         if additional_format_map:
             format_map.update(additional_format_map)
         super().__init__(name, format_map)
-        self.relativity_arg_path = dt.PATH_ARGUMENT
+        self.relativity_arg_path = path_syntax.PATH_ARGUMENT
         self.mandatory_path = a.Single(a.Multiplicity.MANDATORY,
-                                       dt.PATH_ARGUMENT)
-        self.optional_relativity = rel_path_doc.OPTIONAL_RELATIVITY_ARGUMENT_USAGE
+                                       path_syntax.PATH_ARGUMENT)
+        self.optional_relativity = path_syntax.OPTIONAL_RELATIVITY_ARGUMENT_USAGE
         self.mandatory_executable = a.Single(a.Multiplicity.MANDATORY,
                                              self.executable_arg)
         self.generic_arg = a.Named('ARGUMENT')
@@ -134,7 +134,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                [self.zero_or_more_generic_args,
                                                 right_parenthesis])
         default_relativity_desc = rel_path_doc.default_relativity_for_rel_opt_type(
-            dt.PATH_ARGUMENT.name,
+            path_syntax.PATH_ARGUMENT.name,
             PARSE_FILE_REF_CONFIGURATION.options.default_option)
         python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                                a.Option(PYTHON_EXECUTABLE_OPTION_NAME))
