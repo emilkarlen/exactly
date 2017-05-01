@@ -56,7 +56,6 @@ class TestIsSatisfiedBy(unittest.TestCase):
             with self.subTest(msg=description):
                 actual = sut.is_satisfied_by(specific, accepted)
                 if expected:
-                    self.assertIsNone(actual)
+                    self.assertTrue(actual)
                 else:
-                    self.assertIsInstance(actual, str,
-                                          'Expects an error message')
+                    self.assertFalse(actual)

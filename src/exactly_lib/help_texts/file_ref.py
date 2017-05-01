@@ -1,0 +1,1 @@
+ABSOLUTE_RELATIVITY = 'absolute'
