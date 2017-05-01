@@ -2,7 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE, STRING_TYPE, EQUALS_ARGUMENT
+from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -42,30 +42,9 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        symbol_name = a.Single(a.Multiplicity.MANDATORY, self.name)
-        equals = a.Single(a.Multiplicity.MANDATORY, a.Constant(EQUALS_ARGUMENT))
-        path_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(PATH_TYPE))
-        string_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(STRING_TYPE))
-        string_value = a.Single(a.Multiplicity.MANDATORY, self.string_value)
-        arguments_for_string_type = [
-            string_type,
-            symbol_name,
-            equals,
-            string_value,
-        ]
-        arguments_for_path_type = [
-            path_type,
-            symbol_name,
-            equals,
-        ]
-        arguments_for_path_type.extend(
-            path_syntax.mandatory_path_with_optional_relativity(
-                _PATH_ARGUMENT,
-                True,
-                REL_OPTION_ARGUMENT_CONFIGURATION.path_suffix_is_required))
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments_for_string_type)),
-            InvokationVariant(self._cl_syntax_for_args(arguments_for_path_type)),
+            InvokationVariant(syntax_elements.definition_of_type_string()),
+            InvokationVariant(syntax_elements.definition_of_type_path()),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -109,8 +88,8 @@ def parse(source: ParseSource) -> ValueDefinition:
         err_msg = 'Invalid symbol name: {}.\nA symbol name must only contain alphanum and _'.format(name_str)
         raise SingleInstructionInvalidArgumentException(err_msg)
     token_stream.consume()
-    if token_stream.is_null or token_stream.head.source_string != EQUALS_ARGUMENT:
-        raise SingleInstructionInvalidArgumentException('Missing ' + EQUALS_ARGUMENT)
+    if token_stream.is_null or token_stream.head.source_string != syntax_elements.EQUALS_ARGUMENT:
+        raise SingleInstructionInvalidArgumentException('Missing ' + syntax_elements.EQUALS_ARGUMENT)
     token_stream.consume()
     value = value_parser(token_stream)
     if not token_stream.is_null:
@@ -128,7 +107,7 @@ REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
 
 REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
                                                                    path_syntax.PATH_ARGUMENT,
-                                                                   False)
+                                                                   syntax_elements.PATH_SUFFIX_IS_REQUIRED)
 
 _MAIN_DESCRIPTION_REST = """\
 Defines the symbol {NAME} to be the given string or path.
@@ -148,15 +127,15 @@ def _parse_path(token_stream: TokenStream2) -> SymbolValueResolver:
 
 def _parse_string(token_stream: TokenStream2) -> SymbolValueResolver:
     if token_stream.is_null:
-        raise SingleInstructionInvalidArgumentException('Missing {} value'.format(STRING_TYPE))
+        raise SingleInstructionInvalidArgumentException('Missing {} value'.format(syntax_elements.STRING_TYPE))
     ret_val = StringConstant(token_stream.head.string)
     token_stream.consume()
     return ret_val
 
 
 _TYPE_SETUPS = {
-    PATH_TYPE: _parse_path,
-    STRING_TYPE: _parse_string,
+    syntax_elements.PATH_TYPE: _parse_path,
+    syntax_elements.STRING_TYPE: _parse_string,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
