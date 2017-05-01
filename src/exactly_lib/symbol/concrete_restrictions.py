@@ -21,7 +21,7 @@ class StringRestriction(ValueRestriction):
 
     def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
         if not isinstance(value, StringResolver):
-            return _invalid_type_msg__string_expected(value)
+            return _invalid_type_msg(ValueType.STRING, value)
         return None
 
 
@@ -35,8 +35,7 @@ class FileRefRelativityRestriction(ValueRestriction):
 
     def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
         if not isinstance(value, FileRefResolver):
-            #  TODO [val-def] Error message should be human readable
-            return 'Not a FileRefValue: ' + str(value)
+            return _invalid_type_msg(ValueType.PATH, value)
         file_ref = value.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         return is_satisfied_by(actual_relativity, self._accepted)
@@ -106,14 +105,15 @@ class ValueRestrictionVisitor:
         raise NotImplementedError()
 
 
-def _invalid_type_msg__string_expected(actual: Value) -> str:
+def _invalid_type_msg(expected: ValueType,
+                      actual: Value) -> str:
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
             type(SymbolValueResolver),
             str(actual)
         ))
     assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
-    lines = _invalid_type_header_lines(ValueType.STRING, actual.value_type)
+    lines = _invalid_type_header_lines(expected, actual.value_type)
     return '\n'.join(lines)
 
 
