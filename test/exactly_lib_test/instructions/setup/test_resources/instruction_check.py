@@ -120,7 +120,7 @@ class Executor:
                                   'The instruction must be an instance of ' + str(SetupPhaseInstruction))
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, SetupPhaseInstruction)
-        self.expectation.symbol_usages.apply_with_message(self.put, instruction.value_usages(),
+        self.expectation.symbol_usages.apply_with_message(self.put, instruction.symbol_usages(),
                                                                     'value-definition-usages')
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         initial_cwd = os.getcwd()

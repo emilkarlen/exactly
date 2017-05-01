@@ -25,7 +25,7 @@ class _Instruction(SetupPhaseInstruction):
     def __init__(self, file_info: new_file_utils.FileInfo):
         self.file_info = file_info
 
-    def value_usages(self) -> list:
+    def symbol_usages(self) -> list:
         return self.file_info.file_ref.references
 
     def main(self,

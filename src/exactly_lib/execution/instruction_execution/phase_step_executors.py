@@ -57,7 +57,7 @@ class SetupValidateSymbolsExecutor(ControlledInstructionExecutor):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
-        return validate_symbol_usages(instruction.value_usages(),
+        return validate_symbol_usages(instruction.symbol_usages(),
                                       self.__instruction_environment.symbols)
 
 
