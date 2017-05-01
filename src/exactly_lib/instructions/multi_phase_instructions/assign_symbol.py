@@ -1,6 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE, STRING_TYPE
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -18,9 +19,6 @@ from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.symbol.value_structure import ValueDefinition, ValueContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
-
-PATH_TYPE = 'path'
-STRING_TYPE = 'string'
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):

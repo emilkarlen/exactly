@@ -1,5 +1,4 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.default.program_modes.test_case.default_instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
@@ -7,7 +6,8 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.instructions.multi_phase_instructions.assign_symbol import PATH_TYPE
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
+from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.symbol import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure import relative_path_options as options
