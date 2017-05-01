@@ -23,9 +23,10 @@ class Entry(tuple):
 
 class SymbolTable:
     """
-    Dictionary of value definitions defined by instructions.
-
-    Mutable.
+    A generic mutable symbol table.
+    
+    Generic in the sense that the values stored are of an abstract class.
+    Users of the symbol table should sub class this class for concrete values.
     """
 
     def __init__(self, initial_values: dict = None):

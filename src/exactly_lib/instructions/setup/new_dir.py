@@ -25,7 +25,7 @@ class _Instruction(SetupPhaseInstruction):
     def __init__(self, dir_path_resolver: FileRefResolver):
         self.dir_path_resolver = dir_path_resolver
 
-    def value_usages(self) -> list:
+    def symbol_usages(self) -> list:
         return self.dir_path_resolver.references
 
     def main(self,

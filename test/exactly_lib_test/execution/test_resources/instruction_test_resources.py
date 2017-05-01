@@ -110,11 +110,11 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
                  validate_pre_sds,
                  validate_post_setup,
                  main,
-                 value_usages):
+                 symbol_usages):
         self._validate_pre_sds = validate_pre_sds
         self._validate_post_setup = validate_post_setup
         self._main = main
-        self._value_usages = value_usages
+        self._symbol_usages = symbol_usages
 
     def validate_pre_sds(self,
                          environment: instrs.InstructionEnvironmentForPreSdsStep) \
@@ -132,8 +132,8 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 
-    def value_usages(self) -> list:
-        return self._value_usages()
+    def symbol_usages(self) -> list:
+        return self._symbol_usages()
 
 
 class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):

@@ -26,7 +26,7 @@ class _Instruction(SetupPhaseInstruction):
                  symbol: ValueDefinition):
         self.symbol = symbol
 
-    def value_usages(self) -> list:
+    def symbol_usages(self) -> list:
         return [self.symbol]
 
     def main(self,

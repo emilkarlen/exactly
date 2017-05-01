@@ -39,12 +39,12 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
         return _raise_invalid_option(option_str, options)
     source.consume()
     if source.is_null:
-        msg = 'Missing value definition name argument for {} option'.format(option_str)
+        msg = 'Missing symbol name argument for {} option'.format(option_str)
         raise SingleInstructionInvalidArgumentException(msg)
     symbol_name = source.head.source_string
     if source.head.is_quoted:
-        msg = 'Value definition name argument for {} must not be quoted: {}'.format(option_str,
-                                                                                    symbol_name)
+        msg = 'Symbol name argument for {} must not be quoted: {}'.format(option_str,
+                                                                          symbol_name)
         raise SingleInstructionInvalidArgumentException(msg)
     source.consume()
     return ValueReference(symbol_name, FileRefRelativityRestriction(options.accepted_relativity_variants))
