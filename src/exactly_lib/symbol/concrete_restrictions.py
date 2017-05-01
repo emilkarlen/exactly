@@ -1,5 +1,5 @@
 from exactly_lib.symbol.concrete_values import FileRefResolver, StringResolver, SymbolValueResolver, ValueType
-from exactly_lib.symbol.value_structure import ValueRestriction, Value
+from exactly_lib.symbol.value_structure import ValueRestriction, ValueContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
 from exactly_lib.util.symbol_table import SymbolTable
@@ -10,7 +10,10 @@ class NoRestriction(ValueRestriction):
     No restriction - a restriction that any value satisfies.
     """
 
-    def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: ValueContainer) -> str:
         return None
 
 
@@ -19,9 +22,12 @@ class StringRestriction(ValueRestriction):
     Restriction to string values.
     """
 
-    def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
-        if not isinstance(value, StringResolver):
-            return _invalid_type_msg(ValueType.STRING, value)
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value_container: ValueContainer) -> str:
+        if not isinstance(value_container.value, StringResolver):
+            return _invalid_type_msg(ValueType.STRING, value_container)
         return None
 
 
@@ -33,9 +39,13 @@ class FileRefRelativityRestriction(ValueRestriction):
     def __init__(self, accepted: PathRelativityVariants):
         self._accepted = accepted
 
-    def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value_container: ValueContainer) -> str:
+        value = value_container.value
         if not isinstance(value, FileRefResolver):
-            return _invalid_type_msg(ValueType.PATH, value)
+            return _invalid_type_msg(ValueType.PATH, value_container)
         file_ref = value.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         return is_satisfied_by(actual_relativity, self._accepted)
@@ -59,11 +69,14 @@ class EitherStringOrFileRefRelativityRestriction(ValueRestriction):
         self._string_restriction = string_restriction
         self._file_ref_restriction = file_ref_restriction
 
-    def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
-        string_result = self.string_restriction.is_satisfied_by(symbol_table, value)
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value_container: ValueContainer) -> str:
+        string_result = self.string_restriction.is_satisfied_by(symbol_table, symbol_name, value_container)
         if not string_result:
             return None
-        file_ref_result = self.file_ref_restriction.is_satisfied_by(symbol_table, value)
+        file_ref_result = self.file_ref_restriction.is_satisfied_by(symbol_table, symbol_name, value_container)
         if file_ref_result:
             msg = 'Satisfies neither string or file-ref restriction:string: \n{}\file-ref: {}'.format(
                 string_result,
@@ -106,7 +119,8 @@ class ValueRestrictionVisitor:
 
 
 def _invalid_type_msg(expected: ValueType,
-                      actual: Value) -> str:
+                      container_of_actual: ValueContainer) -> str:
+    actual = container_of_actual.value
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
             type(SymbolValueResolver),

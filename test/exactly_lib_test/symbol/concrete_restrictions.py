@@ -4,6 +4,7 @@ from exactly_lib.symbol import concrete_restrictions as sut
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
@@ -28,8 +29,9 @@ class TestNoRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
+                value_container = container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, value)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -45,8 +47,9 @@ class TestStringRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
+                value_container = container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, value)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -59,8 +62,9 @@ class TestStringRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
+                value_container = container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, value)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -79,8 +83,9 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
+                value_container = container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, value)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -96,8 +101,9 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
+                value_container = container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, value)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -123,8 +129,9 @@ class TestEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
+                value_container = container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, value)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -142,8 +149,9 @@ class TestEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
+                value_container = container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, value)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')

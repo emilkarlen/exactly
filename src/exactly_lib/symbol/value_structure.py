@@ -13,19 +13,6 @@ class Value:
         raise NotImplementedError()
 
 
-class ValueRestriction:
-    """
-    A restriction on a value that can be checked "statically" -
-    i.e. does not check actual resolved value.
-    """
-
-    def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
-        """
-        :return: None if satisfied, otherwise an error message
-        """
-        raise NotImplementedError()
-
-
 class ValueContainer(SymbolTableValue):
     """
     The info about a value that is stored in a symbol table.
@@ -47,6 +34,19 @@ class ValueContainer(SymbolTableValue):
         return self._value
 
 
+class ValueRestriction:
+    """
+    A restriction on a value that can be checked "statically" -
+    i.e. does not check actual resolved value.
+    """
+
+    def is_satisfied_by(self, symbol_table: SymbolTable, symbol_name: str, value: ValueContainer) -> str:
+        """
+        :return: None if satisfied, otherwise an error message
+        """
+        raise NotImplementedError()
+
+
 class ValueUsage:
     def __init__(self, name: str):
         self._name = name
@@ -60,6 +60,7 @@ class ValueDefinition(ValueUsage):
     """
     Defines a symbol so that it can be used via references to it.
     """
+
     def __init__(self,
                  name: str,
                  value_container: ValueContainer):
@@ -84,6 +85,7 @@ class ValueReference(ValueUsage):
     """
     A reference to a symbol that is assumed to have been previously defined.
     """
+
     def __init__(self,
                  name: str,
                  value_restriction: ValueRestriction):
