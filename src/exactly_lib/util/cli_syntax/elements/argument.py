@@ -17,6 +17,9 @@ class Constant(Argument):
     def name(self) -> str:
         return self._name
 
+    def __str__(self):
+        return '{}({})'.format(type(self), repr(self._name))
+
 
 class Named(Argument):
     """
@@ -30,6 +33,9 @@ class Named(Argument):
     @property
     def name(self) -> str:
         return self._name
+
+    def __str__(self):
+        return '{}({})'.format(type(self), repr(self._name))
 
 
 class OptionName(tuple):
@@ -49,6 +55,9 @@ class OptionName(tuple):
     @property
     def long(self) -> str:
         return self[1]
+
+    def __str__(self):
+        return '{}(short_name={}, long_name=)'.format(type(self), repr(self.short), repr(self.long))
 
 
 class Option(Argument):
@@ -80,6 +89,9 @@ class Option(Argument):
         :return: Empty `str` if option does not have an argument.
         """
         return self._argument
+
+    def __str__(self):
+        return '{}(name={}, argument={})'.format(type(self), repr(self._name), str(self._argument))
 
 
 def option(short_name: str = '',
@@ -126,6 +138,9 @@ class Single(ArgumentUsage):
     def argument(self) -> Argument:
         return self._argument
 
+    def __str__(self):
+        return '{}(multiplicity={}, argument={})'.format(type(self), repr(self._multiplicity), str(self._argument))
+
 
 class Choice(ArgumentUsage):
     """
@@ -147,6 +162,9 @@ class Choice(ArgumentUsage):
         :rtype: [`Argument`]
         """
         return self._arguments
+
+    def __str__(self):
+        return '{}(multiplicity={}, arguments={})'.format(type(self), repr(self._multiplicity), repr(self._arguments))
 
 
 class ArgumentVisitor:
@@ -220,3 +238,9 @@ class CommandLine:
         :rtype: [`ArgumentUsage`]
         """
         return self._argument_usages
+
+    def __str__(self):
+        return '{}(argument_usages={}, prefix={}, suffix={})'.format(type(self),
+                                                                     repr(self._argument_usages),
+                                                                     repr(self._prefix),
+                                                                     repr(self._suffix))

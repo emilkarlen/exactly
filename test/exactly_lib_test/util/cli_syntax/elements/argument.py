@@ -7,11 +7,51 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(ArgumentVisitorTest),
         unittest.makeSuite(ArgumentUsageVisitorTest),
+        unittest.makeSuite(TestThatToStringDoesNotRaiseException),
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
+class TestThatToStringDoesNotRaiseException(unittest.TestCase):
+    def test_constant(self):
+        value = sut.Constant('name')
+        str(value)
+
+    def test_named(self):
+        value = sut.Named('name')
+        str(value)
+
+    def test_option_name(self):
+        test_cases = [
+            sut.OptionName('s'),
+            sut.OptionName('long'),
+            sut.OptionName(long_name='long'),
+            sut.OptionName('s', 'long'),
+        ]
+        for value in test_cases:
+            with self.subTest():
+                str(value)
+
+    def test_option(self):
+        value = sut.Option(sut.OptionName('s'),
+                           'argument')
+        str(value)
+
+    def test_single(self):
+        value = sut.Single(sut.Multiplicity.OPTIONAL,
+                           sut.Constant('constant'))
+        str(value)
+
+    def test_choice(self):
+        test_cases = [
+            sut.Choice(sut.Multiplicity.OPTIONAL,
+                       [sut.Constant('constant')]),
+            sut.Choice(sut.Multiplicity.OPTIONAL,
+                       [sut.Constant('constant'),
+                        sut.Named('name')]),
+        ]
+        for value in test_cases:
+            with self.subTest():
+                str(value)
 
 
 class ArgumentRecordingArgumentVisitor(sut.ArgumentVisitor):
@@ -99,3 +139,7 @@ class ArgumentUsageVisitorTest(unittest.TestCase):
         self.assertIs(x,
                       returned,
                       'Visitor should return the return-value of the visited method')
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
