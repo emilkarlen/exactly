@@ -12,8 +12,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def rel_symbol(value_reference2: SymbolReference, path_suffix: PathPartResolver) -> FileRefResolver:
-    return _FileRefResolverRelSymbol(path_suffix, value_reference2)
+def rel_symbol(symbol_reference2: SymbolReference, path_suffix: PathPartResolver) -> FileRefResolver:
+    return _FileRefResolverRelSymbol(path_suffix, symbol_reference2)
 
 
 def value_ref2_of_path(symbol_name: str, accepted_relativities: PathRelativityVariants) -> SymbolReference:
@@ -23,17 +23,17 @@ def value_ref2_of_path(symbol_name: str, accepted_relativities: PathRelativityVa
 class _FileRefResolverRelSymbol(FileRefResolver):
     def __init__(self,
                  path_suffix: PathPartResolver,
-                 value_reference_of_path: SymbolReference):
+                 symbol_reference_of_path: SymbolReference):
         self.path_suffix = path_suffix
-        self.value_reference_of_path = value_reference_of_path
+        self.symbol_reference_of_path = symbol_reference_of_path
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
-        base_file_ref = lookup_file_ref_from_symbol_table(symbols, self.value_reference_of_path.name)
+        base_file_ref = lookup_file_ref_from_symbol_table(symbols, self.symbol_reference_of_path.name)
         return _StackedFileRef(base_file_ref, self.path_suffix.resolve(symbols))
 
     @property
     def references(self) -> list:
-        return [self.value_reference_of_path] + self.path_suffix.references
+        return [self.symbol_reference_of_path] + self.path_suffix.references
 
 
 class _StackedFileRef(FileRef):
@@ -67,5 +67,5 @@ def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRe
     value_container = symbols.lookup(name)
     assert isinstance(value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
     value = value_container.value
-    assert isinstance(value, FileRefResolver), 'Referenced definition must be FileRefValue'
+    assert isinstance(value, FileRefResolver), 'Referenced symbol must be FileRefResolver'
     return value.resolve(symbols)

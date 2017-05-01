@@ -16,9 +16,9 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container, \
     symbol_table_from_entries
-from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_reference
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
@@ -98,14 +98,14 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                                   [empty_file('file-name.txt')])
                           ])),
                           symbol_usages=asrt.matches_sequence([
-                              equals_value_reference('VALUE_DEF_NAME',
-                                                     equals_file_ref_relativity_restriction(
+                              equals_symbol_reference('VALUE_DEF_NAME',
+                                                      equals_file_ref_relativity_restriction(
                                                          FileRefRelativityRestriction(RELATIVITY_VARIANTS)))
                           ]),
                       )
                       )
 
-    def test_WHEN_no_value_reference_THEN_no_symbol_usages(self):
+    def test_WHEN_no_symbol_reference_THEN_no_symbol_usages(self):
         instruction_argument = '--rel-tmp file-name.txt'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._run(source,

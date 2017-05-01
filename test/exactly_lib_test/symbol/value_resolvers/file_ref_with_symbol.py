@@ -16,8 +16,8 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as restrictions
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as vr_tr
 from exactly_lib_test.symbol.test_resources import symbol_utils as sym_utils
-from exactly_lib_test.symbol.test_resources import value_reference_assertions as vr_tr
 from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_container
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -29,13 +29,13 @@ def suite() -> unittest.TestSuite:
 
 
 class TestRelSymbol(unittest.TestCase):
-    def test_value_references(self):
+    def test_symbol_references(self):
         # ARRANGE #
         expected_restriction = FileRefRelativityRestriction(
             PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, True))
         expected_mandatory_references = [
-            vr_tr.equals_value_reference('symbol_name',
-                                         restrictions.equals_file_ref_relativity_restriction(expected_restriction))
+            vr_tr.equals_symbol_reference('symbol_name',
+                                          restrictions.equals_file_ref_relativity_restriction(expected_restriction))
         ]
         value_ref_of_path = SymbolReference('symbol_name', expected_restriction)
         path_suffix_test_cases = [
@@ -43,7 +43,7 @@ class TestRelSymbol(unittest.TestCase):
              [],
              ),
             (PathPartResolverAsStringSymbolReference('symbol_name'),
-             [vr_tr.equals_value_reference('symbol_name', restrictions.is_string_value_restriction)],
+             [vr_tr.equals_symbol_reference('symbol_name', restrictions.is_string_value_restriction)],
              ),
         ]
         for path_suffix, additional_expected_references in path_suffix_test_cases:
@@ -53,7 +53,7 @@ class TestRelSymbol(unittest.TestCase):
             # ASSERT #
             expected_references = expected_mandatory_references + additional_expected_references
             assertion = asrt.matches_sequence(expected_references)
-            assertion.apply_with_message(self, actual, 'value_references_of_paths')
+            assertion.apply_with_message(self, actual, 'symbol_references_of_paths')
 
     def test_exists_pre_sds(self):
         # ARRANGE #
@@ -87,8 +87,8 @@ class TestRelSymbol(unittest.TestCase):
                         rel_option_type_of_referenced_symbol,
                         path_suffix)):
                     file_ref_resolver_to_check = sut.rel_symbol(
-                        _value_reference_of_path_with_accepted(file_ref_symbol_name,
-                                                               rel_option_type_of_referenced_symbol),
+                        _symbol_reference_of_path_with_accepted(file_ref_symbol_name,
+                                                                rel_option_type_of_referenced_symbol),
                         path_suffix)
                     # ACT #
                     actual = file_ref_resolver_to_check.resolve(symbol_table).exists_pre_sds()
@@ -123,8 +123,8 @@ class TestRelSymbol(unittest.TestCase):
                                                          path_component_from_referenced_file_ref))))
             for path_suffix, symbol_table_entries in path_suffix_test_cases:
                 fr_resolver_to_check = sut.rel_symbol(
-                    _value_reference_of_path_with_accepted(file_ref_symbol_name,
-                                                           rel_option),
+                    _symbol_reference_of_path_with_accepted(file_ref_symbol_name,
+                                                            rel_option),
                     path_suffix)
                 symbol_table = singleton_symbol_table(referenced_entry)
                 symbol_table.add_all(symbol_table_entries)
@@ -155,8 +155,8 @@ class TestRelSymbol(unittest.TestCase):
                                      'file_path_pre_or_post_sds')
 
 
-def _value_reference_of_path_with_accepted(value_name: str,
-                                           accepted: RelOptionType) -> SymbolReference:
+def _symbol_reference_of_path_with_accepted(value_name: str,
+                                            accepted: RelOptionType) -> SymbolReference:
     return SymbolReference(value_name,
                            FileRefRelativityRestriction(_path_relativity_variants_with(accepted)))
 

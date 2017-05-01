@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
-from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_references
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import FileRefTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
@@ -59,7 +59,8 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                         assertion.apply_without_message(self, file_ref_resolver)
                     with self.subTest(msg=sut.equals_file_ref_resolver2.__name__ + ' :: ' + test_case_descr):
                         assertion = sut.equals_file_ref_resolver2(file_ref,
-                                                                  equals_value_references(file_ref_resolver.references),
+                                                                  equals_symbol_references(
+                                                                      file_ref_resolver.references),
                                                                   symbols)
                         assertion.apply_without_message(self, file_ref_resolver)
 
@@ -77,7 +78,7 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
                     assertion.apply_without_message(self, file_ref_resolver)
                 with self.subTest(msg=sut.equals_file_ref_resolver2.__name__ + ' :: ' + test_case_descr):
                     assertion = sut.equals_file_ref_resolver2(file_ref,
-                                                              equals_value_references(file_ref_resolver.references),
+                                                              equals_symbol_references(file_ref_resolver.references),
                                                               symbols)
                     assertion.apply_without_message(self, file_ref_resolver)
 

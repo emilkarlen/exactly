@@ -6,7 +6,7 @@ from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
-from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_references
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -65,7 +65,7 @@ class TestEquals(unittest.TestCase):
             string_value = _StringResolverTestImpl(plain_string, references)
             with self.subTest(msg=test_case_name):
                 assertion = sut.equals_string_resolver2(plain_string,
-                                                        equals_value_references(references),
+                                                        equals_symbol_references(references),
                                                         symbol_table)
                 assertion.apply_with_message(self, string_value, test_case_name)
 
@@ -105,7 +105,7 @@ class TestNotEquals(unittest.TestCase):
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_resolver2(expected_string,
-                                                    equals_value_references(expected_references),
+                                                    equals_symbol_references(expected_references),
                                                     empty_symbol_table())
             assertion.apply_with_message(put, actual, 'NotEquals')
 

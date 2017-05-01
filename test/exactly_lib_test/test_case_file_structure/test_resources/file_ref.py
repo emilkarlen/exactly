@@ -45,10 +45,10 @@ class _AssertFileRefHasSpecifiedProperties(asrt.ValueAssertion):
                                             actual.path_suffix(),
                                             message_builder)
 
-    def _check_value_references(self,
-                                put: unittest.TestCase,
-                                message_builder: asrt.MessageBuilder,
-                                actual: list):
+    def _check_symbol_references(self,
+                                 put: unittest.TestCase,
+                                 message_builder: asrt.MessageBuilder,
+                                 actual: list):
         raise NotImplementedError()
 
     def _check_exists_pre_sds(self,

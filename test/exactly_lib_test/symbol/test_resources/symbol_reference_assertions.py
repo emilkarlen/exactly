@@ -5,8 +5,8 @@ from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion impor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def equals_value_reference(expected_name: str,
-                           value_restriction_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
+def equals_symbol_reference(expected_name: str,
+                            value_restriction_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return asrt.is_instance_with(stc.SymbolReference,
                                  asrt.and_([
                                      asrt.sub_component('name',
@@ -19,7 +19,7 @@ def equals_value_reference(expected_name: str,
                                  ]))
 
 
-def equals_value_references(expected: list) -> asrt.ValueAssertion:
+def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
     return _EqualsValueReferences(expected)
 
 
@@ -45,8 +45,8 @@ class _EqualsValueReferences(asrt.ValueAssertion):
             assert isinstance(actual_ref, stc.SymbolReference)
             assert isinstance(expected_ref, stc.SymbolReference)
             expected_value_restriction = expected_ref.value_restriction
-            element_assertion = equals_value_reference(expected_ref.name,
-                                                       equals_value_restriction(expected_value_restriction))
+            element_assertion = equals_symbol_reference(expected_ref.name,
+                                                        equals_value_restriction(expected_value_restriction))
             element_assertion.apply(put,
                                     actual_ref,
                                     message_builder.for_sub_component('[%d]' % idx))
