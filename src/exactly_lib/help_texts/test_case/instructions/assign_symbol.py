@@ -1,4 +1,7 @@
+import types
+
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
+from exactly_lib.symbol.concrete_values import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 PATH_TYPE = 'path'
@@ -9,6 +12,49 @@ SYMBOL_NAME = 'NAME'
 STRING_VALUE = 'STRING'
 
 PATH_SUFFIX_IS_REQUIRED = False
+
+
+class TypeInfo(tuple):
+    def __new__(cls,
+                type_name: str,
+                def_instruction_syntax_lines_function):
+        return tuple.__new__(cls, (type_name,
+                                   def_instruction_syntax_lines_function))
+
+    @property
+    def type_name(self) -> str:
+        return self[0]
+
+    @property
+    def def_instruction_syntax_lines_function(self) -> types.FunctionType:
+        """
+        :return: A function, that takes no argument, and gives a list of
+        strings.  Each string is a command line syntax for defining a symbol of the
+        type that this object represents.
+        """
+        return self[1]
+
+
+def _def_instruction_syntax_lines_function__string() -> list:
+    return [
+        definition_of_type_string()
+    ]
+
+
+def _def_instruction_syntax_lines_function__path() -> list:
+    return [
+        definition_of_type_path()
+    ]
+
+
+TYPE_INFO_DICT = {
+    ValueType.STRING:
+        TypeInfo(STRING_TYPE,
+                 _def_instruction_syntax_lines_function__string),
+    ValueType.PATH:
+        TypeInfo(PATH_TYPE,
+                 _def_instruction_syntax_lines_function__path),
+}
 
 
 def definition_of_type_string() -> str:
