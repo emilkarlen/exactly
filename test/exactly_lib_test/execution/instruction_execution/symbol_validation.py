@@ -4,7 +4,7 @@ from exactly_lib.execution.instruction_execution import symbol_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.symbol import value_structure as vs
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
-from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_symbol
+from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.symbol.value_structure import ValueRestriction

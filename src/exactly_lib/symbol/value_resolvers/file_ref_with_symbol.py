@@ -13,14 +13,14 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def rel_symbol(value_reference2: ValueReference, path_suffix: PathPartResolver) -> FileRefResolver:
-    return _FileRefResolverRelValueDefinition(path_suffix, value_reference2)
+    return _FileRefResolverRelSymbol(path_suffix, value_reference2)
 
 
-def value_ref2_of_path(val_def_name: str, accepted_relativities: PathRelativityVariants) -> ValueReference:
-    return ValueReference(val_def_name, FileRefRelativityRestriction(accepted_relativities))
+def value_ref2_of_path(symbol_name: str, accepted_relativities: PathRelativityVariants) -> ValueReference:
+    return ValueReference(symbol_name, FileRefRelativityRestriction(accepted_relativities))
 
 
-class _FileRefResolverRelValueDefinition(FileRefResolver):
+class _FileRefResolverRelSymbol(FileRefResolver):
     def __init__(self,
                  path_suffix: PathPartResolver,
                  value_reference_of_path: ValueReference):

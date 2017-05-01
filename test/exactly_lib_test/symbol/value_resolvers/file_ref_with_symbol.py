@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.value_resolvers import file_ref_with_val_def as sut
+from exactly_lib.symbol.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringSymbolReference
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -23,11 +23,11 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestRelValueDefinition))
+    ret_val.addTest(unittest.makeSuite(TestRelSymbol))
     return ret_val
 
 
-class TestRelValueDefinition(unittest.TestCase):
+class TestRelSymbol(unittest.TestCase):
     def test_value_references(self):
         # ARRANGE #
         expected_restriction = FileRefRelativityRestriction(
@@ -73,7 +73,7 @@ class TestRelValueDefinition(unittest.TestCase):
                     string_value_container('path-suffix')),),
              ),
         ]
-        file_ref_symbol_name = 'VAL_DEF_NAME'
+        file_ref_symbol_name = 'SYMBOL_NAME'
         for rel_option_type_of_referenced_symbol, expected_exists_pre_sds in relativity_test_cases:
             referenced_file_ref = file_refs.of_rel_option(rel_option_type_of_referenced_symbol,
                                                           PathPartAsFixedPath('referenced-file-name'))

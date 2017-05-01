@@ -4,13 +4,13 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 class RelOptionsConfiguration(tuple):
     def __new__(cls,
                 accepted_relativity_variants: PathRelativityVariants,
-                is_rel_val_def_option_accepted: bool,
+                is_rel_symbol_option_accepted: bool,
                 default_option: RelOptionType):
         """
         :type accepted_options: Iterable of `RelOptionType`
         """
         return tuple.__new__(cls, (accepted_relativity_variants,
-                                   is_rel_val_def_option_accepted,
+                                   is_rel_symbol_option_accepted,
                                    default_option))
 
     @property
