@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def rel_value_definition(value_reference2: ValueReference, path_suffix: PathPartResolver) -> FileRefResolver:
+def rel_symbol(value_reference2: ValueReference, path_suffix: PathPartResolver) -> FileRefResolver:
     return _FileRefResolverRelValueDefinition(path_suffix, value_reference2)
 
 

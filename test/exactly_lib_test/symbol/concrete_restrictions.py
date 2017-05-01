@@ -4,7 +4,7 @@ from exactly_lib.symbol import concrete_restrictions as sut
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.symbol.test_resources.value_definition_utils import file_ref_value
+from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 
@@ -25,11 +25,11 @@ class TestNoRestriction(unittest.TestCase):
             file_ref_value(),
         ]
         restriction = sut.NoRestriction()
-        value_definitions = empty_symbol_table()
+        symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
                 # ACT #
-                actual = restriction.is_satisfied_by(value_definitions, value)
+                actual = restriction.is_satisfied_by(symbols, value)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -42,11 +42,11 @@ class TestStringRestriction(unittest.TestCase):
             StringConstant(''),
         ]
         restriction = sut.StringRestriction()
-        value_definitions = empty_symbol_table()
+        symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
                 # ACT #
-                actual = restriction.is_satisfied_by(value_definitions, value)
+                actual = restriction.is_satisfied_by(symbols, value)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -56,11 +56,11 @@ class TestStringRestriction(unittest.TestCase):
             file_ref_value(),
         ]
         restriction = sut.StringRestriction()
-        value_definitions = empty_symbol_table()
+        symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
                 # ACT #
-                actual = restriction.is_satisfied_by(value_definitions, value)
+                actual = restriction.is_satisfied_by(symbols, value)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -76,11 +76,11 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         restriction = sut.FileRefRelativityRestriction(PathRelativityVariants(
             {RelOptionType.REL_ACT, RelOptionType.REL_HOME, RelOptionType.REL_RESULT},
             False))
-        value_definitions = empty_symbol_table()
+        symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
                 # ACT #
-                actual = restriction.is_satisfied_by(value_definitions, value)
+                actual = restriction.is_satisfied_by(symbols, value)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -93,11 +93,11 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         restriction = sut.FileRefRelativityRestriction(PathRelativityVariants(
             {RelOptionType.REL_RESULT},
             False))
-        value_definitions = empty_symbol_table()
+        symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
                 # ACT #
-                actual = restriction.is_satisfied_by(value_definitions, value)
+                actual = restriction.is_satisfied_by(symbols, value)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -120,11 +120,11 @@ class TestEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
                  RelOptionType.REL_RESULT},
                 False))
         )
-        value_definitions = empty_symbol_table()
+        symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
                 # ACT #
-                actual = restriction.is_satisfied_by(value_definitions, value)
+                actual = restriction.is_satisfied_by(symbols, value)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -139,11 +139,11 @@ class TestEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
             sut.FileRefRelativityRestriction(PathRelativityVariants(
                 {RelOptionType.REL_RESULT},
                 False)))
-        value_definitions = empty_symbol_table()
+        symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
                 # ACT #
-                actual = restriction.is_satisfied_by(value_definitions, value)
+                actual = restriction.is_satisfied_by(symbols, value)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')

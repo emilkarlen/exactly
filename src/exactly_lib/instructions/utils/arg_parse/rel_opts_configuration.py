@@ -69,9 +69,9 @@ REL_OPTIONS_FOR_FILE_CREATION = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_
 
 
 def argument_configuration_for_file_creation(argument_syntax_element_name: str,
-                                             may_use_value_definitions: bool) -> RelOptionArgumentConfiguration:
+                                             may_use_symbols: bool) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION,
-                                                                  may_use_value_definitions,
+                                                                  may_use_symbols,
                                                                   RelOptionType.REL_CWD),
                                           argument_syntax_element_name,
                                           True)

@@ -18,7 +18,7 @@ class ExecutableFile:
         self._validator = ExistingExecutableFileValidator(file_reference_resolver)
 
     def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        fr = self._file_reference_resolver.resolve(environment.value_definitions)
+        fr = self._file_reference_resolver.resolve(environment.symbols)
         return fr.file_path_pre_or_post_sds(environment.home_and_sds)
 
     def path_string(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
@@ -31,8 +31,8 @@ class ExecutableFile:
     def arguments(self) -> list:
         return self._arguments
 
-    def exists_pre_sds(self, value_definitions: SymbolTable) -> bool:
-        fr = self._file_reference_resolver.resolve(value_definitions)
+    def exists_pre_sds(self, symbols: SymbolTable) -> bool:
+        fr = self._file_reference_resolver.resolve(symbols)
         return fr.exists_pre_sds()
 
     @property

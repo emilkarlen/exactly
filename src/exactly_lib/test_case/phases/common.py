@@ -15,11 +15,11 @@ class InstructionEnvironmentForPreSdsStep:
                  home_dir: pathlib.Path,
                  environ: dict,
                  timeout_in_seconds: int = None,
-                 value_definitions: SymbolTable = None):
+                 symbols: SymbolTable = None):
         self.__home_dir = home_dir
         self.__timeout_in_seconds = timeout_in_seconds
         self.__environ = environ
-        self.__value_definitions = SymbolTable() if value_definitions is None else value_definitions
+        self.__symbols = SymbolTable() if symbols is None else symbols
 
     @property
     def home_directory(self) -> pathlib.Path:
@@ -45,8 +45,8 @@ class InstructionEnvironmentForPreSdsStep:
         return ProcessExecutionSettings(self.timeout_in_seconds, self.environ)
 
     @property
-    def value_definitions(self) -> SymbolTable:
-        return self.__value_definitions
+    def symbols(self) -> SymbolTable:
+        return self.__symbols
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPreSds:
@@ -98,8 +98,8 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
                  sds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
                  timeout_in_seconds: int = None,
-                 value_definitions: SymbolTable = None):
-        super().__init__(home_dir, environ, timeout_in_seconds, value_definitions)
+                 symbols: SymbolTable = None):
+        super().__init__(home_dir, environ, timeout_in_seconds, symbols)
         self.__sds = sds
         self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
 
@@ -122,11 +122,11 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
-        return PathResolvingEnvironmentPostSds(self.__sds, self.value_definitions)
+        return PathResolvingEnvironmentPostSds(self.__sds, self.symbols)
 
     @property
     def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:
-        return PathResolvingEnvironmentPreOrPostSds(self.home_and_sds, self.value_definitions)
+        return PathResolvingEnvironmentPreOrPostSds(self.home_and_sds, self.symbols)
 
 
 class TestCaseInstruction(Instruction):

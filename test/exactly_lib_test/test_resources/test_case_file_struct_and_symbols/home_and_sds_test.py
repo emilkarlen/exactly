@@ -25,12 +25,12 @@ class Arrangement:
                  home_dir_contents_before: DirContents = empty_dir_contents(),
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
                  pre_action_action: HomeAndSdsAction = HomeAndSdsAction(),
-                 value_definitions: SymbolTable = None):
+                 symbols: SymbolTable = None):
         self.pre_contents_population_action = pre_contents_population_action
         self.home_dir_contents_before = home_dir_contents_before
         self.sds_contents_before = sds_contents_before
         self.pre_action_action = pre_action_action
-        self.value_definitions = symbol_table_from_none_or_value(value_definitions)
+        self.symbols = symbol_table_from_none_or_value(symbols)
 
 
 class Expectation:
@@ -61,7 +61,7 @@ def check(put: unittest.TestCase,
     with home_and_sds_with_act_as_curr_dir(pre_contents_population_action=arrangement.pre_contents_population_action,
                                            home_dir_contents=arrangement.home_dir_contents_before,
                                            sds_contents=arrangement.sds_contents_before,
-                                           value_definitions=arrangement.value_definitions,
+                                           symbols=arrangement.symbols,
                                            ) as environment:
         arrangement.pre_action_action.apply(environment)
         result = action.apply(environment)

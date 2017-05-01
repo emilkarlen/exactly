@@ -73,7 +73,7 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
                                             suffix='.txt',
                                             directory=str(environment.sds.tmp.internal_dir))
         else:
-            file_ref = self._expected_contents.file_reference_resolver.resolve(environment.value_definitions)
+            file_ref = self._expected_contents.file_reference_resolver.resolve(environment.symbols)
             return file_ref.file_path_pre_or_post_sds(environment)
 
     def _file_ref_check_for_expected(self) -> FileRefCheck:

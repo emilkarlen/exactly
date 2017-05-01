@@ -12,12 +12,12 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         Parser(),
         new_file_utils.TheInstructionDocumentation(instruction_name,
-                                                   may_use_value_definitions=True))
+                                                   may_use_symbols=True))
 
 
 class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> SetupPhaseInstruction:
-        argument = new_file_utils.parse(source, may_use_value_definitions=True)
+        argument = new_file_utils.parse(source, may_use_symbols=True)
         return _Instruction(argument)
 
 

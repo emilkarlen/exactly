@@ -7,7 +7,7 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.names import formatting
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.instructions.multi_phase_instructions.assign_value_definition import PATH_TYPE
+from exactly_lib.instructions.multi_phase_instructions.assign_symbol import PATH_TYPE
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.symbol import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure import relative_path_options as options
@@ -28,11 +28,11 @@ SYMBOL_REFERENCE = a.Named('SYMBOL-REFERENCE')
 
 
 def mandatory_path_with_optional_relativity(path_argument: a.Named,
-                                            may_use_value_definitions: bool = False,
+                                            may_use_symbols: bool = False,
                                             path_suffix_is_required: bool = True) -> list:
     multiplicity = a.Multiplicity.MANDATORY if path_suffix_is_required else a.Multiplicity.OPTIONAL
     path_part = a.Single(multiplicity, path_argument)
-    if may_use_value_definitions:
+    if may_use_symbols:
         path_part = a.Choice(multiplicity, [path_argument, SYMBOL_REFERENCE])
     return [
         OPTIONAL_RELATIVITY_ARGUMENT_USAGE,

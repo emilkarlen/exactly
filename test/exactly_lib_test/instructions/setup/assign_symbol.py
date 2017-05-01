@@ -1,13 +1,13 @@
 import unittest
 
-from exactly_lib.instructions.multi_phase_instructions.assign_value_definition import REL_OPTIONS_CONFIGURATION, \
+from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION, \
     PATH_TYPE, STRING_TYPE
-from exactly_lib.instructions.setup import assign_value_definition as sut
+from exactly_lib.instructions.setup import assign_symbol as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_value_definition
+from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_structure import ValueDefinition, ValueContainer, Value, ValueReference
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
@@ -18,9 +18,9 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.symbol.test_resources import value_definition_utils as v2
+from exactly_lib_test.symbol.test_resources import symbol_utils as v2
 from exactly_lib_test.symbol.test_resources import value_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.test_resources.value_definition_utils import assert_symbol_table_is_singleton, \
+from exactly_lib_test.symbol.test_resources.symbol_utils import assert_symbol_table_is_singleton, \
     string_value_container
 from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_value_container
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -106,11 +106,11 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
             ('Valid assignment of single word',
              '{string_type} name1 = v1',
              Expectation(
-                 value_definition_usages=asrt.matches_sequence([
-                     vs_asrt.equals_value_definition(ValueDefinition('name1', string_value_container('v1')),
-                                                     ignore_source_line=True)
+                 symbol_usages=asrt.matches_sequence([
+                     vs_asrt.equals_symbol(ValueDefinition('name1', string_value_container('v1')),
+                                           ignore_source_line=True)
                  ]),
-                 value_definitions_after_main=assert_symbol_table_is_singleton(
+                 symbols_after_main=assert_symbol_table_is_singleton(
                      'name1',
                      equals_value_container(string_value_container('v1')),
                  )
@@ -146,10 +146,10 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          value_definition_usages=v2.assert_value_usages_is_singleton_list(
-                              vs_asrt.equals_value_definition(
+                          symbol_usages=v2.assert_value_usages_is_singleton_list(
+                              vs_asrt.equals_symbol(
                                   ValueDefinition('name', expected_value_container))),
-                          value_definitions_after_main=assert_symbol_table_is_singleton(
+                          symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_value_container(expected_value_container))
                       )
@@ -167,10 +167,10 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          value_definition_usages=v2.assert_value_usages_is_singleton_list(
-                              vs_asrt.equals_value_definition(
+                          symbol_usages=v2.assert_value_usages_is_singleton_list(
+                              vs_asrt.equals_symbol(
                                   ValueDefinition('name', expected_value_container))),
-                          value_definitions_after_main=assert_symbol_table_is_singleton(
+                          symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_value_container(expected_value_container)))
                       )
@@ -180,7 +180,7 @@ class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
     def test(self):
         instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_resolver = rel_value_definition(
+            expected_file_ref_resolver = rel_symbol(
                 ValueReference('REFERENCED_VAL_DEF',
                                FileRefRelativityRestriction(
                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
@@ -189,13 +189,13 @@ class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          value_definition_usages=asrt.matches_sequence([
-                              vs_asrt.equals_value_definition(
+                          symbol_usages=asrt.matches_sequence([
+                              vs_asrt.equals_symbol(
                                   ValueDefinition('ASSIGNED_NAME',
                                                   expected_value_container),
                                   ignore_source_line=True)
                           ]),
-                          value_definitions_after_main=assert_symbol_table_is_singleton(
+                          symbols_after_main=assert_symbol_table_is_singleton(
                               'ASSIGNED_NAME',
                               equals_value_container(expected_value_container)))
                       )

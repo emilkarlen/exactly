@@ -19,11 +19,11 @@ class SdsAction:
 @contextmanager
 def sds_with_act_as_curr_dir(contents: sds_populator.SdsPopulator = sds_populator.empty(),
                              pre_contents_population_action: SdsAction = SdsAction(),
-                             value_definitions: SymbolTable = None,
+                             symbols: SymbolTable = None,
                              ) -> PathResolvingEnvironmentPostSds:
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-sds-') as sds_root_dir:
         sds = sds_module.construct_at(resolved_path_name(sds_root_dir))
-        environment = PathResolvingEnvironmentPostSds(sds, symbol_table_from_none_or_value(value_definitions))
+        environment = PathResolvingEnvironmentPostSds(sds, symbol_table_from_none_or_value(symbols))
         with preserved_cwd():
             os.chdir(str(sds.act_dir))
             pre_contents_population_action.apply(environment)

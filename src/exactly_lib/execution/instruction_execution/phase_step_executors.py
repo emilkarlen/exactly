@@ -1,6 +1,6 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.execution.instruction_execution.value_definition_validation import validate_symbol_usages
+from exactly_lib.execution.instruction_execution.symbol_validation import validate_symbol_usages
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instr
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -58,7 +58,7 @@ class SetupValidateSymbolsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return validate_symbol_usages(instruction.value_usages(),
-                                      self.__instruction_environment.value_definitions)
+                                      self.__instruction_environment.symbols)
 
 
 class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):

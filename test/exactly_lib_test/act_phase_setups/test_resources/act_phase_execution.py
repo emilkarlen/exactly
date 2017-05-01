@@ -85,7 +85,7 @@ def check_execution(put: unittest.TestCase,
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of validation/pre-sds')
-        with sds_with_act_as_curr_dir(value_definitions=instruction_environment.value_definitions
+        with sds_with_act_as_curr_dir(symbols=instruction_environment.symbols
                                       ) as path_resolving_env:
             instruction_environment = InstructionEnvironmentForPostSdsStep(instruction_environment.home_directory,
                                                                            instruction_environment.environ,
