@@ -55,4 +55,4 @@ def _validate_reference(value_usage: vs.ValueReference,
                         symbols: SymbolTable) -> str:
     referenced_value_container = symbols.lookup(value_usage.name)
     assert isinstance(referenced_value_container, ValueContainer), 'Values in SymbolTable must be ValueContainer'
-    return value_usage.value_restriction.is_satisfied_by(symbols, referenced_value_container.value)
+    return value_usage.value_restriction.is_satisfied_by(symbols, value_usage.name, referenced_value_container)

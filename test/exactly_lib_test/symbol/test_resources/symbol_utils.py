@@ -14,6 +14,13 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def container(value: Value,
+              line_num: int = 1,
+              source_line: str = 'value def line') -> ValueContainer:
+    return ValueContainer(Line(line_num, source_line),
+                          value)
+
+
 def string_value_container(string_value: str,
                            line_num: int = 1,
                            source_line: str = 'value def line') -> ValueContainer:
@@ -64,7 +71,7 @@ def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
 
 def file_ref_symbol(name: str,
                     file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                                               relativity=RelOptionType.REL_CWD),
+                                                                     relativity=RelOptionType.REL_CWD),
                     line_num: int = 1,
                     source_line: str = 'value def line') -> ValueDefinition:
     return ValueDefinition(name, file_ref_value_container(file_ref, line_num, source_line))

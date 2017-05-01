@@ -188,14 +188,16 @@ def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRela
 class RestrictionThatCannotBeSatisfied(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: vs.SymbolTable,
-                        value: vs.Value) -> str:
+                        symbol_name: str,
+                        value: vs.ValueContainer) -> str:
         return 'unconditional error'
 
 
 class RestrictionThatIsAlwaysSatisfied(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: vs.SymbolTable,
-                        value: vs.Value) -> str:
+                        symbol_name: str,
+                        value: vs.ValueContainer) -> str:
         return None
 
 
