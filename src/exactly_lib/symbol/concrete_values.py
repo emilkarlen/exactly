@@ -1,12 +1,23 @@
+from enum import Enum
+
 from exactly_lib.symbol.value_structure import Value
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
+
+
+class ValueType(Enum):
+    STRING = 0
+    PATH = 1
 
 
 class SymbolValueResolver(Value):
     """
     Base class for values in the symbol table used by Exactly.
     """
+
+    @property
+    def value_type(self) -> ValueType:
+        raise NotImplementedError()
 
     @property
     def references(self) -> list:
@@ -22,6 +33,10 @@ class SymbolValueResolver(Value):
 
 
 class StringResolver(SymbolValueResolver):
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.STRING
+
     def resolve(self, symbols: SymbolTable) -> str:
         raise NotImplementedError()
 
