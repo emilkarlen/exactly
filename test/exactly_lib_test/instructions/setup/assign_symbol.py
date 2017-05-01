@@ -7,7 +7,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_symbol
+from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_structure import ValueDefinition, ValueContainer, Value, ValueReference
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
@@ -178,10 +178,10 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
 
 class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_VAL_DEF component')
+        instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = rel_symbol(
-                ValueReference('REFERENCED_VAL_DEF',
+                ValueReference('REFERENCED_SYMBOL',
                                FileRefRelativityRestriction(
                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
                 PathPartResolverAsFixedPath('component'))

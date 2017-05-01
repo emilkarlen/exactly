@@ -17,7 +17,7 @@ from exactly_lib.section_document.parser_implementations.token import TokenType,
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.file_ref_with_val_def import rel_symbol
+from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsStringSymbolReference, \
     PathPartResolverAsFixedPath, PathPartResolverAsNothing

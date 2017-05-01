@@ -24,14 +24,14 @@ def parse_explicit_relativity_info(options: RelOptionsConfiguration,
     if not is_option_argument(token.source_string):
         return None
 
-    info = _try_parse_rel_val_def_option(options, source)
+    info = _try_parse_rel_symbol_option(options, source)
     if info is not None:
         return info
     return _parse_rel_option_type(options, source)
 
 
-def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
-                                  source: TokenStream2) -> ValueReference:
+def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
+                                 source: TokenStream2) -> ValueReference:
     option_str = source.head.string
     if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
@@ -41,13 +41,13 @@ def _try_parse_rel_val_def_option(options: RelOptionsConfiguration,
     if source.is_null:
         msg = 'Missing value definition name argument for {} option'.format(option_str)
         raise SingleInstructionInvalidArgumentException(msg)
-    val_def_name = source.head.source_string
+    symbol_name = source.head.source_string
     if source.head.is_quoted:
         msg = 'Value definition name argument for {} must not be quoted: {}'.format(option_str,
-                                                                                    val_def_name)
+                                                                                    symbol_name)
         raise SingleInstructionInvalidArgumentException(msg)
     source.consume()
-    return ValueReference(val_def_name, FileRefRelativityRestriction(options.accepted_relativity_variants))
+    return ValueReference(symbol_name, FileRefRelativityRestriction(options.accepted_relativity_variants))
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,
