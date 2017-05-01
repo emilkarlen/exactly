@@ -28,9 +28,9 @@ class TestValueReference(unittest.TestCase):
     def test_WHEN_referenced_value_not_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        value_usage = vs.SymbolReference('undefined', NoRestriction())
+        symbol_usage = vs.SymbolReference('undefined', NoRestriction())
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
@@ -39,10 +39,10 @@ class TestValueReference(unittest.TestCase):
             self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
-        value_usage = vs.SymbolReference('val_name',
-                                         RestrictionThatCannotBeSatisfied())
+        symbol_usage = vs.SymbolReference('val_name',
+                                          RestrictionThatCannotBeSatisfied())
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
@@ -50,10 +50,10 @@ class TestValueReference(unittest.TestCase):
     def test_WHEN_referenced_value_is_in_symbol_table_and_satisfies_value_restriction_THEN_no_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
-        value_usage = vs.SymbolReference('val_name',
-                                         RestrictionThatIsAlwaysSatisfied())
+        symbol_usage = vs.SymbolReference('val_name',
+                                          RestrictionThatIsAlwaysSatisfied())
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNone(actual, 'result should indicate success')
 
 
@@ -61,9 +61,9 @@ class TestValueDefinition(unittest.TestCase):
     def test_WHEN_defined_value_is_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('already-defined'))
-        value_usage = symbol_of('already-defined')
+        symbol_usage = symbol_of('already-defined')
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
@@ -71,9 +71,9 @@ class TestValueDefinition(unittest.TestCase):
     def test_WHEN_defined_value_not_in_symbol_table_THEN_None_and_added_to_symbol_table(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('other'))
-        value_usage = symbol_of('undefined')
+        symbol_usage = symbol_of('undefined')
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNone(actual, 'return value for indicating')
         self.assertTrue(symbol_table.contains('undefined'),
                         'definition should be added to symbol table')
@@ -83,13 +83,13 @@ class TestValueDefinition(unittest.TestCase):
     def test_WHEN_defined_value_not_in_symbol_table_but_referenced_values_not_in_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('OTHER'))
-        value_usage = vs.SymbolDefinition(
+        symbol_usage = vs.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
                 rel_symbol(vs.SymbolReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'return value for indicating error')
 
     def test_WHEN_defined_value_not_in_table_but_referenced_value_in_table_does_not_satisfy_restriction_THEN_error(
@@ -97,13 +97,13 @@ class TestValueDefinition(unittest.TestCase):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
         symbol_table = singleton_symbol_table(referenced_entry)
-        value_usage_to_check = vs.SymbolDefinition(
+        symbol_usage_to_check = vs.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
                 rel_symbol(vs.SymbolReference('REFERENCED', RestrictionThatCannotBeSatisfied()),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage_to_check, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
         # ASSERT #
         self.assertIsNotNone(actual, 'return value for indicating error')
 
@@ -112,13 +112,13 @@ class TestValueDefinition(unittest.TestCase):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
         symbol_table = singleton_symbol_table(referenced_entry)
-        value_usage_to_check = vs.SymbolDefinition(
+        symbol_usage_to_check = vs.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
                 rel_symbol(vs.SymbolReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
-        actual = sut.validate_symbol_usage(value_usage_to_check, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
         # ASSERT #
         self.assertIsNone(actual, 'return value for indicating success')
         self.assertTrue(symbol_table.contains('UNDEFINED'),
@@ -130,9 +130,9 @@ class TestValidationOfList(unittest.TestCase):
             self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        value_usages = []
+        symbol_usages = []
         # ACT #
-        actual = sut.validate_symbol_usages(value_usages, symbol_table)
+        actual = sut.validate_symbol_usages(symbol_usages, symbol_table)
         self.assertIsNone(actual, 'result should indicate ok')
 
     def test_WHEN_all_usages_are_valid_THEN_validation_ok(
@@ -141,12 +141,12 @@ class TestValidationOfList(unittest.TestCase):
         symbol_table = empty_symbol_table()
         valid_definition = symbol_of('symbol')
         valid__reference = vs.SymbolReference('symbol', NoRestriction())
-        value_usages = [
+        symbol_usages = [
             valid_definition,
             valid__reference,
         ]
         # ACT #
-        actual = sut.validate_symbol_usages(value_usages, symbol_table)
+        actual = sut.validate_symbol_usages(symbol_usages, symbol_table)
         self.assertIsNone(actual, 'result should indicate ok')
 
     def test_WHEN_2nd_element_fails_to_validate_THEN_validation_error(self):
@@ -154,12 +154,12 @@ class TestValidationOfList(unittest.TestCase):
         symbol_table = empty_symbol_table()
         valid_definition = symbol_of('name-of-definition')
         invalid__reference = vs.SymbolReference('undefined', NoRestriction())
-        value_usages = [
+        symbol_usages = [
             valid_definition,
             invalid__reference,
         ]
         # ACT #
-        actual = sut.validate_symbol_usages(value_usages, symbol_table)
+        actual = sut.validate_symbol_usages(symbol_usages, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)

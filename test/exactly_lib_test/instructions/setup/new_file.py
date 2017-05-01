@@ -105,7 +105,7 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                       )
                       )
 
-    def test_WHEN_no_value_reference_THEN_no_value_usages(self):
+    def test_WHEN_no_value_reference_THEN_no_symbol_usages(self):
         instruction_argument = '--rel-tmp file-name.txt'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._run(source,

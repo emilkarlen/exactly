@@ -20,13 +20,13 @@ class RecordingInstructionsFactory:
         return configuration_phase_instruction_that(main=self._do_record_and_return_sh(value))
 
     def new_setup_instruction(self,
-                              value_for_value_usages,
+                              value_for_symbol_usages,
                               value_for_validate_pre_sds,
                               value_for_main,
                               value_for_validate_post_sds,
                               ) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(
-            value_usages_initial_action=self._do_record_first_invokation(value_for_value_usages),
+            symbol_usages_initial_action=self._do_record_first_invokation(value_for_symbol_usages),
             validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
             validate_post_setup=self._do_record_and_return_svh(
                 value_for_validate_post_sds),
