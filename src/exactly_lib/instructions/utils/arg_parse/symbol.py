@@ -2,8 +2,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token import Token
 
-SYMBOL_REFERENCE_BEGIN = '§['
-SYMBOL_REFERENCE_END = ']§'
+SYMBOL_REFERENCE_BEGIN = '@['
+SYMBOL_REFERENCE_END = ']@'
 
 
 def symbol_reference_syntax_for_name(name: str) -> str:
