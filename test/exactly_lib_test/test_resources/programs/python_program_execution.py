@@ -67,6 +67,10 @@ def abs_path_to_interpreter() -> str:
     return sys.executable
 
 
+def file_name_of_interpreter() -> str:
+    return pathlib.Path(sys.executable).name
+
+
 def _str_elements(elements: iter) -> list:
     return [str(x) for x in elements]
 
