@@ -47,7 +47,7 @@ class ValueRestriction:
         raise NotImplementedError()
 
 
-class ValueUsage:
+class SymbolUsage:
     def __init__(self, name: str):
         self._name = name
 
@@ -56,7 +56,7 @@ class ValueUsage:
         return self._name
 
 
-class ValueDefinition(ValueUsage):
+class SymbolDefinition(SymbolUsage):
     """
     Defines a symbol so that it can be used via references to it.
     """
@@ -81,7 +81,7 @@ class ValueDefinition(ValueUsage):
         return Entry(self.name, self.value_container)
 
 
-class ValueReference(ValueUsage):
+class SymbolReference(SymbolUsage):
     """
     A reference to a symbol that is assumed to have been previously defined.
     """
@@ -97,23 +97,23 @@ class ValueReference(ValueUsage):
         return self._value_restriction
 
 
-class ValueUsageVisitor:
+class SymbolUsageVisitor:
     """
-    Visitor of `ValueUsage`
+    Visitor of `SymbolUsage`
     """
 
-    def visit(self, value_usage: ValueUsage):
+    def visit(self, symbol_usage: SymbolUsage):
         """
         :return: Return value from _visit... method
         """
-        if isinstance(value_usage, ValueDefinition):
-            return self._visit_definition(value_usage)
-        if isinstance(value_usage, ValueReference):
-            return self._visit_reference(value_usage)
-        raise TypeError('Unknown {}: {}'.format(Value, str(value_usage)))
+        if isinstance(symbol_usage, SymbolDefinition):
+            return self._visit_definition(symbol_usage)
+        if isinstance(symbol_usage, SymbolReference):
+            return self._visit_reference(symbol_usage)
+        raise TypeError('Unknown {}: {}'.format(Value, str(symbol_usage)))
 
-    def _visit_definition(self, value_usage: ValueDefinition):
+    def _visit_definition(self, symbol_usage: SymbolDefinition):
         raise NotImplementedError()
 
-    def _visit_reference(self, value_usage: ValueReference):
+    def _visit_reference(self, symbol_usage: SymbolReference):
         raise NotImplementedError()

@@ -2,7 +2,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.multi_phase_instructions import assign_symbol
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.symbol.value_structure import ValueDefinition
+from exactly_lib.symbol.value_structure import SymbolDefinition
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -23,7 +23,7 @@ class Parser(InstructionParser):
 
 class _Instruction(SetupPhaseInstruction):
     def __init__(self,
-                 symbol: ValueDefinition):
+                 symbol: SymbolDefinition):
         self.symbol = symbol
 
     def symbol_usages(self) -> list:

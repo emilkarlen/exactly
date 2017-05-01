@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
 from exactly_lib.symbol.concrete_values import StringResolver
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
-from exactly_lib.symbol.value_structure import ValueReference
+from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_references
@@ -30,7 +30,7 @@ class TestEquals(unittest.TestCase):
              ),
             ('String with reference',
              'string value',
-             _StringResolverTestImpl('string value', [ValueReference('symbol_name', NoRestriction())]),
+             _StringResolverTestImpl('string value', [SymbolReference('symbol_name', NoRestriction())]),
              empty_symbol_table(),
              ),
         ]
@@ -56,7 +56,7 @@ class TestEquals(unittest.TestCase):
              ),
             ('String with reference',
              'string value',
-             [ValueReference('symbol_name', NoRestriction())],
+             [SymbolReference('symbol_name', NoRestriction())],
              empty_symbol_table(),
              ),
         ]
@@ -99,8 +99,8 @@ class TestNotEquals(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
-        actual_references = [ValueReference('actual_symbol_name', NoRestriction())]
-        expected_references = [ValueReference('expected_symbol_name', NoRestriction())]
+        actual_references = [SymbolReference('actual_symbol_name', NoRestriction())]
+        expected_references = [SymbolReference('expected_symbol_name', NoRestriction())]
         actual = _StringResolverTestImpl(expected_string, actual_references)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -128,7 +128,7 @@ class TestNotEquals3(unittest.TestCase):
         expected_string = 'expected value'
         expected = StringConstant(expected_string)
         actual = _StringResolverTestImpl(expected_string,
-                                         [ValueReference('symbol_name', NoRestriction())])
+                                         [SymbolReference('symbol_name', NoRestriction())])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_resolver3(expected)
@@ -138,8 +138,8 @@ class TestNotEquals3(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
-        expected_references = [ValueReference('expected_symbol_name', NoRestriction())]
-        actual_references = [ValueReference('actual_symbol_name', NoRestriction())]
+        expected_references = [SymbolReference('expected_symbol_name', NoRestriction())]
+        actual_references = [SymbolReference('actual_symbol_name', NoRestriction())]
         expected = _StringResolverTestImpl(expected_string, expected_references)
         actual = _StringResolverTestImpl(expected_string, actual_references)
         # ACT & ASSERT #

@@ -9,7 +9,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_structure import ValueDefinition, ValueContainer, Value, ValueReference
+from exactly_lib.symbol.value_structure import SymbolDefinition, ValueContainer, Value, SymbolReference
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
@@ -109,7 +109,7 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
              '{string_type} name1 = v1',
              Expectation(
                  symbol_usages=asrt.matches_sequence([
-                     vs_asrt.equals_symbol(ValueDefinition('name1', string_value_container('v1')),
+                     vs_asrt.equals_symbol(SymbolDefinition('name1', string_value_container('v1')),
                                            ignore_source_line=True)
                  ]),
                  symbols_after_main=assert_symbol_table_is_singleton(
@@ -150,7 +150,7 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                       Expectation(
                           symbol_usages=v2.assert_value_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
-                                  ValueDefinition('name', expected_value_container))),
+                                  SymbolDefinition('name', expected_value_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_value_container(expected_value_container))
@@ -171,7 +171,7 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                       Expectation(
                           symbol_usages=v2.assert_value_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
-                                  ValueDefinition('name', expected_value_container))),
+                                  SymbolDefinition('name', expected_value_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_value_container(expected_value_container)))
@@ -183,8 +183,8 @@ class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
         instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = rel_symbol(
-                ValueReference('REFERENCED_SYMBOL',
-                               FileRefRelativityRestriction(
+                SymbolReference('REFERENCED_SYMBOL',
+                                FileRefRelativityRestriction(
                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
                 PathPartResolverAsFixedPath('component'))
             expected_value_container = _value_container(expected_file_ref_resolver)
@@ -193,8 +193,8 @@ class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
                       Expectation(
                           symbol_usages=asrt.matches_sequence([
                               vs_asrt.equals_symbol(
-                                  ValueDefinition('ASSIGNED_NAME',
-                                                  expected_value_container),
+                                  SymbolDefinition('ASSIGNED_NAME',
+                                                   expected_value_container),
                                   ignore_source_line=True)
                           ]),
                           symbols_after_main=assert_symbol_table_is_singleton(

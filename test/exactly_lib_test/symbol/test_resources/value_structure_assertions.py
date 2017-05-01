@@ -21,15 +21,15 @@ def equals_value_container(expected: stc.ValueContainer,
                                  asrt.and_(component_assertions))
 
 
-def equals_symbol(expected: stc.ValueDefinition,
+def equals_symbol(expected: stc.SymbolDefinition,
                   ignore_source_line: bool = True) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(stc.ValueDefinition,
+    return asrt.is_instance_with(stc.SymbolDefinition,
                                  asrt.And([
                                      asrt.sub_component('name',
-                                                        stc.ValueDefinition.name.fget,
+                                                        stc.SymbolDefinition.name.fget,
                                                         asrt.equals(expected.name)),
                                      asrt.sub_component('value_container',
-                                                        stc.ValueDefinition.value_container.fget,
+                                                        stc.SymbolDefinition.value_container.fget,
                                                         equals_value_container(expected.value_container,
                                                                                ignore_source_line)),
 

@@ -7,7 +7,7 @@ from exactly_lib.symbol.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringSymbolReference
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.value_structure import ValueReference
+from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
@@ -37,7 +37,7 @@ class TestRelSymbol(unittest.TestCase):
             vr_tr.equals_value_reference('symbol_name',
                                          restrictions.equals_file_ref_relativity_restriction(expected_restriction))
         ]
-        value_ref_of_path = ValueReference('symbol_name', expected_restriction)
+        value_ref_of_path = SymbolReference('symbol_name', expected_restriction)
         path_suffix_test_cases = [
             (PathPartResolverAsFixedPath('file.txt'),
              [],
@@ -156,9 +156,9 @@ class TestRelSymbol(unittest.TestCase):
 
 
 def _value_reference_of_path_with_accepted(value_name: str,
-                                           accepted: RelOptionType) -> ValueReference:
-    return ValueReference(value_name,
-                          FileRefRelativityRestriction(_path_relativity_variants_with(accepted)))
+                                           accepted: RelOptionType) -> SymbolReference:
+    return SymbolReference(value_name,
+                           FileRefRelativityRestriction(_path_relativity_variants_with(accepted)))
 
 
 def _path_relativity_variants_with(accepted: RelOptionType) -> PathRelativityVariants:

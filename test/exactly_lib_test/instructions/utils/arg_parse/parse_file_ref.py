@@ -13,7 +13,7 @@ from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_structure import ValueReference
+from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
@@ -435,8 +435,8 @@ class TestParseFromTokenStream2CasesWithRelSymbolRelativity(TestParsesBase):
                 PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, False),
             ]
             for accepted_relativities in accepted_relativities_variants:
-                expected_value_reference = ValueReference(symbol_name,
-                                                          FileRefRelativityRestriction(accepted_relativities))
+                expected_value_reference = SymbolReference(symbol_name,
+                                                           FileRefRelativityRestriction(accepted_relativities))
                 expected_file_ref_resolver = rel_symbol(expected_value_reference,
                                                         PathPartResolverAsFixedPath(file_name_argument))
                 for path_suffix_is_required in [False, True]:

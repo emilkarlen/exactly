@@ -21,7 +21,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsStringSymbolReference, \
     PathPartResolverAsFixedPath, PathPartResolverAsNothing
-from exactly_lib.symbol.value_structure import ValueReference
+from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -177,7 +177,7 @@ def _file_ref_constructor(relativity_info) -> types.FunctionType:
     if isinstance(relativity_info, RelOptionType):
         return lambda path_suffix_resolver: _FileRefResolverOfRelativityOptionAndSuffixResolver(relativity_info,
                                                                                                 path_suffix_resolver)
-    elif isinstance(relativity_info, ValueReference):
+    elif isinstance(relativity_info, SymbolReference):
         return functools.partial(rel_symbol, relativity_info)
     else:
         raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))

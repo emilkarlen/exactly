@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
-from exactly_lib.symbol.value_structure import ValueContainer, ValueDefinition
+from exactly_lib.symbol.value_structure import ValueContainer, SymbolDefinition
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.symbol.test_resources import value_structure_assertions as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
@@ -61,7 +61,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
                 with self.subTest():
                     # ARRANGE #
                     value_container = ValueContainer(Line(1, 'source code'), value)
-                    symbol = ValueDefinition('value name', value_container)
+                    symbol = SymbolDefinition('value name', value_container)
                     # ACT #
                     assertion = sut.equals_symbol(symbol, ignore_source_line=ignore_source_line)
                     assertion.apply_without_message(self, symbol)
@@ -72,8 +72,8 @@ class TestEqualsValueDefinition(unittest.TestCase):
         expected_value_container = ValueContainer(Line(4, 'source code 4'), common_value)
         actual_value_container = ValueContainer(Line(5, 'source code 5'), common_value)
         common_name = 'value name'
-        expected_symbol = ValueDefinition(common_name, expected_value_container)
-        actual_symbol = ValueDefinition(common_name, actual_value_container)
+        expected_symbol = SymbolDefinition(common_name, expected_value_container)
+        actual_symbol = SymbolDefinition(common_name, actual_value_container)
         # ACT #
         assertion = sut.equals_symbol(expected_symbol, ignore_source_line=True)
         assertion.apply_without_message(self, actual_symbol)
@@ -82,8 +82,8 @@ class TestEqualsValueDefinition(unittest.TestCase):
         # ARRANGE #
         common_value_container = ValueContainer(Line(1, 'source code'),
                                                 StringConstant('common string value'))
-        expected_symbol = ValueDefinition('expected value name', common_value_container)
-        actual_symbol = ValueDefinition('actual value name', common_value_container)
+        expected_symbol = SymbolDefinition('expected value name', common_value_container)
+        actual_symbol = SymbolDefinition('actual value name', common_value_container)
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             # ACT #
@@ -94,11 +94,11 @@ class TestEqualsValueDefinition(unittest.TestCase):
         # ARRANGE #
         common_name_source = Line(1, 'source code')
         common_name = 'value name'
-        expected_symbol = ValueDefinition(common_name,
-                                          ValueContainer(common_name_source,
+        expected_symbol = SymbolDefinition(common_name,
+                                           ValueContainer(common_name_source,
                                                                    StringConstant('expected string value')))
-        actual_symbol = ValueDefinition(common_name,
-                                        ValueContainer(common_name_source,
+        actual_symbol = SymbolDefinition(common_name,
+                                         ValueContainer(common_name_source,
                                                                  StringConstant('actual string value')))
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
