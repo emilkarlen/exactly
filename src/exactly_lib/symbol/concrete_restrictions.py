@@ -27,7 +27,7 @@ class StringRestriction(ValueRestriction):
                         symbol_name: str,
                         value_container: ValueContainer) -> str:
         if not isinstance(value_container.value, StringResolver):
-            return _invalid_type_msg(ValueType.STRING, value_container)
+            return _invalid_type_msg(ValueType.STRING, symbol_name, value_container)
         return None
 
 
@@ -45,7 +45,7 @@ class FileRefRelativityRestriction(ValueRestriction):
                         value_container: ValueContainer) -> str:
         value = value_container.value
         if not isinstance(value, FileRefResolver):
-            return _invalid_type_msg(ValueType.PATH, value_container)
+            return _invalid_type_msg(ValueType.PATH, symbol_name, value_container)
         file_ref = value.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         return is_satisfied_by(actual_relativity, self._accepted)
@@ -119,6 +119,7 @@ class ValueRestrictionVisitor:
 
 
 def _invalid_type_msg(expected: ValueType,
+                      symbol_name: str,
                       container_of_actual: ValueContainer) -> str:
     actual = container_of_actual.value
     if not isinstance(actual, SymbolValueResolver):
@@ -127,18 +128,25 @@ def _invalid_type_msg(expected: ValueType,
             str(actual)
         ))
     assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
-    lines = _invalid_type_header_lines(expected, actual.value_type)
+    lines = _invalid_type_header_lines(expected,
+                                       actual.value_type,
+                                       symbol_name,
+                                       container_of_actual)
     return '\n'.join(lines)
 
 
 def _invalid_type_header_lines(expected: ValueType,
-                               actual: ValueType) -> list:
+                               actual: ValueType,
+                               symbol_name: str,
+                               container_of_actual: ValueContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     from exactly_lib.help_texts.names.formatting import InstructionName
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
     ret_val = [
-        'Invalid type of symbol',
+        'Invalid type, of symbol "{}"'.format(symbol_name),
+        'defined at line {}: {}'.format(container_of_actual.definition_source.line_number,
+                                        container_of_actual.definition_source.text),
         '',
         'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
         'Found    : ' + help_texts.TYPE_INFO_DICT[actual].type_name,
