@@ -136,7 +136,7 @@ class AssertStdinFileIsSetToFile(Assertion):
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         file_path = self._file_reference.file_path_pre_or_post_sds(
-            environment.path_resolving_environment_pre_or_post_sds)
+            environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
         put.assertIsNotNone(actual_result.stdin.file_name)
         put.assertEqual(str(file_path),
                         actual_result.stdin.file_name,
