@@ -68,7 +68,7 @@ class SetupPhaseInstruction(TestCaseInstruction):
         a value X = Y (where Y is a symbol). Then the return value should contain
         an element that says <reference of Y> before the element that says <definition of X>.
 
-        :return: [`ValueUsage`]
+        :return: [`SymbolUsage`]
         """
         return []
 

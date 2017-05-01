@@ -28,7 +28,7 @@ class TestValueReference(unittest.TestCase):
     def test_WHEN_referenced_value_not_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        value_usage = vs.ValueReference('undefined', NoRestriction())
+        value_usage = vs.SymbolReference('undefined', NoRestriction())
         # ACT #
         actual = sut.validate_symbol_usage(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -39,8 +39,8 @@ class TestValueReference(unittest.TestCase):
             self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
-        value_usage = vs.ValueReference('val_name',
-                                        RestrictionThatCannotBeSatisfied())
+        value_usage = vs.SymbolReference('val_name',
+                                         RestrictionThatCannotBeSatisfied())
         # ACT #
         actual = sut.validate_symbol_usage(value_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -50,8 +50,8 @@ class TestValueReference(unittest.TestCase):
     def test_WHEN_referenced_value_is_in_symbol_table_and_satisfies_value_restriction_THEN_no_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
-        value_usage = vs.ValueReference('val_name',
-                                        RestrictionThatIsAlwaysSatisfied())
+        value_usage = vs.SymbolReference('val_name',
+                                         RestrictionThatIsAlwaysSatisfied())
         # ACT #
         actual = sut.validate_symbol_usage(value_usage, symbol_table)
         self.assertIsNone(actual, 'result should indicate success')
@@ -83,10 +83,10 @@ class TestValueDefinition(unittest.TestCase):
     def test_WHEN_defined_value_not_in_symbol_table_but_referenced_values_not_in_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('OTHER'))
-        value_usage = vs.ValueDefinition(
+        value_usage = vs.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
-                rel_symbol(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
+                rel_symbol(vs.SymbolReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(value_usage, symbol_table)
@@ -97,10 +97,10 @@ class TestValueDefinition(unittest.TestCase):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
         symbol_table = singleton_symbol_table(referenced_entry)
-        value_usage_to_check = vs.ValueDefinition(
+        value_usage_to_check = vs.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
-                rel_symbol(vs.ValueReference('REFERENCED', RestrictionThatCannotBeSatisfied()),
+                rel_symbol(vs.SymbolReference('REFERENCED', RestrictionThatCannotBeSatisfied()),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(value_usage_to_check, symbol_table)
@@ -112,10 +112,10 @@ class TestValueDefinition(unittest.TestCase):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
         symbol_table = singleton_symbol_table(referenced_entry)
-        value_usage_to_check = vs.ValueDefinition(
+        value_usage_to_check = vs.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
-                rel_symbol(vs.ValueReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
+                rel_symbol(vs.SymbolReference('REFERENCED', RestrictionThatIsAlwaysSatisfied()),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(value_usage_to_check, symbol_table)
@@ -140,7 +140,7 @@ class TestValidationOfList(unittest.TestCase):
         # ARRANGE #
         symbol_table = empty_symbol_table()
         valid_definition = symbol_of('symbol')
-        valid__reference = vs.ValueReference('symbol', NoRestriction())
+        valid__reference = vs.SymbolReference('symbol', NoRestriction())
         value_usages = [
             valid_definition,
             valid__reference,
@@ -153,7 +153,7 @@ class TestValidationOfList(unittest.TestCase):
         # ARRANGE #
         symbol_table = empty_symbol_table()
         valid_definition = symbol_of('name-of-definition')
-        invalid__reference = vs.ValueReference('undefined', NoRestriction())
+        invalid__reference = vs.SymbolReference('undefined', NoRestriction())
         value_usages = [
             valid_definition,
             invalid__reference,
@@ -165,9 +165,9 @@ class TestValidationOfList(unittest.TestCase):
                       actual.status)
 
 
-def symbol_of(name: str) -> vs.ValueDefinition:
-    return vs.ValueDefinition(name,
-                              vs.ValueContainer(Line(1, 'source code'),
+def symbol_of(name: str) -> vs.SymbolDefinition:
+    return vs.SymbolDefinition(name,
+                               vs.ValueContainer(Line(1, 'source code'),
                                                 StringConstant('string value')))
 
 

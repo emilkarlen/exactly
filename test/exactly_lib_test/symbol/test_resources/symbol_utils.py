@@ -4,8 +4,8 @@ from exactly_lib.symbol.concrete_restrictions import NoRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
-from exactly_lib.symbol.value_structure import ValueContainer, Value, ValueReference, ValueRestriction, \
-    ValueDefinition
+from exactly_lib.symbol.value_structure import ValueContainer, Value, SymbolReference, ValueRestriction, \
+    SymbolDefinition
 from exactly_lib.test_case_file_structure import file_ref as _file_ref
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.line_source import Line
@@ -28,12 +28,12 @@ def string_value_container(string_value: str,
                           StringConstant(string_value))
 
 
-def value_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> ValueReference:
-    return ValueReference(name, value_restriction)
+def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> SymbolReference:
+    return SymbolReference(name, value_restriction)
 
 
-def string_symbol(name: str, string_value: str = 'string value') -> ValueDefinition:
-    return ValueDefinition(name, string_value_container(string_value))
+def string_symbol(name: str, string_value: str = 'string value') -> SymbolDefinition:
+    return SymbolDefinition(name, string_value_container(string_value))
 
 
 def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
@@ -73,8 +73,8 @@ def file_ref_symbol(name: str,
                     file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                      relativity=RelOptionType.REL_CWD),
                     line_num: int = 1,
-                    source_line: str = 'value def line') -> ValueDefinition:
-    return ValueDefinition(name, file_ref_value_container(file_ref, line_num, source_line))
+                    source_line: str = 'value def line') -> SymbolDefinition:
+    return SymbolDefinition(name, file_ref_value_container(file_ref, line_num, source_line))
 
 
 def entry(name: str, value: Value = StringConstant('string value'),

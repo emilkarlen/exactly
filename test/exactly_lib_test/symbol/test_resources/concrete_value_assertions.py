@@ -218,7 +218,7 @@ def _symbol_table_with_values_matching_references(references: list) -> SymbolTab
     value_constructor = _ValueCorrespondingToValueRestriction()
     elements = {}
     for ref in references:
-        assert isinstance(ref, vs.ValueReference), "Informs IDE of type"
+        assert isinstance(ref, vs.SymbolReference), "Informs IDE of type"
         value_restriction = ref.value_restriction
         assert isinstance(value_restriction, concrete_restrictions.ValueRestriction)
         value = value_constructor.visit(value_restriction)

@@ -7,13 +7,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def equals_value_reference(expected_name: str,
                            value_restriction_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(stc.ValueReference,
+    return asrt.is_instance_with(stc.SymbolReference,
                                  asrt.and_([
                                      asrt.sub_component('name',
-                                                        stc.ValueReference.name.fget,
+                                                        stc.SymbolReference.name.fget,
                                                         asrt.equals(expected_name)),
                                      asrt.sub_component('value_restriction',
-                                                        stc.ValueReference.value_restriction.fget,
+                                                        stc.SymbolReference.value_restriction.fget,
                                                         value_restriction_assertion)
 
                                  ]))
@@ -28,7 +28,7 @@ class _EqualsValueReferences(asrt.ValueAssertion):
         self._expected = expected
         assert isinstance(expected, list), 'Value reference list must be a list'
         for idx, element in enumerate(expected):
-            assert isinstance(element, stc.ValueReference), 'Element must be a ValueReference #' + str(idx)
+            assert isinstance(element, stc.SymbolReference), 'Element must be a ValueReference #' + str(idx)
 
     def apply(self,
               put: unittest.TestCase,
@@ -41,9 +41,9 @@ class _EqualsValueReferences(asrt.ValueAssertion):
                         message_builder.apply('Number of value references'))
         for idx, expected_ref in enumerate(self._expected):
             actual_ref = value[idx]
-            put.assertIsInstance(actual_ref, stc.ValueReference)
-            assert isinstance(actual_ref, stc.ValueReference)
-            assert isinstance(expected_ref, stc.ValueReference)
+            put.assertIsInstance(actual_ref, stc.SymbolReference)
+            assert isinstance(actual_ref, stc.SymbolReference)
+            assert isinstance(expected_ref, stc.SymbolReference)
             expected_value_restriction = expected_ref.value_restriction
             element_assertion = equals_value_reference(expected_ref.name,
                                                        equals_value_restriction(expected_value_restriction))

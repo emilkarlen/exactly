@@ -4,7 +4,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.value_structure import ValueReference
+from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SYMBOL_OPTION_NAME
@@ -16,7 +16,7 @@ def parse_explicit_relativity_info(options: RelOptionsConfiguration,
     """
     :return None if relativity is not given explicitly
     
-    :rtype: None|`RelOptionType`|`ValueReference`
+    :rtype: None|`RelOptionType`|`SymbolReference`
     """
     if source.is_null:
         return None
@@ -31,7 +31,7 @@ def parse_explicit_relativity_info(options: RelOptionsConfiguration,
 
 
 def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
-                                 source: TokenStream2) -> ValueReference:
+                                 source: TokenStream2) -> SymbolReference:
     option_str = source.head.string
     if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
@@ -47,7 +47,7 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
                                                                           symbol_name)
         raise SingleInstructionInvalidArgumentException(msg)
     source.consume()
-    return ValueReference(symbol_name, FileRefRelativityRestriction(options.accepted_relativity_variants))
+    return SymbolReference(symbol_name, FileRefRelativityRestriction(options.accepted_relativity_variants))
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, FileRefRelativityRestriction
-from exactly_lib.symbol.value_structure import ValueReference
+from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib_test.symbol.test_resources import value_reference_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
@@ -16,14 +16,14 @@ class TestEqualsValueReference(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         value_name = 'value name'
-        value_reference = ValueReference(value_name, NoRestriction())
+        value_reference = SymbolReference(value_name, NoRestriction())
         assertion = sut.equals_value_reference(value_name, asrt.is_instance(NoRestriction))
         # ACT & ASSERT #
         assertion.apply_without_message(self, value_reference)
 
     def test_fail__different_name(self):
         # ARRANGE #
-        actual = ValueReference('actual value name', NoRestriction())
+        actual = SymbolReference('actual value name', NoRestriction())
         assertion = sut.equals_value_reference('expected value name', asrt.is_instance(NoRestriction))
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
@@ -32,7 +32,7 @@ class TestEqualsValueReference(unittest.TestCase):
     def test_fail__failing_assertion_on_value_restriction(self):
         # ARRANGE #
         common_name = 'actual value name'
-        actual = ValueReference(common_name, NoRestriction())
+        actual = SymbolReference(common_name, NoRestriction())
         put = test_case_with_failure_exception_set_to_test_exception()
         with put.assertRaises(TestException):
             # ACT #

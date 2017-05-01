@@ -17,7 +17,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_values import SymbolValueResolver
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
-from exactly_lib.symbol.value_structure import ValueDefinition, ValueContainer
+from exactly_lib.symbol.value_structure import SymbolDefinition, ValueContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -64,7 +64,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [concept.cross_reference_target for concept in concepts]
 
 
-def parse(source: ParseSource) -> ValueDefinition:
+def parse(source: ParseSource) -> SymbolDefinition:
     source_line = source.current_line
     token_stream = TokenStream2(source.remaining_part_of_current_line)
     source.consume_current_line()
@@ -95,7 +95,7 @@ def parse(source: ParseSource) -> ValueDefinition:
     if not token_stream.is_null:
         msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return ValueDefinition(name_str, ValueContainer(source_line, value))
+    return SymbolDefinition(name_str, ValueContainer(source_line, value))
 
 
 _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT

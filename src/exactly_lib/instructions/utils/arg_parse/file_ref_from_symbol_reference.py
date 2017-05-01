@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.symbol.concrete_restrictions import EitherStringOrFileRefRelativityRestriction, \
     StringRestriction, FileRefRelativityRestriction
 from exactly_lib.symbol.concrete_values import ValueVisitor, FileRefResolver, StringResolver
-from exactly_lib.symbol.value_structure import ValueReference, ValueContainer
+from exactly_lib.symbol.value_structure import SymbolReference, ValueContainer
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -23,8 +23,8 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
                  default_relativity: RelOptionType,
                  accepted_relativity_variants: PathRelativityVariants):
         self.default_relativity = default_relativity
-        self.symbol_reference = ValueReference(symbol_name,
-                                               EitherStringOrFileRefRelativityRestriction(
+        self.symbol_reference = SymbolReference(symbol_name,
+                                                EitherStringOrFileRefRelativityRestriction(
                                                    StringRestriction(),
                                                    FileRefRelativityRestriction(
                                                        accepted_relativity_variants),
