@@ -1,4 +1,4 @@
-from exactly_lib.symbol.concrete_values import FileRefResolver, StringResolver
+from exactly_lib.symbol.concrete_values import FileRefResolver, StringResolver, SymbolValueResolver, ValueType
 from exactly_lib.symbol.value_structure import ValueRestriction, Value
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
@@ -21,8 +21,7 @@ class StringRestriction(ValueRestriction):
 
     def is_satisfied_by(self, symbol_table: SymbolTable, value: Value) -> str:
         if not isinstance(value, StringResolver):
-            #  TODO [val-def] Error message should be human readable
-            return 'Not a StringValue: ' + str(value)
+            return _invalid_type_msg__string_expected(value)
         return None
 
 
@@ -105,3 +104,38 @@ class ValueRestrictionVisitor:
 
     def visit_string_or_file_ref_relativity(self, x: EitherStringOrFileRefRelativityRestriction):
         raise NotImplementedError()
+
+
+def _invalid_type_msg__string_expected(actual: Value) -> str:
+    if not isinstance(actual, SymbolValueResolver):
+        raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
+            type(SymbolValueResolver),
+            str(actual)
+        ))
+    assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
+    lines = _invalid_type_header_lines(ValueType.STRING, actual.value_type)
+    return '\n'.join(lines)
+
+
+def _invalid_type_header_lines(expected: ValueType,
+                               actual: ValueType) -> list:
+    from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+    from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
+    from exactly_lib.help_texts.names.formatting import InstructionName
+    def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
+    ret_val = [
+        'Invalid type of symbol',
+        '',
+        'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
+        'Found    : ' + help_texts.TYPE_INFO_DICT[actual].type_name,
+        '',
+        'Define a {} symbol using the {} instruction:'.format(help_texts.TYPE_INFO_DICT[expected].type_name,
+                                                              def_name_emphasised),
+        '',
+    ]
+    def_instruction_syntax_list = [
+        SYMBOL_DEFINITION_INSTRUCTION_NAME + ' ' + syntax
+        for syntax in help_texts.TYPE_INFO_DICT[expected].def_instruction_syntax_lines_function()
+    ]
+    ret_val.extend(def_instruction_syntax_list)
+    return ret_val
