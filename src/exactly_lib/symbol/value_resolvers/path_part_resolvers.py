@@ -30,7 +30,7 @@ class PathPartResolverAsNothing(PathPartResolver):
 
 class PathPartResolverAsStringSymbolReference(PathPartResolver):
     def __init__(self, symbol_name: str):
-        self._value_reference = SymbolReference(symbol_name, StringRestriction())
+        self._symbol_reference = SymbolReference(symbol_name, StringRestriction())
 
     def resolve(self, symbols: SymbolTable) -> PathPart:
         value_container = symbols.lookup(self._symbol_name)
@@ -42,11 +42,11 @@ class PathPartResolverAsStringSymbolReference(PathPartResolver):
 
     @property
     def references(self) -> list:
-        return [self._value_reference]
+        return [self._symbol_reference]
 
     @property
     def _symbol_name(self) -> str:
-        return self._value_reference.name
+        return self._symbol_reference.name
 
     def __str__(self):
         return '{}({})'.format(type(self), repr(self._symbol_name))

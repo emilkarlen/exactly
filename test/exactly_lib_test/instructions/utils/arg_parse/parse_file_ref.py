@@ -29,9 +29,9 @@ from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion impor
     equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
     equals_file_ref_resolver2
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
-from exactly_lib_test.symbol.test_resources.value_reference_assertions import equals_value_reference
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -435,9 +435,9 @@ class TestParseFromTokenStream2CasesWithRelSymbolRelativity(TestParsesBase):
                 PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, False),
             ]
             for accepted_relativities in accepted_relativities_variants:
-                expected_value_reference = SymbolReference(symbol_name,
-                                                           FileRefRelativityRestriction(accepted_relativities))
-                expected_file_ref_resolver = rel_symbol(expected_value_reference,
+                expected_symbol_reference = SymbolReference(symbol_name,
+                                                            FileRefRelativityRestriction(accepted_relativities))
+                expected_file_ref_resolver = rel_symbol(expected_symbol_reference,
                                                         PathPartResolverAsFixedPath(file_name_argument))
                 for path_suffix_is_required in [False, True]:
                     arg_config = _arg_config_for_rel_symbol_config(accepted_relativities)
@@ -474,8 +474,8 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                                                                                      PathPartAsFixedPath(
                                                                                          symbol_string_value)),
                                                              asrt.matches_sequence([
-                                                                 equals_value_reference(symbol_name,
-                                                                                        is_string_value_restriction)
+                                                                 equals_symbol_reference(symbol_name,
+                                                                                         is_string_value_restriction)
                                                              ]),
                                                              symbol_table_with_single_string_value(symbol_name,
                                                                                                    symbol_string_value)),
@@ -530,7 +530,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                      file_refs.of_rel_option(RelOptionType.REL_ACT,
                                              PathPartAsFixedPath(symbol_string_value)),
                      asrt.matches_sequence([
-                         equals_value_reference(
+                         equals_symbol_reference(
                              symbol_name,
                              equals_either_string_or_file_ref_relativity_restriction(
                                  EitherStringOrFileRefRelativityRestriction(
@@ -557,7 +557,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                  file_ref_resolver=equals_file_ref_resolver2(
                      file_refs.absolute_file_name('/absolute/path'),
                      asrt.matches_sequence([
-                         equals_value_reference(
+                         equals_symbol_reference(
                              symbol_name,
                              equals_either_string_or_file_ref_relativity_restriction(
                                  EitherStringOrFileRefRelativityRestriction(
@@ -584,7 +584,7 @@ class TestParseWithReferenceEmbeddedInArgument(TestParsesBase):
                  file_ref_resolver=equals_file_ref_resolver2(
                      file_ref_rel_home,
                      asrt.matches_sequence([
-                         equals_value_reference(
+                         equals_symbol_reference(
                              symbol_name,
                              equals_either_string_or_file_ref_relativity_restriction(
                                  EitherStringOrFileRefRelativityRestriction(
