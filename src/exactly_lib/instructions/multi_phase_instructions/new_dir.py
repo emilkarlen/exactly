@@ -1,5 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
@@ -39,9 +40,9 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                 dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = rel_path_doc.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
-                                                                         self.may_use_symbols,
-                                                                         self.rel_opt_arg_conf.path_suffix_is_required)
+        arguments = path_syntax.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
+                                                                        self.may_use_symbols,
+                                                                        self.rel_opt_arg_conf.path_suffix_is_required)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               []),
@@ -94,6 +95,6 @@ def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 
 
-_PATH_ARGUMENT = dt.PATH_ARGUMENT
+_PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
 
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION

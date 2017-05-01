@@ -2,9 +2,9 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.names import formatting
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string, \
     ensure_is_not_option_argument
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck, type_name
@@ -48,7 +48,7 @@ _TYPE_ARGUMENT_STR = 'TYPE'
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         self.type_argument = a.Named(_TYPE_ARGUMENT_STR)
-        self.path_argument = dt.PATH_ARGUMENT
+        self.path_argument = path_syntax.PATH_ARGUMENT
         super().__init__(name, {
             'PATH': self.path_argument.name,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),

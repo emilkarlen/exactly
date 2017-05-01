@@ -1,5 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
@@ -36,7 +37,7 @@ RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_file_ref.CONFIGURATION
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {})
-        self.path_arg = dt.FILE_ARGUMENT
+        self.path_arg = path_syntax.FILE_ARGUMENT
 
     def single_line_description(self) -> str:
         return 'Sets the contents of stdin for the act phase program'
@@ -49,7 +50,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [rel_path_doc.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+        arguments = [path_syntax.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
                      a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [

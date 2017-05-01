@@ -1,7 +1,8 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE, STRING_TYPE
+from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE, STRING_TYPE, EQUALS_ARGUMENT
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -42,7 +43,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def invokation_variants(self) -> list:
         symbol_name = a.Single(a.Multiplicity.MANDATORY, self.name)
-        equals = a.Single(a.Multiplicity.MANDATORY, a.Constant(_EQUALS_ARGUMENT))
+        equals = a.Single(a.Multiplicity.MANDATORY, a.Constant(EQUALS_ARGUMENT))
         path_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(PATH_TYPE))
         string_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(STRING_TYPE))
         string_value = a.Single(a.Multiplicity.MANDATORY, self.string_value)
@@ -57,10 +58,11 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             symbol_name,
             equals,
         ]
-        arguments_for_path_type.extend(rel_path_doc.mandatory_path_with_optional_relativity(
-            _PATH_ARGUMENT,
-            True,
-            REL_OPTION_ARGUMENT_CONFIGURATION.path_suffix_is_required))
+        arguments_for_path_type.extend(
+            path_syntax.mandatory_path_with_optional_relativity(
+                _PATH_ARGUMENT,
+                True,
+                REL_OPTION_ARGUMENT_CONFIGURATION.path_suffix_is_required))
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments_for_string_type)),
             InvokationVariant(self._cl_syntax_for_args(arguments_for_path_type)),
@@ -107,8 +109,8 @@ def parse(source: ParseSource) -> ValueDefinition:
         err_msg = 'Invalid symbol name: {}.\nA symbol name must only contain alphanum and _'.format(name_str)
         raise SingleInstructionInvalidArgumentException(err_msg)
     token_stream.consume()
-    if token_stream.is_null or token_stream.head.source_string != _EQUALS_ARGUMENT:
-        raise SingleInstructionInvalidArgumentException('Missing ' + _EQUALS_ARGUMENT)
+    if token_stream.is_null or token_stream.head.source_string != EQUALS_ARGUMENT:
+        raise SingleInstructionInvalidArgumentException('Missing ' + EQUALS_ARGUMENT)
     token_stream.consume()
     value = value_parser(token_stream)
     if not token_stream.is_null:
@@ -117,9 +119,7 @@ def parse(source: ParseSource) -> ValueDefinition:
     return ValueDefinition(name_str, ValueContainer(source_line, value))
 
 
-_EQUALS_ARGUMENT = '='
-
-_PATH_ARGUMENT = dt.PATH_ARGUMENT
+_PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
 
 REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
     PathRelativityVariants(frozenset(RelOptionType), True),
@@ -127,7 +127,7 @@ REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
     RelOptionType.REL_CWD)
 
 REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
-                                                                   dt.PATH_ARGUMENT,
+                                                                   path_syntax.PATH_ARGUMENT,
                                                                    False)
 
 _MAIN_DESCRIPTION_REST = """\

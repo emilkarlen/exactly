@@ -5,12 +5,13 @@ from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VAR
 from exactly_lib.help.utils.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help.utils.names.formatting import InstructionName
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
-from exactly_lib.instructions.utils.documentation.documentation_text import CommandLineRenderingHelper
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
@@ -22,7 +23,6 @@ class FileContentsHelpParts:
                  instruction_name: str,
                  checked_file: str,
                  initial_args_of_invokation_variants: list):
-        self.clr = CommandLineRenderingHelper()
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self.expected_file_arg = a.Named('EXPECTED-FILE')
@@ -37,7 +37,7 @@ class FileContentsHelpParts:
         self._parser = TextParser(format_map)
 
     def _cls(self, additional_argument_usages: list) -> str:
-        return self.clr.cl_syntax_for_args(self.initial_args_of_invokation_variants + additional_argument_usages)
+        return cl_syntax.cl_syntax_for_args(self.initial_args_of_invokation_variants + additional_argument_usages)
 
     def invokation_variants(self) -> list:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -84,14 +84,14 @@ class FileContentsHelpParts:
 
     def syntax_element_descriptions(self) -> list:
         mandatory_path = a.Single(a.Multiplicity.MANDATORY,
-                                  dt.FILE_ARGUMENT)
+                                  path_syntax.FILE_ARGUMENT)
         relativity_of_expected_arg = a.Named('RELATIVITY-OF-EXPECTED-FILE')
         optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
                                                    relativity_of_expected_arg)
         return [
                    SyntaxElementDescription(self.expected_file_arg.name,
                                             self._paragraphs("The file that contains the expected contents."),
-                                            [InvokationVariant(self.clr.cl_syntax_for_args(
+                                            [InvokationVariant(cl_syntax.cl_syntax_for_args(
                                                 [optional_relativity_of_expected,
                                                  mandatory_path]),
                                                 rel_opts.default_relativity_for_rel_opt_type(
@@ -101,13 +101,13 @@ class FileContentsHelpParts:
                                             ),
                ] + \
                rel_opts.relativity_syntax_element_descriptions(
-                   dt.FILE_ARGUMENT,
+                   path_syntax.FILE_ARGUMENT,
                    parse_here_doc_or_file_ref.CONFIGURATION.options,
                    relativity_of_expected_arg) + \
                [
                    SyntaxElementDescription(dt.REG_EX.name,
                                             self._parser.fnap('A Python regular expression.')),
-                   self.clr.cli_argument_syntax_element_description(
+                   cl_syntax.cli_argument_syntax_element_description(
                        self.with_replaced_env_vars_option,
                        with_replaced_env_vars_help(self._parser.format('the contents of {checked_file}'))),
                    dt.here_document_syntax_element_description(self.instruction_name,

@@ -13,8 +13,8 @@ from exactly_lib.help.program_modes.common.render_syntax_contents import invokat
 from exactly_lib.help.utils.names import suite_section_names, formatting
 from exactly_lib.help.utils.names.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.instructions.utils.documentation import documentation_text as doc_text
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -73,7 +73,7 @@ DOCUMENTATION = FileInterpreterActorDocumentation()
 
 class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
     def __init__(self):
-        self.file = doc_text.FILE_ARGUMENT
+        self.file = path_syntax.FILE_ARGUMENT
         self.argument = a.Named('ARGUMENT')
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         fm = {
