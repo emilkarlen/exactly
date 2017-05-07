@@ -12,7 +12,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class AssertConfigurationBase(ConfigurationBase):
@@ -48,7 +47,3 @@ class AssertConfigurationBase(ConfigurationBase):
                            sds_contents_before_main=sds_contents_before_main,
                            process_execution_settings=with_environ(environ),
                            os_services=os_services)
-
-    def expect_success_and_side_effects_on_files(self,
-                                                 main_side_effects_on_files: ValueAssertion):
-        return Expectation(main_side_effects_on_files=main_side_effects_on_files)

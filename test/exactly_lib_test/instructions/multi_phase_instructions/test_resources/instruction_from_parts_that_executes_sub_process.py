@@ -57,13 +57,6 @@ class Configuration(ConfigurationBase):
         return spe_parts.InstructionParser(self.instruction_info_for(instruction_name),
                                            execution_setup_parser)
 
-    def expect_success_and_side_effects_on_files(self,
-                                                 main_side_effects_on_files: va.ValueAssertion):
-        """
-        :param main_side_effects_on_files: An assertion on the SDS
-        """
-        raise NotImplementedError()
-
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()

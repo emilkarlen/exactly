@@ -61,13 +61,6 @@ class ConfigurationBase:
     def arrangement_with_timeout(self, timeout_in_seconds: int) -> ArrangementBase:
         raise NotImplementedError()
 
-    def expect_success_and_side_effects_on_files(self,
-                                                 main_side_effects_on_files: va.ValueAssertion):
-        """
-        :param main_side_effects_on_files: An assertion on the SDS
-        """
-        raise NotImplementedError()
-
     def expect_success(self,
                        main_side_effects_on_files: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()

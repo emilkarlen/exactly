@@ -11,7 +11,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class BeforeAssertConfigurationBase(ConfigurationBase):
@@ -48,7 +47,3 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
     def arrangement_with_timeout(self, timeout_in_seconds: int):
         return ic.arrangement(
             process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
-
-    def expect_success_and_side_effects_on_files(self,
-                                                 main_side_effects_on_files: ValueAssertion):
-        return ic.Expectation(main_side_effects_on_files=main_side_effects_on_files)
