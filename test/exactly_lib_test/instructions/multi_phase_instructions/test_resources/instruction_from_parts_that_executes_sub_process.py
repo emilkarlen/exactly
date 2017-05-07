@@ -203,9 +203,9 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
             source,
             execution_setup_parser,
             self.conf.arrangement(environ=environ),
-            self.conf.expect_success_and_side_effects_on_files(_InstructionLogDirContainsOutFiles(self.conf.phase(),
-                                                                                                  source_info,
-                                                                                                  expected_sub_process_result)),
+            self.conf.expect_success(_InstructionLogDirContainsOutFiles(self.conf.phase(),
+                                                                        source_info,
+                                                                        expected_sub_process_result)),
             instruction_name=instruction_name)
 
 
@@ -227,9 +227,9 @@ class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
             source,
             execution_setup_parser,
             self.conf.empty_arrangement(),
-            self.conf.expect_success_and_side_effects_on_files(_InstructionLogDirContainsOutFiles(self.conf.phase(),
-                                                                                                  source_info,
-                                                                                                  sub_process_result)),
+            self.conf.expect_success(_InstructionLogDirContainsOutFiles(self.conf.phase(),
+                                                                        source_info,
+                                                                        sub_process_result)),
             instruction_name=instruction_name)
 
 

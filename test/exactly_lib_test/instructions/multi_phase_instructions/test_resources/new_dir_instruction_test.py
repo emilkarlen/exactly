@@ -58,7 +58,7 @@ class TestCreationOfDirectory(TestCaseBase):
                 self,
                 source,
                 self._arrangement_with_cwd_as_non_of_the_relativity_root_dirs(),
-                self.conf.expect_success_and_side_effects_on_files(
+                self.conf.expect_success(
                     main_side_effects_on_files=SubDirOfSdsContainsExactly(
                         self.relativity_option.root_dir__sds,
                         DirContents([
