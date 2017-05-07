@@ -1,6 +1,7 @@
 import pathlib
-import types
 import unittest
+
+import types
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources import file_structure
@@ -58,6 +59,7 @@ class SubDirOfSdsContainsExactly(va.ValueAssertion):
               put: unittest.TestCase,
               sds: SandboxDirectoryStructure,
               message_builder: MessageBuilder = MessageBuilder()):
-        return va.sub_component(self._description,
-                                self.sds__2__root_dir_path,
-                                DirContainsExactly(self._expected_contents))
+        assertion = va.sub_component(self._description,
+                                     self.sds__2__root_dir_path,
+                                     DirContainsExactly(self._expected_contents))
+        assertion.apply(put, sds, message_builder)
