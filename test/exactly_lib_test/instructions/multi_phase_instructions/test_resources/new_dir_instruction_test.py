@@ -36,7 +36,7 @@ class TestCaseBase(unittest.TestCase):
     def _instruction_argument(self, argument_template: str) -> str:
         return argument_template.format(relativity_option=self.relativity_option.option_string)
 
-    def _arrangement_with_sub_dir_of_act_as_cwd(
+    def _arrangement_with_cwd_as_non_of_the_relativity_root_dirs(
             self,
             sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty()):
         return self.conf.arrangement(
@@ -57,7 +57,7 @@ class TestCreationOfDirectory(TestCaseBase):
             self.conf.run_test(
                 self,
                 source,
-                self._arrangement_with_sub_dir_of_act_as_cwd(),
+                self._arrangement_with_cwd_as_non_of_the_relativity_root_dirs(),
                 self.conf.expect_success_and_side_effects_on_files(
                     main_side_effects_on_files=SubDirOfSdsContainsExactly(
                         self.relativity_option.root_dir__sds,
@@ -77,7 +77,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
             self.conf.run_test(
                 self,
                 source,
-                self._arrangement_with_sub_dir_of_act_as_cwd(
+                self._arrangement_with_cwd_as_non_of_the_relativity_root_dirs(
                     sds_contents_before_main=self.relativity_option.populator_for_relativity_option_root__sds(
                         DirContents([
                             empty_file('file')
