@@ -68,7 +68,8 @@ class ConfigurationBase:
         """
         raise NotImplementedError()
 
-    def expect_success(self):
+    def expect_success(self,
+                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()
 
     def expect_failure_of_main(self,

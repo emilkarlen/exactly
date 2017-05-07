@@ -4,8 +4,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_environ
-from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, is_success, \
-    Expectation
+from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
@@ -24,8 +23,9 @@ class CleanupConfigurationBase(ConfigurationBase):
                              expectation):
         check(put, parser, source, arrangement, expectation)
 
-    def expect_success(self):
-        return is_success()
+    def expect_success(self,
+                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes()):
+        return Expectation(main_side_effects_on_files=main_side_effects_on_files)
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
