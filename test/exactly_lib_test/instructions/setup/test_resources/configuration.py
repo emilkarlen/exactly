@@ -23,8 +23,9 @@ class SetupConfigurationBase(ConfigurationBase):
                              expectation):
         ic.check(put, parser, source, arrangement, expectation)
 
-    def expect_success(self):
-        return ic.is_success()
+    def expect_success(self,
+                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes()):
+        return ic.Expectation(main_side_effects_on_files=main_side_effects_on_files)
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
