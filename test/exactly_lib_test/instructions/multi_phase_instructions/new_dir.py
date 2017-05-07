@@ -24,7 +24,14 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_u
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
-_SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'cwd-dir'
+
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestFailingScenarios),
+        suite_for_relativity_options(),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+    ])
 
 
 class TestParse(unittest.TestCase):
@@ -161,7 +168,7 @@ class test_creation_of_directory_with_single_path_component(TestWithRelativityOp
     def runTest(self):
         self._check_argument_with_relativity_option(
             '{relativity_option} dir-that-should-be-constructed',
-            arrangement_with_sub_dir_of_act_as_cwd(),
+            arrangement_with_cwd_as_none_of_the_relativity_roots(),
             Expectation(expected_action_result=is_success(),
                         expected_sds_contents_after=SubDirOfSdsContainsExactly(
                             self.relativity_option.root_dir__sds,
@@ -175,7 +182,7 @@ class test_creation_of_directory_with_multiple_path_components(TestWithRelativit
     def runTest(self):
         self._check_argument_with_relativity_option(
             '{relativity_option} first-component/second-component',
-            arrangement_with_sub_dir_of_act_as_cwd(),
+            arrangement_with_cwd_as_none_of_the_relativity_roots(),
             Expectation(expected_action_result=is_success(),
                         expected_sds_contents_after=SubDirOfSdsContainsExactly(
                             self.relativity_option.root_dir__sds,
@@ -191,7 +198,7 @@ class test_whole_argument_exists_as_directory__single_path_component(TestWithRel
     def runTest(self):
         self._check_argument_with_relativity_option(
             '{relativity_option} existing-directory',
-            arrangement_with_sub_dir_of_act_as_cwd(
+            arrangement_with_cwd_as_none_of_the_relativity_roots(
                 sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([
                         empty_dir('existing-directory')
@@ -210,7 +217,7 @@ class test_whole_argument_exists_as_directory__multiple_path_components(TestWith
     def runTest(self):
         self._check_argument_with_relativity_option(
             '{relativity_option} first-component/second-component',
-            arrangement_with_sub_dir_of_act_as_cwd(
+            arrangement_with_cwd_as_none_of_the_relativity_roots(
                 sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([
                         Dir('first-component', [
@@ -232,7 +239,7 @@ class test_initial_component_of_argument_exists_as_directory__multiple_path_comp
     def runTest(self):
         self._check_argument_with_relativity_option(
             '{relativity_option} first-component-that-exists/second-component',
-            arrangement_with_sub_dir_of_act_as_cwd(
+            arrangement_with_cwd_as_none_of_the_relativity_roots(
                 sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([
                         Dir('first-component-that-exists', [
@@ -253,7 +260,7 @@ class test_initial_component_of_argument_exists_as_directory__multiple_path_comp
 class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
     def test_argument_exists_as_non_directory__single_path_component(self):
         self._check_argument('file',
-                             arrangement_with_sub_dir_of_act_as_cwd(
+                             arrangement_with_cwd_as_none_of_the_relativity_roots(
                                  sds_contents_before=cwd_contents(DirContents([
                                      empty_file('file')
                                  ]))),
@@ -263,7 +270,7 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
 
     def test_argument_exists_as_non_directory__multiple_path_components(self):
         self._check_argument('existing-dir/existing-file',
-                             arrangement_with_sub_dir_of_act_as_cwd(
+                             arrangement_with_cwd_as_none_of_the_relativity_roots(
                                  sds_contents_before=cwd_contents(DirContents([
                                      Dir('existing-dir', [
                                          empty_file('existing-file')
@@ -275,7 +282,7 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
 
     def test_multi_path_component_with_middle_component_is_a_file(self):
         self._check_argument('existing-dir/existing-file/leaf-dir',
-                             arrangement_with_sub_dir_of_act_as_cwd(
+                             arrangement_with_cwd_as_none_of_the_relativity_roots(
                                  sds_contents_before=cwd_contents(DirContents([
                                      Dir('existing-dir', [
                                          empty_file('existing-file')
@@ -286,36 +293,20 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
                              ))
 
 
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParse),
-        unittest.makeSuite(TestFailingScenarios),
-        suite_for_relativity_options(),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
-    ])
-
-
-def arrangement_with_sub_dir_of_act_as_cwd(
+def arrangement_with_cwd_as_none_of_the_relativity_roots(
         sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty()) -> Arrangement:
-    return Arrangement(sds_contents_before=sds_contents_before,
-                       pre_contents_population_action=SETUP_CWD_ACTION)
+    return Arrangement(pre_contents_population_action=SETUP_CWD_ACTION,
+                       sds_contents_before=sds_contents_before)
 
 
-class MkDirIfNotExistsAndChangeToIt(SdsAction):
-    def __init__(self, sds_2_dir_path):
-        self.sds_2_dir_path = sds_2_dir_path
-
+class MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs(SdsAction):
     def apply(self, environment: PathResolvingEnvironmentPostSds):
-        dir_path = self.sds_2_dir_path(environment.sds)
+        dir_path = environment.sds.root_dir / 'not-a-std-sub-dir-of-sds'
         dir_path.mkdir(parents=True, exist_ok=True)
         os.chdir(str(dir_path))
 
 
-def mk_sub_dir_of_act_and_change_to_it(sub_dir_name: str) -> SdsAction:
-    return MkDirIfNotExistsAndChangeToIt(lambda sds: sds.act_dir / sub_dir_name)
-
-
-SETUP_CWD_ACTION = mk_sub_dir_of_act_and_change_to_it(_SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
+SETUP_CWD_ACTION = MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs()
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
