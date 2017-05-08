@@ -2,7 +2,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, \
-    TestCaseInstruction
+    PartialExecutionPhaseInstruction
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 
@@ -48,7 +48,7 @@ def default_settings() -> SetupSettingsBuilder:
     return SetupSettingsBuilder()
 
 
-class SetupPhaseInstruction(TestCaseInstruction):
+class SetupPhaseInstruction(PartialExecutionPhaseInstruction):
     """
     Abstract base class for instructions of the SETUP phase.
     """
@@ -56,21 +56,6 @@ class SetupPhaseInstruction(TestCaseInstruction):
     @property
     def phase(self) -> phase_identifier.Phase:
         return phase_identifier.SETUP
-
-    def symbol_usages(self) -> list:
-        """
-        Gives information about all symbols that this instruction uses.
-
-        This list should be available right after construction (and thus should not need
-        any phase step to have been executed).
-
-        The list should be in usage order. So, for example, if an instruction defines
-        a value X = Y (where Y is a symbol). Then the return value should contain
-        an element that says <reference of Y> before the element that says <definition of X>.
-
-        :return: [`SymbolUsage`]
-        """
-        return []
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
