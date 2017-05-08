@@ -86,12 +86,14 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
                                                                            phase_step.BEFORE_ASSERT__MAIN)
 
     def _new_assert_instruction(self):
-        return self.__recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_SDS,
+        return self.__recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_SYMBOLS,
+                                                                    phase_step.ASSERT__VALIDATE_PRE_SDS,
                                                                     phase_step.ASSERT__VALIDATE_POST_SETUP,
                                                                     phase_step.ASSERT__MAIN)
 
     def _new_cleanup_instruction(self):
-        return self.__recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_SDS,
+        return self.__recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_SYMBOLS,
+                                                                     phase_step.CLEANUP__VALIDATE_PRE_SDS,
                                                                      phase_step.CLEANUP__MAIN)
 
 

@@ -6,7 +6,7 @@ from exactly_lib.test_case.phases import common as instr
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import PartialExecutionPhaseInstruction
+from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, \
     ConfigurationBuilder
 from exactly_lib.test_case.phases.result import pfh
@@ -57,7 +57,7 @@ class ValidateSymbolsExecutor(ControlledInstructionExecutor):
                  instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
         self.__instruction_environment = instruction_environment
 
-    def apply(self, instruction: PartialExecutionPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: TestCaseInstructionWithSymbols) -> PartialInstructionControlledFailureInfo:
         return validate_symbol_usages(instruction.symbol_usages(),
                                       self.__instruction_environment.symbols)
 

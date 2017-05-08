@@ -42,14 +42,53 @@ class ConfigForBeforeAssertValidateSymbols(validate_symbols_utils.Configuration)
         return test.before_assert_phase_instruction_that(symbol_usages=do_raise(exception))
 
 
+class ConfigForAssertValidateSymbols(validate_symbols_utils.Configuration):
+    def __init__(self):
+        super().__init__(PartialPhase.ASSERT,
+                         phase_step.ASSERT__VALIDATE_SYMBOLS,
+                         expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT +
+                                                                   [phase_step.ASSERT__VALIDATE_SYMBOLS])
+
+    def instruction_that_returns(self, symbol_usages: list) -> TestCaseInstruction:
+        return test.assert_phase_instruction_that(symbol_usages=do_return(symbol_usages))
+
+    def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
+        return test.assert_phase_instruction_that(symbol_usages=do_raise(exception))
+
+
+class ConfigForCleanuptValidateSymbols(validate_symbols_utils.Configuration):
+    def __init__(self):
+        super().__init__(PartialPhase.CLEANUP,
+                         phase_step.CLEANUP__VALIDATE_SYMBOLS,
+                         expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ASSERT +
+                                                                   [phase_step.CLEANUP__VALIDATE_SYMBOLS])
+
+    def instruction_that_returns(self, symbol_usages: list) -> TestCaseInstruction:
+        return test.cleanup_phase_instruction_that(symbol_usages=do_return(symbol_usages))
+
+    def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
+        return test.cleanup_phase_instruction_that(symbol_usages=do_raise(exception))
+
+
 ALL_RECORDING_INSTRUCTIONS_IN_SETUP = [phase_step.SETUP__VALIDATE_SYMBOLS,
                                        phase_step.SETUP__VALIDATE_SYMBOLS]
+
+ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT = [phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
+                                               phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS]
+
+ALL_RECORDING_INSTRUCTIONS_IN_ASSERT = [phase_step.ASSERT__VALIDATE_SYMBOLS,
+                                        phase_step.ASSERT__VALIDATE_SYMBOLS]
 
 
 def _configurations() -> list:
     return [
         ConfigForSetupValidateSymbols(),
         ConfigForBeforeAssertValidateSymbols(),
+        ConfigForAssertValidateSymbols(),
+        ConfigForCleanuptValidateSymbols(),
     ]
 
 

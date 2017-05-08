@@ -135,7 +135,7 @@ class TestCaseInstruction(Instruction):
         raise NotImplementedError()
 
 
-class PartialExecutionPhaseInstruction(TestCaseInstruction):
+class TestCaseInstructionWithSymbols(TestCaseInstruction):
     @property
     def phase(self) -> Phase:
         raise NotImplementedError()
