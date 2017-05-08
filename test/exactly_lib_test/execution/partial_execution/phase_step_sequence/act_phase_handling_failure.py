@@ -37,8 +37,8 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         [
-                            phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
@@ -56,6 +56,7 @@ class Test(TestCaseBase):
                             'error in act/validate-pre-sds'),
                         [
                             phase_step.SETUP__VALIDATE_SYMBOLS,
+                            phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
@@ -71,8 +72,8 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             test.ImplementationErrorTestException),
+                        SYMBOL_VALIDATION_STEPS__ONCE +
                         [
-                            phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
