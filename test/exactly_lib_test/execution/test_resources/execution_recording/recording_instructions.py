@@ -33,10 +33,12 @@ class RecordingInstructionsFactory:
             main=self._do_record_and_return_sh(value_for_main))
 
     def new_before_assert_instruction(self,
+                                      value_for_symbol_usages,
                                       value_for_validate_pre_sds,
                                       value_for_validate_post_sds,
                                       value_for_main) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
+            symbol_usages_initial_action=self._do_record_first_invokation(value_for_symbol_usages),
             validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
             validate_post_setup=self._do_record_and_return_svh(value_for_validate_post_sds),
             main=self._do_record_and_return_sh(value_for_main))

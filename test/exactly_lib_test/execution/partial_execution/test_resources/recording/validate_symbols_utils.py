@@ -19,13 +19,13 @@ class Configuration:
     def __init__(self,
                  phase: PartialPhase,
                  step: PhaseStep,
-                 expected_steps: list):
+                 expected_steps_before_failing_instruction: list):
         super().__init__()
         self.phase = phase
         self.step = step
-        self.expected_steps = expected_steps
+        self.expected_steps_before_failing_instruction = expected_steps_before_failing_instruction
 
-    def instruction_that_returns(self, return_value: list) -> TestCaseInstruction:
+    def instruction_that_returns(self, symbol_usages: list) -> TestCaseInstruction:
         raise NotImplementedError()
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
@@ -35,7 +35,8 @@ class Configuration:
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTests([TestValidationError(configuration),
-                      TestImplementationError(configuration)])
+                      TestImplementationError(configuration)
+                      ])
     return ret_val
 
 
@@ -62,8 +63,8 @@ class TestValidationError(TestCaseBase):
                             conf.step,
                             test_case.the_extra(conf.phase)[0].first_line,
                             asrt.is_instance(str)),
-                        conf.expected_steps,
-                        False)
+                        conf.expected_steps_before_failing_instruction,
+                        sandbox_directory_structure_should_exist=False)
         )
 
 
@@ -81,8 +82,8 @@ class TestImplementationError(TestCaseBase):
                             conf.step,
                             test_case.the_extra(conf.phase)[0].first_line,
                             test.ImplementationErrorTestException),
-                        conf.expected_steps,
-                        False))
+                        conf.expected_steps_before_failing_instruction,
+                        sandbox_directory_structure_should_exist=False))
 
 
 def _reference_to_undefined_symbol() -> SymbolReference:

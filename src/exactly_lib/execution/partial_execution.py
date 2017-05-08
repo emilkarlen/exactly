@@ -204,6 +204,7 @@ class _PartialExecutor:
         self.__set_pre_sds_environment_variables()
         res = self._sequence([
             self.__setup__validate_symbols,
+            self.__before_assert__validate_symbols,
             self.__setup__validate_pre_sds,
             self.__act__create_executor_and_validate_pre_sds,
             self.__before_assert__validate_pre_sds,
@@ -272,10 +273,8 @@ class _PartialExecutor:
         self.__set_post_sds_environment_variables()
 
     def __setup__validate_symbols(self) -> PartialResult:
-        return self.__run_instructions_phase_step(phase_step.SETUP__VALIDATE_SYMBOLS,
-                                                  phase_step_executors.ValidateSymbolsExecutor(
-                                                      self.__instruction_environment_pre_sds),
-                                                  self.__test_case.setup_phase)
+        return self.__validate_symbols(phase_step.SETUP__VALIDATE_SYMBOLS,
+                                       self.__test_case.setup_phase)
 
     def __setup__validate_pre_sds(self) -> PartialResult:
         return self.__run_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_SDS,
@@ -318,6 +317,10 @@ class _PartialExecutor:
                                  None,
                                  PhaseFailureInfo(phase_step.ACT__VALIDATE_PRE_SDS,
                                                   new_failure_details_from_exception(ex)))
+
+    def __before_assert__validate_symbols(self) -> PartialResult:
+        return self.__validate_symbols(phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
+                                       self.__test_case.before_assert_phase)
 
     def __before_assert__validate_pre_sds(self) -> PartialResult:
         return self.__run_instructions_phase_step(
@@ -397,6 +400,14 @@ class _PartialExecutor:
                 self.__post_sds_environment(phase_identifier.BEFORE_ASSERT),
                 self.os_services),
             self.__test_case.before_assert_phase)
+
+    def __validate_symbols(self,
+                           step: PhaseStep,
+                           phase_contents: SectionContents) -> PartialResult:
+        return self.__run_instructions_phase_step(step,
+                                                  phase_step_executors.ValidateSymbolsExecutor(
+                                                      self.__instruction_environment_pre_sds),
+                                                  phase_contents)
 
     def __set_pre_sds_environment_variables(self):
         self.__configuration.environ.update(

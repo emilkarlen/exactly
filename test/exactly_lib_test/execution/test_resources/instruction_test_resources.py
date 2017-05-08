@@ -63,7 +63,7 @@ def before_assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_
                                          main=do_return(sh.new_sh_success()),
                                          main_initial_action=None,
                                          symbol_usages_initial_action=None,
-                                         symbol_usages=do_return([])) -> AssertPhaseInstruction:
+                                         symbol_usages=do_return([])) -> BeforeAssertPhaseInstruction:
     return _BeforeAssertPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                              _action_of(validate_post_setup_initial_action, validate_post_setup),
                                              _action_of(main_initial_action, main),

@@ -73,7 +73,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
                                                                  phase_step.SETUP__VALIDATE_POST_SETUP)
 
     def _new_before_assert_instruction(self):
-        return self.recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
+        return self.recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
+                                                                         phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
                                                                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                                                                          phase_step.BEFORE_ASSERT__MAIN)
 
