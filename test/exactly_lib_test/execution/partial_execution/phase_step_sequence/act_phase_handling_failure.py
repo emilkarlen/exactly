@@ -15,7 +15,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
     prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises, \
-    action_that_returns
+    action_that_returns, action_that_raises
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_reference
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForPhaseFailure
 
@@ -32,6 +32,19 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_symbol_usages=action_that_returns(symbol_usages_with_ref_to_undefined_symbol)),
             Expectation(PartialResultStatus.VALIDATE,
+                        ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
+                        [
+                            phase_step.SETUP__VALIDATE_SYMBOLS,
+                            phase_step.ACT__VALIDATE_SYMBOLS,
+                        ],
+                        sandbox_directory_structure_should_exist=False))
+
+    def test_implementation_error_in_validate_symbols(self):
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case,
+                        act_executor_symbol_usages=action_that_raises(test.ImplementationErrorTestException())),
+            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
                             phase_step.SETUP__VALIDATE_SYMBOLS,

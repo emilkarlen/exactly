@@ -15,6 +15,13 @@ def action_that_returns(ret_val):
     return f
 
 
+def action_that_raises(ex: Exception):
+    def f(*args, **kwargs):
+        raise ex
+
+    return f
+
+
 def validate_action_that_returns(ret_val: svh.SuccessOrValidationErrorOrHardError):
     def f(*args, **kwargs):
         return ret_val
