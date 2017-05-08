@@ -133,3 +133,24 @@ class TestCaseInstruction(Instruction):
     @property
     def phase(self) -> Phase:
         raise NotImplementedError()
+
+
+class PartialExecutionPhaseInstruction(TestCaseInstruction):
+    @property
+    def phase(self) -> Phase:
+        raise NotImplementedError()
+
+    def symbol_usages(self) -> list:
+        """
+        Gives information about all symbols that this instruction uses.
+
+        This list should be available right after construction (and thus should not need
+        any phase step to have been executed).
+
+        The list should be in usage order. So, for example, if an instruction defines
+        a value X = Y (where Y is a symbol). Then the return value should contain
+        an element that says <reference of Y> before the element that says <definition of X>.
+
+        :return: [`SymbolUsage`]
+        """
+        return []
