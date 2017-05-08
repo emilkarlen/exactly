@@ -3,7 +3,7 @@ from enum import Enum
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep, TestCaseInstruction
+    InstructionEnvironmentForPreSdsStep, TestCaseInstructionWithSymbols
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.result.sh import SuccessOrHardError
 
@@ -14,7 +14,7 @@ class PreviousPhase(Enum):
     ASSERT = 3
 
 
-class CleanupPhaseInstruction(TestCaseInstruction):
+class CleanupPhaseInstruction(TestCaseInstructionWithSymbols):
     """
     Abstract base class for instructions of the CLEANUP phase.
     """

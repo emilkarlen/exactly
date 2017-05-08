@@ -3,6 +3,8 @@ from exactly_lib.execution.phase_step_identifiers import phase_step_simple as ph
 SYMBOL_VALIDATION_STEPS__ONCE = [
     phase_step.SETUP__VALIDATE_SYMBOLS,
     phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
+    phase_step.ASSERT__VALIDATE_SYMBOLS,
+    phase_step.CLEANUP__VALIDATE_SYMBOLS,
 ]
 
 SYMBOL_VALIDATION_STEPS__TWICE = [
@@ -11,6 +13,12 @@ SYMBOL_VALIDATION_STEPS__TWICE = [
 
     phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
     phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
+
+    phase_step.ASSERT__VALIDATE_SYMBOLS,
+    phase_step.ASSERT__VALIDATE_SYMBOLS,
+
+    phase_step.CLEANUP__VALIDATE_SYMBOLS,
+    phase_step.CLEANUP__VALIDATE_SYMBOLS,
 ]
 
 PRE_SDS_VALIDATION_STEPS__ONCE = [

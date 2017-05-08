@@ -205,6 +205,8 @@ class _PartialExecutor:
         res = self._sequence([
             self.__setup__validate_symbols,
             self.__before_assert__validate_symbols,
+            self.__assert__validate_symbols,
+            self.__cleanup__validate_symbols,
             self.__setup__validate_pre_sds,
             self.__act__create_executor_and_validate_pre_sds,
             self.__before_assert__validate_pre_sds,
@@ -276,6 +278,18 @@ class _PartialExecutor:
         return self.__validate_symbols(phase_step.SETUP__VALIDATE_SYMBOLS,
                                        self.__test_case.setup_phase)
 
+    def __before_assert__validate_symbols(self) -> PartialResult:
+        return self.__validate_symbols(phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
+                                       self.__test_case.before_assert_phase)
+
+    def __assert__validate_symbols(self) -> PartialResult:
+        return self.__validate_symbols(phase_step.ASSERT__VALIDATE_SYMBOLS,
+                                       self.__test_case.assert_phase)
+
+    def __cleanup__validate_symbols(self) -> PartialResult:
+        return self.__validate_symbols(phase_step.CLEANUP__VALIDATE_SYMBOLS,
+                                       self.__test_case.cleanup_phase)
+
     def __setup__validate_pre_sds(self) -> PartialResult:
         return self.__run_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_SDS,
                                                   phase_step_executors.SetupValidatePreSdsExecutor(
@@ -317,10 +331,6 @@ class _PartialExecutor:
                                  None,
                                  PhaseFailureInfo(phase_step.ACT__VALIDATE_PRE_SDS,
                                                   new_failure_details_from_exception(ex)))
-
-    def __before_assert__validate_symbols(self) -> PartialResult:
-        return self.__validate_symbols(phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
-                                       self.__test_case.before_assert_phase)
 
     def __before_assert__validate_pre_sds(self) -> PartialResult:
         return self.__run_instructions_phase_step(

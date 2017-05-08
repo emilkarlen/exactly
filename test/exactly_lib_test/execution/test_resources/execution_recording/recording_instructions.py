@@ -44,19 +44,23 @@ class RecordingInstructionsFactory:
             main=self._do_record_and_return_sh(value_for_main))
 
     def new_assert_instruction(self,
+                               value_for_symbol_usages,
                                value_for_validate_pre_sds,
                                value_for_validate,
                                value_for_execute) -> AssertPhaseInstruction:
         return assert_phase_instruction_that(
+            symbol_usages_initial_action=self._do_record_first_invokation(value_for_symbol_usages),
             validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
             validate_post_setup=self._do_record_and_return_svh(value_for_validate),
             main=self._do_record_and_return(value_for_execute,
                                             pfh.new_pfh_pass()))
 
     def new_cleanup_instruction(self,
+                                value_for_symbol_usages,
                                 value_for_validate_pre_sds,
                                 first_value_of_pair_for_main) -> CleanupPhaseInstruction:
         return cleanup_phase_instruction_that(
+            symbol_usages_initial_action=self._do_record_first_invokation(value_for_symbol_usages),
             validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
             main=self._do_cleanup_main(first_value_of_pair_for_main))
 
