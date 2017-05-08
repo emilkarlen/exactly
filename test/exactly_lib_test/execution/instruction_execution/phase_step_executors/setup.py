@@ -58,7 +58,7 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'defined1', 'defined2'}))
              ),
-            ('WHEN at least one referenced value is in symbol table THEN error',
+            ('WHEN at least one referenced value is not in symbol table THEN error',
              Arrangement(symbol_usages=[sd_tr.symbol_reference('defined'),
                                         sd_tr.symbol_reference('undefined')],
                          environment=env_with_symbol_table([symbol_of('defined')])),
