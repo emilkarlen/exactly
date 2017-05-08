@@ -316,13 +316,8 @@ class _PartialExecutor:
                 return failure_con.apply(PartialResultStatus(res.status.value),
                                          new_failure_details_from_message(res.error_message))
 
-        try:
-            return action()
-        except Exception as ex:
-            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                 None,
-                                 PhaseFailureInfo(phase_step.ACT__VALIDATE_SYMBOLS,
-                                                  new_failure_details_from_exception(ex)))
+        return self.__execute_action_and_catch_implementation_exception(action,
+                                                                        phase_step.ACT__VALIDATE_SYMBOLS)
 
     def __act__validate_pre_sds(self) -> PartialResult:
         failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS, None)
@@ -335,13 +330,8 @@ class _PartialExecutor:
                 return failure_con.apply(PartialResultStatus(res.status.value),
                                          new_failure_details_from_message(res.failure_message))
 
-        try:
-            return action()
-        except Exception as ex:
-            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                 None,
-                                 PhaseFailureInfo(phase_step.ACT__VALIDATE_PRE_SDS,
-                                                  new_failure_details_from_exception(ex)))
+        return self.__execute_action_and_catch_implementation_exception(action,
+                                                                        phase_step.ACT__VALIDATE_PRE_SDS)
 
     def __before_assert__validate_pre_sds(self) -> PartialResult:
         return self.__run_instructions_phase_step(
@@ -485,6 +475,17 @@ class _PartialExecutor:
             self.__instruction_environment_pre_sds,
             instructions)
         return new_partial_result_pass(None)
+
+    @staticmethod
+    def __execute_action_and_catch_implementation_exception(action_that_returns_partial_result,
+                                                            step: PhaseStep) -> PartialResult:
+        try:
+            return action_that_returns_partial_result()
+        except Exception as ex:
+            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                 None,
+                                 PhaseFailureInfo(step,
+                                                  new_failure_details_from_exception(ex)))
 
 
 class _PhaseFailureResultConstructor:
