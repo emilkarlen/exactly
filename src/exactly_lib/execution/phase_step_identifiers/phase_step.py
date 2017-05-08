@@ -68,6 +68,7 @@ SETUP__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.SETUP)
 SETUP__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.SETUP)
 SETUP__MAIN = _main_step(phase_identifier.SETUP)
 
+ACT__VALIDATE_SYMBOLS = _validate_symbols_step(phase_identifier.ACT)
 ACT__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.ACT)
 ACT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ACT)
 ACT__PREPARE = PhaseStep(phase_identifier.ACT, 'act-prepare')

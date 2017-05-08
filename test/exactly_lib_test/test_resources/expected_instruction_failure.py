@@ -192,6 +192,12 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
                                                           exception_class_or_none)))
 
     @staticmethod
+    def new_with_step(phase_step: PhaseStep):
+        return ExpectedFailureForPhaseFailure(phase_step,
+                                              asrt.anything_goes(),
+                                              None)
+
+    @staticmethod
     def new_with_message(phase_step: PhaseStep,
                          error_message: str):
         return ExpectedFailureForPhaseFailure(phase_step,

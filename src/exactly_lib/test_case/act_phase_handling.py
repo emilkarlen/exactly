@@ -2,14 +2,14 @@ import pathlib
 
 from exactly_lib.test_case.eh import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+    InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command, ProcessExecutionSettings
 from exactly_lib.util.std import StdFiles
 
 
-class ActSourceAndExecutor:
+class ActSourceAndExecutor(SymbolUser):
     """
     Valid act phase source together with functionality for executing it.
     """

@@ -21,6 +21,7 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
                  prepare_initial_action=test_actions.do_nothing,
                  execute_action=test_actions.execute_action_that_returns_exit_code(0),
                  execute_initial_action=test_actions.do_nothing,
+                 symbol_usages_action=test_actions.action_that_returns([])
                  ):
         self.__validate_pre_sds_initial_action = validate_pre_sds_initial_action
         self.__validate_pre_sds_action = validate_pre_sds_action
@@ -30,6 +31,10 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
         self.__prepare_action = prepare_action
         self.__execute_initial_action = execute_initial_action
         self.__execute_action = execute_action
+        self.__symbol_usages_action = symbol_usages_action
+
+    def symbol_usages(self) -> list:
+        return self.__symbol_usages_action()
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
