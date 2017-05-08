@@ -61,10 +61,13 @@ def before_assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_
                                          validate_post_setup=do_return(svh.new_svh_success()),
                                          validate_post_setup_initial_action=None,
                                          main=do_return(sh.new_sh_success()),
-                                         main_initial_action=None) -> AssertPhaseInstruction:
+                                         main_initial_action=None,
+                                         symbol_usages_initial_action=None,
+                                         symbol_usages=do_return([])) -> AssertPhaseInstruction:
     return _BeforeAssertPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                              _action_of(validate_post_setup_initial_action, validate_post_setup),
-                                             _action_of(main_initial_action, main))
+                                             _action_of(main_initial_action, main),
+                                             _action_of(symbol_usages_initial_action, symbol_usages))
 
 
 def assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
@@ -72,18 +75,24 @@ def assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success
                                   validate_post_setup=do_return(svh.new_svh_success()),
                                   validate_post_setup_initial_action=None,
                                   main=do_return(pfh.new_pfh_pass()),
-                                  main_initial_action=None) -> AssertPhaseInstruction:
+                                  main_initial_action=None,
+                                  symbol_usages_initial_action=None,
+                                  symbol_usages=do_return([])) -> AssertPhaseInstruction:
     return _AssertPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                        _action_of(validate_post_setup_initial_action, validate_post_setup),
-                                       _action_of(main_initial_action, main))
+                                       _action_of(main_initial_action, main),
+                                       _action_of(symbol_usages_initial_action, symbol_usages))
 
 
 def cleanup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
                                    validate_pre_sds_initial_action=None,
                                    main=do_return(sh.new_sh_success()),
-                                   main_initial_action=None) -> CleanupPhaseInstruction:
+                                   main_initial_action=None,
+                                   symbol_usages_initial_action=None,
+                                   symbol_usages=do_return([])) -> CleanupPhaseInstruction:
     return _CleanupPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
-                                        _action_of(main_initial_action, main))
+                                        _action_of(main_initial_action, main),
+                                        _action_of(symbol_usages_initial_action, symbol_usages))
 
 
 class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstruction):
@@ -140,17 +149,24 @@ class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
     def __init__(self,
                  validate_pre_sds,
                  validate_post_setup,
-                 main):
+                 main,
+                 symbol_usages):
         self._validate_pre_sds = validate_pre_sds
         self._validate_post_setup = validate_post_setup
         self._main = main
+        self._symbol_usages = symbol_usages
+
+    def symbol_usages(self) -> list:
+        return self._symbol_usages()
 
     def validate_pre_sds(self,
-                         environment: instrs.InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: instrs.InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_pre_sds(environment)
 
     def validate_post_setup(self,
-                            environment: instrs.InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: instrs.InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 
     def main(self,
@@ -163,13 +179,19 @@ class _AssertPhaseInstructionThat(AssertPhaseInstruction):
     def __init__(self,
                  validate_pre_sds,
                  validate_post_setup,
-                 main):
+                 main,
+                 symbol_usages):
         self._validate_pre_sds = validate_pre_sds
         self._validate_post_setup = validate_post_setup
         self._main = main
+        self._symbol_usages = symbol_usages
+
+    def symbol_usages(self) -> list:
+        return self._symbol_usages()
 
     def validate_pre_sds(self,
-                         environment: instrs.InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: instrs.InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_pre_sds(environment)
 
     def validate_post_setup(self,
@@ -186,9 +208,14 @@ class _AssertPhaseInstructionThat(AssertPhaseInstruction):
 class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
     def __init__(self,
                  validate_pre_sds,
-                 main):
+                 main,
+                 symbol_usages):
         self.do_validate_pre_sds = validate_pre_sds
         self.do_main = main
+        self._symbol_usages = symbol_usages
+
+    def symbol_usages(self) -> list:
+        return self._symbol_usages()
 
     def validate_pre_sds(self,
                          environment: instrs.InstructionEnvironmentForPreSdsStep) \
