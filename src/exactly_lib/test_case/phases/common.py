@@ -135,10 +135,12 @@ class TestCaseInstruction(Instruction):
         raise NotImplementedError()
 
 
-class TestCaseInstructionWithSymbols(TestCaseInstruction):
-    @property
-    def phase(self) -> Phase:
-        raise NotImplementedError()
+class SymbolUser:
+    """
+    An object that may use symbols.
+    
+    Such an object must be able to tell which symbols are used and how they are used.
+    """
 
     def symbol_usages(self) -> list:
         """
@@ -154,3 +156,9 @@ class TestCaseInstructionWithSymbols(TestCaseInstruction):
         :return: [`SymbolUsage`]
         """
         return []
+
+
+class TestCaseInstructionWithSymbols(TestCaseInstruction, SymbolUser):
+    @property
+    def phase(self) -> Phase:
+        raise NotImplementedError()

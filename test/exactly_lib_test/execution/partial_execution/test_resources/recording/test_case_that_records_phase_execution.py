@@ -1,5 +1,6 @@
-import types
 import unittest
+
+import types
 
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.test_case import test_case_doc
@@ -15,7 +16,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    execute_action_that_returns_exit_code, prepare_action_that_returns
+    execute_action_that_returns_exit_code, prepare_action_that_returns, action_that_returns
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
@@ -26,12 +27,14 @@ class Arrangement(tuple):
                 act_executor_prepare=prepare_action_that_returns(sh.new_sh_success()),
                 act_executor_execute=execute_action_that_returns_exit_code(),
                 act_executor_validate_pre_sds=validate_action_that_returns(svh.new_svh_success()),
+                act_executor_symbol_usages=action_that_returns([])
                 ):
         return tuple.__new__(cls, (test_case_generator,
                                    act_executor_validate_post_setup,
                                    act_executor_prepare,
                                    act_executor_execute,
-                                   act_executor_validate_pre_sds))
+                                   act_executor_validate_pre_sds,
+                                   act_executor_symbol_usages))
 
     @property
     def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
@@ -52,6 +55,10 @@ class Arrangement(tuple):
     @property
     def act_executor_execute(self) -> types.FunctionType:
         return self[3]
+
+    @property
+    def act_executor_symbol_usages(self) -> types.FunctionType:
+        return self[5]
 
 
 class Expectation(tuple):
@@ -140,6 +147,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      expectation: Expectation,
                                      dbg_do_not_delete_dir_structure=False):
     constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
+        symbol_usages_action=arrangement.act_executor_symbol_usages,
         validate_post_setup_action=arrangement.act_executor_validate_post_setup,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,

@@ -204,11 +204,12 @@ class _PartialExecutor:
         self.__set_pre_sds_environment_variables()
         res = self._sequence([
             self.__setup__validate_symbols,
+            self.__act__create_executor_and_validate_symbols,
             self.__before_assert__validate_symbols,
             self.__assert__validate_symbols,
             self.__cleanup__validate_symbols,
             self.__setup__validate_pre_sds,
-            self.__act__create_executor_and_validate_pre_sds,
+            self.__act__validate_pre_sds,
             self.__before_assert__validate_pre_sds,
             self.__assert__validate_pre_sds,
             self.__cleanup__validate_pre_sds,
@@ -278,6 +279,10 @@ class _PartialExecutor:
         return self.__validate_symbols(phase_step.SETUP__VALIDATE_SYMBOLS,
                                        self.__test_case.setup_phase)
 
+    def __act__validate_symbols(self) -> PartialResult:
+        return self.__validate_symbols(phase_step.ACT__VALIDATE_SYMBOLS,
+                                       self.__test_case.setup_phase)
+
     def __before_assert__validate_symbols(self) -> PartialResult:
         return self.__validate_symbols(phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
                                        self.__test_case.before_assert_phase)
@@ -296,27 +301,33 @@ class _PartialExecutor:
                                                       self.__instruction_environment_pre_sds),
                                                   self.__test_case.setup_phase)
 
-    def __act__create_executor_and_validate_pre_sds(self) -> PartialResult:
+    def __act__create_executor_and_validate_symbols(self) -> PartialResult:
+        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS, None)
+
+        def action():
+            res = self.__act__create_and_set_executor(phase_step.ACT__VALIDATE_SYMBOLS)
+            if res.is_failure:
+                return res
+            executor = phase_step_executors.ValidateSymbolsExecutor(self.__instruction_environment_pre_sds)
+            res = executor.apply(self.__act_source_and_executor)
+            if res is None:
+                return new_partial_result_pass(None)
+            else:
+                return failure_con.apply(PartialResultStatus(res.status.value),
+                                         new_failure_details_from_message(res.error_message))
+
+        try:
+            return action()
+        except Exception as ex:
+            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                 None,
+                                 PhaseFailureInfo(phase_step.ACT__VALIDATE_SYMBOLS,
+                                                  new_failure_details_from_exception(ex)))
+
+    def __act__validate_pre_sds(self) -> PartialResult:
         failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS, None)
 
         def action():
-            section_contents = self.__test_case.act_phase
-            instructions = []
-            for element in section_contents.elements:
-                if element.element_type is ElementType.INSTRUCTION:
-                    instruction = element.instruction
-                    if not isinstance(instruction, ActPhaseInstruction):
-                        msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
-                        return failure_con.implementation_error_msg(msg)
-                    instructions.append(instruction)
-                else:
-                    msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
-                    return failure_con.implementation_error_msg(msg)
-
-            self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
-                self.configuration.act_phase_os_process_executor,
-                self.__instruction_environment_pre_sds,
-                instructions)
             res = self.__act_source_and_executor.validate_pre_sds(self.__instruction_environment_pre_sds)
             if res.is_success:
                 return new_partial_result_pass(None)
@@ -454,6 +465,26 @@ class _PartialExecutor:
                                                   instruction_executor,
                                                   step,
                                                   self._sds)
+
+    def __act__create_and_set_executor(self, step: PhaseStep) -> PartialResult:
+        failure_con = _PhaseFailureResultConstructor(step, None)
+        section_contents = self.__test_case.act_phase
+        instructions = []
+        for element in section_contents.elements:
+            if element.element_type is ElementType.INSTRUCTION:
+                instruction = element.instruction
+                if not isinstance(instruction, ActPhaseInstruction):
+                    msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
+                    return failure_con.implementation_error_msg(msg)
+                instructions.append(instruction)
+            else:
+                msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
+                return failure_con.implementation_error_msg(msg)
+        self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
+            self.configuration.act_phase_os_process_executor,
+            self.__instruction_environment_pre_sds,
+            instructions)
+        return new_partial_result_pass(None)
 
 
 class _PhaseFailureResultConstructor:

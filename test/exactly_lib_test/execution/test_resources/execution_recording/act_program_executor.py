@@ -39,6 +39,10 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped
 
+    def symbol_usages(self) -> list:
+        self.__recorder.recording_of(phase_step.ACT__VALIDATE_SYMBOLS).record()
+        return self.__wrapped.symbol_usages()
+
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_PRE_SDS).record()

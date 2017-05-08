@@ -14,7 +14,9 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
     PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
-    prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises
+    prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises, \
+    action_that_returns
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_reference
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForPhaseFailure
 
 
@@ -22,11 +24,21 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class Test(TestCaseBase):
+    def test_reference_to_undefined_symbol_in_validate_symbols(self):
+        test_case = _single_successful_instruction_in_each_phase()
+        symbol_usages_with_ref_to_undefined_symbol = [symbol_reference('undefined_symbol')]
+        self._check(
+            Arrangement(test_case,
+                        act_executor_symbol_usages=action_that_returns(symbol_usages_with_ref_to_undefined_symbol)),
+            Expectation(PartialResultStatus.VALIDATE,
+                        ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
+                        [
+                            phase_step.SETUP__VALIDATE_SYMBOLS,
+                            phase_step.ACT__VALIDATE_SYMBOLS,
+                        ],
+                        sandbox_directory_structure_should_exist=False))
+
     def test_hard_error_in_validate_pre_sds(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
@@ -249,3 +261,7 @@ class Test(TestCaseBase):
 
 def _single_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
     return TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

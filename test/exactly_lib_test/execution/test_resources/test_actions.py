@@ -8,6 +8,13 @@ def do_nothing(*args, **kwargs):
     pass
 
 
+def action_that_returns(ret_val):
+    def f(*args, **kwargs):
+        return ret_val
+
+    return f
+
+
 def validate_action_that_returns(ret_val: svh.SuccessOrValidationErrorOrHardError):
     def f(*args, **kwargs):
         return ret_val

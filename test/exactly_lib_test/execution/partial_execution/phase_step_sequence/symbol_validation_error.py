@@ -33,6 +33,7 @@ class ConfigForBeforeAssertValidateSymbols(validate_symbols_utils.Configuration)
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
                          expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT +
                                                                    [phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS])
 
     def instruction_that_returns(self, symbol_usages: list) -> TestCaseInstruction:
@@ -47,6 +48,7 @@ class ConfigForAssertValidateSymbols(validate_symbols_utils.Configuration):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT__VALIDATE_SYMBOLS,
                          expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT +
                                                                    ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT +
                                                                    [phase_step.ASSERT__VALIDATE_SYMBOLS])
 
@@ -62,6 +64,7 @@ class ConfigForCleanuptValidateSymbols(validate_symbols_utils.Configuration):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP__VALIDATE_SYMBOLS,
                          expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT +
                                                                    ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT +
                                                                    ALL_RECORDING_INSTRUCTIONS_IN_ASSERT +
                                                                    [phase_step.CLEANUP__VALIDATE_SYMBOLS])
@@ -75,6 +78,8 @@ class ConfigForCleanuptValidateSymbols(validate_symbols_utils.Configuration):
 
 ALL_RECORDING_INSTRUCTIONS_IN_SETUP = [phase_step.SETUP__VALIDATE_SYMBOLS,
                                        phase_step.SETUP__VALIDATE_SYMBOLS]
+
+ALL_RECORDING_INSTRUCTIONS_IN_ACT = [phase_step.ACT__VALIDATE_SYMBOLS]
 
 ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT = [phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
                                                phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS]
