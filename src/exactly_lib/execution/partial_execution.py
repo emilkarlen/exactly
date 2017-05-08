@@ -273,7 +273,7 @@ class _PartialExecutor:
 
     def __setup__validate_symbols(self) -> PartialResult:
         return self.__run_instructions_phase_step(phase_step.SETUP__VALIDATE_SYMBOLS,
-                                                  phase_step_executors.SetupValidateSymbolsExecutor(
+                                                  phase_step_executors.ValidateSymbolsExecutor(
                                                       self.__instruction_environment_pre_sds),
                                                   self.__test_case.setup_phase)
 
