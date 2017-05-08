@@ -18,14 +18,14 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_c
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestValueReference),
-        unittest.makeSuite(TestValueDefinition),
+        unittest.makeSuite(TestSymbolReference),
+        unittest.makeSuite(TestSymbolDefinition),
         unittest.makeSuite(TestValidationOfList),
     ])
 
 
-class TestValueReference(unittest.TestCase):
-    def test_WHEN_referenced_value_not_in_symbol_table_THEN_validation_error(self):
+class TestSymbolReference(unittest.TestCase):
+    def test_WHEN_referenced_symbol_not_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
         symbol_usage = vs.SymbolReference('undefined', NoRestriction())
@@ -35,10 +35,10 @@ class TestValueReference(unittest.TestCase):
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
 
-    def test_WHEN_referenced_value_is_in_symbol_table_but_does_not_satisfy_value_restriction_THEN_validation_error(
+    def test_WHEN_referenced_symbol_is_in_symbol_table_but_does_not_satisfy_value_restriction_THEN_validation_error(
             self):
         # ARRANGE #
-        symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
+        symbol_table = singleton_symbol_table(string_entry('val_name', 'symbol string'))
         symbol_usage = vs.SymbolReference('val_name',
                                           RestrictionThatCannotBeSatisfied())
         # ACT #
@@ -47,7 +47,7 @@ class TestValueReference(unittest.TestCase):
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
 
-    def test_WHEN_referenced_value_is_in_symbol_table_and_satisfies_value_restriction_THEN_no_error(self):
+    def test_WHEN_referenced_symbol_is_in_symbol_table_and_satisfies_value_restriction_THEN_no_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
         symbol_usage = vs.SymbolReference('val_name',
@@ -57,8 +57,8 @@ class TestValueReference(unittest.TestCase):
         self.assertIsNone(actual, 'result should indicate success')
 
 
-class TestValueDefinition(unittest.TestCase):
-    def test_WHEN_defined_value_is_in_symbol_table_THEN_validation_error(self):
+class TestSymbolDefinition(unittest.TestCase):
+    def test_WHEN_defined_symbol_is_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('already-defined'))
         symbol_usage = symbol_of('already-defined')
@@ -68,7 +68,7 @@ class TestValueDefinition(unittest.TestCase):
         self.assertIs(PartialControlledFailureEnum.VALIDATION,
                       actual.status)
 
-    def test_WHEN_defined_value_not_in_symbol_table_THEN_None_and_added_to_symbol_table(self):
+    def test_WHEN_defined_symbol_not_in_symbol_table_THEN_None_and_added_to_symbol_table(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('other'))
         symbol_usage = symbol_of('undefined')
@@ -80,7 +80,7 @@ class TestValueDefinition(unittest.TestCase):
         self.assertTrue(symbol_table.contains('other'),
                         'definition in symbol table before definition should remain there')
 
-    def test_WHEN_defined_value_not_in_symbol_table_but_referenced_values_not_in_table_THEN_validation_error(self):
+    def test_WHEN_defined_symbol_not_in_symbol_table_but_referenced_symbols_not_in_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('OTHER'))
         symbol_usage = vs.SymbolDefinition(
@@ -92,7 +92,7 @@ class TestValueDefinition(unittest.TestCase):
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'return value for indicating error')
 
-    def test_WHEN_defined_value_not_in_table_but_referenced_value_in_table_does_not_satisfy_restriction_THEN_error(
+    def test_WHEN_defined_symbol_not_in_table_but_referenced_symbol_in_table_does_not_satisfy_restriction_THEN_error(
             self):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
@@ -107,7 +107,7 @@ class TestValueDefinition(unittest.TestCase):
         # ASSERT #
         self.assertIsNotNone(actual, 'return value for indicating error')
 
-    def test_WHEN_defined_value_not_in_symbol_table_and_referenced_value_is_in_table_and_satisfies_restriction_THEN_ok(
+    def test_WHEN_defined_symbol_not_in_symbol_table_and_referenced_symbol_is_in_table_and_satisfies_restriction_THEN_ok(
             self):
         # ARRANGE #
         referenced_entry = string_entry('REFERENCED')
