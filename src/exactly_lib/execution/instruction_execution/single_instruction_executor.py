@@ -1,9 +1,9 @@
 from enum import Enum
 
-import exactly_lib.util.failure_details
 from exactly_lib.execution import result
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib.util import failure_details
 from exactly_lib.util import line_source
 
 
@@ -70,10 +70,10 @@ class SingleInstructionExecutionFailure(tuple):
     def __new__(cls,
                 status: result.PartialResultStatus,
                 source_line: line_source.Line,
-                failure_details: exactly_lib.util.failure_details.FailureDetails):
+                details: failure_details.FailureDetails):
         return tuple.__new__(cls, (status,
                                    source_line,
-                                   failure_details))
+                                   details))
 
     @property
     def status(self) -> result.PartialResultStatus:
@@ -87,7 +87,7 @@ class SingleInstructionExecutionFailure(tuple):
         return self[1]
 
     @property
-    def failure_details(self) -> exactly_lib.util.failure_details.FailureDetails:
+    def failure_details(self) -> failure_details.FailureDetails:
         return self[2]
 
 
@@ -106,13 +106,12 @@ def execute_element(executor: ControlledInstructionExecutor,
             return None
         return SingleInstructionExecutionFailure(result.PartialResultStatus(fail_info.status.value),
                                                  element.first_line,
-                                                 exactly_lib.util.failure_details.new_failure_details_from_message(
+                                                 failure_details.new_failure_details_from_message(
                                                      fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(result.PartialResultStatus.IMPLEMENTATION_ERROR,
                                                  element.first_line,
-                                                 exactly_lib.util.failure_details.new_failure_details_from_exception(
-                                                     ex))
+                                                 failure_details.new_failure_details_from_exception(ex))
 
 
 _INSTRUCTION_TYPE_ERROR_MESSAGE = 'Instruction in test-case must be ' + str(TestCaseInstruction)
