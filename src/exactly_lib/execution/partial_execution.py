@@ -279,10 +279,6 @@ class _PartialExecutor:
         return self.__validate_symbols(phase_step.SETUP__VALIDATE_SYMBOLS,
                                        self.__test_case.setup_phase)
 
-    def __act__validate_symbols(self) -> PartialResult:
-        return self.__validate_symbols(phase_step.ACT__VALIDATE_SYMBOLS,
-                                       self.__test_case.setup_phase)
-
     def __before_assert__validate_symbols(self) -> PartialResult:
         return self.__validate_symbols(phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
                                        self.__test_case.before_assert_phase)
