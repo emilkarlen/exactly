@@ -36,6 +36,13 @@ def string_symbol(name: str, string_value: str = 'string value') -> SymbolDefini
     return SymbolDefinition(name, string_value_container(string_value))
 
 
+def file_ref_symbol_definition(name: str,
+                               file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                                                relativity=RelOptionType.REL_CWD)
+                               ) -> SymbolDefinition:
+    return SymbolDefinition(name, file_ref_value_container(file_ref))
+
+
 def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
     return symbol_table_from_symbols([string_symbol(name, string_value)])
 
