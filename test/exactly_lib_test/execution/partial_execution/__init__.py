@@ -5,7 +5,8 @@ from exactly_lib_test.execution.partial_execution import \
     instruction_environment, \
     deletion_of_sds, \
     phase_step_sequence, \
-    environment_variables
+    environment_variables, \
+    symbol_propagation
 
 
 def suite():
@@ -15,6 +16,7 @@ def suite():
     ret_val.addTest(deletion_of_sds.suite())
     ret_val.addTest(phase_step_sequence.suite())
     ret_val.addTest(environment_variables.suite())
+    ret_val.addTest(symbol_propagation.suite())
     return ret_val
 
 
