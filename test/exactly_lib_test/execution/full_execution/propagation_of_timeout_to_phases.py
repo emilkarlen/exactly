@@ -1,8 +1,9 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution.phase_step_identifiers.phase_step_simple import ALL_SETUP, ALL_ASSERT, ALL_BEFORE_ASSERT, \
-    ALL_CLEANUP
+from exactly_lib.execution.phase_step_identifiers.phase_step_simple import \
+    ALL_SETUP_WITH_ENV_ARG, ALL_ASSERT_WITH_ENV_ARG, ALL_BEFORE_ASSERT_WITH_ENV_ARG, \
+    ALL_CLEANUP_WITH_ENV_ARG
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.result import sh
@@ -45,11 +46,11 @@ class Test(unittest.TestCase):
         # ACT & ASSERT #
         execution_check.check(self, arrangement, expectation)
         # ASSERT #
-        expected_recordings = dict.fromkeys(ALL_SETUP +
+        expected_recordings = dict.fromkeys(ALL_SETUP_WITH_ENV_ARG +
                                             (ACT_EXE_CONSTRUCTOR,) +
-                                            ALL_BEFORE_ASSERT +
-                                            ALL_ASSERT +
-                                            ALL_CLEANUP,
+                                            ALL_BEFORE_ASSERT_WITH_ENV_ARG +
+                                            ALL_ASSERT_WITH_ENV_ARG +
+                                            ALL_CLEANUP_WITH_ENV_ARG,
                                             default_timeout)
         self.assertDictEqual(expected_recordings, actual_recordings)
 
@@ -75,11 +76,11 @@ class Test(unittest.TestCase):
         # ACT & ASSERT #
         execution_check.check(self, arrangement, expectation)
         # ASSERT #
-        expected_recordings = dict.fromkeys(ALL_SETUP +
+        expected_recordings = dict.fromkeys(ALL_SETUP_WITH_ENV_ARG +
                                             (ACT_EXE_CONSTRUCTOR,) +
-                                            ALL_BEFORE_ASSERT +
-                                            ALL_ASSERT +
-                                            ALL_CLEANUP,
+                                            ALL_BEFORE_ASSERT_WITH_ENV_ARG +
+                                            ALL_ASSERT_WITH_ENV_ARG +
+                                            ALL_CLEANUP_WITH_ENV_ARG,
                                             expected_timeout)
         self.assertDictEqual(expected_recordings, actual_recordings)
 
