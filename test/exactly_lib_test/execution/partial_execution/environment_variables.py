@@ -16,6 +16,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
+from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -31,8 +32,8 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
 
         test_case = partial_test_case_with_instructions(
             [setup_phase_instruction_that(
-                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
-                                               recorder.for_step(step.SETUP__MAIN)]),
+                main_initial_action=Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
+                                              recorder.for_step(step.SETUP__MAIN)]),
                 validate_post_setup_initial_action=recorder.for_step(step.SETUP__VALIDATE_POST_SETUP))],
             _act_phase_instructions_that_are_not_relevant_to_this_test(),
             [before_assert_phase_instruction_that(
@@ -58,8 +59,8 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             [],
             _act_phase_instructions_that_are_not_relevant_to_this_test(),
             [before_assert_phase_instruction_that(
-                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
-                                               recorder.for_step(step.BEFORE_ASSERT__MAIN)]))],
+                main_initial_action=Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
+                                              recorder.for_step(step.BEFORE_ASSERT__MAIN)]))],
             [assert_phase_instruction_that(
                 validate_post_setup_initial_action=recorder.for_step(step.ASSERT__VALIDATE_POST_SETUP),
                 main_initial_action=recorder.for_step(step.ASSERT__MAIN))],
@@ -81,8 +82,8 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             _act_phase_instructions_that_are_not_relevant_to_this_test(),
             [],
             [assert_phase_instruction_that(
-                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
-                                               recorder.for_step(step.ASSERT__MAIN)]))],
+                main_initial_action=Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
+                                              recorder.for_step(step.ASSERT__MAIN)]))],
             [cleanup_phase_instruction_that(
                 main_initial_action=recorder.for_step(step.CLEANUP__MAIN))],
         )
@@ -102,8 +103,8 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             [],
             [],
             [cleanup_phase_instruction_that(
-                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
-                                               recorder.for_step(step.CLEANUP__MAIN)]))],
+                main_initial_action=Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
+                                              recorder.for_step(step.CLEANUP__MAIN)]))],
         )
         test__va(
             self,
@@ -130,15 +131,6 @@ class _RecorderOfExistenceOfGlobalEnvVar:
         return AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess(phase_step,
                                                                       self.recorded_steps,
                                                                       self.variable_name)
-
-
-class _Sequence:
-    def __init__(self, list_of_callable: list):
-        self.list_of_callable = list_of_callable
-
-    def __call__(self, *args, **kwargs):
-        for fun in self.list_of_callable:
-            fun(*args, **kwargs)
 
 
 class SetEnvironmentVariableViaInstructionArguments:
