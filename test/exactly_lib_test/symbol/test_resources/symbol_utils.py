@@ -32,7 +32,7 @@ def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestrict
     return SymbolReference(name, value_restriction)
 
 
-def string_symbol(name: str, string_value: str = 'string value') -> SymbolDefinition:
+def string_symbol_definition(name: str, string_value: str = 'string value') -> SymbolDefinition:
     return SymbolDefinition(name, string_value_container(string_value))
 
 
@@ -44,7 +44,7 @@ def file_ref_symbol_definition(name: str,
 
 
 def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
-    return symbol_table_from_symbols([string_symbol(name, string_value)])
+    return symbol_table_from_symbols([string_symbol_definition(name, string_value)])
 
 
 def symbol_table_with_single_file_ref_value(name: str,

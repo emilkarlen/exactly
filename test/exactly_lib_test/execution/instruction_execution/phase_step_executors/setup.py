@@ -79,27 +79,27 @@ class TestValueDefinition(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
     def runTest(self):
         test_cases = [
             ('WHEN value to defined is in symbol table THEN validation error',
-             Arrangement(symbol_usages=[sd_tr.string_symbol('already-defined')],
+             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('already-defined')],
                          environment=env_with_singleton_symbol_table(symbol_of('already-defined'))),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_contains_exactly_names({'already-defined'}))
              ),
             ('WHEN defined value not in symbol table THEN None and added to symbol table',
-             Arrangement(symbol_usages=[sd_tr.string_symbol('undefined')],
+             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('undefined')],
                          environment=env_with_singleton_symbol_table(symbol_of('other'))),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'undefined', 'other'}))
              ),
             ('WHEN defined valueS not in symbol table THEN None and added to symbol table',
-             Arrangement(symbol_usages=[sd_tr.string_symbol('undefined1'),
-                                        sd_tr.string_symbol('undefined2')],
+             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('undefined1'),
+                                        sd_tr.string_symbol_definition('undefined2')],
                          environment=env_with_singleton_symbol_table(symbol_of('other'))),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'undefined1', 'undefined2', 'other'}))
              ),
             ('WHEN at least one value to define is in symbol table THEN validation error',
-             Arrangement(symbol_usages=[sd_tr.string_symbol('undefined'),
-                                        sd_tr.string_symbol('already-defined')],
+             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('undefined'),
+                                        sd_tr.string_symbol_definition('already-defined')],
                          environment=env_with_singleton_symbol_table(symbol_of('already-defined'))),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_contains_exactly_names({'undefined', 'already-defined'}))
@@ -118,7 +118,7 @@ class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOf
     def runTest(self):
         test_cases = [
             ('WHEN value to define is before reference to it (in list of value usages) THEN ok',
-             Arrangement(symbol_usages=[sd_tr.string_symbol('define'),
+             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('define'),
                                         sd_tr.symbol_reference('define')],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=is_success,
@@ -126,7 +126,7 @@ class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOf
              ),
             ('WHEN value to define is after reference to it (in list of value usages) THEN error',
              Arrangement(symbol_usages=[sd_tr.symbol_reference('define'),
-                                        sd_tr.string_symbol('define')],
+                                        sd_tr.string_symbol_definition('define')],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_is_empty())
@@ -173,7 +173,7 @@ def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
 
 
 def symbol_of(name: str) -> sd_tr.SymbolDefinition:
-    return sd_tr.string_symbol(name)
+    return sd_tr.string_symbol_definition(name)
 
 
 def error_with_status(expected: PartialControlledFailureEnum) -> asrt.ValueAssertion:
