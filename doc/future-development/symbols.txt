@@ -1,6 +1,74 @@
--*_ org -*-
+-*- org -*-
 
+* Look at how symbols are defined, todays solution might not be the best
+<2017-05-10 ons>
+Today, symbols are defined by instructions in two places:
+ - symbol_usages
+ - main
+
+symbol_usages "report" symbol definitions and references.
+This information is sufficent (for today's func) to handle everything related
+to symbols.  But that information is not used for sym def.  Instead, the main
+method must define a symbol by putting it in the symbol table.
+Aspects:
+** Ability to assign "dynamic" values / "computed" values
+Currently, all values are hard coded constants.
+Because of this, they are known at validation-time, and can thus be used in
+validation.  Because of this it is possible to check values as part of
+validation.
+
+The drawback is that symbols cannot have values that depend on the
+main-execution of a test case.  E.g., it is impossible to have a value that is
+the content/file-name that has been construted by the sut.
+It would be very nice to have this ability.
+
+Two possible solutions are:
+*** Separate syntax and set of symbols for dynamic values
+**** Separate method for defining a dyn symbol
+**** Separate syntax for referencing a dyn symbol
+**** Separate symbol tables
+*** Separate handling
+**** definition
+Dynamic symbols would be reqognized by how they were defined - i.e. which
+instruction defines them.
+They are put in the sym-tbl b
+**** instruction reporting of symbol references
+A dynamic symbol would be "reported" `symbol_usages` (as constant symbols
+are), but the reporting would not contain the value.
+**** usage in instruction validation
+A dynamic symbol can only be checked for existence - it would be an error if
+an instruction references a dynamic symbol that is not defined by an
+instruction that precedes the validated instruction.
+It would be an implementation error if an instruction tries to use the value
+of a dynamic symbol for validation.
+
+This requires two different symbol tables
+ - one for validation that that does not contain values for dyn-syms
+ - one for main execution that does contain values for all symbols
+
+** Prevent impl-error by preventing accidental access to symbl
+An instruction that does not declare a reference to a symbol (via
+`symbol_usages`) should not be able to use that symbol.  It would be good if
+an implementation error would be reported if an instruction tries to do this -
+i.e. the symbol table is populated incrementaly during execution (as opposed
+to populating it with all symbols before execution of instruction.main).
+
+This is possible today, by letting the infrastructure populate the sym-tbl
+instead of the instructions. As part of executing the main method of an
+instruction, the infrastructure would populate the sym-tbl with sym-defs
+declared by the instruction (via its `symbol_usages`).
+* Syntax for sym-references
+<2017-05-10 ons>
+Now: @[SYMBOL_NAME]@
+
+Maybe it would be better to have just: SYMBOL_NAME
+
+I believe it is possible to avoid name clashes by just chosing a symbol name
+that is not used elswhere in the test case.
+
+This would also avoid clashes with the special character sequences @[, ]@
 * File inclusion and variable declarations
+
 When a file is included and processed by m4, then the declarations do not
 appear in the parsed source, since m4 outputs just space for a declaration.
 Thus the only affected output is where the variables are used.
