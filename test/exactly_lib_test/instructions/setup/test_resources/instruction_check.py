@@ -58,15 +58,21 @@ arrangement = Arrangement
 
 
 class Expectation:
+    """
+    Expectation on properties of the execution of an instruction.
+    
+    Default settings: successful steps execution and NO symbol usages.
+    """
+
     def __init__(self,
                  pre_validation_result: asrt.ValueAssertion = svh_check.is_success(),
                  main_result: asrt.ValueAssertion = sh_check.is_success(),
+                 post_validation_result: asrt.ValueAssertion = svh_check.is_success(),
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  main_side_effects_on_environment: settings_check.Assertion = settings_check.AnythingGoes(),
                  main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
-                 post_validation_result: asrt.ValueAssertion = svh_check.is_success(),
                  side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
-                 symbol_usages: asrt.ValueAssertion = asrt.anything_goes(),
                  symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
@@ -121,7 +127,7 @@ class Executor:
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, SetupPhaseInstruction)
         self.expectation.symbol_usages.apply_with_message(self.put, instruction.symbol_usages(),
-                                                                    'value-definition-usages')
+                                                          'symbol-usages')
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         initial_cwd = os.getcwd()
         try:
