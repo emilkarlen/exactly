@@ -1,7 +1,6 @@
 import os
-import unittest
-
 import types
+import unittest
 
 
 class MessageBuilder:
@@ -496,6 +495,8 @@ def is_boolean(expected: bool) -> ValueAssertion:
 
 
 is_empty = len_equals(0)
+is_empty_list = is_instance_with(list, is_empty)
+
 ignore = Constant(True)
 
 
