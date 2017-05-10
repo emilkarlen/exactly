@@ -45,6 +45,7 @@ class Expectation(ExpectationBase):
                  validation_pre_sds: asrt.ValueAssertion = svh_check.is_success(),
                  validation_post_setup: asrt.ValueAssertion = svh_check.is_success(),
                  main_result: asrt.ValueAssertion = sh_check.is_success(),
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
                  home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
@@ -53,6 +54,7 @@ class Expectation(ExpectationBase):
         self.validation_post_setup = validation_post_setup
         self.main_result = sh_check.is_sh_and(main_result)
         self.source = source
+        self.symbol_usages = symbol_usages
 
 
 is_success = Expectation
@@ -102,6 +104,9 @@ class Executor(InstructionExecutionBase):
         self._check_instruction(BeforeAssertPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
+        self.expectation.symbol_usages.apply_with_message(self.put,
+                                                          instruction.symbol_usages(),
+                                                          'symbol-usages')
         with home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
