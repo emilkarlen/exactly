@@ -22,7 +22,7 @@ from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_utils
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
@@ -42,12 +42,12 @@ def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAct
 
 class Expectation(ExpectationBase):
     def __init__(self,
-                 validation_pre_sds: va.ValueAssertion = svh_check.is_success(),
-                 validation_post_setup: va.ValueAssertion = svh_check.is_success(),
-                 main_result: va.ValueAssertion = sh_check.is_success(),
-                 main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
-                 home_and_sds: va.ValueAssertion = va.anything_goes(),
-                 source: va.ValueAssertion = va.anything_goes(),
+                 validation_pre_sds: asrt.ValueAssertion = svh_check.is_success(),
+                 validation_post_setup: asrt.ValueAssertion = svh_check.is_success(),
+                 main_result: asrt.ValueAssertion = sh_check.is_success(),
+                 main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
+                 home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
+                 source: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         super().__init__(validation_pre_sds, main_side_effects_on_files, home_and_sds)
         self.validation_post_setup = validation_post_setup
@@ -84,15 +84,15 @@ class Executor(InstructionExecutionBase):
         self.put = put
         self.arrangement = arrangement
         self.expectation = expectation
-        self.message_builder = va.MessageBuilder()
+        self.message_builder = asrt.MessageBuilder()
 
     def _check(self,
                component: str,
-               assertion: va.ValueAssertion,
+               assertion: asrt.ValueAssertion,
                actual):
         assertion.apply(self.put,
                         actual,
-                        va.MessageBuilder(component))
+                        asrt.MessageBuilder(component))
         return actual
 
     def execute(self,
