@@ -19,10 +19,9 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.symbol.test_resources import symbol_utils as v2
 from exactly_lib_test.symbol.test_resources import value_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.test_resources.symbol_utils import assert_symbol_table_is_singleton, \
-    string_value_container
+    string_value_container, file_ref_value, assert_symbol_usages_is_singleton_list
 from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_value_container
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -143,12 +142,12 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = _src('{path_type} name = --rel-act component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = v2.file_ref_value(file_refs.rel_act(PathPartAsFixedPath('component')))
+            expected_file_ref_value = file_ref_value(file_refs.rel_act(PathPartAsFixedPath('component')))
             expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          symbol_usages=v2.assert_symbol_usages_is_singleton_list(
+                          symbol_usages=assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
                                   SymbolDefinition('name', expected_value_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
@@ -162,14 +161,14 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = _src('{path_type} name = component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = v2.file_ref_value(
+            expected_file_ref_value = file_ref_value(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
                                         PathPartAsFixedPath('component')))
             expected_value_container = _value_container(expected_file_ref_value)
             self._run(source,
                       Arrangement(),
                       Expectation(
-                          symbol_usages=v2.assert_symbol_usages_is_singleton_list(
+                          symbol_usages=assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
                                   SymbolDefinition('name', expected_value_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
@@ -185,7 +184,7 @@ class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
             expected_file_ref_resolver = rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
                                 FileRefRelativityRestriction(
-                                   REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
+                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
                 PathPartResolverAsFixedPath('component'))
             expected_value_container = _value_container(expected_file_ref_resolver)
             self._run(source,
