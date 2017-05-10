@@ -17,6 +17,24 @@ class TestError(Exception):
     pass
 
 
+class TestCaseWithTestErrorAsFailureException(unittest.TestCase):
+    def __init__(self):
+        super().__init__()
+        self.failureException = TestError
+
+
+class TestCaseBase(unittest.TestCase):
+    def setUp(self):
+        self.tc = TestCaseWithTestErrorAsFailureException()
+
+    def _check(self,
+               parser: InstructionParser,
+               source: ParseSource,
+               arrangement,
+               expectation):
+        raise NotImplementedError()
+
+
 class RaisesTestError(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
