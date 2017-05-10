@@ -30,7 +30,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Arrangement(ArrangementWithSds):
@@ -59,15 +59,15 @@ arrangement = Arrangement
 
 class Expectation:
     def __init__(self,
-                 pre_validation_result: va.ValueAssertion = svh_check.is_success(),
-                 main_result: va.ValueAssertion = sh_check.is_success(),
+                 pre_validation_result: asrt.ValueAssertion = svh_check.is_success(),
+                 main_result: asrt.ValueAssertion = sh_check.is_success(),
                  main_side_effects_on_environment: settings_check.Assertion = settings_check.AnythingGoes(),
-                 main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
-                 post_validation_result: va.ValueAssertion = svh_check.is_success(),
-                 side_effects_check: va.ValueAssertion = va.anything_goes(),
-                 source: va.ValueAssertion = va.anything_goes(),
-                 symbol_usages: va.ValueAssertion = va.anything_goes(),
-                 symbols_after_main: va.ValueAssertion = va.anything_goes(),
+                 main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
+                 post_validation_result: asrt.ValueAssertion = svh_check.is_success(),
+                 side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),
+                 source: asrt.ValueAssertion = asrt.anything_goes(),
+                 symbol_usages: asrt.ValueAssertion = asrt.anything_goes(),
+                 symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result
