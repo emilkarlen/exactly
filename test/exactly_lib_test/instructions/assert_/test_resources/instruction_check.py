@@ -21,7 +21,7 @@ from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
@@ -43,12 +43,13 @@ def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAct
 
 class Expectation:
     def __init__(self,
-                 validation_post_sds: va.ValueAssertion = svh_check.is_success(),
-                 validation_pre_sds: va.ValueAssertion = svh_check.is_success(),
-                 main_result: va.ValueAssertion = pfh_check.is_pass(),
-                 main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
-                 side_effects_check: va.ValueAssertion = va.anything_goes(),
-                 source: va.ValueAssertion = va.anything_goes(),
+                 validation_post_sds: asrt.ValueAssertion = svh_check.is_success(),
+                 validation_pre_sds: asrt.ValueAssertion = svh_check.is_success(),
+                 main_result: asrt.ValueAssertion = pfh_check.is_pass(),
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
+                 main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
+                 side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),
+                 source: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
@@ -56,6 +57,7 @@ class Expectation:
         self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
         self.source = source
+        self.symbol_usages = symbol_usages
 
 
 is_pass = Expectation
@@ -98,6 +100,9 @@ class Executor:
                                   'The instruction must be an instance of ' + str(AssertPhaseInstruction))
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, AssertPhaseInstruction)
+        self.expectation.symbol_usages.apply_with_message(self.put,
+                                                          instruction.symbol_usages(),
+                                                          'symbol-usages')
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
@@ -138,7 +143,7 @@ class Executor:
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
         self.expectation.validation_pre_sds.apply(self.put, result,
-                                                  va.MessageBuilder('result of validate/pre sds'))
+                                                  asrt.MessageBuilder('result of validate/pre sds'))
         return result
 
     def _execute_validate_post_setup(self,
@@ -148,7 +153,7 @@ class Executor:
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
         self.expectation.validation_post_sds.apply(self.put, result,
-                                                   va.MessageBuilder('result of validate/post setup'))
+                                                   asrt.MessageBuilder('result of validate/post setup'))
         return result
 
     def _execute_main(self,

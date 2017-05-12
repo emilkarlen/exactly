@@ -11,12 +11,14 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
-    assert_phase_instruction_that
+    assert_phase_instruction_that, do_return
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check as sut
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, is_pass, \
     Expectation
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
@@ -26,7 +28,8 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCases))
+    ret_val.addTest(unittest.makeSuite(TestMiscCases))
+    ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
     return ret_val
 
 
@@ -42,7 +45,35 @@ class TestCaseBase(utils.TestCaseBase):
         sut.check(self.tc, parser, source, arrangement, expectation)
 
 
-class TestCases(TestCaseBase):
+class TestSymbolUsages(TestCaseBase):
+    def test_that_default_expectation_assumes_no_symbol_usages(self):
+        with self.assertRaises(utils.TestError):
+            unexpected_symbol_usages = [symbol_utils.symbol_reference('symbol_name')]
+            self._check(
+                utils.ParserThatGives(
+                    assert_phase_instruction_that(
+                        symbol_usages=do_return(unexpected_symbol_usages))),
+                utils.single_line_source(),
+                sut.arrangement(),
+                sut.Expectation(),
+            )
+
+    def test_that_fails_due_to_missing_symbol_reference(self):
+        with self.assertRaises(utils.TestError):
+            symbol_usages_of_instruction = []
+            symbol_usages_of_expectation = [symbol_utils.symbol_reference('symbol_name')]
+            self._check(
+                utils.ParserThatGives(
+                    assert_phase_instruction_that(
+                        symbol_usages=do_return(symbol_usages_of_instruction))),
+                utils.single_line_source(),
+                sut.arrangement(),
+                sut.Expectation(
+                    symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
+            )
+
+
+class TestMiscCases(TestCaseBase):
     def test_successful_flow(self):
         self._check(
             utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
