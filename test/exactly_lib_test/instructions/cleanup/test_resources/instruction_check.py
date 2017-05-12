@@ -22,6 +22,7 @@ from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
@@ -49,6 +50,7 @@ class Expectation(ExpectationBase):
                  act_result: utils.ActResult = utils.ActResult(),
                  validate_pre_sds_result: va.ValueAssertion = svh_check.is_success(),
                  main_result: va.ValueAssertion = sh_check.is_success(),
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  side_effects_check: va.ValueAssertion = va.anything_goes(),
                  source: va.ValueAssertion = va.anything_goes(),
@@ -62,6 +64,7 @@ class Expectation(ExpectationBase):
         self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
         self.source = source
+        self.symbol_usages = symbol_usages
 
 
 is_success = Expectation
@@ -100,6 +103,9 @@ class Executor(InstructionExecutionBase):
         self._check_instruction(CleanupPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, CleanupPhaseInstruction)
+        self.expectation.symbol_usages.apply_with_message(self.put,
+                                                          instruction.symbol_usages(),
+                                                          'symbol-usages')
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
