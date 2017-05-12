@@ -32,7 +32,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestCaseBase(utils.TestCaseBase):
+class TestCaseBase(unittest.TestCase):
     def setUp(self):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
 
