@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
@@ -105,7 +106,7 @@ class Executor(InstructionExecutionBase):
         assert isinstance(instruction, CleanupPhaseInstruction)
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages(),
-                                                          'symbol-usages')
+                                                          'symbol-usages after parse')
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
@@ -118,6 +119,10 @@ class Executor(InstructionExecutionBase):
                                                               self.arrangement.process_execution_settings.environ,
                                                               symbols=self.arrangement.symbols)
             result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__VALIDATE_PRE_SDS)
             if not result_of_validate_pre_sds.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
@@ -130,6 +135,10 @@ class Executor(InstructionExecutionBase):
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__MAIN)
 
     def _execute_pre_validate(self,
                               environment: InstructionEnvironmentForPreSdsStep,
