@@ -111,12 +111,6 @@ class Executor:
                 home_or_sds_contents=self.arrangement.home_or_sds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             home_and_sds = path_resolving_environment.home_and_sds
-            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
-            write_act_result(home_and_sds.sds, act_result)
-            # TODO Execution of validate/pre-sds should be done before act-result is written.
-            # But cannot do this for the moment, since many tests write home-dir contents
-            # as part of the act-result.
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
                                                                 self.arrangement.process_execution_settings.environ,
                                                                 symbols=self.arrangement.symbols)
@@ -141,6 +135,9 @@ class Executor:
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
             if not validate_result.is_success:
                 return
+            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
+            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
+            write_act_result(home_and_sds.sds, act_result)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)
