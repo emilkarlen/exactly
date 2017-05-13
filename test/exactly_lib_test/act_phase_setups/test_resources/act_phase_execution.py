@@ -2,6 +2,7 @@ import os
 import pathlib
 import unittest
 
+from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, \
     ActSourceAndExecutor, ActPhaseOsProcessExecutor
@@ -81,16 +82,21 @@ def check_execution(put: unittest.TestCase,
                                                      arrangement.act_phase_instructions)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),
-                                                     'symbol-usages')
+                                                     'symbol-usages after ExecutorConstructor')
 
         step_result = sut.validate_pre_sds(instruction_environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
-            put.fail('Failure of validation/pre-sds: {}: {}'.format(
+            put.fail('Failure of {}: {}: {}'.format(
+                phase_step.STEP__VALIDATE_PRE_SDS,
                 step_result.status,
                 step_result.failure_message))
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
-                        'Result of validation/pre-sds')
+                        'Result of ' + phase_step.STEP__VALIDATE_PRE_SDS)
+        expectation.symbol_usages.apply_with_message(put,
+                                                     sut.symbol_usages(),
+                                                     'symbol-usages after ' +
+                                                     phase_step.STEP__VALIDATE_PRE_SDS)
         with sds_with_act_as_curr_dir(symbols=instruction_environment.symbols
                                       ) as path_resolving_env:
             instruction_environment = InstructionEnvironmentForPostSdsStep(instruction_environment.home_directory,
@@ -102,12 +108,20 @@ def check_execution(put: unittest.TestCase,
             put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                             step_result.status,
                             'Result of validation/post-setup')
+            expectation.symbol_usages.apply_with_message(put,
+                                                         sut.symbol_usages(),
+                                                         'symbol-usages after ' +
+                                                         phase_step.STEP__VALIDATE_POST_SETUP)
             script_output_dir_path = path_resolving_env.sds.test_case_dir
             step_result = sut.prepare(instruction_environment, script_output_dir_path)
             expectation.side_effects_on_files_after_prepare.apply(put, path_resolving_env.sds)
             expectation.result_of_prepare.apply(put,
                                                 step_result,
                                                 MessageBuilder('Result of prepare'))
+            expectation.symbol_usages.apply_with_message(put,
+                                                         sut.symbol_usages(),
+                                                         'symbol-usages after ' +
+                                                         phase_step.STEP__ACT__PREPARE)
             if not step_result.is_success:
                 return
 
@@ -132,6 +146,10 @@ def check_execution(put: unittest.TestCase,
                 msg_builder = MessageBuilder('Sub process output from execute' + error_msg_extra_info)
                 expectation.sub_process_result_from_execute.apply(put, sub_process_result, msg_builder)
             expectation.side_effects_on_files_after_execute.apply(put, path_resolving_env.sds)
+            expectation.symbol_usages.apply_with_message(put,
+                                                         sut.symbol_usages(),
+                                                         'symbol-usages after ' +
+                                                         phase_step.STEP__ACT__EXECUTE)
             return step_result
 
 
