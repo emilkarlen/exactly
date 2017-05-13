@@ -69,10 +69,13 @@ class _ActResultProducer(test_resources.ActResultProducer):
         self.file_name = file_name
 
     def apply(self, act_environment: ActEnvironment) -> ActResult:
+        self._populate_act_dir(act_environment)
+        return ActResult()
+
+    def _populate_act_dir(self, act_environment: ActEnvironment):
         actual_contents = self.home_and_sds_2_str(act_environment.home_and_sds)
         sds_pop = sds_populator.act_dir_contents(
             DirContents([
                 File(self.file_name, actual_contents)
             ]))
         sds_pop.apply(act_environment.home_and_sds.sds)
-        return ActResult()
