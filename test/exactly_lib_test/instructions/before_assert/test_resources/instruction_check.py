@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
@@ -106,7 +107,7 @@ class Executor(InstructionExecutionBase):
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages(),
-                                                          'symbol-usages')
+                                                          'symbol-usages after parse')
         with home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
@@ -119,6 +120,10 @@ class Executor(InstructionExecutionBase):
                                                                 self.arrangement.process_execution_settings.environ,
                                                                 symbols=self.arrangement.symbols)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__VALIDATE_PRE_SDS)
             if not validate_result.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
@@ -129,6 +134,10 @@ class Executor(InstructionExecutionBase):
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                 symbols=self.arrangement.symbols)
             validate_result = self._execute_validate_post_setup(environment, instruction)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__VALIDATE_POST_SETUP)
             if not validate_result.is_success:
                 return
 
@@ -138,6 +147,10 @@ class Executor(InstructionExecutionBase):
             self._execute_main(environment, instruction)
             self._check_main_side_effects_on_files(home_and_sds)
             self._check_side_effects_on_home_and_sds(home_and_sds)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__MAIN)
 
     def _execute_validate_pre_sds(
             self,
