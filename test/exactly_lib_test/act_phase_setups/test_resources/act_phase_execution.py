@@ -50,11 +50,13 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 side_effects_on_files_after_execute: asrt.ValueAssertion = asrt.anything_goes(),
-                 side_effects_on_files_after_prepare: asrt.ValueAssertion = asrt.anything_goes(),
                  result_of_prepare: asrt.ValueAssertion = sh_check.is_success(),
                  result_of_execute: asrt.ValueAssertion = eh_check.is_any_exit_code,
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
+                 side_effects_on_files_after_execute: asrt.ValueAssertion = asrt.anything_goes(),
+                 side_effects_on_files_after_prepare: asrt.ValueAssertion = asrt.anything_goes(),
                  sub_process_result_from_execute: asrt.ValueAssertion = asrt.anything_goes()):
+        self.symbol_usages = symbol_usages
         self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
         self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
         self.result_of_prepare = result_of_prepare
@@ -77,6 +79,10 @@ def check_execution(put: unittest.TestCase,
         sut = arrangement.executor_constructor.apply(arrangement.act_phase_process_executor,
                                                      instruction_environment,
                                                      arrangement.act_phase_instructions)
+        expectation.symbol_usages.apply_with_message(put,
+                                                     sut.symbol_usages(),
+                                                     'symbol-usages')
+
         step_result = sut.validate_pre_sds(instruction_environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             put.fail('Failure of validation/pre-sds: {}: {}'.format(
