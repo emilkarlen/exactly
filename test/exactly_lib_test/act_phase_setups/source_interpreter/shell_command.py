@@ -10,6 +10,10 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_resources.programs.python_program_execution import file_name_of_interpreter
 
 
+def suite() -> unittest.TestSuite:
+    return suite_for_execution(TheConfiguration())
+
+
 class TheConfiguration(Configuration):
     def __init__(self):
         self.setup = sut.handling_for_interpreter_command(file_name_of_interpreter())
@@ -55,10 +59,6 @@ class TheConfiguration(Configuration):
 
 def _instructions_for(statements: list) -> list:
     return list(map(lambda stmt: instr([stmt]), statements))
-
-
-def suite() -> unittest.TestSuite:
-    return suite_for_execution(TheConfiguration())
 
 
 if __name__ == '__main__':
