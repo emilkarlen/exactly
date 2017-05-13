@@ -147,7 +147,8 @@ class SymbolUser:
         Gives information about all symbols that this instruction uses.
 
         This list should be available right after construction (and thus should not need
-        any phase step to have been executed).
+        any phase step to have been executed). The return value must be constant, with regard
+        to the execution of other methods on the object (object of a sub class of this class).
 
         The list should be in usage order. So, for example, if an instruction defines
         a value X = Y (where Y is a symbol). Then the return value should contain
