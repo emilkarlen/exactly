@@ -1,5 +1,12 @@
 from exactly_lib.test_case import phase_identifier
 
+STEP__VALIDATE_SYMBOLS = 'validate-symbols'
+STEP__VALIDATE_PRE_SDS = 'validate-pre-sds'
+STEP__VALIDATE_POST_SETUP = 'validate-post-setup'
+STEP__MAIN = 'main'
+STEP__ACT__EXECUTE = 'act-execute'
+STEP__ACT__PREPARE = 'act-prepare'
+
 
 class SimplePhaseStep(tuple):
     def __new__(cls,
@@ -46,19 +53,19 @@ class PhaseStep(tuple):
 
 
 def _main_step(phase: phase_identifier.Phase) -> PhaseStep:
-    return PhaseStep(phase, 'main')
+    return PhaseStep(phase, STEP__MAIN)
 
 
 def _validate_symbols_step(phase: phase_identifier.Phase) -> PhaseStep:
-    return PhaseStep(phase, 'validate-symbols')
+    return PhaseStep(phase, STEP__VALIDATE_SYMBOLS)
 
 
 def _validate_pre_sds_step(phase: phase_identifier.Phase) -> PhaseStep:
-    return PhaseStep(phase, 'validate-pre-sds')
+    return PhaseStep(phase, STEP__VALIDATE_PRE_SDS)
 
 
 def _validate_post_setup_step(phase: phase_identifier.Phase) -> PhaseStep:
-    return PhaseStep(phase, 'validate-post-setup')
+    return PhaseStep(phase, STEP__VALIDATE_POST_SETUP)
 
 
 CONFIGURATION__MAIN = _main_step(phase_identifier.CONFIGURATION)
@@ -71,8 +78,8 @@ SETUP__MAIN = _main_step(phase_identifier.SETUP)
 ACT__VALIDATE_SYMBOLS = _validate_symbols_step(phase_identifier.ACT)
 ACT__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.ACT)
 ACT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ACT)
-ACT__PREPARE = PhaseStep(phase_identifier.ACT, 'act-prepare')
-ACT__EXECUTE = PhaseStep(phase_identifier.ACT, 'act-execute')
+ACT__PREPARE = PhaseStep(phase_identifier.ACT, STEP__ACT__PREPARE)
+ACT__EXECUTE = PhaseStep(phase_identifier.ACT, STEP__ACT__EXECUTE)
 
 BEFORE_ASSERT__VALIDATE_SYMBOLS = _validate_symbols_step(phase_identifier.BEFORE_ASSERT)
 BEFORE_ASSERT__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.BEFORE_ASSERT)
