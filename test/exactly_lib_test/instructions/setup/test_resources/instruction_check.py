@@ -6,6 +6,7 @@ import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
+from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -126,6 +127,9 @@ class Executor:
                                   'The instruction must be an instance of ' + str(SetupPhaseInstruction))
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, SetupPhaseInstruction)
+        self.expectation.symbol_usages.apply_with_message(self.put,
+                                                          instruction.symbol_usages(),
+                                                          'symbol-usages after parse')
         self.expectation.symbol_usages.apply_with_message(self.put, instruction.symbol_usages(),
                                                           'symbol-usages')
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
@@ -138,6 +142,10 @@ class Executor:
                                                                   self.arrangement.process_execution_settings.environ,
                                                                   symbols=self.arrangement.symbols)
                 pre_validate_result = self._execute_pre_validate(environment, instruction)
+                self.expectation.symbol_usages.apply_with_message(self.put,
+                                                                  instruction.symbol_usages(),
+                                                                  'symbol-usages after ' +
+                                                                  phase_step.STEP__VALIDATE_PRE_SDS)
                 if not pre_validate_result.is_success:
                     return
                 with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as sds_root_dir_name:
@@ -158,6 +166,10 @@ class Executor:
                     self.arrangement.home_or_sds_contents.write_to(home_and_sds)
                     self.arrangement.post_sds_population_action.apply(path_resolving_environment)
                     main_result = self._execute_main(sds, instruction_environment, instruction)
+                    self.expectation.symbol_usages.apply_with_message(self.put,
+                                                                      instruction.symbol_usages(),
+                                                                      'symbol-usages after ' +
+                                                                      phase_step.STEP__MAIN)
                     if not main_result.is_success:
                         return
                     self.expectation.symbols_after_main.apply_with_message(
@@ -166,6 +178,11 @@ class Executor:
                         'symbols_after_main')
                     self._execute_post_validate(instruction_environment, instruction)
                     self.expectation.side_effects_check.apply(self.put, instruction_environment.home_and_sds)
+                    self.expectation.symbol_usages.apply_with_message(self.put,
+                                                                      instruction.symbol_usages(),
+                                                                      'symbol-usages after ' +
+                                                                      phase_step.STEP__VALIDATE_POST_SETUP)
+
         finally:
             os.chdir(initial_cwd)
 
