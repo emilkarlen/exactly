@@ -18,6 +18,27 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_fi
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 
+class TheConfiguration(TheConfigurationBase):
+    def __init__(self):
+        super().__init__(sut.constructor(Command(abs_path_to_interpreter_quoted_for_exactly(), shell=True)))
+
+
+def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
+    return unittest.TestSuite([
+        single_file_rel_home.suite_for(configuration),
+        custom_suite_for(configuration)
+    ])
+
+
+def custom_suite_for(conf: TheConfiguration) -> unittest.TestSuite:
+    test_cases = [
+        TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
+        TestFileReferenceCanBeQuoted,
+        TestArgumentsAreParsedAndPassedToExecutor,
+    ]
+    return unittest.TestSuite([tc(conf) for tc in test_cases])
+
+
 def suite() -> unittest.TestSuite:
     tests = []
     the_configuration = TheConfiguration()
@@ -93,24 +114,3 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                               'Argument should be a single string when for shell command')
         self.assertEqual(should_be_last_part_of_command_line,
                          executor_that_records_arguments.command.args[-(len(should_be_last_part_of_command_line)):])
-
-
-class TheConfiguration(TheConfigurationBase):
-    def __init__(self):
-        super().__init__(sut.constructor(Command(abs_path_to_interpreter_quoted_for_exactly(), shell=True)))
-
-
-def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
-    return unittest.TestSuite([
-        single_file_rel_home.suite_for(configuration),
-        custom_suite_for(configuration)
-    ])
-
-
-def custom_suite_for(conf: TheConfiguration) -> unittest.TestSuite:
-    test_cases = [
-        TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
-        TestFileReferenceCanBeQuoted,
-        TestArgumentsAreParsedAndPassedToExecutor,
-    ]
-    return unittest.TestSuite([tc(conf) for tc in test_cases])

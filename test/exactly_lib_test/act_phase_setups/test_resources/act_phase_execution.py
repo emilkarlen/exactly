@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import tmp_dir as fs_utils
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
@@ -50,11 +50,11 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 side_effects_on_files_after_execute: va.ValueAssertion = va.anything_goes(),
-                 side_effects_on_files_after_prepare: va.ValueAssertion = va.anything_goes(),
-                 result_of_prepare: va.ValueAssertion = sh_check.is_success(),
-                 result_of_execute: va.ValueAssertion = eh_check.is_any_exit_code,
-                 sub_process_result_from_execute: va.ValueAssertion = va.anything_goes()):
+                 side_effects_on_files_after_execute: asrt.ValueAssertion = asrt.anything_goes(),
+                 side_effects_on_files_after_prepare: asrt.ValueAssertion = asrt.anything_goes(),
+                 result_of_prepare: asrt.ValueAssertion = sh_check.is_success(),
+                 result_of_execute: asrt.ValueAssertion = eh_check.is_any_exit_code,
+                 sub_process_result_from_execute: asrt.ValueAssertion = asrt.anything_goes()):
         self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
         self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
         self.result_of_prepare = result_of_prepare

@@ -20,6 +20,11 @@ from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor imp
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 
 
+class TheConfiguration(TheConfigurationBase):
+    def __init__(self):
+        super().__init__(sut.constructor(Command([sys.executable], shell=False)))
+
+
 def suite() -> unittest.TestSuite:
     tests = []
     the_configuration = TheConfiguration()
@@ -28,8 +33,20 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite(tests)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
+def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
+    return unittest.TestSuite([
+        single_file_rel_home.suite_for(configuration),
+        custom_suite_for(configuration)
+    ])
+
+
+def custom_suite_for(conf: TheConfiguration) -> unittest.TestSuite:
+    test_cases = [
+        TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
+        TestFileReferenceCanBeQuoted,
+        TestArgumentsAreParsedAndPassedToExecutor,
+    ]
+    return unittest.TestSuite([tc(conf) for tc in test_cases])
 
 
 class TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigurationForValidation):
@@ -96,28 +113,11 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                              executor_that_records_arguments.command.args[2:])
 
 
-class TheConfiguration(TheConfigurationBase):
-    def __init__(self):
-        super().__init__(sut.constructor(Command([sys.executable], shell=False)))
-
-
 def _instructions_for_file_in_home_dir(home_dir_path: pathlib.Path, statements: list) -> list:
     with open(str(home_dir_path / 'sut.py'), 'w') as f:
         f.write(lines_content(statements))
     return [instr(['sut.py'])]
 
 
-def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
-    return unittest.TestSuite([
-        single_file_rel_home.suite_for(configuration),
-        custom_suite_for(configuration)
-    ])
-
-
-def custom_suite_for(conf: TheConfiguration) -> unittest.TestSuite:
-    test_cases = [
-        TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
-        TestFileReferenceCanBeQuoted,
-        TestArgumentsAreParsedAndPassedToExecutor,
-    ]
-    return unittest.TestSuite([tc(conf) for tc in test_cases])
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
