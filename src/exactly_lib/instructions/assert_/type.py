@@ -78,7 +78,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        def type_description(k: str) -> str:
+        def type_description(k: str) -> list:
             tn = type_name[FILE_TYPES[k]]
             text = 'Tests if {PATH} is a %s, or a symbolic link to a %s.' % (tn, tn)
             if FILE_TYPES[k] is FileType.SYMLINK:
