@@ -3,7 +3,7 @@ import shlex
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token import Token
+from exactly_lib.util.parse.token import Token
 
 
 def split_arguments_list_string(arguments: str) -> list:

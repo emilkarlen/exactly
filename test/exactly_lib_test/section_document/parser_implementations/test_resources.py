@@ -1,5 +1,5 @@
-from exactly_lib.section_document.parser_implementations.token import TokenType, Token
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

@@ -1,6 +1,5 @@
 import functools
 import pathlib
-
 import types
 
 from exactly_lib.help_texts.argument_rendering import path_syntax
@@ -14,7 +13,6 @@ from exactly_lib.instructions.utils.arg_parse.symbol import parse_symbol_referen
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token import TokenType, Token
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -27,6 +25,7 @@ from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.symbol_table import SymbolTable
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}

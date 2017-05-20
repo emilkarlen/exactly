@@ -1,7 +1,7 @@
 import io
 import shlex
 
-from exactly_lib.section_document.parser_implementations.token import Token, TokenType
+from exactly_lib.util.parse.token import Token, TokenType
 
 
 class TokenSyntaxError(Exception):
