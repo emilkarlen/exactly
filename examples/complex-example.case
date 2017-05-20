@@ -65,7 +65,7 @@ contents a-second-file.txt ! empty
 
 contents another-file.txt --with-replaced-env-vars expected-content.txt
 
-type actual-file directory
+exists --dir actual-file
 
 cd this-dir-is-where-we-should-be-for-the-following-assertions
 

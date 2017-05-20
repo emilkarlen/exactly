@@ -28,10 +28,10 @@ stdout equals <<EOF
 in-execution-dir.txt
 EOF
 
-type in-execution-dir.txt regular
+exists --regular in-execution-dir.txt
 
 cd ..
 
-type in-root-dir.txt regular
+exists --regular in-root-dir.txt
 
-type execution-dir/in-execution-dir.txt regular
+exists --regular execution-dir/in-execution-dir.txt

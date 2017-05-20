@@ -357,7 +357,9 @@ it just displays some of Exactly's features.)
 
     contents file.txt contains 'my .* reg ex'
 
-    type actual-file directory
+    exists actual-file
+
+    exists --dir actual-file
 
     cd this-dir-is-where-we-should-be-for-the-following-assertions
 
