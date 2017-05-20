@@ -32,7 +32,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 TYPE_NAME_SYMLINK = 'symlink'
-TYPE_NAME_REGULAR = 'regular'
+TYPE_NAME_REGULAR = 'file'
 TYPE_NAME_DIRECTORY = 'dir'
 
 FILE_TYPE_OPTIONS = [
