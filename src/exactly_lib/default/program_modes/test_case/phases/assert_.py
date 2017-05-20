@@ -2,7 +2,7 @@ from exactly_lib.common.instruction_setup import instruction_set_from_name_and_s
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME, \
     SHELL_INSTRUCTION_NAME
 from exactly_lib.instructions.assert_ import change_dir, contents, env, run, exitcode, new_dir, \
-    shell, type, stdout, stderr
+    shell, existence_of_file, stdout, stderr
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
@@ -15,6 +15,6 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
         (SHELL_INSTRUCTION_NAME, shell.setup),
         ('stderr', stderr.setup_for_stderr),
         ('stdout', stdout.setup_for_stdout),
-        ('type', type.setup),
+        ('exists', existence_of_file.setup),
     ]
 )

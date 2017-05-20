@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_ import type as sut
+from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
