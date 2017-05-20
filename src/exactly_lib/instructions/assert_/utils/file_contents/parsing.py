@@ -13,9 +13,9 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token import TokenType
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util.cli_syntax.option_parsing import matches
+from exactly_lib.util.parse.token import TokenType
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 

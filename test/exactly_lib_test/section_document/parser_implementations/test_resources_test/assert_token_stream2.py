@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations.token import Token
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.util.parse.token import Token
 from exactly_lib_test.section_document.parser_implementations import test_resources as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
