@@ -52,6 +52,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.path_argument = _PATH_ARGUMENT_STR
         super().__init__(name, {
             'PATH': self.path_argument.name,
+            'TYPE': _TYPE_ARGUMENT_STR,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
         })
 
@@ -63,6 +64,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         PASS if, and only if, {PATH} exists, and is a file of the given type.
 
 
+        If {TYPE} is not given, {PATH} can be any type of file.
+        
+        
         {PATH} is relative the {cwd}.
         """
         return self._paragraphs(text)
