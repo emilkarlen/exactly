@@ -7,7 +7,7 @@ from exactly_lib_test.instructions.assert_ import \
     exitcode, \
     new_dir, \
     shell, \
-    type, \
+    existence_of_file, \
     env, \
     utils
 from exactly_lib_test.instructions.assert_ import stdout, stderr
@@ -22,7 +22,7 @@ def suite():
     ret_val.addTest(contents.suite())
     ret_val.addTest(stdout.suite())
     ret_val.addTest(stderr.suite())
-    ret_val.addTest(type.suite())
+    ret_val.addTest(existence_of_file.suite())
     ret_val.addTest(new_dir.suite())
     ret_val.addTest(change_dir.suite())
     ret_val.addTest(run.suite())
