@@ -17,19 +17,21 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_fi
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestParseInvalidSyntax),
         unittest.makeSuite(TestCheckForRegularFile),
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
+        unittest.makeSuite(TestCheckForAnyTypeOfFile),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 
-class TestParse(TestCaseBase):
+class TestParseInvalidSyntax(TestCaseBase):
     def test_raise_exception_when_syntax_is_invalid(self):
         test_cases = [
             '',
-            'file-name file extra-argument',
+            '{} file-name unexpected-argument'.format(long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+            'file-name unexpected-argument'.format(long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
         ]
         parser = sut.Parser()
         for instruction_argument in test_cases:
@@ -47,6 +49,34 @@ class TestCaseBaseForParser(TestCaseBase):
         parser = sut.Parser()
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._check(parser, source, arrangement, expectation)
+
+
+class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
+    def test_pass_when_file_exists(self):
+        file_name = 'existing-file'
+        cases = [
+            ('dir',
+             DirContents([empty_dir(file_name)])),
+            ('regular file',
+             DirContents([empty_file(file_name)])),
+            ('sym-link',
+             DirContents(
+                 [empty_dir('directory'),
+                  Link(file_name, 'directory')])
+             ),
+        ]
+        for file_type, dir_contents in cases:
+            with self.subTest(msg=file_type):
+                self._run(file_name,
+                          arrangement(sds_contents_before_main=act_dir_contents(dir_contents)),
+                          is_pass(),
+                          )
+
+    def test_fail_when_file_does_not_exist(self):
+        self._run('non-existing-file',
+                  arrangement(),
+                  Expectation(main_result=pfh_check.is_fail()),
+                  )
 
 
 class TestCheckForDirectory(TestCaseBaseForParser):
