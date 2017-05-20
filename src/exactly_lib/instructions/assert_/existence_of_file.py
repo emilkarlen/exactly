@@ -33,7 +33,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 TYPE_NAME_SYMLINK = 'symlink'
 TYPE_NAME_REGULAR = 'regular'
-TYPE_NAME_DIRECTORY = 'directory'
+TYPE_NAME_DIRECTORY = 'dir'
 
 FILE_TYPE_OPTIONS = [
     (file_properties.FileType.SYMLINK, a.OptionName(long_name=TYPE_NAME_SYMLINK)),
