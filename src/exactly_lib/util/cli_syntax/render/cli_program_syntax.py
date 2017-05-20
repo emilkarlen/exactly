@@ -107,3 +107,10 @@ class ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
             ret_val.append(' ')
             ret_val.append(x.argument)
         return ''.join(ret_val)
+
+
+_ARGUMENT_IN_ARGUMENT_DESCRIPTION_RENDERER = ArgumentInArgumentDescriptionRenderer()
+
+
+def render_argument(argument: arg.Argument) -> str:
+    return _ARGUMENT_IN_ARGUMENT_DESCRIPTION_RENDERER.visit(argument)

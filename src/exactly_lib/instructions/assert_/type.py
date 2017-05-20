@@ -20,7 +20,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.elements.argument import OptionName
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure import lists
 
@@ -35,16 +35,10 @@ TYPE_NAME_SYMLINK = 'symlink'
 TYPE_NAME_REGULAR = 'regular'
 TYPE_NAME_DIRECTORY = 'directory'
 
-FILE_TYPES = {
-    TYPE_NAME_SYMLINK: (file_properties.FileType.SYMLINK, OptionName(long_name=TYPE_NAME_SYMLINK)),
-    TYPE_NAME_REGULAR: (file_properties.FileType.REGULAR, OptionName(long_name=TYPE_NAME_REGULAR)),
-    TYPE_NAME_DIRECTORY: (file_properties.FileType.DIRECTORY, OptionName(long_name=TYPE_NAME_DIRECTORY)),
-}
-
 FILE_TYPE_OPTIONS = [
-    (file_properties.FileType.SYMLINK, OptionName(long_name=TYPE_NAME_SYMLINK)),
-    (file_properties.FileType.REGULAR, OptionName(long_name=TYPE_NAME_REGULAR)),
-    (file_properties.FileType.DIRECTORY, OptionName(long_name=TYPE_NAME_DIRECTORY)),
+    (file_properties.FileType.SYMLINK, a.OptionName(long_name=TYPE_NAME_SYMLINK)),
+    (file_properties.FileType.REGULAR, a.OptionName(long_name=TYPE_NAME_REGULAR)),
+    (file_properties.FileType.DIRECTORY, a.OptionName(long_name=TYPE_NAME_DIRECTORY)),
 ]
 
 _TYPE_ARGUMENT_STR = 'TYPE'
@@ -76,33 +70,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
+                a.Single(a.Multiplicity.OPTIONAL,
+                         self.type_argument),
                 a.Single(a.Multiplicity.MANDATORY,
                          self.path_argument),
-                a.Single(a.Multiplicity.MANDATORY,
-                         self.type_argument),
             ]),
                 []),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        def type_description(k: str) -> list:
-            tn = file_properties.type_name[FILE_TYPES[k][0]]
-            text = 'Tests if {PATH} is a %s, or a symbolic link to a %s.' % (tn, tn)
-            if FILE_TYPES[k][0] is file_properties.FileType.SYMLINK:
-                text = 'Tests if {PATH} is a %s.' % tn
-            return self._paragraphs(text)
-
-        def file_type_list() -> core.ParagraphItem:
-            list_items = [
-                lists.HeaderContentListItem(self._text(k),
-                                            type_description(k))
-                for k in sorted(FILE_TYPES.keys())]
-            return lists.HeaderContentList(list_items,
-                                           lists.Format(lists.ListType.VARIABLE_LIST))
-
         return [
             SyntaxElementDescription(self.type_argument.name,
-                                     [file_type_list()],
+                                     [self._file_type_list()],
                                      [])
         ]
 
@@ -110,6 +89,25 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
+
+    def _file_type_list(self) -> core.ParagraphItem:
+        def type_description(file_type: file_properties.FileType) -> list:
+            tn = file_properties.type_name[file_type]
+            text = 'Tests if {PATH} is a %s, or a symbolic link to a %s.' % (tn, tn)
+            if file_type is file_properties.FileType.SYMLINK:
+                text = 'Tests if {PATH} is a %s.' % tn
+            return self._paragraphs(text)
+
+        sort_value__list_items = [
+            (file_properties.type_name[file_type],
+             lists.HeaderContentListItem(self._text(render_argument(a.Option(option_name))),
+                                         type_description(file_type)))
+            for file_type, option_name in FILE_TYPE_OPTIONS]
+        sort_value__list_items.sort(key=lambda type_name__list_item: type_name__list_item[0])
+        list_items = [type_name__list_item[1]
+                      for type_name__list_item in sort_value__list_items]
+        return lists.HeaderContentList(list_items,
+                                       lists.Format(lists.ListType.VARIABLE_LIST))
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
