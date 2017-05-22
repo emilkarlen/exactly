@@ -198,7 +198,8 @@ _REL_HOME_DESCRIPTION = """\
 """
 
 _REL_SYMBOL_DESCRIPTION = """\
-{PATH} is relative the path denoted by the symbol {SYMBOL_NAME} (which must be a {PATH_SYMBOL_TYPE}).
+{PATH} is relative the path denoted by the symbol {SYMBOL_NAME}
+(which must have been defined as a {PATH_SYMBOL_TYPE} symbol).
 """
 
 _ALL = {
