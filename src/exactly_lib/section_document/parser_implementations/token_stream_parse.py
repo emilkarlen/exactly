@@ -1,3 +1,5 @@
+import types
+
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
@@ -38,7 +40,7 @@ class TokenParser:
         self.token_stream.consume()
         return ret_val
 
-    def consume_and_handle_first_matching_option(self, key_and_option_name_list) -> list:
+    def consume_and_handle_first_matching_option_iter(self, key_and_option_name_list) -> list:
         """
         
         :param key_and_option_name_list: [(key, `OptionName`)] 
@@ -51,6 +53,27 @@ class TokenParser:
                 self.token_stream.consume()
                 return [key]
         return []
+
+    def consume_and_handle_first_matching_option(self,
+                                                 default_value,
+                                                 key_handler: types.FunctionType,
+                                                 key_and_option_name_list: list,
+                                                 ):
+        """
+        Returns a value, either a default (if next token does not match any of the given
+        `OptionName`:s), of a default value otherwise.
+        :param key_and_option_name_list: [(key, `OptionName`)] 
+        :param default_value: Value to return if next token does not match any of the given 
+         `OptionName`:s.
+         :param key_handler: Gives the return value from a key corresponding to
+         the `OptionType` that matches the next token.
+        """
+        if self.token_stream.is_null:
+            return default_value
+        for key, option_name in key_and_option_name_list:
+            if matches(option_name, self.token_stream.head.source_string):
+                self.token_stream.consume()
+                return key_handler[key]
 
     @property
     def token_stream(self) -> TokenStream2:
