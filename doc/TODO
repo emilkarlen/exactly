@@ -96,7 +96,7 @@ registered paths.
 If every instruction could tell which references it uses and which paths it
 sets, then it's possible to do validation-time checking of references.
 
-** env should be able to assign paths using --rel VALUE-DEF
+** env should be able to assign paths using --rel SYMBOL-DEF
 
 env path MY_DIR_VAR = --rel-act act/sub/dir
 env path MY_DIR_VAR = --rel DIR_VAL sub/dir

@@ -82,23 +82,23 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
 
 class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBaseForParser):
     def test_symbol_with_relativity_that_is_not_default_relativity(self):
-        instruction_argument = '--rel VALUE_DEF_NAME file-name.txt'
+        instruction_argument = '--rel SYMBOL_NAME file-name.txt'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._run(source,
                       Arrangement(
                           symbols=symbol_table_from_entries([
-                              symbol_table.Entry('VALUE_DEF_NAME',
+                              symbol_table.Entry('SYMBOL_NAME',
                                                  file_ref_value_container(
                                                      file_refs.rel_tmp_user(
-                                                         PathPartAsFixedPath('value-def-path-arg'))))])
+                                                         PathPartAsFixedPath('symbol-def-path-arg'))))])
                       ),
                       Expectation(
                           main_side_effects_on_files=tmp_user_dir_contains_exactly(DirContents([
-                              Dir('value-def-path-arg',
+                              Dir('symbol-def-path-arg',
                                   [empty_file('file-name.txt')])
                           ])),
                           symbol_usages=asrt.matches_sequence([
-                              equals_symbol_reference('VALUE_DEF_NAME',
+                              equals_symbol_reference('SYMBOL_NAME',
                                                       equals_file_ref_relativity_restriction(
                                                          FileRefRelativityRestriction(RELATIVITY_VARIANTS)))
                           ]),
