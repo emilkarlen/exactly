@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -17,6 +18,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_popu
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -27,6 +29,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCheckForSymLink),
         unittest.makeSuite(TestCheckForAnyTypeOfFile),
         unittest.makeSuite(TestOfCurrentDirectoryIsNotActDir),
+        unittest.makeSuite(TestFileRefVariantsOfCheckedFile),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -246,8 +249,49 @@ class TestCheckForSymLink(TestCaseBaseForParser):
                           )
 
 
-def args_for(file_name: str, file_type: str) -> str:
-    return long_option_syntax(file_type) + ' ' + file_name
+class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
+    def test_pass(self):
+        file_name = 'name-of-checked-file'
+        cases = [
+            (
+                'exists in act dir',
+                sut.TYPE_NAME_REGULAR,
+                file_ref_texts.REL_ACT_OPTION,
+                ArrangementPostAct(
+                    sds_contents=act_dir_contents(DirContents([empty_file(file_name)]))),
+                Expectation(symbol_usages=asrt.is_empty_list),
+            ),
+            (
+                'exists in tmp/usr dir',
+                sut.TYPE_NAME_DIRECTORY,
+                file_ref_texts.REL_TMP_OPTION,
+                ArrangementPostAct(
+                    sds_contents=tmp_user_dir_contents(DirContents([empty_dir(file_name)]))),
+                Expectation(symbol_usages=asrt.is_empty_list),
+            ),
+            (
+                'exists in tmp/usr dir',
+                sut.TYPE_NAME_DIRECTORY,
+                file_ref_texts.REL_TMP_OPTION,
+                ArrangementPostAct(
+                    sds_contents=tmp_user_dir_contents(DirContents([empty_dir(file_name)]))),
+                Expectation(symbol_usages=asrt.is_empty_list),
+            ),
+        ]
+        for case_name, expected_file_type, relativity_option, arrangement, expectation in cases:
+            with self.subTest(msg=case_name):
+                self._run(args_for(file_name=file_name,
+                                   relativity_option=relativity_option,
+                                   file_type=expected_file_type),
+                          arrangement,
+                          expectation,
+                          )
+
+
+def args_for(file_name: str,
+             file_type: str,
+             relativity_option: str = '') -> str:
+    return long_option_syntax(file_type) + ' ' + relativity_option + ' ' + file_name
 
 
 if __name__ == '__main__':

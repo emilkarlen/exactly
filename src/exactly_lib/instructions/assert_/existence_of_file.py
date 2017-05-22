@@ -1,9 +1,13 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils import file_properties
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
+from exactly_lib.instructions.utils.documentation import documentation_text as dt
+from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
@@ -12,13 +16,11 @@ from exactly_lib.section_document.parser_implementations.instruction_parsers imp
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import core
@@ -43,19 +45,30 @@ FILE_TYPE_OPTIONS = [
 
 _TYPE_ARGUMENT_STR = 'TYPE'
 
-_PATH_ARGUMENT_STR = path_syntax.PATH_ARGUMENT
+_PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
 
 _DEFAULT_FILE_PROPERTIES_CHECK = file_properties.must_exist(follow_symlinks=False)
+
+_REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
+    RelOptionsConfiguration(
+        PathRelativityVariants(
+            {RelOptionType.REL_ACT,
+             RelOptionType.REL_TMP,
+             RelOptionType.REL_CWD},
+            True),
+        False,
+        RelOptionType.REL_CWD),
+    _PATH_ARGUMENT.name,
+    True)
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         self.type_argument = a.Named(_TYPE_ARGUMENT_STR)
-        self.path_argument = _PATH_ARGUMENT_STR
         super().__init__(name, {
-            'PATH': self.path_argument.name,
+            'PATH': _PATH_ARGUMENT.name,
             'TYPE': _TYPE_ARGUMENT_STR,
-            'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'SYM_LNK': file_properties.type_name[file_properties.FileType.SYMLINK],
         })
 
     def single_line_description(self) -> str:
@@ -66,46 +79,52 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         PASS if, and only if, {PATH} exists, and is a file of the given type.
 
 
-        If {TYPE} is not given, {PATH} can be any type of file.
-        
-        
-        {PATH} is relative the {cwd}.
+        If {TYPE} is not given, {PATH} may be any type of file.
         """
-        return self._paragraphs(text)
+        specific_for_instruction = self._paragraphs(text)
+        default_relativity = rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
+                                                                              _REL_OPTION_CONFIG.options.default_option)
+        path_syntax_paragraphs = dt.paths_uses_posix_syntax()
+        return specific_for_instruction + default_relativity + path_syntax_paragraphs
 
     def invokation_variants(self) -> list:
+        type_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.type_argument)]
+        path_arguments = path_syntax.mandatory_path_with_optional_relativity(
+            _PATH_ARGUMENT,
+            _REL_OPTION_CONFIG.options.is_rel_symbol_option_accepted,
+            _REL_OPTION_CONFIG.path_suffix_is_required)
+        arguments = type_arguments + path_arguments
+
         return [
-            InvokationVariant(self._cl_syntax_for_args([
-                a.Single(a.Multiplicity.OPTIONAL,
-                         self.type_argument),
-                a.Single(a.Multiplicity.MANDATORY,
-                         self.path_argument),
-            ]),
-                []),
+            InvokationVariant(self._cl_syntax_for_args(arguments),
+                              []),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return [
+        type_elements = [
             SyntaxElementDescription(self.type_argument.name,
-                                     [self._file_type_list()],
-                                     [])
+                                     [self._file_type_list()], []),
         ]
+        path_elements = rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
+                                                                            _REL_OPTION_CONFIG.options)
+        all_elements = type_elements + path_elements
+
+        return all_elements
 
     def _see_also_cross_refs(self) -> list:
-        return [
-            CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
-        ]
+        concepts = rel_path_doc.see_also_concepts(_REL_OPTION_CONFIG.options)
+        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
+        return [concept.cross_reference_target for concept in concepts]
 
     def _file_type_list(self) -> core.ParagraphItem:
         def type_description(file_type: file_properties.FileType) -> list:
-            tn = file_properties.type_name[file_type]
-            text = 'Tests if {PATH} is a %s, or a %s to a %s.' % (tn,
-                                                                  file_properties.type_name[
-                                                                      file_properties.FileType.SYMLINK],
-                                                                  tn)
+            text = 'Tests if {PATH} is a {file_type}, or a {SYM_LNK} to a {file_type}.'
             if file_type is file_properties.FileType.SYMLINK:
-                text = 'Tests if {PATH} is a %s (link target may or may not exist).' % tn
-            return self._paragraphs(text)
+                text = 'Tests if {PATH} is a {SYM_LNK} (link target may or may not exist).'
+            extra = {
+                'file_type': file_properties.type_name[file_type],
+            }
+            return self._paragraphs(text, extra)
 
         sort_value__list_items = [
             (file_properties.type_name[file_type],
@@ -120,24 +139,22 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
-    _MISSING_PATH_ARGUMENT = 'Missing {PATH} argument'
-
     def __init__(self):
         self.format_map = {
-            'PATH': _PATH_ARGUMENT_STR,
+            'PATH': _PATH_ARGUMENT.name,
         }
 
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         tokens = TokenParser(TokenStream2(rest_of_line),
                              self.format_map)
-        tokens.if_null_then_invalid_arguments(self._MISSING_PATH_ARGUMENT)
+        tokens.if_null_then_invalid_arguments('Missing {PATH} argument')
         file_properties_check = tokens.consume_and_handle_first_matching_option(
             _DEFAULT_FILE_PROPERTIES_CHECK,
             _file_type_2_file_properties_check,
             FILE_TYPE_OPTIONS)
-        file_name_argument = tokens.consume_mandatory_string_argument(self._MISSING_PATH_ARGUMENT)
+        file_ref_resolver = parse_file_ref(tokens.token_stream,
+                                           _REL_OPTION_CONFIG)
         tokens.require_is_at_eol('Superfluous arguments')
-        file_ref_resolver = FileRefConstant(file_refs.rel_cwd(PathPartAsFixedPath(file_name_argument)))
         return _Instruction(file_ref_resolver, file_properties_check)
 
 
