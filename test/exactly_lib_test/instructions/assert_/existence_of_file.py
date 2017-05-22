@@ -31,7 +31,7 @@ class TestParseInvalidSyntax(TestCaseBase):
         test_cases = [
             '',
             '{} file-name unexpected-argument'.format(long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
-            'file-name unexpected-argument'.format(long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+            'file-name unexpected-argument',
         ]
         parser = sut.Parser()
         for instruction_argument in test_cases:
