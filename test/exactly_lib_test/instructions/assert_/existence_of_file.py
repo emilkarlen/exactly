@@ -81,112 +81,135 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
 
 
 class TestCheckForDirectory(TestCaseBaseForParser):
-    def test_pass__when__file_type_is_given__directory(self):
-        file_name = 'name-of-existing-directory'
-        self._run(args_for(file_name=file_name,
-                           file_type=sut.TYPE_NAME_DIRECTORY),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_dir(file_name)]))),
-                  is_pass(),
-                  )
+    def test_pass(self):
+        file_name = 'name-of-checked-file'
+        cases = [
+            (
+                'exists as directory',
+                DirContents([empty_dir(file_name)])
+            ),
+            (
+                'exists as sym-link to existing directory',
+                DirContents([empty_dir('directory'),
+                             Link(file_name, 'directory')]),
+            ),
+        ]
+        for case_name, actual_dir_contents in cases:
+            with self.subTest(msg=case_name):
+                self._run(args_for(file_name=file_name,
+                                   file_type=sut.TYPE_NAME_DIRECTORY),
+                          arrangement(sds_contents_before_main=act_dir_contents(actual_dir_contents)),
+                          is_pass(),
+                          )
 
-    def test_fail__when__actual_type_is_regular_file(self):
-        file_name = 'name-of-existing-directory'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_DIRECTORY),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_file(file_name)]))),
-                  Expectation(main_result=pfh_check.is_fail()),
-                  )
-
-    def test_pass__when__actual_type_is_sym_link_to_directory(self):
-        file_name = 'sym-link'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_DIRECTORY),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_dir('directory'),
-                       Link(file_name, 'directory')]))),
-                  is_pass(),
-                  )
-
-    def test_fail__when__actual_type_is_sym_link_to_file(self):
-        file_name = 'sym-link'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_DIRECTORY),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_file('existing-file'),
-                       Link(file_name, 'existing-file')]))),
-                  Expectation(main_result=pfh_check.is_fail()),
-                  )
+    def test_fail(self):
+        file_name = 'the-name-of-checked-file'
+        cases = [
+            (
+                'exists as regular file',
+                DirContents([empty_file(file_name)])
+            ),
+            (
+                'exists as sym-link to existing regular file',
+                DirContents([empty_file('existing-file'),
+                             Link(file_name, 'directory')]),
+            ),
+        ]
+        for case_name, actual_dir_contents in cases:
+            with self.subTest(msg=case_name):
+                self._run(args_for(file_name=file_name,
+                                   file_type=sut.TYPE_NAME_DIRECTORY),
+                          arrangement(sds_contents_before_main=act_dir_contents(actual_dir_contents)),
+                          Expectation(main_result=pfh_check.is_fail()),
+                          )
 
 
 class TestCheckForRegularFile(TestCaseBaseForParser):
-    def test_pass__when__actual_type_is_regular_file(self):
-        file_name = 'name-of-existing-directory'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_REGULAR),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_file(file_name)]))),
-                  is_pass(),
-                  )
+    def test_pass(self):
+        file_name = 'name-of-checked-file'
+        cases = [
+            (
+                'exists as regular file',
+                DirContents([empty_file(file_name)])
+            ),
+            (
+                'exists as sym-link to existing regular file',
+                DirContents([empty_file('existing-file'),
+                             Link(file_name, 'existing-file')]),
+            ),
+        ]
+        for case_name, actual_dir_contents in cases:
+            with self.subTest(msg=case_name):
+                self._run(args_for(file_name=file_name,
+                                   file_type=sut.TYPE_NAME_REGULAR),
+                          arrangement(sds_contents_before_main=act_dir_contents(actual_dir_contents)),
+                          is_pass(),
+                          )
 
-    def test_fail__when__file_type_is_given__directory(self):
-        file_name = 'name-of-existing-directory'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_REGULAR),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_dir(file_name)]))),
-                  Expectation(main_result=pfh_check.is_fail()),
-                  )
-
-    def test_fail__when__actual_type_is_sym_link_to_directory(self):
-        file_name = 'sym-link'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_REGULAR),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_dir('directory'),
-                       Link(file_name, 'directory')]))),
-                  Expectation(main_result=pfh_check.is_fail()),
-                  )
-
-    def test_pass__when__actual_type_is_sym_link_to_file(self):
-        file_name = 'sym-link'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_REGULAR),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_file('existing-file'),
-                       Link(file_name, 'existing-file')]))),
-                  is_pass(),
-                  )
+    def test_fail(self):
+        file_name = 'the-name-of-checked-file'
+        cases = [
+            (
+                'exists as directory',
+                DirContents([empty_dir(file_name)])
+            ),
+            (
+                'exists as sym-link to existing directory',
+                DirContents([empty_dir('directory'),
+                             Link(file_name, 'directory')]),
+            ),
+        ]
+        for case_name, actual_dir_contents in cases:
+            with self.subTest(msg=case_name):
+                self._run(args_for(file_name=file_name,
+                                   file_type=sut.TYPE_NAME_REGULAR),
+                          arrangement(sds_contents_before_main=act_dir_contents(actual_dir_contents)),
+                          Expectation(main_result=pfh_check.is_fail()),
+                          )
 
 
 class TestCheckForSymLink(TestCaseBaseForParser):
-    def test_link_fail__when__file_exists_and_is_regular_file(self):
-        file_name = 'name-of-existing-file'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_SYMLINK),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_file(file_name)]))),
-                  Expectation(main_result=pfh_check.is_fail()),
-                  )
+    def test_pass(self):
+        file_name = 'name-of-checked-file'
+        cases = [
+            (
+                'exists as sym-link to directory',
+                DirContents([empty_dir('dir'),
+                             Link(file_name, 'dir')])
+            ),
+            (
+                'exists as sym-link to existing regular file',
+                DirContents([empty_file('file'),
+                             Link(file_name, 'file')]),
+            ),
+        ]
+        for case_name, actual_dir_contents in cases:
+            with self.subTest(msg=case_name):
+                self._run(args_for(file_name=file_name,
+                                   file_type=sut.TYPE_NAME_SYMLINK),
+                          arrangement(sds_contents_before_main=act_dir_contents(actual_dir_contents)),
+                          is_pass(),
+                          )
 
-    def test_link_fail__when__file_type_is_given__directory(self):
-        file_name = 'name-of-existing-directory'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_SYMLINK),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_dir(file_name)]))),
-                  Expectation(main_result=pfh_check.is_fail()),
-                  )
-
-    def test_pass__when__file_type_is_given__link_to_directory(self):
-        file_name = 'link-file'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_SYMLINK),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_dir('dir'),
-                       Link(file_name, 'dir')]))),
-                  is_pass(),
-                  )
-
-    def test_pass__when__file_type_is_given__link_to_regular_file(self):
-        file_name = 'link-file'
-        self._run(args_for(file_name=file_name, file_type=sut.TYPE_NAME_SYMLINK),
-                  arrangement(sds_contents_before_main=act_dir_contents(DirContents(
-                      [empty_file('file'),
-                       Link(file_name, 'file')]))),
-                  is_pass(),
-                  )
+    def test_fail(self):
+        file_name = 'the-name-of-checked-file'
+        cases = [
+            (
+                'exists as directory',
+                DirContents([empty_file(file_name)])
+            ),
+            (
+                'exists as regular file',
+                DirContents([empty_dir(file_name)]),
+            ),
+        ]
+        for case_name, actual_dir_contents in cases:
+            with self.subTest(msg=case_name):
+                self._run(args_for(file_name=file_name,
+                                   file_type=sut.TYPE_NAME_SYMLINK),
+                          arrangement(sds_contents_before_main=act_dir_contents(actual_dir_contents)),
+                          Expectation(main_result=pfh_check.is_fail()),
+                          )
 
 
 def args_for(file_name: str, file_type: str) -> str:
