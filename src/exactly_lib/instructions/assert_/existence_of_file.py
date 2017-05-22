@@ -99,9 +99,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _file_type_list(self) -> core.ParagraphItem:
         def type_description(file_type: file_properties.FileType) -> list:
             tn = file_properties.type_name[file_type]
-            text = 'Tests if {PATH} is a %s, or a symbolic link to a %s.' % (tn, tn)
+            text = 'Tests if {PATH} is a %s, or a %s to a %s.' % (tn,
+                                                                  file_properties.type_name[
+                                                                      file_properties.FileType.SYMLINK],
+                                                                  tn)
             if file_type is file_properties.FileType.SYMLINK:
-                text = 'Tests if {PATH} is a %s.' % tn
+                text = 'Tests if {PATH} is a %s (link target may or may not exist).' % tn
             return self._paragraphs(text)
 
         sort_value__list_items = [
