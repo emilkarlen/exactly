@@ -182,6 +182,10 @@ class TestCheckForSymLink(TestCaseBaseForParser):
                 DirContents([empty_file('file'),
                              Link(file_name, 'file')]),
             ),
+            (
+                'exists as sym-link to non-existing file',
+                DirContents([Link(file_name, 'non-existing-file')]),
+            ),
         ]
         for case_name, actual_dir_contents in cases:
             with self.subTest(msg=case_name):
