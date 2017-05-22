@@ -1,6 +1,9 @@
 import types
 
+from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
+from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
+from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
 from exactly_lib.symbol.concrete_values import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -12,6 +15,9 @@ SYMBOL_NAME = 'NAME'
 STRING_VALUE = 'STRING'
 
 PATH_SUFFIX_IS_REQUIRED = False
+
+ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE = TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME,
+                                                                                   SYMBOL_DEFINITION_INSTRUCTION_NAME)
 
 
 class TypeInfo(tuple):

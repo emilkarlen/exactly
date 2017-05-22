@@ -2,6 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
@@ -114,7 +115,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(_REL_OPTION_CONFIG.options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
-        return [concept.cross_reference_target for concept in concepts]
+        refs = [concept.cross_reference_target for concept in concepts]
+        refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
+        return refs
 
     def _file_type_list(self) -> core.ParagraphItem:
         def type_description(file_type: file_properties.FileType) -> list:
