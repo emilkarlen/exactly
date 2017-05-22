@@ -22,7 +22,7 @@ def validate_symbol_usage(usage: vs.SymbolUsage,
         if not symbol_table.contains(usage.name):
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
-                'Referenced definition `{}\' is undefined.'.format(usage.name))
+                'Referenced symbol `{}\' is undefined.'.format(usage.name))
         else:
             err_msg = _validate_reference(usage, symbol_table)
             if err_msg is not None:
@@ -35,7 +35,7 @@ def validate_symbol_usage(usage: vs.SymbolUsage,
             assert isinstance(already_defined_value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
-                'Name `{}\' has already been defined:\n\n{}'.format(
+                'Symbol `{}\' has already been defined:\n\n{}'.format(
                     usage.name,
                     error_message_format.source_line(
                         already_defined_value_container.definition_source)))
