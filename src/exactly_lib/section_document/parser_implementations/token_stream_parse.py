@@ -40,20 +40,6 @@ class TokenParser:
         self.token_stream.consume()
         return ret_val
 
-    def consume_and_handle_first_matching_option_iter(self, key_and_option_name_list) -> list:
-        """
-        
-        :param key_and_option_name_list: [(key, `OptionName`)] 
-        :return: singleton list of [key] if an OptionName matches the head of the token stream. Otherwise []
-        """
-        if self.token_stream.is_null:
-            return []
-        for key, option_name in key_and_option_name_list:
-            if matches(option_name, self.token_stream.head.source_string):
-                self.token_stream.consume()
-                return [key]
-        return []
-
     def consume_and_handle_first_matching_option(self,
                                                  return_value_if_no_match,
                                                  key_handler: types.FunctionType,
