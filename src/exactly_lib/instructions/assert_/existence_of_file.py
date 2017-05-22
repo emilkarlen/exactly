@@ -162,6 +162,4 @@ class _Instruction(AssertPhaseInstruction):
             FileRefCheck(self._file_ref_resolver,
                          self._expected_file_properties),
             environment.path_resolving_environment_pre_or_post_sds)
-        if failure_message is not None:
-            return pfh.new_pfh_fail(failure_message)
-        return pfh.new_pfh_pass()
+        return pfh.new_pfh_fail_if_has_failure_message(failure_message)
