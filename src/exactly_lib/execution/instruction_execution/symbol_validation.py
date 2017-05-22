@@ -20,9 +20,10 @@ def validate_symbol_usage(usage: vs.SymbolUsage,
     if isinstance(usage, vs.SymbolReference):
         assert isinstance(usage, vs.SymbolReference)
         if not symbol_table.contains(usage.name):
+            error_message = _undefined_symbol_error_message(usage)
             return PartialInstructionControlledFailureInfo(
                 PartialControlledFailureEnum.VALIDATION,
-                'Referenced symbol `{}\' is undefined.'.format(usage.name))
+                error_message)
         else:
             err_msg = _validate_reference(usage, symbol_table)
             if err_msg is not None:
@@ -49,6 +50,18 @@ def validate_symbol_usage(usage: vs.SymbolUsage,
     else:
         raise TypeError('Unknown variant of {}: {}'.format(str(vs.SymbolUsage),
                                                            str(usage)))
+
+
+def _undefined_symbol_error_message(reference: vs.SymbolReference) -> str:
+    from exactly_lib.help_texts.names.formatting import InstructionName
+    from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
+    def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
+    lines = [
+        'Referenced symbol `{}\' is undefined.'.format(reference.name),
+        '',
+        'Define a symbol using the {} instruction.'.format(def_name_emphasised),
+    ]
+    return '\n'.join(lines)
 
 
 def _validate_reference(symbol_usage: vs.SymbolReference,
