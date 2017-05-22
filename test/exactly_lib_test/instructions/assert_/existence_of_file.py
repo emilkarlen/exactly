@@ -4,6 +4,10 @@ from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
     arrangement, Expectation, is_pass
@@ -13,6 +17,10 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
+from exactly_lib_test.instructions.utils.arg_parse.test_resources import rel_symbol_arg_str
+from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_file_ref_relativity_restriction
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_with_single_file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
     tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link
@@ -276,6 +284,25 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
                 ArrangementPostAct(
                     sds_contents=tmp_user_dir_contents(DirContents([empty_dir(file_name)]))),
                 Expectation(symbol_usages=asrt.is_empty_list),
+            ),
+            (
+                'exists relative symbol',
+                sut.TYPE_NAME_DIRECTORY,
+                rel_symbol_arg_str('SYMBOL_NAME'),
+                ArrangementPostAct(
+                    symbols=symbol_table_with_single_file_ref_value(
+                        'SYMBOL_NAME',
+                        file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                                PathPartAsNothing())),
+                    sds_contents=tmp_user_dir_contents(DirContents([empty_dir(file_name)]))),
+                Expectation(symbol_usages=asrt.matches_sequence([
+                    equals_symbol_reference(
+                        'SYMBOL_NAME',
+                        equals_file_ref_relativity_restriction(
+                            FileRefRelativityRestriction(
+                                sut._REL_OPTION_CONFIG.options.accepted_relativity_variants)
+                        ))
+                ])),
             ),
         ]
         for case_name, expected_file_type, relativity_option, arrangement, expectation in cases:
