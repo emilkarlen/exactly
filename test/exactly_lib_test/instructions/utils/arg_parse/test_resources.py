@@ -15,3 +15,7 @@ _FORMAT_MAP = {
     'rel_act_option': file_ref_texts.REL_ACT_OPTION,
     'rel_result_option': file_ref_texts.REL_RESULT_OPTION,
 }
+
+
+def rel_symbol_arg_str(symbol_name: str) -> str:
+    return file_ref_texts.REL_symbol_OPTION + ' ' + symbol_name

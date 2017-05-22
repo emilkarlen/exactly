@@ -56,7 +56,7 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
              RelOptionType.REL_TMP,
              RelOptionType.REL_CWD},
             True),
-        False,
+        True,
         RelOptionType.REL_CWD),
     _PATH_ARGUMENT.name,
     True)
@@ -171,6 +171,9 @@ class _Instruction(AssertPhaseInstruction):
                  expected_file_properties: file_properties.FilePropertiesCheck):
         self._file_ref_resolver = file_ref_resolver
         self._expected_file_properties = expected_file_properties
+
+    def symbol_usages(self) -> list:
+        return self._file_ref_resolver.references
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
