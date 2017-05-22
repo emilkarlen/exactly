@@ -75,6 +75,7 @@ class ArrangementPostAct(ArrangementWithSds):
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                 symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          home_contents=home_contents,
@@ -82,5 +83,6 @@ class ArrangementPostAct(ArrangementWithSds):
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
                          home_or_sds_contents=home_or_sds_contents,
-                         post_sds_population_action=post_sds_population_action)
+                         post_sds_population_action=post_sds_population_action,
+                         symbols=symbols)
         self.act_result_producer = act_result_producer
