@@ -73,7 +73,7 @@ class TokenParser:
         for key, option_name in key_and_option_name_list:
             if matches(option_name, self.token_stream.head.source_string):
                 self.token_stream.consume()
-                return key_handler[key]
+                return key_handler(key)
 
     @property
     def token_stream(self) -> TokenStream2:
