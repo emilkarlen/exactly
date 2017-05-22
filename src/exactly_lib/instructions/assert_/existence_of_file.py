@@ -45,6 +45,8 @@ _TYPE_ARGUMENT_STR = 'TYPE'
 
 _PATH_ARGUMENT_STR = path_syntax.PATH_ARGUMENT
 
+_DEFAULT_FILE_PROPERTIES_CHECK = file_properties.must_exist(follow_symlinks=False)
+
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
@@ -115,6 +117,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
+    _MISSING_PATH_ARGUMENT = 'Missing {PATH} argument'
+
     def __init__(self):
         self.format_map = {
             'PATH': _PATH_ARGUMENT_STR,
@@ -123,21 +127,22 @@ class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         tokens = TokenParser(TokenStream2(rest_of_line),
                              self.format_map)
-        tokens.if_null_then_invalid_arguments('Missing {PATH} argument')
-        file_properties_check = _parse_file_properties_check(tokens)
-        file_name_argument = tokens.consume_mandatory_string_argument('Missing {PATH} argument')
+        tokens.if_null_then_invalid_arguments(self._MISSING_PATH_ARGUMENT)
+        file_properties_check = tokens.consume_and_handle_first_matching_option(
+            _DEFAULT_FILE_PROPERTIES_CHECK,
+            _file_type_2_file_properties_check,
+            FILE_TYPE_OPTIONS)
+        file_name_argument = tokens.consume_mandatory_string_argument(self._MISSING_PATH_ARGUMENT)
         tokens.require_is_at_eol('Superfluous arguments')
         file_ref_resolver = FileRefConstant(file_refs.rel_cwd(PathPartAsFixedPath(file_name_argument)))
         return _Instruction(file_ref_resolver, file_properties_check)
 
 
-def _parse_file_properties_check(tokens: TokenParser) -> file_properties.FilePropertiesCheck:
-    ret_val = file_properties.must_exist(follow_symlinks=False)
-    for file_type in tokens.consume_and_handle_first_matching_option(FILE_TYPE_OPTIONS):
-        follow_sym_links = file_type is not file_properties.FileType.SYMLINK
-        ret_val = file_properties.must_exist_as(file_type,
-                                                follow_sym_links)
-    return ret_val
+def _file_type_2_file_properties_check(file_type: file_properties.FileType
+                                       ) -> file_properties.FilePropertiesCheck:
+    follow_sym_links = file_type is not file_properties.FileType.SYMLINK
+    return file_properties.must_exist_as(file_type,
+                                         follow_sym_links)
 
 
 class _Instruction(AssertPhaseInstruction):
