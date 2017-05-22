@@ -48,6 +48,10 @@ def new_pfh_fail(failure_message: str) -> PassOrFailOrHardError:
                                  failure_message)
 
 
+def new_pfh_fail_if_has_failure_message(failure_message: str) -> PassOrFailOrHardError:
+    return new_pfh_fail(failure_message) if failure_message else new_pfh_pass()
+
+
 def new_pfh_hard_error(failure_message: str) -> PassOrFailOrHardError:
     if failure_message is None:
         raise ValueError('A HARD ERROR must have a failure message (that is not None)')
