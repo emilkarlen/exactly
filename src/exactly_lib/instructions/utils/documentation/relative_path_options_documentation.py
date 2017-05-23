@@ -32,13 +32,14 @@ def default_relativity_for_rel_opt_type(path_arg_name: str,
 def relativity_syntax_element_descriptions(
         path_that_may_be_relative: a.Named,
         rel_options_conf: RelOptionsConfiguration,
-        relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> list:
+        relativity_argument: a.Named = RELATIVITY_ARGUMENT,
+        skip_symbol_reference_element: bool = False) -> list:
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     ret_val = [
         SyntaxElementDescription(relativity_argument.name,
                                  [renderer.list_for(rel_options_conf)]),
     ]
-    if rel_options_conf.is_rel_symbol_option_accepted:
+    if rel_options_conf.is_rel_symbol_option_accepted and not skip_symbol_reference_element:
         ret_val.append(SyntaxElementDescription(SYMBOL_REFERENCE.name,
                                                 normalize_and_parse(_SYMBOL_REFERENCE_DESCRIPTION.format(
                                                     symbol_reference=symbol_reference_syntax_for_name('SYMBOL'),
