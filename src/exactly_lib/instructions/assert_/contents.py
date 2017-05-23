@@ -80,12 +80,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                      mandatory_path]),
                 rel_opts.default_relativity_for_rel_opt_type(
                     path_syntax.PATH_ARGUMENT.name,
-                    _ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
+                    ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
         )
 
         relativity_seds = rel_opts.relativity_syntax_element_descriptions(
             path_syntax.PATH_ARGUMENT,
-            _ACTUAL_RELATIVITY_CONFIGURATION.options,
+            ACTUAL_RELATIVITY_CONFIGURATION.options,
             relativity_of_actual_arg)
 
         return [actual_file_arg_sed] + relativity_seds + self._help_parts.syntax_element_descriptions()
@@ -133,15 +133,16 @@ class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVar
                 *absolute_src_file_path.parts[1:])
 
 
-_ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
-    rel_opts_configuration.RelOptionsConfiguration(parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX,
-                                                   False,  # TODO Change to true when val-defs available in assert phase
-                                                   RelOptionType.REL_CWD),
+ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
+    rel_opts_configuration.RelOptionsConfiguration(
+        parse_file_ref.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
+        True,
+        RelOptionType.REL_CWD),
     'PATH',
     True)
 
 
 def parse_actual_file_argument(source: ParseSource) -> ComparisonActualFile:
     file_ref = parse_file_ref.parse_file_ref_from_parse_source(source,
-                                                               _ACTUAL_RELATIVITY_CONFIGURATION)
+                                                               ACTUAL_RELATIVITY_CONFIGURATION)
     return ActComparisonActualFileForFileRef(file_ref)

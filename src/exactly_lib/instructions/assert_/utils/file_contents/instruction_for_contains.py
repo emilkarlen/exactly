@@ -54,6 +54,9 @@ class ContainsAssertionInstruction(AssertPhaseInstruction):
         self._file_checker = file_checker
         self._actual_file_transformer = actual_file_transformer
 
+    def symbol_usages(self) -> list:
+        return self._actual_value.symbol_usages
+
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:

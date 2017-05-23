@@ -16,11 +16,19 @@ class ComparisonActualFile:
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
         raise NotImplementedError()
 
+    @property
+    def symbol_usages(self) -> list:
+        return []
+
 
 class ActComparisonActualFileForFileRef(ComparisonActualFile):
     def __init__(self,
                  file_ref_resolver: FileRefResolver):
         self.file_ref_resolver = file_ref_resolver
+
+    @property
+    def symbol_usages(self) -> list:
+        return self.file_ref_resolver.references
 
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         return pre_or_post_sds_failure_message_or_none(FileRefCheck(self.file_ref_resolver,

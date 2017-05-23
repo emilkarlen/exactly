@@ -1,14 +1,23 @@
 import pathlib
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.test_case_file_structure import file_refs
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
+from exactly_lib_test.instructions.utils.arg_parse.test_resources import rel_symbol_arg_str
+from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_file_ref_relativity_restriction
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator, \
-    HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
+    HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
     tmp_user_dir_contents, \
     SdsPopulator, SdsPopulatorForFileWithContentsThatDependOnSds, cwd_contents
@@ -43,6 +52,54 @@ class RelativityOptionConfiguration:
 
     def symbol_usages_expectation(self) -> asrt.ValueAssertion:
         return asrt.is_empty_list
+
+
+class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfiguration):
+    def __init__(self,
+                 relativity: RelOptionType,
+                 expected_accepted_relativities: PathRelativityVariants,
+                 symbol_name: str = 'SYMBOL_NAME'):
+        super().__init__(rel_symbol_arg_str(symbol_name))
+        self.expected_accepted_relativities = expected_accepted_relativities
+        self.relativity = relativity
+        self.symbol_name = symbol_name
+
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+
+    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
+        if self.relativity is RelOptionType.REL_HOME:
+            return Expectation(
+                validation_pre_sds=svh_check.is_validation_error(),
+                symbol_usages=self.symbol_usages_expectation(),
+            )
+        else:
+            return Expectation(
+                main_result=pfh_check.is_fail(),
+                symbol_usages=self.symbol_usages_expectation(),
+            )
+
+    def symbol_usages_expectation(self) -> asrt.ValueAssertion:
+        return asrt.matches_sequence(self.symbol_usage_expectation_assertions())
+
+    def symbol_usage_expectation_assertions(self) -> list:
+        return [
+            equals_symbol_reference(
+                self.symbol_name,
+                equals_file_ref_relativity_restriction(
+                    FileRefRelativityRestriction(self.expected_accepted_relativities)))
+
+        ]
+
+    def symbol_entries_for_arrangement(self) -> list:
+        return [
+            symbol_utils.entry(self.symbol_name,
+                               FileRefConstant(file_refs.of_rel_option(self.relativity,
+                                                                       PathPartAsNothing())))
+        ]
+
+    def symbols_in_arrangement(self) -> SymbolTable:
+        return symbol_utils.symbol_table_from_entries(self.symbol_entries_for_arrangement())
 
 
 class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):

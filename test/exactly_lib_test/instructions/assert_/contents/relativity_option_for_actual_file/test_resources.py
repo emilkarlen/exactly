@@ -1,11 +1,13 @@
 import unittest
 
+from exactly_lib.instructions.assert_.contents import ACTUAL_RELATIVITY_CONFIGURATION
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     RelativityOptionConfigurationForRelCwdForTestCwdDir
 from exactly_lib_test.instructions.test_resources.relativity_options import \
-    RelativityOptionConfiguration
+    RelativityOptionConfiguration, RelativityOptionConfigurationForRelSymbol
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp
@@ -14,6 +16,9 @@ RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE = [
     RelativityOptionConfigurationForRelCwdForTestCwdDir(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
+    RelativityOptionConfigurationForRelSymbol(RelOptionType.REL_TMP,
+                                              ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants,
+                                              symbol_name='ACTUAL_FILE_SYMBOL'),
     # Test of default relativity is done by "generic" tests of equals -
     # i.e. code in the test resources that are used for all content-checking instructions.
 ]
