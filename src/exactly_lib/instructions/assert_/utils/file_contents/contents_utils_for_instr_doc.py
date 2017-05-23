@@ -17,6 +17,8 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 NOT_ARGUMENT_CONSTANT = a.Constant(NOT_ARGUMENT)
 
+EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
+
 
 class FileContentsHelpParts:
     def __init__(self,
@@ -95,14 +97,14 @@ class FileContentsHelpParts:
                                                 [optional_relativity_of_expected,
                                                  mandatory_path]),
                                                 rel_opts.default_relativity_for_rel_opt_type(
-                                                    parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name,
-                                                    parse_here_doc_or_file_ref.CONFIGURATION.options.default_option)
+                                                    EXPECTED_FILE_REL_OPT_ARG_CONFIG.argument_syntax_name,
+                                                    EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.default_option)
                                             )]
                                             ),
                ] + \
                rel_opts.relativity_syntax_element_descriptions(
                    path_syntax.PATH_ARGUMENT,
-                   parse_here_doc_or_file_ref.CONFIGURATION.options,
+                   EXPECTED_FILE_REL_OPT_ARG_CONFIG.options,
                    relativity_of_expected_arg) + \
                [
                    SyntaxElementDescription(dt.REG_EX.name,
@@ -122,7 +124,7 @@ class FileContentsHelpParts:
 
     @staticmethod
     def _see_also_cross_refs() -> list:
-        concepts = rel_opts.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)
+        concepts = rel_opts.see_also_concepts(EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
         if ENVIRONMENT_VARIABLE_CONCEPT_INFO not in concepts:
             concepts.append(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
         return list(map(SingularAndPluralNameAndCrossReferenceId.cross_reference_target.fget, concepts))
