@@ -1,6 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.util.textformat.structure import document as doc, paragraph, lists
-from exactly_lib.util.textformat.structure.structures import para, text
+from exactly_lib.util.textformat.structure.structures import para, text, SEPARATION_OF_HEADER_AND_CONTENTS
 
 LIST_INDENT = 2
 
@@ -55,7 +55,7 @@ def invokation_variants_content(instruction_name_or_none: str,
 
     return doc.SectionContents([variants_list(instruction_name_or_none,
                                               invokation_variants,
-                                              custom_separations=BLANK_LINE_BETWEEN_ELEMENTS)] +
+                                              custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)] +
                                syntax_element_description_paragraph_items(),
                                [])
 
