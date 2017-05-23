@@ -50,7 +50,7 @@ class InstructionEnvironmentForPreSdsStep:
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPreSds:
-        return PathResolvingEnvironmentPreSds(self.__home_dir)
+        return PathResolvingEnvironmentPreSds(self.__home_dir, self.__symbols)
 
 
 class PhaseLoggingPaths:
