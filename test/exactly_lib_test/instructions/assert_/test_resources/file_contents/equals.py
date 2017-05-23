@@ -67,7 +67,10 @@ class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(Relativity
         return HomeOrSdsPopulatorForHomeContents(contents)
 
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        return Expectation(validation_pre_sds=svh_check.is_validation_error())
+        return Expectation(
+            validation_pre_sds=svh_check.is_validation_error(),
+            symbol_usages=self.symbol_usages_expectation(),
+        )
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS = [

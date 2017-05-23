@@ -31,7 +31,9 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
@@ -45,7 +47,9 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
@@ -59,8 +63,13 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'no match')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+            ),
         )
 
 
@@ -73,6 +82,11 @@ class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOption
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'REG-matching-EX')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+            ),
         )
