@@ -57,7 +57,7 @@ def _undefined_symbol_error_message(reference: vs.SymbolReference) -> str:
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
     lines = [
-        'Referenced symbol `{}\' is undefined.'.format(reference.name),
+        'Symbol `{}\' is undefined.'.format(reference.name),
         '',
         'Define a symbol using the {} instruction.'.format(def_name_emphasised),
     ]
