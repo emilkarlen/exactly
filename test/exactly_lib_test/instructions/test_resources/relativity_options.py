@@ -3,6 +3,7 @@ import pathlib
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
@@ -12,6 +13,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_popu
     tmp_user_dir_contents, \
     SdsPopulator, SdsPopulatorForFileWithContentsThatDependOnSds, cwd_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class RelativityOptionConfiguration:
@@ -36,6 +38,12 @@ class RelativityOptionConfiguration:
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         raise NotImplementedError()
 
+    def symbols_in_arrangement(self) -> SymbolTable:
+        return empty_symbol_table()
+
+    def symbol_usages_expectation(self) -> asrt.ValueAssertion:
+        return asrt.is_empty_list
+
 
 class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
     def __init__(self):
@@ -45,7 +53,10 @@ class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
         return HomeOrSdsPopulatorForHomeContents(contents)
 
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        return Expectation(validation_pre_sds=svh_check.is_validation_error())
+        return Expectation(
+            validation_pre_sds=svh_check.is_validation_error(),
+            symbol_usages=self.symbol_usages_expectation(),
+        )
 
 
 class RelativityOptionConfigurationForRelSds(RelativityOptionConfiguration):
@@ -67,7 +78,10 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfiguration):
                                                               self.populator_for_relativity_option_root__sds)
 
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        return Expectation(main_result=pfh_check.is_fail())
+        return Expectation(
+            main_result=pfh_check.is_fail(),
+            symbol_usages=self.symbol_usages_expectation(),
+        )
 
 
 class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRelSds):

@@ -43,8 +43,13 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_populator,
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+            ),
         )
 
 
