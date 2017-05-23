@@ -38,6 +38,10 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
     ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
     False)
 
+ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativityVariants(
+    ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
+    True)
+
 
 def all_rel_options_config(argument_syntax_name: str,
                            path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:

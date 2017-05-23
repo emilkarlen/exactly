@@ -12,6 +12,9 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
         self.actual_file = actual_file
         self.expect_empty = expect_empty
 
+    def symbol_usages(self) -> list:
+        return self.actual_file.symbol_usages
+
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:

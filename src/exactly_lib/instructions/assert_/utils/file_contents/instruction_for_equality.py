@@ -34,6 +34,9 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
         self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
             FileRefCheckValidator(self._file_ref_check_for_expected())
 
+    def symbol_usages(self) -> list:
+        return self._actual_value.symbol_usages
+
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         validator = PreOrPostSdsSvhValidationErrorValidator(self.validator_of_expected)
