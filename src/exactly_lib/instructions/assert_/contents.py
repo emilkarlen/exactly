@@ -10,7 +10,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
     ActualFileTransformerForEnvVarsReplacementBase
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ActComparisonActualFileForFileRef
-from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
+from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts, \
+    EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import rel_opts_configuration
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
@@ -65,9 +66,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
 
     def syntax_element_descriptions(self) -> list:
-        mandatory_path = a.Single(a.Multiplicity.MANDATORY,
-                                  path_syntax.PATH_ARGUMENT)
-        relativity_of_actual_arg = a.Named('RELATIVITY-OF-ACTUAL-FILE')
+        mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
+                                                                     path_syntax.PATH_ARGUMENT)
+        relativity_of_actual_arg = a.Named('RELATIVITY-OF-ACTUAL-PATH')
         optional_relativity_of_actual = a.Single(a.Multiplicity.OPTIONAL,
                                                  relativity_of_actual_arg)
         actual_file_arg_sed = SyntaxElementDescription(
@@ -77,21 +78,26 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             [InvokationVariant(
                 self._cl_syntax_for_args(
                     [optional_relativity_of_actual,
-                     mandatory_path]),
+                     mandatory_actual_path]),
                 rel_opts.default_relativity_for_rel_opt_type(
                     path_syntax.PATH_ARGUMENT.name,
                     ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
         )
 
-        relativity_seds = rel_opts.relativity_syntax_element_descriptions(
+        relativity_of_actual_file_seds = rel_opts.relativity_syntax_element_descriptions(
             path_syntax.PATH_ARGUMENT,
             ACTUAL_RELATIVITY_CONFIGURATION.options,
-            relativity_of_actual_arg)
+            relativity_of_actual_arg,
+            skip_symbol_reference_element=self._expected_file_may_be_rel_symbol())
 
-        return [actual_file_arg_sed] + relativity_seds + self._help_parts.syntax_element_descriptions()
+        return [actual_file_arg_sed] + relativity_of_actual_file_seds + self._help_parts.syntax_element_descriptions()
 
     def see_also_items(self) -> list:
         return self._help_parts.see_also_items()
+
+    @staticmethod
+    def _expected_file_may_be_rel_symbol() -> bool:
+        return EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.is_rel_symbol_option_accepted
 
 
 class Parser(InstructionParser):

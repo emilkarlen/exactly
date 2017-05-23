@@ -85,9 +85,10 @@ class FileContentsHelpParts:
         ]
 
     def syntax_element_descriptions(self) -> list:
-        mandatory_path = a.Single(a.Multiplicity.MANDATORY,
-                                  path_syntax.PATH_ARGUMENT)
-        relativity_of_expected_arg = a.Named('RELATIVITY-OF-EXPECTED-FILE')
+        mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
+                                                              path_syntax.PATH_ARGUMENT)
+
+        relativity_of_expected_arg = a.Named('RELATIVITY-OF-EXPECTED-PATH')
         optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
                                                    relativity_of_expected_arg)
         return [
