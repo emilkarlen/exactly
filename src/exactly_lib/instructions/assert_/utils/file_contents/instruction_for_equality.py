@@ -35,7 +35,7 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
             FileRefCheckValidator(self._file_ref_check_for_expected())
 
     def symbol_usages(self) -> list:
-        return self._actual_value.symbol_usages
+        return self._expected_contents.symbol_usages + self._actual_value.symbol_usages
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:

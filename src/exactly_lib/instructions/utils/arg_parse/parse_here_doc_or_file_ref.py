@@ -17,6 +17,12 @@ class HereDocOrFileRef(tuple):
         return tuple.__new__(cls, (here_document, file_reference))
 
     @property
+    def symbol_usages(self) -> list:
+        if self.is_file_ref:
+            return self.file_reference_resolver.references
+        return []
+
+    @property
     def is_here_document(self) -> bool:
         return self.here_document is not None
 

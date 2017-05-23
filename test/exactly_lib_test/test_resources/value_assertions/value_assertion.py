@@ -448,8 +448,8 @@ class _MatchesSequence(ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
-        put.assertEqual(len(value),
-                        len(self.element_assertions),
+        put.assertEqual(len(self.element_assertions),
+                        len(value),
                         message_builder.apply('Number of elements'))
         for idx, element in enumerate(value):
             element_message_builder = sub_component_builder('[' + str(idx) + ']',

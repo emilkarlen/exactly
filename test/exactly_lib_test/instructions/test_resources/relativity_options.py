@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsN
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import rel_symbol_arg_str
@@ -47,11 +47,17 @@ class RelativityOptionConfiguration:
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         raise NotImplementedError()
 
+    def symbol_entries_for_arrangement(self) -> list:
+        return []
+
     def symbols_in_arrangement(self) -> SymbolTable:
-        return empty_symbol_table()
+        return symbol_utils.symbol_table_from_entries(self.symbol_entries_for_arrangement())
+
+    def symbol_usage_expectation_assertions(self) -> list:
+        return []
 
     def symbol_usages_expectation(self) -> asrt.ValueAssertion:
-        return asrt.is_empty_list
+        return asrt.matches_sequence(self.symbol_usage_expectation_assertions())
 
 
 class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfiguration):
@@ -78,9 +84,6 @@ class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfiguration):
                 main_result=pfh_check.is_fail(),
                 symbol_usages=self.symbol_usages_expectation(),
             )
-
-    def symbol_usages_expectation(self) -> asrt.ValueAssertion:
-        return asrt.matches_sequence(self.symbol_usage_expectation_assertions())
 
     def symbol_usage_expectation_assertions(self) -> list:
         return [

@@ -102,4 +102,5 @@ _FORMAT_MAP = {
     'rel_home_option': file_ref_texts.REL_HOME_OPTION,
     'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
     'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
+    'rel_symbol_option': file_ref_texts.REL_symbol_OPTION,
 }
