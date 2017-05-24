@@ -14,6 +14,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phases.result import sh
@@ -73,13 +74,13 @@ Omitting the {dir_argument} is the same as giving ".".
 """
 
 
-def parse(argument: str, is_after_act_phase: bool) -> FileRefResolver:
-    relativity_options = _relativity_options(is_after_act_phase)
-    source = TokenStream2(argument)
-    destination_path = parse_file_ref(source, relativity_options)
-    if not source.is_null:
-        raise SingleInstructionInvalidArgumentException('Superfluous arguments: {}'.format(source.remaining_source))
-    return destination_path
+def parse(rest_of_line: str, is_after_act_phase: bool) -> FileRefResolver:
+    rel_opt_arg_conf = _relativity_options(is_after_act_phase)
+    tokens = TokenParser(TokenStream2(rest_of_line))
+
+    target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
+    tokens.report_superfluous_arguments_if_not_at_eol()
+    return target_file_ref
 
 
 def change_dir(destination: FileRefResolver,
