@@ -8,16 +8,14 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help
-from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help, \
+    EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 NOT_ARGUMENT_CONSTANT = a.Constant(NOT_ARGUMENT)
-
-EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 
 
 class FileContentsHelpParts:

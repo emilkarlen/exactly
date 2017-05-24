@@ -1,5 +1,6 @@
 from exactly_lib.instructions.assert_ import contents as sut
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains as test_resources
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
@@ -38,23 +39,28 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
                                           home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
                                           post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                          symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         act_result_producer = _ActResultProducer(home_and_sds_2_str, self.FILE_NAME_REL_ACT)
         return instruction_check.ArrangementPostAct(
             act_result_producer=act_result_producer,
             home_or_sds_contents=home_or_sds_contents,
             post_sds_population_action=post_sds_population_action,
+            symbols=symbols,
         )
 
     def arrangement_for_actual_and_expected(self,
                                             actual_contents: str,
                                             expected: HomeOrSdsPopulator,
                                             post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                            symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             sds_contents=self._populator_for_actual(actual_contents),
             home_or_sds_contents=expected,
-            post_sds_population_action=post_sds_population_action)
+            post_sds_population_action=post_sds_population_action,
+            symbols=symbols,
+        )
 
     def _populator_for_actual(self, actual_contents) -> sds_populator.SdsPopulator:
         return sds_populator.act_dir_contents(

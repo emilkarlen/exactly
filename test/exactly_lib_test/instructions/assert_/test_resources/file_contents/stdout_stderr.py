@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, contains
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
@@ -28,11 +29,13 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
                                             actual_contents: str,
                                             expected: HomeOrSdsPopulator,
                                             post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                            symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=(self._act_result_producer(actual_contents)),
             home_or_sds_contents=expected,
             post_sds_population_action=post_sds_population_action,
+            symbols=symbols,
         )
 
     def act_result(self, contents_of_tested_file: str) -> ActResult:
