@@ -150,7 +150,6 @@ class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         tokens = TokenParser(TokenStream2(rest_of_line),
                              self.format_map)
-        tokens.if_null_then_invalid_arguments('Missing {PATH} argument')
         file_properties_check = tokens.consume_and_handle_first_matching_option(
             _DEFAULT_FILE_PROPERTIES_CHECK,
             _file_type_2_file_properties_check,
