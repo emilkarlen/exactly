@@ -1,6 +1,9 @@
 import unittest
 
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.string import lines_content
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
@@ -15,7 +18,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
-    RelativityOptionConfigurationForRelTmp
+    RelativityOptionConfigurationForRelTmp, RelativityOptionConfigurationForRelSymbol
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
@@ -31,6 +34,7 @@ class InstructionTestConfigurationForEquals(InstructionTestConfigurationForConte
                                             actual_contents: str,
                                             expected: HomeOrSdsPopulator,
                                             post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                            symbols: SymbolTable = None,
                                             ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
 
@@ -52,7 +56,7 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
 
     return unittest.TestSuite([
         suite_for__conf__rel_opts__negations(instruction_configuration,
-                                             _RELATIVITY_OPTION_CONFIGURATIONS,
+                                             _RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE,
                                              test_cases_for_rel_opts),
         suite_for__conf__not_argument(instruction_configuration,
                                       test_cases_without_rel_opts),
@@ -73,12 +77,18 @@ class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(Relativity
         )
 
 
-_RELATIVITY_OPTION_CONFIGURATIONS = [
+_RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE = [
     RelativityOptionConfigurationForRelHome(),
     RelativityOptionConfigurationForRelCwdForTestCwdDir(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
     RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(),
+    RelativityOptionConfigurationForRelSymbol(RelOptionType.REL_TMP,
+                                              EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants,
+                                              symbol_name='EXPECTED_FILE_SYMBOL'),
+    RelativityOptionConfigurationForRelSymbol(RelOptionType.REL_HOME,
+                                              EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants,
+                                              symbol_name='EXPECTED_FILE_SYMBOL'),
 ]
 
 
@@ -89,7 +99,10 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
                 args('{maybe_not} {equals} {relativity_option} non-existing-file.txt',
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
-            ArrangementPostAct(post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+            ArrangementPostAct(
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
 
@@ -104,7 +117,8 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
             ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
@@ -121,8 +135,13 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 'actual',
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+            ),
         )
 
 
@@ -137,8 +156,13 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 'expected',
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+            ),
         )
 
 
@@ -157,8 +181,13 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
                     'expected.txt',
                     contents_generator.expected_contents_after_replacement
                 ),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.pass__if_un_negated_else__fail),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+            ),
         )
 
 
@@ -178,8 +207,13 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
                     'expected.txt',
                     contents_generator.unexpected_contents_after_replacement
                 ),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
-            Expectation(main_result=self.not_opt.fail__if_un_negated_else__pass),
+                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                symbols=self.rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+            ),
         )
 
 

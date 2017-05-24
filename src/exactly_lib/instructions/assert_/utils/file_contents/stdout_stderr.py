@@ -1,7 +1,7 @@
 import pathlib
 
-import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
+from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
     ActualFileTransformerForEnvVarsReplacementBase, \
@@ -33,7 +33,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
         self.checked_file = name_of_checked_file
         self.with_replaced_env_vars_option = a.Option(
-            exactly_lib.instructions.assert_.utils.file_contents.instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+            instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
 
     def single_line_description(self) -> str:
         return self._format('Tests the contents of {checked_file}')

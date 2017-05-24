@@ -19,6 +19,8 @@ from exactly_lib.util.parse.token import TokenType
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
+EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
+
 
 def with_replaced_env_vars_help(checked_file: str) -> list:
     header_text = """\
@@ -51,7 +53,9 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                       actual_file_transformer: ActualFileTransformer,
                       actual: ComparisonActualFile) -> AssertPhaseInstruction:
         current_line_before = source.current_line_number
-        here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(source)
+        here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(
+            source,
+            EXPECTED_FILE_REL_OPT_ARG_CONFIG)
         if source.has_current_line and source.current_line_number == current_line_before:
             _ensure_no_more_arguments(source)
             source.consume_current_line()
