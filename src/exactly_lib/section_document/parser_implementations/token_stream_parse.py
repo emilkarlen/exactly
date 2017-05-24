@@ -18,14 +18,14 @@ class TokenParser:
 
     def __init__(self,
                  token_stream: TokenStream2,
-                 error_message_format_map: dict):
+                 error_message_format_map: dict=None):
         """
         
         :param token_stream: Token stream to read tokens from.
         :param error_message_format_map: Map to pass to string.format_map as the map argument.
         """
         self._token_stream = token_stream
-        self.error_message_format_map = error_message_format_map
+        self.error_message_format_map = {} if error_message_format_map is None else error_message_format_map
 
     def if_null_then_invalid_arguments(self, error_message_format_string: str):
         if self._token_stream.is_null:
