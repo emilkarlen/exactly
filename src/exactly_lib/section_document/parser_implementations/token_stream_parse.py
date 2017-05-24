@@ -18,7 +18,7 @@ class TokenParser:
 
     def __init__(self,
                  token_stream: TokenStream2,
-                 error_message_format_map: dict=None):
+                 error_message_format_map: dict = None):
         """
         
         :param token_stream: Token stream to read tokens from.
@@ -35,6 +35,11 @@ class TokenParser:
         remaining = self.token_stream.remaining_part_of_current_line.strip()
         if len(remaining) != 0:
             self._error(error_message_format_string)
+
+    def report_superfluous_arguments_if_not_at_eol(self):
+        remaining = self.token_stream.remaining_part_of_current_line.strip()
+        if len(remaining) != 0:
+            self._error('Superfluous arguments: `{}`'.format(remaining))
 
     def consume_mandatory_string_argument(self, error_message_format_string: str) -> str:
         if self._token_stream.is_null:
