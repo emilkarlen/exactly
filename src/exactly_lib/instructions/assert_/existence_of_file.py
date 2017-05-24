@@ -155,7 +155,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             _file_type_2_file_properties_check,
             FILE_TYPE_OPTIONS)
         file_ref_resolver = tokens.consume_file_ref(_REL_OPTION_CONFIG)
-        tokens.require_is_at_eol('Superfluous arguments')
+        tokens.report_superfluous_arguments_if_not_at_eol()
         return _Instruction(file_ref_resolver, file_properties_check)
 
 

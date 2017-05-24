@@ -62,11 +62,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 def parse(rest_of_line: str,
           may_use_symbols: bool = False) -> FileRefResolver:
     rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, may_use_symbols)
-    tokens = TokenParser(TokenStream2(rest_of_line),
-                         {'PATH': _PATH_ARGUMENT.name})
+    tokens = TokenParser(TokenStream2(rest_of_line))
 
     target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
-    tokens.require_is_at_eol('Superfluous arguments')
+    tokens.report_superfluous_arguments_if_not_at_eol()
     return target_file_ref
 
 
