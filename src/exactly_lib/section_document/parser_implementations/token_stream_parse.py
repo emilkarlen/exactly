@@ -1,9 +1,12 @@
 import types
 
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.util.cli_syntax.option_parsing import matches
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 
 
 class TokenParser:
@@ -69,3 +72,6 @@ class TokenParser:
     def _error(self, error_message_format_string: str):
         err_msg = error_message_format_string.format_map(self.error_message_format_map)
         raise SingleInstructionInvalidArgumentException(err_msg)
+
+    def consume_file_ref(self, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+        return parse_file_ref.parse_file_ref(self._token_stream, conf)
