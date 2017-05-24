@@ -121,15 +121,15 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             FileRefConstant(file_refs.of_rel_option(self.relativity_of_expected_file(),
                                                     PathPartAsNothing())))
 
+        symbols_in_arrangement = symbol_utils.symbol_table_from_entries(
+            [file_ref_sym_tbl_entry_for_expected_file] +
+            self.rel_opt.symbol_entries_for_arrangement())
+
         symbol_usage_expectation_for_expected_file = equals_symbol_reference(
             expected_file_relativity_symbol,
             equals_file_ref_relativity_restriction(
                 FileRefRelativityRestriction(
                     EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants)))
-
-        symbols_in_arrangement = symbol_utils.symbol_table_from_entries(
-            [file_ref_sym_tbl_entry_for_expected_file] +
-            self.rel_opt.symbol_entries_for_arrangement())
 
         expected_symbol_usages = asrt.matches_sequence(
             [symbol_usage_expectation_for_expected_file] +
