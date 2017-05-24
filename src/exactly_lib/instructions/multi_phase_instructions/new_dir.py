@@ -11,6 +11,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phases.result import sh
@@ -58,15 +59,15 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [concept.cross_reference_target for concept in concepts]
 
 
-def parse(argument: str,
+def parse(rest_of_line: str,
           may_use_symbols: bool = False) -> FileRefResolver:
-    source = TokenStream2(argument)
     rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, may_use_symbols)
-    destination_path = parse_file_ref(source, rel_opt_arg_conf)
+    tokens = TokenParser(TokenStream2(rest_of_line),
+                         {'PATH': _PATH_ARGUMENT.name})
 
-    if not source.is_null:
-        raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(source.remaining_source))
-    return destination_path
+    target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
+    tokens.require_is_at_eol('Superfluous arguments')
+    return target_file_ref
 
 
 def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
