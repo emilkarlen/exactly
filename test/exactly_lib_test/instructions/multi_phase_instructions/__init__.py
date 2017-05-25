@@ -1,10 +1,12 @@
 import unittest
 
-from exactly_lib_test.instructions.multi_phase_instructions import new_dir, change_dir, run, new_file, env, shell
+from exactly_lib_test.instructions.multi_phase_instructions import \
+    utils, new_dir, change_dir, run, new_file, env, shell
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        utils.suite(),
         new_dir.suite(),
         change_dir.suite(),
         new_file.suite(),
