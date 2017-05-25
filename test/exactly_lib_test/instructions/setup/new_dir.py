@@ -48,7 +48,7 @@ class TestCaseBaseForParser(TestCaseBase):
              source: ParseSource,
              arrangement: Arrangement,
              expectation: Expectation):
-        self._check(sut.Parser(), source, arrangement, expectation)
+        self._check(sut.setup('instr-name'), source, arrangement, expectation)
 
 
 class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBaseForParser):
