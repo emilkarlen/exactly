@@ -1,16 +1,23 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.instructions.multi_phase_instructions.utils.main_step_executor_for_single_method_executor import \
+    MainStepExecutorForGenericMethodWithStringErrorMessage
+from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParserThatConsumesCurrentLine
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts
+from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import sh
 
 
@@ -66,6 +73,23 @@ def parse(rest_of_line: str,
     return target_file_ref
 
 
+class Parser(InstructionPartsParserThatConsumesCurrentLine):
+    def __init__(self,
+                 may_use_symbols: bool = False):
+        self.may_use_symbols = may_use_symbols
+
+    def _parse(self, rest_of_line: str) -> InstructionParts:
+        rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
+                                                                    self.may_use_symbols)
+        tokens = TokenParser(TokenStream2(rest_of_line))
+
+        target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
+        tokens.report_superfluous_arguments_if_not_at_eol()
+        return InstructionParts(ConstantSuccessValidator(),
+                                TheMainStepExecutor(target_file_ref),
+                                symbol_usages=tuple(target_file_ref.references))
+
+
 def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
                             dir_path_resolver: FileRefResolver) -> str:
     """
@@ -90,6 +114,18 @@ def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
                           dir_path_resolver: FileRefResolver) -> sh.SuccessOrHardError:
     error_message = make_dir_in_current_dir(environment, dir_path_resolver)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
+
+
+class TheMainStepExecutor(MainStepExecutorForGenericMethodWithStringErrorMessage):
+    def __init__(self, target_path: FileRefResolver):
+        self.target_path = target_path
+
+    def execute(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                logging_paths: PhaseLoggingPaths,
+                os_services: OsServices) -> str:
+        return make_dir_in_current_dir(environment.path_resolving_environment,
+                                       self.target_path)
 
 
 _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
