@@ -18,12 +18,12 @@ class TheConfiguration(AssertConfigurationBase, tr.Configuration):
         raise NotImplementedError('this method should not be used')
 
     def new_instruction_from_parts(self, parts: InstructionParts):
-        return sut.AssertPhaseInstructionFromValidatorAndExecutor(parts)
+        return sut.AssertPhaseInstructionFromParts(parts)
 
     def step_sequence_of_successful_execution(self) -> list:
         return [
             tr.VALIDATE_STEP_PRE_SDS_IF_APPLICABLE,
-            tr.VALIDATE_STEP_POST_SDS_IF_APPLICABLE,
+            tr.VALIDATE_STEP_POST_SETUP_IF_APPLICABLE,
             tr.MAIN_STEP_AS_ASSERTION,
         ]
 

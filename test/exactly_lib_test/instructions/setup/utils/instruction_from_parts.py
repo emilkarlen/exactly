@@ -18,13 +18,13 @@ class TheConfiguration(SetupConfigurationBase, tr.Configuration):
         raise NotImplementedError('this method should not be used')
 
     def new_instruction_from_parts(self, parts: InstructionParts):
-        return sut.SetupPhaseInstructionFromValidatorAndExecutor(parts)
+        return sut.SetupPhaseInstructionFromParts(parts)
 
     def step_sequence_of_successful_execution(self) -> list:
         return [
             tr.VALIDATE_STEP_PRE_SDS_IF_APPLICABLE,
             tr.MAIN_STEP_AS_NON_ASSERTION,
-            tr.VALIDATE_STEP_POST_SDS_IF_APPLICABLE,
+            tr.VALIDATE_STEP_POST_SETUP_IF_APPLICABLE,
         ]
 
     def instruction_parser_from_parts_parser(self,
