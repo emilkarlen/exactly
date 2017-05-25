@@ -38,7 +38,7 @@ class CleanupConfigurationBase(ConfigurationBase):
 
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
-        return self.expect_success()
+        return self.expect_failure_of_main(assertion_on_error_message=assertion_on_error_message)
 
     def arrangement(self,
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
