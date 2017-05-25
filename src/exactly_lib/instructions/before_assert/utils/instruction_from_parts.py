@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 
 
-class BeforeAssertPhaseInstructionFromValidatorAndExecutor(BeforeAssertPhaseInstruction):
+class BeforeAssertPhaseInstructionFromParts(BeforeAssertPhaseInstruction):
     def __init__(self,
                  instruction_setup: InstructionParts):
         self.setup = instruction_setup
@@ -44,9 +44,9 @@ class Parser(InstructionParser):
 
     def parse(self, source: ParseSource) -> BeforeAssertPhaseInstruction:
         instruction_parts = self.instruction_parts_parser.parse(source)
-        return BeforeAssertPhaseInstructionFromValidatorAndExecutor(instruction_parts)
+        return BeforeAssertPhaseInstructionFromParts(instruction_parts)
 
 
 def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
     return InstructionInfoForConstructingAnInstructionFromParts(instruction_name,
-                                                                BeforeAssertPhaseInstructionFromValidatorAndExecutor)
+                                                                BeforeAssertPhaseInstructionFromParts)
