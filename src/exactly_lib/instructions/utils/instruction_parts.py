@@ -45,8 +45,9 @@ class InstructionParts(tuple):
 
     def __new__(cls,
                 validator: PreOrPostSdsValidator,
-                executor: MainStepExecutor):
-        return tuple.__new__(cls, (validator, executor))
+                executor: MainStepExecutor,
+                symbol_usages: tuple = ()):
+        return tuple.__new__(cls, (validator, executor, list(symbol_usages)))
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
@@ -55,6 +56,10 @@ class InstructionParts(tuple):
     @property
     def executor(self) -> MainStepExecutor:
         return self[1]
+
+    @property
+    def symbol_usages(self) -> list:
+        return self[2]
 
 
 class InstructionInfoForConstructingAnInstructionFromParts(tuple):
