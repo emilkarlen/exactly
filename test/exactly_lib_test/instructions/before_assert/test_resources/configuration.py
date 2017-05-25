@@ -23,8 +23,10 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
         ic.check(put, parser, source, arrangement, expectation)
 
     def expect_success(self,
-                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes()):
-        return ic.Expectation(main_side_effects_on_files=main_side_effects_on_files)
+                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
+                       symbol_usages: va.ValueAssertion = va.is_empty_list):
+        return ic.Expectation(main_side_effects_on_files=main_side_effects_on_files,
+                              symbol_usages=symbol_usages)
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
@@ -33,6 +35,10 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         return ic.Expectation(validation_pre_sds=svh_check.is_validation_error(assertion_on_error_message))
+
+    def expect_failing_validation_post_setup(self,
+                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+        return ic.Expectation(validation_post_setup=svh_check.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
