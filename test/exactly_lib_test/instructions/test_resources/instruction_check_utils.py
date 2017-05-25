@@ -8,32 +8,6 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
-class InstructionExecutionToBeReplacedByVaBase:
-    def __init__(self,
-                 put: unittest.TestCase,
-                 arrangement: ArrangementWithSds):
-        self.put = put
-        self.arrangement = arrangement
-
-    def _check_instruction(self, expected_class: type, instruction):
-        validation = va.IsInstance(expected_class,
-                                   'The instruction must be an instance of ' + str(expected_class))
-        validation.apply(self.put, instruction)
-
-    def _check_result_of_main__sh(self, actual):
-        validation = va.IsInstance(sh.SuccessOrHardError,
-                                   'The result from main must be an instance of ' + str(sh.SuccessOrHardError))
-        validation.apply(self.put, actual)
-
-    def _check_result_of_validate_pre_sds(self, actual):
-        va.IsInstance(svh.SuccessOrValidationErrorOrHardError,
-                      'Result of validate/pre-sds').apply(self.put, actual)
-
-    def _check_result_of_validate_post_setup(self, actual):
-        va.IsInstance(svh.SuccessOrValidationErrorOrHardError,
-                      'Result of validate/pre-sds').apply(self.put, actual)
-
-
 class InstructionExecutionBase:
     def __init__(self,
                  put: unittest.TestCase,
