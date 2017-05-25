@@ -217,7 +217,7 @@ def instruction_parts_that_records_execution_steps(recorder: list) -> instructio
             pre_sds_action=record_value(recorder,
                                         VALIDATE_STEP_PRE_SDS_IF_APPLICABLE),
             post_setup_action=record_value(recorder,
-                                           VALIDATE_STEP_POST_SDS_IF_APPLICABLE)),
+                                           VALIDATE_STEP_POST_SETUP_IF_APPLICABLE)),
         MainStepExecutorThat(
             assertion_action=record_value(recorder,
                                           MAIN_STEP_AS_ASSERTION),
@@ -281,7 +281,7 @@ class ValidatorThat(PreOrPostSdsValidator):
 MAIN_STEP_AS_ASSERTION = 'apply_as_assertion'
 MAIN_STEP_AS_NON_ASSERTION = 'apply_as_non_assertion'
 VALIDATE_STEP_PRE_SDS_IF_APPLICABLE = 'validate_pre_sds_if_applicable'
-VALIDATE_STEP_POST_SDS_IF_APPLICABLE = 'validate_post_sds_if_applicable'
+VALIDATE_STEP_POST_SETUP_IF_APPLICABLE = 'validate_post_sds_if_applicable'
 
 
 def record_value(recorder: list, value_to_record) -> types.FunctionType:

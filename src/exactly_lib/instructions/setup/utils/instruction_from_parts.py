@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
-class SetupPhaseInstructionFromValidatorAndExecutor(SetupPhaseInstruction):
+class SetupPhaseInstructionFromParts(SetupPhaseInstruction):
     def __init__(self,
                  instruction_setup: InstructionParts):
         self.setup = instruction_setup
@@ -45,9 +45,9 @@ class Parser(InstructionParser):
 
     def parse(self, source: ParseSource) -> SetupPhaseInstruction:
         instruction_parts = self.instruction_parts_parser.parse(source)
-        return SetupPhaseInstructionFromValidatorAndExecutor(instruction_parts)
+        return SetupPhaseInstructionFromParts(instruction_parts)
 
 
 def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
     return InstructionInfoForConstructingAnInstructionFromParts(instruction_name,
-                                                                SetupPhaseInstructionFromValidatorAndExecutor)
+                                                                SetupPhaseInstructionFromParts)

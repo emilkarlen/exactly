@@ -13,7 +13,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 
 
-class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
+class CleanupPhaseInstructionFromParts(CleanupPhaseInstruction):
     def __init__(self,
                  instruction_setup: InstructionParts):
         self.setup = instruction_setup
@@ -51,9 +51,9 @@ class Parser(InstructionParser):
 
     def parse(self, source: ParseSource) -> CleanupPhaseInstruction:
         instruction_parts = self.instruction_parts_parser.parse(source)
-        return CleanupPhaseInstructionFromValidatorAndExecutor(instruction_parts)
+        return CleanupPhaseInstructionFromParts(instruction_parts)
 
 
 def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
     return InstructionInfoForConstructingAnInstructionFromParts(instruction_name,
-                                                                CleanupPhaseInstructionFromValidatorAndExecutor)
+                                                                CleanupPhaseInstructionFromParts)
