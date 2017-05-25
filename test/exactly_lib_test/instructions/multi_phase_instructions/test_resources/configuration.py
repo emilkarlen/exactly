@@ -62,7 +62,8 @@ class ConfigurationBase:
         raise NotImplementedError()
 
     def expect_success(self,
-                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes()):
+                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
+                       symbol_usages: va.ValueAssertion = va.is_empty_list):
         raise NotImplementedError()
 
     def expect_failure_of_main(self,
@@ -71,6 +72,10 @@ class ConfigurationBase:
 
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+        raise NotImplementedError()
+
+    def expect_failing_validation_post_setup(self,
+                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()
 
 
