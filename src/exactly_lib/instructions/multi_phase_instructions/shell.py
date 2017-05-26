@@ -3,8 +3,9 @@ from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
     ValidationAndSubProcessExecutionSetup
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
-    InstructionInfoForConstructingAnInstructionFromParts
+    InstructionPartsParser
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
@@ -12,13 +13,17 @@ from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSucces
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
-def instruction_parser(
-        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> InstructionParser:
-    return spe_parts.InstructionParser(instruction_info, SetupParser())
+def parts_parser(instruction_name: str) -> InstructionPartsParser:
+    return PartsParserFromEmbryoParser(embryo_parser(instruction_name),
+                                       spe_parts.ResultAndStderrTranslator())
+
+
+def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
+    return spe_parts.InstructionEmbryoParser(instruction_name,
+                                             SetupParser())
 
 
 _COMMAND_SYNTAX_ELEMENT = 'COMMAND'
