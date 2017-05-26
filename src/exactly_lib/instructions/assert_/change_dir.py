@@ -1,33 +1,11 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.instructions.assert_.utils import instruction_from_parts
 from exactly_lib.instructions.multi_phase_instructions import change_dir as cd_utils
-from exactly_lib.section_document.parser_implementations.instruction_parsers import \
-    InstructionParserThatConsumesCurrentLine
-from exactly_lib.symbol.concrete_values import FileRefResolver
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(Parser(),
-                                  cd_utils.TheInstructionDocumentation(instruction_name,
-                                                                       is_after_act_phase=True,
-                                                                       is_in_assert_phase=True))
-
-
-class Parser(InstructionParserThatConsumesCurrentLine):
-    def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
-        destination_directory = cd_utils.parse(rest_of_line, is_after_act_phase=True)
-        return _Instruction(destination_directory)
-
-
-class _Instruction(AssertPhaseInstruction):
-    def __init__(self, destination_directory: FileRefResolver):
-        self.destination_directory = destination_directory
-
-    def main(self, environment: InstructionEnvironmentForPostSdsStep,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        error_message = cd_utils.change_dir(self.destination_directory,
-                                            environment.path_resolving_environment)
-        return pfh.new_pfh_pass() if error_message is None else pfh.new_pfh_hard_error(error_message)
+    return SingleInstructionSetup(
+        instruction_from_parts.Parser(cd_utils.PartsParser(is_after_act_phase=True)),
+        cd_utils.TheInstructionDocumentation(instruction_name,
+                                             is_after_act_phase=True,
+                                             is_in_assert_phase=True))
