@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase_instructions import change_dir as cd_u
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        instruction_from_parts.Parser(cd_utils.PartsParser(is_after_act_phase=True)),
+        instruction_from_parts.Parser(cd_utils.parts_parser(is_after_act_phase=True)),
         cd_utils.TheInstructionDocumentation(instruction_name,
                                              is_after_act_phase=True,
                                              is_in_assert_phase=False))

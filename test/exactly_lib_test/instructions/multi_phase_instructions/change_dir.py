@@ -163,7 +163,7 @@ class ParseAndChangeDirAction(sds_env_utils.SdsAction):
     def apply(self, environment: PathResolvingEnvironmentPostSds):
         parser = sut.EmbryoParser(self.is_after_act_phase)
         instruction_embryo = parser.parse(remaining_source(self.arguments))
-        return instruction_embryo.main(environment)
+        return instruction_embryo.custom_main(environment)
 
 
 class TestCaseBase(sds_test.TestCaseBase):
