@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils import \
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
-    InstructionInfoForConstructingAnInstructionFromParts
+    InstructionPartsParser
 from exactly_lib.instructions.utils import pre_or_post_validation
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
@@ -51,13 +51,14 @@ class Configuration(ConfigurationBase):
     def phase(self) -> Phase:
         raise NotImplementedError()
 
-    def instruction_info_for(self, instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
+    def instruction_from_parts_parser(self, parts_parser: InstructionPartsParser) -> InstructionParser:
         raise NotImplementedError()
 
-    def _parser(self, instruction_name: str,
+    def _parser(self,
+                instruction_name: str,
                 execution_setup_parser: spe_parts.ValidationAndSubProcessExecutionSetupParser) -> InstructionParser:
-        return spe_parts.InstructionParser(self.instruction_info_for(instruction_name),
-                                           execution_setup_parser)
+        parts_parser = spe_parts.parts_parser(instruction_name, execution_setup_parser)
+        return self.instruction_from_parts_parser(parts_parser)
 
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
