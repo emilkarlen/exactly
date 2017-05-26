@@ -15,6 +15,7 @@ from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equ
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
     tmp_user_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test, sds_env_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNotNone
@@ -43,103 +44,113 @@ class TestParseSet(unittest.TestCase):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-act'
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_ACT)
                 assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, actual.destination)
 
     def test_no_relativity_option_should_use_default_option(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = 'single-argument'
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD, PathPartAsFixedPath(arguments))
                 assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, actual.destination)
 
     def test_no_arguments_is_rel_default_option(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = ''
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_CWD)
                 assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, actual.destination)
 
     def test_fail_when_superfluous_arguments(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = 'expected-argument superfluous-argument'
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT & ASSERT #
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                    parser.parse(remaining_source(arguments))
 
     def test_strip_trailing_space(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '  expected-argument  '
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
                                                             PathPartAsFixedPath(arguments.strip()))
                 assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, actual.destination)
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '"expected argument"'
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
                                                             PathPartAsFixedPath('expected argument'))
                 assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_without_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-tmp'
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_TMP)
                 assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = '--rel-tmp subdir'
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_TMP,
                                                             PathPartAsFixedPath('subdir'))
                 assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
-                assertion.apply_without_message(self, actual)
+                assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_superfluous_argument(self):
         arguments = '--rel-tmp subdir superfluous'
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                     # ACT #
-                    sut.parse(arguments, is_after_act_phase=is_after_act_phase)
+                    parser.parse(remaining_source(arguments))
 
     def test_rel_result_should_not_be_available_pre_act_phase(self):
         arguments = '--rel-result'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser = sut.EmbryoParser(is_after_act_phase=False)
             # ACT #
-            sut.parse(arguments, is_after_act_phase=False)
+            parser.parse(remaining_source(arguments))
 
 
 class ParseAndChangeDirAction(sds_env_utils.SdsAction):
@@ -150,8 +161,9 @@ class ParseAndChangeDirAction(sds_env_utils.SdsAction):
         self.is_after_act_phase = is_after_act_phase
 
     def apply(self, environment: PathResolvingEnvironmentPostSds):
-        destination_directory = sut.parse(self.arguments, self.is_after_act_phase)
-        return sut.change_dir(destination_directory, environment)
+        parser = sut.EmbryoParser(self.is_after_act_phase)
+        instruction_embryo = parser.parse(remaining_source(self.arguments))
+        return instruction_embryo.main(environment)
 
 
 class TestCaseBase(sds_test.TestCaseBase):
