@@ -4,6 +4,7 @@ Utilities to help constructing an instruction for a specific phase, from phase-i
 import types
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
@@ -90,3 +91,12 @@ class InstructionInfoForConstructingAnInstructionFromParts(tuple):
     @property
     def instruction_parts_2_instruction_function(self) -> types.FunctionType:
         return self[1]
+
+
+class InstructionPartsParser:
+    """
+    Parser of `InstructionParts` - used by instructions that may be used in multiple phases. 
+    """
+
+    def parse(self, source: ParseSource) -> InstructionParts:
+        raise NotImplementedError()

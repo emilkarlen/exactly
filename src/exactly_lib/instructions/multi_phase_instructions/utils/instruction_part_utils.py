@@ -3,8 +3,8 @@ Utilities for helping with integrate multi-phase instruction into different phas
 """
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_embryo import MainStepExecutorEmbryo, \
     InstructionEmbryo, InstructionEmbryoParser
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import MainStepExecutor, InstructionParts
-from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import MainStepExecutor, \
+    InstructionParts, InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
