@@ -1,27 +1,9 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.instructions.multi_phase_instructions import env
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.instructions.assert_.utils import instruction_from_parts
+from exactly_lib.instructions.multi_phase_instructions import env as env_instruction
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            PARSER,
-        env.TheInstructionDocumentation(instruction_name, is_in_assert_phase=True))
-
-
-class _Instruction(AssertPhaseInstruction):
-    def __init__(self,
-                 executor: env.Executor):
-        self.executor = executor
-
-    def main(self,
-             environment: InstructionEnvironmentForPostSdsStep,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        self.executor.execute(environment.environ)
-        return pfh.new_pfh_pass()
-
-
-PARSER = env.Parser(_Instruction)
+        instruction_from_parts.Parser(env_instruction.PartsParser()),
+        env_instruction.TheInstructionDocumentation(instruction_name, is_in_assert_phase=True))

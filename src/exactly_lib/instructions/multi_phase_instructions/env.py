@@ -1,16 +1,21 @@
 import re
-import types
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.main_step_executor_for_single_method_executor import \
+    MainStepExecutorForGenericMethodWithStringErrorMessage
+from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts
+from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.instruction_parsers import \
-    InstructionParserThatConsumesCurrentLine
-from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    PhaseLoggingPaths
 from exactly_lib.util.textformat.structure.structures import paras
 
 
@@ -44,30 +49,48 @@ or the empty string, if there is no environment variable with that name.
 """
 
 
-class Parser(InstructionParserThatConsumesCurrentLine):
-    def __init__(self,
-                 instruction_constructor_for_executor: types.FunctionType):
-        self.instruction_constructor_for_executor = instruction_constructor_for_executor
-
-    def _parse(self, rest_of_line: str) -> TestCaseInstruction:
-        arguments = split_arguments_list_string(rest_of_line)
-        if len(arguments) == 3 and arguments[1] == '=':
-            return self.instruction_constructor_for_executor(_SetExecutor(arguments[0],
-                                                                          arguments[2]))
-        if len(arguments) == 2 and arguments[0] == 'unset':
-            return self.instruction_constructor_for_executor(_UnsetExecutor(arguments[1]))
-        raise SingleInstructionInvalidArgumentException('Invalid syntax')
-
-
 class Executor:
     def execute(self, environ: dict):
         raise NotImplementedError()
 
 
-def execute_and_return_sh(executor: Executor,
-                          environ: dict) -> sh.SuccessOrHardError:
-    executor.execute(environ)
-    return sh.new_sh_success()
+class InstructionEmbryo(embryo.InstructionEmbryo):
+    def __init__(self, executor: Executor):
+        self.executor = executor
+
+
+class TheMainStepExecutor(MainStepExecutorForGenericMethodWithStringErrorMessage):
+    def __init__(self, executor: Executor):
+        self.executor = executor
+
+    def execute(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                logging_paths: PhaseLoggingPaths,
+                os_services: OsServices) -> str:
+        self.executor.execute(environment.environ)
+        return None
+
+
+class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
+    def _parse(self, rest_of_line: str) -> InstructionEmbryo:
+        arguments = split_arguments_list_string(rest_of_line)
+        if len(arguments) == 3 and arguments[1] == '=':
+            return InstructionEmbryo(_SetExecutor(arguments[0],
+                                                  arguments[2]))
+        if len(arguments) == 2 and arguments[0] == 'unset':
+            return InstructionEmbryo(_UnsetExecutor(arguments[1]))
+        raise SingleInstructionInvalidArgumentException('Invalid syntax')
+
+
+class PartsParser(InstructionPartsParser):
+    embryo_parser = EmbryoParser()
+
+    def parse(self, source: ParseSource) -> InstructionParts:
+        the_embryo = self.embryo_parser.parse(source)
+        assert isinstance(the_embryo, InstructionEmbryo)
+        return InstructionParts(ConstantSuccessValidator(),
+                                TheMainStepExecutor(the_embryo.executor),
+                                symbol_usages=tuple(the_embryo.symbol_usages))
 
 
 class _SetExecutor(Executor):
