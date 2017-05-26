@@ -7,7 +7,7 @@ from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResult
-from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
