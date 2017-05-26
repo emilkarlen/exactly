@@ -1,10 +1,43 @@
+from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 
 
-class InstructionEmbryo:
+class MainStepExecutorEmbryo:
+    """
+    Executor with standard arguments, but custom return type.
+    
+    The custom return type makes testing easier, by providing access to
+    custom result.
+    """
+
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             logging_paths: PhaseLoggingPaths,
+             os_services: OsServices):
+        raise NotImplementedError()
+
+
+class InstructionEmbryo(MainStepExecutorEmbryo):
+    """
+    Instruction embryo that makes it easy to both
+    test using custom information (in sub classes),
+    and integrate into many phases.
+    
+    A multi-phase instruction may sub class this class,
+    to achieve both easy testing (by giving access to things that
+    are specific for the instruction in question),
+    and integrate into different phases.
+    """
+
     @property
     def symbol_usages(self) -> list:
         return []
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return ConstantSuccessValidator()
 
 
 class InstructionEmbryoParser:
