@@ -20,6 +20,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents, SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
@@ -36,57 +37,62 @@ def suite() -> unittest.TestSuite:
 
 
 class TestParse(unittest.TestCase):
+    def _parse_arguments(self, arguments: str) -> sut.TheInstructionEmbryo:
+        return sut.EmbryoParser().parse(remaining_source(arguments))
+
     def test_fail_when_there_is_no_arguments(self):
         arguments = ''
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(arguments)
+            self._parse_arguments(arguments)
 
     def test_fail_when_superfluous_arguments(self):
         arguments = 'expected-argument superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(arguments)
+            self._parse_arguments(arguments)
 
     def test_rel_result_option_is_not_allowed(self):
         arguments = args_with_rel_ops('{rel_result_option} file')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(arguments)
+            self._parse_arguments(arguments)
 
     def test_strip_trailing_space(self):
         arguments = '  expected-argument  '
-        result = sut.parse(arguments)
+        instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        file_ref = result.resolve(symbols)
+        file_ref = instruction_embryo.dir_path_resolver.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
                                                                         file_ref.path_suffix(),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments(self):
         arguments = 'expected-argument'
-        result = sut.parse(arguments)
+        instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        file_ref = result.resolve(symbols)
+        file_ref = instruction_embryo.dir_path_resolver.resolve(symbols)
         equals_path_part_string('expected-argument').apply_with_message(self,
                                                                         file_ref.path_suffix(),
                                                                         'path_suffix')
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
-        result = sut.parse(arguments)
+        instruction_embryo = self._parse_arguments(arguments)
         symbols = empty_symbol_table()
-        file_ref = result.resolve(symbols)
+        file_ref = instruction_embryo.dir_path_resolver.resolve(symbols)
         equals_path_part_string('expected argument').apply_with_message(self,
                                                                         file_ref.path_suffix(),
                                                                         'path_suffix')
 
 
 class ParseAndMkDirAction(SdsAction):
-    def __init__(self,
-                 arguments: str):
+    parser = sut.EmbryoParser()
+
+    def __init__(self, arguments: str):
         self.arguments = arguments
 
     def apply(self, environment: PathResolvingEnvironmentPostSds):
-        destination_path = sut.parse(self.arguments)
-        return sut.make_dir_in_current_dir(environment, destination_path)
+        instruction_embryo = self.parser.parse(remaining_source(self.arguments))
+        assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
+        return instruction_embryo.custom_main(environment)
 
 
 class TestCaseForCheckOfArgumentBase(sds_test.TestCaseBase):

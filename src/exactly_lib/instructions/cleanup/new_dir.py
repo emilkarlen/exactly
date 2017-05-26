@@ -5,5 +5,5 @@ from exactly_lib.instructions.multi_phase_instructions import new_dir as new_dir
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        instruction_from_parts.Parser(new_dir_utils.Parser()),
+        instruction_from_parts.Parser(new_dir_utils.PARTS_PARSER),
         new_dir_utils.TheInstructionDocumentation(instruction_name))
