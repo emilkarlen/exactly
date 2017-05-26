@@ -66,7 +66,7 @@ class TestSet(unittest.TestCase):
     def test_set(self):
         parser = sut.EmbryoParser()
         instruction_embryo = parser.parse(source4('name = value'))
-        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
+        assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         environ = {}
         instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
@@ -78,7 +78,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         parser = sut.EmbryoParser()
         environ = {'MY_VAR': 'MY_VAL'}
         instruction_embryo = parser.parse(source4('name = ${MY_VAR}'))
-        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
+        assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
                          {'name': 'MY_VAL',
@@ -89,7 +89,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         environ = {'MY_VAR': 'MY_VAL',
                    'YOUR_VAR': 'YOUR_VAL'}
         instruction_embryo = parser.parse(source4('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
-        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
+        assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
                          {'name': 'pre MY_VAL YOUR_VAL post',
@@ -99,7 +99,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
     def test_a_references_to_a_non_existing_env_var_SHOULD_be_replaced_with_empty_string(self):
         parser = sut.EmbryoParser()
         instruction_embryo = parser.parse(source4('name = ${NON_EXISTING_VAR}'))
-        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
+        assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         environ = {}
         instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
@@ -110,7 +110,7 @@ class TestUnset(unittest.TestCase):
     def test_unset(self):
         parser = sut.EmbryoParser()
         instruction_embryo = parser.parse(source4('unset a'))
-        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
+        assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         environ = {'a': 'A', 'b': 'B'}
         instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
