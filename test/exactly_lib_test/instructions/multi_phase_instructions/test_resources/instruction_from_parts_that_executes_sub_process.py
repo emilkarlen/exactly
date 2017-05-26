@@ -1,13 +1,15 @@
 import random
 import unittest
 
-from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
+from exactly_lib.instructions.multi_phase_instructions.utils import \
+    instruction_from_parts_for_executing_sub_process as spe_parts
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
+    ValidationAndSubProcessExecutionSetup
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
+    InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils import pre_or_post_validation
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
-from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
-    ValidationAndSubProcessExecutionSetup
-from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreSds, \

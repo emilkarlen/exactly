@@ -1,4 +1,4 @@
-from exactly_lib.instructions.utils.instruction_parts import InstructionParts
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts
 from exactly_lib.section_document.parse_source import ParseSource
 
 
