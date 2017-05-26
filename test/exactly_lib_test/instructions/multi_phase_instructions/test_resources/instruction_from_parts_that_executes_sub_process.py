@@ -104,7 +104,7 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
             self,
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expect_failing_validation_pre_sds(va.Equals('validation error message')))
 
 
@@ -117,7 +117,7 @@ class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
             self,
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expect_failing_validation_post_setup(va.Equals('validation error message post setup')))
 
 
@@ -129,7 +129,7 @@ class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
             self,
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expectation_for_zero_exitcode())
 
 
@@ -142,7 +142,7 @@ class TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero(TestCaseBa
             self,
             source4(command_that_exits_with_code),
             execution_setup_parser,
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expectation_for_zero_exitcode())
 
 
@@ -156,7 +156,7 @@ class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
             self,
             source4(script_that_exists_with_non_zero_status),
             execution_setup_parser,
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expectation_for_non_zero_exitcode())
 
 
@@ -222,7 +222,7 @@ class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
             self,
             source,
             execution_setup_parser,
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expect_success(_InstructionLogDirContainsOutFiles(self.conf.phase(),
                                                                         source_info,
                                                                         sub_process_result)),
@@ -243,7 +243,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
             self,
             source,
             execution_setup_parser,
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expect_failure_of_main(va_str.contains('output on stderr')))
 
 
