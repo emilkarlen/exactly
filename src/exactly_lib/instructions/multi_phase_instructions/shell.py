@@ -1,11 +1,13 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
+from exactly_lib.instructions.multi_phase_instructions.utils import \
+    instruction_from_parts_for_executing_sub_process as spe_parts
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
+    ValidationAndSubProcessExecutionSetup
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
+    InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
-from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
-    ValidationAndSubProcessExecutionSetup
-from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \

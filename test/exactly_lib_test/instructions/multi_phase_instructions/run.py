@@ -3,9 +3,10 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_TMP_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
-from exactly_lib.instructions.utils import sub_process_execution as spe
-from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import SubProcessExecutionSetup, \
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
+    SubProcessExecutionSetup, \
     MainStepExecutorForSubProcess
+from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

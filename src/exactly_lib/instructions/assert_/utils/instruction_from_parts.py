@@ -1,6 +1,6 @@
-from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
-from exactly_lib.instructions.utils.instruction_parts import InstructionParts, \
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
     InstructionInfoForConstructingAnInstructionFromParts
+from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser

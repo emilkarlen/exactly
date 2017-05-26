@@ -2,7 +2,8 @@ import unittest
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.before_assert.utils import instruction_from_parts
-from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
+    InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.instructions.before_assert.test_resources.configuration import BeforeAssertConfigurationBase
 from exactly_lib_test.instructions.before_assert.test_resources.instruction_check import Expectation
