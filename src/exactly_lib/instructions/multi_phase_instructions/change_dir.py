@@ -5,6 +5,7 @@ from exactly_lib.help.concepts.plain_concepts.current_working_directory import C
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts
 from exactly_lib.instructions.multi_phase_instructions.utils.main_step_executor_for_single_method_executor import \
     MainStepExecutorForGenericMethodWithStringErrorMessage
 from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
@@ -14,7 +15,6 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.instructions.utils.instruction_parts import InstructionParts
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
