@@ -7,8 +7,9 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
-    InstructionInfoForConstructingAnInstructionFromParts
+    InstructionPartsParser
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
@@ -24,7 +25,6 @@ from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -32,10 +32,14 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
 
-def instruction_parser(
-        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> InstructionParser:
-    return spe_parts.InstructionParser(instruction_info,
-                                       SetupParser())
+def parts_parser(instruction_name: str) -> InstructionPartsParser:
+    return PartsParserFromEmbryoParser(embryo_parser(instruction_name),
+                                       spe_parts.ResultAndStderrTranslator())
+
+
+def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
+    return spe_parts.InstructionEmbryoParser(instruction_name,
+                                             SetupParser())
 
 
 INTERPRET_OPTION_NAME = a.OptionName(long_name='interpret')
@@ -45,6 +49,8 @@ SOURCE_OPTION_NAME = a.OptionName(long_name='source')
 SOURCE_OPTION = long_option_syntax(SOURCE_OPTION_NAME.long)
 
 OPTIONS_SEPARATOR_ARGUMENT = '--'
+
+ASSERT_PHASE_DESCRIPTION_REST = "Runs a program and PASS if, and only if, its exit code is 0"
 
 NON_ASSERT_PHASE_DESCRIPTION_REST = """\
 It is considered an error if the program exits with a non-zero exit code.
