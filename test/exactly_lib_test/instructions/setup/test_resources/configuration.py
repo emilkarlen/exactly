@@ -23,6 +23,9 @@ class SetupConfigurationBase(ConfigurationBase):
                              expectation):
         ic.check(put, parser, source, arrangement, expectation)
 
+    def phase_is_after_act(self) -> bool:
+        return False
+
     def expect_success(self,
                        main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                        symbol_usages: va.ValueAssertion = va.is_empty_list):

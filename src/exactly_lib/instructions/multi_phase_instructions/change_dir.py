@@ -32,7 +32,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                  is_after_act_phase: bool,
                  is_in_assert_phase: bool = False):
         self.is_after_act_phase = is_after_act_phase
-        self.relativity_options = _relativity_options(is_after_act_phase)
+        self.relativity_options = relativity_options(is_after_act_phase)
         self.cwd_concept_name = formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)
         super().__init__(name, {
             'cwd_concept': self.cwd_concept_name,
@@ -118,7 +118,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
         self.is_after_act_phase = is_after_act_phase
 
     def _parse(self, rest_of_line: str) -> InstructionEmbryo:
-        rel_opt_arg_conf = _relativity_options(self.is_after_act_phase)
+        rel_opt_arg_conf = relativity_options(self.is_after_act_phase)
         tokens = TokenParser(TokenStream2(rest_of_line))
 
         target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
@@ -139,10 +139,10 @@ class PartsParser(InstructionPartsParser):
                                 symbol_usages=tuple(instruction_embryo.symbol_usages))
 
 
-_DIR_ARGUMENT = path_syntax.DIR_ARGUMENT
+_DIR_ARGUMENT = path_syntax.PATH_ARGUMENT
 
 
-def _relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfiguration:
+def relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfiguration:
     accepted = [RelOptionType.REL_ACT,
                 RelOptionType.REL_TMP]
     if is_after_act_phase:
