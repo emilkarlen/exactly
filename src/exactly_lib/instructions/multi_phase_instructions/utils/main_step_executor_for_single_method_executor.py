@@ -2,7 +2,7 @@
 Utilities to help constructing an instruction for a specific phase, from phase-independent parts.
 """
 
-from exactly_lib.instructions.utils.instruction_parts import MainStepExecutor
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import MainStepExecutor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
