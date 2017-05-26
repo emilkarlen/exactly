@@ -60,9 +60,6 @@ class ConfigurationBase:
                     symbols: SymbolTable = None):
         raise NotImplementedError()
 
-    def empty_arrangement(self) -> ArrangementBase:
-        return self.arrangement(sds_contents_before_main=sds_populator.empty())
-
     def arrangement_with_timeout(self, timeout_in_seconds: int) -> ArrangementBase:
         raise NotImplementedError()
 

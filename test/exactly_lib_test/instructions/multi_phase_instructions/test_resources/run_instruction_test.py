@@ -28,7 +28,7 @@ class TestSuccessfulExecution(TestCaseBase):
     def runTest(self):
         self.conf.run_test(self,
                            single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
-                           self.conf.empty_arrangement(),
+                           self.conf.arrangement(),
                            self.conf.expect_success(),
                            )
 
@@ -37,7 +37,7 @@ class TestFailingExecution(TestCaseBase):
     def runTest(self):
         self.conf.run_test(self,
                            single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
-                           self.conf.empty_arrangement(),
+                           self.conf.arrangement(),
                            self.conf.expect_failure_of_main(),
                            )
 
@@ -47,7 +47,7 @@ class TestFailingValidationOfAbsolutePath(TestCaseBase):
         self.conf.run_test(
             self,
             single_line_source('/absolute/path/to/program/that/does/not/exist'),
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expect_failing_validation_pre_sds(),
         )
 
@@ -57,7 +57,7 @@ class TestFailingValidationOfRelHomePath(TestCaseBase):
         self.conf.run_test(
             self,
             source_for_interpreting(file_ref_texts.REL_HOME_OPTION, 'non-existing-file.py'),
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expect_failing_validation_pre_sds(),
         )
 
@@ -67,7 +67,7 @@ class TestFailingValidationOfRelTmpPath(TestCaseBase):
         self.conf.run_test(
             self,
             source_for_interpreting(file_ref_texts.REL_TMP_OPTION, 'non-existing-file.py'),
-            self.conf.empty_arrangement(),
+            self.conf.arrangement(),
             self.conf.expect_failure_because_specified_file_under_sds_is_missing(),
         )
 
