@@ -25,21 +25,21 @@ class TestParseWithNoContents(unittest.TestCase):
     def test_path_is_mandatory__without_option(self):
         arguments = ''
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(single_line_source(arguments))
+            _parse_and_get_file_info(single_line_source(arguments))
 
     def test_path_is_mandatory__with_option(self):
         arguments = '--rel-act'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(single_line_source(arguments))
+            _parse_and_get_file_info(single_line_source(arguments))
 
     def test_rel_result_option_is_not_allowed(self):
         arguments = args_with_rel_ops('{rel_result_option} file')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(single_line_source(arguments))
+            _parse_and_get_file_info(single_line_source(arguments))
 
     def test_when_no_option_path_should_be_relative_cwd(self):
         arguments = 'single-argument'
-        actual = sut.parse(single_line_source(arguments))
+        actual = _parse_and_get_file_info(single_line_source(arguments))
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
         actual_file_ref = actual.file_ref.resolve(symbol_table)
@@ -54,12 +54,12 @@ class TestParseWithNoContents(unittest.TestCase):
     def test_fail_when_superfluous_arguments__without_option(self):
         arguments = 'expected-argument superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(single_line_source(arguments))
+            _parse_and_get_file_info(single_line_source(arguments))
 
     def test_fail_when_superfluous_arguments__with_option(self):
         arguments = '--rel-act expected-argument superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(single_line_source(arguments))
+            _parse_and_get_file_info(single_line_source(arguments))
 
 
 class TestParseWithContents(unittest.TestCase):
@@ -68,13 +68,13 @@ class TestParseWithContents(unittest.TestCase):
                                       ['single line',
                                        'MARKER'])
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(source)
+            _parse_and_get_file_info(source)
 
     def test_single_line(self):
         source = argument_list_source(['file name', '<<MARKER'],
                                       ['single line',
                                        'MARKER'])
-        actual = sut.parse(source)
+        actual = _parse_and_get_file_info(source)
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_CWD))
         actual_file_ref = actual.file_ref.resolve(symbol_table)
@@ -91,7 +91,7 @@ class TestParseWithContents(unittest.TestCase):
                                       ['single line',
                                        'MARKER',
                                        'following line'])
-        actual = sut.parse(source)
+        actual = _parse_and_get_file_info(source)
         symbol_table = empty_symbol_table()
         relativity_assertion = equals_path_relativity(specific_relative_relativity(RelOptionType.REL_TMP))
         actual_file_ref = actual.file_ref.resolve(symbol_table)
@@ -107,13 +107,18 @@ class TestParseWithContents(unittest.TestCase):
                          source.current_line_text)
 
 
+def _parse_and_get_file_info(source: ParseSource) -> sut.FileInfo:
+    instruction_embryo = sut.EmbryoParser().parse(source)
+    return instruction_embryo.file_info
+
+
 class ParseAndCreateFileAction(sds_env_utils.SdsAction):
     def __init__(self,
                  source: ParseSource):
         self.source = source
 
     def apply(self, environment: PathResolvingEnvironmentPostSds):
-        file_info = sut.parse(self.source)
+        file_info = _parse_and_get_file_info(self.source)
         return sut.create_file(file_info, environment)
 
 
