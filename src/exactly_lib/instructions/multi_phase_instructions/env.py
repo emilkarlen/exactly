@@ -2,15 +2,11 @@ import re
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts
-from exactly_lib.instructions.multi_phase_instructions.utils.main_step_executor_for_single_method_executor import \
-    MainStepExecutorForGenericMethodWithStringErrorMessage
-from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
+    MainStepResultTranslatorForUnconditionalSuccess
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
@@ -54,43 +50,30 @@ class Executor:
         raise NotImplementedError()
 
 
-class InstructionEmbryo(embryo.InstructionEmbryo):
+class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def __init__(self, executor: Executor):
         self.executor = executor
 
-
-class TheMainStepExecutor(MainStepExecutorForGenericMethodWithStringErrorMessage):
-    def __init__(self, executor: Executor):
-        self.executor = executor
-
-    def execute(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                logging_paths: PhaseLoggingPaths,
-                os_services: OsServices) -> str:
-        self.executor.execute(environment.environ)
-        return None
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             logging_paths: PhaseLoggingPaths,
+             os_services: OsServices):
+        return self.executor.execute(environment.environ)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
-    def _parse(self, rest_of_line: str) -> InstructionEmbryo:
+    def _parse(self, rest_of_line: str) -> TheInstructionEmbryo:
         arguments = split_arguments_list_string(rest_of_line)
         if len(arguments) == 3 and arguments[1] == '=':
-            return InstructionEmbryo(_SetExecutor(arguments[0],
-                                                  arguments[2]))
+            return TheInstructionEmbryo(_SetExecutor(arguments[0],
+                                                     arguments[2]))
         if len(arguments) == 2 and arguments[0] == 'unset':
-            return InstructionEmbryo(_UnsetExecutor(arguments[1]))
+            return TheInstructionEmbryo(_UnsetExecutor(arguments[1]))
         raise SingleInstructionInvalidArgumentException('Invalid syntax')
 
 
-class PartsParser(InstructionPartsParser):
-    embryo_parser = EmbryoParser()
-
-    def parse(self, source: ParseSource) -> InstructionParts:
-        the_embryo = self.embryo_parser.parse(source)
-        assert isinstance(the_embryo, InstructionEmbryo)
-        return InstructionParts(ConstantSuccessValidator(),
-                                TheMainStepExecutor(the_embryo.executor),
-                                symbol_usages=tuple(the_embryo.symbol_usages))
+PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
+                                           MainStepResultTranslatorForUnconditionalSuccess())
 
 
 class _SetExecutor(Executor):

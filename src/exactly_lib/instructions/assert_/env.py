@@ -5,5 +5,5 @@ from exactly_lib.instructions.multi_phase_instructions import env as env_instruc
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        instruction_from_parts.Parser(env_instruction.PartsParser()),
+        instruction_from_parts.Parser(env_instruction.PARTS_PARSER),
         env_instruction.TheInstructionDocumentation(instruction_name, is_in_assert_phase=True))
