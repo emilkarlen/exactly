@@ -5,6 +5,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
@@ -52,7 +53,8 @@ class ConfigurationBase:
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     environ: dict = None,
-                    os_services: OsServices = new_default()):
+                    os_services: OsServices = new_default(),
+                    symbols: SymbolTable = None):
         raise NotImplementedError()
 
     def empty_arrangement(self) -> ArrangementBase:

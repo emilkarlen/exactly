@@ -4,8 +4,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.multi_phase_instructions.utils.main_step_executor_for_single_method_executor import \
     MainStepExecutorForGenericMethodWithStringErrorMessage
 from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParserThatConsumesCurrentLine
-from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation, \
-    RELATIVITY_VARIANTS_FOR_FILE_CREATION
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -21,12 +20,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
-    def __init__(self, name: str, may_use_symbols: bool = False, is_in_assert_phase: bool = False):
+    def __init__(self, name: str, is_in_assert_phase: bool = False):
         super().__init__(name, {}, is_in_assert_phase)
-        self.may_use_symbols = may_use_symbols
-        self.path_arg = _PATH_ARGUMENT
-        self.rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
-                                                                         may_use_symbols)
 
     def single_line_description(self) -> str:
         return self._format('Creates a directory')
@@ -40,13 +35,14 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             """
         return (self._paragraphs(text) +
                 rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
-                                                                 self.rel_opt_arg_conf.options.default_option) +
+                                                                 RELATIVITY_VARIANTS.options.default_option) +
                 dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = path_syntax.mandatory_path_with_optional_relativity(_PATH_ARGUMENT,
-                                                                        self.may_use_symbols,
-                                                                        self.rel_opt_arg_conf.path_suffix_is_required)
+        arguments = path_syntax.mandatory_path_with_optional_relativity(
+            _PATH_ARGUMENT,
+            RELATIVITY_VARIANTS.options.is_rel_symbol_option_accepted,
+            RELATIVITY_VARIANTS.path_suffix_is_required)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               []),
@@ -54,20 +50,18 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def syntax_element_descriptions(self) -> list:
         return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
-                                                                   self.rel_opt_arg_conf.options)
+                                                                   RELATIVITY_VARIANTS.options)
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(self.rel_opt_arg_conf.options)
+        concepts = rel_path_doc.see_also_concepts(RELATIVITY_VARIANTS.options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]
 
 
-def parse(rest_of_line: str,
-          may_use_symbols: bool = False) -> FileRefResolver:
-    rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, may_use_symbols)
+def parse(rest_of_line) -> FileRefResolver:
     tokens = TokenParser(TokenStream2(rest_of_line))
 
-    target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
+    target_file_ref = tokens.consume_file_ref(RELATIVITY_VARIANTS)
     tokens.report_superfluous_arguments_if_not_at_eol()
     return target_file_ref
 
@@ -93,13 +87,8 @@ def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
 
 
 class Parser(InstructionPartsParserThatConsumesCurrentLine):
-    def __init__(self,
-                 may_use_symbols: bool = False):
-        self.may_use_symbols = may_use_symbols
-
     def _parse(self, rest_of_line: str) -> InstructionParts:
-        target_file_ref = parse(rest_of_line,
-                                self.may_use_symbols)
+        target_file_ref = parse(rest_of_line)
         return InstructionParts(ConstantSuccessValidator(),
                                 TheMainStepExecutor(target_file_ref),
                                 symbol_usages=tuple(target_file_ref.references))
@@ -119,4 +108,4 @@ class TheMainStepExecutor(MainStepExecutorForGenericMethodWithStringErrorMessage
 
 _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
 
-RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION
+RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, True)
