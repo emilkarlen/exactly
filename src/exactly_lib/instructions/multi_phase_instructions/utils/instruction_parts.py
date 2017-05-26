@@ -1,7 +1,6 @@
 """
 Utilities to help constructing an instruction for a specific phase, from phase-independent parts.
 """
-import types
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.section_document.parse_source import ParseSource
@@ -61,36 +60,6 @@ class InstructionParts(tuple):
     @property
     def symbol_usages(self) -> list:
         return self[2]
-
-
-class InstructionInfoForConstructingAnInstructionFromParts(tuple):
-    """
-    The information about an instruction needed to construct an instruction parser
-    that constructs an instruction for a specific phase using InstructionParts.
-
-    Each phase can have a utility method that constructs an object of this type
-    given just an instruction name.
-
-    This class is an abstraction that is motivated primarily for ease of testing.
-    For a specific phase, it makes it possible to vary as little as possible between
-    individual instructions, so that it is possible to test as much common code as possible.
-
-    The motivation for this testing is that it is very important that different instructions
-    execute sub processes in the same manner (timeout, environment variables, etc).
-    """
-
-    def __new__(cls,
-                instruction_name: str,
-                instruction_parts_2_instruction_function):
-        return tuple.__new__(cls, (instruction_name, instruction_parts_2_instruction_function))
-
-    @property
-    def instruction_name(self) -> str:
-        return self[0]
-
-    @property
-    def instruction_parts_2_instruction_function(self) -> types.FunctionType:
-        return self[1]
 
 
 class InstructionPartsParser:
