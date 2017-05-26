@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts
-from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
+    InstructionPartsParser
 from exactly_lib.instructions.setup.utils import instruction_from_parts as sut
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import instruction_from_parts as tr
