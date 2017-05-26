@@ -7,11 +7,19 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.test_resources.parse import source4
 
 
-def identity(x): return x
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+        unittest.makeSuite(TestParseSet),
+        unittest.makeSuite(TestParseUnset),
+        unittest.makeSuite(TestSet),
+        unittest.makeSuite(TestSetWithReferencesToExistingEnvVars),
+        unittest.makeSuite(TestUnset),
+    ])
 
 
 class TestParseSet(unittest.TestCase):
-    parser = sut.Parser(identity)
+    parser = sut.EmbryoParser()
 
     def test_fail_when_there_is_no_arguments(self):
         source = source4('')
@@ -33,7 +41,7 @@ class TestParseSet(unittest.TestCase):
 
 
 class TestParseUnset(unittest.TestCase):
-    parser = sut.Parser(identity)
+    parser = sut.EmbryoParser()
 
     def test_fail_when_there_is_no_arguments(self):
         source = source4('unset')
@@ -56,65 +64,54 @@ class TestParseUnset(unittest.TestCase):
 
 class TestSet(unittest.TestCase):
     def test_set(self):
-        parser = sut.Parser(identity)
-        executor = parser.parse(source4('name = value'))
-        assert isinstance(executor, sut.Executor)
+        parser = sut.EmbryoParser()
+        instruction_embryo = parser.parse(source4('name = value'))
+        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
         environ = {}
-        executor.execute(environ)
+        instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
                          {'name': 'value'})
 
 
 class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
     def test_set_value_that_references_an_env_var(self):
-        parser = sut.Parser(identity)
+        parser = sut.EmbryoParser()
         environ = {'MY_VAR': 'MY_VAL'}
-        executor = parser.parse(source4('name = ${MY_VAR}'))
-        assert isinstance(executor, sut.Executor)
-        executor.execute(environ)
+        instruction_embryo = parser.parse(source4('name = ${MY_VAR}'))
+        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
+        instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
                          {'name': 'MY_VAL',
                           'MY_VAR': 'MY_VAL'})
 
     def test_set_value_that_contains_text_and_references_to_env_vars(self):
-        parser = sut.Parser(identity)
+        parser = sut.EmbryoParser()
         environ = {'MY_VAR': 'MY_VAL',
                    'YOUR_VAR': 'YOUR_VAL'}
-        executor = parser.parse(source4('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
-        assert isinstance(executor, sut.Executor)
-        executor.execute(environ)
+        instruction_embryo = parser.parse(source4('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
+        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
+        instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
                          {'name': 'pre MY_VAL YOUR_VAL post',
                           'MY_VAR': 'MY_VAL',
                           'YOUR_VAR': 'YOUR_VAL'})
 
     def test_a_references_to_a_non_existing_env_var_SHOULD_be_replaced_with_empty_string(self):
-        parser = sut.Parser(identity)
-        executor = parser.parse(source4('name = ${NON_EXISTING_VAR}'))
-        assert isinstance(executor, sut.Executor)
+        parser = sut.EmbryoParser()
+        instruction_embryo = parser.parse(source4('name = ${NON_EXISTING_VAR}'))
+        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
         environ = {}
-        executor.execute(environ)
+        instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
                          {'name': ''})
 
 
 class TestUnset(unittest.TestCase):
     def test_unset(self):
-        parser = sut.Parser(identity)
-        executor = parser.parse(source4('unset a'))
-        assert isinstance(executor, sut.Executor)
+        parser = sut.EmbryoParser()
+        instruction_embryo = parser.parse(source4('unset a'))
+        assert isinstance(instruction_embryo, sut.InstructionEmbryo)
         environ = {'a': 'A', 'b': 'B'}
-        executor.execute(environ)
+        instruction_embryo.executor.execute(environ)
         self.assertEqual(environ,
                          {'b': 'B'})
-
-
-def suite():
-    return unittest.TestSuite([
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
-        unittest.makeSuite(TestParseSet),
-        unittest.makeSuite(TestParseUnset),
-        unittest.makeSuite(TestSet),
-        unittest.makeSuite(TestSetWithReferencesToExistingEnvVars),
-        unittest.makeSuite(TestUnset),
-    ])
