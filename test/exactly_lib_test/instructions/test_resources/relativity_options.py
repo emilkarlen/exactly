@@ -69,7 +69,7 @@ class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfiguration):
         self.expected_accepted_relativities = expected_accepted_relativities
         self.relativity = relativity
         self.symbol_name = symbol_name
-        self.helper = _SymbolsHelper(relativity, expected_accepted_relativities, symbol_name)
+        self.helper = SymbolsRelativityHelper(relativity, expected_accepted_relativities, symbol_name)
 
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         if self.relativity is RelOptionType.REL_HOME:
@@ -175,7 +175,7 @@ class RelativityOptionConfigurationRelSdsForRelSymbol(RelativityOptionConfigurat
                  expected_accepted_relativities: PathRelativityVariants,
                  symbol_name: str = 'SYMBOL_NAME'):
         super().__init__(rel_symbol_arg_str(symbol_name))
-        self.helper = _SymbolsHelper(relativity, expected_accepted_relativities, symbol_name)
+        self.helper = SymbolsRelativityHelper(relativity, expected_accepted_relativities, symbol_name)
         self.expected_accepted_relativities = expected_accepted_relativities
         self.relativity = relativity
         self.symbol_name = symbol_name
@@ -223,7 +223,7 @@ class _HomeOrSdsPopulatorForContentsThatDependOnHomeAndSds(HomeOrSdsPopulator):
         home_or_sds_populator.write_to(home_and_sds)
 
 
-class _SymbolsHelper:
+class SymbolsRelativityHelper:
     def __init__(self,
                  relativity: RelOptionType,
                  expected_accepted_relativities: PathRelativityVariants,
@@ -234,6 +234,9 @@ class _SymbolsHelper:
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+
+    def symbol_usage_expectation(self) -> asrt.ValueAssertion:
+        return asrt.matches_sequence(self.symbol_usage_expectation_assertions())
 
     def symbol_usage_expectation_assertions(self) -> list:
         return [

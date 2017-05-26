@@ -24,6 +24,9 @@ class AssertConfigurationBase(ConfigurationBase):
                              expectation):
         check(put, parser, source, arrangement, expectation)
 
+    def phase_is_after_act(self) -> bool:
+        return True
+
     def arrangement_with_timeout(self, timeout_in_seconds: int):
         return arrangement(process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
 

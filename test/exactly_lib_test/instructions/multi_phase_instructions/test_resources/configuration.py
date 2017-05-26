@@ -17,6 +17,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class ConfigurationBase:
+    def phase_is_after_act(self) -> bool:
+        raise NotImplementedError()
+
     def run_test_with_parser(self,
                              put: unittest.TestCase,
                              parser: InstructionParser,
