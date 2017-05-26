@@ -5,9 +5,8 @@ from exactly_lib.help.concepts.plain_concepts.current_working_directory import C
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts
-from exactly_lib.instructions.multi_phase_instructions.utils.main_step_executor_for_single_method_executor import \
-    MainStepExecutorForGenericMethodWithStringErrorMessage
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
+    MainStepResultTranslatorForErrorMessageStringResult
 from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
@@ -15,8 +14,6 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
@@ -87,7 +84,13 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
     def symbol_usages(self) -> list:
         return self.destination.references
 
-    def main(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             logging_paths: PhaseLoggingPaths,
+             os_services: OsServices):
+        return self.custom_main(environment.path_resolving_environment)
+
+    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> str:
         """
         :return: None iff success. Otherwise an error message.
         """
@@ -100,17 +103,6 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
         except NotADirectoryError:
             return 'Not a directory: {}'.format(dir_path_ref)
         return None
-
-
-class TheMainStepExecutor(MainStepExecutorForGenericMethodWithStringErrorMessage):
-    def __init__(self, instruction_embryo: InstructionEmbryo):
-        self.instruction_embryo = instruction_embryo
-
-    def execute(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                logging_paths: PhaseLoggingPaths,
-                os_services: OsServices) -> str:
-        return self.instruction_embryo.main(environment.path_resolving_environment)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
@@ -126,17 +118,9 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
         return InstructionEmbryo(target_file_ref)
 
 
-class PartsParser(InstructionPartsParser):
-    def __init__(self, is_after_act_phase: bool):
-        self.is_after_act_phase = is_after_act_phase
-        self.embryo_parser = EmbryoParser(is_after_act_phase)
-
-    def parse(self, source: ParseSource) -> InstructionParts:
-        instruction_embryo = self.embryo_parser.parse(source)
-        assert isinstance(instruction_embryo, InstructionEmbryo)
-        return InstructionParts(ConstantSuccessValidator(),
-                                TheMainStepExecutor(instruction_embryo),
-                                symbol_usages=tuple(instruction_embryo.symbol_usages))
+def parts_parser(is_after_act_phase: bool) -> InstructionPartsParser:
+    return PartsParserFromEmbryoParser(EmbryoParser(is_after_act_phase),
+                                       MainStepResultTranslatorForErrorMessageStringResult())
 
 
 _DIR_ARGUMENT = path_syntax.PATH_ARGUMENT
