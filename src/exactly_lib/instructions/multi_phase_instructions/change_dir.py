@@ -4,17 +4,25 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
+from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.main_step_executor_for_single_method_executor import \
+    MainStepExecutorForGenericMethodWithStringErrorMessage
+from exactly_lib.instructions.multi_phase_instructions.utils.parser import InstructionPartsParser
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts
+from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -71,35 +79,64 @@ Omitting the {dir_argument} is the same as giving ".".
 """
 
 
-def parse(rest_of_line: str, is_after_act_phase: bool) -> FileRefResolver:
-    rel_opt_arg_conf = _relativity_options(is_after_act_phase)
-    tokens = TokenParser(TokenStream2(rest_of_line))
+class InstructionEmbryo(embryo.InstructionEmbryo):
+    def __init__(self, destination: FileRefResolver):
+        self.destination = destination
 
-    target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
-    tokens.report_superfluous_arguments_if_not_at_eol()
-    return target_file_ref
+    @property
+    def symbol_usages(self) -> list:
+        return self.destination.references
 
-
-def change_dir(destination: FileRefResolver,
-               environment: PathResolvingEnvironmentPostSds) -> str:
-    """
-    :return: None iff success. Otherwise an error message.
-    """
-    dir_path_ref = destination.resolve(environment.symbols)
-    dir_path = dir_path_ref.file_path_post_sds(environment.sds)
-    try:
-        os.chdir(str(dir_path))
-    except FileNotFoundError:
-        return 'Directory does not exist: {}'.format(dir_path_ref)
-    except NotADirectoryError:
-        return 'Not a directory: {}'.format(dir_path_ref)
-    return None
+    def main(self, environment: PathResolvingEnvironmentPostSds) -> str:
+        """
+        :return: None iff success. Otherwise an error message.
+        """
+        dir_path_ref = self.destination.resolve(environment.symbols)
+        dir_path = dir_path_ref.file_path_post_sds(environment.sds)
+        try:
+            os.chdir(str(dir_path))
+        except FileNotFoundError:
+            return 'Directory does not exist: {}'.format(dir_path_ref)
+        except NotADirectoryError:
+            return 'Not a directory: {}'.format(dir_path_ref)
+        return None
 
 
-def execute_with_sh_result(destination: FileRefResolver,
-                           environment: PathResolvingEnvironmentPostSds) -> sh.SuccessOrHardError:
-    error_message = change_dir(destination, environment)
-    return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
+class TheMainStepExecutor(MainStepExecutorForGenericMethodWithStringErrorMessage):
+    def __init__(self, instruction_embryo: InstructionEmbryo):
+        self.instruction_embryo = instruction_embryo
+
+    def execute(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                logging_paths: PhaseLoggingPaths,
+                os_services: OsServices) -> str:
+        return self.instruction_embryo.main(environment.path_resolving_environment)
+
+
+class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
+    def __init__(self, is_after_act_phase: bool):
+        self.is_after_act_phase = is_after_act_phase
+
+    def _parse(self, rest_of_line: str) -> InstructionEmbryo:
+        rel_opt_arg_conf = _relativity_options(self.is_after_act_phase)
+        tokens = TokenParser(TokenStream2(rest_of_line))
+
+        target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
+        tokens.report_superfluous_arguments_if_not_at_eol()
+        return InstructionEmbryo(target_file_ref)
+
+
+class PartsParser(InstructionPartsParser):
+    def __init__(self, is_after_act_phase: bool):
+        self.is_after_act_phase = is_after_act_phase
+        self.embryo_parser = EmbryoParser(is_after_act_phase)
+
+    def parse(self, source: ParseSource) -> InstructionParts:
+        instruction_embryo = self.embryo_parser.parse(source)
+        assert isinstance(instruction_embryo, InstructionEmbryo)
+        return InstructionParts(ConstantSuccessValidator(),
+                                TheMainStepExecutor(instruction_embryo),
+                                symbol_usages=tuple(instruction_embryo.symbol_usages))
 
 
 _DIR_ARGUMENT = path_syntax.DIR_ARGUMENT
