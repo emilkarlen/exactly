@@ -12,6 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
@@ -36,13 +37,15 @@ class Arrangement(ArrangementWithSds):
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT,
                  home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
+                 symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          home_contents=home_dir_contents,
                          sds_contents=sds_contents_before_main,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
-                         home_or_sds_contents=home_or_sds_contents)
+                         home_or_sds_contents=home_or_sds_contents,
+                         symbols=symbols)
         self.previous_phase = previous_phase
 
 

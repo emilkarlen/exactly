@@ -4,6 +4,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_environ
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
@@ -44,11 +45,13 @@ class CleanupConfigurationBase(ConfigurationBase):
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     environ: dict = None,
-                    os_services: OsServices = new_default()):
+                    os_services: OsServices = new_default(),
+                    symbols: SymbolTable = None):
         return Arrangement(pre_contents_population_action=pre_contents_population_action,
                            sds_contents_before_main=sds_contents_before_main,
                            process_execution_settings=with_environ(environ),
-                           os_services=os_services)
+                           os_services=os_services,
+                           symbols=symbols)
 
     def arrangement_with_timeout(self, timeout_in_seconds: int):
         return Arrangement(process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
