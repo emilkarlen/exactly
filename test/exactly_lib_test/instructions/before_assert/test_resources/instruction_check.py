@@ -12,6 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
@@ -32,13 +33,15 @@ def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAct
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
                 os_services: OsServices = new_default(),
                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                symbols: SymbolTable = None,
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(pre_contents_population_action=pre_contents_population_action,
                               home_contents=home_dir_contents,
                               sds_contents=sds_contents_before_main,
                               act_result_producer=act_result_producer,
                               os_services=os_services,
-                              process_execution_settings=process_execution_settings)
+                              process_execution_settings=process_execution_settings,
+                              symbols=symbols)
 
 
 class Expectation(ExpectationBase):

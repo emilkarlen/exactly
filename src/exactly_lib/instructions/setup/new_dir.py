@@ -5,5 +5,5 @@ from exactly_lib.instructions.setup.utils import instruction_from_parts
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        instruction_from_parts.Parser(new_dir_utils.Parser(may_use_symbols=True)),
-        new_dir_utils.TheInstructionDocumentation(instruction_name, may_use_symbols=True))
+        instruction_from_parts.Parser(new_dir_utils.Parser()),
+        new_dir_utils.TheInstructionDocumentation(instruction_name))

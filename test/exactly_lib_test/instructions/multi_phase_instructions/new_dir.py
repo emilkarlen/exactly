@@ -6,12 +6,13 @@ from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
-    RelativityOptionConfigurationForRelTmp
+    RelativityOptionConfigurationForRelTmp, RelativityOptionConfigurationRelSdsForRelSymbol
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
@@ -145,6 +146,9 @@ RELATIVITY_OPTIONS = [
     RelativityOptionConfigurationForDefaultRelativity(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
+    RelativityOptionConfigurationRelSdsForRelSymbol(RelOptionType.REL_TMP,
+                                                    sut.RELATIVITY_VARIANTS.options.accepted_relativity_variants,
+                                                    symbol_name='DIR_PATH_SYMBOL'),
 ]
 
 
@@ -168,7 +172,8 @@ class test_creation_of_directory_with_single_path_component(TestWithRelativityOp
     def runTest(self):
         self._check_argument_with_relativity_option(
             '{relativity_option} dir-that-should-be-constructed',
-            arrangement_with_cwd_as_none_of_the_relativity_roots(),
+            arrangement_with_cwd_as_none_of_the_relativity_roots(
+                symbols=self.relativity_option.symbols_in_arrangement()),
             Expectation(expected_action_result=is_success(),
                         expected_sds_contents_after=SubDirOfSdsContainsExactly(
                             self.relativity_option.root_dir__sds,
@@ -182,7 +187,8 @@ class test_creation_of_directory_with_multiple_path_components(TestWithRelativit
     def runTest(self):
         self._check_argument_with_relativity_option(
             '{relativity_option} first-component/second-component',
-            arrangement_with_cwd_as_none_of_the_relativity_roots(),
+            arrangement_with_cwd_as_none_of_the_relativity_roots(
+                symbols=self.relativity_option.symbols_in_arrangement()),
             Expectation(expected_action_result=is_success(),
                         expected_sds_contents_after=SubDirOfSdsContainsExactly(
                             self.relativity_option.root_dir__sds,
@@ -202,7 +208,9 @@ class test_whole_argument_exists_as_directory__single_path_component(TestWithRel
                 sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([
                         empty_dir('existing-directory')
-                    ]))),
+                    ])),
+                symbols=self.relativity_option.symbols_in_arrangement(),
+            ),
             Expectation(
                 expected_action_result=is_success(),
                 expected_sds_contents_after=SubDirOfSdsContainsExactly(
@@ -222,7 +230,9 @@ class test_whole_argument_exists_as_directory__multiple_path_components(TestWith
                     DirContents([
                         Dir('first-component', [
                             empty_dir('second-component')
-                        ])]))),
+                        ])])),
+                symbols=self.relativity_option.symbols_in_arrangement(),
+            ),
             Expectation(
                 expected_action_result=is_success(),
                 expected_sds_contents_after=SubDirOfSdsContainsExactly(
@@ -244,7 +254,9 @@ class test_initial_component_of_argument_exists_as_directory__multiple_path_comp
                     DirContents([
                         Dir('first-component-that-exists', [
                             empty_dir('second-component')])
-                    ]))),
+                    ])),
+                symbols=self.relativity_option.symbols_in_arrangement(),
+            ),
             Expectation(
                 expected_action_result=is_success(),
                 expected_sds_contents_after=SubDirOfSdsContainsExactly(
@@ -294,9 +306,11 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
 
 
 def arrangement_with_cwd_as_none_of_the_relativity_roots(
-        sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty()) -> Arrangement:
+        sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
+        symbols: SymbolTable = None) -> Arrangement:
     return Arrangement(pre_contents_population_action=SETUP_CWD_ACTION,
-                       sds_contents_before=sds_contents_before)
+                       sds_contents_before=sds_contents_before,
+                       symbols=symbols)
 
 
 class MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs(SdsAction):

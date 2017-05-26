@@ -7,6 +7,7 @@ from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -18,9 +19,8 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import e
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents, HomeOrSdsPopulatorForRelOptionType
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
-    tmp_user_dir_contents, \
-    SdsPopulator, SdsPopulatorForFileWithContentsThatDependOnSds, cwd_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -69,9 +69,7 @@ class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfiguration):
         self.expected_accepted_relativities = expected_accepted_relativities
         self.relativity = relativity
         self.symbol_name = symbol_name
-
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+        self.helper = _SymbolsHelper(relativity, expected_accepted_relativities, symbol_name)
 
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         if self.relativity is RelOptionType.REL_HOME:
@@ -85,24 +83,17 @@ class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfiguration):
                 symbol_usages=self.symbol_usages_expectation(),
             )
 
-    def symbol_usage_expectation_assertions(self) -> list:
-        return [
-            equals_symbol_reference(
-                self.symbol_name,
-                equals_file_ref_relativity_restriction(
-                    FileRefRelativityRestriction(self.expected_accepted_relativities)))
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+        return self.helper.populator_for_relativity_option_root(contents)
 
-        ]
+    def symbol_usage_expectation_assertions(self) -> list:
+        return self.helper.symbol_usage_expectation_assertions()
 
     def symbol_entries_for_arrangement(self) -> list:
-        return [
-            symbol_utils.entry(self.symbol_name,
-                               FileRefConstant(file_refs.of_rel_option(self.relativity,
-                                                                       PathPartAsNothing())))
-        ]
+        return self.helper.symbol_entries_for_arrangement()
 
     def symbols_in_arrangement(self) -> SymbolTable:
-        return symbol_utils.symbol_table_from_entries(self.symbol_entries_for_arrangement())
+        return self.helper.symbols_in_arrangement()
 
 
 class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
@@ -123,7 +114,7 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfiguration):
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
+    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         raise NotImplementedError()
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
@@ -133,9 +124,10 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfiguration):
                                                                        file_name: str,
                                                                        sds_2_file_contents_str
                                                                        ) -> SdsPopulator:
-        return SdsPopulatorForFileWithContentsThatDependOnSds(file_name,
-                                                              sds_2_file_contents_str,
-                                                              self.populator_for_relativity_option_root__sds)
+        return sds_populator.SdsPopulatorForFileWithContentsThatDependOnSds(
+            file_name,
+            sds_2_file_contents_str,
+            self.populator_for_relativity_option_root__sds)
 
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         return Expectation(
@@ -152,7 +144,7 @@ class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRel
         return pathlib.Path().cwd()
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
-        return cwd_contents(contents)
+        return sds_populator.cwd_contents(contents)
 
 
 class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRelSds):
@@ -163,7 +155,7 @@ class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRel
         return sds.act_dir
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
-        return act_dir_contents(contents)
+        return sds_populator.act_dir_contents(contents)
 
 
 class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRelSds):
@@ -174,7 +166,39 @@ class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRel
         return sds.tmp.user_dir
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
-        return tmp_user_dir_contents(contents)
+        return sds_populator.tmp_user_dir_contents(contents)
+
+
+class RelativityOptionConfigurationRelSdsForRelSymbol(RelativityOptionConfigurationForRelSds):
+    def __init__(self,
+                 relativity: RelOptionType,
+                 expected_accepted_relativities: PathRelativityVariants,
+                 symbol_name: str = 'SYMBOL_NAME'):
+        super().__init__(rel_symbol_arg_str(symbol_name))
+        self.helper = _SymbolsHelper(relativity, expected_accepted_relativities, symbol_name)
+        self.expected_accepted_relativities = expected_accepted_relativities
+        self.relativity = relativity
+        self.symbol_name = symbol_name
+        if relativity is RelOptionType.REL_HOME:
+            raise ValueError('Invalid relativity - must be rel SDS. Found: ' + str(relativity))
+
+    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return REL_OPTIONS_MAP[self.relativity].root_resolver.from_sds(sds)
+
+    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
+        return sds_populator.rel_symbol(self.relativity, contents)
+
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+        return self.helper.populator_for_relativity_option_root(contents)
+
+    def symbol_usage_expectation_assertions(self) -> list:
+        return self.helper.symbol_usage_expectation_assertions()
+
+    def symbol_entries_for_arrangement(self) -> list:
+        return self.helper.symbol_entries_for_arrangement()
+
+    def symbols_in_arrangement(self) -> SymbolTable:
+        return self.helper.symbols_in_arrangement()
 
 
 class _HomeOrSdsPopulatorForContentsThatDependOnHomeAndSds(HomeOrSdsPopulator):
@@ -197,3 +221,35 @@ class _HomeOrSdsPopulatorForContentsThatDependOnHomeAndSds(HomeOrSdsPopulator):
         ])
         home_or_sds_populator = self.dir_contents__2_home_or_sds_populator(dir_contents)
         home_or_sds_populator.write_to(home_and_sds)
+
+
+class _SymbolsHelper:
+    def __init__(self,
+                 relativity: RelOptionType,
+                 expected_accepted_relativities: PathRelativityVariants,
+                 symbol_name: str):
+        self.expected_accepted_relativities = expected_accepted_relativities
+        self.relativity = relativity
+        self.symbol_name = symbol_name
+
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+
+    def symbol_usage_expectation_assertions(self) -> list:
+        return [
+            equals_symbol_reference(
+                self.symbol_name,
+                equals_file_ref_relativity_restriction(
+                    FileRefRelativityRestriction(self.expected_accepted_relativities)))
+
+        ]
+
+    def symbol_entries_for_arrangement(self) -> list:
+        return [
+            symbol_utils.entry(self.symbol_name,
+                               FileRefConstant(file_refs.of_rel_option(self.relativity,
+                                                                       PathPartAsNothing())))
+        ]
+
+    def symbols_in_arrangement(self) -> SymbolTable:
+        return symbol_utils.symbol_table_from_entries(self.symbol_entries_for_arrangement())

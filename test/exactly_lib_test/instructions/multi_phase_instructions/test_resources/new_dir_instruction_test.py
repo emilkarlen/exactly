@@ -15,10 +15,12 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_di
 from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Configuration(ConfigurationBase):
-    def expect_failure_to_create_dir(self):
+    def expect_failure_to_create_dir(self,
+                                     symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
         raise NotImplementedError()
 
 
@@ -41,7 +43,8 @@ class TestCaseBase(unittest.TestCase):
             sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty()):
         return self.conf.arrangement(
             sds_contents_before_main=sds_contents_before_main,
-            pre_contents_population_action=HomeAndSdsActionFromSdsAction(new_dir.SETUP_CWD_ACTION))
+            pre_contents_population_action=HomeAndSdsActionFromSdsAction(new_dir.SETUP_CWD_ACTION),
+            symbols=self.relativity_option.symbols_in_arrangement())
 
     def shortDescription(self):
         return '{}\n / {}\n / {}'.format(type(self),
@@ -65,7 +68,9 @@ class TestCreationOfDirectory(TestCaseBase):
                             Dir('first-component', [
                                 empty_dir('second-component')
                             ])
-                        ])))
+                        ])),
+                    symbol_usages=self.relativity_option.symbol_usages_expectation(),
+                )
             )
 
 
@@ -82,7 +87,9 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                         DirContents([
                             empty_file('file')
                         ]))),
-                self.conf.expect_failure_to_create_dir()
+                self.conf.expect_failure_to_create_dir(
+                    symbol_usages=self.relativity_option.symbol_usages_expectation(),
+                )
             )
 
 
