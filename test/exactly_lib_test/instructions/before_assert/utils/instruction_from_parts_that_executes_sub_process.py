@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.before_assert.utils import instruction_from_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
-    InstructionInfoForConstructingAnInstructionFromParts
+    InstructionPartsParser
+from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.instructions.before_assert.test_resources.configuration import BeforeAssertConfigurationBase
 from exactly_lib_test.instructions.before_assert.test_resources.instruction_check import Expectation
@@ -25,8 +26,8 @@ class ConfigurationForTheBeforeAssertPhase(BeforeAssertConfigurationBase, test_i
     def instruction_setup(self) -> SingleInstructionSetup:
         raise ValueError('this method is not used by these tests')
 
-    def instruction_info_for(self, instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
-        return instruction_from_parts.instruction_info_for(instruction_name)
+    def instruction_from_parts_parser(self, parts_parser: InstructionPartsParser) -> InstructionParser:
+        return instruction_from_parts.Parser(parts_parser)
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=sh_check.is_hard_error())
