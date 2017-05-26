@@ -4,8 +4,7 @@ import unittest
 from exactly_lib.help_texts.file_ref import REL_TMP_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
-    SubProcessExecutionSetup, \
-    MainStepExecutorForSubProcess
+    TheInstructionEmbryo
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -26,21 +25,27 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestExecuteProgramWithShellArgumentList),
+        unittest.makeSuite(TestExecuteInterpret),
+        unittest.makeSuite(TestSource),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
+                                                                            'single line description')),
+    ])
+
+
 class ExecuteAction(HomeAndSdsAction):
-    def __init__(self,
-                 source_info: spe.InstructionSourceInfo,
-                 setup: SubProcessExecutionSetup):
-        self.setup = setup
-        self.source_info = source_info
+    def __init__(self, instruction_embryo: TheInstructionEmbryo):
+        self.instruction_embryo = instruction_embryo
 
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds) -> spe.ResultAndStderr:
-        executor = MainStepExecutorForSubProcess(self.source_info, self.setup)
-        return executor.apply(InstructionEnvironmentForPostSdsStep(environment.home_dir_path,
-                                                                   dict(os.environ),
-                                                                   environment.sds,
-                                                                   'the-phase'),
-                              PhaseLoggingPaths(environment.sds.log_dir, 'the-phase'),
-                              os_services.new_default())
+        return self.instruction_embryo.main(InstructionEnvironmentForPostSdsStep(environment.home_dir_path,
+                                                                                 dict(os.environ),
+                                                                                 environment.sds,
+                                                                                 'the-phase'),
+                                            PhaseLoggingPaths(environment.sds.log_dir, 'the-phase'),
+                                            os_services.new_default())
 
 
 class TestCaseBase(home_and_sds_test.TestCaseBase):
@@ -49,20 +54,17 @@ class TestCaseBase(home_and_sds_test.TestCaseBase):
                                                           arrangement: home_and_sds_test.Arrangement,
                                                           expectation: home_and_sds_test.Expectation):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            source_info = spe.InstructionSourceInfo(source.current_line_number,
-                                                    'instruction-name')
-            setup = sut.SetupParser().parse(source)
-            action = ExecuteAction(source_info, setup)
+            embryo_parser = sut.embryo_parser('instruction-name')
+            instruction_embryo = embryo_parser.parse(source)
+            action = ExecuteAction(instruction_embryo)
             self._check(action, arrangement, expectation)
 
     def _check_source(self,
                       source: ParseSource,
                       arrangement: home_and_sds_test.Arrangement,
                       expectation: home_and_sds_test.Expectation):
-        source_info = spe.InstructionSourceInfo(source.current_line_number,
-                                                'instruction-name')
-        setup = sut.SetupParser().parse(source)
-        action = ExecuteAction(source_info, setup)
+        instruction_embryo = sut.embryo_parser('instruction-name').parse(source)
+        action = ExecuteAction(instruction_embryo)
         self._check(action, arrangement, expectation)
 
 
@@ -265,16 +267,6 @@ sys.stderr.write('{}');
 val = int(sys.argv[1])
 sys.exit(val)
 """.format(stderr_output)
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestExecuteProgramWithShellArgumentList),
-        unittest.makeSuite(TestExecuteInterpret),
-        unittest.makeSuite(TestSource),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
-                                                                            'single line description')),
-    ])
 
 
 if __name__ == '__main__':
