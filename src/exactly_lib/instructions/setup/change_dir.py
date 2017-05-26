@@ -5,7 +5,7 @@ from exactly_lib.instructions.setup.utils import instruction_from_parts
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        instruction_from_parts.Parser(cd_utils.PartsParser(is_after_act_phase=False)),
+        instruction_from_parts.Parser(cd_utils.parts_parser(is_after_act_phase=False)),
         cd_utils.TheInstructionDocumentation(instruction_name,
                                              is_after_act_phase=False,
                                              is_in_assert_phase=False))
