@@ -1,5 +1,5 @@
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
-    InstructionInfoForConstructingAnInstructionFromParts, InstructionPartsParser
+    InstructionPartsParser
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator, \
     PreOrPostSdsSvhValidationForSuccessOrHardError
 from exactly_lib.section_document.parse_source import ParseSource
@@ -51,8 +51,3 @@ class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> CleanupPhaseInstruction:
         instruction_parts = self.instruction_parts_parser.parse(source)
         return CleanupPhaseInstructionFromParts(instruction_parts)
-
-
-def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
-    return InstructionInfoForConstructingAnInstructionFromParts(instruction_name,
-                                                                CleanupPhaseInstructionFromParts)
