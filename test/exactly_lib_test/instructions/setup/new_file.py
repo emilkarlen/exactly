@@ -39,7 +39,7 @@ class TestCaseBaseForParser(TestCaseBase):
              source: ParseSource,
              arrangement: Arrangement,
              expectation: Expectation):
-        self._check(sut.Parser(), source, arrangement, expectation)
+        self._check(sut.setup('instr-name'), source, arrangement, expectation)
 
 
 class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
@@ -100,7 +100,7 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                           symbol_usages=asrt.matches_sequence([
                               equals_symbol_reference('SYMBOL_NAME',
                                                       equals_file_ref_relativity_restriction(
-                                                         FileRefRelativityRestriction(RELATIVITY_VARIANTS)))
+                                                          FileRefRelativityRestriction(RELATIVITY_VARIANTS)))
                           ]),
                       )
                       )

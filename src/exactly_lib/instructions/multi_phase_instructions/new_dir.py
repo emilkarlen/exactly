@@ -70,7 +70,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
              os_services: OsServices):
         return self.custom_main(environment.path_resolving_environment)
 
-    def custom_main(self, environment: PathResolvingEnvironmentPostSds):
+    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> str:
         """
         :return: None iff success. Otherwise an error message.
         """
