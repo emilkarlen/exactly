@@ -45,7 +45,7 @@ sys.exit(0)
             self.conf.run_single_line_test_with_source_variants_and_source_check(
                 self,
                 instruction_argument,
-                self.conf.empty_arrangement(),
+                self.conf.arrangement(),
                 self.conf.expectation_for_zero_exitcode(),
             )
 
@@ -62,7 +62,7 @@ sys.exit(1)
             self.conf.run_single_line_test_with_source_variants_and_source_check(
                 self,
                 instruction_argument,
-                self.conf.empty_arrangement(),
+                self.conf.arrangement(),
                 self.conf.expectation_for_non_zero_exitcode(),
             )
 
