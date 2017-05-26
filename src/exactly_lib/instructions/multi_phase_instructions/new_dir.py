@@ -18,7 +18,6 @@ from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case.phases.result import sh
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -73,23 +72,6 @@ def parse(rest_of_line: str,
     return target_file_ref
 
 
-class Parser(InstructionPartsParserThatConsumesCurrentLine):
-    def __init__(self,
-                 may_use_symbols: bool = False):
-        self.may_use_symbols = may_use_symbols
-
-    def _parse(self, rest_of_line: str) -> InstructionParts:
-        rel_opt_arg_conf = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
-                                                                    self.may_use_symbols)
-        tokens = TokenParser(TokenStream2(rest_of_line))
-
-        target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
-        tokens.report_superfluous_arguments_if_not_at_eol()
-        return InstructionParts(ConstantSuccessValidator(),
-                                TheMainStepExecutor(target_file_ref),
-                                symbol_usages=tuple(target_file_ref.references))
-
-
 def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
                             dir_path_resolver: FileRefResolver) -> str:
     """
@@ -100,20 +82,27 @@ def make_dir_in_current_dir(environment: PathResolvingEnvironmentPostSds,
         if dir_path.is_dir():
             return None
     except NotADirectoryError:
-        return 'Part of path exists, but is not a directory: %s' % str(dir_path)
+        return 'Part of PATH exists, but is not a directory: %s' % str(dir_path)
     try:
         dir_path.mkdir(parents=True)
     except FileExistsError:
-        return 'Path exists, but is not a directory: {}'.format(dir_path)
+        return 'PATH exists, but is not a directory: {}'.format(dir_path)
     except NotADirectoryError:
         return 'Clash with existing file: {}'.format(dir_path)
     return None
 
 
-def execute_and_return_sh(environment: PathResolvingEnvironmentPostSds,
-                          dir_path_resolver: FileRefResolver) -> sh.SuccessOrHardError:
-    error_message = make_dir_in_current_dir(environment, dir_path_resolver)
-    return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
+class Parser(InstructionPartsParserThatConsumesCurrentLine):
+    def __init__(self,
+                 may_use_symbols: bool = False):
+        self.may_use_symbols = may_use_symbols
+
+    def _parse(self, rest_of_line: str) -> InstructionParts:
+        target_file_ref = parse(rest_of_line,
+                                self.may_use_symbols)
+        return InstructionParts(ConstantSuccessValidator(),
+                                TheMainStepExecutor(target_file_ref),
+                                symbol_usages=tuple(target_file_ref.references))
 
 
 class TheMainStepExecutor(MainStepExecutorForGenericMethodWithStringErrorMessage):
