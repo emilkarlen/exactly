@@ -10,7 +10,7 @@ from exactly_lib_test.execution.full_execution.test_resources.recording.test_cas
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
-from exactly_lib_test.execution.test_resources.instruction_test_resources import do_return
+from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 

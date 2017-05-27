@@ -12,20 +12,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.util.line_source import LineSequence
-
-
-def do_return(x):
-    def ret_val(*args):
-        return x
-
-    return ret_val
-
-
-def do_raise(ex: Exception):
-    def ret_val(*args):
-        raise ex
-
-    return ret_val
+from exactly_lib_test.test_resources.actions import do_return, action_of
 
 
 class ImplementationErrorTestException(Exception):
@@ -34,7 +21,7 @@ class ImplementationErrorTestException(Exception):
 
 def configuration_phase_instruction_that(main=do_return(sh.SuccessOrHardError),
                                          main_initial_action=None) -> ConfigurationPhaseInstruction:
-    return _ConfigurationPhaseInstructionThat(main=_action_of(main_initial_action, main))
+    return _ConfigurationPhaseInstructionThat(main=action_of(main_initial_action, main))
 
 
 def setup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
@@ -45,10 +32,10 @@ def setup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success(
                                  main_initial_action=None,
                                  symbol_usages_initial_action=None,
                                  symbol_usages=do_return([])) -> SetupPhaseInstruction:
-    return _SetupPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
-                                      _action_of(validate_post_setup_initial_action, validate_post_setup),
-                                      _action_of(main_initial_action, main),
-                                      _action_of(symbol_usages_initial_action, symbol_usages))
+    return _SetupPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
+                                      action_of(validate_post_setup_initial_action, validate_post_setup),
+                                      action_of(main_initial_action, main),
+                                      action_of(symbol_usages_initial_action, symbol_usages))
 
 
 def act_phase_instruction_with_source(source_code: LineSequence = LineSequence(72, (
@@ -64,10 +51,10 @@ def before_assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_
                                          main_initial_action=None,
                                          symbol_usages_initial_action=None,
                                          symbol_usages=do_return([])) -> BeforeAssertPhaseInstruction:
-    return _BeforeAssertPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
-                                             _action_of(validate_post_setup_initial_action, validate_post_setup),
-                                             _action_of(main_initial_action, main),
-                                             _action_of(symbol_usages_initial_action, symbol_usages))
+    return _BeforeAssertPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
+                                             action_of(validate_post_setup_initial_action, validate_post_setup),
+                                             action_of(main_initial_action, main),
+                                             action_of(symbol_usages_initial_action, symbol_usages))
 
 
 def assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
@@ -78,10 +65,10 @@ def assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success
                                   main_initial_action=None,
                                   symbol_usages_initial_action=None,
                                   symbol_usages=do_return([])) -> AssertPhaseInstruction:
-    return _AssertPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
-                                       _action_of(validate_post_setup_initial_action, validate_post_setup),
-                                       _action_of(main_initial_action, main),
-                                       _action_of(symbol_usages_initial_action, symbol_usages))
+    return _AssertPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
+                                       action_of(validate_post_setup_initial_action, validate_post_setup),
+                                       action_of(main_initial_action, main),
+                                       action_of(symbol_usages_initial_action, symbol_usages))
 
 
 def cleanup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
@@ -90,9 +77,9 @@ def cleanup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_succes
                                    main_initial_action=None,
                                    symbol_usages_initial_action=None,
                                    symbol_usages=do_return([])) -> CleanupPhaseInstruction:
-    return _CleanupPhaseInstructionThat(_action_of(validate_pre_sds_initial_action, validate_pre_sds),
-                                        _action_of(main_initial_action, main),
-                                        _action_of(symbol_usages_initial_action, symbol_usages))
+    return _CleanupPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
+                                        action_of(main_initial_action, main),
+                                        action_of(symbol_usages_initial_action, symbol_usages))
 
 
 class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstruction):
@@ -229,12 +216,3 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
         return self.do_main(environment, os_services, previous_phase)
 
 
-def _action_of(initial_action, action_that_returns):
-    if initial_action:
-        def complete_action(*args):
-            initial_action(*args)
-            return action_that_returns(*args)
-
-        return complete_action
-    else:
-        return action_that_returns

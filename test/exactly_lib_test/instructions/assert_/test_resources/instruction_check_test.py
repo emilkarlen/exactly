@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
-    assert_phase_instruction_that, do_return
+    assert_phase_instruction_that
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check as sut
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, is_pass, \
     Expectation
@@ -21,6 +21,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly
+from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     sds_2_home_and_sds_assertion
