@@ -620,11 +620,6 @@ De steg-metoder som tar flera argument ska ha en action som tar alla dessa
 argument i en tupel.
 I dagsläget gör en av stegens action det (minns inte vilken), medan andra inte
 gör det.  Den olikheten är bara dålig.
-** TODO <2016-01-06 ons> anonymous/main: arg global_environment ospecificerat
-I dagsläget har det ingen roll (har ingen typ, bl a).
-Antingen ska det
- - specificeras med en typ o innehåll
- - tas bort
 * TODO Miljövariabler
 ** TODO EXACTLY_HOME ska ev inte vara tillgänglig i [act]
 <2016-04-02 lör>

@@ -157,17 +157,17 @@ class Executor(InstructionExecutionBase):
 
     def _execute_validate_pre_sds(
             self,
-            global_environment: InstructionEnvironmentForPreSdsStep,
+            environment: InstructionEnvironmentForPreSdsStep,
             instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_pre_sds(global_environment)
+        result = instruction.validate_pre_sds(environment)
         self._check_result_of_validate_pre_sds(result)
         return result
 
     def _execute_validate_post_setup(
             self,
-            global_environment: InstructionEnvironmentForPostSdsStep,
+            environment: InstructionEnvironmentForPostSdsStep,
             instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_post_setup(global_environment)
+        result = instruction.validate_post_setup(environment)
         self._check('result from validate/post-setup',
                     self.expectation.validation_post_setup,
                     result)
