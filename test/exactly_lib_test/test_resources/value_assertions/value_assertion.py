@@ -78,7 +78,7 @@ class Constant(ValueAssertion):
 
 class Boolean(ValueAssertion):
     """
-    Tests a boolean
+    Tests an expression casted to a boolean
     """
 
     def __init__(self,
@@ -490,7 +490,7 @@ is_false = Equals(False)
 is_true = Equals(True)
 
 
-def is_boolean(expected: bool) -> ValueAssertion:
+def casted_to_boolean_is(expected: bool) -> ValueAssertion:
     return Boolean(expected)
 
 
