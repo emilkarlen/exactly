@@ -1,3 +1,5 @@
+import unittest
+
 from exactly_lib.symbol import value_structure as stc
 from exactly_lib.symbol.concrete_values import SymbolValueResolver
 from exactly_lib_test.section_document.test_resources.assertions import equals_line
@@ -35,3 +37,32 @@ def equals_symbol(expected: stc.SymbolDefinition,
 
                                  ])
                                  )
+
+
+def equals_symbol_table(expected: stc.SymbolTable,
+                        ignore_source_line: bool = True) -> asrt.ValueAssertion:
+    return _EqualsSymbolTable(expected, ignore_source_line)
+
+
+class _EqualsSymbolTable(asrt.ValueAssertion):
+    def __init__(self,
+                 expected: stc.SymbolTable,
+                 ignore_source_line: bool = True
+                 ):
+        self.ignore_source_line = ignore_source_line
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        put.assertIsInstance(value, stc.SymbolTable)
+        assert isinstance(value, stc.SymbolTable)
+        put.assertEqual(self.expected.names_set,
+                        value.names_set,
+                        message_builder.apply('names in symbol table'))
+        for name in self.expected.names_set:
+            actual_value = value.lookup(name)
+            expected_value = self.expected.lookup(name)
+            equals_value_container(expected_value).apply_with_message(put, actual_value,
+                                                                      message_builder.apply('Value of symbol ' + name))
