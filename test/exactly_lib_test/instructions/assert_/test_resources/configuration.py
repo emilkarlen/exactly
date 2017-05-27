@@ -7,7 +7,7 @@ from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.util.process_execution.os_process_execution import with_environ
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, check, Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import \
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
