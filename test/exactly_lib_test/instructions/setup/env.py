@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.instructions.setup import env as sut
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.env_instruction_test import \
+from exactly_lib.instructions.setup import env as sut
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.env_instruction_test import \
     suite_for
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 

@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import \
+    ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
