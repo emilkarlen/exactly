@@ -12,6 +12,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
+from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
@@ -22,7 +23,6 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -68,66 +68,13 @@ class TestCaseBase(home_and_sds_test.TestCaseBase):
         self._check(action, arrangement, expectation)
 
 
-class IsSuccess(asrt.ValueAssertion):
-    def apply(self,
-              put: unittest.TestCase,
-              value: spe.ResultAndStderr,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertTrue(value.result.is_success,
-                       message_builder.apply('Result is expected to indicate success'))
-
-
-class IsFailure(asrt.ValueAssertion):
-    def apply(self,
-              put: unittest.TestCase,
-              value: spe.ResultAndStderr,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertFalse(value.result.is_success,
-                        message_builder.apply('Result is expected to indicate failure'))
-
-
-class ExitCodeIs(asrt.ValueAssertion):
-    def __init__(self,
-                 exit_code: int):
-        self.exit_code = exit_code
-
-    def apply(self,
-              put: unittest.TestCase,
-              value: spe.ResultAndStderr,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertEqual(self.exit_code,
-                        value.result.exit_code,
-                        message_builder.apply('Exit code'))
-
-
-class StderrContentsIs(asrt.ValueAssertion):
-    def __init__(self,
-                 stderr_contents: str):
-        self.stderr_contents = stderr_contents
-
-    def apply(self,
-              put: unittest.TestCase,
-              value: spe.ResultAndStderr,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertEqual(self.stderr_contents,
-                        value.stderr_contents,
-                        message_builder.apply('Stderr contents'))
-
-
-def is_success_result(exitcode: int,
-                      stderr_contents: str) -> asrt.ValueAssertion:
-    return asrt.And([IsSuccess(),
-                   ExitCodeIs(exitcode),
-                   StderrContentsIs(stderr_contents)])
-
-
 class TestExecuteProgramWithShellArgumentList(TestCaseBase):
     def test_check_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
             py_exe.command_line_for_executing_program_via_command_line('exit(0)'),
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
-                                                                                   None)))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.is_success_result(0,
+                                                                                             None)))
 
     def test_double_dash_should_invoke_execute(self):
         argument = py_exe.command_line_for_executing_program_via_command_line(
@@ -136,29 +83,29 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
         self._check_single_line_arguments_with_source_variants(
             argument,
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
-                                                                                   None)))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.is_success_result(0,
+                                                                                             None)))
 
     def test_check_non_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
             py_exe.command_line_for_executing_program_via_command_line('exit(1)'),
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=is_success_result(1,
-                                                                                   '')))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.is_success_result(1,
+                                                                                             '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write(\\"on stderr\\"); exit(2)'
         self._check_single_line_arguments_with_source_variants(
             py_exe.command_line_for_executing_program_via_command_line(python_program),
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=is_success_result(2,
-                                                                                   'on stderr')))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.is_success_result(2,
+                                                                                             'on stderr')))
 
     def test_invalid_executable(self):
         self._check_single_line_arguments_with_source_variants(
             '/not/an/executable/program',
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=IsFailure()))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.IsFailure()))
 
 
 class TestExecuteInterpret(TestCaseBase):
@@ -172,8 +119,8 @@ class TestExecuteInterpret(TestCaseBase):
                     File('exit-with-value-on-command-line.py',
                          py_pgm_that_exits_with_value_on_command_line(''))])),
             home_and_sds_test.Expectation(
-                expected_action_result=is_success_result(0,
-                                                         None),
+                expected_action_result=spr_check.is_success_result(0,
+                                                                   None),
 
             )
         )
@@ -189,8 +136,8 @@ class TestExecuteInterpret(TestCaseBase):
                     File('exit-with-value-on-command-line.py',
                          py_pgm_that_exits_with_value_on_command_line(''))]))),
             home_and_sds_test.Expectation(
-                expected_action_result=is_success_result(0,
-                                                         None)),
+                expected_action_result=spr_check.is_success_result(0,
+                                                                   None)),
         )
 
     def test_check_non_zero_exit_code(self):
@@ -203,8 +150,8 @@ class TestExecuteInterpret(TestCaseBase):
                     File('exit-with-value-on-command-line.py',
                          py_pgm_that_exits_with_value_on_command_line('on stderr'))])),
             home_and_sds_test.Expectation(
-                expected_action_result=is_success_result(2,
-                                                         'on stderr'),
+                expected_action_result=spr_check.is_success_result(2,
+                                                                   'on stderr'),
 
             )
         )
@@ -220,7 +167,7 @@ class TestExecuteInterpret(TestCaseBase):
                     File('exit-with-value-on-command-line.py',
                          py_pgm_that_exits_with_value_on_command_line(''))])),
             home_and_sds_test.Expectation(
-                expected_action_result=IsFailure(),
+                expected_action_result=spr_check.IsFailure(),
 
             ))
 
@@ -234,23 +181,23 @@ class TestSource(TestCaseBase):
         self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line('exit(0)'),
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=is_success_result(0,
-                                                                                   None)))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.is_success_result(0,
+                                                                                             None)))
 
     def test_check_non_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line('exit(1)'),
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=is_success_result(1,
-                                                                                   '')))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.is_success_result(1,
+                                                                                             '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
         self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line(python_program),
             home_and_sds_test.Arrangement(),
-            home_and_sds_test.Expectation(expected_action_result=is_success_result(2,
-                                                                                   'on stderr')))
+            home_and_sds_test.Expectation(expected_action_result=spr_check.is_success_result(2,
+                                                                                             'on stderr')))
 
     @staticmethod
     def _python_interpreter_for_source_on_command_line(argument: str) -> str:
