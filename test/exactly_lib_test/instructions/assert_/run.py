@@ -7,14 +7,17 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.run_instruction_test import \
     suite_for, Configuration
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class TheConfiguration(AssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
 
-    def expect_failure_because_specified_file_under_sds_is_missing(self):
-        return Expectation(validation_post_sds=svh_check.is_validation_error())
+    def expect_failure_because_specified_file_under_sds_is_missing(self,
+                                                                   symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+        return Expectation(validation_post_sds=svh_check.is_validation_error(),
+                           symbol_usages=symbol_usages)
 
 
 def suite() -> unittest.TestSuite:
