@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check

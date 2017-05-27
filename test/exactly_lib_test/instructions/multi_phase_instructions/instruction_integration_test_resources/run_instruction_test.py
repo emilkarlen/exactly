@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import \
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
