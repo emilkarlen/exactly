@@ -18,6 +18,10 @@ class CmdAndArgsResolverForExecutableFileBase(CmdAndArgsResolver):
     def __init__(self, executable: ExecutableFile):
         self.__executable = executable
 
+    @property
+    def symbol_usages(self) -> list:
+        return self.__executable.symbol_usages
+
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         raise NotImplementedError()
 

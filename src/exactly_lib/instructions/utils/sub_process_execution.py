@@ -92,6 +92,10 @@ class CmdAndArgsResolver:
     Resolves the command string to execute.
     """
 
+    @property
+    def symbol_usages(self) -> list:
+        return []
+
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds):
         """
         Resolves the "thing" to execute by Python's subprocess module.

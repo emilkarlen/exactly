@@ -37,6 +37,10 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
         self.setup = sub_process_execution_setup
 
     @property
+    def symbol_usages(self) -> list:
+        return self.setup.cmd_and_args_resolver.symbol_usages
+
+    @property
     def validator(self) -> PreOrPostSdsValidator:
         return self.setup.validator
 

@@ -42,6 +42,8 @@ def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
                                              SetupParser())
 
 
+REL_OPTION_ARG_CONF = PARSE_FILE_REF_CONFIGURATION
+
 INTERPRET_OPTION_NAME = a.OptionName(long_name='interpret')
 INTERPRET_OPTION = long_option_syntax(INTERPRET_OPTION_NAME.long)
 
@@ -143,7 +145,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                 right_parenthesis])
         default_relativity_desc = rel_path_doc.default_relativity_for_rel_opt_type(
             path_syntax.PATH_ARGUMENT.name,
-            PARSE_FILE_REF_CONFIGURATION.options.default_option)
+            REL_OPTION_ARG_CONF.options.default_option)
         python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                                a.Option(PYTHON_EXECUTABLE_OPTION_NAME))
         python_interpreter_arguments = [python_interpreter_argument]
@@ -170,10 +172,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                        ])
                ] + \
                rel_path_doc.relativity_syntax_element_descriptions(self.relativity_arg_path,
-                                                                   PARSE_FILE_REF_CONFIGURATION.options)
+                                                                   REL_OPTION_ARG_CONF.options)
 
     def _see_also_cross_refs(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.options)
+        concepts = rel_path_doc.see_also_concepts(REL_OPTION_ARG_CONF.options)
         concepts.append(SHELL_SYNTAX_CONCEPT_INFO)
         return [concept.cross_reference_target for concept in concepts]
 
