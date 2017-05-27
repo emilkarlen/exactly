@@ -1,16 +1,12 @@
 """
 Test of test-infrastructure: instruction_embryo_check.
 """
-import types
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreSds
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     do_return
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import instruction_embryo_check as sut
@@ -18,10 +14,12 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instr
     instruction_embryo_that
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.instructions.test_resources.symbol_table_check_help import \
+    get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
+    get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
 from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
@@ -108,12 +106,15 @@ class TestSymbols(TestCaseBase):
                                                                                          symbol_value)
         expected_symbol_table = symbol_utils.symbol_table_with_single_string_value(symbol_name,
                                                                                    symbol_value)
-        assertion_for_validation = self._do_fail_if_symbol_table_does_not_equal(
+        assertion_for_validation = do_fail_if_symbol_table_does_not_equal(
+            self,
             expected_symbol_table,
             get_symbol_table_from_path_resolving_environment_that_is_first_arg)
-        assertion_for_main = self._do_fail_if_symbol_table_does_not_equal(
+
+        assertion_for_main = do_fail_if_symbol_table_does_not_equal(
+            self,
             expected_symbol_table,
-            get_symbol_table_from_path_resolving_environment_that_is_first_arg)
+            get_symbol_table_from_instruction_environment_that_is_first_arg)
 
         self._check(
             ParserThatGives(
@@ -126,16 +127,6 @@ class TestSymbols(TestCaseBase):
             ArrangementWithSds(symbols=symbol_table_of_arrangement),
             sut.Expectation(),
         )
-
-    def _do_fail_if_symbol_table_does_not_equal(self,
-                                                expected: SymbolTable,
-                                                get_actual_symbol_table) -> types.FunctionType:
-        def ret_val(*args, **kwargs):
-            actual_symbol_table = get_actual_symbol_table(*args, **kwargs)
-            assertion = equals_symbol_table(expected)
-            assertion.apply_with_message(self, actual_symbol_table, 'symbol table')
-
-        return ret_val
 
 
 class TestMiscCases(TestCaseBase):
@@ -246,16 +237,6 @@ class ParserThatGives(embryo.InstructionEmbryoParser):
 
 
 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = ParserThatGives(instruction_embryo_that())
-
-
-def get_symbol_table_from_instruction_environment_that_is_first_arg(environment: InstructionEnvironmentForPostSdsStep,
-                                                                    *args, **kwargs):
-    return environment.symbols
-
-
-def get_symbol_table_from_path_resolving_environment_that_is_first_arg(environment: PathResolvingEnvironmentPreSds,
-                                                                       *args, **kwargs):
-    return environment.symbols
 
 
 def run_suite():
