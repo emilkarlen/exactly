@@ -66,5 +66,11 @@ def empty_symbol_table() -> SymbolTable:
     return SymbolTable()
 
 
+def symbol_table_with_entries(entries: iter) -> SymbolTable:
+    ret_val = SymbolTable()
+    ret_val.add_all(entries)
+    return ret_val
+
+
 def singleton_symbol_table(entry: Entry) -> SymbolTable:
     return SymbolTable({entry.key: entry.value})

@@ -200,6 +200,10 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
         self.file_to_interpret = file_to_interpret
         self.argument_list = argument_list
 
+    @property
+    def symbol_usages(self) -> list:
+        return super().symbol_usages + self.file_to_interpret.references
+
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         file_ref = self.file_to_interpret.resolve(environment.symbols)
         return [str(file_ref.file_path_pre_or_post_sds(environment.home_and_sds))] + self.argument_list

@@ -1,10 +1,12 @@
 import pathlib
+import sys
 import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.symbol_table import symbol_table_with_entries
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -14,9 +16,8 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sub_pro
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulator
-from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.file_structure import DirContents
+    HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulator, multiple
+from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -24,7 +25,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFailingValidationBecauseExecutableDoesNotExist),
+        unittest.makeSuite(TestValidationAndSymbolUsagesOfExecute),
+        unittest.makeSuite(TestValidationAndSymbolUsagesOfInterpret),
+        unittest.makeSuite(TestValidationAndSymbolUsagesOfSource),
         unittest.makeSuite(TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine),
     ])
 
@@ -39,17 +42,13 @@ class TestCaseBase(home_and_sds_test.TestCaseBase):
             embryo_check.check(self, parser, source, arrangement, expectation)
 
 
-class TestFailingValidationBecauseExecutableDoesNotExist(TestCaseBase):
-    def test_execute(self):
+class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
+    def test_validate_should_fail_when_executable_does_not_exist(self):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file'.format(
                 relativity_option=relativity_option_conf.option_string)
 
-            expected_symbol_usage = asrt.matches_sequence(
-                relativity_option_conf.symbol_usage_expectation_assertions())
-
-            expectation = self._expect_validation_error(relativity_option_conf,
-                                                        expected_symbol_usage)
+            expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
             arrangement = ArrangementWithSds(
                 symbols=relativity_option_conf.symbols_in_arrangement(),
@@ -59,9 +58,73 @@ class TestFailingValidationBecauseExecutableDoesNotExist(TestCaseBase):
                                                                        arrangement,
                                                                        expectation)
 
-    def test_interpret(self):
+    def test_success_when_executable_does_exist(self):
+        for relativity_option_conf in RELATIVITY_OPTIONS:
+            argument = '{relativity_option} {executable_file}'.format(
+                relativity_option=relativity_option_conf.option_string,
+                executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
+            )
+
+            expectation = embryo_check.Expectation(
+                symbol_usages=asrt.matches_sequence(relativity_option_conf.symbol_usage_expectation_assertions()),
+            )
+
+            arrangement = ArrangementWithSds(
+                home_or_sds_contents=relativity_option_conf.populator_for_relativity_option_root(
+                    fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
+                symbols=relativity_option_conf.symbols_in_arrangement(),
+            )
+            with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
+                self._check_single_line_arguments_with_source_variants(argument,
+                                                                       arrangement,
+                                                                       expectation)
+
+
+class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
+    def test_success_when_referenced_files_does_exist(self):
+        symbol_name_for_executable_file = 'EXECUTABLE_FILE_SYMBOL_NAME'
+        symbol_name_for_source_file = 'SOURCE_FILE_SYMBOL_NAME'
+        source_file = fs.empty_file('source-file.src')
+        for roc_executable_file in relativity_options(symbol_name_for_executable_file):
+            for roc_source_file in relativity_options(symbol_name_for_source_file):
+                argument = '{relativity_option_executable} {executable_file} {interpret_option}' \
+                           ' {relativity_option_source_file} {source_file}'.format(
+                    relativity_option_executable=roc_executable_file.option_string,
+                    relativity_option_source_file=roc_source_file.option_string,
+                    executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
+                    interpret_option=sut.INTERPRET_OPTION,
+                    source_file=source_file.file_name,
+                )
+
+                expectation = embryo_check.Expectation(
+                    symbol_usages=asrt.matches_sequence(roc_executable_file.symbol_usage_expectation_assertions() +
+                                                        roc_source_file.symbol_usage_expectation_assertions()),
+                )
+
+                arrangement = ArrangementWithSds(
+                    home_or_sds_contents=multiple([
+                        roc_executable_file.populator_for_relativity_option_root(
+                            fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
+                        roc_source_file.populator_for_relativity_option_root(
+                            fs.DirContents([source_file])),
+                    ]),
+                    symbols=symbol_table_with_entries(
+                        roc_executable_file.symbol_entries_for_arrangement() +
+                        roc_source_file.symbol_entries_for_arrangement()),
+
+                )
+                test_name = 'exe-file-option={}, source-file-option={}'.format(
+                    roc_executable_file.test_case_description,
+                    roc_source_file.test_case_description,
+                )
+                with self.subTest(msg=test_name):
+                    self._check_single_line_arguments_with_source_variants(argument,
+                                                                           arrangement,
+                                                                           expectation)
+
+    def test_validate_should_fail_when_executable_does_not_exist(self):
         existing_file_to_interpret = 'existing-file-to-interpret.src'
-        home_dir_contents = file_structure.DirContents([file_structure.empty_file(existing_file_to_interpret)])
+        home_dir_contents = fs.DirContents([fs.empty_file(existing_file_to_interpret)])
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {interpret_option}' \
                        ' {rel_home_option} {existing_file}'.format(
@@ -71,11 +134,7 @@ class TestFailingValidationBecauseExecutableDoesNotExist(TestCaseBase):
                 existing_file=existing_file_to_interpret,
             )
 
-            expected_symbol_usage = asrt.matches_sequence(
-                relativity_option_conf.symbol_usage_expectation_assertions())
-
-            expectation = self._expect_validation_error(relativity_option_conf,
-                                                        expected_symbol_usage)
+            expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
             arrangement = ArrangementWithSds(
                 symbols=relativity_option_conf.symbols_in_arrangement(),
@@ -86,18 +145,15 @@ class TestFailingValidationBecauseExecutableDoesNotExist(TestCaseBase):
                                                                        arrangement,
                                                                        expectation)
 
-    def test_source(self):
+    def test_validate_should_fail_when_file_to_interpret_does_not_exist(self):
         for relativity_option_conf in RELATIVITY_OPTIONS:
-            argument = '{relativity_option} non-existing-file {source_option} irrelevant-source'.format(
+            argument = '"{python_interpreter}" {interpret_option} {relativity_option} non-existing-file.py'.format(
+                python_interpreter=sys.executable,
+                interpret_option=sut.INTERPRET_OPTION,
                 relativity_option=relativity_option_conf.option_string,
-                source_option=sut.SOURCE_OPTION,
             )
 
-            expected_symbol_usage = asrt.matches_sequence(
-                relativity_option_conf.symbol_usage_expectation_assertions())
-
-            expectation = self._expect_validation_error(relativity_option_conf,
-                                                        expected_symbol_usage)
+            expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
             arrangement = ArrangementWithSds(
                 symbols=relativity_option_conf.symbols_in_arrangement(),
@@ -107,19 +163,67 @@ class TestFailingValidationBecauseExecutableDoesNotExist(TestCaseBase):
                                                                        arrangement,
                                                                        expectation)
 
-    def _expect_validation_error(self,
-                                 relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration,
-                                 expected_symbol_usage: asrt.ValueAssertion) -> embryo_check.Expectation:
-        if relativity_option_conf.exists_pre_sds:
-            return embryo_check.Expectation(
-                validation_pre_sds=IS_VALIDATION_ERROR,
-                symbol_usages=expected_symbol_usage,
+
+class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
+    def test_success_when_executable_does_exist(self):
+        for relativity_option_conf in RELATIVITY_OPTIONS:
+            argument = '{relativity_option} {executable_file} {source_option} irrelevant-source'.format(
+                relativity_option=relativity_option_conf.option_string,
+                executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
+                source_option=sut.SOURCE_OPTION,
             )
-        else:
-            return embryo_check.Expectation(
-                validation_post_sds=IS_VALIDATION_ERROR,
-                symbol_usages=expected_symbol_usage,
+
+            expectation = embryo_check.Expectation(
+                symbol_usages=asrt.matches_sequence(relativity_option_conf.symbol_usage_expectation_assertions()),
             )
+
+            arrangement = ArrangementWithSds(
+                home_or_sds_contents=relativity_option_conf.populator_for_relativity_option_root(
+                    fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
+                symbols=relativity_option_conf.symbols_in_arrangement(),
+            )
+            with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
+                self._check_single_line_arguments_with_source_variants(argument,
+                                                                       arrangement,
+                                                                       expectation)
+
+    def test_validate_should_fail_when_executable_does_not_exist(self):
+        for relativity_option_conf in RELATIVITY_OPTIONS:
+            argument = '{relativity_option} non-existing-file {source_option} irrelevant-source'.format(
+                relativity_option=relativity_option_conf.option_string,
+                source_option=sut.SOURCE_OPTION,
+            )
+
+            expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
+
+            arrangement = ArrangementWithSds(
+                symbols=relativity_option_conf.symbols_in_arrangement(),
+            )
+            with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
+                self._check_single_line_arguments_with_source_variants(argument,
+                                                                       arrangement,
+                                                                       expectation)
+
+
+def _expect_validation_error_and_symbol_usages_of(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration
+                                                  ) -> embryo_check.Expectation:
+    return _expect_validation_error_and_symbol_usages(relativity_option_conf,
+                                                      relativity_option_conf.symbol_usage_expectation_assertions())
+
+
+def _expect_validation_error_and_symbol_usages(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration,
+                                               expected_symbol_usage: list) -> embryo_check.Expectation:
+    expected_symbol_usages_assertion = asrt.matches_sequence(expected_symbol_usage)
+    if relativity_option_conf.exists_pre_sds:
+        return embryo_check.Expectation(
+            validation_pre_sds=IS_VALIDATION_ERROR,
+            symbol_usages=expected_symbol_usages_assertion,
+        )
+    else:
+        return embryo_check.Expectation(
+            validation_post_sds=IS_VALIDATION_ERROR,
+            symbol_usages=expected_symbol_usages_assertion,
+        )
 
 
 class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(TestCaseBase):
@@ -175,34 +279,31 @@ class RelativityOptionConfigurationForDefaultRelativity(rel_opt_conf.RelativityO
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return pathlib.Path().cwd()
 
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+    def populator_for_relativity_option_root(self, contents: fs.DirContents) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForHomeContents(contents)
 
 
-RELATIVITY_OPTIONS = [
-    RelativityOptionConfigurationForDefaultRelativity(),
-    rel_opt_conf.RelativityOptionConfigurationForRelAct(),
-    rel_opt_conf.RelativityOptionConfigurationForRelTmp(),
-    rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
-        RelOptionType.REL_TMP,
-        sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
-        symbol_name='EXECUTABLE_FILE_SYMBOL_NAME'),
-    rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
-        RelOptionType.REL_HOME,
-        sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
-        symbol_name='EXECUTABLE_FILE_SYMBOL_NAME'),
-]
+def relativity_options(symbol_name: str) -> list:
+    return [
+        RelativityOptionConfigurationForDefaultRelativity(),
+        rel_opt_conf.RelativityOptionConfigurationForRelAct(),
+        rel_opt_conf.RelativityOptionConfigurationForRelTmp(),
+        rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+            RelOptionType.REL_TMP,
+            sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
+            symbol_name=symbol_name),
+        rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+            RelOptionType.REL_HOME,
+            sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
+            symbol_name=symbol_name),
+    ]
 
 
-def py_pgm_that_exits_with_value_on_command_line(stderr_output) -> str:
-    return """
-import sys
+RELATIVITY_OPTIONS = relativity_options('EXECUTABLE_FILE_SYMBOL_NAME')
 
-sys.stderr.write('{}');
-val = int(sys.argv[1])
-sys.exit(val)
-""".format(stderr_output)
-
+python_program_that_exits_with_code_0 = 'exit(0)'
+EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0 = fs.python_executable_file('executable-file',
+                                                                   python_program_that_exits_with_code_0)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
