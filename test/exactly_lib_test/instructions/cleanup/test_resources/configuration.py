@@ -9,6 +9,7 @@ from exactly_lib_test.instructions.cleanup.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
@@ -48,11 +49,13 @@ class CleanupConfigurationBase(ConfigurationBase):
     def arrangement(self,
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                    home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                     environ: dict = None,
                     os_services: OsServices = new_default(),
                     symbols: SymbolTable = None):
         return Arrangement(pre_contents_population_action=pre_contents_population_action,
                            sds_contents_before_main=sds_contents_before_main,
+                           home_or_sds_contents=home_or_sds_contents,
                            process_execution_settings=with_environ(environ),
                            os_services=os_services,
                            symbols=symbols)
