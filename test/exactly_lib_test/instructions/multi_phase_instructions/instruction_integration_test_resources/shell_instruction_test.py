@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import \
+    ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
