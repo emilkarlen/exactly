@@ -1,3 +1,7 @@
+def do_nothing(*args, **kwargs):
+    pass
+
+
 def do_return(x):
     def ret_val(*args):
         return x

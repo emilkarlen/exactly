@@ -1,9 +1,10 @@
+import types
 import unittest
 
-import types
-
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
+    PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
+from exactly_lib_test.test_resources.actions import do_nothing
 
 
 class Expectation:
@@ -59,3 +60,24 @@ def check(put: unittest.TestCase,
            'Validation pre or post SDS',
            passes_pre_sds and passes_post_sds,
            environment)
+
+
+class ValidatorThat(PreOrPostSdsValidator):
+    def __init__(self,
+                 pre_sds_action=do_nothing,
+                 pre_sds_return_value=None,
+                 post_setup_action=do_nothing,
+                 post_setup_return_value=None,
+                 ):
+        self.post_setup_return_value = post_setup_return_value
+        self.pre_sds_return_value = pre_sds_return_value
+        self.post_setup_action = post_setup_action
+        self.pre_sds_action = pre_sds_action
+
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+        self.pre_sds_action(environment)
+        return self.pre_sds_return_value
+
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+        self.post_setup_action(environment)
+        return self.post_setup_return_value
