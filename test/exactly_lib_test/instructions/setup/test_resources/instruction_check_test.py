@@ -18,6 +18,9 @@ from exactly_lib_test.instructions.setup.test_resources import instruction_check
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
+from exactly_lib_test.instructions.test_resources.symbol_table_check_help import do_fail_if_symbol_table_does_not_equal, \
+    get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
+    get_symbol_table_from_instruction_environment_that_is_first_arg
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -30,7 +33,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestMiscCases))
-    ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
+    ret_val.addTest(unittest.makeSuite(TestSymbols))
     return ret_val
 
 
@@ -46,7 +49,36 @@ class TestCaseBase(unittest.TestCase):
         sut.check(self.tc, parser, source, arrangement, expectation)
 
 
-class TestSymbolUsages(TestCaseBase):
+class TestSymbols(TestCaseBase):
+    def test_that_symbols_from_arrangement_exist_in_environment(self):
+        symbol_name = 'symbol_name_in_setup_phase'
+        symbol_value = 'the symbol value in setup phase'
+        symbol_table_of_arrangement = symbol_utils.symbol_table_with_single_string_value(symbol_name,
+                                                                                         symbol_value)
+        expected_symbol_table = symbol_utils.symbol_table_with_single_string_value(symbol_name,
+                                                                                   symbol_value)
+        assertion_for_validation = do_fail_if_symbol_table_does_not_equal(
+            self,
+            expected_symbol_table,
+            get_symbol_table_from_path_resolving_environment_that_is_first_arg)
+
+        assertion_for_main = do_fail_if_symbol_table_does_not_equal(
+            self,
+            expected_symbol_table,
+            get_symbol_table_from_instruction_environment_that_is_first_arg)
+
+        self._check(
+            utils.ParserThatGives(
+                setup_phase_instruction_that(
+                    validate_pre_sds_initial_action=assertion_for_validation,
+                    validate_post_setup_initial_action=assertion_for_validation,
+                    main_initial_action=assertion_for_main,
+                )),
+            utils.single_line_source(),
+            sut.Arrangement(symbols=symbol_table_of_arrangement),
+            sut.Expectation(),
+        )
+
     def test_that_default_expectation_assumes_no_symbol_usages(self):
         with self.assertRaises(utils.TestError):
             unexpected_symbol_usages = [symbol_utils.symbol_reference('symbol_name')]
