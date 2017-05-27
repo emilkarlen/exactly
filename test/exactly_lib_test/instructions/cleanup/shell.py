@@ -4,7 +4,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.cleanup import shell as sut
 from exactly_lib_test.instructions.cleanup.test_resources.configuration import CleanupConfigurationBase
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.shell_instruction_test import \
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.shell_instruction_test import \
     Configuration, suite_for
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 

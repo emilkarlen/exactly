@@ -3,8 +3,9 @@ import unittest
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.setup import new_dir as sut
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources import new_dir_instruction_test
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.new_dir_instruction_test import \
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
+    new_dir_instruction_test
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.new_dir_instruction_test import \
     Configuration
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \

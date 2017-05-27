@@ -2,7 +2,8 @@ import unittest
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.instructions.multi_phase_instructions import new_dir
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import \
+    ConfigurationBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds

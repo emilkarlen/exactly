@@ -3,7 +3,8 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import \
+    ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import AssertCwdIsSubDirOf
 from exactly_lib_test.instructions.test_resources.relativity_options import SymbolsRelativityHelper
