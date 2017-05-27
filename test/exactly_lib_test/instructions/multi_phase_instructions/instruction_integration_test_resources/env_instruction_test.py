@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import \
+    ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
