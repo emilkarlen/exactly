@@ -6,7 +6,7 @@ from exactly_lib_test.common.help.test_resources import cross_reference_id_va as
 from exactly_lib_test.common.help.test_resources import see_also_va
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -85,7 +85,7 @@ class TestExitCodeDescription(WithSuiteReporterDocumentationBase):
 class TestSeeAlso(WithSuiteReporterDocumentationBase):
     def runTest(self):
         actual = self.documentation.see_also_items()
-        va.is_list_of(see_also_va.is_see_also_item).apply_with_message(self, actual, 'see_also_items')
+        asrt.is_list_of(see_also_va.is_see_also_item).apply_with_message(self, actual, 'see_also_items')
 
 
 class TestCrossReferenceTarget(WithSuiteReporterDocumentationBase):

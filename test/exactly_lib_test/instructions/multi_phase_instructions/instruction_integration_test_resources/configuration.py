@@ -13,7 +13,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class ConfigurationBase:
@@ -64,20 +64,20 @@ class ConfigurationBase:
         raise NotImplementedError()
 
     def expect_success(self,
-                       main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
-                       symbol_usages: va.ValueAssertion = va.is_empty_list):
+                       main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
+                       symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
         raise NotImplementedError()
 
     def expect_failure_of_main(self,
-                               assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                               assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         raise NotImplementedError()
 
     def expect_failing_validation_pre_sds(self,
-                                          assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                                          assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         raise NotImplementedError()
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                                             assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         raise NotImplementedError()
 
 

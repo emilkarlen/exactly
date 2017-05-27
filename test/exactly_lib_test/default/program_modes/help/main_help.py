@@ -9,7 +9,7 @@ from exactly_lib_test.test_resources.main_program.constant_arguments_check impor
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import is_empty
 
 
@@ -23,7 +23,7 @@ def _main_program_test_cases() -> list:
                         ' exit code SHOULD indicate this'
                         ' AND stdout SHOULD be empty',
                         HelpInvokation(['too', 'many', 'arguments', ',', 'indeed']),
-                        va.And([
+                        asrt.And([
                             pr.is_result_for_exit_code(main_program.EXIT_INVALID_USAGE),
                             pr.stdout(is_empty())
                         ])),

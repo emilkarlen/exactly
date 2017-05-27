@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.setup.test_resources.configuration import Set
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class ConfigurationForTheSetupPhase(SetupConfigurationBase, test_impl.Configuration):
@@ -35,7 +35,7 @@ class ConfigurationForTheSetupPhase(SetupConfigurationBase, test_impl.Configurat
         return Expectation(main_result=sh_check.is_hard_error())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                                             assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         return Expectation(post_validation_result=svh_check.is_validation_error(assertion_on_error_message))
 
 
