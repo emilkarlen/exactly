@@ -17,6 +17,10 @@ class ExecutableFile:
         self._arguments = arguments
         self._validator = ExistingExecutableFileValidator(file_reference_resolver)
 
+    @property
+    def symbol_usages(self) -> list:
+        return self._file_reference_resolver.references
+
     def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
         fr = self._file_reference_resolver.resolve(environment.symbols)
         return fr.file_path_pre_or_post_sds(environment.home_and_sds)
