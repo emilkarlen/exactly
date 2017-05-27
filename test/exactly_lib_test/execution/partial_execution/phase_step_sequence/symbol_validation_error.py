@@ -5,7 +5,7 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.partial_execution.test_resources.recording import validate_symbols_utils
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
-from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
+from exactly_lib_test.test_resources.actions import do_return, do_raise
 
 
 def suite() -> unittest.TestSuite:

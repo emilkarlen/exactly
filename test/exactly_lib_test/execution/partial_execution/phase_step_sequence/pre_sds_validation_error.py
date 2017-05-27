@@ -7,7 +7,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording impor
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import SYMBOL_VALIDATION_STEPS__TWICE
-from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
+from exactly_lib_test.test_resources.actions import do_return, do_raise
 
 
 def suite() -> unittest.TestSuite:

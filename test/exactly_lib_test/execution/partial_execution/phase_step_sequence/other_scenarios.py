@@ -13,7 +13,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.test_case_gener
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
-from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
+from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 
 
@@ -104,7 +104,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.BEFORE_ASSERT,
                  test.before_assert_phase_instruction_that(
-                     main=test.do_raise(test.ImplementationErrorTestException())))
+                     main=do_raise(test.ImplementationErrorTestException())))
         self._check(
             Arrangement(test_case),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -210,7 +210,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.ASSERT,
                  test.assert_phase_instruction_that(
-                     main=test.do_raise(test.ImplementationErrorTestException())))
+                     main=do_raise(test.ImplementationErrorTestException())))
         self._check(
             Arrangement(test_case),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -246,7 +246,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                     main=test.do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
+                     main=do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
         self._check(
             Arrangement(test_case),
             Expectation(PartialResultStatus.HARD_ERROR,
@@ -282,7 +282,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                     main=test.do_raise(test.ImplementationErrorTestException())))
+                     main=do_raise(test.ImplementationErrorTestException())))
         self._check(
             Arrangement(test_case),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
