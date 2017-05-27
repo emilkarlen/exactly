@@ -8,12 +8,14 @@ from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import file_ref, file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.setup.test_resources.settings_check import Assertion
+from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
@@ -86,6 +88,26 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                       source=source_is_at_end)
                   )
 
+    def test_file_rel_home__rel_symbol(self):
+        symbol_rel_opt = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+            RelOptionType.REL_TMP,
+            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants,
+            symbol_name='SYMBOL')
+        self._run(source4('{relativity_option} file.txt'.format(
+            relativity_option=symbol_rel_opt.option_string)),
+            Arrangement(
+                home_or_sds_contents=symbol_rel_opt.populator_for_relativity_option_root(DirContents([
+                    empty_file('file.txt')])),
+                symbols=symbol_rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                main_side_effects_on_environment=AssertStdinFileIsSetToFile(
+                    file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                            PathPartAsFixedPath('file.txt'))),
+                symbol_usages=symbol_rel_opt.symbol_usages_expectation(),
+                source=source_is_at_end),
+        )
+
     def test_file_rel_home__implicitly(self):
         self._run(source4('file-in-home-dir.txt'),
                   Arrangement(home_dir_contents=DirContents([
@@ -104,6 +126,38 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
                   Expectation(pre_validation_result=svh_check.is_validation_error(),
                               source=source_is_at_end)
                   )
+
+    def test_referenced_file_does_not_exist__rel_symbol(self):
+        symbol_rel_opt = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+            RelOptionType.REL_HOME,
+            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants,
+            symbol_name='SYMBOL')
+        self._run(source4('{relativity_option} file.txt'.format(
+            relativity_option=symbol_rel_opt.option_string)),
+            Arrangement(
+                symbols=symbol_rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                pre_validation_result=svh_check.is_validation_error(),
+                symbol_usages=symbol_rel_opt.symbol_usages_expectation(),
+                source=source_is_at_end),
+        )
+
+    def test_referenced_file_does_not_exist__rel_symbol__post_sds(self):
+        symbol_rel_opt = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+            RelOptionType.REL_ACT,
+            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants,
+            symbol_name='SYMBOL')
+        self._run(source4('{relativity_option} file.txt'.format(
+            relativity_option=symbol_rel_opt.option_string)),
+            Arrangement(
+                symbols=symbol_rel_opt.symbols_in_arrangement(),
+            ),
+            Expectation(
+                post_validation_result=svh_check.is_validation_error(),
+                symbol_usages=symbol_rel_opt.symbol_usages_expectation(),
+                source=source_is_at_end),
+        )
 
     def test_referenced_file_is_a_directory(self):
         self._run(source4('--rel-home directory'),

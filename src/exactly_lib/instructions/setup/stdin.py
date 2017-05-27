@@ -112,6 +112,9 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
                                        file_properties.must_exist_as(FileType.REGULAR)),))
         self.redirect_file = redirect_file
 
+    def symbol_usages(self) -> list:
+        return self.redirect_file.references
+
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
