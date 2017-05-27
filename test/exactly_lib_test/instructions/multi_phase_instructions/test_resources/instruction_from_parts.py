@@ -4,17 +4,15 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.symbol.concrete_restrictions import StringRestriction
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh, sh
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from exactly_lib_test.instructions.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
     equals_string_restriction
@@ -255,27 +253,6 @@ class MainStepExecutorThat(instruction_parts.MainStepExecutor):
                                os_services: OsServices) -> sh.SuccessOrHardError:
         self.non_assertion_action(environment, logging_paths, os_services)
         return self.non_assertion_return_value
-
-
-class ValidatorThat(PreOrPostSdsValidator):
-    def __init__(self,
-                 pre_sds_action=do_nothing,
-                 pre_sds_return_value=None,
-                 post_setup_action=do_nothing,
-                 post_setup_return_value=None,
-                 ):
-        self.post_setup_return_value = post_setup_return_value
-        self.pre_sds_return_value = pre_sds_return_value
-        self.post_setup_action = post_setup_action
-        self.pre_sds_action = pre_sds_action
-
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
-        self.pre_sds_action(environment)
-        return self.pre_sds_return_value
-
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
-        self.post_setup_action(environment)
-        return self.post_setup_return_value
 
 
 MAIN_STEP_AS_ASSERTION = 'apply_as_assertion'
