@@ -17,6 +17,9 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
     Expectation
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check, pfh_check
+from exactly_lib_test.instructions.test_resources.symbol_table_check_help import \
+    get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
+    get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -72,6 +75,35 @@ class TestSymbolUsages(TestCaseBase):
                 sut.Expectation(
                     symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
             )
+
+    def test_that_symbols_from_arrangement_exist_in_environment(self):
+        symbol_name = 'symbol_name'
+        symbol_value = 'the symbol value'
+        symbol_table_of_arrangement = symbol_utils.symbol_table_with_single_string_value(symbol_name,
+                                                                                         symbol_value)
+        expected_symbol_table = symbol_utils.symbol_table_with_single_string_value(symbol_name,
+                                                                                   symbol_value)
+        assertion_for_validation = do_fail_if_symbol_table_does_not_equal(
+            self,
+            expected_symbol_table,
+            get_symbol_table_from_path_resolving_environment_that_is_first_arg)
+
+        assertion_for_main = do_fail_if_symbol_table_does_not_equal(
+            self,
+            expected_symbol_table,
+            get_symbol_table_from_instruction_environment_that_is_first_arg)
+
+        self._check(
+            utils.ParserThatGives(
+                assert_phase_instruction_that(
+                    validate_pre_sds_initial_action=assertion_for_validation,
+                    validate_post_setup_initial_action=assertion_for_validation,
+                    main_initial_action=assertion_for_main,
+                )),
+            utils.single_line_source(),
+            sut.arrangement(symbols=symbol_table_of_arrangement),
+            sut.Expectation(),
+        )
 
 
 class TestMiscCases(TestCaseBase):
