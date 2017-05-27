@@ -1,18 +1,24 @@
 import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.instructions.multi_phase_instructions import run
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
+from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, python_executable_file
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Configuration(ConfigurationBase):
-    def expect_failure_because_specified_file_under_sds_is_missing(self):
+    def expect_failure_because_specified_file_under_sds_is_missing(
+            self,
+            symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
         raise NotImplementedError()
 
 
@@ -73,6 +79,49 @@ class TestFailingValidationOfRelTmpPath(TestCaseBase):
         )
 
 
+class TestFailingValidationOfRelSymbol(TestCaseBase):
+    def runTest(self):
+        symbol_name = 'SYMBOL_NAME'
+        relativity_option = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+            RelOptionType.REL_TMP,
+            run.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
+            symbol_name=symbol_name)
+        self.conf.run_test(
+            self,
+            single_line_source('{relativity_option} non-existing-file'.format(
+                relativity_option=relativity_option.option_string)),
+            self.conf.arrangement(symbols=relativity_option.symbols_in_arrangement()),
+            self.conf.expect_failure_because_specified_file_under_sds_is_missing(
+                symbol_usages=relativity_option.symbol_usages_expectation(),
+            ),
+        )
+
+
+class TestSuccessAndSymbolUsages(TestCaseBase):
+    def runTest(self):
+        executable_file_that_exits_with_code_0 = python_executable_file('executable-file',
+                                                                        'exit(0)')
+        symbol_name = 'SYMBOL_NAME'
+        relativity_option = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+            RelOptionType.REL_TMP,
+            run.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
+            symbol_name=symbol_name)
+        self.conf.run_test(
+            self,
+            single_line_source('{relativity_option} {executable_file}'.format(
+                relativity_option=relativity_option.option_string,
+                executable_file=executable_file_that_exits_with_code_0.file_name)),
+            self.conf.arrangement(
+                home_or_sds_contents=relativity_option.populator_for_relativity_option_root(
+                    DirContents([executable_file_that_exits_with_code_0])
+                ),
+                symbols=relativity_option.symbols_in_arrangement()),
+            self.conf.expect_success(
+                symbol_usages=relativity_option.symbol_usages_expectation(),
+            ),
+        )
+
+
 class TestSuccessfulValidation(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
@@ -93,4 +142,6 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
                                TestFailingValidationOfRelHomePath,
                                TestFailingValidationOfRelTmpPath,
                                TestSuccessfulValidation,
+                               TestFailingValidationOfRelSymbol,
+                               TestSuccessAndSymbolUsages,
                            ])
