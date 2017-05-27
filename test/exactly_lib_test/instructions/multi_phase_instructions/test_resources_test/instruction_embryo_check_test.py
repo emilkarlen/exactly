@@ -1,0 +1,216 @@
+"""
+Test of test-infrastructure: instruction_embryo_check.
+"""
+import unittest
+
+from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib_test.execution.test_resources.instruction_test_resources import \
+    do_return
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources import instruction_embryo_check as sut
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_instruction import \
+    instruction_embryo_that
+from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
+from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    act_dir_contains_exactly
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestArgumentTypesGivenToAssertions),
+        unittest.makeSuite(TestMiscCases),
+        unittest.makeSuite(TestSymbolUsages),
+    ])
+
+
+class TestCaseBase(unittest.TestCase):
+    def setUp(self):
+        self.tc = utils.TestCaseWithTestErrorAsFailureException()
+
+    def _check(self,
+               parser: embryo.InstructionEmbryoParser,
+               source: ParseSource,
+               arrangement: ArrangementWithSds,
+               expectation: sut.Expectation):
+        sut.check(self.tc, parser, source, arrangement, expectation)
+
+
+class TestArgumentTypesGivenToAssertions(TestCaseBase):
+    def test_source(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(source=asrt.IsInstance(ParseSource)),
+        )
+
+    def test_side_effects_on_files(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(main_side_effects_on_sds=asrt.IsInstance(SandboxDirectoryStructure)),
+        )
+
+    def test_home_and_sds(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(HomeAndSds)),
+        )
+
+
+class TestSymbolUsages(TestCaseBase):
+    def test_that_default_expectation_assumes_no_symbol_usages(self):
+        with self.assertRaises(utils.TestError):
+            unexpected_symbol_usages = [symbol_utils.symbol_reference('symbol_name')]
+            self._check(
+                ParserThatGives(
+                    instruction_embryo_that(
+                        symbol_usages=do_return(unexpected_symbol_usages))),
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(),
+            )
+
+    def test_that_fails_due_to_missing_symbol_reference(self):
+        with self.assertRaises(utils.TestError):
+            symbol_usages_of_instruction = []
+            symbol_usages_of_expectation = [symbol_utils.symbol_reference('symbol_name')]
+            self._check(
+                ParserThatGives(
+                    instruction_embryo_that(
+                        symbol_usages=do_return(symbol_usages_of_instruction))),
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(
+                    symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
+            )
+
+
+class TestMiscCases(TestCaseBase):
+    def test_successful_step_sequence(self):
+        validate_pre_sds = 'validate_pre_sds'
+        validate_post_sds = 'validate_post_sds'
+        main = 'main'
+
+        expected_recordings = [
+            validate_pre_sds,
+            validate_post_sds,
+            main,
+        ]
+        recorder = []
+
+        def recording_of(s: str):
+            def ret_val(*args, **kwargs):
+                recorder.append(s)
+
+            return ret_val
+
+        instruction_that_records_steps = instruction_embryo_that(
+            validate_pre_sds_initial_action=recording_of(validate_pre_sds),
+            validate_post_sds_initial_action=recording_of(validate_post_sds),
+            main_initial_action=recording_of(main))
+        self._check(
+            ParserThatGives(instruction_that_records_steps),
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation())
+
+        self.assertEqual(expected_recordings,
+                         recorder,
+                         'step execution sequence')
+
+    def test_successful_flow(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation())
+
+    def test_fail_due_to_unexpected_result_from__validate_pre_sds(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(validation_pre_sds=asrt.is_not_none),
+            )
+
+    def test_fail_due_to_unexpected_result_from__validate_post_sds(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(validation_post_sds=asrt.is_not_none),
+            )
+
+    def test_fail_due_to_unexpected_result__from_main(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                ParserThatGives(instruction_embryo_that(main=do_return('actual'))),
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(main_result=asrt.equals('different-from-actual')),
+            )
+
+    def test_fail_due_to_fail_of_side_effects_on_files(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(main_side_effects_on_sds=act_dir_contains_exactly(
+                    DirContents([empty_file('non-existing-file.txt')]))),
+            )
+
+    def test_that_cwd_for_main__and__validate_post_setup_is_act_dir(self):
+        instruction_that_raises_exception_if_unexpected_state = instruction_embryo_that(
+            main_initial_action=utils.raise_test_error_if_cwd_is_not_act_root__env,
+            validate_post_sds_initial_action=utils.raise_test_error_if_cwd_is_not_act_root__env,
+        )
+        self._check(
+            ParserThatGives(instruction_that_raises_exception_if_unexpected_state),
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation())
+
+    def test_fail_due_to_side_effects_check(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(bool)),
+            )
+
+
+class ParserThatGives(embryo.InstructionEmbryoParser):
+    def __init__(self,
+                 instruction: embryo.InstructionEmbryo):
+        self.instruction = instruction
+
+    def parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
+        return self.instruction
+
+
+PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = ParserThatGives(instruction_embryo_that())
+
+
+def run_suite():
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
+
+
+if __name__ == '__main__':
+    run_suite()
