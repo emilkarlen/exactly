@@ -6,7 +6,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction, \
     sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 
 
@@ -31,8 +31,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 expected_action_result: va.ValueAssertion = va.anything_goes(),
-                 expected_sds_contents_after: va.ValueAssertion = va.anything_goes(),
+                 expected_action_result: asrt.ValueAssertion = asrt.anything_goes(),
+                 expected_sds_contents_after: asrt.ValueAssertion = asrt.anything_goes(),
                  post_action_check: PostActionCheck = PostActionCheck()):
         self.expected_action_result = expected_action_result
         self.expected_sds_contents_after = expected_sds_contents_after

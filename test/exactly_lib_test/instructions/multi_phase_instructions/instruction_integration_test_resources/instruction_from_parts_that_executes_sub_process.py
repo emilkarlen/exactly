@@ -30,7 +30,7 @@ from exactly_lib_test.test_resources.programs.python_program_execution import \
     non_shell_args_for_that_executes_source_on_command_line
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as va_str
 
 
@@ -62,7 +62,7 @@ class Configuration(ConfigurationBase):
         return self.instruction_from_parts_parser(parts_parser)
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                                             assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         raise NotImplementedError()
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
@@ -106,7 +106,7 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.arrangement(),
-            self.conf.expect_failing_validation_pre_sds(va.Equals('validation error message')))
+            self.conf.expect_failing_validation_pre_sds(asrt.Equals('validation error message')))
 
 
 class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
@@ -119,7 +119,7 @@ class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):
             source4(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.arrangement(),
-            self.conf.expect_failing_validation_post_setup(va.Equals('validation error message post setup')))
+            self.conf.expect_failing_validation_post_setup(asrt.Equals('validation error message post setup')))
 
 
 class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
@@ -248,7 +248,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
             self.conf.expect_failure_of_main(va_str.contains('output on stderr')))
 
 
-class _InstructionLogDirContainsOutFiles(va.ValueAssertion):
+class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
     def __init__(self,
                  phase: Phase,
                  source_info: spe.InstructionSourceInfo,
@@ -260,7 +260,7 @@ class _InstructionLogDirContainsOutFiles(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               sds: SandboxDirectoryStructure,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         logging_paths = PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
         instruction_log_dir = spe.instruction_log_dir(logging_paths, self.source_info)
         assert_dir_contains_at_least_result_files(self.expected_files_contents).apply(put,

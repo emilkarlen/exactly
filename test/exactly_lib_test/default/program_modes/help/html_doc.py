@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.main_program.constant_arguments_check impor
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import begins_with
 
 
@@ -35,7 +35,7 @@ def _main_program_test_cases() -> list:
         ProcessTestCase('Generation of html-doc SHOULD exit with 0 exitcode '
                         'AND output html',
                         PlainArrangement([HELP_COMMAND] + arguments_for.html_doc()),
-                        va.And([
+                        asrt.And([
                             pr.is_result_for_exit_code(0),
                             pr.stdout(begins_with(DOCTYPE_XHTML1_0))
                         ])
@@ -52,4 +52,4 @@ class TestHtmlDoc(unittest.TestCase):
         sut.generate_and_output(output_file, application_help)
         # ASSERT #
         actual_output = output_file.getvalue()
-        begins_with(DOCTYPE_XHTML1_0).apply(self, actual_output, va.MessageBuilder('file output'))
+        begins_with(DOCTYPE_XHTML1_0).apply(self, actual_output, asrt.MessageBuilder('file output'))

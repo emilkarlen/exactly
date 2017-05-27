@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case.phases.common import TestCaseInstruction, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.parse import source3
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def single_line_source() -> ParseSource:
@@ -35,15 +35,15 @@ class TestCaseBase(unittest.TestCase):
         raise NotImplementedError()
 
 
-class RaisesTestError(va.ValueAssertion):
+class RaisesTestError(asrt.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         raise TestError()
 
 
-def raises_test_error() -> va.ValueAssertion:
+def raises_test_error() -> asrt.ValueAssertion:
     return RaisesTestError()
 
 

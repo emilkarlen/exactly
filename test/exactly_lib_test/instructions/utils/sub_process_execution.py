@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -94,7 +94,7 @@ def assert_is_success_and_output_dir_contains_at_least_result_files(put: unittes
 
 
 def assert_dir_contains_at_least_result_files(expected: SubProcessResult,
-                                              file_names: sut.FileNames = sut.FILE_NAMES) -> va.ValueAssertion:
+                                              file_names: sut.FileNames = sut.FILE_NAMES) -> asrt.ValueAssertion:
     return fa.dir_contains_at_least(DirContents([
         File(file_names.exit_code,
              str(expected.exitcode)),

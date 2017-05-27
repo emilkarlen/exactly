@@ -17,7 +17,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 from exactly_lib_test.test_resources.functions import Sequence
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.makeSuite:
@@ -156,14 +156,14 @@ class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
             self.phases_that_contains_the_environment_variable.add(self.phase_step)
 
 
-class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(va.ValueAssertion):
+class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(asrt.ValueAssertion):
     def __init__(self,
                  phases_that_contains_the_environment_variable: set):
         self.phases_that_contains_the_environment_variable = phases_that_contains_the_environment_variable
 
     def apply(self, put: unittest.TestCase,
               value: Result,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         msg = 'set of phases that have the environment variable in the global environment is expected to be empty'
         put.assertEqual(set(),
                         self.phases_that_contains_the_environment_variable,

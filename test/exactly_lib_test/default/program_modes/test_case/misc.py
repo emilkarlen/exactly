@@ -24,7 +24,7 @@ from exactly_lib_test.test_resources.main_program.main_program_check_for_test_ca
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult, \
     SubProcessResultInfo
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va, process_result_info_assertions
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, process_result_info_assertions
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     process_result_for_exit_value, \
     is_process_result_for_exit_code
@@ -49,7 +49,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
     def additional_arguments(self) -> list:
         return ['--invalid-option-that-should-cause-failure']
 
-    def expected_result(self) -> va.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion:
         return is_process_result_for_exit_code(main_program.EXIT_INVALID_USAGE)
 
     def test_case(self) -> str:
@@ -57,7 +57,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
 
 
 class EmptyTestCaseShouldPass(SetupWithoutPreprocessorAndTestActor):
-    def expected_result(self) -> va.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -70,7 +70,7 @@ class AllPhasesEmptyShouldPass(SetupWithoutPreprocessorAndTestActor):
                            for phase in phase_identifier.ALL]
         return lines_content(test_case_lines)
 
-    def expected_result(self) -> va.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
 
@@ -81,7 +81,7 @@ class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithout
         ]
         return lines_content(test_case_lines)
 
-    def expected_result(self) -> va.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion:
         return process_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR)
 
 
@@ -92,12 +92,12 @@ class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessorAndTestActor):
     def additional_arguments(self) -> list:
         return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
 
-    def expected_result(self) -> va.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion:
         return process_result_info_assertions.assertion_on_process_result(
-            va.And([
-                va.sub_component('exit code',
-                                 SubProcessResult.exitcode.fget,
-                                 va.Equals(exit_values.EXECUTION__PASS.exit_code)),
+            asrt.And([
+                asrt.sub_component('exit code',
+                                   SubProcessResult.exitcode.fget,
+                                   asrt.Equals(exit_values.EXECUTION__PASS.exit_code)),
                 AssertStdoutIsNameOfExistingSandboxDirectory(),
             ]))
 
@@ -118,30 +118,30 @@ sys.exit(72)
 """
         return test_case_source
 
-    def expected_result(self) -> va.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion:
         exit_code = 72
         std_out = 'output to stdout'
         std_err = 'output to stderr\n'
         return process_result_info_assertions.assertion_on_process_result(
-            va.And([
-                va.sub_component('exit code',
-                                 SubProcessResult.exitcode.fget,
-                                 va.Equals(exit_code)),
-                va.sub_component('stdout',
-                                 SubProcessResult.stdout.fget,
-                                 va.Equals(std_out)),
-                va.sub_component('stderr',
-                                 SubProcessResult.stderr.fget,
-                                 va.Equals(std_err)),
+            asrt.And([
+                asrt.sub_component('exit code',
+                                   SubProcessResult.exitcode.fget,
+                                   asrt.Equals(exit_code)),
+                asrt.sub_component('stdout',
+                                   SubProcessResult.stdout.fget,
+                                   asrt.Equals(std_out)),
+                asrt.sub_component('stderr',
+                                   SubProcessResult.stderr.fget,
+                                   asrt.Equals(std_err)),
             ])
         )
 
 
-class AssertStdoutIsNameOfExistingSandboxDirectory(va.ValueAssertion):
+class AssertStdoutIsNameOfExistingSandboxDirectory(asrt.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: SubProcessResult,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         actual_sds_directory = _get_printed_sds_or_fail(put, value)
         actual_sds_path = pathlib.Path(actual_sds_directory)
         if actual_sds_path.exists():
@@ -170,18 +170,18 @@ class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
         ]
         return lines_content(test_case_source_lines)
 
-    def expected_result(self) -> va.ValueAssertion:
-        return va.And([
+    def expected_result(self) -> asrt.ValueAssertion:
+        return asrt.And([
             process_result_info_assertions.is_process_result_for_exit_code(exit_values.EXECUTION__PASS.exit_code),
             ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(),
         ])
 
 
-class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(va.ValueAssertion):
+class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(asrt.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: SubProcessResultInfo,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         actual_sds_directory = _get_printed_sds_or_fail(put, value.sub_process_result)
         sds = sandbox_directory_structure.SandboxDirectoryStructure(actual_sds_directory)
         actually_printed_variables = _get_act_output_to_stdout(sds).splitlines()

@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configuration):
@@ -32,7 +32,7 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
         return Expectation(main_result=pfh_check.is_pass())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                                             assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         return Expectation(validation_post_sds=svh_check.is_validation_error(assertion_on_error_message))
 
     def expect_hard_error_in_main(self) -> Expectation:
