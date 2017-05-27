@@ -13,7 +13,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
-    setup_phase_instruction_that, do_return
+    setup_phase_instruction_that
 from exactly_lib_test.instructions.setup.test_resources import instruction_check as sut
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
@@ -22,6 +22,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly
+from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

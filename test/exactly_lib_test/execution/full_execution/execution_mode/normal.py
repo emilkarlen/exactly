@@ -12,7 +12,7 @@ from exactly_lib_test.execution.full_execution.test_resources.recording.test_cas
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
-from exactly_lib_test.execution.test_resources.instruction_test_resources import do_return
+from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 
@@ -68,7 +68,7 @@ class Test(TestCaseBase):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
                  test.configuration_phase_instruction_that(
-                     main=test.do_raise(test.ImplementationErrorTestException())))
+                     main=do_raise(test.ImplementationErrorTestException())))
         self._check(
             Arrangement(test_case),
             Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
