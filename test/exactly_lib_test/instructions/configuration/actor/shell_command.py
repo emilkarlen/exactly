@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -33,7 +33,7 @@ class _ShellExecutionCheckerHelper:
               put: unittest.TestCase,
               instruction_argument_source_template: str,
               act_phase_source_lines: list,
-              expectation_of_cmd_and_args: va.ValueAssertion,
+              expectation_of_cmd_and_args: asrt.ValueAssertion,
               home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
               ):
         instruction_argument_source = instruction_argument_source_template.format(
@@ -60,12 +60,12 @@ class _ShellExecutionCheckerHelper:
 
 
 def initial_part_of_command_without_file_argument_is(
-        expected_command_except_final_file_name_part: str) -> va.ValueAssertion:
-    class RetClass(va.ValueAssertion):
+        expected_command_except_final_file_name_part: str) -> asrt.ValueAssertion:
+    class RetClass(asrt.ValueAssertion):
         def apply(self,
                   put: unittest.TestCase,
                   actual_cmd_and_args: str,
-                  message_builder: va.MessageBuilder = va.MessageBuilder()):
+                  message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
             put.assertTrue(len(actual_cmd_and_args) > len(expected_command_except_final_file_name_part),
                            'Command line string is expected to contain at least the argument of the instruction')
             command_head = actual_cmd_and_args[:len(expected_command_except_final_file_name_part)]
@@ -77,12 +77,12 @@ def initial_part_of_command_without_file_argument_is(
 
 def is_interpreter_file_and_args(interpreter: str,
                                  file_name_base: str,
-                                 args: str) -> va.ValueAssertion:
-    class RetClass(va.ValueAssertion):
+                                 args: str) -> asrt.ValueAssertion:
+    class RetClass(asrt.ValueAssertion):
         def apply(self,
                   put: unittest.TestCase,
                   actual_cmd_and_args: str,
-                  message_builder: va.MessageBuilder = va.MessageBuilder()):
+                  message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
             put.assertEqual(interpreter + ' ',
                             actual_cmd_and_args[:len(interpreter) + 1],
                             'First part of string should be equal to the interpreter')
@@ -103,7 +103,7 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShel
     helper = _ShellExecutionCheckerHelper(actor_utils.SOURCE_INTERPRETER_OPTION)
 
     def _check(self, instruction_argument_source_template: str,
-               expected_command_except_final_file_name_part: va.ValueAssertion):
+               expected_command_except_final_file_name_part: asrt.ValueAssertion):
         self.helper.apply(self, instruction_argument_source_template,
                           ['this is act phase source code that is not used in the test'],
                           expected_command_except_final_file_name_part)
@@ -126,7 +126,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
 
     def _check(self, instruction_argument_source_template: str,
                act_phase_source_lines: list,
-               expected_command_except_final_file_name_part: va.ValueAssertion,
+               expected_command_except_final_file_name_part: asrt.ValueAssertion,
                home_dir_contents: DirContents,
                ):
         self.helper.apply(self,
@@ -181,6 +181,6 @@ class TestShellHandlingViaExecution(unittest.TestCase):
         check(self,
               Arrangement(remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
                           [act_phase_source_line]),
-              Expectation(sub_process_result_from_execute=pr.stdout(va.Equals('output on stdout\n',
+              Expectation(sub_process_result_from_execute=pr.stdout(asrt.Equals('output on stdout\n',
                                                                               'expected output on stdout')))
               )

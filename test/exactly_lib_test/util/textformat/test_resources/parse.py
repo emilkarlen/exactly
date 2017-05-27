@@ -6,15 +6,15 @@ from exactly_lib.util.textformat.structure.lists import HeaderContentList
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.textformat.test_resources import structure as structure_assert
 
 
 def check(put: unittest.TestCase,
           expected_items: list,
           actual_items: list):
-    va.every_element('Hardcoded Expected value: ', structure_assert.is_paragraph_item).apply(put, expected_items)
-    va.every_element('Actual value: ', structure_assert.is_paragraph_item).apply(put, actual_items)
+    asrt.every_element('Hardcoded Expected value: ', structure_assert.is_paragraph_item).apply(put, expected_items)
+    asrt.every_element('Actual value: ', structure_assert.is_paragraph_item).apply(put, actual_items)
     put.assertEqual(len(expected_items),
                     len(actual_items),
                     'Number of Paragraph Items')

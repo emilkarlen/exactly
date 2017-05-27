@@ -17,7 +17,7 @@ from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -97,8 +97,8 @@ for arg in sys.argv[1:]:
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
         expectation = Expectation(result_of_execute=eh_check.is_exit_code(0),
-                                  sub_process_result_from_execute=pr.stdout(va.Equals(expected_output,
-                                                                                      'CLI arguments, one per line')))
+                                  sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                                        'CLI arguments, one per line')))
         check_execution(self, arrangement, expectation)
 
 

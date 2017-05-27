@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
 from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 
 
@@ -42,21 +42,21 @@ class Arrangement:
         self.symbols = symbol_table_from_none_or_value(symbols)
 
 
-token_stream2_is_null = va.sub_component('is_null',
-                                         TokenStream2.is_null.fget,
-                                         va.Constant(True))
+token_stream2_is_null = asrt.sub_component('is_null',
+                                           TokenStream2.is_null.fget,
+                                           asrt.Constant(True))
 
 
-def token_stream2_is(source: str) -> va.ValueAssertion:
-    return va.sub_component('remaining-source',
-                            TokenStream2.remaining_source.fget,
-                            va.Equals(source))
+def token_stream2_is(source: str) -> asrt.ValueAssertion:
+    return asrt.sub_component('remaining-source',
+                              TokenStream2.remaining_source.fget,
+                              asrt.Equals(source))
 
 
 class Expectation:
     def __init__(self,
                  exists_pre_eds: bool,
-                 remaining_argument: va.ValueAssertion,
+                 remaining_argument: asrt.ValueAssertion,
                  validation_result: validator_util.Expectation,
                  arguments_of_exe_file_ref: list):
         self.exists_pre_eds = exists_pre_eds
@@ -66,7 +66,7 @@ class Expectation:
 
 
 def expectation_for_relativity_configuration(conf: RelativityConfiguration,
-                                             remaining_argument: va.ValueAssertion,
+                                             remaining_argument: asrt.ValueAssertion,
                                              validation_result: validator_util.Expectation,
                                              arguments_of_exe_file_ref: list) -> Expectation:
     return Expectation(exists_pre_eds=conf.exists_pre_sds,

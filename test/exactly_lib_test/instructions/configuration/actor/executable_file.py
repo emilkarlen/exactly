@@ -10,7 +10,7 @@ from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor imp
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.parse import remaining_source
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -36,7 +36,7 @@ class _NonShellExecutionCheckHelper:
             put: unittest.TestCase,
             first_source_line_instruction_argument_source_template: str,
             act_phase_source_lines: list,
-            expected_cmd_and_args: va.ValueAssertion,
+            expected_cmd_and_args: asrt.ValueAssertion,
             home_dir_contents: file_structure.DirContents = file_structure.DirContents(
                 []),
     ):
@@ -63,10 +63,10 @@ class _NonShellExecutionCheckHelper:
             expected_cmd_and_args.apply_with_message(put, actual_cmd_and_args, 'actual_cmd_and_args')
 
 
-def equals_with_last_element_removed(expected: list) -> va.ValueAssertion:
-    return va.sub_component('all elements except last',
-                            lambda l: l[:-1],
-                            va.Equals(expected))
+def equals_with_last_element_removed(expected: list) -> asrt.ValueAssertion:
+    return asrt.sub_component('all elements except last',
+                              lambda l: l[:-1],
+                              asrt.Equals(expected))
 
 
 class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExecutableFIle(unittest.TestCase):
@@ -104,7 +104,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
             self,
             instruction_argument_source_template: str,
             act_phase_source_lines: list,
-            cmd_and_args: va.ValueAssertion,
+            cmd_and_args: asrt.ValueAssertion,
             home_dir_contents: file_structure.DirContents = file_structure.DirContents(
                 []),
     ):
@@ -149,12 +149,12 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 
 def is_interpreter_with_source_file_and_arguments(interpreter: str,
                                                   source_file_relative_home_name: str,
-                                                  arguments: list) -> va.ValueAssertion:
-    class RetClass(va.ValueAssertion):
+                                                  arguments: list) -> asrt.ValueAssertion:
+    class RetClass(asrt.ValueAssertion):
         def apply(self,
                   put: unittest.TestCase,
                   cmd_and_args: list,
-                  message_builder: va.MessageBuilder = va.MessageBuilder()):
+                  message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
             msg = 'Expecting cmd-and-args to be [interpreter, argument..., source-file]. Found: ' + str(
                 cmd_and_args)
             put.assertEqual(1 + 1 + len(arguments), len(cmd_and_args),

@@ -24,7 +24,7 @@ from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -106,12 +106,12 @@ class TestCaseForCheckOfArgumentBase(sds_test.TestCaseBase):
                     expectation)
 
 
-def is_success() -> va.ValueAssertion:
-    return va.ValueIsNone()
+def is_success() -> asrt.ValueAssertion:
+    return asrt.ValueIsNone()
 
 
-def is_failure() -> va.ValueAssertion:
-    return va.ValueIsNotNone()
+def is_failure() -> asrt.ValueAssertion:
+    return asrt.ValueIsNotNone()
 
 
 class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):

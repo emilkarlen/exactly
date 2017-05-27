@@ -12,7 +12,7 @@ from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import empty_file
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Arrangement:
@@ -30,8 +30,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 sub_process_result_from_execute: va.ValueAssertion = va.anything_goes(),
-                 source_after_parse: va.ValueAssertion = va.anything_goes()):
+                 sub_process_result_from_execute: asrt.ValueAssertion = asrt.anything_goes(),
+                 source_after_parse: asrt.ValueAssertion = asrt.anything_goes()):
         self.sub_process_result_from_execute = sub_process_result_from_execute
         self.source_after_parse = source_after_parse
 

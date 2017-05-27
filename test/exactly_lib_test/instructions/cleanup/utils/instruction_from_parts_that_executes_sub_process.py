@@ -11,7 +11,7 @@ from exactly_lib_test.instructions.cleanup.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class ConfigurationForTheCleanupPhase(CleanupConfigurationBase, test_impl.Configuration):
@@ -34,7 +34,7 @@ class ConfigurationForTheCleanupPhase(CleanupConfigurationBase, test_impl.Config
         return Expectation(main_result=sh_check.is_hard_error())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                                             assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         return Expectation(main_result=sh_check.is_hard_error(assertion_on_error_message))
 
 

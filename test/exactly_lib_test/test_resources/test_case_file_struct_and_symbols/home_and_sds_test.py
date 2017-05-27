@@ -7,7 +7,7 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_di
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
 from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
 
@@ -36,7 +36,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  expected_action_result: ValueAssertion = anything_goes(),
-                 expected_sds_contents_after: va.ValueAssertion = va.anything_goes(),
+                 expected_sds_contents_after: asrt.ValueAssertion = asrt.anything_goes(),
                  post_action_check: PostActionCheck = PostActionCheck()):
         self.expected_action_result = expected_action_result
         self.expected_sds_contents_after = expected_sds_contents_after
