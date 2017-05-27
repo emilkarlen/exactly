@@ -13,7 +13,8 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -221,9 +222,9 @@ class Executor:
         return main_result
 
     def _execute_post_validate(self,
-                               global_environment_with_sds,
-                               instruction: SetupPhaseInstruction, ) -> svh.SuccessOrValidationErrorOrHardError:
-        post_validate_result = instruction.validate_post_setup(global_environment_with_sds)
+                               environment: InstructionEnvironmentForPostSdsStep,
+                               instruction: SetupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
+        post_validate_result = instruction.validate_post_setup(environment)
         self.put.assertIsInstance(post_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'post_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
