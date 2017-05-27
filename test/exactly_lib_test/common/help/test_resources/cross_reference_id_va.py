@@ -2,22 +2,22 @@ import types
 import unittest
 
 from exactly_lib.common.help.cross_reference_id import *
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-class _IsCrossReferenceId(va.ValueAssertion):
+class _IsCrossReferenceId(asrt.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         self._assertion_for(value).apply(put, value, message_builder)
 
     @staticmethod
-    def _assertion_for(value) -> va.ValueAssertion:
+    def _assertion_for(value) -> asrt.ValueAssertion:
         try:
             return _IS_CROSS_REFERENCE_ID_ASSERTION_GETTER.visit(value)
         except TypeError:
-            return va.fail('Not an instance of {}: {}'.format(CrossReferenceId, value))
+            return asrt.fail('Not an instance of {}: {}'.format(CrossReferenceId, value))
 
 
 is_any = _IsCrossReferenceId()
@@ -46,8 +46,8 @@ class _IsCrossReferenceIdAssertionGetter(CrossReferenceIdVisitor):
         return _assertion_on_properties_of(x, url_is_valid)
 
 
-def _is_str(component_name: str, component_getter: types.FunctionType) -> va.ValueAssertion:
-    return va.sub_component(component_name, component_getter, va.IsInstance(str))
+def _is_str(component_name: str, component_getter: types.FunctionType) -> asrt.ValueAssertion:
+    return asrt.sub_component(component_name, component_getter, asrt.IsInstance(str))
 
 
 _IS_CROSS_REFERENCE_ID_ASSERTION_GETTER = _IsCrossReferenceIdAssertionGetter()
@@ -56,29 +56,29 @@ test_case_phase_is_valid = _is_str('phase name', TestCasePhaseCrossReference.pha
 
 test_suite_section_is_valid = _is_str('section name', TestSuiteSectionCrossReference.section_name.fget)
 
-entity_is_valid = va.And([
+entity_is_valid = asrt.And([
     _is_str('entity type name', EntityCrossReferenceId.entity_type_name.fget),
     _is_str('entity name', EntityCrossReferenceId.entity_name.fget),
 ])
 
 
-def is_entity_for_type(entity_type_name: str) -> va.ValueAssertion:
-    return va.And([
+def is_entity_for_type(entity_type_name: str) -> asrt.ValueAssertion:
+    return asrt.And([
         is_entity,
-        va.sub_component('entity type name',
-                         EntityCrossReferenceId.entity_type_name.fget,
-                         va.Equals(entity_type_name))
+        asrt.sub_component('entity type name',
+                           EntityCrossReferenceId.entity_type_name.fget,
+                           asrt.Equals(entity_type_name))
     ])
 
 
-is_entity = va.is_instance_with(EntityCrossReferenceId, entity_is_valid)
+is_entity = asrt.is_instance_with(EntityCrossReferenceId, entity_is_valid)
 
-test_case_phase_instruction_is_valid = va.And([
+test_case_phase_instruction_is_valid = asrt.And([
     _is_str('phase name', TestCasePhaseInstructionCrossReference.phase_name.fget),
     _is_str('instruction name', TestCasePhaseInstructionCrossReference.instruction_name.fget),
 ])
 
-test_suite_section_instruction_is_valid = va.And([
+test_suite_section_instruction_is_valid = asrt.And([
     _is_str('section name', TestSuiteSectionInstructionCrossReference.section_name.fget),
     _is_str('instruction name', TestSuiteSectionInstructionCrossReference.instruction_name.fget),
 ])
@@ -88,23 +88,23 @@ custom_is_valid = _is_str('target name', CustomCrossReferenceId.target_name.fget
 url_is_valid = _is_str('url', UrlCrossReferenceTarget.url.fget)
 
 
-def _assertion_on_properties_of(x, properties_assertion: va.ValueAssertion) -> va.ValueAssertion:
-    return va.with_transformed_message(va.append_to_message(':' + str(type(x)) + ':'),
+def _assertion_on_properties_of(x, properties_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
+    return asrt.with_transformed_message(asrt.append_to_message(':' + str(type(x)) + ':'),
                                        properties_assertion)
 
 
-def equals(expected: CrossReferenceId) -> va.ValueAssertion:
+def equals(expected: CrossReferenceId) -> asrt.ValueAssertion:
     return _CrossReferenceIdEquals(expected)
 
 
-class _CrossReferenceIdEquals(va.ValueAssertion):
+class _CrossReferenceIdEquals(asrt.ValueAssertion):
     def __init__(self, expected: CrossReferenceId):
         self.expected = expected
 
     def apply(self,
               put: unittest.TestCase,
               value,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertIsInstance(value, type(self.expected), message_builder.apply('type of CrossReferenceId'))
         equality_checker = _CrossReferenceIdEqualsWhenClassIsEqual(self.expected, put, message_builder)
         equality_checker.visit(value)
@@ -114,7 +114,7 @@ class _CrossReferenceIdEqualsWhenClassIsEqual(CrossReferenceIdVisitor):
     def __init__(self,
                  expected: CrossReferenceId,
                  put: unittest.TestCase,
-                 message_builder: va.MessageBuilder = va.MessageBuilder()):
+                 message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         self.put = put
         self.message_builder = message_builder
         self.expected = expected

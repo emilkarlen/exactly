@@ -22,7 +22,7 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -68,25 +68,25 @@ class TestCaseBase(home_and_sds_test.TestCaseBase):
         self._check(action, arrangement, expectation)
 
 
-class IsSuccess(va.ValueAssertion):
+class IsSuccess(asrt.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: spe.ResultAndStderr,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertTrue(value.result.is_success,
                        message_builder.apply('Result is expected to indicate success'))
 
 
-class IsFailure(va.ValueAssertion):
+class IsFailure(asrt.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: spe.ResultAndStderr,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertFalse(value.result.is_success,
                         message_builder.apply('Result is expected to indicate failure'))
 
 
-class ExitCodeIs(va.ValueAssertion):
+class ExitCodeIs(asrt.ValueAssertion):
     def __init__(self,
                  exit_code: int):
         self.exit_code = exit_code
@@ -94,13 +94,13 @@ class ExitCodeIs(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: spe.ResultAndStderr,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertEqual(self.exit_code,
                         value.result.exit_code,
                         message_builder.apply('Exit code'))
 
 
-class StderrContentsIs(va.ValueAssertion):
+class StderrContentsIs(asrt.ValueAssertion):
     def __init__(self,
                  stderr_contents: str):
         self.stderr_contents = stderr_contents
@@ -108,15 +108,15 @@ class StderrContentsIs(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: spe.ResultAndStderr,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertEqual(self.stderr_contents,
                         value.stderr_contents,
                         message_builder.apply('Stderr contents'))
 
 
 def is_success_result(exitcode: int,
-                      stderr_contents: str) -> va.ValueAssertion:
-    return va.And([IsSuccess(),
+                      stderr_contents: str) -> asrt.ValueAssertion:
+    return asrt.And([IsSuccess(),
                    ExitCodeIs(exitcode),
                    StderrContentsIs(stderr_contents)])
 

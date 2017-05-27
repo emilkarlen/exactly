@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -39,7 +39,7 @@ class ConfigurationForTheBeforeAssertPhase(BeforeAssertConfigurationBase, test_i
         return Expectation(main_result=sh_check.is_success())
 
     def expect_failing_validation_post_setup(self,
-                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+                                             assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         return Expectation(validation_post_setup=svh_check.is_validation_error(assertion_on_error_message))
 
 

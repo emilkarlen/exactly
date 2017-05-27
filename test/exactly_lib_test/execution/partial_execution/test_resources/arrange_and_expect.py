@@ -9,7 +9,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.util.file_utils import preserved_cwd
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from .basic import Result
 
 
@@ -27,7 +27,7 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 assertion_on_sds: va.ValueAssertion = va.anything_goes()):
+                 assertion_on_sds: asrt.ValueAssertion = asrt.anything_goes()):
         self.assertion_on_sds = assertion_on_sds
 
 
@@ -48,7 +48,7 @@ def execute_and_check(put: unittest.TestCase,
         result = Result(home_dir_path, partial_result)
         expectation.assertion_on_sds.apply(put,
                                            result.partial_result.sandbox_directory_structure,
-                                           va.MessageBuilder('Sandbox Directory Structure'))
+                                           asrt.MessageBuilder('Sandbox Directory Structure'))
         # CLEANUP #
         os.chdir(str(result.home_dir_path))
         if result.sandbox_directory_structure.root_dir.exists():
