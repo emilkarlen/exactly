@@ -150,9 +150,9 @@ class Executor:
                                                               phase_step.STEP__MAIN)
 
     def _execute_validate_pre_sds(self,
-                                  global_environment: InstructionEnvironmentForPreSdsStep,
+                                  environment: InstructionEnvironmentForPreSdsStep,
                                   instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_pre_sds(global_environment)
+        result = instruction.validate_pre_sds(environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
         self.expectation.validation_pre_sds.apply(self.put, result,
@@ -160,9 +160,9 @@ class Executor:
         return result
 
     def _execute_validate_post_setup(self,
-                                     global_environment: InstructionEnvironmentForPostSdsStep,
+                                     environment: InstructionEnvironmentForPostSdsStep,
                                      instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_post_setup(global_environment)
+        result = instruction.validate_post_setup(environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
         self.expectation.validation_post_sds.apply(self.put, result,
