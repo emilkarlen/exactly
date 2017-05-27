@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
 from exactly_lib.instructions.setup.utils import instruction_from_parts
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import Expectation

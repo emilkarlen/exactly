@@ -20,7 +20,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program as py
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
+    ConfigurationBase
 from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.process import SubProcessResult
