@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.instructions.cleanup.test_resources.configuration import CleanupConfigurationBase
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
+from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
