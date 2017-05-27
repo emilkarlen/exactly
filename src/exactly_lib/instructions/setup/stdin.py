@@ -50,12 +50,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [path_syntax.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-                     a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
+        arguments = path_syntax.mandatory_path_with_optional_relativity(
+            self.path_arg,
+            RELATIVITY_OPTIONS_CONFIGURATION.options.is_rel_symbol_option_accepted,
+            RELATIVITY_OPTIONS_CONFIGURATION.path_suffix_is_required)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
-                              docs.paras('Sets stdin to be the contents of file {}.'.format(self.path_arg.name))),
+                              docs.paras('Sets stdin to be the contents of a file.')),
             InvokationVariant(self._cl_syntax_for_args([here_doc_arg]),
                               docs.paras('Sets stdin to be the contents of a "here document".')),
         ]
