@@ -30,10 +30,10 @@ class Expectation:
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         self.validation_pre_sds = validation_pre_sds
-        self.main_side_effects_on_sds = main_side_effects_on_sds
-        self.side_effects_on_home_and_sds = side_effects_on_home_and_sds
         self.validation_post_sds = validation_post_sds
         self.main_result = main_result
+        self.main_side_effects_on_sds = main_side_effects_on_sds
+        self.side_effects_on_home_and_sds = side_effects_on_home_and_sds
         self.source = source
         self.symbol_usages = symbol_usages
 

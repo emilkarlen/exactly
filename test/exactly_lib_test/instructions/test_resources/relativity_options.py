@@ -33,6 +33,14 @@ class RelativityOptionConfiguration:
     def option_string(self) -> str:
         return self._cli_option
 
+    @property
+    def test_case_description(self) -> str:
+        return self._cli_option
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        raise NotImplementedError()
+
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         raise NotImplementedError()
 
@@ -71,6 +79,14 @@ class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfiguration):
         self.symbol_name = symbol_name
         self.helper = SymbolsRelativityHelper(relativity, expected_accepted_relativities, symbol_name)
 
+    @property
+    def test_case_description(self) -> str:
+        return self._cli_option + '/' + str(self.relativity)
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        return self.relativity is RelOptionType.REL_HOME
+
     def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
         if self.relativity is RelOptionType.REL_HOME:
             return Expectation(
@@ -100,6 +116,10 @@ class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
     def __init__(self):
         super().__init__(file_ref_texts.REL_HOME_OPTION)
 
+    @property
+    def exists_pre_sds(self) -> bool:
+        return True
+
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
         return HomeOrSdsPopulatorForHomeContents(contents)
 
@@ -111,6 +131,10 @@ class RelativityOptionConfigurationForRelHome(RelativityOptionConfiguration):
 
 
 class RelativityOptionConfigurationForRelSds(RelativityOptionConfiguration):
+    @property
+    def exists_pre_sds(self) -> bool:
+        return False
+
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
