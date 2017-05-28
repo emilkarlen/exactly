@@ -9,6 +9,37 @@ class RelOptionType(enum.Enum):
     REL_CWD = 4
 
 
+class RelSdsOptionType(enum.Enum):
+    """
+    Id values must match those of `RelOptionType`
+    """
+    REL_ACT = 0
+    REL_RESULT = 1
+    REL_TMP = 2
+
+
+class RelNonHomeOptionType(enum.Enum):
+    """
+    Id values must match those of `RelOptionType`
+    """
+    REL_ACT = 0
+    REL_RESULT = 1
+    REL_TMP = 2
+    REL_CWD = 4
+
+
+def rel_non_home_from_rel_sds(rel_sds: RelSdsOptionType) -> RelNonHomeOptionType:
+    return RelNonHomeOptionType(rel_sds.value)
+
+
+def rel_any_from_rel_sds(rel_sds: RelSdsOptionType) -> RelOptionType:
+    return RelOptionType(rel_sds.value)
+
+
+def rel_any_from_rel_non_home(rel_sds_or_cwd: RelNonHomeOptionType) -> RelOptionType:
+    return RelOptionType(rel_sds_or_cwd.value)
+
+
 class SpecificPathRelativity:
     """
     The relativity, or non-relativity, of a path.
