@@ -8,8 +8,81 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestSdsRelativityResolver),
+        unittest.makeSuite(TestNonHomeRelativityResolver),
         unittest.makeSuite(TestAnyRelativityResolver),
     ])
+
+
+class TestSdsRelativityResolver(unittest.TestCase):
+    def test(self):
+        cases = [
+            (sut.RelSdsOptionType.REL_RESULT, sut.resolver_rel_sds__for_result, sds_2_result_dir),
+            (sut.RelSdsOptionType.REL_ACT, sut.resolver_rel_sds__for_act, sds_2_act_dir),
+            (sut.RelSdsOptionType.REL_TMP, sut.resolver_rel_sds__for_tmp_user, sds_2_tmp_user_dir),
+        ]
+        sds = SandboxDirectoryStructure('sds-root')
+
+        for rel_option_type, resolver, expected_root_path_resolver in cases:
+            with self.subTest(msg=str(rel_option_type)):
+                expected_root = expected_root_path_resolver(sds)
+                self.assertIs(rel_option_type,
+                              resolver.sds_relativity_type,
+                              'relativity_type')
+                self.assertEqual(expected_root,
+                                 resolver.from_sds(sds),
+                                 'from_sds')
+
+
+class TestNonHomeRelativityResolver(unittest.TestCase):
+    def test_under_sds(self):
+        cases = [
+            (sut.RelNonHomeOptionType.REL_RESULT, sut.resolver_rel_non_home__for_result, sds_2_result_dir),
+            (sut.RelNonHomeOptionType.REL_ACT, sut.resolver_rel_non_home__for_act, sds_2_act_dir),
+            (sut.RelNonHomeOptionType.REL_TMP, sut.resolver_rel_non_home__for_tmp_user, sds_2_tmp_user_dir),
+        ]
+        sds = SandboxDirectoryStructure('sds-root')
+
+        for rel_option_type, resolver, expected_root_path_resolver in cases:
+            with self.subTest(msg=str(rel_option_type)):
+                self.assertIs(rel_option_type,
+                              resolver.non_home_relativity_type,
+                              'relativity_type')
+                self.assertFalse(resolver.exists_pre_sds,
+                                 'existence pre SDS')
+                expected_root = expected_root_path_resolver(sds)
+                self.assertEqual(expected_root,
+                                 resolver.from_sds(sds),
+                                 'from_sds')
+                self.assertEqual(expected_root,
+                                 resolver.from_non_home(sds),
+                                 'from_non_home')
+                self.assertTrue(resolver.is_rel_sds,
+                                'is_rel_sds')
+                self.assertFalse(resolver.is_rel_cwd,
+                                 'is_rel_cwd')
+
+    def test_cwd(self):
+        cases = [
+            (sut.RelNonHomeOptionType.REL_CWD, sut.resolver_rel_non_home__for_cwd, home_and_sds_2_cwd_dir),
+        ]
+        sds = SandboxDirectoryStructure('sds-root')
+
+        for rel_option_type, resolver, expected_root_path_resolver in cases:
+            with self.subTest(msg=str(rel_option_type)):
+                self.assertIs(rel_option_type,
+                              resolver.non_home_relativity_type,
+                              'relativity_type')
+                self.assertFalse(resolver.exists_pre_sds,
+                                 'existence pre SDS')
+                expected_root = expected_root_path_resolver(sds)
+                self.assertEqual(expected_root,
+                                 resolver.from_non_home(sds),
+                                 'from_non_home')
+                self.assertFalse(resolver.is_rel_sds,
+                                 'is_rel_sds')
+                self.assertTrue(resolver.is_rel_cwd,
+                                'is_rel_cwd')
 
 
 class TestAnyRelativityResolver(unittest.TestCase):
@@ -24,6 +97,9 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
+                self.assertIs(rel_option_type,
+                              resolver.relativity_type,
+                              'relativity_type')
                 self.assertFalse(resolver.exists_pre_sds,
                                  'existence pre SDS')
                 expected_root = expected_root_path_resolver(sds)
@@ -36,6 +112,10 @@ class TestAnyRelativityResolver(unittest.TestCase):
                 self.assertEqual(expected_root,
                                  resolver.from_home_and_sds(home_and_sds),
                                  'from_home_and_sds')
+                self.assertTrue(resolver.is_rel_sds,
+                                'is_rel_sds')
+                self.assertFalse(resolver.is_rel_home,
+                                 'is_rel_home')
                 self.assertFalse(resolver.is_rel_cwd,
                                  'is_rel_cwd')
 
@@ -57,6 +137,10 @@ class TestAnyRelativityResolver(unittest.TestCase):
                 self.assertEqual(expected_root,
                                  resolver.from_home_and_sds(home_and_sds),
                                  'from_home_and_sds')
+                self.assertFalse(resolver.is_rel_sds,
+                                 'is_rel_sds')
+                self.assertTrue(resolver.is_rel_home,
+                                'is_rel_home')
                 self.assertFalse(resolver.is_rel_cwd,
                                  'is_rel_cwd')
 
@@ -73,8 +157,15 @@ class TestAnyRelativityResolver(unittest.TestCase):
                                  'existence pre SDS')
                 expected_root = expected_root_path_resolver(home_and_sds)
                 self.assertEqual(expected_root,
+                                 resolver.from_non_home(sds),
+                                 'from_non_home')
+                self.assertEqual(expected_root,
                                  resolver.from_home_and_sds(home_and_sds),
                                  'from_home_and_sds')
+                self.assertFalse(resolver.is_rel_sds,
+                                 'is_rel_sds')
+                self.assertFalse(resolver.is_rel_home,
+                                 'is_rel_home')
                 self.assertTrue(resolver.is_rel_cwd,
                                 'is_rel_cwd')
 
@@ -91,9 +182,13 @@ def sds_2_tmp_user_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
     return sds.tmp.user_dir
 
 
+def sds_2_cwd_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
+    return pathlib.Path().cwd()
+
+
 def home_and_sds_2_home_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
     return home_and_sds.home_dir_path
 
 
 def home_and_sds_2_cwd_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
-    return pathlib.Path().resolve()
+    return pathlib.Path().cwd()
