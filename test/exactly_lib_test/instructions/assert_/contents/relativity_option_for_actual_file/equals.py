@@ -47,7 +47,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
             ArrangementPostAct(
                 home_contents=DirContents([empty_file('expected.txt')]),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
@@ -64,7 +64,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
@@ -81,11 +81,11 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'not equal to expected contents')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.fail__if_un_negated_else__pass,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -101,11 +101,11 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'expected contents')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.pass__if_un_negated_else__fail,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -123,7 +123,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
 
         symbols_in_arrangement = symbol_utils.symbol_table_from_entries(
             [file_ref_sym_tbl_entry_for_expected_file] +
-            self.rel_opt.symbol_entries_for_arrangement())
+            self.rel_opt.symbols.entries_for_arrangement())
 
         symbol_usage_expectation_for_expected_file = equals_symbol_reference(
             expected_file_relativity_symbol,
@@ -133,7 +133,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
 
         expected_symbol_usages = asrt.matches_sequence(
             [symbol_usage_expectation_for_expected_file] +
-            self.rel_opt.symbol_usage_expectation_assertions())
+            self.rel_opt.symbols.usage_expectation_assertions())
 
         populator_of_expected_files = home_and_sds_populators.HomeOrSdsPopulatorForRelOptionType(
             self.relativity_of_expected_file(),

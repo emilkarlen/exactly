@@ -45,11 +45,11 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_populator,
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.pass__if_un_negated_else__fail,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -73,10 +73,10 @@ class _ContentsNotEquals(TestWithConfigurationAndRelativityOptionAndNegationBase
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_populator,
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.fail__if_un_negated_else__pass,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )

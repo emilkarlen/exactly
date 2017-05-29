@@ -45,7 +45,7 @@ class TestCaseBase(unittest.TestCase):
         return self.conf.arrangement(
             sds_contents_before_main=sds_contents_before_main,
             pre_contents_population_action=HomeAndSdsActionFromSdsAction(new_dir.SETUP_CWD_ACTION),
-            symbols=self.relativity_option.symbols_in_arrangement())
+            symbols=self.relativity_option.symbols.in_arrangement())
 
     def shortDescription(self):
         return '{}\n / {}\n / {}'.format(type(self),
@@ -70,7 +70,7 @@ class TestCreationOfDirectory(TestCaseBase):
                                 empty_dir('second-component')
                             ])
                         ])),
-                    symbol_usages=self.relativity_option.symbol_usages_expectation(),
+                    symbol_usages=self.relativity_option.symbols.usages_expectation(),
                 )
             )
 
@@ -84,13 +84,12 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                 self,
                 source,
                 self._arrangement_with_cwd_as_non_of_the_relativity_root_dirs(
-                    # home_or_sds_contents=self.relativity_option.populator_for_relativity_option_root(
                     sds_contents_before_main=self.relativity_option.populator_for_relativity_option_root__sds(
                         DirContents([
                             empty_file('file')
                         ]))),
                 self.conf.expect_failure_to_create_dir(
-                    symbol_usages=self.relativity_option.symbol_usages_expectation(),
+                    symbol_usages=self.relativity_option.symbols.usages_expectation(),
                 )
             )
 
