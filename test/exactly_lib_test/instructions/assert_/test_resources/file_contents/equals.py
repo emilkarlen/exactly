@@ -14,11 +14,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
     ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.test_resources import relativity_options
+from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.instructions.test_resources.relativity_options import \
-    RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
-    RelativityOptionConfigurationForRelTmp, RelativityOptionConfigurationForRelSymbol
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
@@ -61,25 +58,18 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
     ])
 
 
-class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(
-    relativity_options.RelativityOptionConfigurationBase):
-    def __init__(self):
-        super().__init__(RelOptionType.REL_HOME,
-                         relativity_options.OptionStringConfigurationForDefaultRelativity())
-
-
 _RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE = [
-    RelativityOptionConfigurationForRelHome(),
+    rel_opt.conf_rel_any(RelOptionType.REL_HOME),
     RelativityOptionConfigurationForRelCwdForTestCwdDir(),
-    RelativityOptionConfigurationForRelAct(),
-    RelativityOptionConfigurationForRelTmp(),
-    RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(),
-    RelativityOptionConfigurationForRelSymbol(RelOptionType.REL_TMP,
-                                              EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants,
-                                              symbol_name='EXPECTED_FILE_SYMBOL'),
-    RelativityOptionConfigurationForRelSymbol(RelOptionType.REL_HOME,
-                                              EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants,
-                                              symbol_name='EXPECTED_FILE_SYMBOL'),
+    rel_opt.conf_rel_any(RelOptionType.REL_ACT),
+    rel_opt.conf_rel_any(RelOptionType.REL_TMP),
+    rel_opt.default_conf_rel_any(RelOptionType.REL_HOME),
+    rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
+                                'EXPECTED_FILE_SYMBOL',
+                                EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
+    rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME,
+                                'EXPECTED_FILE_SYMBOL',
+                                EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
 ]
 
 
