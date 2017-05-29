@@ -195,13 +195,6 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
             sds_2_file_contents_str,
             self.populator_for_relativity_option_root__sds)
 
-        #
-        # def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        #     return Expectation(
-        #         main_result=pfh_check.is_fail(),
-        #         symbol_usages=self._symbols_configuration.symbol_usage_expectation(),
-        #     )
-
 
 class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurationForRelNonHome):
     def __init__(self,
@@ -274,66 +267,6 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
             file_name,
             sds_2_file_contents_str,
             self.populator_for_relativity_option_root__sds)
-
-
-class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfigurationBase):
-    """
-    Configuration for when the relativity option is not given.
-    """
-
-    def __init__(self, default_relativity: RelOptionType):
-        super().__init__(default_relativity,
-                         OptionStringConfigurationForDefaultRelativity())
-
-    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        raise NotImplementedError('should not be used by these tests')
-
-
-class RelativityOptionConfigurationForRelOption(RelativityOptionConfigurationBase):
-    def __init__(self,
-                 relativity: RelOptionType):
-        super().__init__(relativity,
-                         OptionStringConfigurationForRelativityOption(relativity))
-
-
-class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfigurationBase):
-    def __init__(self,
-                 relativity: RelOptionType,
-                 expected_accepted_relativities: PathRelativityVariants,
-                 symbol_name: str = 'SYMBOL_NAME'):
-        super().__init__(relativity,
-                         OptionStringConfigurationForRelSymbol(symbol_name),
-                         SymbolsRelativityHelper(relativity,
-                                                 expected_accepted_relativities,
-                                                 symbol_name))
-
-
-class RelativityOptionConfigurationForRelSdsRelOption(RelativityOptionConfigurationForRelSds):
-    def __init__(self, relativity: RelSdsOptionType):
-        super().__init__(relativity,
-                         OptionStringConfigurationForRelativityOptionRelSds(relativity))
-
-
-class RelativityOptionConfigurationForDefaultRelativityRelSds(RelativityOptionConfigurationForRelSds):
-    """
-    Configuration for when the relativity option is not given.
-    """
-
-    def __init__(self, default_relativity: path_relativity.RelSdsOptionType):
-        super().__init__(default_relativity,
-                         OptionStringConfigurationForDefaultRelativity())
-
-
-class RelativityOptionConfigurationRelSdsForRelSymbol(RelativityOptionConfigurationForRelSds):
-    def __init__(self,
-                 relativity: RelSdsOptionType,
-                 expected_accepted_relativities: PathRelativityVariants,
-                 symbol_name: str = 'SYMBOL_NAME'):
-        super().__init__(relativity,
-                         OptionStringConfigurationForRelSymbol(symbol_name),
-                         SymbolsRelativityHelper(path_relativity.rel_any_from_rel_sds(relativity),
-                                                 expected_accepted_relativities,
-                                                 symbol_name))
 
 
 class _HomeOrSdsPopulatorForContentsThatDependOnHomeAndSds(HomeOrSdsPopulator):
