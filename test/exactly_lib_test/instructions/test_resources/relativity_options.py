@@ -30,6 +30,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class SymbolsConfiguration:
+    """
+    Configuration of symbols used by a relativity option (for a path cli argument).
+    """
     def symbol_usage_expectation_assertions(self) -> list:
         return []
 
@@ -44,6 +47,9 @@ class SymbolsConfiguration:
 
 
 class OptionStringConfiguration:
+    """
+    Configuration for the relativity option (for a path cli argument).
+    """
     def __init__(self, cli_option_string: str):
         self._cli_option_string = cli_option_string
 
@@ -85,6 +91,9 @@ class OptionStringConfigurationForRelSymbol(OptionStringConfiguration):
 
 
 class RelativityOptionConfiguration:
+    """
+    Complete Configuration of a relativity option (for a path cli argument). 
+    """
     def __init__(self,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
