@@ -89,10 +89,10 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                   )
 
     def test_file_rel_home__rel_symbol(self):
-        symbol_rel_opt = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+        symbol_rel_opt = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_TMP,
-            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants,
-            symbol_name='SYMBOL')
+            'SYMBOL',
+            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(source4('{relativity_option} file.txt'.format(
             relativity_option=symbol_rel_opt.option_string)),
             Arrangement(
@@ -128,10 +128,10 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
                   )
 
     def test_referenced_file_does_not_exist__rel_symbol(self):
-        symbol_rel_opt = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+        symbol_rel_opt = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_HOME,
-            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants,
-            symbol_name='SYMBOL')
+            'SYMBOL',
+            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(source4('{relativity_option} file.txt'.format(
             relativity_option=symbol_rel_opt.option_string)),
             Arrangement(
@@ -144,10 +144,10 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         )
 
     def test_referenced_file_does_not_exist__rel_symbol__post_sds(self):
-        symbol_rel_opt = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+        symbol_rel_opt = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_ACT,
-            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants,
-            symbol_name='SYMBOL')
+            'SYMBOL',
+            sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(source4('{relativity_option} file.txt'.format(
             relativity_option=symbol_rel_opt.option_string)),
             Arrangement(
