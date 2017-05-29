@@ -23,12 +23,6 @@ def cwd_contents(contents: DirContents) -> SdsPopulator:
     return _FilesInCwd(contents)
 
 
-def rel_option(relativity: RelSdsOptionType,
-               dir_contents: DirContents) -> SdsPopulator:
-    return _SdsPopulatorForRelSdsOptionType(relativity,
-                                            dir_contents)
-
-
 def contents_in(relativity: RelSdsOptionType,
                 dir_contents: DirContents) -> SdsPopulator:
     return _SdsPopulatorForRelSdsOptionType(relativity,
