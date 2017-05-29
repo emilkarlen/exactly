@@ -2,6 +2,8 @@ import unittest
 
 from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
+    expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
@@ -34,7 +36,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
         )
 
 
@@ -50,7 +52,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
         )
 
 
