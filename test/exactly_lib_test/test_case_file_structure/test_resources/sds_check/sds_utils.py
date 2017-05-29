@@ -16,7 +16,7 @@ def sandbox_directory_structure(contents: sds_populator.SdsPopulator = sds_popul
         -> sds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as sds_root_dir:
         sds = sds_module.construct_at(resolved_path_name(sds_root_dir))
-        contents.apply(sds)
+        contents.populate_sds(sds)
         yield sds
 
 

@@ -26,7 +26,7 @@ class _CwdPopulator(SdsPopulator):
     def __init__(self, contents: DirContents):
         self.contents = contents
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         sub_dir = _get_cwd_path_and_make_dir_if_not_exists(sds)
         self.contents.write_to(sub_dir)
 
