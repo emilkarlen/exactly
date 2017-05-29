@@ -90,9 +90,9 @@ class TestFailingValidationOfRelSymbol(TestCaseBase):
             self,
             single_line_source('{relativity_option} non-existing-file'.format(
                 relativity_option=relativity_option.option_string)),
-            self.conf.arrangement(symbols=relativity_option.symbols_in_arrangement()),
+            self.conf.arrangement(symbols=relativity_option.symbols.in_arrangement()),
             self.conf.expect_failure_because_specified_file_under_sds_is_missing(
-                symbol_usages=relativity_option.symbol_usages_expectation(),
+                symbol_usages=relativity_option.symbols.usages_expectation(),
             ),
         )
 
@@ -115,9 +115,9 @@ class TestSuccessAndSymbolUsages(TestCaseBase):
                 home_or_sds_contents=relativity_option.populator_for_relativity_option_root(
                     DirContents([executable_file_that_exits_with_code_0])
                 ),
-                symbols=relativity_option.symbols_in_arrangement()),
+                symbols=relativity_option.symbols.in_arrangement()),
             self.conf.expect_success(
-                symbol_usages=relativity_option.symbol_usages_expectation(),
+                symbol_usages=relativity_option.symbols.usages_expectation(),
             ),
         )
 

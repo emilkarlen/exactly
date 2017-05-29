@@ -50,7 +50,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
             arrangement = ArrangementWithSds(
-                symbols=relativity_option_conf.symbols_in_arrangement(),
+                symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,
@@ -65,13 +65,13 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
             )
 
             expectation = embryo_check.Expectation(
-                symbol_usages=asrt.matches_sequence(relativity_option_conf.symbol_usage_expectation_assertions()),
+                symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
             arrangement = ArrangementWithSds(
                 home_or_sds_contents=relativity_option_conf.populator_for_relativity_option_root(
                     fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
-                symbols=relativity_option_conf.symbols_in_arrangement(),
+                symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,
@@ -96,8 +96,8 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                 )
 
                 expectation = embryo_check.Expectation(
-                    symbol_usages=asrt.matches_sequence(roc_executable_file.symbol_usage_expectation_assertions() +
-                                                        roc_source_file.symbol_usage_expectation_assertions()),
+                    symbol_usages=asrt.matches_sequence(roc_executable_file.symbols.usage_expectation_assertions() +
+                                                        roc_source_file.symbols.usage_expectation_assertions()),
                 )
 
                 arrangement = ArrangementWithSds(
@@ -108,8 +108,8 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                             fs.DirContents([source_file])),
                     ]),
                     symbols=symbol_table_with_entries(
-                        roc_executable_file.symbol_entries_for_arrangement() +
-                        roc_source_file.symbol_entries_for_arrangement()),
+                        roc_executable_file.symbols.entries_for_arrangement() +
+                        roc_source_file.symbols.entries_for_arrangement()),
 
                 )
                 test_name = 'exe-file-option={}, source-file-option={}'.format(
@@ -136,7 +136,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
             arrangement = ArrangementWithSds(
-                symbols=relativity_option_conf.symbols_in_arrangement(),
+                symbols=relativity_option_conf.symbols.in_arrangement(),
                 home_contents=home_dir_contents,
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
@@ -155,7 +155,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
             arrangement = ArrangementWithSds(
-                symbols=relativity_option_conf.symbols_in_arrangement(),
+                symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,
@@ -173,13 +173,13 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             )
 
             expectation = embryo_check.Expectation(
-                symbol_usages=asrt.matches_sequence(relativity_option_conf.symbol_usage_expectation_assertions()),
+                symbol_usages=asrt.matches_sequence(relativity_option_conf.symbols.usage_expectation_assertions()),
             )
 
             arrangement = ArrangementWithSds(
                 home_or_sds_contents=relativity_option_conf.populator_for_relativity_option_root(
                     fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
-                symbols=relativity_option_conf.symbols_in_arrangement(),
+                symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,
@@ -196,7 +196,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
             arrangement = ArrangementWithSds(
-                symbols=relativity_option_conf.symbols_in_arrangement(),
+                symbols=relativity_option_conf.symbols.in_arrangement(),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,
@@ -207,7 +207,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
 def _expect_validation_error_and_symbol_usages_of(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration
                                                   ) -> embryo_check.Expectation:
     return _expect_validation_error_and_symbol_usages(relativity_option_conf,
-                                                      relativity_option_conf.symbol_usage_expectation_assertions())
+                                                      relativity_option_conf.symbols.usage_expectation_assertions())
 
 
 def _expect_validation_error_and_symbol_usages(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration,

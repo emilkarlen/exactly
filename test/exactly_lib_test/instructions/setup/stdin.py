@@ -98,13 +98,13 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
             Arrangement(
                 home_or_sds_contents=symbol_rel_opt.populator_for_relativity_option_root(DirContents([
                     empty_file('file.txt')])),
-                symbols=symbol_rel_opt.symbols_in_arrangement(),
+                symbols=symbol_rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_side_effects_on_environment=AssertStdinFileIsSetToFile(
                     file_refs.of_rel_option(RelOptionType.REL_TMP,
                                             PathPartAsFixedPath('file.txt'))),
-                symbol_usages=symbol_rel_opt.symbol_usages_expectation(),
+                symbol_usages=symbol_rel_opt.symbols.usages_expectation(),
                 source=source_is_at_end),
         )
 
@@ -135,11 +135,11 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         self._run(source4('{relativity_option} file.txt'.format(
             relativity_option=symbol_rel_opt.option_string)),
             Arrangement(
-                symbols=symbol_rel_opt.symbols_in_arrangement(),
+                symbols=symbol_rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 pre_validation_result=svh_check.is_validation_error(),
-                symbol_usages=symbol_rel_opt.symbol_usages_expectation(),
+                symbol_usages=symbol_rel_opt.symbols.usages_expectation(),
                 source=source_is_at_end),
         )
 
@@ -151,11 +151,11 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         self._run(source4('{relativity_option} file.txt'.format(
             relativity_option=symbol_rel_opt.option_string)),
             Arrangement(
-                symbols=symbol_rel_opt.symbols_in_arrangement(),
+                symbols=symbol_rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 post_validation_result=svh_check.is_validation_error(),
-                symbol_usages=symbol_rel_opt.symbol_usages_expectation(),
+                symbol_usages=symbol_rel_opt.symbols.usages_expectation(),
                 source=source_is_at_end),
         )
 

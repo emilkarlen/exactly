@@ -166,7 +166,7 @@ class test_creation_of_directory_with_single_path_component(TestWithRelativityOp
         self._check_argument_with_relativity_option(
             '{relativity_option} dir-that-should-be-constructed',
             arrangement_with_cwd_as_none_of_the_relativity_roots(
-                symbols=self.relativity_option.symbols_in_arrangement()),
+                symbols=self.relativity_option.symbols.in_arrangement()),
             Expectation(expected_action_result=is_success(),
                         expected_sds_contents_after=SubDirOfSdsContainsExactly(
                             self.relativity_option.root_dir__sds,
@@ -181,7 +181,7 @@ class test_creation_of_directory_with_multiple_path_components(TestWithRelativit
         self._check_argument_with_relativity_option(
             '{relativity_option} first-component/second-component',
             arrangement_with_cwd_as_none_of_the_relativity_roots(
-                symbols=self.relativity_option.symbols_in_arrangement()),
+                symbols=self.relativity_option.symbols.in_arrangement()),
             Expectation(expected_action_result=is_success(),
                         expected_sds_contents_after=SubDirOfSdsContainsExactly(
                             self.relativity_option.root_dir__sds,
@@ -202,7 +202,7 @@ class test_whole_argument_exists_as_directory__single_path_component(TestWithRel
                     DirContents([
                         empty_dir('existing-directory')
                     ])),
-                symbols=self.relativity_option.symbols_in_arrangement(),
+                symbols=self.relativity_option.symbols.in_arrangement(),
             ),
             Expectation(
                 expected_action_result=is_success(),
@@ -224,7 +224,7 @@ class test_whole_argument_exists_as_directory__multiple_path_components(TestWith
                         Dir('first-component', [
                             empty_dir('second-component')
                         ])])),
-                symbols=self.relativity_option.symbols_in_arrangement(),
+                symbols=self.relativity_option.symbols.in_arrangement(),
             ),
             Expectation(
                 expected_action_result=is_success(),
@@ -248,7 +248,7 @@ class test_initial_component_of_argument_exists_as_directory__multiple_path_comp
                         Dir('first-component-that-exists', [
                             empty_dir('second-component')])
                     ])),
-                symbols=self.relativity_option.symbols_in_arrangement(),
+                symbols=self.relativity_option.symbols.in_arrangement(),
             ),
             Expectation(
                 expected_action_result=is_success(),
