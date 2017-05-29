@@ -84,6 +84,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                 self,
                 source,
                 self._arrangement_with_cwd_as_non_of_the_relativity_root_dirs(
+                    # home_or_sds_contents=self.relativity_option.populator_for_relativity_option_root(
                     sds_contents_before_main=self.relativity_option.populator_for_relativity_option_root__sds(
                         DirContents([
                             empty_file('file')

@@ -1,14 +1,13 @@
 import os
-import pathlib
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
@@ -18,7 +17,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents, SdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
@@ -137,22 +136,17 @@ class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):
         raise NotImplementedError()
 
 
-class RelativityOptionConfigurationForDefaultRelativity(RelativityOptionConfigurationForRelSds):
+class RelativityOptionConfigurationForDefaultRelativity(rel_opt_conf.RelativityOptionConfigurationForRelNonHomeBase):
     def __init__(self):
-        super().__init__('')
-
-    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return pathlib.Path().cwd()
-
-    def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
-        return cwd_contents(contents)
+        super().__init__(rel_opt_conf.RelNonHomeOptionType.REL_CWD,
+                         rel_opt_conf.OptionStringConfigurationForDefaultRelativity())
 
 
 RELATIVITY_OPTIONS = [
     RelativityOptionConfigurationForDefaultRelativity(),
     RelativityOptionConfigurationForRelAct(),
     RelativityOptionConfigurationForRelTmp(),
-    RelativityOptionConfigurationRelSdsForRelSymbol(RelOptionType.REL_TMP,
+    RelativityOptionConfigurationRelSdsForRelSymbol(RelSdsOptionType.REL_TMP,
                                                     sut.RELATIVITY_VARIANTS.options.accepted_relativity_variants,
                                                     symbol_name='DIR_PATH_SYMBOL'),
 ]

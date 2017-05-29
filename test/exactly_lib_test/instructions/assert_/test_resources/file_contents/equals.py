@@ -14,16 +14,14 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
     ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.instructions.test_resources import relativity_options
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.relativity_options import \
-    RelativityOptionConfiguration, RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
+    RelativityOptionConfigurationForRelHome, RelativityOptionConfigurationForRelAct, \
     RelativityOptionConfigurationForRelTmp, RelativityOptionConfigurationForRelSymbol
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    HomeOrSdsPopulatorForHomeContents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
@@ -63,18 +61,11 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
     ])
 
 
-class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(RelativityOptionConfiguration):
+class RelativityOptionConfigurationForDefaultRelativityOfExpectedFile(
+    relativity_options.RelativityOptionConfigurationBase):
     def __init__(self):
-        super().__init__('')
-
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulatorForHomeContents:
-        return HomeOrSdsPopulatorForHomeContents(contents)
-
-    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        return Expectation(
-            validation_pre_sds=svh_check.is_validation_error(),
-            symbol_usages=self.symbol_usages_expectation(),
-        )
+        super().__init__(RelOptionType.REL_HOME,
+                         relativity_options.OptionStringConfigurationForDefaultRelativity())
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE = [
