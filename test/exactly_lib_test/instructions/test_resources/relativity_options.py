@@ -33,23 +33,25 @@ class SymbolsConfiguration:
     """
     Configuration of symbols used by a relativity option (for a path cli argument).
     """
-    def symbol_usage_expectation_assertions(self) -> list:
+
+    def usage_expectation_assertions(self) -> list:
         return []
 
-    def symbol_entries_for_arrangement(self) -> list:
+    def entries_for_arrangement(self) -> list:
         return []
 
-    def symbol_usage_expectation(self) -> asrt.ValueAssertion:
-        return asrt.matches_sequence(self.symbol_usage_expectation_assertions())
+    def usages_expectation(self) -> asrt.ValueAssertion:
+        return asrt.matches_sequence(self.usage_expectation_assertions())
 
-    def symbols_in_arrangement(self) -> SymbolTable:
-        return symbol_utils.symbol_table_from_entries(self.symbol_entries_for_arrangement())
+    def in_arrangement(self) -> SymbolTable:
+        return symbol_utils.symbol_table_from_entries(self.entries_for_arrangement())
 
 
 class OptionStringConfiguration:
     """
     Configuration for the relativity option (for a path cli argument).
     """
+
     def __init__(self, cli_option_string: str):
         self._cli_option_string = cli_option_string
 
@@ -94,6 +96,7 @@ class RelativityOptionConfiguration:
     """
     Complete Configuration of a relativity option (for a path cli argument). 
     """
+
     def __init__(self,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
@@ -133,25 +136,17 @@ class RelativityOptionConfiguration:
         if self.exists_pre_sds:
             return Expectation(
                 validation_pre_sds=svh_check.is_validation_error(),
-                symbol_usages=self.symbol_usages_expectation(),
+                symbol_usages=self.symbols.usages_expectation(),
             )
         else:
             return Expectation(
                 main_result=pfh_check.is_fail(),
-                symbol_usages=self.symbol_usages_expectation(),
+                symbol_usages=self.symbols.usages_expectation(),
             )
 
-    def symbol_entries_for_arrangement(self) -> list:
-        return self._symbols_configuration.symbol_entries_for_arrangement()
-
-    def symbols_in_arrangement(self) -> SymbolTable:
-        return self._symbols_configuration.symbols_in_arrangement()
-
-    def symbol_usage_expectation_assertions(self) -> list:
-        return self._symbols_configuration.symbol_usage_expectation_assertions()
-
-    def symbol_usages_expectation(self) -> asrt.ValueAssertion:
-        return self._symbols_configuration.symbol_usage_expectation()
+    @property
+    def symbols(self) -> SymbolsConfiguration:
+        return self._symbols_configuration
 
 
 class RelativityOptionConfigurationBase(RelativityOptionConfiguration):
@@ -313,7 +308,7 @@ class SymbolsRelativityHelper(SymbolsConfiguration):
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
 
-    def symbol_usage_expectation_assertions(self) -> list:
+    def usage_expectation_assertions(self) -> list:
         return [
             equals_symbol_reference(
                 self.symbol_name,
@@ -322,7 +317,7 @@ class SymbolsRelativityHelper(SymbolsConfiguration):
 
         ]
 
-    def symbol_entries_for_arrangement(self) -> list:
+    def entries_for_arrangement(self) -> list:
         return [
             symbol_utils.entry(self.symbol_name,
                                FileRefConstant(file_refs.of_rel_option(self.relativity,
