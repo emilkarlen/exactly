@@ -8,19 +8,11 @@ from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 
 def empty() -> SdsPopulator:
-    return _Empty()
+    return multiple([])
 
 
 def multiple(populators: list) -> SdsPopulator:
     return _ListOfPopulators(populators)
-
-
-def act_dir_contents(contents: DirContents) -> SdsPopulator:
-    return _FilesInActDir(contents)
-
-
-def tmp_user_dir_contents(contents: DirContents) -> SdsPopulator:
-    return _FilesInTmpUserDir(contents)
 
 
 def tmp_internal_dir_contents(contents: DirContents) -> SdsPopulator:
@@ -33,6 +25,12 @@ def cwd_contents(contents: DirContents) -> SdsPopulator:
 
 def rel_option(relativity: RelSdsOptionType,
                dir_contents: DirContents) -> SdsPopulator:
+    return _SdsPopulatorForRelSdsOptionType(relativity,
+                                            dir_contents)
+
+
+def contents_in(relativity: RelSdsOptionType,
+                dir_contents: DirContents) -> SdsPopulator:
     return _SdsPopulatorForRelSdsOptionType(relativity,
                                             dir_contents)
 
@@ -59,11 +57,6 @@ class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
         sds_populator.write_to(sds)
 
 
-class _Empty(SdsPopulator):
-    def populate_sds(self, sds: SandboxDirectoryStructure):
-        pass
-
-
 class _ListOfPopulators(SdsPopulator):
     def __init__(self, populator_list: list):
         self.__populator_list = populator_list
@@ -71,24 +64,6 @@ class _ListOfPopulators(SdsPopulator):
     def populate_sds(self, sds: SandboxDirectoryStructure):
         for populator in self.__populator_list:
             populator.apply(sds)
-
-
-class _FilesInActDir(SdsPopulator):
-    def __init__(self,
-                 contents: DirContents):
-        self.test_root_contents = contents
-
-    def populate_sds(self, sds: SandboxDirectoryStructure):
-        self.test_root_contents.write_to(sds.act_dir)
-
-
-class _FilesInTmpUserDir(SdsPopulator):
-    def __init__(self,
-                 contents: DirContents):
-        self.test_root_contents = contents
-
-    def populate_sds(self, sds: SandboxDirectoryStructure):
-        self.test_root_contents.write_to(sds.tmp.user_dir)
 
 
 class _FilesInTmpInternalDir(SdsPopulator):

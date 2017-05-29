@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.instructions.setup import install as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
@@ -98,7 +99,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       home_dir_contents=DirContents(home_dir_contents),
-                      sds_contents_before_main=sds_populator.act_dir_contents(DirContents(act_dir_contents))),
+                      sds_contents_before_main=sds_populator.contents_in(RelSdsOptionType.REL_ACT,
+                                                                         DirContents(act_dir_contents))),
                   Expectation(
                       main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
                           DirContents(act_dir_contents_after)))
@@ -132,7 +134,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         self._run('{} {}'.format(src_dir, dst_dir),
                   Arrangement(
                       home_dir_contents=DirContents(files_to_install),
-                      sds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents_before)),
+                      sds_contents_before_main=sds_populator.contents_in(RelSdsOptionType.REL_ACT,
+                                                                         act_dir_contents_before)),
                   Expectation(
                       main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
                           act_dir_contents_after))
@@ -147,8 +150,9 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run(file_name,
                   Arrangement(
                       home_dir_contents=file_to_install,
-                      sds_contents_before_main=sds_populator.act_dir_contents(DirContents(
-                          [empty_file(file_name)]))),
+                      sds_contents_before_main=sds_populator.contents_in(RelSdsOptionType.REL_ACT,
+                                                                         DirContents(
+                                                                             [empty_file(file_name)]))),
                   Expectation(
                       main_result=sh_check.is_hard_error())
                   )
@@ -161,7 +165,8 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       home_dir_contents=home_dir_contents,
-                      sds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)
+                      sds_contents_before_main=sds_populator.contents_in(RelSdsOptionType.REL_ACT,
+                                                                         act_dir_contents)
                   ),
                   Expectation(
                       main_result=sh_check.is_hard_error()
@@ -177,7 +182,8 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       home_dir_contents=home_dir_contents,
-                      sds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)),
+                      sds_contents_before_main=sds_populator.contents_in(RelSdsOptionType.REL_ACT,
+                                                                         act_dir_contents)),
                   Expectation(
                       main_result=sh_check.is_hard_error())
                   )

@@ -35,7 +35,8 @@ class TestExistingDirectoryWithMultiplePathComponents(TestCaseBase):
             self,
             'first-component/second-component',
             self.conf.arrangement(
-                sds_contents_before_main=sds_populator.act_dir_contents(
+                sds_contents_before_main=sds_populator.contents_in(
+                    RelSdsOptionType.REL_ACT,
                     DirContents([
                         Dir('first-component', [
                             empty_dir('second-component')
@@ -50,7 +51,8 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
         self.conf.run_single_line_test_with_source_variants_and_source_check(
             self,
             'file',
-            self.conf.arrangement(sds_contents_before_main=sds_populator.act_dir_contents(
+            self.conf.arrangement(sds_contents_before_main=sds_populator.contents_in(
+                RelSdsOptionType.REL_ACT,
                 DirContents([
                     empty_file('file')
                 ]))),

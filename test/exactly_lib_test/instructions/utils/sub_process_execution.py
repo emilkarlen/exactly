@@ -2,9 +2,10 @@ import unittest
 
 from exactly_lib.instructions.utils import sub_process_execution as sut
 from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
 from exactly_lib_test.act_phase_setups.test_resources.py_program import program_that_prints_and_exits_with_exit_code
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -27,7 +28,8 @@ import sys
 sys.exit(%d)
 """ % exit_code
 
-        with sandbox_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=contents_in(
+                RelSdsOptionType.REL_ACT,
                 DirContents([
                     File('program.py', py_pgm_that_exits_with_exit_code)
                 ]))) as sds:
@@ -49,7 +51,8 @@ sys.exit(%d)
                              'Result should indicate failure')
 
     def test_storage_of_result_in_files__existing_dir(self):
-        with sandbox_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=contents_in(
+                RelSdsOptionType.REL_ACT,
                 DirContents([
                     File('program.py',
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
@@ -62,7 +65,8 @@ sys.exit(%d)
                                                                             result)
 
     def test_storage_of_result_in_files__non_existing_dir(self):
-        with sandbox_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=contents_in(
+                RelSdsOptionType.REL_ACT,
                 DirContents([
                     File('program.py',
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))

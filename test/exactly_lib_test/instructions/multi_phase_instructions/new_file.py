@@ -5,7 +5,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, specific_relative_relativity
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, specific_relative_relativity, \
+    RelSdsOptionType
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
@@ -14,7 +15,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part
 from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import equals_path_relativity
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import argument_list_source, single_line_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test, sds_env_utils
@@ -153,9 +154,10 @@ class TestSuccessfulScenariosNoContent(TestCaseBase):
 
     def test_file_in_sub_dir__sub_dir_exists(self):
         self._check_argument(single_line_source('existing-directory/file-name.txt'),
-                             sds_test.Arrangement(sds_contents_before=act_dir_contents(DirContents([
-                                 empty_dir('existing-directory')
-                             ]))),
+                             sds_test.Arrangement(sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
+                                                                                  DirContents([
+                                                                                      empty_dir('existing-directory')
+                                                                                  ]))),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                                       Dir('existing-directory', [
@@ -204,19 +206,22 @@ class TestFailingScenarios(TestCaseBase):
     def test_argument_is_existing_file(self):
         self._check_argument(single_line_source('existing-file'),
                              sds_test.Arrangement(
-                                 sds_contents_before=act_dir_contents(DirContents([
-                                     empty_file('existing-file')
-                                 ]))),
+                                 sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
+                                                                 DirContents([
+                                                                     empty_file('existing-file')
+                                                                 ]))),
                              sds_test.Expectation(expected_action_result=is_failure(),
                                                   ))
 
     def test_argument_is_under_path_that_contains_a_component_that_is_an_existing_file(self):
         self._check_argument(single_line_source('existing-directory/existing-file/directory/file-name.txt'),
-                             sds_test.Arrangement(sds_contents_before=act_dir_contents(DirContents([
-                                 Dir('existing-directory', [
-                                     empty_file('existing-file')
-                                 ])
-                             ]))),
+                             sds_test.Arrangement(sds_contents_before=contents_in(
+                                 RelSdsOptionType.REL_ACT,
+                                 DirContents([
+                                     Dir('existing-directory', [
+                                         empty_file('existing-file')
+                                     ])
+                                 ]))),
                              sds_test.Expectation(expected_action_result=is_failure(),
                                                   ))
 

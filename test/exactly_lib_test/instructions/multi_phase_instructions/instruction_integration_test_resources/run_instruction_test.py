@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.multi_phase_instructions import run
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, python_executable_file
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -127,7 +127,8 @@ class TestSuccessfulValidation(TestCaseBase):
         self.conf.run_test(
             self,
             source_for_interpreting(file_ref_texts.REL_TMP_OPTION, 'existing-file.py'),
-            self.conf.arrangement(sds_contents_before_main=sds_populator.tmp_user_dir_contents(
+            self.conf.arrangement(sds_contents_before_main=contents_in(
+                RelSdsOptionType.REL_TMP,
                 DirContents([empty_file('existing-file.py')]))),
             self.conf.expect_success(),
         )

@@ -6,6 +6,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util import symbol_table
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
@@ -21,7 +22,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_c
     symbol_table_from_entries
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import argument_list_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -47,10 +48,11 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
         instruction_argument = 'existing-directory/file-name.txt'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._run(source,
-                      Arrangement(sds_contents_before_main=act_dir_contents(DirContents([
-                          empty_dir('existing-directory')
-                      ]))
-                      ),
+                      Arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
+                                                                       DirContents([
+                                                                           empty_dir('existing-directory')
+                                                                       ]))
+                                  ),
                       Expectation(main_side_effects_on_files=act_dir_contains_exactly(DirContents([
                           Dir('existing-directory', [
                               empty_file('file-name.txt')])
@@ -73,9 +75,10 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
         instruction_argument = 'existing-file'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._run(source,
-                      Arrangement(sds_contents_before_main=act_dir_contents(DirContents([
-                          empty_file('existing-file')
-                      ]))),
+                      Arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
+                                                                       DirContents([
+                                                                           empty_file('existing-file')
+                                                                       ]))),
                       Expectation(main_result=sh_check.is_hard_error())
                       )
 
