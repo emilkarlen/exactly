@@ -8,12 +8,11 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver2
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents, \
-    tmp_user_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test, sds_env_utils
@@ -235,9 +234,11 @@ class CwdIs(sds_test.PostActionCheck):
 class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_argument_should_change_dir_relative_to_cwd__from_act_dir(self):
         self._check_argument('existing-dir',
-                             sds_test.Arrangement(sds_contents_before=act_dir_contents(DirContents([
-                                 empty_dir('existing-dir')
-                             ]))),
+                             sds_test.Arrangement(sds_contents_before=contents_in(
+                                 RelSdsOptionType.REL_ACT,
+                                 DirContents([
+                                     empty_dir('existing-dir')
+                                 ]))),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir / 'existing-dir')
                                                   ))
@@ -245,11 +246,12 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_argument_should_change_dir_relative_to_cwd__from_tmp_dir(self):
         self._check_argument('sub1/sub2',
                              sds_test.Arrangement(
-                                 sds_contents_before=tmp_user_dir_contents(DirContents([
-                                     Dir('sub1', [
-                                         empty_dir('sub2')
-                                     ])
-                                 ])),
+                                 sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,
+                                                                 DirContents([
+                                                                     Dir('sub1', [
+                                                                         empty_dir('sub2')
+                                                                     ])
+                                                                 ])),
                                  pre_action_action=ChangeDirTo(lambda sds: sds.tmp.user_dir)),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(
@@ -259,9 +261,11 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_no_argument_should_have_no_effect(self):
         self._check_argument('',
                              sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.act_dir / 'sub-dir'),
-                                                  sds_contents_before=act_dir_contents(DirContents([
-                                                      empty_dir('sub-dir')
-                                                  ]))
+                                                  sds_contents_before=contents_in(
+                                                      RelSdsOptionType.REL_ACT,
+                                                      DirContents([
+                                                          empty_dir('sub-dir')
+                                                      ]))
                                                   ),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir / 'sub-dir')
@@ -270,9 +274,10 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_single_dot_argument_should_have_no_effect(self):
         self._check_argument('.',
                              sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.act_dir / 'sub-dir'),
-                                                  sds_contents_before=act_dir_contents(DirContents([
-                                                      empty_dir('sub-dir')
-                                                  ]))
+                                                  sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
+                                                                                  DirContents([
+                                                                                      empty_dir('sub-dir')
+                                                                                  ]))
                                                   ),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir / 'sub-dir')
@@ -308,11 +313,12 @@ class TestSuccessfulScenarios(TestCaseBase):
 
     def test_relative_tmp__with_argument(self):
         self._check_argument('--rel-tmp sub1/sub2',
-                             sds_test.Arrangement(sds_contents_before=tmp_user_dir_contents(DirContents([
-                                 Dir('sub1', [
-                                     empty_dir('sub2')
-                                 ])
-                             ]))),
+                             sds_test.Arrangement(sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,
+                                                                                  DirContents([
+                                                                                      Dir('sub1', [
+                                                                                          empty_dir('sub2')
+                                                                                      ])
+                                                                                  ]))),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(
                                                       lambda sds: sds.tmp.user_dir / 'sub1' / 'sub2')
@@ -331,9 +337,10 @@ class TestSuccessfulScenarios(TestCaseBase):
 class TestFailingScenarios(TestCaseBase):
     def test_argument_is_file(self):
         self._check_argument('existing-file',
-                             sds_test.Arrangement(sds_contents_before=act_dir_contents(DirContents([
-                                 empty_file('existing-file')
-                             ]))),
+                             sds_test.Arrangement(sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
+                                                                                  DirContents([
+                                                                                      empty_file('existing-file')
+                                                                                  ]))),
                              sds_test.Expectation(expected_action_result=is_failure()))
 
 

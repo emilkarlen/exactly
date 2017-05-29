@@ -8,6 +8,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
@@ -19,6 +20,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
@@ -361,7 +363,7 @@ class RelActConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_ACT_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return sds_populator.act_dir_contents(DirContents([file]))
+        return sds_populator.contents_in(RelSdsOptionType.REL_ACT, DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -374,7 +376,7 @@ class RelTmpConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_TMP_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return sds_populator.tmp_user_dir_contents(DirContents([file]))
+        return contents_in(RelSdsOptionType.REL_TMP, DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -387,7 +389,7 @@ class RelCwdConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_CWD_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return sds_populator.act_dir_contents(DirContents([file]))
+        return sds_populator.contents_in(RelSdsOptionType.REL_ACT, DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,

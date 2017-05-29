@@ -12,11 +12,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -132,9 +133,10 @@ class TestExecuteInterpret(TestCaseBase):
                                                'exit-with-value-on-command-line.py',
                                                0]),
             home_and_sds_test.Arrangement(
-                sds_contents_before=sds_populator.tmp_user_dir_contents(DirContents([
-                    File('exit-with-value-on-command-line.py',
-                         py_pgm_that_exits_with_value_on_command_line(''))]))),
+                sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,
+                                                DirContents([
+                                                    File('exit-with-value-on-command-line.py',
+                                                         py_pgm_that_exits_with_value_on_command_line(''))]))),
             home_and_sds_test.Expectation(
                 expected_action_result=spr_check.is_success_result(0,
                                                                    None)),
