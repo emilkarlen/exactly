@@ -36,7 +36,7 @@ class HomeOrSdsPopulatorForSdsContents(HomeOrSdsPopulator):
         self.sds_contents = sds_contents
 
     def write_to(self, home_and_sds: HomeAndSds):
-        self.sds_contents.apply(home_and_sds.sds)
+        self.sds_contents.populate_sds(home_and_sds.sds)
 
 
 def empty() -> HomeOrSdsPopulator:

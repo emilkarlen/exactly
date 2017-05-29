@@ -27,5 +27,5 @@ def sds_with_act_as_curr_dir(contents: sds_populator.SdsPopulator = sds_populato
         with preserved_cwd():
             os.chdir(str(sds.act_dir))
             pre_contents_population_action.apply(environment)
-            contents.apply(sds)
+            contents.populate_sds(sds)
             yield environment

@@ -3,13 +3,8 @@ import pathlib
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_SDS_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents, File
-
-
-class SdsPopulator:
-    def apply(self,
-              sds: SandboxDirectoryStructure):
-        raise NotImplementedError()
 
 
 def empty() -> SdsPopulator:
@@ -64,7 +59,7 @@ class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
         self.sds_2_file_contents_str = sds__2__file_contents_str
         self.dir_contents__2__sds_populator = dir_contents__2__sds_populator
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         file_contents = self.sds_2_file_contents_str(sds)
         dir_contents = DirContents([
             File(self.file_name, file_contents)
@@ -74,7 +69,7 @@ class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
 
 
 class _Empty(SdsPopulator):
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         pass
 
 
@@ -82,7 +77,7 @@ class _ListOfPopulators(SdsPopulator):
     def __init__(self, populator_list: list):
         self.__populator_list = populator_list
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         for populator in self.__populator_list:
             populator.apply(sds)
 
@@ -92,7 +87,7 @@ class _FilesInActDir(SdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         self.test_root_contents.write_to(sds.act_dir)
 
 
@@ -101,7 +96,7 @@ class _FilesInTmpUserDir(SdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         self.test_root_contents.write_to(sds.tmp.user_dir)
 
 
@@ -110,7 +105,7 @@ class _FilesInTmpInternalDir(SdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         self.test_root_contents.write_to(sds.tmp.internal_dir)
 
 
@@ -119,7 +114,7 @@ class _FilesInCwd(SdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         cwd = pathlib.Path().cwd()
         self.test_root_contents.write_to(cwd)
 
@@ -133,7 +128,7 @@ class _SdsPopulatorForRelOptionType(SdsPopulator):
         if relativity is RelOptionType.REL_HOME:
             raise ValueError('Relativity must be rel SDS. Found: ' + str(relativity))
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         root_path = REL_OPTIONS_MAP[self.relativity].root_resolver.from_sds(sds)
         self.dir_contents.write_to(root_path)
 
@@ -145,6 +140,6 @@ class _SdsPopulatorForRelSdsOptionType(SdsPopulator):
         self.relativity = relativity
         self.dir_contents = dir_contents
 
-    def apply(self, sds: SandboxDirectoryStructure):
+    def populate_sds(self, sds: SandboxDirectoryStructure):
         root_path = REL_SDS_OPTIONS_MAP[self.relativity].root_resolver.from_sds(sds)
         self.dir_contents.write_to(root_path)
