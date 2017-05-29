@@ -208,7 +208,7 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
             return sds_populator.cwd_contents(contents)
         else:
             relativity_sds = RelSdsOptionType(self.relativity_non_home.value)
-            return sds_populator.rel_option(relativity_sds, contents)
+            return sds_populator.contents_in(relativity_sds, contents)
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
     def populator_for_relativity_option_root_for_contents_from_sds_fun(self,
@@ -236,7 +236,7 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
         return self.resolver_sds.from_sds(sds)
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
-        return sds_populator.rel_option(self.relativity_sds, contents)
+        return sds_populator.contents_in(self.relativity_sds, contents)
 
     def populator_for_relativity_option_root_for_contents_from_sds_fun(self,
                                                                        file_name: str,
