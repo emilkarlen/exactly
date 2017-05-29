@@ -1,11 +1,10 @@
-import pathlib
+import sys
 import sys
 import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import symbol_table_with_entries
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
@@ -16,7 +15,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sub_pro
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulator, multiple
+    multiple
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
@@ -265,27 +264,9 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(TestCaseBase):
 IS_VALIDATION_ERROR = asrt.is_instance_with(str, asrt.casted_to_boolean_is(True))
 
 
-class RelativityOptionConfigurationForDefaultRelativity(rel_opt_conf.RelativityOptionConfiguration):
-    def expectation_that_file_for_expected_contents_is_invalid(self) -> Expectation:
-        raise NotImplementedError('should not be used by these tests')
-
-    def __init__(self):
-        super().__init__('')
-
-    @property
-    def exists_pre_sds(self) -> bool:
-        return True
-
-    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return pathlib.Path().cwd()
-
-    def populator_for_relativity_option_root(self, contents: fs.DirContents) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForHomeContents(contents)
-
-
 def relativity_options(symbol_name: str) -> list:
     return [
-        RelativityOptionConfigurationForDefaultRelativity(),
+        rel_opt_conf.RelativityOptionConfigurationForDefaultRelativity(RelOptionType.REL_HOME),
         rel_opt_conf.RelativityOptionConfigurationForRelAct(),
         rel_opt_conf.RelativityOptionConfigurationForRelTmp(),
         rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
