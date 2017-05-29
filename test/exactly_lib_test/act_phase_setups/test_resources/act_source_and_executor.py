@@ -10,11 +10,12 @@ from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_check
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import act_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -224,7 +225,8 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/pre-sds')
-                with sds_with_act_as_curr_dir(act_dir_contents(DirContents([empty_dir('expected-cwd')]))
+                with sds_with_act_as_curr_dir(contents_in(RelSdsOptionType.REL_ACT,
+                                                          DirContents([empty_dir('expected-cwd')]))
                                               ) as path_resolving_env:
                     environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
                                                                        environment.environ,
