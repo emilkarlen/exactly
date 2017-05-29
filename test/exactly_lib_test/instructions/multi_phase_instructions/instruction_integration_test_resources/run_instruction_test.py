@@ -82,10 +82,10 @@ class TestFailingValidationOfRelTmpPath(TestCaseBase):
 class TestFailingValidationOfRelSymbol(TestCaseBase):
     def runTest(self):
         symbol_name = 'SYMBOL_NAME'
-        relativity_option = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+        relativity_option = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_TMP,
-            run.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
-            symbol_name=symbol_name)
+            symbol_name,
+            run.REL_OPTION_ARG_CONF.options.accepted_relativity_variants)
         self.conf.run_test(
             self,
             single_line_source('{relativity_option} non-existing-file'.format(
@@ -102,10 +102,10 @@ class TestSuccessAndSymbolUsages(TestCaseBase):
         executable_file_that_exits_with_code_0 = python_executable_file('executable-file',
                                                                         'exit(0)')
         symbol_name = 'SYMBOL_NAME'
-        relativity_option = rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
+        relativity_option = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_TMP,
-            run.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
-            symbol_name=symbol_name)
+            symbol_name,
+            run.REL_OPTION_ARG_CONF.options.accepted_relativity_variants)
         self.conf.run_test(
             self,
             single_line_source('{relativity_option} {executable_file}'.format(
