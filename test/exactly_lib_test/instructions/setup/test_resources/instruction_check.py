@@ -163,7 +163,7 @@ class Executor:
                     path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
                                                                                       self.arrangement.symbols)
                     self.arrangement.pre_contents_population_action.apply(path_resolving_environment)
-                    self.arrangement.sds_contents.apply(sds)
+                    self.arrangement.sds_contents.populate_sds(sds)
                     self.arrangement.home_or_sds_contents.write_to(home_and_sds)
                     self.arrangement.post_sds_population_action.apply(path_resolving_environment)
                     main_result = self._execute_main(sds, instruction_environment, instruction)

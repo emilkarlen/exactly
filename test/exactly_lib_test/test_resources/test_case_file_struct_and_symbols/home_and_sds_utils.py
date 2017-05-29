@@ -54,6 +54,6 @@ def home_and_sds_with_act_as_curr_dir(
                 os.chdir(str(sds.act_dir))
                 pre_contents_population_action.apply(ret_val)
                 home_dir_contents.write_to(home_dir_path)
-                sds_contents.apply(sds)
+                sds_contents.populate_sds(sds)
                 home_or_sds_contents.write_to(home_and_sds)
                 yield ret_val
