@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -10,8 +11,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
     ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfigurationForRelTmp
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import multiple
 
 
@@ -28,7 +29,7 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
 class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         contents_generator = ReplacedEnvVarsFileContentsGenerator()
-        rel_tmp_opt = RelativityOptionConfigurationForRelTmp()
+        rel_tmp_opt = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
         populator_of_expected = rel_tmp_opt.populator_for_relativity_option_root_for_contents_from_fun(
             'expected.txt',
             contents_generator.expected_contents_after_replacement)
@@ -56,7 +57,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
 class _ContentsNotEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         contents_generator = ReplacedEnvVarsFileContentsGenerator()
-        rel_tmp_opt = RelativityOptionConfigurationForRelTmp()
+        rel_tmp_opt = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
         populator_of_expected = rel_tmp_opt.populator_for_relativity_option_root_for_contents_from_fun(
             'expected.txt',
             contents_generator.unexpected_contents_after_replacement)
