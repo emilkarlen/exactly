@@ -5,13 +5,12 @@ from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
+from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import \
-    RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelAct, \
-    RelativityOptionConfigurationForRelTmp, RelativityOptionConfigurationRelSdsForRelSymbol
+    RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelNonHome
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
@@ -136,19 +135,13 @@ class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):
         raise NotImplementedError()
 
 
-class RelativityOptionConfigurationForDefaultRelativity(rel_opt_conf.RelativityOptionConfigurationForRelNonHomeBase):
-    def __init__(self):
-        super().__init__(rel_opt_conf.RelNonHomeOptionType.REL_CWD,
-                         rel_opt_conf.OptionStringConfigurationForDefaultRelativity())
-
-
 RELATIVITY_OPTIONS = [
-    RelativityOptionConfigurationForDefaultRelativity(),
-    RelativityOptionConfigurationForRelAct(),
-    RelativityOptionConfigurationForRelTmp(),
-    RelativityOptionConfigurationRelSdsForRelSymbol(RelSdsOptionType.REL_TMP,
-                                                    sut.RELATIVITY_VARIANTS.options.accepted_relativity_variants,
-                                                    symbol_name='DIR_PATH_SYMBOL'),
+    rel_opt.default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+    rel_opt.conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
+    rel_opt.conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
+    rel_opt.symbol_conf_rel_non_home(RelNonHomeOptionType.REL_TMP,
+                                     'DIR_PATH_SYMBOL',
+                                     sut.RELATIVITY_VARIANTS.options.accepted_relativity_variants),
 ]
 
 
@@ -157,7 +150,7 @@ def suite_for_relativity_options() -> unittest.TestSuite:
                                for relativity_option in RELATIVITY_OPTIONS])
 
 
-def suite_for_relativity_option(relativity_option: RelativityOptionConfigurationForRelSds) -> unittest.TestSuite:
+def suite_for_relativity_option(relativity_option: RelativityOptionConfigurationForRelNonHome) -> unittest.TestSuite:
     test_cases = [
         test_creation_of_directory_with_single_path_component,
         test_creation_of_directory_with_multiple_path_components,
