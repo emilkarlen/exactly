@@ -13,11 +13,11 @@ from exactly_lib_test.instructions.test_resources import executable_file_test_ut
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    HomeOrSdsPopulator, \
-    HomeOrSdsPopulatorForHomeContents, HomeOrSdsPopulatorForSdsContents
+    HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.file_structure import DirContents, File
@@ -335,7 +335,7 @@ class RelHomeConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_HOME_OPTION, True)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForHomeContents(DirContents([file]))
+        return HomePopulator(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -348,7 +348,7 @@ class DefaultConfiguration(RelativityConfiguration):
         super().__init__('', True)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForHomeContents(DirContents([file]))
+        return HomePopulator(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -361,8 +361,7 @@ class RelActConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_ACT_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForSdsContents(
-            sds_populator.act_dir_contents(DirContents([file])))
+        return sds_populator.act_dir_contents(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -375,8 +374,7 @@ class RelTmpConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_TMP_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForSdsContents(
-            sds_populator.tmp_user_dir_contents(DirContents([file])))
+        return sds_populator.tmp_user_dir_contents(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -389,8 +387,7 @@ class RelCwdConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_CWD_OPTION, False)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForSdsContents(
-            sds_populator.act_dir_contents(DirContents([file])))
+        return sds_populator.act_dir_contents(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
