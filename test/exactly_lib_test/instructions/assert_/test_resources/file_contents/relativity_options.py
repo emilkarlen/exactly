@@ -11,9 +11,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_oper
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \
     OptionStringConfigurationForRelativityOptionRelNonHome
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    HomeOrSdsPopulator, HomeOrSdsPopulatorForSdsContents
+    HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -89,11 +89,10 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
         return self.root_dir__sds(sds)
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForSdsContents(
-            self.populator_for_relativity_option_root__sds(contents))
+        return self.populator_for_relativity_option_root__sds(contents)
 
     def populator_for_relativity_option_root__non_home(self,
-                                                       contents: DirContents) -> non_home_populator.NonHomePopulator:
+                                                       contents: DirContents) -> NonHomePopulator:
         return self.populator_for_relativity_option_root__sds(contents)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
