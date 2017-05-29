@@ -2,14 +2,18 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
-from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfigurationForRelSds, \
-    RelativityOptionConfiguration
+from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration, \
+    RelativityOptionConfigurationForRelNonHome, \
+    OptionStringConfigurationForRelativityOptionRelNonHome
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
+    HomeOrSdsPopulator, HomeOrSdsPopulatorForSdsContents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -73,9 +77,25 @@ def suite_for__conf__rel_opts__negations(instruction_configuration: InstructionT
                                ])
 
 
-class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfigurationForRelSds):
+class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfigurationForRelNonHome):
     def __init__(self):
-        super().__init__(file_ref_texts.REL_CWD_OPTION)
+        super().__init__(OptionStringConfigurationForRelativityOptionRelNonHome(RelNonHomeOptionType.REL_CWD))
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        return False
+
+    def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.root_dir__sds(sds)
+
+    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
+        return HomeOrSdsPopulatorForSdsContents(
+            self.populator_for_relativity_option_root__sds(contents))
+
+    def populator_for_relativity_option_root__non_home(self,
+                                                       contents: DirContents) -> non_home_populator.NonHomePopulator:
+        return non_home_populator.from_sds_populator(
+            self.populator_for_relativity_option_root__sds(contents))
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return _test_cwd_dir(sds)

@@ -1,7 +1,7 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_SDS_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
@@ -43,6 +43,12 @@ def rel_symbol(relativity: RelOptionType,
     """
     return _SdsPopulatorForRelOptionType(relativity,
                                          dir_contents)
+
+
+def rel_option(relativity: RelSdsOptionType,
+               dir_contents: DirContents) -> SdsPopulator:
+    return _SdsPopulatorForRelSdsOptionType(relativity,
+                                            dir_contents)
 
 
 class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
@@ -129,4 +135,16 @@ class _SdsPopulatorForRelOptionType(SdsPopulator):
 
     def apply(self, sds: SandboxDirectoryStructure):
         root_path = REL_OPTIONS_MAP[self.relativity].root_resolver.from_sds(sds)
+        self.dir_contents.write_to(root_path)
+
+
+class _SdsPopulatorForRelSdsOptionType(SdsPopulator):
+    def __init__(self,
+                 relativity: RelSdsOptionType,
+                 dir_contents: DirContents):
+        self.relativity = relativity
+        self.dir_contents = dir_contents
+
+    def apply(self, sds: SandboxDirectoryStructure):
+        root_path = REL_SDS_OPTIONS_MAP[self.relativity].root_resolver.from_sds(sds)
         self.dir_contents.write_to(root_path)
