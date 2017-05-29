@@ -410,3 +410,73 @@ class SymbolsRelativityHelper(SymbolsConfiguration):
                                FileRefConstant(file_refs.of_rel_option(self.relativity,
                                                                        PathPartAsNothing())))
         ]
+
+
+def conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfiguration:
+    return RelativityOptionConfigurationBase(
+        relativity,
+        OptionStringConfigurationForRelativityOption(relativity))
+
+
+def default_conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfiguration:
+    return RelativityOptionConfigurationBase(
+        relativity,
+        OptionStringConfigurationForDefaultRelativity())
+
+
+def symbol_conf_rel_any(relativity: RelOptionType,
+                        symbol_name: str,
+                        accepted_relativities: PathRelativityVariants) -> RelativityOptionConfiguration:
+    return RelativityOptionConfigurationBase(
+        relativity,
+        OptionStringConfigurationForRelSymbol(symbol_name),
+        SymbolsRelativityHelper(relativity,
+                                accepted_relativities,
+                                symbol_name))
+
+
+def conf_rel_non_home(relativity: RelNonHomeOptionType) -> RelativityOptionConfigurationForRelNonHome:
+    return RelativityOptionConfigurationForRelNonHomeBase(
+        relativity,
+        OptionStringConfigurationForRelativityOptionRelNonHome(relativity))
+
+
+def default_conf_rel_non_home(relativity: RelNonHomeOptionType) -> RelativityOptionConfigurationForRelNonHome:
+    return RelativityOptionConfigurationForRelNonHomeBase(
+        relativity,
+        OptionStringConfigurationForDefaultRelativity())
+
+
+def symbol_conf_rel_non_home(relativity: RelNonHomeOptionType,
+                             symbol_name: str,
+                             accepted_relativities: PathRelativityVariants) -> RelativityOptionConfigurationForRelNonHome:
+    return RelativityOptionConfigurationForRelNonHomeBase(
+        relativity,
+        OptionStringConfigurationForRelSymbol(symbol_name),
+        SymbolsRelativityHelper(path_relativity.rel_any_from_rel_non_home(relativity),
+                                accepted_relativities,
+                                symbol_name))
+
+
+def conf_rel_sds(relativity: RelSdsOptionType) -> RelativityOptionConfigurationForRelSds:
+    return RelativityOptionConfigurationForRelSds(
+        relativity,
+        OptionStringConfigurationForRelativityOptionRelSds(relativity))
+
+
+def default_conf_rel_sds(relativity: RelSdsOptionType) -> RelativityOptionConfigurationForRelSds:
+    return RelativityOptionConfigurationForRelSds(
+        relativity,
+        OptionStringConfigurationForDefaultRelativity())
+
+
+def symbol_conf_rel_sds(relativity: RelSdsOptionType,
+                        symbol_name: str,
+                        accepted_relativities: PathRelativityVariants) -> RelativityOptionConfigurationForRelSds:
+    return RelativityOptionConfigurationForRelSds(
+        relativity,
+        OptionStringConfigurationForRelSymbol(symbol_name),
+        SymbolsRelativityHelper(path_relativity.rel_any_from_rel_sds(relativity),
+                                accepted_relativities,
+                                symbol_name)
+    )
