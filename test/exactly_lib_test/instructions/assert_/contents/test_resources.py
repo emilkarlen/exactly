@@ -84,4 +84,4 @@ class _ActResultProducer(test_resources.ActResultProducer):
             DirContents([
                 File(self.file_name, actual_contents)
             ]))
-        sds_pop.apply(act_environment.home_and_sds.sds)
+        sds_pop.populate_sds(act_environment.home_and_sds.sds)
