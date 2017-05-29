@@ -308,12 +308,6 @@ class RelativityOptionConfigurationForRelSymbol(RelativityOptionConfigurationBas
                                                  symbol_name))
 
 
-class RelativityOptionConfigurationForRelHome(RelativityOptionConfigurationBase):
-    def __init__(self):
-        super().__init__(RelOptionType.REL_HOME,
-                         OptionStringConfigurationForRelativityOption(RelOptionType.REL_HOME))
-
-
 class RelativityOptionConfigurationForRelSdsRelOption(RelativityOptionConfigurationForRelSds):
     def __init__(self, relativity: RelSdsOptionType):
         super().__init__(relativity,
@@ -328,24 +322,6 @@ class RelativityOptionConfigurationForDefaultRelativityRelSds(RelativityOptionCo
     def __init__(self, default_relativity: path_relativity.RelSdsOptionType):
         super().__init__(default_relativity,
                          OptionStringConfigurationForDefaultRelativity())
-
-
-class RelativityOptionConfigurationForRelCwd(RelativityOptionConfigurationForRelNonHomeBase):
-    def __init__(self):
-        super().__init__(RelNonHomeOptionType.REL_CWD,
-                         OptionStringConfigurationForRelativityOptionRelNonHome(RelNonHomeOptionType.REL_CWD))
-
-
-class RelativityOptionConfigurationForRelAct(RelativityOptionConfigurationForRelSds):
-    def __init__(self):
-        super().__init__(RelSdsOptionType.REL_ACT,
-                         OptionStringConfigurationForRelativityOptionRelSds(RelSdsOptionType.REL_ACT))
-
-
-class RelativityOptionConfigurationForRelTmp(RelativityOptionConfigurationForRelSds):
-    def __init__(self):
-        super().__init__(RelSdsOptionType.REL_TMP,
-                         OptionStringConfigurationForRelativityOptionRelSds(RelSdsOptionType.REL_TMP))
 
 
 class RelativityOptionConfigurationRelSdsForRelSymbol(RelativityOptionConfigurationForRelSds):

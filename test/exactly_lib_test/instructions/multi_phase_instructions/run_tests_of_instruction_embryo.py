@@ -1,5 +1,4 @@
 import sys
-import sys
 import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
@@ -9,6 +8,7 @@ from exactly_lib.util.symbol_table import symbol_table_with_entries
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
@@ -266,17 +266,17 @@ IS_VALIDATION_ERROR = asrt.is_instance_with(str, asrt.casted_to_boolean_is(True)
 
 def relativity_options(symbol_name: str) -> list:
     return [
-        rel_opt_conf.RelativityOptionConfigurationForDefaultRelativity(RelOptionType.REL_HOME),
-        rel_opt_conf.RelativityOptionConfigurationForRelAct(),
-        rel_opt_conf.RelativityOptionConfigurationForRelTmp(),
-        rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
-            RelOptionType.REL_TMP,
-            sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
-            symbol_name=symbol_name),
-        rel_opt_conf.RelativityOptionConfigurationForRelSymbol(
-            RelOptionType.REL_HOME,
-            sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants,
-            symbol_name=symbol_name),
+        rel_opt.default_conf_rel_any(RelOptionType.REL_HOME),
+
+        rel_opt.conf_rel_any(RelOptionType.REL_ACT),
+        rel_opt.conf_rel_any(RelOptionType.REL_TMP),
+
+        rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
+                                    symbol_name,
+                                    sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
+        rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME,
+                                    symbol_name,
+                                    sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
     ]
 
 
