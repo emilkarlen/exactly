@@ -82,7 +82,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
@@ -99,7 +99,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
         )
@@ -117,11 +117,11 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.fail__if_un_negated_else__pass,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -138,11 +138,11 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.pass__if_un_negated_else__fail,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -163,11 +163,11 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
                     contents_generator.expected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.pass__if_un_negated_else__fail,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
@@ -189,11 +189,11 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
                     contents_generator.unexpected_contents_after_replacement
                 ),
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
-                symbols=self.rel_opt.symbols_in_arrangement(),
+                symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
                 main_result=self.not_opt.fail__if_un_negated_else__pass,
-                symbol_usages=self.rel_opt.symbol_usages_expectation(),
+                symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
 
