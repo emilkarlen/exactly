@@ -5,6 +5,10 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.arrangement_utils import \
+    populator_for_relativity_option_root_for_contents_from_fun
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
+    expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
@@ -84,7 +88,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
         )
 
 
@@ -101,7 +105,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
                 post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
-            self.rel_opt.expectation_that_file_for_expected_contents_is_invalid(),
+            expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
         )
 
 
@@ -158,7 +162,8 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 contents_generator.contents_before_replacement,
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
+                home_or_sds_contents=populator_for_relativity_option_root_for_contents_from_fun(
+                    self.rel_opt,
                     'expected.txt',
                     contents_generator.expected_contents_after_replacement
                 ),
@@ -184,7 +189,8 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 contents_generator.contents_before_replacement,
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
+                home_or_sds_contents=populator_for_relativity_option_root_for_contents_from_fun(
+                    self.rel_opt,
                     'expected.txt',
                     contents_generator.unexpected_contents_after_replacement
                 ),

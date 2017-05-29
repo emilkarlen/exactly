@@ -3,6 +3,8 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.arrangement_utils import \
+    populator_for_relativity_option_root_for_contents_from_fun
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     args, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
@@ -30,10 +32,12 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         contents_generator = ReplacedEnvVarsFileContentsGenerator()
         rel_tmp_opt = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
-        populator_of_expected = rel_tmp_opt.populator_for_relativity_option_root_for_contents_from_fun(
+        populator_of_expected = populator_for_relativity_option_root_for_contents_from_fun(
+            rel_tmp_opt,
             'expected.txt',
             contents_generator.expected_contents_after_replacement)
-        populator_of_actual = self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
+        populator_of_actual = populator_for_relativity_option_root_for_contents_from_fun(
+            self.rel_opt,
             'actual.txt',
             contents_generator.contents_before_replacement)
         home_or_sds_populator = multiple([populator_of_expected, populator_of_actual])
@@ -58,10 +62,12 @@ class _ContentsNotEquals(TestWithConfigurationAndRelativityOptionAndNegationBase
     def runTest(self):
         contents_generator = ReplacedEnvVarsFileContentsGenerator()
         rel_tmp_opt = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
-        populator_of_expected = rel_tmp_opt.populator_for_relativity_option_root_for_contents_from_fun(
+        populator_of_expected = populator_for_relativity_option_root_for_contents_from_fun(
+            rel_tmp_opt,
             'expected.txt',
             contents_generator.unexpected_contents_after_replacement)
-        populator_of_actual = self.rel_opt.populator_for_relativity_option_root_for_contents_from_fun(
+        populator_of_actual = populator_for_relativity_option_root_for_contents_from_fun(
+            self.rel_opt,
             'actual.txt',
             contents_generator.contents_before_replacement)
         home_or_sds_populator = multiple([populator_of_expected, populator_of_actual])
