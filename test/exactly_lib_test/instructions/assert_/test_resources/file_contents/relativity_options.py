@@ -94,8 +94,7 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
 
     def populator_for_relativity_option_root__non_home(self,
                                                        contents: DirContents) -> non_home_populator.NonHomePopulator:
-        return non_home_populator.from_sds_populator(
-            self.populator_for_relativity_option_root__sds(contents))
+        return self.populator_for_relativity_option_root__sds(contents)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return _test_cwd_dir(sds)

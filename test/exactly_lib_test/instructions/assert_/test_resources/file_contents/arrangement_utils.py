@@ -27,10 +27,10 @@ class _HomeOrSdsPopulatorForContentsThatDependOnHomeAndSds(HomeOrSdsPopulator):
         self.home_and_sds_2_file_contents_str = home_and_sds_2_file_contents_str
         self.dir_contents__2_home_or_sds_populator = dir_contents__2_home_or_sds_populator
 
-    def write_to(self, home_and_sds: HomeAndSds):
+    def populate_home_or_sds(self, home_and_sds: HomeAndSds):
         file_contents = self.home_and_sds_2_file_contents_str(home_and_sds)
         dir_contents = DirContents([
             File(self.file_name, file_contents)
         ])
         home_or_sds_populator = self.dir_contents__2_home_or_sds_populator(dir_contents)
-        home_or_sds_populator.write_to(home_and_sds)
+        home_or_sds_populator.populate_home_or_sds(home_and_sds)
