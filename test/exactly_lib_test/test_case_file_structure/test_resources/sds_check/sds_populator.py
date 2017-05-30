@@ -76,6 +76,12 @@ def contents_in_sub_dir_of(relativity: RelSdsOptionType,
                                  dir_contents)
 
 
+def contents_in_resolved_dir(dir_resolver: SdsSubDirResolver,
+                             dir_contents: DirContents) -> SdsPopulatorForSubDir:
+    return SdsPopulatorForSubDir(dir_resolver,
+                                 dir_contents)
+
+
 class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
     def __init__(self,
                  file_name: str,
