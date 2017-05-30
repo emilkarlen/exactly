@@ -200,7 +200,6 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
             return sds_populator.contents_in(relativity_sds, contents)
 
 
-
 class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHomeBase):
     def __init__(self,
                  relativity: RelSdsOptionType,
@@ -219,7 +218,7 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
         return sds_populator.contents_in(self.relativity_sds, contents)
 
 
-class SymbolsRelativityHelper(SymbolsConfiguration):
+class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
     def __init__(self,
                  relativity: RelOptionType,
                  expected_accepted_relativities: PathRelativityVariants,
@@ -263,9 +262,9 @@ def symbol_conf_rel_any(relativity: RelOptionType,
     return RelativityOptionConfigurationBase(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
-        SymbolsRelativityHelper(relativity,
-                                accepted_relativities,
-                                symbol_name))
+        SymbolsConfigurationForSinglePathSymbol(relativity,
+                                                accepted_relativities,
+                                                symbol_name))
 
 
 def conf_rel_non_home(relativity: RelNonHomeOptionType) -> RelativityOptionConfigurationForRelNonHome:
@@ -286,9 +285,9 @@ def symbol_conf_rel_non_home(relativity: RelNonHomeOptionType,
     return RelativityOptionConfigurationForRelNonHomeBase(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
-        SymbolsRelativityHelper(path_relativity.rel_any_from_rel_non_home(relativity),
-                                accepted_relativities,
-                                symbol_name))
+        SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_non_home(relativity),
+                                                accepted_relativities,
+                                                symbol_name))
 
 
 def conf_rel_sds(relativity: RelSdsOptionType) -> RelativityOptionConfigurationForRelSds:
@@ -309,7 +308,7 @@ def symbol_conf_rel_sds(relativity: RelSdsOptionType,
     return RelativityOptionConfigurationForRelSds(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
-        SymbolsRelativityHelper(path_relativity.rel_any_from_rel_sds(relativity),
-                                accepted_relativities,
-                                symbol_name)
+        SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_sds(relativity),
+                                                accepted_relativities,
+                                                symbol_name)
     )

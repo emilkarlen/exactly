@@ -3,7 +3,7 @@ import pathlib
 import unittest
 
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
@@ -14,21 +14,16 @@ from exactly_lib_test.instructions.test_resources.relativity_options import Rela
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator, \
+    SdsSubDirResolver, SdsPopulatorForSubDir
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
-
-class _CwdPopulator(SdsPopulator):
-    def __init__(self, contents: DirContents):
-        self.contents = contents
-
-    def populate_sds(self, sds: SandboxDirectoryStructure):
-        sub_dir = _get_cwd_path_and_make_dir_if_not_exists(sds)
-        self.contents.write_to(sub_dir)
+SUB_DIR_RESOLVER = SdsSubDirResolver(RelSdsOptionType.REL_ACT,
+                                     _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
 
 
 class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
@@ -96,16 +91,16 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
         return self.populator_for_relativity_option_root__sds(contents)
 
     def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return _test_cwd_dir(sds)
+        return SUB_DIR_RESOLVER.population_dir(sds)
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
-        return _CwdPopulator(contents)
+        return SdsPopulatorForSubDir(SUB_DIR_RESOLVER, contents)
 
 
 def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
-    ret_val = _test_cwd_dir(sds)
-    if not ret_val.exists():
-        os.mkdir(str(ret_val))
+    ret_val = SUB_DIR_RESOLVER.population_dir(sds)
+    ret_val.mkdir(parents=True,
+                  exist_ok=True)
     return ret_val
 
 
@@ -113,7 +108,3 @@ class MkSubDirOfActAndMakeItCurrentDirectory(HomeAndSdsAction):
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
         sub_dir = _get_cwd_path_and_make_dir_if_not_exists(environment.sds)
         os.chdir(str(sub_dir))
-
-
-def _test_cwd_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
-    return sds.act_dir / _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD
