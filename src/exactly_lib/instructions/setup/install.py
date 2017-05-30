@@ -14,6 +14,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
+from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
@@ -21,6 +22,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.failure_details import new_failure_details_from_message
 from exactly_lib.util.textformat.structure.structures import paras
 
 
@@ -139,10 +141,11 @@ class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBas
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
         cwd = pathlib.Path()
-        return _install_into_directory(os_services,
-                                       src_path,
-                                       src_path.name,
-                                       cwd)
+        return exception_detection.return_success_or_hard_error(_install_into_directory,
+                                                                os_services,
+                                                                src_path,
+                                                                src_path.name,
+                                                                cwd)
 
 
 class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
@@ -156,35 +159,40 @@ class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        src_path = self._src_path(environment)
-        basename = src_path.name
-        cwd = pathlib.Path()
-        direct_target = cwd / self.destination_file_name
-        if direct_target.exists():
-            if direct_target.is_dir():
-                return _install_into_directory(os_services,
-                                               src_path,
-                                               basename,
-                                               direct_target)
+        def f():
+            src_path = self._src_path(environment)
+            basename = src_path.name
+            cwd = pathlib.Path()
+            direct_target = cwd / self.destination_file_name
+            if direct_target.exists():
+                if direct_target.is_dir():
+                    _install_into_directory(os_services,
+                                            src_path,
+                                            basename,
+                                            direct_target)
+                else:
+                    raise exception_detection.DetectedException(
+                        new_failure_details_from_message('Destination file already exists: {}'.format(direct_target)))
             else:
-                return sh.new_sh_hard_error('Destination file already exists: {}'.format(direct_target))
-        else:
-            return _install_into_directory(os_services,
-                                           src_path,
-                                           self.destination_file_name,
-                                           cwd)
+                _install_into_directory(os_services,
+                                        src_path,
+                                        self.destination_file_name,
+                                        cwd)
+
+        return exception_detection.return_success_or_hard_error(f)
 
 
 def _install_into_directory(os_services: OsServices,
                             src_file_path: pathlib.Path,
                             dst_file_name: str,
-                            dst_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                            dst_dir_path: pathlib.Path):
     target = dst_dir_path / dst_file_name
     if target.exists():
-        return sh.new_sh_hard_error('Destination already exists: {}'.format(target))
+        raise exception_detection.DetectedException(
+            new_failure_details_from_message('Destination already exists: {}'.format(target)))
     src = str(src_file_path)
     dst = str(target)
     if src_file_path.is_dir():
-        return os_services.copy_tree_preserve_as_much_as_possible(src, dst)
+        os_services.copy_tree_preserve_as_much_as_possible__detect_ex(src, dst)
     else:
-        return os_services.copy_file_preserve_as_much_as_possible(src, dst)
+        os_services.copy_file_preserve_as_much_as_possible__detect_ex(src, dst)
