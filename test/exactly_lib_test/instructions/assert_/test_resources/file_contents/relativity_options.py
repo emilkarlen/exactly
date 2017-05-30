@@ -83,14 +83,7 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
         return SdsPopulatorForSubDir(SUB_DIR_RESOLVER, contents)
 
 
-def _get_cwd_path_and_make_dir_if_not_exists(sds: SandboxDirectoryStructure):
-    ret_val = SUB_DIR_RESOLVER.population_dir(sds)
-    ret_val.mkdir(parents=True,
-                  exist_ok=True)
-    return ret_val
-
-
 class MkSubDirOfActAndMakeItCurrentDirectory(HomeAndSdsAction):
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        sub_dir = _get_cwd_path_and_make_dir_if_not_exists(environment.sds)
+        sub_dir = SUB_DIR_RESOLVER.population_dir__create_if_not_exists(environment.sds)
         os.chdir(str(sub_dir))
