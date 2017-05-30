@@ -21,9 +21,9 @@ class TestSdsRelativityResolver(unittest.TestCase):
 
     def test(self):
         cases = [
-            (sut.RelSdsOptionType.REL_RESULT, sut.resolver_rel_sds__for_result, sds_2_result_dir),
-            (sut.RelSdsOptionType.REL_ACT, sut.resolver_rel_sds__for_act, sds_2_act_dir),
-            (sut.RelSdsOptionType.REL_TMP, sut.resolver_rel_sds__for_tmp_user, sds_2_tmp_user_dir),
+            (sut.RelSdsOptionType.REL_RESULT, sut.resolver_for_result, sds_2_result_dir),
+            (sut.RelSdsOptionType.REL_ACT, sut.resolver_for_act, sds_2_act_dir),
+            (sut.RelSdsOptionType.REL_TMP, sut.resolver_for_tmp_user, sds_2_tmp_user_dir),
         ]
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -39,9 +39,9 @@ class TestNonHomeRelativityResolver(unittest.TestCase):
 
     def test_under_sds(self):
         cases = [
-            (sut.RelNonHomeOptionType.REL_RESULT, sut.resolver_rel_non_home__for_result, sds_2_result_dir),
-            (sut.RelNonHomeOptionType.REL_ACT, sut.resolver_rel_non_home__for_act, sds_2_act_dir),
-            (sut.RelNonHomeOptionType.REL_TMP, sut.resolver_rel_non_home__for_tmp_user, sds_2_tmp_user_dir),
+            (sut.RelNonHomeOptionType.REL_RESULT, sut.resolver_for_result, sds_2_result_dir),
+            (sut.RelNonHomeOptionType.REL_ACT, sut.resolver_for_act, sds_2_act_dir),
+            (sut.RelNonHomeOptionType.REL_TMP, sut.resolver_for_tmp_user, sds_2_tmp_user_dir),
         ]
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -51,7 +51,7 @@ class TestNonHomeRelativityResolver(unittest.TestCase):
 
     def test_cwd(self):
         cases = [
-            (sut.RelNonHomeOptionType.REL_CWD, sut.resolver_rel_non_home__for_cwd, home_and_sds_2_cwd_dir),
+            (sut.RelNonHomeOptionType.REL_CWD, sut.resolver_for_cwd, home_and_sds_2_cwd_dir),
         ]
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
