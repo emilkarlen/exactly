@@ -18,6 +18,12 @@ class RelRootResolver:
     def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         raise NotImplementedError()
 
+    def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        raise ValueError('Root is not relative home: ' + str(self._relativity))
+
+    def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        raise ValueError('Root is not relative non-home: ' + str(self._relativity))
+
     @property
     def is_rel_home(self) -> bool:
         raise NotImplementedError()

@@ -43,14 +43,12 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
 
     def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         suffix = self.path_suffix_path()
-        return self._rel_root_resolver.from_home(home_dir_path) / suffix
+        root = self._rel_root_resolver.from_home(home_dir_path)
+        return root / suffix
 
     def file_path_post_sds(self, sds: SandboxDirectoryStructure):
         suffix = self.path_suffix_path()
-        if self._rel_root_resolver.is_rel_cwd:
-            root = self._rel_root_resolver.from_cwd()
-        else:
-            root = self._rel_root_resolver.from_sds(sds)
+        root = self._rel_root_resolver.from_non_home(sds)
         return root / suffix
 
 
