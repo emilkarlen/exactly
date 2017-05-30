@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    MkSubDirOfActAndMakeItCurrentDirectory
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 
 
@@ -51,7 +51,7 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 '',
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
         )
 
@@ -64,6 +64,6 @@ class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 'contents that makes the file non-empty',
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
         )

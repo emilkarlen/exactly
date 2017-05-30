@@ -1,8 +1,7 @@
-import os
+import pathlib
 import pathlib
 import unittest
 
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -17,8 +16,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator, \
     SdsSubDirResolver, SdsPopulatorForSubDir
 from exactly_lib_test.test_resources.file_structure import DirContents
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
+    MkSubDirAndMakeItCurrentDirectory
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
@@ -83,7 +82,4 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
         return SdsPopulatorForSubDir(SUB_DIR_RESOLVER, contents)
 
 
-class MkSubDirOfActAndMakeItCurrentDirectory(HomeAndSdsAction):
-    def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        sub_dir = SUB_DIR_RESOLVER.population_dir__create_if_not_exists(environment.sds)
-        os.chdir(str(sub_dir))
+MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY = MkSubDirAndMakeItCurrentDirectory(SUB_DIR_RESOLVER)
