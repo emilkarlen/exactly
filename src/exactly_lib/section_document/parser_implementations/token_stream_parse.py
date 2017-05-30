@@ -1,12 +1,12 @@
 import types
 
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.util.cli_syntax.option_parsing import matches
-from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 
 
 class TokenParser:
@@ -31,9 +31,12 @@ class TokenParser:
         if self._token_stream.is_null:
             self._error(error_message_format_string)
 
+    @property
+    def is_at_eol(self) -> bool:
+        return self.token_stream.remaining_part_of_current_line.isspace()
+
     def require_is_at_eol(self, error_message_format_string: str):
-        remaining = self.token_stream.remaining_part_of_current_line.strip()
-        if len(remaining) != 0:
+        if not self.is_at_eol:
             self._error(error_message_format_string)
 
     def report_superfluous_arguments_if_not_at_eol(self):
