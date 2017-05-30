@@ -68,33 +68,33 @@ class RelNonHomeOptionInfo(tuple):
 
 REL_SDS_OPTIONS_MAP = {
     RelSdsOptionType.REL_ACT: RelSdsOptionInfo(file_ref_texts.REL_ACT_OPTION_NAME,
-                                               relativity_root.resolver_rel_sds__for_act,
+                                               relativity_root.resolver_for_act,
                                                file_ref_texts.RELATIVITY_DESCRIPTION_ACT),
 
     RelSdsOptionType.REL_TMP: RelSdsOptionInfo(file_ref_texts.REL_TMP_OPTION_NAME,
-                                               relativity_root.resolver_rel_sds__for_tmp_user,
+                                               relativity_root.resolver_for_tmp_user,
                                                file_ref_texts.RELATIVITY_DESCRIPTION_TMP),
 
     RelSdsOptionType.REL_RESULT: RelSdsOptionInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
-                                                  relativity_root.resolver_rel_sds__for_result,
+                                                  relativity_root.resolver_for_result,
                                                   file_ref_texts.RELATIVITY_DESCRIPTION_RESULT),
 }
 
 REL_NON_HOME_OPTIONS_MAP = {
     RelNonHomeOptionType.REL_CWD: RelNonHomeOptionInfo(file_ref_texts.REL_CWD_OPTION_NAME,
-                                                       relativity_root.resolver_rel_non_home__for_cwd,
+                                                       relativity_root.resolver_for_cwd,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_CWD),
 
     RelNonHomeOptionType.REL_ACT: RelNonHomeOptionInfo(file_ref_texts.REL_ACT_OPTION_NAME,
-                                                       relativity_root.resolver_rel_non_home__for_act,
+                                                       relativity_root.resolver_for_act,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_ACT),
 
     RelNonHomeOptionType.REL_TMP: RelNonHomeOptionInfo(file_ref_texts.REL_TMP_OPTION_NAME,
-                                                       relativity_root.resolver_rel_non_home__for_tmp_user,
+                                                       relativity_root.resolver_for_tmp_user,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_TMP),
 
     RelNonHomeOptionType.REL_RESULT: RelNonHomeOptionInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
-                                                          relativity_root.resolver_rel_non_home__for_result,
+                                                          relativity_root.resolver_for_result,
                                                           file_ref_texts.RELATIVITY_DESCRIPTION_RESULT),
 }
 
