@@ -12,3 +12,12 @@ class MkSubDirAndMakeItCurrentDirectory(HomeAndSdsAction):
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
         sub_dir = self.sub_dir_resolver.population_dir__create_if_not_exists(environment.sds)
         os.chdir(str(sub_dir))
+
+
+class ChangeDirectoryToDirectory(HomeAndSdsAction):
+    def __init__(self, sub_dir_resolver: SdsSubDirResolver):
+        self.sub_dir_resolver = sub_dir_resolver
+
+    def apply(self, environment: PathResolvingEnvironmentPreOrPostSds):
+        sub_dir = self.sub_dir_resolver.population_dir(environment.sds)
+        os.chdir(str(sub_dir))

@@ -1,4 +1,5 @@
 import pathlib
+import types
 
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP
@@ -30,6 +31,31 @@ def contents_in(relativity: RelSdsOptionType,
 
 
 class SdsSubDirResolver:
+    def root_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def population_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def population_dir__create_if_not_exists(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        sub_dir_path = self.population_dir(sds)
+        sub_dir_path.mkdir(parents=True,
+                           exist_ok=True)
+        return sub_dir_path
+
+
+class SdsSubDirResolverFromSdsFun(SdsSubDirResolver):
+    def __init__(self, sds_2_path: types.FunctionType):
+        self.sds_2_path = sds_2_path
+
+    def root_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.sds_2_path(sds)
+
+    def population_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.root_dir(sds)
+
+
+class SdsSubDirResolverWithRelSdsRoot(SdsSubDirResolver):
     def __init__(self,
                  relativity: RelSdsOptionType,
                  sub_dir: str):
@@ -41,12 +67,6 @@ class SdsSubDirResolver:
 
     def population_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.root_dir(sds) / self.sub_dir
-
-    def population_dir__create_if_not_exists(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        sub_dir_path = self.population_dir(sds)
-        sub_dir_path.mkdir(parents=True,
-                           exist_ok=True)
-        return sub_dir_path
 
 
 class SdsPopulatorForSubDir(SdsPopulator):
@@ -71,8 +91,8 @@ class SdsPopulatorForSubDir(SdsPopulator):
 def contents_in_sub_dir_of(relativity: RelSdsOptionType,
                            sub_dir: str,
                            dir_contents: DirContents) -> SdsPopulatorForSubDir:
-    return SdsPopulatorForSubDir(SdsSubDirResolver(relativity,
-                                                   sub_dir),
+    return SdsPopulatorForSubDir(SdsSubDirResolverWithRelSdsRoot(relativity,
+                                                                 sub_dir),
                                  dir_contents)
 
 

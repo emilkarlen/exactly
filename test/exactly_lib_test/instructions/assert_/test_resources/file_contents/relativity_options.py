@@ -14,15 +14,15 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_populator impo
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator, \
-    SdsSubDirResolver, SdsPopulatorForSubDir
+    SdsPopulatorForSubDir, SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
-SUB_DIR_RESOLVER = SdsSubDirResolver(RelSdsOptionType.REL_ACT,
-                                     _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
+SUB_DIR_RESOLVER = SdsSubDirResolverWithRelSdsRoot(RelSdsOptionType.REL_ACT,
+                                                   _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
 
 
 class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurationBase):
