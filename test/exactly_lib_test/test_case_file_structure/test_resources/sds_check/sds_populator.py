@@ -29,6 +29,49 @@ def contents_in(relativity: RelSdsOptionType,
                                             dir_contents)
 
 
+class SdsSubDirResolver:
+    def __init__(self,
+                 relativity: RelSdsOptionType,
+                 sub_dir: str):
+        self.relativity = relativity
+        self.sub_dir = sub_dir
+
+    def root_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return REL_SDS_OPTIONS_MAP[self.relativity].root_resolver.from_sds(sds)
+
+    def population_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.root_dir(sds) / self.sub_dir
+
+
+class SdsPopulatorForSubDir(SdsPopulator):
+    def __init__(self,
+                 sub_dir_resolver: SdsSubDirResolver,
+                 dir_contents: DirContents):
+        self._sub_dir_resolver = sub_dir_resolver
+        self.dir_contents = dir_contents
+
+    @property
+    def sub_dir_resolver(self) -> SdsSubDirResolver:
+        return self._sub_dir_resolver
+
+    def population_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self._sub_dir_resolver.population_dir(sds)
+
+    def populate_sds(self, sds: SandboxDirectoryStructure):
+        sub_dir_path = self.population_dir(sds)
+        sub_dir_path.mkdir(parents=True,
+                           exist_ok=True)
+        self.dir_contents.write_to(sub_dir_path)
+
+
+def contents_in_sub_dir_of(relativity: RelSdsOptionType,
+                           sub_dir: str,
+                           dir_contents: DirContents) -> SdsPopulatorForSubDir:
+    return SdsPopulatorForSubDir(SdsSubDirResolver(relativity,
+                                                   sub_dir),
+                                 dir_contents)
+
+
 class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
     def __init__(self,
                  file_name: str,
