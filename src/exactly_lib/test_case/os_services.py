@@ -1,3 +1,4 @@
+import pathlib
 import shutil
 import subprocess
 
@@ -17,6 +18,12 @@ class OsServices:
     These are services that should not be implemented as part of instructions, and
     that may vary depending on operating system.
     """
+
+    def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
+        """
+        :raises DetectedException
+        """
+        raise NotImplementedError()
 
     def copy_file_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
         """
@@ -50,6 +57,14 @@ def new_with_environ() -> OsServices:
 
 
 class _Default(OsServices):
+    def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+        except FileExistsError as ex:
+            _raise_fail_to_make_dir_exception(path, ex)
+        except OSError as ex:
+            _raise_fail_to_make_dir_exception(path, ex)
+
     def copy_file_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
         try:
             shutil.copy2(src, dst)
@@ -95,3 +110,9 @@ class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
 
 
 ACT_PHASE_OS_PROCESS_EXECUTOR = ActPhaseSubProcessExecutor()
+
+
+def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):
+    raise exception_detection.DetectedException(
+        FailureDetails('Failed to make directory {}:\n{}'.format(path, str(ex)),
+                       ex))
