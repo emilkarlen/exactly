@@ -21,7 +21,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
     HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.non_home_populator import NonHomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -164,16 +163,6 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         raise NotImplementedError()
 
-    # TODO ska inte finnas i denna klass - finns pga felaktig design
-    def populator_for_relativity_option_root_for_contents_from_sds_fun(self,
-                                                                       file_name: str,
-                                                                       sds_2_file_contents_str
-                                                                       ) -> SdsPopulator:
-        return sds_populator.SdsPopulatorForFileWithContentsThatDependOnSds(
-            file_name,
-            sds_2_file_contents_str,
-            self.populator_for_relativity_option_root__sds)
-
 
 class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurationForRelNonHome):
     def __init__(self,
@@ -210,15 +199,6 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
             relativity_sds = RelSdsOptionType(self.relativity_non_home.value)
             return sds_populator.contents_in(relativity_sds, contents)
 
-    # TODO ska inte finnas i denna klass - finns pga felaktig design
-    def populator_for_relativity_option_root_for_contents_from_sds_fun(self,
-                                                                       file_name: str,
-                                                                       sds_2_file_contents_str
-                                                                       ) -> SdsPopulator:
-        return sds_populator.SdsPopulatorForFileWithContentsThatDependOnSds(
-            file_name,
-            sds_2_file_contents_str,
-            self.populator_for_relativity_option_root__sds)
 
 
 class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHomeBase):
@@ -237,15 +217,6 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         return sds_populator.contents_in(self.relativity_sds, contents)
-
-    def populator_for_relativity_option_root_for_contents_from_sds_fun(self,
-                                                                       file_name: str,
-                                                                       sds_2_file_contents_str
-                                                                       ) -> SdsPopulator:
-        return sds_populator.SdsPopulatorForFileWithContentsThatDependOnSds(
-            file_name,
-            sds_2_file_contents_str,
-            self.populator_for_relativity_option_root__sds)
 
 
 class SymbolsRelativityHelper(SymbolsConfiguration):
