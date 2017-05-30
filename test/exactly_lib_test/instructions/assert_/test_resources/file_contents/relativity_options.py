@@ -26,20 +26,6 @@ SUB_DIR_RESOLVER = SdsSubDirResolver(RelSdsOptionType.REL_ACT,
                                      _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD)
 
 
-class TestWithConfigurationAndRelativityOptionBase(TestWithConfigurationBase):
-    def __init__(self,
-                 instruction_configuration: InstructionTestConfiguration,
-                 option_configuration: RelativityOptionConfiguration):
-        super().__init__(instruction_configuration)
-        self.rel_opt = option_configuration
-
-    def shortDescription(self):
-        return (str(type(self)) + ' /\n' +
-                str(type(self.configuration)) + ' /\n' +
-                str(type(self.rel_opt))
-                )
-
-
 class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurationBase):
     def __init__(self,
                  instruction_configuration: InstructionTestConfiguration,
