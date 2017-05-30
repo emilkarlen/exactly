@@ -19,15 +19,15 @@ class RelRootResolver:
         raise NotImplementedError()
 
     @property
-    def is_rel_cwd(self) -> bool:
-        raise NotImplementedError()
-
-    @property
     def is_rel_home(self) -> bool:
         raise NotImplementedError()
 
     @property
     def is_rel_sds(self) -> bool:
+        raise NotImplementedError()
+
+    @property
+    def is_rel_cwd(self) -> bool:
         raise NotImplementedError()
 
     @property
@@ -39,6 +39,12 @@ class RelPathResolverRelHome(RelRootResolver):
     def __init__(self):
         super().__init__(RelOptionType.REL_HOME)
 
+    def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        return home_dir_path
+
+    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return self.from_home(home_and_sds.home_dir_path)
+
     @property
     def is_rel_home(self) -> bool:
         return True
@@ -54,12 +60,6 @@ class RelPathResolverRelHome(RelRootResolver):
     @property
     def exists_pre_sds(self) -> bool:
         return True
-
-    def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
-        return home_dir_path
-
-    def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self.from_home(home_and_sds.home_dir_path)
 
 
 class RelNonHomeRootResolver(RelRootResolver):
