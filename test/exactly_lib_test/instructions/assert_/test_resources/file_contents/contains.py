@@ -11,7 +11,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     InstructionTestConfigurationForContentsOrEquals, \
     TestWithConfigurationAndNegationArgumentBase, suite_for__conf__not_argument, args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    MkSubDirOfActAndMakeItCurrentDirectory
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
     Expectation
 
@@ -77,7 +77,7 @@ class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
         )
 
@@ -95,7 +95,7 @@ class _ALineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
         )
 
@@ -113,7 +113,7 @@ class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
         )
 
@@ -132,7 +132,7 @@ class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArg
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
         )
 
@@ -151,7 +151,7 @@ class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegat
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
         )
 
