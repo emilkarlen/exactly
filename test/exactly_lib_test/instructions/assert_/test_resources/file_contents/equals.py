@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
-    TestWithConfigurationAndRelativityOptionAndNegationBase, MkSubDirOfActAndMakeItCurrentDirectory
+    TestWithConfigurationAndRelativityOptionAndNegationBase, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
     ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -85,7 +85,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
                      maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
@@ -102,7 +102,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             expectation_that_file_for_expected_contents_is_invalid(self.rel_opt),
@@ -120,7 +120,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 'actual',
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
@@ -141,7 +141,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 'expected',
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
@@ -167,7 +167,7 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
                     'expected.txt',
                     contents_generator.expected_contents_after_replacement
                 ),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
@@ -194,7 +194,7 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
                     'expected.txt',
                     contents_generator.unexpected_contents_after_replacement
                 ),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory(),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
@@ -214,7 +214,7 @@ class _ContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase)
                  'EOF']),
             self.configuration.arrangement_for_contents(
                 lines_content(['expected content line']),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail,
                         source=source_is_at_end),
         )
@@ -230,7 +230,7 @@ class _ContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentB
                  'EOF']),
             self.configuration.arrangement_for_contents(
                 lines_content(['actual contents that is not equal to expected contents']),
-                post_sds_population_action=MkSubDirOfActAndMakeItCurrentDirectory()),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass,
                         source=source_is_at_end),
         )

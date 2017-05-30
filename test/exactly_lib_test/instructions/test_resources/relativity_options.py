@@ -16,6 +16,7 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForRelOptionType
@@ -140,6 +141,20 @@ class RelativityOptionConfigurationBase(RelativityOptionConfiguration):
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+
+
+class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationBase):
+    def __init__(self,
+                 cli_option: OptionStringConfiguration,
+                 symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
+        super().__init__(RelOptionType.REL_HOME, cli_option, symbols_configuration)
+
+    def populator_for_relativity_option_root__home(self, contents: DirContents) -> HomePopulator:
+        return HomePopulator(contents)
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        return True
 
 
 class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
@@ -312,3 +327,19 @@ def symbol_conf_rel_sds(relativity: RelSdsOptionType,
                                                 accepted_relativities,
                                                 symbol_name)
     )
+
+
+def conf_rel_home() -> RelativityOptionConfigurationRelHome:
+    return RelativityOptionConfigurationRelHome(OptionStringConfigurationForRelativityOption(RelOptionType.REL_HOME))
+
+
+def default_conf_rel_home() -> RelativityOptionConfigurationRelHome:
+    return RelativityOptionConfigurationRelHome(OptionStringConfigurationForDefaultRelativity())
+
+
+def symbol_conf_rel_home(symbol_name: str,
+                         accepted_relativities: PathRelativityVariants) -> RelativityOptionConfigurationRelHome:
+    return RelativityOptionConfigurationRelHome(OptionStringConfigurationForRelSymbol(symbol_name),
+                                                SymbolsConfigurationForSinglePathSymbol(RelOptionType.REL_HOME,
+                                                                                        accepted_relativities,
+                                                                                        symbol_name))
