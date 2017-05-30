@@ -228,10 +228,6 @@ class SymbolsRelativityHelper(SymbolsConfiguration):
         self.relativity = relativity
         self.symbol_name = symbol_name
 
-    # TODO Ska inte behöva finnas här - finns ju i RelativityOptionConfiguration!
-    def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
-        return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
-
     def usage_expectation_assertions(self) -> list:
         return [
             equals_symbol_reference(
