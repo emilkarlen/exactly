@@ -42,6 +42,12 @@ class SdsSubDirResolver:
     def population_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.root_dir(sds) / self.sub_dir
 
+    def population_dir__create_if_not_exists(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        sub_dir_path = self.population_dir(sds)
+        sub_dir_path.mkdir(parents=True,
+                           exist_ok=True)
+        return sub_dir_path
+
 
 class SdsPopulatorForSubDir(SdsPopulator):
     def __init__(self,
@@ -58,9 +64,7 @@ class SdsPopulatorForSubDir(SdsPopulator):
         return self._sub_dir_resolver.population_dir(sds)
 
     def populate_sds(self, sds: SandboxDirectoryStructure):
-        sub_dir_path = self.population_dir(sds)
-        sub_dir_path.mkdir(parents=True,
-                           exist_ok=True)
+        sub_dir_path = self._sub_dir_resolver.population_dir__create_if_not_exists(sds)
         self.dir_contents.write_to(sub_dir_path)
 
 
