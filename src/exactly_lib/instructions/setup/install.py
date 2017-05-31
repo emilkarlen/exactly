@@ -4,7 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.arg_parse import rel_opts_configuration
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -26,7 +26,6 @@ from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.failure_details import new_failure_details_from_message
-from exactly_lib.util.textformat.structure.structures import paras
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -65,33 +64,31 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {
             'home_dir': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'current_dir': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'SOURCE': OPTION_ARGUMENT_FOR_SOURCE.name,
             'DESTINATION': OPTION_ARGUMENT_FOR_DESTINATION.name,
         })
 
     def single_line_description(self) -> str:
-        return self._format('Install existing files from the {home_dir} into the {current_dir}')
+        return self._format('Install existing files from the {home_dir} into the {sandbox}')
 
     def main_description_rest(self) -> list:
-        return dt.paths_uses_posix_syntax() + self._paragraphs(_MAIN_DESCRIPTION_REST)
+        return self._paragraphs(_MAIN_DESCRIPTION_REST) + dt.paths_uses_posix_syntax()
 
     def invokation_variants(self) -> list:
         dst_arg_usage = a.Single(a.Multiplicity.OPTIONAL, OPTION_ARGUMENT_FOR_DESTINATION)
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 a.Single(a.Multiplicity.MANDATORY, OPTION_ARGUMENT_FOR_SOURCE),
-                dst_arg_usage,
-            ]),
-                paras('Installs a file or a directory and its contents.')),
+                dst_arg_usage]
+            )),
         ]
 
     def syntax_element_descriptions(self) -> list:
         return [
-            dt.a_path_that_is_relative_the(path_syntax.FILE_ARGUMENT,
+            dt.a_path_that_is_relative_the(OPTION_ARGUMENT_FOR_SOURCE.name,
                                            HOME_DIRECTORY_CONFIGURATION_PARAMETER),
-            dt.a_path_that_is_relative_the(path_syntax.DIR_ARGUMENT,
-                                           HOME_DIRECTORY_CONFIGURATION_PARAMETER),
-            dt.a_path_that_is_relative_the(OPTION_ARGUMENT_FOR_DESTINATION,
+            dt.a_path_that_is_relative_the(OPTION_ARGUMENT_FOR_DESTINATION.name,
                                            CURRENT_WORKING_DIRECTORY_CONCEPT),
         ]
 
