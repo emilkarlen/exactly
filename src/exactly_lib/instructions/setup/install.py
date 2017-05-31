@@ -86,14 +86,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             )),
         ]
 
-    def syntax_element_descriptions_old(self) -> list:
-        return [
-            dt.a_path_that_is_relative_the(OPTION_ARGUMENT_FOR_SOURCE.name,
-                                           HOME_DIRECTORY_CONFIGURATION_PARAMETER),
-            dt.a_path_that_is_relative_the(OPTION_ARGUMENT_FOR_DESTINATION.name,
-                                           CURRENT_WORKING_DIRECTORY_CONCEPT),
-        ]
-
     def syntax_element_descriptions(self) -> list:
         return self._syntax_element_descriptions_for_src() + self._syntax_element_descriptions_for_dst()
 
