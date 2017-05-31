@@ -1,9 +1,7 @@
 import unittest
 
-from exactly_lib.symbol.concrete_values import StringResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
@@ -53,18 +51,3 @@ class TestEqualsResolver(unittest.TestCase):
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.resolver_equals3(expected).apply_without_message(put, actual)
-
-
-class _StringResolverTestImpl(StringResolver):
-    def __init__(self,
-                 value: str,
-                 explicit_references: list):
-        self.value = value
-        self.explicit_references = explicit_references
-
-    def resolve(self, symbols: SymbolTable) -> str:
-        return self.value
-
-    @property
-    def references(self) -> list:
-        return self.explicit_references
