@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
-from exactly_lib.symbol.concrete_values import StringResolver
+from exactly_lib.symbol.concrete_values import StringResolver, StringConstantFragment, StringSymbolFragment
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
@@ -14,10 +14,136 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestEqualsFragment),
+        unittest.makeSuite(TestEqualsFragments),
         unittest.makeSuite(TestEquals),
         unittest.makeSuite(TestNotEquals),
         unittest.makeSuite(TestNotEquals3),
     ])
+
+
+class TestEqualsFragment(unittest.TestCase):
+    def test_equals(self):
+        test_cases = [
+            (StringConstantFragment('abc'),
+             StringConstantFragment('abc')),
+            (StringSymbolFragment('symbol_name'),
+             StringSymbolFragment('symbol_name')),
+        ]
+        for fragment1, fragment2 in test_cases:
+            with self.subTest(msg=str(fragment1) + ' ' + str(fragment2)):
+                sut.equals_string_fragment(fragment1).apply_without_message(self, fragment2)
+                sut.equals_string_fragment(fragment2).apply_without_message(self, fragment1)
+
+    def test_string_not_equals_symbol_ref(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        value = 'a_value'
+        string_fragment = StringConstantFragment(value)
+        symbol_fragment = StringSymbolFragment(value)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragment(string_fragment)
+            assertion.apply_without_message(put, symbol_fragment)
+
+    def test_symbol_ref_not_equals_string(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        value = 'a_value'
+        string_fragment = StringConstantFragment(value)
+        symbol_fragment = StringSymbolFragment(value)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragment(symbol_fragment)
+            assertion.apply_without_message(put, string_fragment)
+
+    def test_string_not_equals_string_with_different_value(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        fragment1 = StringConstantFragment('value 1')
+        fragment2 = StringConstantFragment('value 2')
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragment(fragment1)
+            assertion.apply_without_message(put, fragment2)
+
+    def test_symbol_ref_not_equals_symbol_ref_with_different_symbol_name(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        fragment1 = StringSymbolFragment('symbol_name_1')
+        fragment2 = StringSymbolFragment('symbol_name_2')
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragment(fragment1)
+            assertion.apply_without_message(put, fragment2)
+
+
+class TestEqualsFragments(unittest.TestCase):
+    def test_equals(self):
+        test_cases = [
+            (
+                (),
+                (),
+            ),
+            (
+                (StringConstantFragment('abc'),),
+                (StringConstantFragment('abc'),),
+            ),
+            (
+                (StringSymbolFragment('symbol_name'),),
+                (StringSymbolFragment('symbol_name'),),
+            ),
+            (
+                (StringConstantFragment('abc'),
+                 StringSymbolFragment('symbol_name'),),
+                (StringConstantFragment('abc'),
+                 StringSymbolFragment('symbol_name'),),
+            ),
+        ]
+        for fragments1, fragments2 in test_cases:
+            with self.subTest(msg=str(fragments1) + ' ' + str(fragments2)):
+                sut.equals_string_fragments(fragments1).apply_without_message(self, fragments2)
+                sut.equals_string_fragments(fragments2).apply_without_message(self, fragments1)
+
+    def test_not_equals__different_number_of_fragments__empty__non_empty(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = ()
+        actual = (StringConstantFragment('value'),)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragments(expected)
+            assertion.apply_without_message(put, actual)
+
+    def test_not_equals__different_number_of_fragments__non_empty__empty(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = (StringConstantFragment('value'),)
+        actual = ()
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragments(expected)
+            assertion.apply_without_message(put, actual)
+
+    def test_not_equals__same_length__different_values(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = (StringConstantFragment('expected value'),)
+        actual = (StringConstantFragment('actual value'),)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragments(expected)
+            assertion.apply_without_message(put, actual)
+
+    def test_not_equals__same_length__different_types(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected = (StringConstantFragment('value'),)
+        actual = (StringSymbolFragment('value'),)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_fragments(expected)
+            assertion.apply_without_message(put, actual)
 
 
 class TestEquals(unittest.TestCase):
@@ -147,16 +273,48 @@ class TestNotEquals3(unittest.TestCase):
             assertion = sut.equals_string_resolver3(expected)
             assertion.apply_without_message(put, actual)
 
+    def test_differs__different_number_of_fragments(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected_string = 'expected value'
+        expected_fragments = (StringConstantFragment('value'),)
+        actual_fragments = ()
+        expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
+        actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_resolver3(expected)
+            assertion.apply_without_message(put, actual)
+
+    def test_differs__different_fragments(self):
+        # ARRANGE #
+        put = test_case_with_failure_exception_set_to_test_exception()
+        expected_string = 'expected value'
+        expected_fragments = (StringConstantFragment('value 1'),)
+        actual_fragments = (StringConstantFragment('value 2'),)
+        expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
+        actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
+        # ACT & ASSERT #
+        with put.assertRaises(TestException):
+            assertion = sut.equals_string_resolver3(expected)
+            assertion.apply_without_message(put, actual)
+
 
 class _StringResolverTestImpl(StringResolver):
     def __init__(self,
                  value: str,
-                 explicit_references: list):
+                 explicit_references: list,
+                 fragments: tuple() = ()):
         self.value = value
         self.explicit_references = explicit_references
+        self._fragments = fragments
 
     def resolve(self, symbols: SymbolTable) -> str:
         return self.value
+
+    @property
+    def fragments(self) -> tuple:
+        return self._fragments
 
     @property
     def references(self) -> list:
