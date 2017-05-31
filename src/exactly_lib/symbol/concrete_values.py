@@ -32,6 +32,54 @@ class SymbolValueResolver(Value):
         raise NotImplementedError()
 
 
+class StringFragment:
+    """
+    A part of the value of a StringResolver.
+    """
+
+    @property
+    def is_string_constant(self) -> bool:
+        return False
+
+    @property
+    def is_symbol(self) -> bool:
+        return False
+
+
+class StringConstantFragment(StringFragment):
+    """
+    A fragment that is a string constant.
+    """
+
+    def __init__(self, string_constant: str):
+        self._string_constant = string_constant
+
+    @property
+    def is_string_constant(self) -> bool:
+        return True
+
+    @property
+    def string_constant(self) -> str:
+        return self._string_constant
+
+
+class StringSymbolFragment(StringFragment):
+    """
+    A fragment that represents a reference to a symbol.
+    """
+
+    def __init__(self, symbol_name: str):
+        self._symbol_name = symbol_name
+
+    @property
+    def is_symbol(self) -> bool:
+        return True
+
+    @property
+    def symbol_name(self) -> str:
+        return self._symbol_name
+
+
 class StringResolver(SymbolValueResolver):
     @property
     def value_type(self) -> ValueType:
@@ -43,6 +91,17 @@ class StringResolver(SymbolValueResolver):
     @property
     def references(self) -> list:
         raise NotImplementedError()
+
+    @property
+    def fragments(self) -> list:
+        """
+        The sequence of fragments that makes up the value.
+
+        The resolved value is the concatenation of all fragments.
+
+        :rtype: [`StringFragment`]
+        """
+        return []
 
     def __str__(self):
         return str(type(self))

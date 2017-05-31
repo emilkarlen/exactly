@@ -7,7 +7,34 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestValueVisitor)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestStringFragments),
+        unittest.makeSuite(TestValueVisitor),
+    ])
+
+
+class TestStringFragments(unittest.TestCase):
+    def test_string_constant_fragment(self):
+        # ARRANGE #
+        value = 'string value'
+        actual = sut.StringConstantFragment(value)
+        # ASSERT #
+        self.assertIsInstance(actual, sut.StringFragment)
+        self.assertTrue(actual.is_string_constant, 'is_string_constant')
+        self.assertFalse(actual.is_symbol, 'is_symbol')
+        self.assertEqual(value, actual.string_constant,
+                         'string_constant')
+
+    def test_symbol_fragment(self):
+        # ARRANGE #
+        symbol_name = 'symbol_name'
+        actual = sut.StringSymbolFragment(symbol_name)
+        # ASSERT #
+        self.assertIsInstance(actual, sut.StringFragment)
+        self.assertFalse(actual.is_string_constant, 'is_string_constant')
+        self.assertTrue(actual.is_symbol, 'is_symbol')
+        self.assertEqual(symbol_name, actual.symbol_name,
+                         symbol_name)
 
 
 class TestValueVisitor(unittest.TestCase):
