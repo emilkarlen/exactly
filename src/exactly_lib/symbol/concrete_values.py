@@ -1,5 +1,6 @@
 from enum import Enum
 
+from exactly_lib.symbol.string_value import StringValue
 from exactly_lib.symbol.value_structure import Value
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
@@ -86,6 +87,9 @@ class StringResolver(SymbolValueResolver):
         return ValueType.STRING
 
     def resolve(self, symbols: SymbolTable) -> str:
+        raise NotImplementedError()
+
+    def resolve_string_value(self, symbols: SymbolTable) -> StringValue:
         raise NotImplementedError()
 
     @property
