@@ -93,15 +93,15 @@ class StringResolver(SymbolValueResolver):
         raise NotImplementedError()
 
     @property
-    def fragments(self) -> list:
+    def fragments(self) -> tuple:
         """
         The sequence of fragments that makes up the value.
 
         The resolved value is the concatenation of all fragments.
 
-        :rtype: [`StringFragment`]
+        :rtype: (`StringFragment`)
         """
-        return []
+        return ()
 
     def __str__(self):
         return str(type(self))
