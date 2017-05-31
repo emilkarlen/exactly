@@ -72,7 +72,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return self._format('Install existing files from the {home_dir} into the {sandbox}')
+        return self._format('Installs files and directories from the {home_dir} into the {sandbox}')
 
     def main_description_rest(self) -> list:
         return self._paragraphs(_MAIN_DESCRIPTION_REST) + dt.paths_uses_posix_syntax()
@@ -106,7 +106,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         file_arg_sed = SyntaxElementDescription(
             OPTION_ARGUMENT_FOR_SOURCE.name,
             self._paragraphs(
-                "A file or directory to install."),
+                "An existing file or directory."),
             [InvokationVariant(
                 self._cl_syntax_for_args(
                     [optional_relativity,
@@ -254,7 +254,9 @@ class _MainWithExplicitDestination:
                                         src_basename,
                                         self.dst_path)
             else:
-                err_msg = 'Destination file already exists as a non-directory: {}'.format(self.dst_path)
+                err_msg = '{} file already exists but is not a directory: {}'.format(
+                    OPTION_ARGUMENT_FOR_DESTINATION.name,
+                    self.dst_path)
                 raise exception_detection.DetectedException(
                     new_failure_details_from_message(err_msg))
         else:
@@ -272,7 +274,8 @@ def _install_into_directory(os_services: OsServices,
     target = dst_container_path / dst_file_name
     if target.exists():
         raise exception_detection.DetectedException(
-            new_failure_details_from_message('Destination already exists: {}'.format(target)))
+            new_failure_details_from_message('{} already exists: {}'.format(OPTION_ARGUMENT_FOR_DESTINATION.name,
+                                                                            target)))
     src = str(src_file_path)
     dst = str(target)
     if src_file_path.is_dir():
@@ -282,20 +285,20 @@ def _install_into_directory(os_services: OsServices,
 
 
 _MAIN_DESCRIPTION_REST = """\
-    As many attributes as possible of the copied files are preserved
-    (this depends on Python implementation).
+If {DESTINATION} is not given, then {SOURCE} is installed in the {current_dir},
+as a file/directory with the basename of {SOURCE}.
 
 
-    If {DESTINATION} is not given, then {SOURCE} is installed in the {current_dir},
-    as a file/directory with the name basename({SOURCE}).
-    
+If {DESTINATION} is given, but does not exist, then {SOURCE} is installed as
+a file/directory with the path of {DESTINATION}
 
-    If {DESTINATION} is given, but does not exist, then the {SOURCE} is installed as
-    a file/directory with the name {DESTINATION}
-    
-    (the basename of {SOURCE} is not preserved).
+(the basename of {SOURCE} is not preserved).
 
 
-    If {DESTINATION} does exist, it must be a directory, and {SOURCE} is installed inside that directory
-    as a file/directory with the same base name as {SOURCE}.
-    """
+If {DESTINATION} does exist, it must be a directory, and {SOURCE} is installed inside that directory
+as a file/directory with the basename of {SOURCE}.
+
+
+As many attributes as possible of the copied files are preserved
+(this depends on the Python implementation).
+"""
