@@ -1,10 +1,9 @@
 import pathlib
 
-import exactly_lib.help_texts.argument_rendering.path_syntax
-import exactly_lib.instructions.assert_.utils.file_contents.instruction_options
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
     ActualFileTransformerForEnvVarsReplacementBase
@@ -47,7 +46,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                  self.actual_file_arg.name,
                                                  [self.actual_file])
         self.with_replaced_env_vars_option = a.Option(
-            exactly_lib.instructions.assert_.utils.file_contents.instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+            instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
         self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                                a.Named('ACTUAL-REL'))
 
