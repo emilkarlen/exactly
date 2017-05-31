@@ -93,7 +93,7 @@ syntax_element_description_checker = asrt.And([
     asrt.sub_component_list('description_rest',
                           lambda x: x.description_rest,
                           struct_check.is_paragraph_item),
-    va.sub_component_list('invokation_variants',
-                          lambda sed: sed.invokation_variants,
-                          is_invokation_variant)
+    asrt.sub_component_list('invokation_variants',
+                            lambda sed: sed.invokation_variants,
+                            is_invokation_variant)
 ])
