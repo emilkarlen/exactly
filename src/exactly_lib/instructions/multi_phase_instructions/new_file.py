@@ -118,7 +118,7 @@ def create_file(file_info: FileInfo,
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.file_ref.resolve(environment.symbols).file_path_post_sds(environment.sds)
+    file_path = file_info.file_ref.resolve(environment.symbols).value_post_sds(environment.sds)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)

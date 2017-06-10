@@ -56,11 +56,11 @@ class _StackedFileRef(FileRef):
     def exists_pre_sds(self) -> bool:
         return self.base_file_ref.exists_pre_sds()
 
-    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
-        return self.base_file_ref.file_path_pre_sds(home_dir_path) / self.path_suffix_path()
+    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        return self.base_file_ref.value_pre_sds(home_dir_path) / self.path_suffix_path()
 
-    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return self.base_file_ref.file_path_post_sds(sds) / self.path_suffix_path()
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.base_file_ref.value_post_sds(sds) / self.path_suffix_path()
 
 
 def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:

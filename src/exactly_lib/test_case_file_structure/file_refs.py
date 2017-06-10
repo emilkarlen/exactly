@@ -24,11 +24,11 @@ class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase
     def exists_pre_sds(self) -> bool:
         return self.__exists_pre_sds
 
-    def file_path_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self.__exists_pre_sds:
-            return self.file_path_pre_sds(home_and_sds.home_dir_path)
+            return self.value_pre_sds(home_and_sds.home_dir_path)
         else:
-            return self.file_path_post_sds(home_and_sds.sds)
+            return self.value_post_sds(home_and_sds.sds)
 
 
 class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
@@ -41,12 +41,12 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
     def _relativity(self) -> RelOptionType:
         return self._rel_root_resolver.relativity_type
 
-    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         suffix = self.path_suffix_path()
         root = self._rel_root_resolver.from_home(home_dir_path)
         return root / suffix
 
-    def file_path_post_sds(self, sds: SandboxDirectoryStructure):
+    def value_post_sds(self, sds: SandboxDirectoryStructure):
         suffix = self.path_suffix_path()
         root = self._rel_root_resolver.from_non_home(sds)
         return root / suffix
@@ -97,13 +97,13 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
     def exists_pre_sds(self) -> bool:
         return True
 
-    def file_path_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self.file_path_pre_sds(home_and_sds.home_dir_path)
+    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return self.value_pre_sds(home_and_sds.home_dir_path)
 
-    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return self.path_suffix_path()
 
-    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
 
 
@@ -111,10 +111,10 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
     def __init__(self, path_suffix: PathPart):
         super().__init__(True, path_suffix)
 
-    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return home_dir_path / self.path_suffix_path()
 
-    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
 
 
@@ -122,8 +122,8 @@ class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
     def __init__(self, path_suffix: PathPart):
         super().__init__(False, path_suffix)
 
-    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         raise ValueError('This file does not exist pre-SDS')
 
-    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return sds.tmp.internal_dir / self.path_suffix_path()

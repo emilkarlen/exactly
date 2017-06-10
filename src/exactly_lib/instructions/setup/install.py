@@ -185,7 +185,7 @@ class _InstallInstructionBase(SetupPhaseInstruction):
 
     def _src_path(self,
                   environment: InstructionEnvironmentForPreSdsStep) -> pathlib.Path:
-        return self.source_file_ref.resolve(environment.symbols).file_path_pre_sds(environment.home_directory)
+        return self.source_file_ref.resolve(environment.symbols).value_pre_sds(environment.home_directory)
 
 
 class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBase):
@@ -223,7 +223,7 @@ class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
-        dst_path = self.destination_file_ref.resolve(environment.symbols).file_path_post_sds(environment.sds)
+        dst_path = self.destination_file_ref.resolve(environment.symbols).value_post_sds(environment.sds)
         main = _MainWithExplicitDestination(os_services, src_path, dst_path)
         return exception_detection.return_success_or_hard_error(main)
 

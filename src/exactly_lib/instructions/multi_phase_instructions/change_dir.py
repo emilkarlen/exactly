@@ -95,7 +95,7 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
         :return: None iff success. Otherwise an error message.
         """
         dir_path_ref = self.destination.resolve(environment.symbols)
-        dir_path = dir_path_ref.file_path_post_sds(environment.sds)
+        dir_path = dir_path_ref.value_post_sds(environment.sds)
         try:
             os.chdir(str(dir_path))
         except FileNotFoundError:
