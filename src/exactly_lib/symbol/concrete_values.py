@@ -21,7 +21,11 @@ class SymbolValueResolver(Value):
 
     @property
     def references(self) -> list:
-        """Values in the symbol table used by this object."""
+        """
+        Values in the symbol table used by this object.
+        
+        :type: [SymbolReference]
+        """
         raise NotImplementedError()
 
     def resolve(self, symbols: SymbolTable):
