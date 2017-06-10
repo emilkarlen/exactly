@@ -53,6 +53,9 @@ class _StackedFileRef(FileRef):
     def path_suffix_path(self) -> pathlib.Path:
         return pathlib.Path(self.path_suffix_str())
 
+    def has_dir_dependency(self) -> bool:
+        return self.base_file_ref.has_dir_dependency()
+
     def exists_pre_sds(self) -> bool:
         return self.base_file_ref.exists_pre_sds()
 
