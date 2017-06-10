@@ -28,6 +28,24 @@ class RelNonHomeOptionType(enum.Enum):
     REL_CWD = 4
 
 
+class ResolvingDependency(enum.Enum):
+    HOME = 1
+    NON_HOME = 2
+
+
+DEPENDENCY_DICT = {
+    ResolvingDependency.HOME:
+        frozenset((RelOptionType.REL_HOME,)),
+
+    ResolvingDependency.NON_HOME:
+        frozenset((RelOptionType.REL_ACT,
+                   RelOptionType.REL_RESULT,
+                   RelOptionType.REL_TMP,
+                   RelOptionType.REL_CWD,
+                   )),
+}
+
+
 def rel_non_home_from_rel_sds(rel_sds: RelSdsOptionType) -> RelNonHomeOptionType:
     return RelNonHomeOptionType(rel_sds.value)
 
