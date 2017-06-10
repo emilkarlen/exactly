@@ -36,8 +36,8 @@ class ValueContainer(SymbolTableValue):
 
 class ValueRestriction:
     """
-    A restriction on a value that can be checked "statically" -
-    i.e. does not check actual resolved value.
+    A restriction on a value in the symbol table, that is applied by the frame work - 
+    i.e. not by specific instructions.
     """
 
     def is_satisfied_by(self, symbol_table: SymbolTable, symbol_name: str, value: ValueContainer) -> str:
