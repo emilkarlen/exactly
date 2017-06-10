@@ -67,12 +67,12 @@ class _AssertFileRefHasSpecifiedProperties(asrt.ValueAssertion):
                      home_and_sds: HomeAndSds):
         expected_exists_pre_sds = self._expected.exists_pre_sds()
         if expected_exists_pre_sds:
-            put.assertEqual(self._expected.file_path_pre_sds(home_and_sds.home_dir_path),
-                            actual.file_path_pre_sds(home_and_sds.home_dir_path),
+            put.assertEqual(self._expected.value_pre_sds(home_and_sds.home_dir_path),
+                            actual.value_pre_sds(home_and_sds.home_dir_path),
                             message_builder.apply('file_path_pre_sds'))
         else:
-            put.assertEqual(self._expected.file_path_post_sds(home_and_sds.sds),
-                            actual.file_path_post_sds(home_and_sds.sds),
+            put.assertEqual(self._expected.value_post_sds(home_and_sds.sds),
+                            actual.value_post_sds(home_and_sds.sds),
                             message_builder.apply('file_path_post_sds'))
 
     def _check_relativity(self,

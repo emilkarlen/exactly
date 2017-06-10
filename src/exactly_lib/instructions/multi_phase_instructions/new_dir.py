@@ -74,7 +74,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         """
         :return: None iff success. Otherwise an error message.
         """
-        dir_path = self.dir_path_resolver.resolve(environment.symbols).file_path_post_sds(environment.sds)
+        dir_path = self.dir_path_resolver.resolve(environment.symbols).value_post_sds(environment.sds)
         try:
             if dir_path.is_dir():
                 return None

@@ -29,10 +29,10 @@ class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
     def exists_pre_sds(self) -> bool:
         return self.__relativity == RelOptionType.REL_HOME
 
-    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
-    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
     def _relativity(self) -> RelOptionType:

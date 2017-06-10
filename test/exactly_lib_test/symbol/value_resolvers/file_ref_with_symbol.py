@@ -137,12 +137,12 @@ class TestRelSymbol(unittest.TestCase):
                     # ACT #
                     file_ref_to_check = fr_resolver_to_check.resolve(environment.symbols)
                     if exists_pre_sds:
-                        tested_path_msg = 'file_path_pre_sds'
-                        actual_path = file_ref_to_check.file_path_pre_sds(environment.home_dir_path)
+                        tested_path_msg = 'value_pre_sds'
+                        actual_path = file_ref_to_check.value_pre_sds(environment.home_dir_path)
                     else:
-                        tested_path_msg = 'file_path_post_sds'
-                        actual_path = file_ref_to_check.file_path_post_sds(environment.sds)
-                    actual_path_pre_or_post_sds = file_ref_to_check.file_path_pre_or_post_sds(environment.home_and_sds)
+                        tested_path_msg = 'value_post_sds'
+                        actual_path = file_ref_to_check.value_post_sds(environment.sds)
+                    actual_path_pre_or_post_sds = file_ref_to_check.value_pre_or_post_sds(environment.home_and_sds)
                     # ASSERT #
                     self.assertIs(ValueType.PATH,
                                   fr_resolver_to_check.value_type,
@@ -152,7 +152,7 @@ class TestRelSymbol(unittest.TestCase):
                                      tested_path_msg)
                     self.assertEqual(expected_path_str,
                                      str(actual_path_pre_or_post_sds),
-                                     'file_path_pre_or_post_sds')
+                                     'value_pre_or_post_sds')
 
 
 def _symbol_reference_of_path_with_accepted(value_name: str,
