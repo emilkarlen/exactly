@@ -22,9 +22,6 @@ class FileRef(DirDependentValue):
     def path_suffix_path(self) -> pathlib.Path:
         raise NotImplementedError()
 
-    def exists_pre_sds(self) -> bool:
-        raise NotImplementedError()
-
     def relativity(self) -> SpecificPathRelativity:
         raise NotImplementedError()
 

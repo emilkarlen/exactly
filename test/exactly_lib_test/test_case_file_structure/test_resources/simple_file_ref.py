@@ -26,6 +26,9 @@ class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
         self.__relativity = relativity
         self.__path_suffix = path_suffix
 
+    def has_dir_dependency(self) -> bool:
+        return True
+
     def exists_pre_sds(self) -> bool:
         return self.__relativity == RelOptionType.REL_HOME
 
