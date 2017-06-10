@@ -1,12 +1,20 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class DirDependencyError(ValueError):
-    def __init__(self, *args):
-        super().__init__(*args)
+    def __init__(self, unexpected_dependency: ResolvingDependency,
+                 msg: str):
+        super().__init__(msg)
+        self.unexpected_dependency = unexpected_dependency
+
+    def __str__(self) -> str:
+        return '{}(unexpected={}: {})'.format(type(self),
+                                              self.unexpected_dependency,
+                                              super().__str__())
 
 
 class DirDependentValue:
