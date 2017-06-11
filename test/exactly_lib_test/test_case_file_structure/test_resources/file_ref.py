@@ -1,10 +1,11 @@
 import unittest
 
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part
+from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import DirDependentValueAssertion
 from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import equals_path_relativity
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -12,29 +13,25 @@ def equals_file_ref(expected: FileRef) -> asrt.ValueAssertion:
     return _AssertFileRefHasSpecifiedProperties(expected)
 
 
-class _AssertFileRefHasSpecifiedProperties(asrt.ValueAssertion):
+class _AssertFileRefHasSpecifiedProperties(DirDependentValueAssertion):
     def __init__(self, expected: FileRef):
+        super().__init__(expected)
         self._expected = expected
 
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertIsInstance(value, FileRef,
-                             'Actual value is expected to be a ' + str(FileRef))
-        assert isinstance(value, FileRef)
-
-        home_and_sds = dummy_home_and_sds()
+    def _check_custom(self,
+                      put: unittest.TestCase,
+                      actual: DirDependentValue,
+                      home_and_sds: HomeAndSds,
+                      message_builder: asrt.MessageBuilder):
+        put.assertIsInstance(actual, FileRef,
+                             message_builder.apply('Actual value is expected to be a ' + str(FileRef)))
+        assert isinstance(actual, FileRef)
 
         self._check_path_suffix(put,
-                                value,
+                                actual,
                                 message_builder.for_sub_component('path_suffix'))
 
-        self._check_relativity(put, value, message_builder)
-
-        self._check_exists_pre_sds(put, value, message_builder)
-
-        self._check_paths(put, value, message_builder, home_and_sds)
+        self._check_relativity(put, actual, message_builder)
 
     def _check_path_suffix(self,
                            put: unittest.TestCase,
@@ -44,30 +41,6 @@ class _AssertFileRefHasSpecifiedProperties(asrt.ValueAssertion):
         equals_path_part(path_suffix).apply(put,
                                             actual.path_suffix(),
                                             message_builder)
-
-    def _check_exists_pre_sds(self,
-                              put: unittest.TestCase,
-                              actual: FileRef,
-                              message_builder: asrt.MessageBuilder):
-        expected_exists_pre_sds = self._expected.exists_pre_sds()
-        put.assertEqual(expected_exists_pre_sds,
-                        actual.exists_pre_sds(),
-                        message_builder.apply('exists_pre_sds'))
-
-    def _check_paths(self,
-                     put: unittest.TestCase,
-                     actual: FileRef,
-                     message_builder: asrt.MessageBuilder,
-                     home_and_sds: HomeAndSds):
-        expected_exists_pre_sds = self._expected.exists_pre_sds()
-        if expected_exists_pre_sds:
-            put.assertEqual(self._expected.value_pre_sds(home_and_sds.home_dir_path),
-                            actual.value_pre_sds(home_and_sds.home_dir_path),
-                            message_builder.apply('file_path_pre_sds'))
-        else:
-            put.assertEqual(self._expected.value_post_sds(home_and_sds.sds),
-                            actual.value_post_sds(home_and_sds.sds),
-                            message_builder.apply('file_path_post_sds'))
 
     def _check_relativity(self,
                           put: unittest.TestCase,
