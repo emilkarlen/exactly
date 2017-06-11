@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
-from exactly_lib.symbol.concrete_values import StringResolver, StringConstantFragment, StringSymbolFragment
+from exactly_lib.symbol.string_resolver import StringConstantFragmentResolver, StringSymbolFragmentResolver, \
+    StringResolver
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
@@ -22,10 +23,10 @@ def suite() -> unittest.TestSuite:
 class TestEqualsFragment(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            (StringConstantFragment('abc'),
-             StringConstantFragment('abc')),
-            (StringSymbolFragment('symbol_name'),
-             StringSymbolFragment('symbol_name')),
+            (StringConstantFragmentResolver('abc'),
+             StringConstantFragmentResolver('abc')),
+            (StringSymbolFragmentResolver('symbol_name'),
+             StringSymbolFragmentResolver('symbol_name')),
         ]
         for fragment1, fragment2 in test_cases:
             with self.subTest(msg=str(fragment1) + ' ' + str(fragment2)):
@@ -36,8 +37,8 @@ class TestEqualsFragment(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         value = 'a_value'
-        string_fragment = StringConstantFragment(value)
-        symbol_fragment = StringSymbolFragment(value)
+        string_fragment = StringConstantFragmentResolver(value)
+        symbol_fragment = StringSymbolFragmentResolver(value)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragment(string_fragment)
@@ -47,8 +48,8 @@ class TestEqualsFragment(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         value = 'a_value'
-        string_fragment = StringConstantFragment(value)
-        symbol_fragment = StringSymbolFragment(value)
+        string_fragment = StringConstantFragmentResolver(value)
+        symbol_fragment = StringSymbolFragmentResolver(value)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragment(symbol_fragment)
@@ -57,8 +58,8 @@ class TestEqualsFragment(unittest.TestCase):
     def test_string_not_equals_string_with_different_value(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        fragment1 = StringConstantFragment('value 1')
-        fragment2 = StringConstantFragment('value 2')
+        fragment1 = StringConstantFragmentResolver('value 1')
+        fragment2 = StringConstantFragmentResolver('value 2')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragment(fragment1)
@@ -67,8 +68,8 @@ class TestEqualsFragment(unittest.TestCase):
     def test_symbol_ref_not_equals_symbol_ref_with_different_symbol_name(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        fragment1 = StringSymbolFragment('symbol_name_1')
-        fragment2 = StringSymbolFragment('symbol_name_2')
+        fragment1 = StringSymbolFragmentResolver('symbol_name_1')
+        fragment2 = StringSymbolFragmentResolver('symbol_name_2')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragment(fragment1)
@@ -83,18 +84,18 @@ class TestEqualsFragments(unittest.TestCase):
                 (),
             ),
             (
-                (StringConstantFragment('abc'),),
-                (StringConstantFragment('abc'),),
+                (StringConstantFragmentResolver('abc'),),
+                (StringConstantFragmentResolver('abc'),),
             ),
             (
-                (StringSymbolFragment('symbol_name'),),
-                (StringSymbolFragment('symbol_name'),),
+                (StringSymbolFragmentResolver('symbol_name'),),
+                (StringSymbolFragmentResolver('symbol_name'),),
             ),
             (
-                (StringConstantFragment('abc'),
-                 StringSymbolFragment('symbol_name'),),
-                (StringConstantFragment('abc'),
-                 StringSymbolFragment('symbol_name'),),
+                (StringConstantFragmentResolver('abc'),
+                 StringSymbolFragmentResolver('symbol_name'),),
+                (StringConstantFragmentResolver('abc'),
+                 StringSymbolFragmentResolver('symbol_name'),),
             ),
         ]
         for fragments1, fragments2 in test_cases:
@@ -106,7 +107,7 @@ class TestEqualsFragments(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = ()
-        actual = (StringConstantFragment('value'),)
+        actual = (StringConstantFragmentResolver('value'),)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragments(expected)
@@ -115,7 +116,7 @@ class TestEqualsFragments(unittest.TestCase):
     def test_not_equals__different_number_of_fragments__non_empty__empty(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = (StringConstantFragment('value'),)
+        expected = (StringConstantFragmentResolver('value'),)
         actual = ()
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -125,8 +126,8 @@ class TestEqualsFragments(unittest.TestCase):
     def test_not_equals__same_length__different_values(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = (StringConstantFragment('expected value'),)
-        actual = (StringConstantFragment('actual value'),)
+        expected = (StringConstantFragmentResolver('expected value'),)
+        actual = (StringConstantFragmentResolver('actual value'),)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragments(expected)
@@ -135,8 +136,8 @@ class TestEqualsFragments(unittest.TestCase):
     def test_not_equals__same_length__different_types(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = (StringConstantFragment('value'),)
-        actual = (StringSymbolFragment('value'),)
+        expected = (StringConstantFragmentResolver('value'),)
+        actual = (StringSymbolFragmentResolver('value'),)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragments(expected)
@@ -206,7 +207,7 @@ class TestNotEquals3(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
-        expected_fragments = (StringConstantFragment('value'),)
+        expected_fragments = (StringConstantFragmentResolver('value'),)
         actual_fragments = ()
         expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
@@ -219,8 +220,8 @@ class TestNotEquals3(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
-        expected_fragments = (StringConstantFragment('value 1'),)
-        actual_fragments = (StringConstantFragment('value 2'),)
+        expected_fragments = (StringConstantFragmentResolver('value 1'),)
+        actual_fragments = (StringConstantFragmentResolver('value 2'),)
         expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
         # ACT & ASSERT #

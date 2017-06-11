@@ -2,7 +2,8 @@ import pathlib
 
 from exactly_lib.symbol.concrete_restrictions import EitherStringOrFileRefRelativityRestriction, \
     StringRestriction, FileRefRelativityRestriction
-from exactly_lib.symbol.concrete_values import ValueVisitor, FileRefResolver, StringResolver
+from exactly_lib.symbol.concrete_values import ValueVisitor, FileRefResolver
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_structure import SymbolReference, ValueContainer
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath

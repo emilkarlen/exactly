@@ -1,5 +1,6 @@
-from exactly_lib.symbol.concrete_values import FileRefResolver, StringResolver, SymbolValueResolver, ValueType
-from exactly_lib.symbol.value_structure import ValueRestriction, ValueContainer
+from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.symbol.value_structure import ValueRestriction, ValueContainer, ValueType, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by

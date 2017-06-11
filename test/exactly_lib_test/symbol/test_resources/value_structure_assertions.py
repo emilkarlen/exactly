@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import value_structure as stc
-from exactly_lib.symbol.concrete_values import SymbolValueResolver
+from exactly_lib.symbol.value_structure import SymbolValueResolver
 from exactly_lib_test.section_document.test_resources.assertions import equals_line
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import resolver_equals3
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
