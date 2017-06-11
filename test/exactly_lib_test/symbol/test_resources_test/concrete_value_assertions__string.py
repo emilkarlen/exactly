@@ -148,18 +148,15 @@ class TestEquals(unittest.TestCase):
     def test_with_ignored_reference_checks(self):
         test_cases = [
             ('Plain string',
-             'string value',
              StringConstant('string value'),
              empty_symbol_table(),
              ),
             ('String with reference',
-             'string value',
              _StringResolverTestImpl('string value', [SymbolReference('symbol_name', NoRestriction())]),
              empty_symbol_table(),
              ),
         ]
-        for test_case_name, plain_string, string_value, symbol_table in test_cases:
-            assert isinstance(plain_string, str), 'Type info for IDE'
+        for test_case_name, string_value, symbol_table in test_cases:
             assert isinstance(string_value, StringResolver), 'Type info for IDE'
             with self.subTest(msg='equals_string_value2::with checked references::' + test_case_name):
                 assertion = sut.equals_string_resolver3(string_value)
