@@ -3,11 +3,12 @@ import unittest
 
 from exactly_lib.symbol import concrete_restrictions
 from exactly_lib.symbol import value_structure as vs
-from exactly_lib.symbol.concrete_values import FileRefResolver, StringResolver, ValueVisitor, \
-    SymbolValueResolver, StringFragment, StringConstantFragment, StringSymbolFragment
+from exactly_lib.symbol.concrete_values import FileRefResolver, ValueVisitor
+from exactly_lib.symbol.string_resolver import StringFragmentResolver, StringConstantFragmentResolver, \
+    StringSymbolFragmentResolver, StringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
-from exactly_lib.symbol.value_structure import ValueContainer, Value
+from exactly_lib.symbol.value_structure import ValueContainer, Value, SymbolValueResolver
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
@@ -41,10 +42,10 @@ def equals_file_ref_resolver2(expected_relativity_and_paths: FileRef,
                                                         symbol_table)
 
 
-def equals_string_fragment(expected: StringFragment) -> asrt.ValueAssertion:
-    if isinstance(expected, StringConstantFragment):
+def equals_string_fragment(expected: StringFragmentResolver) -> asrt.ValueAssertion:
+    if isinstance(expected, StringConstantFragmentResolver):
         return _EqualsStringFragmentAssertionForStringConstant(expected)
-    if isinstance(expected, StringSymbolFragment):
+    if isinstance(expected, StringSymbolFragmentResolver):
         return _EqualsStringFragmentAssertionForSymbolReference(expected)
     raise TypeError('Not a StringResolver: ' + str(expected))
 
@@ -58,15 +59,15 @@ def equals_string_resolver3(expected: StringResolver) -> asrt.ValueAssertion:
 
 
 class _EqualsStringFragmentAssertionForStringConstant(asrt.ValueAssertion):
-    def __init__(self, expected: StringConstantFragment):
+    def __init__(self, expected: StringConstantFragmentResolver):
         self.expected = expected
 
     def apply(self,
               put: unittest.TestCase,
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertIsInstance(value, StringConstantFragment)
-        assert isinstance(value, StringConstantFragment)  # Type info for IDE
+        put.assertIsInstance(value, StringConstantFragmentResolver)
+        assert isinstance(value, StringConstantFragmentResolver)  # Type info for IDE
 
         put.assertTrue(value.is_string_constant,
                        'is_string_constant')
@@ -80,15 +81,15 @@ class _EqualsStringFragmentAssertionForStringConstant(asrt.ValueAssertion):
 
 
 class _EqualsStringFragmentAssertionForSymbolReference(asrt.ValueAssertion):
-    def __init__(self, expected: StringSymbolFragment):
+    def __init__(self, expected: StringSymbolFragmentResolver):
         self.expected = expected
 
     def apply(self,
               put: unittest.TestCase,
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertIsInstance(value, StringSymbolFragment)
-        assert isinstance(value, StringSymbolFragment)  # Type info for IDE
+        put.assertIsInstance(value, StringSymbolFragmentResolver)
+        assert isinstance(value, StringSymbolFragmentResolver)  # Type info for IDE
 
         put.assertFalse(value.is_string_constant,
                         'is_string_constant')
@@ -107,7 +108,7 @@ class _EqualsStringFragments(asrt.ValueAssertion):
         assert isinstance(expected, tuple), 'Value reference list must be a tuple'
         self._sequence_of_element_assertions = []
         for idx, element in enumerate(expected):
-            assert isinstance(element, StringFragment), 'Element must be a StringFragment #' + str(idx)
+            assert isinstance(element, StringFragmentResolver), 'Element must be a StringFragment #' + str(idx)
             self._sequence_of_element_assertions.append(equals_string_fragment(element))
 
     def apply(self,

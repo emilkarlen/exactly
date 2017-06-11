@@ -1,5 +1,5 @@
 from exactly_lib.symbol.concrete_restrictions import StringRestriction
-from exactly_lib.symbol.concrete_values import StringResolver
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_structure import SymbolReference, ValueContainer
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing

@@ -1,4 +1,4 @@
-from exactly_lib.symbol.concrete_values import StringResolver
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.util.symbol_table import SymbolTable
 
 

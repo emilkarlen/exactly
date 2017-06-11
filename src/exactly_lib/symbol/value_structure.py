@@ -1,5 +1,12 @@
+from enum import Enum
+
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable, Entry
+
+
+class ValueType(Enum):
+    STRING = 0
+    PATH = 1
 
 
 class Value:
@@ -10,6 +17,32 @@ class Value:
     @property
     def references(self) -> list:
         """All `ValueReference` directly referenced by this object"""
+        raise NotImplementedError()
+
+
+class SymbolValueResolver(Value):
+    """
+    Base class for values in the symbol table used by Exactly.
+    """
+
+    @property
+    def value_type(self) -> ValueType:
+        raise NotImplementedError()
+
+    @property
+    def references(self) -> list:
+        """
+        Values in the symbol table used by this object.
+
+        :type: [SymbolReference]
+        """
+        raise NotImplementedError()
+
+    def resolve(self, symbols: SymbolTable):
+        """
+        Resolves the value given a symbol table.
+        :rtype: Depends on the concrete value.
+        """
         raise NotImplementedError()
 
 

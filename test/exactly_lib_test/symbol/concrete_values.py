@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import concrete_values as sut
+from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
@@ -17,9 +18,9 @@ class TestStringFragments(unittest.TestCase):
     def test_string_constant_fragment(self):
         # ARRANGE #
         value = 'string value'
-        actual = sut.StringConstantFragment(value)
+        actual = sr.StringConstantFragmentResolver(value)
         # ASSERT #
-        self.assertIsInstance(actual, sut.StringFragment)
+        self.assertIsInstance(actual, sr.StringFragmentResolver)
         self.assertTrue(actual.is_string_constant, 'is_string_constant')
         self.assertFalse(actual.is_symbol, 'is_symbol')
         self.assertEqual(value, actual.string_constant,
@@ -28,9 +29,9 @@ class TestStringFragments(unittest.TestCase):
     def test_symbol_fragment(self):
         # ARRANGE #
         symbol_name = 'symbol_name'
-        actual = sut.StringSymbolFragment(symbol_name)
+        actual = sr.StringSymbolFragmentResolver(symbol_name)
         # ASSERT #
-        self.assertIsInstance(actual, sut.StringFragment)
+        self.assertIsInstance(actual, sr.StringFragmentResolver)
         self.assertFalse(actual.is_string_constant, 'is_string_constant')
         self.assertTrue(actual.is_symbol, 'is_symbol')
         self.assertEqual(symbol_name, actual.symbol_name,
@@ -59,7 +60,7 @@ class TestValueVisitor(unittest.TestCase):
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')
         self.assertListEqual(visitor.visited_classes,
-                             [sut.StringResolver],
+                             [sr.StringResolver],
                              'visited classes')
 
     def test_visit_non_sub_class_should_raise_exception(self):
@@ -79,6 +80,6 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.ValueVisitor):
         self.visited_classes.append(sut.FileRefResolver)
         return self.ret_val
 
-    def _visit_string(self, value: sut.StringResolver):
-        self.visited_classes.append(sut.StringResolver)
+    def _visit_string(self, value: sr.StringResolver):
+        self.visited_classes.append(sr.StringResolver)
         return self.ret_val
