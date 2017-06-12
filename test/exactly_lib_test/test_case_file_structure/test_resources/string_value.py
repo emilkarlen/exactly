@@ -1,0 +1,51 @@
+import unittest
+
+from exactly_lib.symbol.string_value import StringValue, StringFragment
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import DirDependentValueAssertion
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+
+
+def equals_string_value(expected: StringValue) -> asrt.ValueAssertion:
+    return _AssertStringValueHasSpecifiedProperties(expected)
+
+
+def equals_string_fragment(expected: StringFragment) -> asrt.ValueAssertion:
+    return _AssertStringFragmentHasSpecifiedProperties(expected)
+
+
+class _AssertStringFragmentHasSpecifiedProperties(DirDependentValueAssertion):
+    def __init__(self, expected: StringFragment):
+        super().__init__(expected)
+        self._expected = expected
+
+    def _check_custom(self,
+                      put: unittest.TestCase,
+                      actual: DirDependentValue,
+                      home_and_sds: HomeAndSds,
+                      message_builder: asrt.MessageBuilder):
+        put.assertIsInstance(actual, StringFragment,
+                             message_builder.apply('Actual value is expected to be a ' + str(StringFragment)))
+        assert isinstance(actual, StringFragment)
+
+
+class _AssertStringValueHasSpecifiedProperties(DirDependentValueAssertion):
+    def __init__(self, expected: StringValue):
+        super().__init__(expected)
+        self._expected = expected
+        self._sequence_of_fragment_assertions = []
+        for idx, element in enumerate(expected.fragments):
+            assert isinstance(element, StringFragment), 'Element must be a StringFragment #' + str(idx)
+            self._sequence_of_fragment_assertions.append(equals_string_fragment(element))
+
+    def _check_custom(self,
+                      put: unittest.TestCase,
+                      actual: DirDependentValue,
+                      home_and_sds: HomeAndSds,
+                      message_builder: asrt.MessageBuilder):
+        put.assertIsInstance(actual, StringValue,
+                             message_builder.apply('Actual value is expected to be a ' + str(StringValue)))
+        assert isinstance(actual, StringValue)
+        fragments_assertion = asrt.matches_sequence(self._sequence_of_fragment_assertions)
+        fragments_assertion.apply(put, actual.fragments, message_builder.for_sub_component('fragments'))

@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
@@ -21,14 +21,14 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_equals__string(self):
         # ARRANGE #
-        value = StringConstant('string')
+        value = string_constant('string')
         # ACT & ASSERT #
         sut.resolver_equals3(value).apply_without_message(self, value)
 
     def test_not_equals__different_types(self):
         # ARRANGE #
         expected = FileRefConstant(file_ref_test_impl('file-name'))
-        actual = StringConstant('string value')
+        actual = string_constant('string value')
         put = test_case_with_failure_exception_set_to_test_exception()
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -45,8 +45,8 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_not_equals__string(self):
         # ARRANGE #
-        expected = StringConstant('expected string')
-        actual = StringConstant('actual string')
+        expected = string_constant('expected string')
+        actual = string_constant('actual string')
         put = test_case_with_failure_exception_set_to_test_exception()
         # ACT & ASSERT #
         with put.assertRaises(TestException):

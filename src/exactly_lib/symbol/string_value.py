@@ -86,24 +86,43 @@ class ConstantFragment(StringFragment):
         return self.string_constant
 
 
-class FileRefFragment(StringFragment):
-    def __init__(self, file_ref):
-        self.file_ref = file_ref
+class _StringFragmentFromDirDependentValue(StringFragment):
+    def __init__(self, value: DirDependentValue):
+        self.value = value
 
     def has_dir_dependency(self) -> bool:
-        return self.file_ref.has_dir_dependency()
+        return self.value.has_dir_dependency()
 
     def exists_pre_sds(self) -> bool:
-        return self.file_ref.exists_pre_sds()
+        return self.value.exists_pre_sds()
 
     def value_when_no_dir_dependencies(self):
-        return self.file_ref.value_when_no_dir_dependencies()
+        return self.value.value_when_no_dir_dependencies()
 
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> str:
-        return str(self.file_ref.value_pre_sds())
+        return self._to_string(self.value.value_pre_sds(home_dir_path))
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> str:
-        return str(self.file_ref.value_post_sds())
+        return self._to_string(self.value.value_post_sds(sds))
 
     def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> str:
-        return str(self.file_ref.value_pre_or_post_sds())
+        return self._to_string(self.value.value_pre_or_post_sds(home_and_sds))
+
+    def _to_string(self, x) -> str:
+        raise NotImplementedError()
+
+
+class StringValueFragment(_StringFragmentFromDirDependentValue):
+    def __init__(self, string_value: StringValue):
+        super().__init__(string_value)
+
+    def _to_string(self, value) -> str:
+        return value
+
+
+class FileRefFragment(_StringFragmentFromDirDependentValue):
+    def __init__(self, file_ref):
+        super().__init__(file_ref)
+
+    def _to_string(self, value) -> str:
+        return str(value)

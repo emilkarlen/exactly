@@ -4,9 +4,9 @@ from exactly_lib.execution.instruction_execution import symbol_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.symbol import value_structure as vs
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.symbol.value_structure import ValueRestriction
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -168,7 +168,7 @@ class TestValidationOfList(unittest.TestCase):
 def symbol_of(name: str) -> vs.SymbolDefinition:
     return vs.SymbolDefinition(name,
                                vs.ValueContainer(Line(1, 'source code'),
-                                                StringConstant('string value')))
+                                                 string_constant('string value')))
 
 
 def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
@@ -178,7 +178,7 @@ def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
 def string_entry(name: str, value: str = 'string value') -> Entry:
     return Entry(name,
                  vs.ValueContainer(Line(1, 'source code'),
-                                   StringConstant(value)))
+                                   string_constant(value)))
 
 
 def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRelativityVariants:

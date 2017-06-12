@@ -1,5 +1,6 @@
 from enum import Enum
 
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable, Entry
 
@@ -38,7 +39,7 @@ class SymbolValueResolver(Value):
         """
         raise NotImplementedError()
 
-    def resolve(self, symbols: SymbolTable):
+    def resolve(self, symbols: SymbolTable) -> DirDependentValue:
         """
         Resolves the value given a symbol table.
         :rtype: Depends on the concrete value.

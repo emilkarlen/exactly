@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import concrete_restrictions as sut
-from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
+from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -22,7 +22,7 @@ class TestNoRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            StringConstant('string'),
+            string_constant('string'),
             file_ref_value(),
         ]
         restriction = sut.NoRestriction()
@@ -40,8 +40,8 @@ class TestStringRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            StringConstant('string'),
-            StringConstant(''),
+            string_constant('string'),
+            string_constant(''),
         ]
         restriction = sut.StringRestriction()
         symbols = empty_symbol_table()
@@ -113,7 +113,7 @@ class TestEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            StringConstant('string'),
+            string_constant('string'),
             file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
             file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
         ]

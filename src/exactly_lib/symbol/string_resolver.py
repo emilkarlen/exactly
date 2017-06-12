@@ -1,12 +1,18 @@
-from exactly_lib.symbol.string_value import StringValue
-from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueType
+from exactly_lib.symbol import string_value as sv
+from exactly_lib.symbol import value_structure as struct
+from exactly_lib.symbol.value_structure import SymbolValueResolver
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class StringFragmentResolver:
+class StringFragmentResolver(SymbolValueResolver):
     """
     A part of the value of a StringResolver.
     """
+
+    @property
+    def value_type(self) -> struct.ValueType:
+        return struct.ValueType.STRING
 
     @property
     def is_string_constant(self) -> bool:
@@ -16,8 +22,20 @@ class StringFragmentResolver:
     def is_symbol(self) -> bool:
         return False
 
+    @property
+    def references(self) -> tuple:
+        """
+        Values in the symbol table used by this object.
 
-class StringConstantFragmentResolver(StringFragmentResolver):
+        :type: (SymbolReference)
+        """
+        raise NotImplementedError()
+
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+        raise NotImplementedError()
+
+
+class ConstantStringFragmentResolver(StringFragmentResolver):
     """
     A fragment that is a string constant.
     """
@@ -33,14 +51,21 @@ class StringConstantFragmentResolver(StringFragmentResolver):
     def string_constant(self) -> str:
         return self._string_constant
 
+    @property
+    def references(self) -> tuple:
+        return ()
 
-class StringSymbolFragmentResolver(StringFragmentResolver):
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+        return sv.ConstantFragment(self._string_constant)
+
+
+class SymbolStringFragmentResolver(StringFragmentResolver):
     """
     A fragment that represents a reference to a symbol.
     """
 
-    def __init__(self, symbol_name: str):
-        self._symbol_name = symbol_name
+    def __init__(self, symbol_reference: struct.SymbolReference):
+        self._symbol_reference = symbol_reference
 
     @property
     def is_symbol(self) -> bool:
@@ -48,23 +73,53 @@ class StringSymbolFragmentResolver(StringFragmentResolver):
 
     @property
     def symbol_name(self) -> str:
-        return self._symbol_name
+        return self._symbol_reference.name
+
+    @property
+    def references(self) -> tuple:
+        return self._symbol_reference,
+
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+        value_container = symbols.lookup(self._symbol_reference.name)
+        assert isinstance(value_container, struct.ValueContainer), 'Value in SymTbl must be ValueContainer'
+        value_resolver = value_container.value
+        assert isinstance(value_resolver, SymbolValueResolver), 'Value must be a SymbolValueResolver'
+        value = value_resolver.resolve(symbols)
+        if isinstance(value, sv.StringValue):
+            return sv.StringValueFragment(value)
+        elif isinstance(value, FileRef):
+            return sv.FileRefFragment(value)
+        else:
+            raise TypeError('Not a {}: {}'.format(type(SymbolValueResolver),
+                                                  value))
 
 
 class StringResolver(SymbolValueResolver):
+    def __init__(self, fragment_resolvers: tuple):
+        """
+        :param fragment_resolvers: Tuple of `StringFragmentResolver`
+        """
+        self._fragment_resolvers = fragment_resolvers
+
     @property
-    def value_type(self) -> ValueType:
-        return ValueType.STRING
+    def value_type(self) -> struct.ValueType:
+        return struct.ValueType.STRING
 
-    def resolve(self, symbols: SymbolTable) -> str:
-        raise NotImplementedError()
+    def resolve(self, symbols: SymbolTable) -> sv.StringValue:
+        fragments = [fr.resolve(symbols)
+                     for fr in self._fragment_resolvers]
+        return sv.StringValue(tuple(fragments))
 
-    def resolve_string_value(self, symbols: SymbolTable) -> StringValue:
-        raise NotImplementedError()
+    def resolve_string_value(self, symbols: SymbolTable) -> sv.StringValue:
+        # TODO [string-fragments] Remove when method above is used instead of this method
+        return self.resolve(symbols)
 
     @property
     def references(self) -> list:
-        raise NotImplementedError()
+        ret_val = []
+        for fragment in self._fragment_resolvers:
+            ret_val.extend(fragment.references)
+        return ret_val
 
     @property
     def fragments(self) -> tuple:
@@ -75,7 +130,11 @@ class StringResolver(SymbolValueResolver):
 
         :rtype: (`StringFragmentResolver`)
         """
-        return ()
+        return self._fragment_resolvers
 
     def __str__(self):
         return str(type(self))
+
+
+def string_constant(string: str) -> StringResolver:
+    return StringResolver((ConstantStringFragmentResolver(string),))

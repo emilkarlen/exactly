@@ -2,8 +2,10 @@ import unittest
 
 from exactly_lib.symbol import concrete_values as sut
 from exactly_lib.symbol import string_resolver as sr
+from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
+from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 
@@ -18,7 +20,7 @@ class TestStringFragments(unittest.TestCase):
     def test_string_constant_fragment(self):
         # ARRANGE #
         value = 'string value'
-        actual = sr.StringConstantFragmentResolver(value)
+        actual = sr.ConstantStringFragmentResolver(value)
         # ASSERT #
         self.assertIsInstance(actual, sr.StringFragmentResolver)
         self.assertTrue(actual.is_string_constant, 'is_string_constant')
@@ -29,7 +31,7 @@ class TestStringFragments(unittest.TestCase):
     def test_symbol_fragment(self):
         # ARRANGE #
         symbol_name = 'symbol_name'
-        actual = sr.StringSymbolFragmentResolver(symbol_name)
+        actual = sr.SymbolStringFragmentResolver(SymbolReference(symbol_name, NoRestriction()))
         # ASSERT #
         self.assertIsInstance(actual, sr.StringFragmentResolver)
         self.assertFalse(actual.is_string_constant, 'is_string_constant')
@@ -55,7 +57,7 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
-        ret_val = visitor.visit(StringConstant('string'))
+        ret_val = visitor.visit(string_constant('string'))
         # ASSERT #
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')
