@@ -118,6 +118,25 @@ class SymbolDefinition(SymbolUsage):
         return Entry(self.name, self.value_container)
 
 
+class ReferenceRestrictions:
+    def __init__(self,
+                 direct: ValueRestriction,
+                 every: ValueRestriction = None):
+        self._direct = direct
+        self._every = every
+
+    @property
+    def direct(self) -> ValueRestriction:
+        return self._direct
+
+    @property
+    def every(self) -> ValueRestriction:
+        """
+        :rtype: None or ValueRestriction
+        """
+        return self._every
+
+
 class SymbolReference(SymbolUsage):
     """
     A reference to a symbol that is assumed to have been previously defined.
@@ -132,6 +151,10 @@ class SymbolReference(SymbolUsage):
     @property
     def value_restriction(self) -> ValueRestriction:
         return self._value_restriction
+
+    @property
+    def restrictions(self) -> ReferenceRestrictions:
+        return ReferenceRestrictions(self._value_restriction)
 
 
 class SymbolUsageVisitor:

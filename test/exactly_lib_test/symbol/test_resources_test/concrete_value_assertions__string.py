@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
 from exactly_lib.symbol.string_resolver import ConstantStringFragmentResolver, SymbolStringFragmentResolver, \
     StringResolver, string_constant
+from exactly_lib.symbol.string_value import StringValue, ConstantFragment
 from exactly_lib.symbol.value_structure import SymbolReference
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
@@ -236,17 +237,14 @@ class _StringResolverTestImpl(StringResolver):
     def __init__(self,
                  value: str,
                  explicit_references: list,
-                 fragment_resolvers: tuple() = ()):
+                 fragment_resolvers: tuple = ()):
+        super().__init__(fragment_resolvers)
         self.value = value
         self.explicit_references = explicit_references
         self._fragments = fragment_resolvers
 
-    def resolve(self, symbols: SymbolTable) -> str:
-        return self.value
-
-    @property
-    def fragments(self) -> tuple:
-        return self._fragments
+    def resolve(self, symbols: SymbolTable) -> StringValue:
+        return StringValue((ConstantFragment(self.value),))
 
     @property
     def references(self) -> list:
