@@ -9,7 +9,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_structure import SymbolDefinition, ValueContainer, Value, SymbolReference
+from exactly_lib.symbol.value_structure import SymbolDefinition, ValueContainer, Value, SymbolReference, \
+    ReferenceRestrictions
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
@@ -183,8 +184,8 @@ class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
-                                FileRefRelativityRestriction(
-                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants)),
+                                ReferenceRestrictions(FileRefRelativityRestriction(
+                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 PathPartResolverAsFixedPath('component'))
             expected_value_container = _value_container(expected_file_ref_resolver)
             self._run(source,

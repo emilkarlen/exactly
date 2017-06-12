@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_structure import SymbolReference, ValueRestriction
+from exactly_lib.symbol.value_structure import SymbolReference, ValueRestriction, ReferenceRestrictions
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -40,7 +40,8 @@ _RELATIVITY_VARIANTS = [
 
 _SYMBOL_REFERENCES = [
     [],
-    [SymbolReference('symbol_name', NoRestriction())]
+    [SymbolReference('symbol_name',
+                     ReferenceRestrictions(NoRestriction()))]
 ]
 
 
@@ -106,12 +107,14 @@ class Test1NotEquals(unittest.TestCase):
                                            False)
 
         file_ref = arbitrary_file_ref()
-        expected = resolver_from_constants(file_ref,
-                                           [SymbolReference('reffed-name',
-                                                            restriction_with_relativity(RelOptionType.REL_ACT))])
-        actual = resolver_from_constants(file_ref,
-                                         [SymbolReference('reffed-name',
-                                                          restriction_with_relativity(RelOptionType.REL_HOME))])
+        expected = resolver_from_constants(
+            file_ref,
+            [SymbolReference('reffed-name',
+                             ReferenceRestrictions(restriction_with_relativity(RelOptionType.REL_ACT)))])
+        actual = resolver_from_constants(
+            file_ref,
+            [SymbolReference('reffed-name',
+                             ReferenceRestrictions(restriction_with_relativity(RelOptionType.REL_HOME)))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.file_ref_resolver_equals(expected)
@@ -123,10 +126,10 @@ class Test1NotEquals(unittest.TestCase):
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
                                            [SymbolReference('expected_symbol_name',
-                                                            NoRestriction())])
+                                                            ReferenceRestrictions(NoRestriction()))])
         actual = resolver_from_constants(file_ref,
                                          [SymbolReference('actual_symbol_name',
-                                                          NoRestriction())])
+                                                          ReferenceRestrictions(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.file_ref_resolver_equals(expected)
@@ -138,7 +141,7 @@ class Test1NotEquals(unittest.TestCase):
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
                                            [SymbolReference('reffed-name',
-                                                            NoRestriction())])
+                                                            ReferenceRestrictions(NoRestriction()))])
         actual = resolver_from_constants(file_ref, [])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
@@ -152,7 +155,7 @@ class Test1NotEquals(unittest.TestCase):
         expected = resolver_from_constants(file_ref, [])
         actual = resolver_from_constants(file_ref,
                                          [SymbolReference('reffed-name',
-                                                          NoRestriction())])
+                                                          ReferenceRestrictions(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.file_ref_resolver_equals(expected)
@@ -164,12 +167,12 @@ class Test1NotEquals(unittest.TestCase):
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
                                            [SymbolReference('reffed-name',
-                                                            _relativity_restriction(
-                                                               {RelOptionType.REL_ACT},
-                                                               False))])
+                                                            ReferenceRestrictions(_relativity_restriction(
+                                                                {RelOptionType.REL_ACT},
+                                                                False)))])
         actual = resolver_from_constants(file_ref,
                                          [SymbolReference('reffed-name',
-                                                          NoRestriction())])
+                                                          ReferenceRestrictions(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.file_ref_resolver_equals(expected)
@@ -213,7 +216,7 @@ class Test2NotEquals(unittest.TestCase):
         file_ref = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
         actual = _FileRefResolverWithConstantFileRefAndSymbolReferences(
             file_ref,
-            [SymbolReference('symbol_name', NoRestriction())])
+            [SymbolReference('symbol_name', ReferenceRestrictions(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_file_ref_resolver2(file_ref,

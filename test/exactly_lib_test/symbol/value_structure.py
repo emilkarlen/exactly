@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.symbol import value_structure as sut
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.value_structure import ReferenceRestrictions
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container
 
 
@@ -26,7 +27,7 @@ class TestSymbolUsageVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
-        ret_val = visitor.visit(sut.SymbolReference('name', NoRestriction()))
+        ret_val = visitor.visit(sut.SymbolReference('name', ReferenceRestrictions(NoRestriction())))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
                              [sut.SymbolReference],
