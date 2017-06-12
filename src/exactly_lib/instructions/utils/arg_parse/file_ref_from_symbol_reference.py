@@ -53,7 +53,8 @@ class _SymbolValue2FileRefVisitor(ValueVisitor):
         return value.resolve(self.symbols)
 
     def _visit_string(self, value: StringResolver) -> FileRef:
-        s = value.resolve(self.symbols)
+        sv = value.resolve(self.symbols)
+        s = sv.value_when_no_dir_dependencies()
         path_value = pathlib.Path(s)
         if path_value.is_absolute():
             return file_refs.absolute_file_name(s)

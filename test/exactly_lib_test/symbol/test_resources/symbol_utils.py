@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.string_resolvers import StringConstant
 from exactly_lib.symbol.value_structure import ValueContainer, Value, SymbolReference, ValueRestriction, \
     SymbolDefinition
 from exactly_lib.test_case_file_structure import file_ref as _file_ref
@@ -25,7 +25,7 @@ def string_value_container(string_value: str,
                            line_num: int = 1,
                            source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
-                          StringConstant(string_value))
+                          string_constant(string_value))
 
 
 def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> SymbolReference:
@@ -84,7 +84,7 @@ def file_ref_symbol(name: str,
     return SymbolDefinition(name, file_ref_value_container(file_ref, line_num, source_line))
 
 
-def entry(name: str, value: Value = StringConstant('string value'),
+def entry(name: str, value: Value = string_constant('string value'),
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
     return Entry(name, ValueContainer(Line(line_num, source_line), value))

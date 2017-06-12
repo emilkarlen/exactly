@@ -30,6 +30,12 @@ class PathPartResolverAsNothing(PathPartResolver):
 
 
 class PathPartResolverAsStringSymbolReference(PathPartResolver):
+    """
+    The referenced symbol must not have any dir-dependencies -
+    i.e. not contain references (direct or indirect) to FileRefs
+    that are not absolute.
+    """
+
     def __init__(self, symbol_name: str):
         self._symbol_reference = SymbolReference(symbol_name, StringRestriction())
 
@@ -39,9 +45,6 @@ class PathPartResolverAsStringSymbolReference(PathPartResolver):
         string_value_resolver = value_container.value
         assert isinstance(string_value_resolver, StringResolver)
         string_value = string_value_resolver.resolve(symbols)
-        if isinstance(string_value, str):
-            # TODO: This should never happen when impl of string fragments is complete
-            return PathPartAsFixedPath(string_value)
         assert isinstance(string_value, StringValue)
         path_string = string_value.value_when_no_dir_dependencies()
         return PathPartAsFixedPath(path_string)
