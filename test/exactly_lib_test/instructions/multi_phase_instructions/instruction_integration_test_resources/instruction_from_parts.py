@@ -7,7 +7,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.symbol.concrete_restrictions import StringRestriction
-from exactly_lib.symbol.value_structure import SymbolReference
+from exactly_lib.symbol.value_structure import SymbolReference, ReferenceRestrictions
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh, sh
@@ -104,7 +104,7 @@ class TestSymbolUsagesOfHardCodedInstruction(TestCaseBase):
         # ARRANGE #
         symbol_name = 'SYMBOL_NAME'
         string_restriction = StringRestriction()
-        symbol_reference = SymbolReference(symbol_name, string_restriction)
+        symbol_reference = SymbolReference(symbol_name, ReferenceRestrictions(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
             equals_symbol_reference(
                 symbol_name,
@@ -129,7 +129,7 @@ class TestSymbolUsagesOfInstructionFromParser(TestCaseBase):
         # ARRANGE #
         symbol_name = 'SYMBOL_NAME'
         string_restriction = StringRestriction()
-        symbol_reference = SymbolReference(symbol_name, string_restriction)
+        symbol_reference = SymbolReference(symbol_name, ReferenceRestrictions(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
             equals_symbol_reference(
                 symbol_name,

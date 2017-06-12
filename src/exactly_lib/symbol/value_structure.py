@@ -144,13 +144,13 @@ class SymbolReference(SymbolUsage):
 
     def __init__(self,
                  name: str,
-                 value_restriction: ValueRestriction):
+                 restrictions: ReferenceRestrictions):
         super().__init__(name)
-        self._value_restriction = value_restriction
+        self._restrictions = restrictions
 
     @property
     def restrictions(self) -> ReferenceRestrictions:
-        return ReferenceRestrictions(self._value_restriction)
+        return self._restrictions
 
 
 class SymbolUsageVisitor:

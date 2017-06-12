@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_structure import SymbolReference, ValueContainer
+from exactly_lib.symbol.value_structure import SymbolReference, ValueContainer, ReferenceRestrictions
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
@@ -17,7 +17,8 @@ def rel_symbol(symbol_reference2: SymbolReference, path_suffix: PathPartResolver
 
 
 def value_ref2_of_path(symbol_name: str, accepted_relativities: PathRelativityVariants) -> SymbolReference:
-    return SymbolReference(symbol_name, FileRefRelativityRestriction(accepted_relativities))
+    return SymbolReference(symbol_name,
+                           ReferenceRestrictions(FileRefRelativityRestriction(accepted_relativities)))
 
 
 class _FileRefResolverRelSymbol(FileRefResolver):

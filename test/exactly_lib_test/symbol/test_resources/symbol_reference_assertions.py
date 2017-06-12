@@ -48,7 +48,8 @@ def matches_symbol_reference(expected_name: str,
 def equals_symbol_reference(expected_name: str,
                             assertion_on_direct_restriction: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return equals_symbol_reference2(expected_name,
-                                    matches_reference_restrictions(assertion_on_direct=assertion_on_direct_restriction))
+                                    matches_reference_restrictions(assertion_on_direct=assertion_on_direct_restriction,
+                                                                   assertion_on_every=asrt.ValueIsNone()))
 
 
 def equals_symbol_reference2(expected_name: str,
