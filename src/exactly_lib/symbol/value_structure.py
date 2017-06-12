@@ -149,10 +149,6 @@ class SymbolReference(SymbolUsage):
         self._value_restriction = value_restriction
 
     @property
-    def value_restriction(self) -> ValueRestriction:
-        return self._value_restriction
-
-    @property
     def restrictions(self) -> ReferenceRestrictions:
         return ReferenceRestrictions(self._value_restriction)
 
