@@ -119,6 +119,9 @@ class SymbolDefinition(SymbolUsage):
 
 
 class ReferenceRestrictions:
+    """
+    Restrictions on a referenced symbol
+    """
     def __init__(self,
                  direct: ValueRestriction,
                  every: ValueRestriction = None):
@@ -127,11 +130,16 @@ class ReferenceRestrictions:
 
     @property
     def direct(self) -> ValueRestriction:
+        """
+        Restriction on the symbol that is the direct target of the reference.
+        """
         return self._direct
 
     @property
     def every(self) -> ValueRestriction:
         """
+        Restriction that must be satisfied by the direct target of the reference,
+        and also by all symbols referenced indirectly via this target.
         :rtype: None or ValueRestriction
         """
         return self._every
