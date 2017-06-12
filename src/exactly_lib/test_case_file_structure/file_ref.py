@@ -25,6 +25,9 @@ class FileRef(DirDependentValue):
     def relativity(self) -> SpecificPathRelativity:
         raise NotImplementedError()
 
+    def value_when_no_dir_dependencies(self) -> pathlib.Path:
+        raise NotImplementedError()
+
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         raise NotImplementedError()
 

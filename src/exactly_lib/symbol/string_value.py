@@ -42,6 +42,11 @@ class StringValue(StringWithDirDependency):
         return all([fragment.exists_pre_sds()
                     for fragment in self._fragments])
 
+    def value_when_no_dir_dependencies(self):
+        fragment_strings = [f.value_when_no_dir_dependencies()
+                            for f in self._fragments]
+        return ''.join(fragment_strings)
+
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> str:
         fragment_strings = [f.value_pre_sds(home_dir_path)
                             for f in self._fragments]
@@ -68,6 +73,9 @@ class ConstantFragment(StringFragment):
     def exists_pre_sds(self) -> bool:
         return True
 
+    def value_when_no_dir_dependencies(self):
+        return self.string_constant
+
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> str:
         return self.string_constant
 
@@ -87,6 +95,9 @@ class FileRefFragment(StringFragment):
 
     def exists_pre_sds(self) -> bool:
         return self.file_ref.exists_pre_sds()
+
+    def value_when_no_dir_dependencies(self):
+        return self.file_ref.value_when_no_dir_dependencies()
 
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> str:
         return str(self.file_ref.value_pre_sds())

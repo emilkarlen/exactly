@@ -45,6 +45,15 @@ DEPENDENCY_DICT = {
                    )),
 }
 
+DIR_DEPENDENCY_OF = {
+    RelOptionType.REL_HOME: ResolvingDependency.HOME,
+
+    RelOptionType.REL_ACT: ResolvingDependency.NON_HOME,
+    RelOptionType.REL_RESULT: ResolvingDependency.NON_HOME,
+    RelOptionType.REL_TMP: ResolvingDependency.NON_HOME,
+    RelOptionType.REL_CWD: ResolvingDependency.NON_HOME,
+}
+
 
 def rel_non_home_from_rel_sds(rel_sds: RelSdsOptionType) -> RelNonHomeOptionType:
     return RelNonHomeOptionType(rel_sds.value)
