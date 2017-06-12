@@ -1,5 +1,6 @@
 from exactly_lib.symbol.concrete_restrictions import StringRestriction
 from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.symbol.string_value import StringValue
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_structure import SymbolReference, ValueContainer
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
@@ -35,9 +36,14 @@ class PathPartResolverAsStringSymbolReference(PathPartResolver):
     def resolve(self, symbols: SymbolTable) -> PathPart:
         value_container = symbols.lookup(self._symbol_name)
         assert isinstance(value_container, ValueContainer)
-        string_value = value_container.value
-        assert isinstance(string_value, StringResolver)
-        path_string = string_value.resolve(symbols)
+        string_value_resolver = value_container.value
+        assert isinstance(string_value_resolver, StringResolver)
+        string_value = string_value_resolver.resolve(symbols)
+        if isinstance(string_value, str):
+            # TODO: This should never happen when impl of string fragments is complete
+            return PathPartAsFixedPath(string_value)
+        assert isinstance(string_value, StringValue)
+        path_string = string_value.value_when_no_dir_dependencies()
         return PathPartAsFixedPath(path_string)
 
     @property

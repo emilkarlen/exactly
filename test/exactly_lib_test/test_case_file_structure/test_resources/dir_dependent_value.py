@@ -59,6 +59,11 @@ class DirDependentValueAssertion(asrt.ValueAssertion):
 
                      home_and_sds: HomeAndSds,
                      message_builder: asrt.MessageBuilder):
+        if not self._expected.has_dir_dependency():
+            put.assertEqual(self._expected.value_when_no_dir_dependencies(),
+                            actual.value_when_no_dir_dependencies(),
+                            message_builder.apply('value_when_no_dir_dependencies'))
+
         if self._expected.exists_pre_sds():
             put.assertEqual(self._expected.value_pre_sds(home_and_sds.home_dir_path),
                             actual.value_pre_sds(home_and_sds.home_dir_path),

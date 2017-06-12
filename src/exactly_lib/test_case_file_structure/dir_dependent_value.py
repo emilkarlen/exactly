@@ -15,7 +15,7 @@ class DirDependency(Enum):
 
 class DirDependencyError(ValueError):
     def __init__(self, unexpected_dependency: ResolvingDependency,
-                 msg: str):
+                 msg: str = ''):
         super().__init__(msg)
         self.unexpected_dependency = unexpected_dependency
 
@@ -38,6 +38,12 @@ class DirDependentValue:
         raise NotImplementedError()
 
     def exists_pre_sds(self) -> bool:
+        raise NotImplementedError()
+
+    def value_when_no_dir_dependencies(self):
+        """
+        :raises DirDependencyError: This value has dir dependencies.
+        """
         raise NotImplementedError()
 
     def value_pre_sds(self, home_dir_path: pathlib.Path):
