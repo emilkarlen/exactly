@@ -7,7 +7,8 @@ from exactly_lib.symbol.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringSymbolReference
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.value_structure import ValueType, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueType
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath

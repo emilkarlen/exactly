@@ -8,7 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.symbol.concrete_restrictions import StringRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_structure import ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh, sh

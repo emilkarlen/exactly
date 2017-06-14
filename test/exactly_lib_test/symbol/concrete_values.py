@@ -6,7 +6,7 @@ from exactly_lib.symbol.concrete_restrictions import NoRestriction
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_structure import ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 

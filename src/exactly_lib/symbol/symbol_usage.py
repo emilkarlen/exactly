@@ -1,4 +1,5 @@
-from exactly_lib.symbol.value_structure import ValueContainer, ReferenceRestrictions, Value
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueContainer, Value
 from exactly_lib.util.symbol_table import Entry
 
 

@@ -8,7 +8,7 @@ from exactly_lib.symbol.concrete_restrictions import NoRestriction
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_structure import ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.line_source import Line

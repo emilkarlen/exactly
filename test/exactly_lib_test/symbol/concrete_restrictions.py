@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.symbol import concrete_restrictions as sut
 from exactly_lib.symbol.string_resolver import string_constant
+from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -221,7 +222,7 @@ class TestValueRestrictionVisitor(unittest.TestCase):
     def test_visit_invalid_object_should_raise_exception(self):
         # ARRANGE #
         visitor = _VisitorThatRegisterClassOfVisitMethod("not used")
-        non_concept = 'a string is not a sub class of ' + str(sut.ValueRestriction)
+        non_concept = 'a string is not a sub class of ' + str(ValueRestriction)
         # ACT & ASSERT #
         with self.assertRaises(TypeError):
             visitor.visit(non_concept)

@@ -5,6 +5,7 @@ from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.concrete_values import FileRefResolver, ValueVisitor
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
+from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import ValueContainer, Value, SymbolValueResolver, ValueType
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -237,7 +238,7 @@ def _symbol_table_with_values_matching_references(references: list) -> SymbolTab
     for ref in references:
         assert isinstance(ref, su.SymbolReference), "Informs IDE of type"
         value_restriction = ref.restrictions.direct
-        assert isinstance(value_restriction, concrete_restrictions.ValueRestriction)
+        assert isinstance(value_restriction, ValueRestriction)
         value = value_constructor.visit(value_restriction)
         elements[ref.name] = _value_container(value)
     return SymbolTable(elements)
