@@ -10,7 +10,8 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_structure import ValueContainer, Value, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueContainer, Value
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath

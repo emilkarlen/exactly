@@ -5,8 +5,8 @@ from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_structure import ValueContainer, Value, ValueRestriction, \
-    ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueContainer, Value
 from exactly_lib.test_case_file_structure import file_ref as _file_ref
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.line_source import Line

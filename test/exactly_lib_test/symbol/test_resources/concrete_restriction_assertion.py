@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
     NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction
-from exactly_lib.symbol.value_structure import ValueRestriction
+from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib_test.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

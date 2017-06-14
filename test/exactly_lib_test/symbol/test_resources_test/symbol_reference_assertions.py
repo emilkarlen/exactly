@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_structure import ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException

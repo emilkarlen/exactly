@@ -4,7 +4,8 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_structure import ValueContainer, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \

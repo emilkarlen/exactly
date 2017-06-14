@@ -5,7 +5,8 @@ from exactly_lib.symbol.concrete_restrictions import EitherStringOrFileRefRelati
 from exactly_lib.symbol.concrete_values import ValueVisitor, FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_structure import ValueContainer, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import symbol_usage as sut
 from exactly_lib.symbol.concrete_restrictions import NoRestriction
-from exactly_lib.symbol.value_structure import ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container
 
 
