@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
-from exactly_lib.symbol.value_structure import SymbolDefinition
+from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phase_identifier import PhaseEnum, PHASES_FOR_PARTIAL_EXECUTION
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

@@ -16,7 +16,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.string_resolver import string_constant
-from exactly_lib.symbol.value_structure import SymbolDefinition, ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 

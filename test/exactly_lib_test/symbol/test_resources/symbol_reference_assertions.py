@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol import value_structure as stc
+from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.value_structure import ReferenceRestrictions
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_value_restriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -33,13 +33,13 @@ def equals_reference_restrictions(expected: ReferenceRestrictions) -> asrt.Value
 def matches_symbol_reference(expected_name: str,
                              assertion_on_restrictions: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return asrt.is_instance_with(
-        stc.SymbolReference,
+        su.SymbolReference,
         asrt.and_([
             asrt.sub_component('name',
-                               stc.SymbolReference.name.fget,
+                               su.SymbolReference.name.fget,
                                asrt.equals(expected_name)),
             asrt.sub_component('restrictions',
-                               stc.SymbolReference.restrictions.fget,
+                               su.SymbolReference.restrictions.fget,
                                assertion_on_restrictions)
 
         ]))
@@ -55,13 +55,13 @@ def equals_symbol_reference(expected_name: str,
 def equals_symbol_reference2(expected_name: str,
                              assertion_on_restrictions: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return asrt.is_instance_with(
-        stc.SymbolReference,
+        su.SymbolReference,
         asrt.and_([
             asrt.sub_component('name',
-                               stc.SymbolReference.name.fget,
+                               su.SymbolReference.name.fget,
                                asrt.equals(expected_name)),
             asrt.sub_component('restrictions',
-                               stc.SymbolReference.restrictions.fget,
+                               su.SymbolReference.restrictions.fget,
                                assertion_on_restrictions)
 
         ]))
@@ -76,7 +76,8 @@ class _EqualsValueReferences(asrt.ValueAssertion):
         self._expected = expected
         assert isinstance(expected, list), 'Value reference list must be a list'
         for idx, element in enumerate(expected):
-            assert isinstance(element, stc.SymbolReference), 'Element must be a ValueReference #' + str(idx)
+            assert isinstance(element,
+                              su.SymbolReference), 'Element must be a ValueReference #' + str(idx)
 
     def apply(self,
               put: unittest.TestCase,
@@ -89,9 +90,9 @@ class _EqualsValueReferences(asrt.ValueAssertion):
                         message_builder.apply('Number of value references'))
         for idx, expected_ref in enumerate(self._expected):
             actual_ref = value[idx]
-            put.assertIsInstance(actual_ref, stc.SymbolReference)
-            assert isinstance(actual_ref, stc.SymbolReference)
-            assert isinstance(expected_ref, stc.SymbolReference)
+            put.assertIsInstance(actual_ref, su.SymbolReference)
+            assert isinstance(actual_ref, su.SymbolReference)
+            assert isinstance(expected_ref, su.SymbolReference)
             expected_restrictions = expected_ref.restrictions
             element_assertion = equals_symbol_reference2(expected_ref.name,
                                                          equals_reference_restrictions(expected_restrictions))

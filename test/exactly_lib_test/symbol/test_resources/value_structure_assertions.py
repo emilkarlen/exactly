@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol import value_structure as stc
 from exactly_lib.symbol.value_structure import SymbolValueResolver
 from exactly_lib_test.section_document.test_resources.assertions import equals_line
@@ -23,15 +24,15 @@ def equals_value_container(expected: stc.ValueContainer,
                                  asrt.and_(component_assertions))
 
 
-def equals_symbol(expected: stc.SymbolDefinition,
+def equals_symbol(expected: su.SymbolDefinition,
                   ignore_source_line: bool = True) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(stc.SymbolDefinition,
+    return asrt.is_instance_with(su.SymbolDefinition,
                                  asrt.And([
                                      asrt.sub_component('name',
-                                                        stc.SymbolDefinition.name.fget,
+                                                        su.SymbolDefinition.name.fget,
                                                         asrt.equals(expected.name)),
                                      asrt.sub_component('value_container',
-                                                        stc.SymbolDefinition.value_container.fget,
+                                                        su.SymbolDefinition.value_container.fget,
                                                         equals_value_container(expected.value_container,
                                                                                ignore_source_line)),
 

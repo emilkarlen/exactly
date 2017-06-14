@@ -1,4 +1,5 @@
 from exactly_lib.symbol import string_value as sv
+from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol import value_structure as struct
 from exactly_lib.symbol.value_structure import SymbolValueResolver
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -64,7 +65,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
     A fragment that represents a reference to a symbol.
     """
 
-    def __init__(self, symbol_reference: struct.SymbolReference):
+    def __init__(self, symbol_reference: su.SymbolReference):
         self._symbol_reference = symbol_reference
 
     @property
