@@ -18,38 +18,49 @@ def validate_symbol_usages(symbol_usages: list,
 def validate_symbol_usage(usage: vs.SymbolUsage,
                           symbol_table: SymbolTable) -> PartialInstructionControlledFailureInfo:
     if isinstance(usage, vs.SymbolReference):
-        assert isinstance(usage, vs.SymbolReference)
-        if not symbol_table.contains(usage.name):
-            error_message = _undefined_symbol_error_message(usage)
-            return PartialInstructionControlledFailureInfo(
-                PartialControlledFailureEnum.VALIDATION,
-                error_message)
-        else:
-            err_msg = _validate_reference(usage, symbol_table)
-            if err_msg is not None:
-                return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION, err_msg)
-        return None
+        return _validate_symbol_reference(symbol_table, usage)
     elif isinstance(usage, vs.SymbolDefinition):
-        assert isinstance(usage, vs.SymbolDefinition)
-        if symbol_table.contains(usage.name):
-            already_defined_value_container = symbol_table.lookup(usage.name)
-            assert isinstance(already_defined_value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
-            return PartialInstructionControlledFailureInfo(
-                PartialControlledFailureEnum.VALIDATION,
-                'Symbol `{}\' has already been defined:\n\n{}'.format(
-                    usage.name,
-                    error_message_format.source_line(
-                        already_defined_value_container.definition_source)))
-        else:
-            for referenced_value in usage.references:
-                failure_info = validate_symbol_usage(referenced_value, symbol_table)
-                if failure_info is not None:
-                    return failure_info
-            symbol_table.add(usage.symbol_table_entry)
-            return None
+        return _validate_symbol_definition(symbol_table, usage)
     else:
         raise TypeError('Unknown variant of {}: {}'.format(str(vs.SymbolUsage),
                                                            str(usage)))
+
+
+def _validate_symbol_definition(symbol_table: SymbolTable,
+                                definition: vs.SymbolDefinition,
+                                ) -> PartialInstructionControlledFailureInfo:
+    if symbol_table.contains(definition.name):
+        already_defined_value_container = symbol_table.lookup(definition.name)
+        assert isinstance(already_defined_value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
+        return PartialInstructionControlledFailureInfo(
+            PartialControlledFailureEnum.VALIDATION,
+            'Symbol `{}\' has already been defined:\n\n{}'.format(
+                definition.name,
+                error_message_format.source_line(
+                    already_defined_value_container.definition_source)))
+    else:
+        for referenced_value in definition.references:
+            failure_info = validate_symbol_usage(referenced_value, symbol_table)
+            if failure_info is not None:
+                return failure_info
+        symbol_table.add(definition.symbol_table_entry)
+        return None
+
+
+def _validate_symbol_reference(symbol_table: SymbolTable,
+                               reference: vs.SymbolReference,
+                               ) -> PartialInstructionControlledFailureInfo:
+    assert isinstance(reference, vs.SymbolReference)
+    if not symbol_table.contains(reference.name):
+        error_message = _undefined_symbol_error_message(reference)
+        return PartialInstructionControlledFailureInfo(
+            PartialControlledFailureEnum.VALIDATION,
+            error_message)
+    else:
+        err_msg = _validate_reference(reference, symbol_table)
+        if err_msg is not None:
+            return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION, err_msg)
+    return None
 
 
 def _undefined_symbol_error_message(reference: vs.SymbolReference) -> str:
