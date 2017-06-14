@@ -2,8 +2,9 @@ import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_structure import SymbolReference, ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueRestriction, ReferenceRestrictions
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef

@@ -1,6 +1,6 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.symbol import value_structure as vs
+from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
@@ -15,19 +15,19 @@ def validate_symbol_usages(symbol_usages: list,
     return None
 
 
-def validate_symbol_usage(usage: vs.SymbolUsage,
+def validate_symbol_usage(usage: su.SymbolUsage,
                           symbol_table: SymbolTable) -> PartialInstructionControlledFailureInfo:
-    if isinstance(usage, vs.SymbolReference):
+    if isinstance(usage, su.SymbolReference):
         return _validate_symbol_reference(symbol_table, usage)
-    elif isinstance(usage, vs.SymbolDefinition):
+    elif isinstance(usage, su.SymbolDefinition):
         return _validate_symbol_definition(symbol_table, usage)
     else:
-        raise TypeError('Unknown variant of {}: {}'.format(str(vs.SymbolUsage),
+        raise TypeError('Unknown variant of {}: {}'.format(str(su.SymbolUsage),
                                                            str(usage)))
 
 
 def _validate_symbol_definition(symbol_table: SymbolTable,
-                                definition: vs.SymbolDefinition,
+                                definition: su.SymbolDefinition,
                                 ) -> PartialInstructionControlledFailureInfo:
     if symbol_table.contains(definition.name):
         already_defined_value_container = symbol_table.lookup(definition.name)
@@ -48,9 +48,9 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
 
 
 def _validate_symbol_reference(symbol_table: SymbolTable,
-                               reference: vs.SymbolReference,
+                               reference: su.SymbolReference,
                                ) -> PartialInstructionControlledFailureInfo:
-    assert isinstance(reference, vs.SymbolReference)
+    assert isinstance(reference, su.SymbolReference)
     if not symbol_table.contains(reference.name):
         error_message = _undefined_symbol_error_message(reference)
         return PartialInstructionControlledFailureInfo(
@@ -63,7 +63,7 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
     return None
 
 
-def _undefined_symbol_error_message(reference: vs.SymbolReference) -> str:
+def _undefined_symbol_error_message(reference: su.SymbolReference) -> str:
     from exactly_lib.help_texts.names.formatting import InstructionName
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
@@ -75,7 +75,7 @@ def _undefined_symbol_error_message(reference: vs.SymbolReference) -> str:
     return '\n'.join(lines)
 
 
-def _validate_reference(symbol_reference: vs.SymbolReference,
+def _validate_reference(symbol_reference: su.SymbolReference,
                         symbols: SymbolTable) -> str:
     referenced_value_container = symbols.lookup(symbol_reference.name)
     assert isinstance(referenced_value_container, ValueContainer), 'Values in SymbolTable must be ValueContainer'

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import concrete_restrictions
-from exactly_lib.symbol import value_structure as vs
+from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.concrete_values import FileRefResolver, ValueVisitor
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
@@ -235,7 +235,7 @@ def _symbol_table_with_values_matching_references(references: list) -> SymbolTab
     value_constructor = _ValueCorrespondingToValueRestriction()
     elements = {}
     for ref in references:
-        assert isinstance(ref, vs.SymbolReference), "Informs IDE of type"
+        assert isinstance(ref, su.SymbolReference), "Informs IDE of type"
         value_restriction = ref.restrictions.direct
         assert isinstance(value_restriction, concrete_restrictions.ValueRestriction)
         value = value_constructor.visit(value_restriction)
