@@ -75,8 +75,8 @@ def _undefined_symbol_error_message(reference: vs.SymbolReference) -> str:
     return '\n'.join(lines)
 
 
-def _validate_reference(symbol_usage: vs.SymbolReference,
+def _validate_reference(symbol_reference: vs.SymbolReference,
                         symbols: SymbolTable) -> str:
-    referenced_value_container = symbols.lookup(symbol_usage.name)
+    referenced_value_container = symbols.lookup(symbol_reference.name)
     assert isinstance(referenced_value_container, ValueContainer), 'Values in SymbolTable must be ValueContainer'
-    return symbol_usage.restrictions.direct.is_satisfied_by(symbols, symbol_usage.name, referenced_value_container)
+    return symbol_reference.restrictions.is_satisfied_by(symbols, symbol_reference.name, referenced_value_container)

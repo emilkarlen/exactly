@@ -122,11 +122,24 @@ class ReferenceRestrictions:
     """
     Restrictions on a referenced symbol
     """
+
     def __init__(self,
                  direct: ValueRestriction,
                  every: ValueRestriction = None):
         self._direct = direct
         self._every = every
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: ValueContainer) -> str:
+        """
+        :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
+        :param symbol_name: The name of the symbol that the restriction applies to
+        :param value: The value that the restriction applies to
+        :return: None if satisfied, otherwise an error message
+        """
+        return self.direct.is_satisfied_by(symbol_table, symbol_name, value)
 
     @property
     def direct(self) -> ValueRestriction:
