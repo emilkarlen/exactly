@@ -39,7 +39,12 @@ class ReferenceRestrictions:
         :param value: The value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        return self.direct.is_satisfied_by(symbol_table, symbol_name, value)
+        result = self.direct.is_satisfied_by(symbol_table, symbol_name, value)
+        if result is not None:
+            return result
+        if self.every is None:
+            return None
+        return self._check_every_node(symbol_table, symbol_name, value)
 
     @property
     def direct(self) -> ValueRestriction:
@@ -56,3 +61,17 @@ class ReferenceRestrictions:
         :rtype: None or ValueRestriction
         """
         return self._every
+
+    def _check_every_node(self,
+                          symbol_table: SymbolTable,
+                          symbol_name: str,
+                          value: ValueContainer) -> str:
+        result = self.every.is_satisfied_by(symbol_table, symbol_name, value)
+        if result is not None:
+            return result
+        for reference in value.value.references:
+            symbol = symbol_table.lookup(reference.name)
+            result = self._check_every_node(symbol_table, reference.name, symbol)
+            if result is not None:
+                return result
+        return None
