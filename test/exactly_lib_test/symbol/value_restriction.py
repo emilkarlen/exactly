@@ -1,4 +1,5 @@
 import unittest
+from collections import Counter
 
 from exactly_lib.symbol import value_restriction as sut
 from exactly_lib.util.symbol_table import SymbolTable
@@ -24,8 +25,27 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
         self._check_direct_with_satisfied_variants_for_restriction_on_every_node(restriction_on_direct,
                                                                                  expected_result)
 
-    # def test_that_only_direct_symbol_is_processed(self):
-    #     self.fail('not impl')
+
+    def test_test(self):
+        def f():
+            self.fail('f fail')
+
+        for i in range(1,4):
+            with self.subTest(i=i):
+                f()
+
+
+    def test_test2(self):
+        f = faila(self)
+
+        for i in range(1,4):
+            with self.subTest(i=i):
+                f()
+
+
+    def test_that_only_direct_symbol_is_processed(self):
+        entry_with_no_refs = symbol_table_entry('entry_with_no_refs', [])
+        self.fail('not impl')
 
     def _check_direct_with_satisfied_variants_for_restriction_on_every_node(
             self,
@@ -64,3 +84,27 @@ class RestrictionWithConstantResult(sut.ValueRestriction):
                         symbol_name: str,
                         value: sut.ValueContainer) -> str:
         return self.result
+
+
+
+class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
+    def __init__(self, result):
+        self.result = result
+        self.visited = Counter()
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: sut.ValueContainer) -> str:
+        self.visited.update([symbol_name])
+        return self.result
+
+def faila(tc: unittest.TestCase):
+    def r():
+        tc.fail("r")
+
+    return r
+
+
+def symbol_table_entry(symbol_name: str, referred_symbols):
+    raise NotImplementedError()
