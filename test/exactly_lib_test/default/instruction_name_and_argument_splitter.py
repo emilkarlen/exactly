@@ -37,6 +37,10 @@ class TestCase(unittest.TestCase):
         self._check('$ command and args',
                     '$')
 
+    def test_raise_exception_if_no_instruction_name(self):
+        with self.assertRaises(ValueError):
+            splitter('     ')
+
     def _check(self,
                line: str,
                expected_name: str):
