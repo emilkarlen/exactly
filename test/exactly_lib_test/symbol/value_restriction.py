@@ -2,7 +2,10 @@ import unittest
 from collections import Counter
 
 from exactly_lib.symbol import value_restriction as sut
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueType
+from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.test_resources import symbol_utils
 
 
@@ -25,27 +28,31 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
         self._check_direct_with_satisfied_variants_for_restriction_on_every_node(restriction_on_direct,
                                                                                  expected_result)
 
-
-    def test_test(self):
-        def f():
-            self.fail('f fail')
-
-        for i in range(1,4):
-            with self.subTest(i=i):
-                f()
-
-
-    def test_test2(self):
-        f = faila(self)
-
-        for i in range(1,4):
-            with self.subTest(i=i):
-                f()
-
-
     def test_that_only_direct_symbol_is_processed(self):
-        entry_with_no_refs = symbol_table_entry('entry_with_no_refs', [])
-        self.fail('not impl')
+        # ARRANGE #
+        level_2_symbol = symbol_table_entry('level_2_symbol', [])
+        restrictions_that_should_not_be_used = ReferenceRestrictions(direct=ValueRestrictionThatRaisesErrorIfApplied(),
+                                                                     every=ValueRestrictionThatRaisesErrorIfApplied())
+
+        level_1a_symbol = symbol_table_entry('level_1a_symbol',
+                                             [reference_to(level_2_symbol, restrictions_that_should_not_be_used)])
+        level_1b_symbol = symbol_table_entry('level_1b_symbol', [])
+        level_0_symbol = symbol_table_entry('level_0_symbol',
+                                            [reference_to(level_1a_symbol, restrictions_that_should_not_be_used),
+                                             reference_to(level_1b_symbol, restrictions_that_should_not_be_used)])
+        symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol, level_2_symbol]
+
+        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+
+        restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(None)
+        restrictions_to_test = ReferenceRestrictions(direct=restriction_that_registers_processed_symbols)
+        # ACT #
+        restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
+        # ASSERT #
+        actual_processed_symbols = dict(restriction_that_registers_processed_symbols.visited.items())
+        expected_processed_symbol = {level_0_symbol.key: 1}
+        self.assertEqual(expected_processed_symbol,
+                         actual_processed_symbols)
 
     def _check_direct_with_satisfied_variants_for_restriction_on_every_node(
             self,
@@ -86,6 +93,13 @@ class RestrictionWithConstantResult(sut.ValueRestriction):
         return self.result
 
 
+class ValueRestrictionThatRaisesErrorIfApplied(sut.ValueRestriction):
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: sut.ValueContainer) -> str:
+        raise NotImplementedError('It is an error if this method is called')
+
 
 class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
     def __init__(self, result):
@@ -99,12 +113,27 @@ class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
         self.visited.update([symbol_name])
         return self.result
 
-def faila(tc: unittest.TestCase):
-    def r():
-        tc.fail("r")
 
-    return r
+class SymbolValueResolverForTest(SymbolValueResolver):
+    def __init__(self, references: list):
+        self._references = references
+
+    @property
+    def value_type(self) -> ValueType:
+        raise NotImplementedError('It is an error if this method is called')
+
+    def resolve(self, symbols: SymbolTable):
+        raise NotImplementedError('It is an error if this method is called')
+
+    @property
+    def references(self) -> list:
+        return self._references
 
 
-def symbol_table_entry(symbol_name: str, referred_symbols):
-    raise NotImplementedError()
+def symbol_table_entry(symbol_name: str, references) -> Entry:
+    return Entry(symbol_name,
+                 symbol_utils.container(SymbolValueResolverForTest(references)))
+
+
+def reference_to(entry: Entry, restrictions: ReferenceRestrictions) -> SymbolReference:
+    return SymbolReference(entry.key, restrictions)
