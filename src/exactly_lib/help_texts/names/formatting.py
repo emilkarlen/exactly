@@ -84,7 +84,7 @@ class InstructionName:
         try:
             return self._formats[format_spec]
         except KeyError:
-            raise ValueError('Invalid section format: "%s"' % format_spec)
+            raise ValueError('Invalid instruction format: "%s"' % format_spec)
 
 
 class AnyInstructionNameDictionary(dict):
