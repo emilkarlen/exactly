@@ -13,6 +13,6 @@ class PathPartResolver:
     @property
     def references(self) -> list:
         """
-        :rtype: [ValueReference]
+        :rtype: [SymbolReference]
         """
         raise NotImplementedError()

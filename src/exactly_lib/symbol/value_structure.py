@@ -17,7 +17,7 @@ class Value:
 
     @property
     def references(self) -> list:
-        """All `ValueReference` directly referenced by this object"""
+        """All `SymbolReference` directly referenced by this object"""
         raise NotImplementedError()
 
 

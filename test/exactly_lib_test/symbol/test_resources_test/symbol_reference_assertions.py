@@ -10,10 +10,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestEqualsValueReference)
+    return unittest.makeSuite(TestEqualsSymbolReference)
 
 
-class TestEqualsValueReference(unittest.TestCase):
+class TestEqualsSymbolReference(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         value_name = 'value name'
