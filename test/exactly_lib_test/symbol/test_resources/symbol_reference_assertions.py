@@ -68,16 +68,16 @@ def equals_symbol_reference2(expected_name: str,
 
 
 def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
-    return _EqualsValueReferences(expected)
+    return _EqualsSymbolReferences(expected)
 
 
-class _EqualsValueReferences(asrt.ValueAssertion):
+class _EqualsSymbolReferences(asrt.ValueAssertion):
     def __init__(self, expected: list):
         self._expected = expected
         assert isinstance(expected, list), 'Value reference list must be a list'
         for idx, element in enumerate(expected):
             assert isinstance(element,
-                              su.SymbolReference), 'Element must be a ValueReference #' + str(idx)
+                              su.SymbolReference), 'Element must be a SymbolReference #' + str(idx)
 
     def apply(self,
               put: unittest.TestCase,
