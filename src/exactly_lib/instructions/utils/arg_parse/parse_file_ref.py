@@ -77,7 +77,6 @@ def parse_file_ref_from_parse_source(source: ParseSource,
                                      conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     """
     :param source: Has a current line
-    :return: The parsed FileRef, remaining arguments after file was parsed.
     :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
     """
 
@@ -91,7 +90,6 @@ def parse_file_ref(tokens: TokenStream2,
                    conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     """
     :param tokens: Argument list
-    :return: The parsed FileRef, remaining arguments after file was parsed.
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
 
