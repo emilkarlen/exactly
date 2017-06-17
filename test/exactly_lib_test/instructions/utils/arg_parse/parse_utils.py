@@ -5,6 +5,13 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestCases))
+    ret_val.addTest(unittest.makeSuite(TestTokenStream))
+    return ret_val
+
+
 class TestCases(unittest.TestCase):
     def test_fail_when_quoting_is_invalid(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -117,13 +124,6 @@ class TestTokenStream(unittest.TestCase):
         self.assertIsNone(actual.tail_source)
         self.assertEqual('',
                          actual.tail_source_or_empty_string)
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCases))
-    ret_val.addTest(unittest.makeSuite(TestTokenStream))
-    return ret_val
 
 
 if __name__ == '__main__':
