@@ -10,6 +10,18 @@ def symbol_reference_syntax_for_name(name: str) -> str:
     return SYMBOL_REFERENCE_BEGIN + name + SYMBOL_REFERENCE_END
 
 
+class SymbolWithReferenceSyntax:
+    """
+    Formats a symbol name as a symbol reference, if used as value in str.format()
+    """
+
+    def __init__(self, name: str):
+        self.name = name
+
+    def __str__(self, *args, **kwargs):
+        return symbol_reference_syntax_for_name(self.name)
+
+
 def parse_symbol_reference(path_argument: Token) -> str:
     """
     Gives the name of the referenced symbol,
