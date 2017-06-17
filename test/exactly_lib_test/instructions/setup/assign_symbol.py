@@ -38,7 +38,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestPathSuccessfulParse))
     ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleValidOption))
     ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleDefaultOption))
-    ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeValueDefinition))
+    ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSymbolDefinition))
     ret_val.addTest(suite_for_instruction_documentation(sut.setup('instruction name').documentation))
     return ret_val
 
@@ -179,7 +179,7 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                       )
 
 
-class TestPathAssignmentRelativeValueDefinition(TestCaseBaseForParser):
+class TestPathAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
     def test(self):
         instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
