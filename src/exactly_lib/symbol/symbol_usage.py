@@ -29,7 +29,7 @@ class SymbolDefinition(SymbolUsage):
 
     @property
     def references(self) -> list:
-        """All `ValueReference` directly referenced by this object"""
+        """All `SymbolReference` directly referenced by this object"""
         return self._value_container.value.references
 
     @property

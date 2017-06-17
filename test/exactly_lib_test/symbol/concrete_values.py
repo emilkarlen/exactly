@@ -72,7 +72,7 @@ class TestValueVisitor(unittest.TestCase):
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
         with self.assertRaises(TypeError):
-            visitor.visit('a string is not a ValueReference')
+            visitor.visit('a string is not a SymbolReference')
 
 
 class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.ValueVisitor):
