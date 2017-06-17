@@ -131,6 +131,14 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
                                                     None)
 
     @staticmethod
+    def new_with_phase_and_message_assertion(phase_step: PhaseStep,
+                                             error_message: asrt.ValueAssertion):
+        return ExpectedFailureForInstructionFailure(phase_step,
+                                                    None,
+                                                    error_message,
+                                                    None)
+
+    @staticmethod
     def new_with_exception(phase_step: PhaseStep,
                            source_line: line_source.Line,
                            exception_class):
@@ -150,9 +158,10 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
         unittest_case.assertEqual(self.phase_step.step,
                                   phase_step.step,
                                   'Step')
-        assert_equals_line(unittest_case,
-                           self.source_line,
-                           actual_line)
+        if self.source_line is not None:
+            assert_equals_line(unittest_case,
+                               self.source_line,
+                               actual_line)
         self.expected_failure.assertions(unittest_case,
                                          actual_details)
 
