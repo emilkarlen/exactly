@@ -119,7 +119,7 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                              'Unexpected result status')
         self.__expectation.failure_info.assertions(self.put,
                                                    self.partial_result.failure_info)
-        msg = 'Difference in the sequence of executed phases and steps that are executed internally'
+        msg = 'Difference in the sequence of executed phases and steps'
         self.put.assertListEqual(self.__expectation.internal_recording,
                                  self.__recorder.recorded_elements,
                                  msg)
