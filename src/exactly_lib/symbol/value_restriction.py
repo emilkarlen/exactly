@@ -39,7 +39,7 @@ class ReferenceRestrictions:
         :param value: The value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        result = self.direct.is_satisfied_by(symbol_table, symbol_name, value)
+        result = self._direct.is_satisfied_by(symbol_table, symbol_name, value)
         if result is not None:
             return result
         if self.every is None:
@@ -66,7 +66,7 @@ class ReferenceRestrictions:
                           symbol_table: SymbolTable,
                           symbol_name: str,
                           value: ValueContainer) -> str:
-        result = self.every.is_satisfied_by(symbol_table, symbol_name, value)
+        result = self._every.is_satisfied_by(symbol_table, symbol_name, value)
         if result is not None:
             return result
         for reference in value.value.references:
