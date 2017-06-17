@@ -6,6 +6,15 @@ class TokenType(enum.Enum):
     QUOTED = 1
 
 
+class QuoteType(enum.Enum):
+    SOFT = 1
+    HARD = 2
+
+
+SOFT_QUOTE_CHAR = '"'
+HARD_QUOTE_CHAR = '\''
+
+
 class Token(tuple):
     def __new__(cls,
                 token_type: TokenType,
@@ -26,6 +35,20 @@ class Token(tuple):
     @property
     def is_quoted(self) -> bool:
         return self.type is TokenType.QUOTED
+
+    @property
+    def quote_type(self) -> QuoteType:
+        """
+        Precontition: is_quoted
+        """
+        return QuoteType.SOFT if self[2][0] == SOFT_QUOTE_CHAR else QuoteType.HARD
+
+    @property
+    def is_hard_quote_type(self) -> bool:
+        """
+        Precontition: is_quoted
+        """
+        return self[2][0] == HARD_QUOTE_CHAR
 
     @property
     def string(self) -> str:

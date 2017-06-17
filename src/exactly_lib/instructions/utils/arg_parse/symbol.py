@@ -1,3 +1,5 @@
+from itertools import takewhile
+
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.parse.token import Token
@@ -45,6 +47,84 @@ def parse_symbol_reference(path_argument: Token) -> str:
                 raise SingleInstructionInvalidArgumentException(
                     'Illegal symbol name: `{}\''.format(s))
     return None
+
+
+class Fragment:
+    def __init__(self,
+                 value: str,
+                 is_symbol: bool):
+        self.value = value
+        self.is_symbol = is_symbol
+
+    @property
+    def is_constant(self) -> bool:
+        return not self.is_symbol
+
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, Fragment):
+            return self.value == o.value and self.is_symbol == o.is_symbol
+        else:
+            return False
+
+    def __str__(self):
+        fragment_type = 'constant' if self.is_constant else 'symbol'
+        return 'Fragment\{{type}, value={value}\}'.format(type=fragment_type,
+                                                          value=repr(self.value))
+
+
+def constant(s: str) -> Fragment:
+    return Fragment(s, False)
+
+
+def symbol(s: str) -> Fragment:
+    return Fragment(s, True)
+
+
+def split(s: str) -> list:
+    """
+    Splits a string into fragments, according to the syntax of symbol references.
+
+    Each returned fragment is either a string constant or a symbol name.
+    :param s:
+    :return: [`Fragment`]
+    """
+    ret_val = []
+    while s:
+        s, fragments = _extract_fragment(s)
+        ret_val.extend(fragments)
+    return ret_val
+
+
+def _extract_fragment(s: str):
+    pos, name, rest = _find_symbol_reference(s)
+    if pos == -1:
+        return '', [Fragment(s, False)]
+    if pos == 0:
+        return rest, [Fragment(name, True)]
+    return rest, [Fragment(s[:pos], False), Fragment(name, True)]
+
+
+def _find_symbol_reference(s):
+    # The constants 2 are the length of SYMBOL_REFERENCE_END/SYMBOL_REFERENCE_END
+    sym_ref_pos = s.find(SYMBOL_REFERENCE_BEGIN)
+    while sym_ref_pos != -1:
+        symbol_name = _extract_symbol_name(s, sym_ref_pos + 2)
+        pos_after_symbol_name = sym_ref_pos + 2 + len(symbol_name)
+        if symbol_name and s.startswith(SYMBOL_REFERENCE_END, pos_after_symbol_name):
+            rest = s[pos_after_symbol_name + 2:]
+            return sym_ref_pos, symbol_name, rest
+        else:
+            sym_ref_pos = s.find(SYMBOL_REFERENCE_BEGIN, pos_after_symbol_name)
+
+    return -1, '', ''
+
+
+def _extract_symbol_name(s: str, start_idx: int):
+    return ''.join(takewhile(_is_identifier, s[start_idx:]))
+
+
+def _is_identifier(s: str) -> bool:
+    return s.isalnum() or s == '_'
 
 
 def is_symbol_name(s: str) -> bool:
