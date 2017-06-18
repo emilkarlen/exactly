@@ -4,7 +4,7 @@ from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTI
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.instructions.utils.arg_parse.symbol import symbol_reference_syntax_for_name
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2

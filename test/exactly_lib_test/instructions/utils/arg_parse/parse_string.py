@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_string as sut
-from exactly_lib.instructions.utils.arg_parse.symbol import SymbolWithReferenceSyntax, symbol_reference_syntax_for_name, \
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import SymbolWithReferenceSyntax, \
+    symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -245,10 +246,14 @@ def _multi_line_source(lines: list,
     return TokenStream2(all_lines)
 
 
-def assert_equals_string_resolver(list_of_fragments: list) -> asrt.ValueAssertion:
-    fragment_resolves = [fragment_resolver_from_fragment(f) for f in list_of_fragments]
-    expected_resolver = StringResolver(tuple(fragment_resolves))
+def assert_equals_string_resolver(fragments: list) -> asrt.ValueAssertion:
+    expected_resolver = string_resolver_from_fragments(fragments)
     return equals_string_resolver3(expected_resolver)
+
+
+def string_resolver_from_fragments(fragments: list) -> StringResolver:
+    fragment_resolves = [fragment_resolver_from_fragment(f) for f in fragments]
+    return StringResolver(tuple(fragment_resolves))
 
 
 def fragment_resolver_from_fragment(fragment: Fragment) -> StringFragmentResolver:

@@ -9,7 +9,7 @@ from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse
 from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
-from exactly_lib.instructions.utils.arg_parse.symbol import parse_symbol_reference
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import parse_symbol_reference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
