@@ -111,10 +111,6 @@ class StringResolver(SymbolValueResolver):
                      for fr in self._fragment_resolvers]
         return sv.StringValue(tuple(fragments))
 
-    def resolve_string_value(self, symbols: SymbolTable) -> sv.StringValue:
-        # TODO [string-fragments] Remove when method above is used instead of this method
-        return self.resolve(symbols)
-
     @property
     def references(self) -> list:
         ret_val = []
