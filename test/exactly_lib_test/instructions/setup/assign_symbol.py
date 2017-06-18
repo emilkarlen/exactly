@@ -7,7 +7,7 @@ from exactly_lib.instructions.utils.arg_parse.symbol_syntax import SymbolWithRef
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
@@ -24,7 +24,6 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.instructions.utils.arg_parse.parse_string import string_resolver_from_fragments
-from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sr_asrt
 from exactly_lib_test.symbol.test_resources import value_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.test_resources.symbol_utils import assert_symbol_table_is_singleton, \
     string_value_container, file_ref_value, assert_symbol_usages_is_singleton_list, container
@@ -281,7 +280,3 @@ def _multi_line_source(first_line: str,
 
 def _value_container(value: Value) -> ValueContainer:
     return ValueContainer(Line(1, 'source line'), value)
-
-
-IS_UNRESTRICTED = sr_asrt.matches_reference_restrictions(assertion_on_direct=asrt.is_instance(NoRestriction),
-                                                         assertion_on_every=asrt.ValueIsNone())
