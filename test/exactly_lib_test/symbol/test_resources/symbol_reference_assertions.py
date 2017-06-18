@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import symbol_usage as su
+from exactly_lib.symbol.concrete_restrictions import NoRestriction
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_value_restriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -65,6 +66,10 @@ def equals_symbol_reference2(expected_name: str,
                                assertion_on_restrictions)
 
         ]))
+
+
+REFERENCES_ARE_UNRESTRICTED = matches_reference_restrictions(assertion_on_direct=asrt.is_instance(NoRestriction),
+                                                             assertion_on_every=asrt.ValueIsNone())
 
 
 def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
