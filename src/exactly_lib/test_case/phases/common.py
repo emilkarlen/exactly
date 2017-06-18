@@ -150,9 +150,8 @@ class SymbolUser:
         any phase step to have been executed). The return value must be constant, with regard
         to the execution of other methods on the object (object of a sub class of this class).
 
-        The list should be in usage order. So, for example, if an instruction defines
-        a value X = Y (where Y is a symbol). Then the return value should contain
-        an element that says <reference of Y> before the element that says <definition of X>.
+        A symbol definition should not report references that the definition uses -
+        these references are derived automatically via the definition object.
 
         :return: [`SymbolUsage`]
         """

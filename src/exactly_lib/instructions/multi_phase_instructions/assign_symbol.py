@@ -4,9 +4,10 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.instructions.utils.arg_parse.symbol import is_symbol_name
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import is_symbol_name
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -15,7 +16,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.symbol.string_resolver import string_constant
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -125,12 +126,8 @@ def _parse_path(token_stream: TokenStream2) -> SymbolValueResolver:
     return parse_file_ref.parse_file_ref(token_stream, REL_OPTION_ARGUMENT_CONFIGURATION)
 
 
-def _parse_string(token_stream: TokenStream2) -> SymbolValueResolver:
-    if token_stream.is_null:
-        raise SingleInstructionInvalidArgumentException('Missing {} value'.format(syntax_elements.STRING_TYPE))
-    ret_val = string_constant(token_stream.head.string)
-    token_stream.consume()
-    return ret_val
+def _parse_string(token_stream: TokenStream2) -> StringResolver:
+    return parse_string_resolver(token_stream)
 
 
 _TYPE_SETUPS = {

@@ -1,5 +1,5 @@
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import STRING_TYPE
-from exactly_lib.instructions.utils.arg_parse import symbol
+from exactly_lib.instructions.utils.arg_parse import symbol_syntax
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -53,11 +53,11 @@ def parse_fragments_from_token(tokens: TokenStream2,
         raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(conf.argument_name))
     string_token = tokens.consume()
     if string_token.is_quoted and string_token.is_hard_quote_type:
-        return [symbol.Fragment(string_token.string, is_symbol=False)]
-    return symbol.split(string_token.string)
+        return [symbol_syntax.Fragment(string_token.string, is_symbol=False)]
+    return symbol_syntax.split(string_token.string)
 
 
-def fragment_resolver_from_fragment(fragment: symbol.Fragment) -> StringFragmentResolver:
+def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment) -> StringFragmentResolver:
     if fragment.is_constant:
         return ConstantStringFragmentResolver(fragment.value)
     else:
