@@ -25,9 +25,9 @@ class ReferenceRestrictions:
 
     def __init__(self,
                  direct: ValueRestriction,
-                 every: ValueRestriction = None):
+                 indirect: ValueRestriction = None):
         self._direct = direct
-        self._every = every
+        self._indirect = indirect
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
@@ -42,9 +42,9 @@ class ReferenceRestrictions:
         result = self._direct.is_satisfied_by(symbol_table, symbol_name, value)
         if result is not None:
             return result
-        if self.every is None:
+        if self._indirect is None:
             return None
-        return self._check_every_node(symbol_table, symbol_name, value)
+        return self._check_indirect(symbol_table, value.value.references)
 
     @property
     def direct(self) -> ValueRestriction:
@@ -54,19 +54,31 @@ class ReferenceRestrictions:
         return self._direct
 
     @property
-    def every(self) -> ValueRestriction:
+    def indirect(self) -> ValueRestriction:
         """
-        Restriction that must be satisfied by the direct target of the reference,
-        and also by all symbols referenced indirectly via this target.
+        Restriction that must be satisfied by the symbols references indirectly referenced.
         :rtype: None or ValueRestriction
         """
-        return self._every
+        return self._indirect
+
+    def _check_indirect(self,
+                        symbol_table: SymbolTable,
+                        references: list) -> str:
+        for reference in references:
+            symbol_value = symbol_table.lookup(reference.name)
+            result = self._indirect.is_satisfied_by(symbol_table, reference.name, symbol_value)
+            if result is not None:
+                return result
+            result = self._check_indirect(symbol_table, symbol_value.value.references)
+            if result is not None:
+                return result
+        return None
 
     def _check_every_node(self,
                           symbol_table: SymbolTable,
                           symbol_name: str,
                           value: ValueContainer) -> str:
-        result = self._every.is_satisfied_by(symbol_table, symbol_name, value)
+        result = self._indirect.is_satisfied_by(symbol_table, symbol_name, value)
         if result is not None:
             return result
         for reference in value.value.references:

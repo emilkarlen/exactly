@@ -13,7 +13,7 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestUsageOfDirectRestriction),
-        unittest.makeSuite(TestUsageOfRestrictionOnEveryReferencedSymbol),
+        unittest.makeSuite(TestUsageOfRestrictionOnIndirectReferencedSymbol),
     ])
 
 
@@ -34,7 +34,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
         # ARRANGE #
         level_2_symbol = symbol_table_entry('level_2_symbol', [])
         restrictions_that_should_not_be_used = ReferenceRestrictions(direct=ValueRestrictionThatRaisesErrorIfApplied(),
-                                                                     every=ValueRestrictionThatRaisesErrorIfApplied())
+                                                                     indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
         level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                              [reference_to(level_2_symbol, restrictions_that_should_not_be_used)])
@@ -77,7 +77,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
         for case_name, restriction_on_every, symbol_table in cases:
             with self.subTest(msg=case_name):
                 restrictions = sut.ReferenceRestrictions(direct=restriction_on_direct_node,
-                                                         every=restriction_on_every)
+                                                         indirect=restriction_on_every)
                 assert isinstance(symbol_to_check.value, sut.ValueContainer)
                 actual_result = restrictions.is_satisfied_by(symbol_table,
                                                              symbol_to_check.key,
@@ -85,13 +85,13 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
                 self.assertEqual(expected_result, actual_result)
 
 
-class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
+class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
     def test_that_every_referenced_symbol_is_processed_once(self):
         # ARRANGE #
         level_2_symbol = symbol_table_entry('level_2_symbol', [])
         restrictions_that_should_not_be_used = ReferenceRestrictions(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            every=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
         level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                              [reference_to(level_2_symbol, restrictions_that_should_not_be_used)])
@@ -105,7 +105,7 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
 
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
             value_container_2_result__fun=unconditional_satisfaction)
-        restrictions_to_test = ReferenceRestrictions(every=restriction_that_registers_processed_symbols,
+        restrictions_to_test = ReferenceRestrictions(indirect=restriction_that_registers_processed_symbols,
                                                      direct=unconditionally_satisfied_value_restriction())
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
@@ -116,7 +116,6 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
                          'result of processing')
         actual_processed_symbols = dict(restriction_that_registers_processed_symbols.visited.items())
         expected_processed_symbol = {
-            level_0_symbol.key: 1,
             level_1a_symbol.key: 1,
             level_1b_symbol.key: 1,
             level_2_symbol.key: 1
@@ -128,7 +127,7 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
         # ARRANGE #
         restrictions_that_should_not_be_used = ReferenceRestrictions(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            every=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
         level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                              [])
@@ -144,7 +143,7 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
         function_that_reports_error = unconditional_dissatisfaction(result_that_indicates_error)
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
             value_container_2_result__fun=function_that_reports_error)
-        restrictions_to_test = ReferenceRestrictions(every=restriction_that_registers_processed_symbols,
+        restrictions_to_test = ReferenceRestrictions(indirect=restriction_that_registers_processed_symbols,
                                                      direct=unconditionally_satisfied_value_restriction())
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
@@ -154,7 +153,7 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
                          'result of processing')
         actual_processed_symbols = dict(restriction_that_registers_processed_symbols.visited.items())
         expected_processed_symbol = {
-            level_0_symbol.key: 1,
+            level_1a_symbol.key: 1,
         }
         self.assertEqual(expected_processed_symbol,
                          actual_processed_symbols)
@@ -165,15 +164,15 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
         disSatisfied_value_type = ValueType.PATH
         level_2_symbol = symbol_table_entry('level_2_symbol',
                                             references=[],
-                                            value_type=satisfied_value_type)
+                                            value_type=disSatisfied_value_type)
         restrictions_that_should_not_be_used = ReferenceRestrictions(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            every=ValueRestrictionThatRaisesErrorIfApplied())
+            indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
         level_1a_symbol = symbol_table_entry('level_1a_symbol',
                                              references=[reference_to(level_2_symbol,
                                                                       restrictions_that_should_not_be_used)],
-                                             value_type=disSatisfied_value_type)
+                                             value_type=satisfied_value_type)
         level_1b_symbol = symbol_table_entry('level_1b_symbol',
                                              references=[],
                                              value_type=satisfied_value_type)
@@ -190,7 +189,7 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
         restriction_on_every = RestrictionThatRegistersProcessedSymbols(
             value_container_2_result__fun=dissatisfaction_if_value_type_is(disSatisfied_value_type))
         restrictions_to_test = ReferenceRestrictions(
-            every=restriction_on_every,
+            indirect=restriction_on_every,
             direct=RestrictionWithConstantResult(None))
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
@@ -199,8 +198,8 @@ class TestUsageOfRestrictionOnEveryReferencedSymbol(unittest.TestCase):
                              'result of processing')
         actual_processed_symbols = dict(restriction_on_every.visited.items())
         expected_processed_symbol = {
-            level_0_symbol.key: 1,
             level_1a_symbol.key: 1,
+            level_2_symbol.key: 1,
         }
         self.assertEqual(expected_processed_symbol,
                          actual_processed_symbols)

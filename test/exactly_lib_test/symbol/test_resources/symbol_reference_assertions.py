@@ -16,7 +16,7 @@ def matches_reference_restrictions(assertion_on_direct: asrt.ValueAssertion = as
                                                         ReferenceRestrictions.direct.fget,
                                                         assertion_on_direct),
                                      asrt.sub_component('every',
-                                                        ReferenceRestrictions.every.fget,
+                                                        ReferenceRestrictions.indirect.fget,
                                                         assertion_on_every)
                                  ])
                                  )
@@ -25,8 +25,8 @@ def matches_reference_restrictions(assertion_on_direct: asrt.ValueAssertion = as
 def equals_reference_restrictions(expected: ReferenceRestrictions) -> asrt.ValueAssertion:
     on_direct = equals_value_restriction(expected.direct)
     on_every = asrt.ValueIsNone()
-    if expected.every is not None:
-        on_every = equals_value_restriction(expected.every)
+    if expected.indirect is not None:
+        on_every = equals_value_restriction(expected.indirect)
     return matches_reference_restrictions(assertion_on_direct=on_direct,
                                           assertion_on_every=on_every)
 
