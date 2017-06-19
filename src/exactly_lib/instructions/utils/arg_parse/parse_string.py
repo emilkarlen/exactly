@@ -63,5 +63,5 @@ def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment) -> StringF
     else:
         sr = SymbolReference(fragment.value,
                              ReferenceRestrictions(direct=NoRestriction(),
-                                                   every=None))
+                                                   indirect=None))
         return SymbolStringFragmentResolver(sr)
