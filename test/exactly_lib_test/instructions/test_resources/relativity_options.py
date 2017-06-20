@@ -14,7 +14,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import rel_symbol_arg_str
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_file_ref_relativity_restriction
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
+    equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
@@ -244,7 +245,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
 
     def usage_expectation_assertions(self) -> list:
         return [
-            equals_symbol_reference(
+            equals_symbol_reference_with_restriction_on_direct_target(
                 self.symbol_name,
                 equals_file_ref_relativity_restriction(
                     FileRefRelativityRestriction(self.expected_accepted_relativities)))

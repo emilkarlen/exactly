@@ -1,6 +1,6 @@
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.symbol.value_restriction import ValueRestriction
+from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer, ValueType, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
@@ -124,6 +124,80 @@ class ValueRestrictionVisitor:
         raise NotImplementedError()
 
 
+class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
+    """
+    Restriction with one `ValueRestriction` that is applied on the
+    directly referenced symbol; and another that (if it is not None) is applied on every indirectly
+    referenced symbol.
+    """
+
+    def __init__(self,
+                 direct: ValueRestriction,
+                 indirect: ValueRestriction = None):
+        self._direct = direct
+        self._indirect = indirect
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: ValueContainer) -> str:
+        """
+        :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
+        :param symbol_name: The name of the symbol that the restriction applies to
+        :param value: The value that the restriction applies to
+        :return: None if satisfied, otherwise an error message
+        """
+        result = self._direct.is_satisfied_by(symbol_table, symbol_name, value)
+        if result is not None:
+            return result
+        if self._indirect is None:
+            return None
+        return self._check_indirect(symbol_table, value.value.references)
+
+    @property
+    def direct(self) -> ValueRestriction:
+        """
+        Restriction on the symbol that is the direct target of the reference.
+        """
+        return self._direct
+
+    @property
+    def indirect(self) -> ValueRestriction:
+        """
+        Restriction that must be satisfied by the symbols references indirectly referenced.
+        :rtype: None or ValueRestriction
+        """
+        return self._indirect
+
+    def _check_indirect(self,
+                        symbol_table: SymbolTable,
+                        references: list) -> str:
+        for reference in references:
+            symbol_value = symbol_table.lookup(reference.name)
+            result = self._indirect.is_satisfied_by(symbol_table, reference.name, symbol_value)
+            if result is not None:
+                return result
+            result = self._check_indirect(symbol_table, symbol_value.value.references)
+            if result is not None:
+                return result
+        return None
+
+
+class OrReferenceRestrictions(ReferenceRestrictions):
+    def __init__(self, simple_reference_restriction_parts: list):
+        self._parts = tuple(simple_reference_restriction_parts)
+
+    @property
+    def parts(self) -> tuple:
+        return self._parts
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: ValueContainer) -> str:
+        raise NotImplementedError()
+
+
 def _invalid_type_msg(expected: ValueType,
                       symbol_name: str,
                       container_of_actual: ValueContainer) -> str:
@@ -139,6 +213,21 @@ def _invalid_type_msg(expected: ValueType,
                                        symbol_name,
                                        container_of_actual)
     return '\n'.join(lines)
+
+
+class ReferenceRestrictionsVisitor:
+    def visit(self, x: ReferenceRestrictions):
+        if isinstance(x, ReferenceRestrictionsOnDirectAndIndirect):
+            return self.visit_direct_and_indirect(x)
+        if isinstance(x, OrReferenceRestrictions):
+            return self.visit_or(x)
+        raise TypeError('%s is not an instance of %s' % (str(x), str(ReferenceRestrictions)))
+
+    def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect):
+        raise NotImplementedError()
+
+    def visit_or(self, x: OrReferenceRestrictions):
+        raise NotImplementedError()
 
 
 def _unsatisfied_path_relativity(symbol_name: str,

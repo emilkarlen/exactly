@@ -6,9 +6,8 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
     InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.symbol.concrete_restrictions import StringRestriction
+from exactly_lib.symbol.concrete_restrictions import StringRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh, sh
@@ -18,7 +17,8 @@ from exactly_lib_test.instructions.test_resources.pre_or_post_sds_validator impo
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
     equals_string_restriction
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
+    equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -105,9 +105,9 @@ class TestSymbolUsagesOfHardCodedInstruction(TestCaseBase):
         # ARRANGE #
         symbol_name = 'SYMBOL_NAME'
         string_restriction = StringRestriction()
-        symbol_reference = SymbolReference(symbol_name, ReferenceRestrictions(string_restriction))
+        symbol_reference = SymbolReference(symbol_name, ReferenceRestrictionsOnDirectAndIndirect(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
-            equals_symbol_reference(
+            equals_symbol_reference_with_restriction_on_direct_target(
                 symbol_name,
                 equals_string_restriction(string_restriction))
         ])
@@ -130,9 +130,9 @@ class TestSymbolUsagesOfInstructionFromParser(TestCaseBase):
         # ARRANGE #
         symbol_name = 'SYMBOL_NAME'
         string_restriction = StringRestriction()
-        symbol_reference = SymbolReference(symbol_name, ReferenceRestrictions(string_restriction))
+        symbol_reference = SymbolReference(symbol_name, ReferenceRestrictionsOnDirectAndIndirect(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
-            equals_symbol_reference(
+            equals_symbol_reference_with_restriction_on_direct_target(
                 symbol_name,
                 equals_string_restriction(string_restriction))
         ])

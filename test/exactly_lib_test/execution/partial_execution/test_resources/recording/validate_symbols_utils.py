@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import StringResolver, SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions, ValueRestriction
+from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable
@@ -84,8 +84,9 @@ class TestValidationErrorDueToFailedRestrictionOnDirectReferenceTarget(TestCaseB
         error_message_for_failed_restriction = 'error message'
         reference_with_restriction_failure = SymbolReference(
             defined_symbol.name,
-            ReferenceRestrictions(direct=ValueRestrictionWithConstantResult(error_message_for_failed_restriction),
-                                  indirect=value_restriction_that_is_unconditionally_satisfied()))
+            ReferenceRestrictionsOnDirectAndIndirect(
+                direct=ValueRestrictionWithConstantResult(error_message_for_failed_restriction),
+                indirect=value_restriction_that_is_unconditionally_satisfied()))
 
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.SETUP,
@@ -114,8 +115,9 @@ class TestValidationErrorDueToFailedRestrictionOnIndirectReferenceTarget(TestCas
         error_message_for_failed_restriction = 'error message'
         reference_with_restriction_failure = SymbolReference(
             def_of_directly_referenced_symbol.name,
-            ReferenceRestrictions(direct=value_restriction_that_is_unconditionally_satisfied(),
-                                  indirect=ValueRestrictionWithConstantResult(error_message_for_failed_restriction)))
+            ReferenceRestrictionsOnDirectAndIndirect(direct=value_restriction_that_is_unconditionally_satisfied(),
+                                                     indirect=ValueRestrictionWithConstantResult(
+                                                         error_message_for_failed_restriction)))
 
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.SETUP,
@@ -160,7 +162,7 @@ def symbol_definition(symbol_name: str) -> SymbolDefinition:
 
 
 def _reference_to_undefined_symbol() -> SymbolReference:
-    return SymbolReference('undefined symbol', ReferenceRestrictions(NoRestriction()))
+    return SymbolReference('undefined symbol', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
 
 
 def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:
@@ -181,8 +183,8 @@ class ValueRestrictionWithConstantResult(ValueRestriction):
 def definition_with_reference(name_of_defined: str,
                               name_of_referenced) -> SymbolDefinition:
     symbol_reference = SymbolReference(name_of_referenced,
-                                       ReferenceRestrictions(direct=NoRestriction(),
-                                                             indirect=NoRestriction()))
+                                       ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
+                                                                                indirect=NoRestriction()))
     return SymbolDefinition(name_of_defined,
                             symbol_utils.container(
                                 StringResolver((SymbolStringFragmentResolver(symbol_reference),))

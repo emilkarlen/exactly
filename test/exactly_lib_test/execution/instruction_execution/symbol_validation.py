@@ -4,11 +4,11 @@ from exactly_lib.execution.instruction_execution import symbol_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol import value_structure as vs
-from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.line_source import Line
@@ -29,7 +29,7 @@ class TestSymbolReference(unittest.TestCase):
     def test_WHEN_referenced_symbol_not_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        symbol_usage = su.SymbolReference('undefined', ReferenceRestrictions(NoRestriction()))
+        symbol_usage = su.SymbolReference('undefined', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -41,7 +41,7 @@ class TestSymbolReference(unittest.TestCase):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'symbol string'))
         symbol_usage = su.SymbolReference('val_name',
-                                          ReferenceRestrictions(RestrictionThatCannotBeSatisfied()))
+                                          ReferenceRestrictionsOnDirectAndIndirect(RestrictionThatCannotBeSatisfied()))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
@@ -52,7 +52,7 @@ class TestSymbolReference(unittest.TestCase):
         # ARRANGE #
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
         symbol_usage = su.SymbolReference('val_name',
-                                          ReferenceRestrictions(RestrictionThatIsAlwaysSatisfied()))
+                                          ReferenceRestrictionsOnDirectAndIndirect(RestrictionThatIsAlwaysSatisfied()))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNone(actual, 'result should indicate success')
@@ -88,7 +88,8 @@ class TestSymbolDefinition(unittest.TestCase):
             'UNDEFINED',
             file_ref_resolver_container(
                 rel_symbol(su.SymbolReference('REFERENCED',
-                                              ReferenceRestrictions(RestrictionThatIsAlwaysSatisfied())),
+                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                  RestrictionThatIsAlwaysSatisfied())),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
@@ -103,7 +104,8 @@ class TestSymbolDefinition(unittest.TestCase):
             'UNDEFINED',
             file_ref_resolver_container(
                 rel_symbol(su.SymbolReference('REFERENCED',
-                                              ReferenceRestrictions(RestrictionThatCannotBeSatisfied())),
+                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                  RestrictionThatCannotBeSatisfied())),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
@@ -119,7 +121,8 @@ class TestSymbolDefinition(unittest.TestCase):
             'UNDEFINED',
             file_ref_resolver_container(
                 rel_symbol(su.SymbolReference('REFERENCED',
-                                              ReferenceRestrictions(RestrictionThatIsAlwaysSatisfied())),
+                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                  RestrictionThatIsAlwaysSatisfied())),
                            PathPartResolverAsFixedPath('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
@@ -144,7 +147,7 @@ class TestValidationOfList(unittest.TestCase):
         # ARRANGE #
         symbol_table = empty_symbol_table()
         valid_definition = symbol_of('symbol')
-        valid__reference = su.SymbolReference('symbol', ReferenceRestrictions(NoRestriction()))
+        valid__reference = su.SymbolReference('symbol', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
         symbol_usages = [
             valid_definition,
             valid__reference,
@@ -157,7 +160,7 @@ class TestValidationOfList(unittest.TestCase):
         # ARRANGE #
         symbol_table = empty_symbol_table()
         valid_definition = symbol_of('name-of-definition')
-        invalid__reference = su.SymbolReference('undefined', ReferenceRestrictions(NoRestriction()))
+        invalid__reference = su.SymbolReference('undefined', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
         symbol_usages = [
             valid_definition,
             invalid__reference,

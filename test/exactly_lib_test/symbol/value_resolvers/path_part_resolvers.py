@@ -4,7 +4,8 @@ from exactly_lib.symbol.value_resolvers import path_part_resolvers as sut
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.util import symbol_table as st
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import is_string_value_restriction
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
+    equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_container
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -48,8 +49,8 @@ class TestPathPartAsStringSymbolReference(unittest.TestCase):
         actual = path_part.references
         # ASSERT #
         assertion = asrt.matches_sequence([
-            equals_symbol_reference('the symbol name',
-                                    is_string_value_restriction)
+            equals_symbol_reference_with_restriction_on_direct_target('the symbol name',
+                                                                      is_string_value_restriction)
         ])
         assertion.apply_with_message(self, actual, 'value references')
 

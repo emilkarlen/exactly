@@ -1,11 +1,10 @@
 import pathlib
 
 from exactly_lib.symbol.concrete_restrictions import EitherStringOrFileRefRelativityRestriction, \
-    StringRestriction, FileRefRelativityRestriction
+    StringRestriction, FileRefRelativityRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.concrete_values import ValueVisitor, FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
@@ -30,7 +29,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
                                                                                FileRefRelativityRestriction(
                                                                                    accepted_relativity_variants))
         self.symbol_reference = SymbolReference(symbol_name,
-                                                ReferenceRestrictions(restriction_on_direct_ref))
+                                                ReferenceRestrictionsOnDirectAndIndirect(restriction_on_direct_ref))
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
         symbol_value_2_file_ref = _SymbolValue2FileRefVisitor(self.default_relativity, symbols)

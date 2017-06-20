@@ -1,8 +1,9 @@
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
-    NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction
-from exactly_lib.symbol.value_restriction import ValueRestriction
+    NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction, ReferenceRestrictionsVisitor, \
+    OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
 from exactly_lib_test.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -74,3 +75,55 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
     def visit_string_or_file_ref_relativity(self, expected: EitherStringOrFileRefRelativityRestriction):
         assertion = equals_either_string_or_file_ref_relativity_restriction(expected)
         assertion.apply(self.put, self.actual, self.message_builder)
+
+
+def matches_restrictions_on_direct_and_indirect(assertion_on_direct: asrt.ValueAssertion = asrt.anything_goes(),
+                                                assertion_on_every: asrt.ValueAssertion = asrt.anything_goes(),
+                                                ) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(ReferenceRestrictionsOnDirectAndIndirect,
+                                 asrt.and_([
+                                     asrt.sub_component('direct',
+                                                        ReferenceRestrictionsOnDirectAndIndirect.direct.fget,
+                                                        assertion_on_direct),
+                                     asrt.sub_component('indirect',
+                                                        ReferenceRestrictionsOnDirectAndIndirect.indirect.fget,
+                                                        assertion_on_every)
+                                 ])
+                                 )
+
+
+def equals_reference_restrictions(expected: ReferenceRestrictions) -> asrt.ValueAssertion:
+    return _EQUALS_REFERENCE_RESTRICTIONS_VISITOR.visit(expected)
+
+
+REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
+    assertion_on_direct=asrt.is_instance(NoRestriction),
+    assertion_on_every=asrt.ValueIsNone())
+
+
+def _equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> asrt.ValueAssertion:
+    expected_sub_restrictions = [_equals_reference_restriction_on_direct_and_indirect(sub)
+                                 for sub in expected.parts]
+    return asrt.is_instance_with(OrReferenceRestrictions,
+                                 asrt.sub_component('parts',
+                                                    OrReferenceRestrictions.parts.fget,
+                                                    asrt.matches_sequence(expected_sub_restrictions)))
+
+
+def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRestrictionsOnDirectAndIndirect
+                                                         ) -> asrt.ValueAssertion:
+    return matches_restrictions_on_direct_and_indirect(
+        assertion_on_direct=equals_value_restriction(expected.direct),
+        assertion_on_every=asrt.is_none if expected.indirect is None else equals_value_restriction(expected.indirect)
+    )
+
+
+class _EqualsReferenceRestrictionsVisitor(ReferenceRestrictionsVisitor):
+    def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> asrt.ValueAssertion:
+        return _equals_reference_restriction_on_direct_and_indirect(x)
+
+    def visit_or(self, x: OrReferenceRestrictions) -> asrt.ValueAssertion:
+        return _equals_or_reference_restrictions(x)
+
+
+_EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsReferenceRestrictionsVisitor()

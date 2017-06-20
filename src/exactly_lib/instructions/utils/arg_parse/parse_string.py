@@ -4,11 +4,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import StringResolver, ConstantStringFragmentResolver, StringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 
 
 class Configuration:
@@ -62,6 +61,6 @@ def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment) -> StringF
         return ConstantStringFragmentResolver(fragment.value)
     else:
         sr = SymbolReference(fragment.value,
-                             ReferenceRestrictions(direct=NoRestriction(),
-                                                   indirect=None))
+                             ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
+                                                                      indirect=None))
         return SymbolStringFragmentResolver(sr)

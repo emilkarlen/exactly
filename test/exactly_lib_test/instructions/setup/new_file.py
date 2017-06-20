@@ -17,7 +17,8 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
+    equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container, \
     symbol_table_from_entries
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -101,8 +102,8 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                                   [empty_file('file-name.txt')])
                           ])),
                           symbol_usages=asrt.matches_sequence([
-                              equals_symbol_reference('SYMBOL_NAME',
-                                                      equals_file_ref_relativity_restriction(
+                              equals_symbol_reference_with_restriction_on_direct_target('SYMBOL_NAME',
+                                                                                        equals_file_ref_relativity_restriction(
                                                           FileRefRelativityRestriction(RELATIVITY_VARIANTS)))
                           ]),
                       )
