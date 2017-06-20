@@ -5,10 +5,7 @@ from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import StringResolver, SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
-from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
@@ -17,6 +14,8 @@ from exactly_lib_test.execution.partial_execution.test_resources.test_case_gener
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import ValueRestrictionWithConstantResult, \
+    value_restriction_that_is_unconditionally_satisfied
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -163,21 +162,6 @@ def symbol_definition(symbol_name: str) -> SymbolDefinition:
 
 def _reference_to_undefined_symbol() -> SymbolReference:
     return SymbolReference('undefined symbol', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
-
-
-def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:
-    return ValueRestrictionWithConstantResult(None)
-
-
-class ValueRestrictionWithConstantResult(ValueRestriction):
-    def __init__(self, result):
-        self.result = result
-
-    def is_satisfied_by(self,
-                        symbol_table: SymbolTable,
-                        symbol_name: str,
-                        value: ValueContainer) -> str:
-        return self.result
 
 
 def definition_with_reference(name_of_defined: str,

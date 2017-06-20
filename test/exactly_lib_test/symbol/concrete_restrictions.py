@@ -12,6 +12,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
+    value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
@@ -26,6 +28,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestReferenceRestrictionVisitor),
         unittest.makeSuite(TestUsageOfDirectRestriction),
         unittest.makeSuite(TestUsageOfRestrictionOnIndirectReferencedSymbol),
+        unittest.makeSuite(TestOrReferenceRestrictions),
     ])
 
 
@@ -502,6 +505,82 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         }
         self.assertEqual(expected_processed_symbol,
                          actual_processed_symbols)
+
+
+class TestOrReferenceRestrictions(unittest.TestCase):
+    def test_satisfied(self):
+        cases = [
+            ('single unconditionally satisfied restriction',
+             sut.OrReferenceRestrictions([
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_satisfied())
+             ])
+             ),
+            ('multiple unconditionally satisfied restrictions',
+             sut.OrReferenceRestrictions([
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_satisfied()),
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_satisfied())
+             ])
+             ),
+        ]
+        for case_name, restrictions in cases:
+            with self.subTest(msg=case_name):
+                actual = restrictions.is_satisfied_by(*self._symbol_setup_with_indirectly_referenced_symbol())
+                self.assertIsNone(actual)
+
+    def test_unsatisfied(self):
+        cases = [
+            ('no restriction parts',
+             sut.OrReferenceRestrictions([]),
+             ),
+
+            ('single direct: unsatisfied',
+             sut.OrReferenceRestrictions([
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_unsatisfied())
+             ])
+             ),
+            ('multiple direct: unconditionally satisfied restrictions',
+             sut.OrReferenceRestrictions([
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_unsatisfied()),
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_unsatisfied())
+             ])
+             ),
+            ('first: direct=satisfied, indirect=unsatisfied. second:satisfied ',
+             sut.OrReferenceRestrictions([
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_satisfied(),
+                     indirect=value_restriction_that_is_unconditionally_unsatisfied()),
+                 sut.ReferenceRestrictionsOnDirectAndIndirect(
+                     direct=value_restriction_that_is_unconditionally_satisfied())
+             ])
+             ),
+        ]
+        for case_name, restrictions in cases:
+            with self.subTest(msg=case_name):
+                actual = restrictions.is_satisfied_by(*self._symbol_setup_with_indirectly_referenced_symbol())
+                self.assertIsNotNone(actual)
+
+    @staticmethod
+    def _symbol_setup_with_indirectly_referenced_symbol() -> ():
+        referenced_symbol = symbol_table_entry('referenced_symbol',
+                                               references=[])
+        restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
+            direct=ValueRestrictionThatRaisesErrorIfApplied(),
+            indirect=ValueRestrictionThatRaisesErrorIfApplied())
+
+        referencing_symbol = symbol_table_entry('referencing_symbol',
+                                                references=[reference_to(referenced_symbol,
+                                                                         restrictions_that_should_not_be_used)])
+        symbol_table_entries = [referencing_symbol, referenced_symbol]
+
+        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+
+        return symbol_table, referencing_symbol.key, referencing_symbol.value,
 
 
 def unconditionally_satisfied_value_restriction() -> sut.ValueRestriction:
