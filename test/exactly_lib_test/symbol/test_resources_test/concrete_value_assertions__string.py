@@ -1,11 +1,10 @@
 import unittest
 
-from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import ConstantStringFragmentResolver, SymbolStringFragmentResolver, \
     StringResolver, string_constant
 from exactly_lib.symbol.string_value import StringValue, ConstantFragment
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
@@ -26,8 +25,10 @@ class TestEqualsFragment(unittest.TestCase):
         test_cases = [
             (ConstantStringFragmentResolver('abc'),
              ConstantStringFragmentResolver('abc')),
-            (SymbolStringFragmentResolver(SymbolReference('symbol_name', ReferenceRestrictions(NoRestriction()))),
-             SymbolStringFragmentResolver(SymbolReference('symbol_name', ReferenceRestrictions(NoRestriction())))),
+            (SymbolStringFragmentResolver(
+                SymbolReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))),
+             SymbolStringFragmentResolver(
+                 SymbolReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))),
         ]
         for fragment1, fragment2 in test_cases:
             with self.subTest(msg=str(fragment1) + ' ' + str(fragment2)):
@@ -39,7 +40,8 @@ class TestEqualsFragment(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         value = 'a_value'
         string_fragment = ConstantStringFragmentResolver(value)
-        symbol_fragment = SymbolStringFragmentResolver(SymbolReference(value, ReferenceRestrictions(NoRestriction())))
+        symbol_fragment = SymbolStringFragmentResolver(
+            SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragment(string_fragment)
@@ -50,7 +52,8 @@ class TestEqualsFragment(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         value = 'a_value'
         string_fragment = ConstantStringFragmentResolver(value)
-        symbol_fragment = SymbolStringFragmentResolver(SymbolReference(value, ReferenceRestrictions(NoRestriction())))
+        symbol_fragment = SymbolStringFragmentResolver(
+            SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragment(symbol_fragment)
@@ -70,9 +73,11 @@ class TestEqualsFragment(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         fragment1 = SymbolStringFragmentResolver(SymbolReference('symbol_name_1',
-                                                                 ReferenceRestrictions(NoRestriction())))
+                                                                 ReferenceRestrictionsOnDirectAndIndirect(
+                                                                     NoRestriction())))
         fragment2 = SymbolStringFragmentResolver(SymbolReference('symbol_name_2',
-                                                                 ReferenceRestrictions(NoRestriction())))
+                                                                 ReferenceRestrictionsOnDirectAndIndirect(
+                                                                     NoRestriction())))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragment(fragment1)
@@ -92,17 +97,21 @@ class TestEqualsFragments(unittest.TestCase):
             ),
             (
                 (SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictions(NoRestriction()))),),
+                                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                                  NoRestriction()))),),
                 (SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictions(NoRestriction()))),),
+                                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                                  NoRestriction()))),),
             ),
             (
                 (ConstantStringFragmentResolver('abc'),
                  SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictions(NoRestriction()))),),
+                                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                                  NoRestriction()))),),
                 (ConstantStringFragmentResolver('abc'),
                  SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictions(NoRestriction()))),),
+                                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                                  NoRestriction()))),),
             ),
         ]
         for fragments1, fragments2 in test_cases:
@@ -145,7 +154,8 @@ class TestEqualsFragments(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = (ConstantStringFragmentResolver('value'),)
         actual = (SymbolStringFragmentResolver(SymbolReference('value',
-                                                               ReferenceRestrictions(NoRestriction()))),)
+                                                               ReferenceRestrictionsOnDirectAndIndirect(
+                                                                   NoRestriction()))),)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_fragments(expected)
@@ -161,7 +171,7 @@ class TestEquals(unittest.TestCase):
              ),
             ('String with reference',
              resolver_with_references([SymbolReference('symbol_name',
-                                                       ReferenceRestrictions(NoRestriction()))]),
+                                                       ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]),
              empty_symbol_table(),
              ),
         ]
@@ -191,7 +201,7 @@ class TestNotEquals3(unittest.TestCase):
         expected_string = 'expected value'
         expected = string_constant(expected_string)
         actual = resolver_with_references([SymbolReference('symbol_name',
-                                                           ReferenceRestrictions(NoRestriction()))])
+                                                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             assertion = sut.equals_string_resolver3(expected)
@@ -201,8 +211,10 @@ class TestNotEquals3(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
-        expected_references = [SymbolReference('expected_symbol_name', ReferenceRestrictions(NoRestriction()))]
-        actual_references = [SymbolReference('actual_symbol_name', ReferenceRestrictions(NoRestriction()))]
+        expected_references = [
+            SymbolReference('expected_symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
+        actual_references = [
+            SymbolReference('actual_symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
         expected = _StringResolverTestImpl(expected_string, expected_references)
         actual = _StringResolverTestImpl(expected_string, actual_references)
         # ACT & ASSERT #

@@ -4,9 +4,9 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.cli_syntax import option_parsing
@@ -49,7 +49,8 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
         raise SingleInstructionInvalidArgumentException(msg)
     source.consume()
     return SymbolReference(symbol_name,
-                           ReferenceRestrictions(FileRefRelativityRestriction(options.accepted_relativity_variants)))
+                           ReferenceRestrictionsOnDirectAndIndirect(
+                               FileRefRelativityRestriction(options.accepted_relativity_variants)))
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,

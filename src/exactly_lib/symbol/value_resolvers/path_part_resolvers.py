@@ -1,9 +1,8 @@
-from exactly_lib.symbol.concrete_restrictions import StringRestriction
+from exactly_lib.symbol.concrete_restrictions import StringRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.string_value import StringValue
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_part import PathPart
@@ -40,7 +39,7 @@ class PathPartResolverAsStringSymbolReference(PathPartResolver):
 
     def __init__(self, symbol_name: str):
         self._symbol_reference = SymbolReference(symbol_name,
-                                                 ReferenceRestrictions(StringRestriction()))
+                                                 ReferenceRestrictionsOnDirectAndIndirect(StringRestriction()))
 
     def resolve(self, symbols: SymbolTable) -> PathPart:
         value_container = symbols.lookup(self._symbol_name)

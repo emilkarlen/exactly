@@ -1,8 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import symbol_usage as sut
-from exactly_lib.symbol.concrete_restrictions import NoRestriction
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container
 
 
@@ -28,7 +27,7 @@ class TestSymbolUsageVisitor(unittest.TestCase):
         visitor = _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
         ret_val = visitor.visit(
-            sut.SymbolReference('name', ReferenceRestrictions(NoRestriction())))
+            sut.SymbolReference('name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
                              [sut.SymbolReference],

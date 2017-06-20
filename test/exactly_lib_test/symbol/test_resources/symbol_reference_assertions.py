@@ -1,34 +1,9 @@
 import unittest
 
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.concrete_restrictions import NoRestriction
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_value_restriction
+from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
+    matches_restrictions_on_direct_and_indirect, equals_reference_restrictions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-
-
-def matches_reference_restrictions(assertion_on_direct: asrt.ValueAssertion = asrt.anything_goes(),
-                                   assertion_on_every: asrt.ValueAssertion = asrt.anything_goes(),
-                                   ) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(ReferenceRestrictions,
-                                 asrt.and_([
-                                     asrt.sub_component('direct',
-                                                        ReferenceRestrictions.direct.fget,
-                                                        assertion_on_direct),
-                                     asrt.sub_component('every',
-                                                        ReferenceRestrictions.indirect.fget,
-                                                        assertion_on_every)
-                                 ])
-                                 )
-
-
-def equals_reference_restrictions(expected: ReferenceRestrictions) -> asrt.ValueAssertion:
-    on_direct = equals_value_restriction(expected.direct)
-    on_every = asrt.ValueIsNone()
-    if expected.indirect is not None:
-        on_every = equals_value_restriction(expected.indirect)
-    return matches_reference_restrictions(assertion_on_direct=on_direct,
-                                          assertion_on_every=on_every)
 
 
 def matches_symbol_reference(expected_name: str,
@@ -46,11 +21,13 @@ def matches_symbol_reference(expected_name: str,
         ]))
 
 
-def equals_symbol_reference(expected_name: str,
-                            assertion_on_direct_restriction: asrt.ValueAssertion) -> asrt.ValueAssertion:
+def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str,
+                                                              assertion_on_direct_restriction: asrt.ValueAssertion
+                                                              ) -> asrt.ValueAssertion:
     return equals_symbol_reference2(expected_name,
-                                    matches_reference_restrictions(assertion_on_direct=assertion_on_direct_restriction,
-                                                                   assertion_on_every=asrt.ValueIsNone()))
+                                    matches_restrictions_on_direct_and_indirect(
+                                        assertion_on_direct=assertion_on_direct_restriction,
+                                        assertion_on_every=asrt.ValueIsNone()))
 
 
 def equals_symbol_reference2(expected_name: str,
@@ -68,10 +45,6 @@ def equals_symbol_reference2(expected_name: str,
         ]))
 
 
-REFERENCES_ARE_UNRESTRICTED = matches_reference_restrictions(assertion_on_direct=asrt.is_instance(NoRestriction),
-                                                             assertion_on_every=asrt.ValueIsNone())
-
-
 def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
     return _EqualsSymbolReferences(expected)
 
@@ -79,7 +52,7 @@ def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
 class _EqualsSymbolReferences(asrt.ValueAssertion):
     def __init__(self, expected: list):
         self._expected = expected
-        assert isinstance(expected, list), 'Value reference list must be a list'
+        assert isinstance(expected, list), 'Symbol reference list must be a list'
         for idx, element in enumerate(expected):
             assert isinstance(element,
                               su.SymbolReference), 'Element must be a SymbolReference #' + str(idx)
@@ -89,10 +62,10 @@ class _EqualsSymbolReferences(asrt.ValueAssertion):
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertIsInstance(value, list,
-                             'Expects a list of value references')
+                             'Expects a list of symbol references')
         put.assertEqual(len(self._expected),
                         len(value),
-                        message_builder.apply('Number of value references'))
+                        message_builder.apply('Number of symbol references'))
         for idx, expected_ref in enumerate(self._expected):
             actual_ref = value[idx]
             put.assertIsInstance(actual_ref, su.SymbolReference)

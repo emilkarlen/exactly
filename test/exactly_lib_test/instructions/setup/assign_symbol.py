@@ -7,11 +7,11 @@ from exactly_lib.instructions.utils.arg_parse.symbol_syntax import SymbolWithRef
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer, Value
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
@@ -232,7 +232,7 @@ class TestPathAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
-                                ReferenceRestrictions(FileRefRelativityRestriction(
+                                ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(
                                     REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 PathPartResolverAsFixedPath('component'))
             expected_value_container = _value_container(expected_file_ref_resolver)

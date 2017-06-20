@@ -1,11 +1,11 @@
 import unittest
 
-from exactly_lib.symbol.concrete_restrictions import NoRestriction
+from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import ValueContainer, Value
 from exactly_lib.test_case_file_structure import file_ref as _file_ref
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -30,7 +30,7 @@ def string_value_container(string_value: str,
 
 
 def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> SymbolReference:
-    return SymbolReference(name, ReferenceRestrictions(value_restriction))
+    return SymbolReference(name, ReferenceRestrictionsOnDirectAndIndirect(value_restriction))
 
 
 def string_symbol_definition(name: str, string_value: str = 'string value') -> SymbolDefinition:
