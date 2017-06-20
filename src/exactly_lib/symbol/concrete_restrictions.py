@@ -195,7 +195,15 @@ class OrReferenceRestrictions(ReferenceRestrictions):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         value: ValueContainer) -> str:
-        raise NotImplementedError()
+        for restriction_on_direct_and_indirect in self._parts:
+            assert isinstance(restriction_on_direct_and_indirect, ReferenceRestrictionsOnDirectAndIndirect)
+            on_direct = restriction_on_direct_and_indirect.direct.is_satisfied_by(symbol_table, symbol_name, value)
+            if on_direct is None:
+                if restriction_on_direct_and_indirect.indirect is None:
+                    return None
+                else:
+                    return restriction_on_direct_and_indirect.indirect.is_satisfied_by(symbol_table, symbol_name, value)
+        return 'OR: no restriction is satisfied. TODO: improve error message'
 
 
 def _invalid_type_msg(expected: ValueType,

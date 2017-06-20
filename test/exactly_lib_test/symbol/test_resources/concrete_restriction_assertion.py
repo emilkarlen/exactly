@@ -4,6 +4,8 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
     NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction, ReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -127,3 +129,22 @@ class _EqualsReferenceRestrictionsVisitor(ReferenceRestrictionsVisitor):
 
 
 _EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsReferenceRestrictionsVisitor()
+
+
+def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:
+    return ValueRestrictionWithConstantResult(None)
+
+
+def value_restriction_that_is_unconditionally_unsatisfied() -> ValueRestriction:
+    return ValueRestrictionWithConstantResult('error message')
+
+
+class ValueRestrictionWithConstantResult(ValueRestriction):
+    def __init__(self, result):
+        self.result = result
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: ValueContainer) -> str:
+        return self.result
