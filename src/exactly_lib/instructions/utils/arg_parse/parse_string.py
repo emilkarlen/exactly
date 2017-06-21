@@ -8,6 +8,7 @@ from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRes
 from exactly_lib.symbol.string_resolver import StringResolver, ConstantStringFragmentResolver, StringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.util.parse.token import Token
 
 
@@ -38,12 +39,13 @@ def parse_string_resolver(tokens: TokenStream2,
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
     fragments = parse_fragments_from_tokens(tokens, conf)
-    return _string_resolver_from_fragments(fragments)
+    return string_resolver_from_fragments(fragments)
 
 
-def parse_string_resolver_from_token(token: Token) -> StringResolver:
+def parse_string_resolver_from_token(token: Token,
+                                     reference_restrictions: ReferenceRestrictions = None) -> StringResolver:
     fragments = parse_fragments_from_token(token)
-    return _string_resolver_from_fragments(fragments)
+    return string_resolver_from_fragments(fragments, reference_restrictions)
 
 
 def parse_fragments_from_tokens(tokens: TokenStream2,
@@ -62,7 +64,7 @@ def parse_fragments_from_tokens(tokens: TokenStream2,
 
 def parse_fragments_from_token(token: Token) -> list:
     """
-    :rtype [Fragment]
+    :rtype [symbol_syntax.Fragment]
     """
 
     if token.is_quoted and token.is_hard_quote_type:
@@ -70,18 +72,21 @@ def parse_fragments_from_token(token: Token) -> list:
     return symbol_syntax.split(token.string)
 
 
-def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment) -> StringFragmentResolver:
+def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment,
+                                    reference_restrictions: ReferenceRestrictions) -> StringFragmentResolver:
     if fragment.is_constant:
         return ConstantStringFragmentResolver(fragment.value)
     else:
-        sr = SymbolReference(fragment.value,
-                             ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
-                                                                      indirect=None))
+        sr = SymbolReference(fragment.value, reference_restrictions)
         return SymbolStringFragmentResolver(sr)
 
 
-def _string_resolver_from_fragments(fragments) -> StringResolver:
+def string_resolver_from_fragments(fragments,
+                                   reference_restrictions: ReferenceRestrictions = None) -> StringResolver:
     """
     :type fragments: List of `symbol_syntax.Fragment`
     """
-    return StringResolver(tuple([fragment_resolver_from_fragment(f) for f in fragments]))
+    if reference_restrictions is None:
+        reference_restrictions = ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction())
+    return StringResolver(tuple([fragment_resolver_from_fragment(f, reference_restrictions)
+                                 for f in fragments]))

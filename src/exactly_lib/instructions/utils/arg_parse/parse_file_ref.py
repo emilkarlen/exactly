@@ -6,6 +6,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
+from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver_from_token
 from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
@@ -14,13 +15,15 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, StringRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsStringSymbolReference, \
-    PathPartResolverAsFixedPath, PathPartResolverAsNothing
+from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
+    PathPartResolverAsNothing, PathPartResolverAsStringResolver
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -135,19 +138,19 @@ def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentCo
         return _just_symbol_reference_argument(symbol_name_of_symbol_reference, conf)
 
 
-def _with_explicit_relativity(path_argument_token: Token,
+def _with_explicit_relativity(path_argument: Token,
                               path_part_2_file_ref_resolver: types.FunctionType) -> FileRefResolver:
-    symbol_name_of_symbol_reference = parse_symbol_reference(path_argument_token)
-    if symbol_name_of_symbol_reference:
-        path_suffix = PathPartResolverAsStringSymbolReference(symbol_name_of_symbol_reference)
-        return path_part_2_file_ref_resolver(path_suffix)
-    else:
-        path_argument_str = path_argument_token.string
+    string_resolver = _parse_string_resolver(path_argument)
+    if string_resolver.is_string_constant:
+        path_argument_str = string_resolver.string_constant
         path_argument_path = pathlib.PurePath(path_argument_str)
         if path_argument_path.is_absolute():
             return FileRefConstant(file_refs.absolute_file_name(path_argument_str))
-    path_suffix = PathPartResolverAsFixedPath(path_argument_str)
-    return path_part_2_file_ref_resolver(path_suffix)
+        path_suffix = PathPartResolverAsFixedPath(path_argument_str)
+        return path_part_2_file_ref_resolver(path_suffix)
+    else:
+        path_suffix = PathPartResolverAsStringResolver(string_resolver)
+        return path_part_2_file_ref_resolver(path_suffix)
 
 
 def _just_string_argument(argument: str,
@@ -199,3 +202,11 @@ class _FileRefResolverOfRelativityOptionAndSuffixResolver(FileRefResolver):
     @property
     def references(self) -> list:
         return self.path_suffix_resolver.references
+
+
+def _parse_string_resolver(token: Token) -> StringResolver:
+    return parse_string_resolver_from_token(token, REFERENCES_RESTRICTION)
+
+
+REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndIndirect(direct=StringRestriction(),
+                                                                  indirect=StringRestriction())

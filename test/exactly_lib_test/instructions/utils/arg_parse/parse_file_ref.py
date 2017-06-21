@@ -21,19 +21,21 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
-    equals_either_string_or_file_ref_relativity_restriction, is_string_value_restriction
+    equals_either_string_or_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
     equals_file_ref_resolver2
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference_with_restriction_on_direct_target
+    equals_symbol_reference_with_restriction_on_direct_target, equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import \
-    symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value
+    symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -461,6 +463,9 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
     def test_with_explicit_relativity(self):
         symbol_name = 'PATH_SUFFIX_SYMBOL'
         symbol_string_value = 'symbol-string-value'
+        symbol = NameAndValue(symbol_name, symbol_string_value)
+        symbol_1 = NameAndValue('SYMBOL_NAME_1', 'symbol 1 value')
+        symbol_2 = NameAndValue('SYMBOL_NAME_2', 'symbol 2 value')
         test_cases = [
             ('Symbol reference after explicit relativity '
              'SHOULD '
@@ -472,24 +477,77 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                                                                     PathPartAsFixedPath(
-                                                                                         symbol_string_value)),
-                                                             asrt.matches_sequence([
-                                                                 equals_symbol_reference_with_restriction_on_direct_target(
-                                                                     symbol_name,
-                                                                     is_string_value_restriction)
-                                                             ]),
-                                                             symbol_table_with_single_string_value(symbol_name,
-                                                                                                   symbol_string_value)),
+                 file_ref_resolver=equals_file_ref_resolver2(
+                     file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                             PathPartAsFixedPath(
+                                                 symbol_string_value)),
+                     asrt.matches_sequence([
+                         equals_symbol_reference(
+                             SymbolReference(symbol_name,
+                                             path_part_string_reference_restrictions())),
+                     ]),
+                     symbol_table_with_single_string_value(symbol_name,
+                                                           symbol_string_value)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
-            ('Quoted symbol reference after explicit relativity'
+            ('Mixed symbol references and constants as path suffix after explicit relativity '
+             'SHOULD '
+             'become a symbol reference path suffix that must be a strings',
+             ArrangementWoSuffixRequirement(
+                 source='{rel_tmp_option} {symbol_reference1}/const{symbol_reference2}'.format(
+                     rel_tmp_option=_option_string_for_relativity(RelOptionType.REL_TMP),
+                     symbol_reference1=symbol_reference_syntax_for_name(symbol_1.name),
+                     symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name)),
+                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
+             ),
+             Expectation2(
+                 file_ref_resolver=equals_file_ref_resolver2(
+                     file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                             PathPartAsFixedPath(
+                                                 symbol_1.value + '/const' + symbol_2.value)),
+                     asrt.matches_sequence([
+                         equals_symbol_reference(
+                             SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
+                         equals_symbol_reference(
+                             SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                     ]),
+                     symbol_table_with_string_values([symbol_1, symbol_2])
+                 ),
+                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             )),
+            ('Mixed symbol references and constants - within soft quotes - as path suffix after explicit relativity '
+             'SHOULD '
+             'become a symbol reference path suffix that must be a strings',
+             ArrangementWoSuffixRequirement(
+                 source='{rel_tmp_option} {soft_quote}{symbol_reference1}/ const {symbol_reference2}{soft_quote}'.format(
+                     soft_quote=SOFT_QUOTE_CHAR,
+                     rel_tmp_option=_option_string_for_relativity(RelOptionType.REL_TMP),
+                     symbol_reference1=symbol_reference_syntax_for_name(symbol_1.name),
+                     symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name)),
+                 rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
+             ),
+             Expectation2(
+                 file_ref_resolver=equals_file_ref_resolver2(
+                     file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                             PathPartAsFixedPath(
+                                                 symbol_1.value + '/ const ' + symbol_2.value)),
+                     asrt.matches_sequence([
+                         equals_symbol_reference(
+                             SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
+                         equals_symbol_reference(
+                             SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                     ]),
+                     symbol_table_with_string_values([symbol_1, symbol_2])
+                 ),
+                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             )),
+            ('Hard quoted symbol reference after explicit relativity'
              ' SHOULD '
              'become a path suffix that is the literal quoted symbol reference',
              ArrangementWoSuffixRequirement(
-                 source='{rel_home_option} \'{symbol_reference}\''.format(
+                 source='{rel_home_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
                      rel_home_option=_option_string_for_relativity(RelOptionType.REL_HOME),
+                     hard_quote=HARD_QUOTE_CHAR,
                      symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
@@ -805,6 +863,11 @@ def _option_string_for(option_name: argument.OptionName) -> str:
 
 def _option_string_for_relativity(relativity: RelOptionType) -> str:
     return _option_string_for(REL_OPTIONS_MAP[relativity].option_name)
+
+
+def path_part_string_reference_restrictions() -> ReferenceRestrictionsOnDirectAndIndirect:
+    return ReferenceRestrictionsOnDirectAndIndirect(StringRestriction(),
+                                                    StringRestriction())
 
 
 if __name__ == '__main__':
