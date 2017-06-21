@@ -32,14 +32,14 @@ class _FileRefResolverRelSymbol(FileRefResolver):
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
         base_file_ref = lookup_file_ref_from_symbol_table(symbols, self.symbol_reference_of_path.name)
-        return _StackedFileRef(base_file_ref, self.path_suffix.resolve(symbols))
+        return StackedFileRef(base_file_ref, self.path_suffix.resolve(symbols))
 
     @property
     def references(self) -> list:
         return [self.symbol_reference_of_path] + self.path_suffix.references
 
 
-class _StackedFileRef(FileRef):
+class StackedFileRef(FileRef):
     def __init__(self, base_file_ref: FileRef, path_suffix: PathPart):
         self._path_suffix = path_suffix
         self.base_file_ref = base_file_ref
