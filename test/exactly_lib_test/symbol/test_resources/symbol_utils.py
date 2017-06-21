@@ -22,9 +22,9 @@ def container(value: Value,
                           value)
 
 
-def string_value_container(string_value: str,
-                           line_num: int = 1,
-                           source_line: str = 'value def line') -> ValueContainer:
+def string_constant_value_container(string_value: str,
+                                    line_num: int = 1,
+                                    source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
                           string_constant(string_value))
 
@@ -34,7 +34,7 @@ def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestrict
 
 
 def string_symbol_definition(name: str, string_value: str = 'string value') -> SymbolDefinition:
-    return SymbolDefinition(name, string_value_container(string_value))
+    return SymbolDefinition(name, string_constant_value_container(string_value))
 
 
 def file_ref_symbol_definition(name: str,
@@ -92,7 +92,7 @@ def entry(name: str, value: Value = string_constant('string value'),
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:
-    elements = [(name, string_value_container(name, source_line='source line for {}'.format(name)))
+    elements = [(name, string_constant_value_container(name, source_line='source line for {}'.format(name)))
                 for name in names]
     return SymbolTable(dict(elements))
 

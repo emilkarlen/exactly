@@ -6,7 +6,7 @@ from exactly_lib.util import symbol_table as st
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import is_string_value_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_container
+from exactly_lib_test.symbol.test_resources.symbol_utils import string_constant_value_container
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -58,7 +58,7 @@ class TestPathPartAsStringSymbolReference(unittest.TestCase):
         # ARRANGE #
         path_part = sut.PathPartResolverAsStringSymbolReference('the symbol name')
         symbol_table = st.singleton_symbol_table(st.Entry('the symbol name',
-                                                          string_value_container('symbol value')))
+                                                          string_constant_value_container('symbol value')))
         # ACT #
         actual = path_part.resolve(symbol_table)
         self.assertIsInstance(actual, PathPart)
