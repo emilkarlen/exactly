@@ -461,9 +461,7 @@ class TestParseFromTokenStream2CasesWithRelSymbolRelativity(TestParsesBase):
 
 class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
     def test_with_explicit_relativity(self):
-        symbol_name = 'PATH_SUFFIX_SYMBOL'
-        symbol_string_value = 'symbol-string-value'
-        symbol = NameAndValue(symbol_name, symbol_string_value)
+        symbol = NameAndValue('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
         symbol_1 = NameAndValue('SYMBOL_NAME_1', 'symbol 1 value')
         symbol_2 = NameAndValue('SYMBOL_NAME_2', 'symbol 2 value')
         test_cases = [
@@ -473,21 +471,21 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{rel_home_option} {symbol_reference}'.format(
                      rel_home_option=_option_string_for_relativity(RelOptionType.REL_HOME),
-                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
                  file_ref_resolver=equals_file_ref_resolver2(
                      file_refs.of_rel_option(RelOptionType.REL_HOME,
                                              PathPartAsFixedPath(
-                                                 symbol_string_value)),
+                                                 symbol.value)),
                      asrt.matches_sequence([
                          equals_symbol_reference(
-                             SymbolReference(symbol_name,
+                             SymbolReference(symbol.name,
                                              path_part_string_reference_restrictions())),
                      ]),
-                     symbol_table_with_single_string_value(symbol_name,
-                                                           symbol_string_value)),
+                     symbol_table_with_single_string_value(symbol.name,
+                                                           symbol.value)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Mixed symbol references and constants as path suffix after explicit relativity '
@@ -548,14 +546,14 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  source='{rel_home_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
                      rel_home_option=_option_string_for_relativity(RelOptionType.REL_HOME),
                      hard_quote=HARD_QUOTE_CHAR,
-                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
                  file_ref_resolver=file_ref_resolver_equals(
                      FileRefConstant(file_refs.of_rel_option(
                          RelOptionType.REL_HOME,
-                         PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol_name))))),
+                         PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol.name))))),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
         ]
