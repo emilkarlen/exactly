@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import symbol_usage as su
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
     matches_restrictions_on_direct_and_indirect, equals_reference_restrictions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -45,6 +46,11 @@ def equals_symbol_reference2(expected_name: str,
         ]))
 
 
+def equals_symbol_reference(expected: SymbolReference) -> asrt.ValueAssertion:
+    return equals_symbol_reference2(expected.name,
+                                    equals_reference_restrictions(expected.restrictions))
+
+
 def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
     return _EqualsSymbolReferences(expected)
 
@@ -71,9 +77,7 @@ class _EqualsSymbolReferences(asrt.ValueAssertion):
             put.assertIsInstance(actual_ref, su.SymbolReference)
             assert isinstance(actual_ref, su.SymbolReference)
             assert isinstance(expected_ref, su.SymbolReference)
-            expected_restrictions = expected_ref.restrictions
-            element_assertion = equals_symbol_reference2(expected_ref.name,
-                                                         equals_reference_restrictions(expected_restrictions))
+            element_assertion = equals_symbol_reference(expected_ref)
             element_assertion.apply(put,
                                     actual_ref,
                                     message_builder.for_sub_component('[%d]' % idx))
