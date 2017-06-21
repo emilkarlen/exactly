@@ -6,16 +6,17 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
-from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver_from_token
+from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver_from_token, \
+    parse_fragments_from_token, string_resolver_from_fragments
 from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
-from exactly_lib.instructions.utils.arg_parse.symbol_syntax import parse_symbol_reference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
-from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, StringRestriction
+from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, StringRestriction, \
+    OrReferenceRestrictions, FileRefRelativityRestriction
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -131,11 +132,11 @@ def parse_file_ref(tokens: TokenStream2,
 
 
 def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
-    symbol_name_of_symbol_reference = parse_symbol_reference(path_argument)
-    if symbol_name_of_symbol_reference is None:
+    string_fragments = parse_fragments_from_token(path_argument)
+    if _string_fragments_is_constant(string_fragments):
         return _just_string_argument(path_argument.string, conf)
     else:
-        return _just_symbol_reference_argument(symbol_name_of_symbol_reference, conf)
+        return _just_argument_with_symbol_references(string_fragments, conf)
 
 
 def _with_explicit_relativity(path_argument: Token,
@@ -157,17 +158,26 @@ def _just_string_argument(argument: str,
                           conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     argument_path = pathlib.PurePath(argument)
     if argument_path.is_absolute():
+        #  TODO Should we check if absolute paths are allowed according to RelOptionArgumentConfiguration??
         return FileRefConstant(file_refs.absolute_file_name(argument))
     path_suffix = PathPartAsFixedPath(argument)
     return FileRefConstant(file_refs.of_rel_option(conf.options.default_option, path_suffix))
 
 
-def _just_symbol_reference_argument(symbol_name: str,
-                                    conf: RelOptionArgumentConfiguration) -> FileRefResolver:
-    return _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(
-        symbol_name,
-        conf.options.default_option,
-        conf.options.accepted_relativity_variants)
+def _just_argument_with_symbol_references(string_fragments: list,
+                                          conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+    if _first_fragment_is_symbol_that_can_act_as_file_ref(string_fragments):
+        file_ref_or_str_sym_ref, path_suffix = _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments,
+                                                                                                  conf)
+        return _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(
+            file_ref_or_str_sym_ref,
+            path_suffix,
+            conf.options.default_option)
+    else:
+        #  TODO Check if fragments represent an absolute path
+        path_suffix = _path_suffix_resolver_from_fragments(string_fragments)
+        return _FileRefResolverOfRelativityOptionAndSuffixResolver(conf.options.default_option,
+                                                                   path_suffix)
 
 
 def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):
@@ -188,6 +198,21 @@ def _file_ref_constructor(relativity_info) -> types.FunctionType:
         raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))
 
 
+def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
+                                                       conf: RelOptionArgumentConfiguration
+                                                       ) -> (SymbolReference, PathPartResolver):
+    file_ref_or_string_symbol = SymbolReference(
+        string_fragments[0].value,
+        OrReferenceRestrictions([
+            ReferenceRestrictionsOnDirectAndIndirect(
+                FileRefRelativityRestriction(conf.options.accepted_relativity_variants)),
+            JUST_STRINGS_REFERENCES_RESTRICTION,
+        ]))
+    path_part_resolver = _path_suffix_resolver_from_fragments(string_fragments[1:])
+    return file_ref_or_string_symbol, path_part_resolver
+
+
+
 class _FileRefResolverOfRelativityOptionAndSuffixResolver(FileRefResolver):
     def __init__(self,
                  relativity: RelOptionType,
@@ -205,8 +230,28 @@ class _FileRefResolverOfRelativityOptionAndSuffixResolver(FileRefResolver):
 
 
 def _parse_string_resolver(token: Token) -> StringResolver:
-    return parse_string_resolver_from_token(token, REFERENCES_RESTRICTION)
+    return parse_string_resolver_from_token(token, JUST_STRINGS_REFERENCES_RESTRICTION)
 
 
-REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndIndirect(direct=StringRestriction(),
-                                                                  indirect=StringRestriction())
+def _string_fragments_is_constant(fragments: list) -> bool:
+    return len(fragments) == 1 and fragments[0].is_constant
+
+
+def _first_fragment_is_symbol_that_can_act_as_file_ref(fragments: list) -> bool:
+    if fragments[0].is_constant:
+        return False
+    if len(fragments) == 1:
+        return True
+    fragment2 = fragments[1]
+    return fragment2.is_constant and fragment2.value.startswith('/')
+
+
+def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
+    if not fragments:
+        return PathPartResolverAsNothing()
+    string_resolver = string_resolver_from_fragments(fragments, JUST_STRINGS_REFERENCES_RESTRICTION)
+    return PathPartResolverAsStringResolver(string_resolver)
+
+
+JUST_STRINGS_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndIndirect(direct=StringRestriction(),
+                                                                               indirect=StringRestriction())

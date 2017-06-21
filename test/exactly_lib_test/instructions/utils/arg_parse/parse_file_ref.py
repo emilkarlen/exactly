@@ -9,12 +9,14 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
-    EitherStringOrFileRefRelativityRestriction, StringRestriction, ReferenceRestrictionsOnDirectAndIndirect
+    StringRestriction, ReferenceRestrictionsOnDirectAndIndirect, \
+    OrReferenceRestrictions
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
@@ -26,12 +28,10 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
-    equals_either_string_or_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
     equals_file_ref_resolver2
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference_with_restriction_on_direct_target, equals_symbol_reference
+    equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
@@ -564,8 +564,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                                  expectation)
 
     def test_no_explicit_relativity(self):
-        symbol_name = 'THE_SYMBOL'
-        symbol_string_value = 'symbol-string-value'
+        symbol = NameAndValue('THE_SYMBOL', 'symbol-string-value')
         accepted_relativities = PathRelativityVariants({RelOptionType.REL_HOME,
                                                         RelOptionType.REL_TMP},
                                                        True)
@@ -580,25 +579,22 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
              'referenced symbol is a string',
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}'.format(
-                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
              Expectation2(
                  file_ref_resolver=equals_file_ref_resolver2(
                      file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                             PathPartAsFixedPath(symbol_string_value)),
+                                             PathPartAsFixedPath(symbol.value)),
                      asrt.matches_sequence([
-                         equals_symbol_reference_with_restriction_on_direct_target(
-                             symbol_name,
-                             equals_either_string_or_file_ref_relativity_restriction(
-                                 EitherStringOrFileRefRelativityRestriction(
-                                     StringRestriction(),
-                                     FileRefRelativityRestriction(accepted_relativities)
-                                 )
-                             )),
+                         equals_symbol_reference(
+                             SymbolReference(symbol.name,
+                                             file_ref_or_string_reference_restrictions(accepted_relativities))
+                         )
                      ]),
-                     symbol_table_with_single_string_value(symbol_name, symbol_string_value)),
+                     symbol_table_with_single_string_value(symbol.name, symbol.value)
+                 ),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Symbol reference as only argument'
@@ -608,7 +604,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
              'referenced symbol is a string that is an absolute path',
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}'.format(
-                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
@@ -616,16 +612,13 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  file_ref_resolver=equals_file_ref_resolver2(
                      file_refs.absolute_file_name('/absolute/path'),
                      asrt.matches_sequence([
-                         equals_symbol_reference_with_restriction_on_direct_target(
-                             symbol_name,
-                             equals_either_string_or_file_ref_relativity_restriction(
-                                 EitherStringOrFileRefRelativityRestriction(
-                                     StringRestriction(),
-                                     FileRefRelativityRestriction(accepted_relativities)
-                                 )
-                             )),
+                         equals_symbol_reference(
+                             SymbolReference(symbol.name,
+                                             file_ref_or_string_reference_restrictions(accepted_relativities))
+                         )
+                         ,
                      ]),
-                     symbol_table_with_single_string_value(symbol_name, '/absolute/path')),
+                     symbol_table_with_single_string_value(symbol.name, '/absolute/path')),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Symbol reference as only argument'
@@ -635,7 +628,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
              'referenced symbol is a file ref',
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}'.format(
-                     symbol_reference=symbol_reference_syntax_for_name(symbol_name)),
+                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
@@ -643,16 +636,13 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  file_ref_resolver=equals_file_ref_resolver2(
                      file_ref_rel_home,
                      asrt.matches_sequence([
-                         equals_symbol_reference_with_restriction_on_direct_target(
-                             symbol_name,
-                             equals_either_string_or_file_ref_relativity_restriction(
-                                 EitherStringOrFileRefRelativityRestriction(
-                                     StringRestriction(),
-                                     FileRefRelativityRestriction(accepted_relativities)
-                                 )
-                             )),
+                         equals_symbol_reference(
+                             SymbolReference(symbol.name,
+                                             file_ref_or_string_reference_restrictions(accepted_relativities))
+                         )
+                         ,
                      ]),
-                     symbol_table_with_single_file_ref_value(symbol_name,
+                     symbol_table_with_single_file_ref_value(symbol.name,
                                                              file_ref_rel_home)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
@@ -866,6 +856,14 @@ def _option_string_for_relativity(relativity: RelOptionType) -> str:
 def path_part_string_reference_restrictions() -> ReferenceRestrictionsOnDirectAndIndirect:
     return ReferenceRestrictionsOnDirectAndIndirect(StringRestriction(),
                                                     StringRestriction())
+
+
+def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativityVariants
+                                              ) -> ReferenceRestrictions:
+    return OrReferenceRestrictions([
+        ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities)),
+        path_part_string_reference_restrictions(),
+    ])
 
 
 if __name__ == '__main__':
