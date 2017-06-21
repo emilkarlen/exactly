@@ -5,7 +5,6 @@ from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsNothing
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
@@ -53,10 +52,11 @@ class _SymbolValue2FileRefVisitor(ValueVisitor):
 
     def _visit_file_ref(self, value: FileRefResolver) -> FileRef:
         file_ref = value.resolve(self.symbols)
-        if isinstance(self.suffix_resolver, PathPartResolverAsNothing):
+        suffix_str = self.suffix_resolver.resolve(self.symbols).resolve()
+        if not suffix_str:
             return file_ref
-        return StackedFileRef(file_ref,
-                              self.suffix_resolver.resolve(self.symbols))
+        suffix_str = suffix_str.lstrip('/')
+        return StackedFileRef(file_ref, PathPartAsFixedPath(suffix_str))
 
     def _visit_string(self, value: StringResolver) -> FileRef:
         sv = value.resolve(self.symbols)
