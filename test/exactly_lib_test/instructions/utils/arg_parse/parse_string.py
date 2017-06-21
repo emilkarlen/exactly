@@ -50,7 +50,7 @@ class TC:
 class TestFailWhenNoArgument(unittest.TestCase):
     def test_missing_argument__parse_fragments_from_token(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_fragments_from_token(TokenStream2(''))
+            sut.parse_fragments_from_tokens(TokenStream2(''))
 
     def test_missing_argument__parse_string_resolver(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -148,14 +148,14 @@ class TestParseFragmentsFromToken(unittest.TestCase):
             # ARRANGE #
             token_stream = TokenStream2(tc.source_string)
             # ACT #
-            actual = sut.parse_fragments_from_token(token_stream, CONFIGURATION)
+            actual = sut.parse_fragments_from_tokens(token_stream, CONFIGURATION)
             # ASSERT #
             self.assertEqual(tc.expectation.fragments, actual, 'fragment')
             tc.expectation.token_stream.apply_with_message(self, token_stream, 'token_stream')
 
     def test_missing_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_fragments_from_token(TokenStream2(''))
+            sut.parse_fragments_from_tokens(TokenStream2(''))
 
     def test_successful_parse_of_single_symbol(self):
         cases = successful_parse_of_single_symbol()

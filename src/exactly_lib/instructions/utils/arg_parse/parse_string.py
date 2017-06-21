@@ -8,6 +8,7 @@ from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRes
 from exactly_lib.symbol.string_resolver import StringResolver, ConstantStringFragmentResolver, StringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.util.parse.token import Token
 
 
 class Configuration:
@@ -36,12 +37,17 @@ def parse_string_resolver(tokens: TokenStream2,
     """
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
-    fragments = parse_fragments_from_token(tokens, conf)
-    return StringResolver(tuple([fragment_resolver_from_fragment(f) for f in fragments]))
+    fragments = parse_fragments_from_tokens(tokens, conf)
+    return _string_resolver_from_fragments(fragments)
 
 
-def parse_fragments_from_token(tokens: TokenStream2,
-                               conf: Configuration = DEFAULT_CONFIGURATION) -> list:
+def parse_string_resolver_from_token(token: Token) -> StringResolver:
+    fragments = parse_fragments_from_token(token)
+    return _string_resolver_from_fragments(fragments)
+
+
+def parse_fragments_from_tokens(tokens: TokenStream2,
+                                conf: Configuration = DEFAULT_CONFIGURATION) -> list:
     """
     Consumes a single token.
     :raises SingleInstructionInvalidArgumentException: Missing argument
@@ -51,9 +57,17 @@ def parse_fragments_from_token(tokens: TokenStream2,
     if tokens.is_null:
         raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(conf.argument_name))
     string_token = tokens.consume()
-    if string_token.is_quoted and string_token.is_hard_quote_type:
-        return [symbol_syntax.Fragment(string_token.string, is_symbol=False)]
-    return symbol_syntax.split(string_token.string)
+    return parse_fragments_from_token(string_token)
+
+
+def parse_fragments_from_token(token: Token) -> list:
+    """
+    :rtype [Fragment]
+    """
+
+    if token.is_quoted and token.is_hard_quote_type:
+        return [symbol_syntax.Fragment(token.string, is_symbol=False)]
+    return symbol_syntax.split(token.string)
 
 
 def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment) -> StringFragmentResolver:
@@ -64,3 +78,10 @@ def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment) -> StringF
                              ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
                                                                       indirect=None))
         return SymbolStringFragmentResolver(sr)
+
+
+def _string_resolver_from_fragments(fragments) -> StringResolver:
+    """
+    :type fragments: List of `symbol_syntax.Fragment`
+    """
+    return StringResolver(tuple([fragment_resolver_from_fragment(f) for f in fragments]))
