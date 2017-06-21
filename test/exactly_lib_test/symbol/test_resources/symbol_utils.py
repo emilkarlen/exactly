@@ -48,6 +48,12 @@ def symbol_table_with_single_string_value(name: str, string_value: str = 'string
     return symbol_table_from_symbols([string_symbol_definition(name, string_value)])
 
 
+def symbol_table_with_string_values(name_and_value_pairs: iter) -> SymbolTable:
+    sym_defs = [string_symbol_definition(name, value)
+                for (name, value) in name_and_value_pairs]
+    return symbol_table_from_symbols(sym_defs)
+
+
 def symbol_table_with_single_file_ref_value(name: str,
                                             file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                                              relativity=RelOptionType.REL_CWD),
