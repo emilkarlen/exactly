@@ -6,6 +6,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
@@ -41,20 +42,24 @@ class _FileRefResolverRelSymbol(FileRefResolver):
 
 class StackedFileRef(FileRef):
     def __init__(self, base_file_ref: FileRef, path_suffix: PathPart):
-        self._path_suffix = path_suffix
+        self._stacked_path_suffix = path_suffix
+        self._combined_path_suffix = _combine(base_file_ref.path_suffix(), path_suffix)
         self.base_file_ref = base_file_ref
 
     def relativity(self) -> SpecificPathRelativity:
         return self.base_file_ref.relativity()
 
     def path_suffix(self) -> PathPart:
-        return self._path_suffix
+        return self._combined_path_suffix
 
     def path_suffix_str(self) -> str:
-        return self._path_suffix.resolve()
+        return self._combined_path_suffix.resolve()
 
     def path_suffix_path(self) -> pathlib.Path:
         return pathlib.Path(self.path_suffix_str())
+
+    def _stacked_path_suffix_path(self) -> pathlib.Path:
+        return pathlib.Path(self._stacked_path_suffix.resolve())
 
     def has_dir_dependency(self) -> bool:
         return self.base_file_ref.has_dir_dependency()
@@ -63,13 +68,22 @@ class StackedFileRef(FileRef):
         return self.base_file_ref.exists_pre_sds()
 
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
-        return self.base_file_ref.value_when_no_dir_dependencies()
+        return self.base_file_ref.value_when_no_dir_dependencies() / self._stacked_path_suffix_path()
 
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
-        return self.base_file_ref.value_pre_sds(home_dir_path) / self.path_suffix_path()
+        return self.base_file_ref.value_pre_sds(home_dir_path) / self._stacked_path_suffix_path()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return self.base_file_ref.value_post_sds(sds) / self.path_suffix_path()
+        return self.base_file_ref.value_post_sds(sds) / self._stacked_path_suffix_path()
+
+
+def _combine(first: PathPart, second: PathPart) -> PathPart:
+    if isinstance(first, PathPartAsNothing):
+        return second
+    if isinstance(second, PathPartAsNothing):
+        return first
+    p = pathlib.Path(first.resolve()) / pathlib.Path(second.resolve())
+    return PathPartAsFixedPath(str(p))
 
 
 def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:
