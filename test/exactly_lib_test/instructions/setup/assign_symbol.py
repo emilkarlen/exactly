@@ -17,7 +17,7 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.line_source import Line
-from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
+from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
@@ -26,7 +26,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.instructions.utils.arg_parse.parse_string import string_resolver_from_fragments
 from exactly_lib_test.symbol.test_resources import value_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.test_resources.symbol_utils import assert_symbol_table_is_singleton, \
-    string_value_container, file_ref_value, assert_symbol_usages_is_singleton_list, container
+    string_constant_value_container, file_ref_value, assert_symbol_usages_is_singleton_list, container
 from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_value_container
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -111,12 +111,12 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
         source = _single_line_source('{string_type} name1 = v1')
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition('name1', string_value_container('v1')),
+                vs_asrt.equals_symbol(SymbolDefinition('name1', string_constant_value_container('v1')),
                                       ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 'name1',
-                equals_value_container(string_value_container('v1')),
+                equals_value_container(string_constant_value_container('v1')),
             )
         )
         self._run(source, Arrangement(), expectation)
@@ -129,6 +129,30 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
                                      name=name_of_defined_symbol,
                                      symbol_reference=referred_symbol)
         expected_resolver = string_resolver_from_fragments([symbol(referred_symbol.name)])
+        container_of_expected_resolver = container(expected_resolver)
+        expected_definition = SymbolDefinition(name_of_defined_symbol,
+                                               container_of_expected_resolver)
+        expectation = Expectation(
+            symbol_usages=asrt.matches_sequence([
+                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
+            ]),
+            symbols_after_main=assert_symbol_table_is_singleton(
+                name_of_defined_symbol,
+                equals_value_container(container_of_expected_resolver),
+            )
+        )
+        # ACT & ASSERT #
+        self._run(source, Arrangement(), expectation)
+
+    def test_assignment_of_single_symbol_reference_syntax_within_hard_quotes(self):
+        # ARRANGE #
+        referred_symbol = SymbolWithReferenceSyntax('referred_symbol')
+        name_of_defined_symbol = 'defined_symbol'
+        source = _single_line_source('{string_type} {name} = {hard_quote}{symbol_reference}{hard_quote}',
+                                     name=name_of_defined_symbol,
+                                     hard_quote=HARD_QUOTE_CHAR,
+                                     symbol_reference=referred_symbol)
+        expected_resolver = string_resolver_from_fragments([constant(str(referred_symbol))])
         container_of_expected_resolver = container(expected_resolver)
         expected_definition = SymbolDefinition(name_of_defined_symbol,
                                                container_of_expected_resolver)

@@ -19,7 +19,7 @@ from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as restrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as vr_tr
 from exactly_lib_test.symbol.test_resources import symbol_utils as sym_utils
-from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_container
+from exactly_lib_test.symbol.test_resources.symbol_utils import string_constant_value_container
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -75,7 +75,7 @@ class TestRelSymbol(unittest.TestCase):
              ),
             (PathPartResolverAsStringSymbolReference('path_suffix_symbol_name'),
              (Entry('path_suffix_symbol_name',
-                    string_value_container('path-suffix')),),
+                    string_constant_value_container('path-suffix')),),
              ),
         ]
         file_ref_symbol_name = 'SYMBOL_NAME'
@@ -112,7 +112,7 @@ class TestRelSymbol(unittest.TestCase):
              ),
             (PathPartResolverAsStringSymbolReference('path_suffix_symbol'),
              (Entry('path_suffix_symbol',
-                    string_value_container(path_suffix_str)),)
+                    string_constant_value_container(path_suffix_str)),)
              ),
         ]
         for rel_option, exists_pre_sds in relativity_test_cases:
