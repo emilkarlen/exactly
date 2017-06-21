@@ -20,6 +20,14 @@ class StringFragmentResolver(SymbolValueResolver):
         return False
 
     @property
+    def string_constant(self) -> str:
+        """
+        :raises ValueError: This object does not represent a string constant
+        :rtype str
+        """
+        raise ValueError('The object is not a string constant')
+
+    @property
     def is_symbol(self) -> bool:
         return False
 
@@ -128,6 +136,24 @@ class StringResolver(SymbolValueResolver):
         :rtype: (`StringFragmentResolver`)
         """
         return self._fragment_resolvers
+
+    @property
+    def is_string_constant(self) -> bool:
+        """
+        Tells if the object does not depend on any symbols
+        """
+        return all(map(lambda x: x.is_string_constant, self._fragment_resolvers))
+
+    @property
+    def string_constant(self) -> str:
+        """
+        Precondition: is_string_constant
+
+        :return: The constant string that this object represents
+        """
+        fragments = [fragment_resolver.string_constant
+                     for fragment_resolver in self._fragment_resolvers]
+        return ''.join(fragments)
 
     def __str__(self):
         return str(type(self))
