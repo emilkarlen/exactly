@@ -2,11 +2,12 @@ import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
     NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction, ReferenceRestrictionsVisitor, \
-    OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect
+    OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, PathOrStringReferenceRestrictions
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.path_relativity import equals_path_relativity_variants
+from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import path_relativity_variants_equals
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 is_no_restriction = asrt.is_instance(NoRestriction)
@@ -120,9 +121,20 @@ def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRest
     )
 
 
+def equals_path_or_string_reference_restrictions(expected: PathOrStringReferenceRestrictions
+                                                 ) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(PathOrStringReferenceRestrictions,
+                                 asrt.sub_component('accepted_relativities',
+                                                    PathOrStringReferenceRestrictions.accepted_relativities.fget,
+                                                    path_relativity_variants_equals(expected.accepted_relativities)))
+
+
 class _EqualsReferenceRestrictionsVisitor(ReferenceRestrictionsVisitor):
     def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> asrt.ValueAssertion:
         return _equals_reference_restriction_on_direct_and_indirect(x)
+
+    def visit_path_or_string(self, x: PathOrStringReferenceRestrictions) -> asrt.ValueAssertion:
+        return equals_path_or_string_reference_restrictions(x)
 
     def visit_or(self, x: OrReferenceRestrictions) -> asrt.ValueAssertion:
         return _equals_or_reference_restrictions(x)

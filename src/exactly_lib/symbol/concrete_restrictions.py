@@ -206,6 +206,21 @@ class OrReferenceRestrictions(ReferenceRestrictions):
         return 'OR: no restriction is satisfied. TODO: improve error message'
 
 
+class PathOrStringReferenceRestrictions(ReferenceRestrictions):
+    def __init__(self, accepted_relativities: PathRelativityVariants):
+        self._accepted_relativities = accepted_relativities
+
+    @property
+    def accepted_relativities(self) -> PathRelativityVariants:
+        return self._accepted_relativities
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        value: ValueContainer) -> str:
+        raise NotImplementedError('TODO')
+
+
 def _invalid_type_msg(expected: ValueType,
                       symbol_name: str,
                       container_of_actual: ValueContainer) -> str:
@@ -227,11 +242,16 @@ class ReferenceRestrictionsVisitor:
     def visit(self, x: ReferenceRestrictions):
         if isinstance(x, ReferenceRestrictionsOnDirectAndIndirect):
             return self.visit_direct_and_indirect(x)
+        if isinstance(x, PathOrStringReferenceRestrictions):
+            return self.visit_path_or_string(x)
         if isinstance(x, OrReferenceRestrictions):
             return self.visit_or(x)
         raise TypeError('%s is not an instance of %s' % (str(x), str(ReferenceRestrictions)))
 
     def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect):
+        raise NotImplementedError()
+
+    def visit_path_or_string(self, x: PathOrStringReferenceRestrictions):
         raise NotImplementedError()
 
     def visit_or(self, x: OrReferenceRestrictions):
