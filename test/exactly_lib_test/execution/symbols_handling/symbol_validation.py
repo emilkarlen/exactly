@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.execution.instruction_execution import symbol_validation as sut
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
+from exactly_lib.execution.symbols_handling import symbol_validation as sut
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol import value_structure as vs
 from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect
