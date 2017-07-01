@@ -1,6 +1,6 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.symbol import restriction_failure_renderer
+from exactly_lib.execution.symbols_handling import restriction_failure_renderer
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.util import error_message_format
