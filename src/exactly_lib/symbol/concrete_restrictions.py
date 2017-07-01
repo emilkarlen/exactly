@@ -209,12 +209,22 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
     def check_indirect(self,
                        symbol_table: SymbolTable,
                        references: list) -> FailureOfIndirectReference:
+        return self._check_indirect(symbol_table, (), references)
+
+    def _check_indirect(self,
+                        symbol_table: SymbolTable,
+                        path_to_referring_symbol: tuple,
+                        references: list) -> FailureOfIndirectReference:
         for reference in references:
             symbol_value = symbol_table.lookup(reference.name)
             result = self._indirect.is_satisfied_by(symbol_table, reference.name, symbol_value)
             if result is not None:
-                return FailureOfIndirectReference(result)
-            result = self.check_indirect(symbol_table, symbol_value.value.references)
+                return FailureOfIndirectReference(failing_symbol=reference.name,
+                                                  path_to_failing_symbol=list(path_to_referring_symbol),
+                                                  error_message=result)
+            result = self._check_indirect(symbol_table,
+                                          path_to_referring_symbol + (reference.name,),
+                                          symbol_value.value.references)
             if result is not None:
                 return result
         return None
