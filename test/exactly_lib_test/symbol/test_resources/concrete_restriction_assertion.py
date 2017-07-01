@@ -54,11 +54,22 @@ def is_failure_of_direct_reference(error_message: asrt.ValueAssertion = asrt.is_
                                                     error_message))
 
 
-def is_failure_of_indirect_reference(error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+def is_failure_of_indirect_reference(failing_symbol: asrt.ValueAssertion = asrt.is_instance(str),
+                                     path_to_failing_symbol: asrt.ValueAssertion = asrt.is_instance(list),
+                                     error_message: asrt.ValueAssertion = asrt.is_instance(str),
+                                     ) -> asrt.ValueAssertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
-                                 asrt.sub_component('error_message',
-                                                    FailureOfIndirectReference.error_message.fget,
-                                                    error_message))
+                                 asrt.and_([
+                                     asrt.sub_component('failing_symbol',
+                                                        FailureOfIndirectReference.failing_symbol.fget,
+                                                        failing_symbol),
+                                     asrt.sub_component('path_to_failing_symbol',
+                                                        FailureOfIndirectReference.path_to_failing_symbol.fget,
+                                                        path_to_failing_symbol),
+                                     asrt.sub_component('error_message',
+                                                        FailureOfIndirectReference.error_message.fget,
+                                                        error_message),
+                                 ]))
 
 
 class _EqualsValueRestriction(asrt.ValueAssertion):
