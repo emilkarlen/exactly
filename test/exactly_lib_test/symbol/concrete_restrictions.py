@@ -13,10 +13,12 @@ from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
-    value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied
+    value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied, \
+    is_failure_of_direct_reference, is_failure_of_indirect_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -335,14 +337,15 @@ class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.ReferenceR
 
 class TestUsageOfDirectRestriction(unittest.TestCase):
     def test_satisfied_restriction(self):
-        expected_result = None
-        restriction_on_direct = RestrictionWithConstantResult(expected_result)
+        expected_result = asrt.is_none
+        restriction_on_direct = RestrictionWithConstantResult(None)
         self._check_direct_with_satisfied_variants_for_restriction_on_every_node(restriction_on_direct,
                                                                                  expected_result)
 
     def test_unsatisfied_restriction(self):
-        expected_result = 'error message'
-        restriction_on_direct = RestrictionWithConstantResult(expected_result)
+        error_message = 'error message'
+        expected_result = is_failure_of_direct_reference(error_message=asrt.equals(error_message))
+        restriction_on_direct = RestrictionWithConstantResult(error_message)
         self._check_direct_with_satisfied_variants_for_restriction_on_every_node(restriction_on_direct,
                                                                                  expected_result)
 
@@ -378,7 +381,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
     def _check_direct_with_satisfied_variants_for_restriction_on_every_node(
             self,
             restriction_on_direct_node: sut.ValueRestriction,
-            expected_result):
+            expected_result: asrt.ValueAssertion):
         symbol_to_check = symbol_utils.entry('symbol_name')
         cases = [
             (
@@ -400,7 +403,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
                 actual_result = restrictions.is_satisfied_by(symbol_table,
                                                              symbol_to_check.key,
                                                              symbol_to_check.value)
-                self.assertEqual(expected_result, actual_result)
+                expected_result.apply_with_message(self, actual_result, 'return value')
 
 
 class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
@@ -442,7 +445,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         self.assertEqual(expected_processed_symbol,
                          actual_processed_symbols)
 
-    def test_unconditionally_failing_value_restriction(self):
+    def test_unconditionally_failing_restriction_on_indirect_referenced_symbol(self):
         # ARRANGE #
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
@@ -468,9 +471,11 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
-        self.assertEqual(result_that_indicates_error,
-                         actual_result,
-                         'result of processing')
+        result_assertion = is_failure_of_indirect_reference(error_message=asrt.equals(result_that_indicates_error))
+        result_assertion.apply_with_message(self, actual_result, 'result of processing')
+        # self.assertEqual(result_that_indicates_error,
+        #                  actual_result,
+        #                  'result of processing')
         actual_processed_symbols = dict(restriction_that_registers_processed_symbols.visited.items())
         expected_processed_symbol = {
             level_1a_symbol.key: 1,
@@ -478,13 +483,13 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         self.assertEqual(expected_processed_symbol,
                          actual_processed_symbols)
 
-    def test_combination_of_satisfied_and_dissatisified_symbols(self):
+    def test_combination_of_satisfied_and_dissatisfied_symbols(self):
         # ARRANGE #
         satisfied_value_type = ValueType.STRING
-        disSatisfied_value_type = ValueType.PATH
+        dissatisfied_value_type = ValueType.PATH
         level_2_symbol = symbol_table_entry('level_2_symbol',
                                             references=[],
-                                            value_type=disSatisfied_value_type)
+                                            value_type=dissatisfied_value_type)
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
             indirect=ValueRestrictionThatRaisesErrorIfApplied())
@@ -507,15 +512,15 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
 
         restriction_on_every = RestrictionThatRegistersProcessedSymbols(
-            value_container_2_result__fun=dissatisfaction_if_value_type_is(disSatisfied_value_type))
+            value_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every,
             direct=RestrictionWithConstantResult(None))
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
-        self.assertIsNotNone(actual_result,
-                             'result of processing')
+        expected_result = is_failure_of_indirect_reference()
+        expected_result.apply_with_message(self, actual_result, 'result of processing')
         actual_processed_symbols = dict(restriction_on_every.visited.items())
         expected_processed_symbol = {
             level_1a_symbol.key: 1,
@@ -552,13 +557,15 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         cases = [
             ('no restriction parts',
              sut.OrReferenceRestrictions([]),
+             is_failure_of_direct_reference(),
              ),
 
             ('single direct: unsatisfied',
              sut.OrReferenceRestrictions([
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
                      direct=value_restriction_that_is_unconditionally_unsatisfied())
-             ])
+             ]),
+             is_failure_of_direct_reference(),
              ),
             ('multiple direct: unconditionally satisfied restrictions',
              sut.OrReferenceRestrictions([
@@ -566,7 +573,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                      direct=value_restriction_that_is_unconditionally_unsatisfied()),
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
                      direct=value_restriction_that_is_unconditionally_unsatisfied())
-             ])
+             ]),
+             is_failure_of_direct_reference(),
              ),
             ('first: direct=satisfied, indirect=unsatisfied. second:satisfied ',
              sut.OrReferenceRestrictions([
@@ -575,16 +583,17 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                      indirect=value_restriction_that_is_unconditionally_unsatisfied()),
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
                      direct=value_restriction_that_is_unconditionally_satisfied())
-             ])
+             ]),
+             is_failure_of_indirect_reference(),
              ),
         ]
-        for case_name, restrictions in cases:
+        for case_name, restrictions, result_assertion in cases:
             with self.subTest(msg=case_name):
                 actual = restrictions.is_satisfied_by(*self._symbol_setup_with_indirectly_referenced_symbol())
-                self.assertIsNotNone(actual)
+                result_assertion.apply_with_message(self, actual, 'return value')
 
     @staticmethod
-    def _symbol_setup_with_indirectly_referenced_symbol() -> ():
+    def _symbol_setup_with_indirectly_referenced_symbol():
         referenced_symbol = symbol_table_entry('referenced_symbol',
                                                references=[])
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
