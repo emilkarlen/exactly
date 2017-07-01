@@ -134,8 +134,27 @@ class FailureOfDirectReference(FailureInfo):
 
 
 class FailureOfIndirectReference(FailureInfo):
-    def __init__(self, error_message: str):
+    def __init__(self,
+                 failing_symbol: str,
+                 path_to_failing_symbol: list,
+                 error_message: str):
+        self._failing_symbol = failing_symbol
+        self._path_to_failing_symbol = path_to_failing_symbol
         self._error_message = error_message
+
+    @property
+    def failing_symbol(self) -> str:
+        """
+        The name of the symbol that causes the failure
+        """
+        return self._failing_symbol
+
+    @property
+    def path_to_failing_symbol(self) -> list:
+        """
+        The references (from top to bottom) that leads to the failing symbol
+        """
+        return self._path_to_failing_symbol
 
     @property
     def error_message(self) -> str:

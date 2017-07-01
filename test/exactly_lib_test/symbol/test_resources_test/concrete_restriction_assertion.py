@@ -2,15 +2,17 @@ import unittest
 
 from exactly_lib.symbol import concrete_restrictions as r
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
-    StringRestriction, EitherStringOrFileRefRelativityRestriction
+    StringRestriction, EitherStringOrFileRefRelativityRestriction, FailureOfIndirectReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestIsFailureOfIndirectReference),
         unittest.makeSuite(TestIsNoRestriction),
         unittest.makeSuite(TestIsStringRestriction),
         unittest.makeSuite(TestEqualsStringRestriction),
@@ -20,6 +22,95 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestEqualsPathOrStringReferenceRestrictions),
         unittest.makeSuite(TestEqualsReferenceRestrictions),
     ])
+
+
+class TestIsFailureOfIndirectReference(unittest.TestCase):
+    def test_pass(self):
+        cases = [
+            (
+                'default behaviour',
+                sut.is_failure_of_indirect_reference(),
+                FailureOfIndirectReference('symbol_name', [], 'error message'),
+            ),
+            (
+                'default behaviour with non-empty list',
+                sut.is_failure_of_indirect_reference(),
+                FailureOfIndirectReference('symbol_name', [], 'error message'),
+            ),
+            (
+                'name of symbol',
+                sut.is_failure_of_indirect_reference(failing_symbol=asrt.equals('the-failing-symbol')),
+                FailureOfIndirectReference('the-failing-symbol', [], 'error message'),
+            ),
+            (
+                'error message',
+                sut.is_failure_of_indirect_reference(error_message=asrt.equals('the error message')),
+                FailureOfIndirectReference('symbol_name', [], 'the error message'),
+            ),
+            (
+                'path to failing symbol',
+                sut.is_failure_of_indirect_reference(path_to_failing_symbol=asrt.equals(['sym1', 'sym2'])),
+                FailureOfIndirectReference('symbol_name', ['sym1', 'sym2'], 'the error message'),
+            ),
+        ]
+        for description, assertion, actual in cases:
+            with self.subTest(msg=description):
+                assertion.apply_without_message(self, actual)
+
+    def test__default_behaviour__fail_if_symbol_name_is_not_string(self):
+        self._assert_fails(
+            sut.is_failure_of_indirect_reference(),
+            FailureOfIndirectReference(['this is a list - not a string'],
+                                       [],
+                                       'error message')
+        )
+
+    def test__default_behaviour__fail_if_path_to_failing_symbol_is_not_a_list(self):
+        self._assert_fails(
+            sut.is_failure_of_indirect_reference(),
+            FailureOfIndirectReference('failing_symbol',
+                                       'this is a string - not a list',
+                                       'error message')
+        )
+
+    def test__default_behaviour__fail_if_error_message_is_not_a_string(self):
+        self._assert_fails(
+            sut.is_failure_of_indirect_reference(),
+            FailureOfIndirectReference('failing_symbol',
+                                       [],
+                                       ['this is a list - not a string'])
+        )
+
+    def test_fail_if_symbol_name_is_unexpected(self):
+        self._assert_fails(
+            sut.is_failure_of_indirect_reference(failing_symbol=asrt.equals('expected_failing_symbol')),
+            FailureOfIndirectReference('actual_failing_symbol',
+                                       [],
+                                       'error message')
+        )
+
+    def test_fail_if_path_to_failing_symbol_is_unexpected(self):
+        self._assert_fails(
+            sut.is_failure_of_indirect_reference(path_to_failing_symbol=asrt.equals(['sym1', 'sym2'])),
+            FailureOfIndirectReference('failing_symbol',
+                                       ['sym1'],
+                                       'error message')
+        )
+
+    def test_fail_if_error_message_is_unexpected(self):
+        self._assert_fails(
+            sut.is_failure_of_indirect_reference(error_message=asrt.equals('expected error message')),
+            FailureOfIndirectReference('failing_symbol',
+                                       [],
+                                       'actual error message')
+        )
+
+    def _assert_fails(self,
+                      assertion: asrt.ValueAssertion,
+                      actual: FailureOfIndirectReference):
+        put = test_case_with_failure_exception_set_to_test_exception()
+        with put.assertRaises(TestException):
+            assertion.apply_without_message(put, actual)
 
 
 class TestIsNoRestriction(unittest.TestCase):
