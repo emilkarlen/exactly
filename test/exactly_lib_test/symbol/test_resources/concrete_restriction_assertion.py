@@ -2,7 +2,8 @@ import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
     NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction, ReferenceRestrictionsVisitor, \
-    OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, PathOrStringReferenceRestrictions
+    OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, PathOrStringReferenceRestrictions, \
+    FailureOfDirectReference, FailureOfIndirectReference
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -44,6 +45,20 @@ def equals_either_string_or_file_ref_relativity_restriction(expected: EitherStri
 
 def equals_value_restriction(expected: ValueRestriction) -> asrt.ValueAssertion:
     return _EqualsValueRestriction(expected)
+
+
+def is_failure_of_direct_reference(error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(FailureOfDirectReference,
+                                 asrt.sub_component('error_message',
+                                                    FailureOfDirectReference.error_message.fget,
+                                                    error_message))
+
+
+def is_failure_of_indirect_reference(error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(FailureOfIndirectReference,
+                                 asrt.sub_component('error_message',
+                                                    FailureOfIndirectReference.error_message.fget,
+                                                    error_message))
 
 
 class _EqualsValueRestriction(asrt.ValueAssertion):

@@ -1,6 +1,6 @@
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, FailureInfo
 from exactly_lib.symbol.value_structure import ValueContainer, ValueType, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
@@ -124,6 +124,24 @@ class ValueRestrictionVisitor:
         raise NotImplementedError()
 
 
+class FailureOfDirectReference(FailureInfo):
+    def __init__(self, error_message: str):
+        self._error_message = error_message
+
+    @property
+    def error_message(self) -> str:
+        return self._error_message
+
+
+class FailureOfIndirectReference(FailureInfo):
+    def __init__(self, error_message: str):
+        self._error_message = error_message
+
+    @property
+    def error_message(self) -> str:
+        return self._error_message
+
+
 class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
     """
     Restriction with one `ValueRestriction` that is applied on the
@@ -140,7 +158,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> str:
+                        value: ValueContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -149,10 +167,10 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
         """
         result = self._direct.is_satisfied_by(symbol_table, symbol_name, value)
         if result is not None:
-            return result
+            return FailureOfDirectReference(result)
         if self._indirect is None:
             return None
-        return self._check_indirect(symbol_table, value.value.references)
+        return self.check_indirect(symbol_table, value.value.references)
 
     @property
     def direct(self) -> ValueRestriction:
@@ -169,15 +187,15 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
         """
         return self._indirect
 
-    def _check_indirect(self,
-                        symbol_table: SymbolTable,
-                        references: list) -> str:
+    def check_indirect(self,
+                       symbol_table: SymbolTable,
+                       references: list) -> FailureOfIndirectReference:
         for reference in references:
             symbol_value = symbol_table.lookup(reference.name)
             result = self._indirect.is_satisfied_by(symbol_table, reference.name, symbol_value)
             if result is not None:
-                return result
-            result = self._check_indirect(symbol_table, symbol_value.value.references)
+                return FailureOfIndirectReference(result)
+            result = self.check_indirect(symbol_table, symbol_value.value.references)
             if result is not None:
                 return result
         return None
@@ -194,7 +212,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> str:
+                        value: ValueContainer) -> FailureInfo:
         for restriction_on_direct_and_indirect in self._parts:
             assert isinstance(restriction_on_direct_and_indirect, ReferenceRestrictionsOnDirectAndIndirect)
             on_direct = restriction_on_direct_and_indirect.direct.is_satisfied_by(symbol_table, symbol_name, value)
@@ -202,8 +220,9 @@ class OrReferenceRestrictions(ReferenceRestrictions):
                 if restriction_on_direct_and_indirect.indirect is None:
                     return None
                 else:
-                    return restriction_on_direct_and_indirect.indirect.is_satisfied_by(symbol_table, symbol_name, value)
-        return 'OR: no restriction is satisfied. TODO: improve error message'
+                    return restriction_on_direct_and_indirect.check_indirect(symbol_table,
+                                                                             value.value.references)
+        return FailureOfDirectReference('OR: no restriction is satisfied. TODO: improve error message')
 
 
 class PathOrStringReferenceRestrictions(ReferenceRestrictions):
