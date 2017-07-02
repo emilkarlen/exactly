@@ -33,6 +33,17 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
         # ASSERT #
         self.assertIsInstance(actual, str)
 
+    def test_meaning_of_failure_is_non_empty(self):
+        # ARRANGE #
+        failure = FailureOfIndirectReference(failing_symbol='name_of_failing_symbol',
+                                             path_to_failing_symbol=[],
+                                             error_message='error message',
+                                             meaning_of_failure='meaning of failure')
+        # ACT #
+        actual = sut.error_message(failure, empty_symbol_table())
+        # ASSERT #
+        self.assertIsInstance(actual, str)
+
     def test_non_empty_path_to_failing_symbol(self):
         # ARRANGE #
         failure = FailureOfIndirectReference(failing_symbol='name_of_failing_symbol',

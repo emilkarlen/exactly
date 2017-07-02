@@ -3,6 +3,7 @@ import pathlib
 import types
 
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
@@ -25,6 +26,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
+from exactly_lib.symbol.value_structure import ValueType
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -206,11 +208,10 @@ def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
         OrReferenceRestrictions([
             ReferenceRestrictionsOnDirectAndIndirect(
                 FileRefRelativityRestriction(conf.options.accepted_relativity_variants)),
-            JUST_STRINGS_REFERENCES_RESTRICTION,
+            PATH_COMPONENT_STRING_REFERENCES_RESTRICTION,
         ]))
     path_part_resolver = _path_suffix_resolver_from_fragments(string_fragments[1:])
     return file_ref_or_string_symbol, path_part_resolver
-
 
 
 class _FileRefResolverOfRelativityOptionAndSuffixResolver(FileRefResolver):
@@ -230,7 +231,7 @@ class _FileRefResolverOfRelativityOptionAndSuffixResolver(FileRefResolver):
 
 
 def _parse_string_resolver(token: Token) -> StringResolver:
-    return parse_string_resolver_from_token(token, JUST_STRINGS_REFERENCES_RESTRICTION)
+    return parse_string_resolver_from_token(token, PATH_COMPONENT_STRING_REFERENCES_RESTRICTION)
 
 
 def _string_fragments_is_constant(fragments: list) -> bool:
@@ -249,9 +250,15 @@ def _first_fragment_is_symbol_that_can_act_as_file_ref(fragments: list) -> bool:
 def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
     if not fragments:
         return PathPartResolverAsNothing()
-    string_resolver = string_resolver_from_fragments(fragments, JUST_STRINGS_REFERENCES_RESTRICTION)
+    string_resolver = string_resolver_from_fragments(fragments, PATH_COMPONENT_STRING_REFERENCES_RESTRICTION)
     return PathPartResolverAsStringResolver(string_resolver)
 
 
-JUST_STRINGS_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndIndirect(direct=StringRestriction(),
-                                                                               indirect=StringRestriction())
+PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndIndirect(
+    direct=StringRestriction(),
+    indirect=StringRestriction(),
+    meaning_of_failure_of_indirect_reference=('Every symbol used as a path component for a {path_type} '
+                                              'must be defined as a {string_type}.'.format(
+        path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
+        string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
+    )))
