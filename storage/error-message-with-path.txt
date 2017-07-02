@@ -1,0 +1,19 @@
+VALIDATE
+In phase "setup"
+Line 25: `def path full = @[bp]@/dir2/@[base]@.@[sfx]@'
+--------------------
+Every symbol used as a sub directory for a "path" must be defined as a "string".
+
+> Line 20: `def string base = @[b]@@[se]@'
+> Line 17: `def string b =   @[q]@
+--------------------
+
+Invalid type, of symbol "ba"
+defined at line 19: def path ba   = fi
+
+Expected : string
+Found    : path
+
+Define a string symbol using the "def" instruction:
+
+def string NAME = STRING
