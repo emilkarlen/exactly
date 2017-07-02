@@ -594,16 +594,19 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         cases = [
             ('single unconditionally satisfied restriction',
              sut.OrReferenceRestrictions([
-                 sut.ReferenceRestrictionsOnDirectAndIndirect(
-                     direct=value_restriction_that_is_unconditionally_satisfied())
+                 sut.OrRestrictionPart(
+                     sut.ReferenceRestrictionsOnDirectAndIndirect(
+                         direct=value_restriction_that_is_unconditionally_satisfied()))
              ])
              ),
             ('multiple unconditionally satisfied restrictions',
              sut.OrReferenceRestrictions([
-                 sut.ReferenceRestrictionsOnDirectAndIndirect(
-                     direct=value_restriction_that_is_unconditionally_satisfied()),
-                 sut.ReferenceRestrictionsOnDirectAndIndirect(
-                     direct=value_restriction_that_is_unconditionally_satisfied())
+                 sut.OrRestrictionPart(
+                     sut.ReferenceRestrictionsOnDirectAndIndirect(
+                         direct=value_restriction_that_is_unconditionally_satisfied())),
+                 sut.OrRestrictionPart(
+                     sut.ReferenceRestrictionsOnDirectAndIndirect(
+                         direct=value_restriction_that_is_unconditionally_satisfied()))
              ])
              ),
         ]
@@ -645,27 +648,32 @@ class TestOrReferenceRestrictions(unittest.TestCase):
              ),
             ('single direct: unsatisfied',
              sut.OrReferenceRestrictions([
+                 sut.OrRestrictionPart(
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
-                     direct=value_restriction_that_is_unconditionally_unsatisfied())
+                     direct=value_restriction_that_is_unconditionally_unsatisfied())),
              ]),
              is_failure_of_direct_reference(),
              ),
             ('multiple direct: unconditionally satisfied restrictions',
              sut.OrReferenceRestrictions([
+                 sut.OrRestrictionPart(
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
-                     direct=value_restriction_that_is_unconditionally_unsatisfied()),
-                 sut.ReferenceRestrictionsOnDirectAndIndirect(
-                     direct=value_restriction_that_is_unconditionally_unsatisfied())
+                     direct=value_restriction_that_is_unconditionally_unsatisfied())),
+                 sut.OrRestrictionPart(
+                     sut.ReferenceRestrictionsOnDirectAndIndirect(
+                         direct=value_restriction_that_is_unconditionally_unsatisfied()))
              ]),
              is_failure_of_direct_reference(),
              ),
             ('first: direct=satisfied, indirect=unsatisfied. second:satisfied ',
              sut.OrReferenceRestrictions([
+                 sut.OrRestrictionPart(
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
                      direct=value_restriction_that_is_unconditionally_satisfied(),
-                     indirect=value_restriction_that_is_unconditionally_unsatisfied()),
+                     indirect=value_restriction_that_is_unconditionally_unsatisfied())),
+                 sut.OrRestrictionPart(
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
-                     direct=value_restriction_that_is_unconditionally_satisfied())
+                     direct=value_restriction_that_is_unconditionally_satisfied())),
              ]),
              is_failure_of_indirect_reference(failing_symbol=asrt.equals(referenced_symbol.key),
                                               path_to_failing_symbol=asrt.equals([])),

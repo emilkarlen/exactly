@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
     NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction, ReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, PathOrStringReferenceRestrictions, \
-    FailureOfDirectReference, FailureOfIndirectReference
+    FailureOfDirectReference, FailureOfIndirectReference, OrRestrictionPart
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -141,9 +141,16 @@ REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
     assertion_on_every=asrt.ValueIsNone())
 
 
-def _equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> asrt.ValueAssertion:
-    expected_sub_restrictions = [_equals_reference_restriction_on_direct_and_indirect(sub)
-                                 for sub in expected.parts]
+def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> asrt.ValueAssertion:
+    expected_sub_restrictions = [
+        asrt.is_instance_with(OrRestrictionPart,
+                              asrt.sub_component('restriction',
+                                                 OrRestrictionPart.restriction.fget,
+                                                 _equals_reference_restriction_on_direct_and_indirect(
+                                                     part.restriction)))
+        for part in expected.parts]
+    # expected_sub_restrictions = [_equals_reference_restriction_on_direct_and_indirect(sub)
+    #                              for sub in expected.parts]
     return asrt.is_instance_with(OrReferenceRestrictions,
                                  asrt.sub_component('parts',
                                                     OrReferenceRestrictions.parts.fget,
@@ -174,7 +181,7 @@ class _EqualsReferenceRestrictionsVisitor(ReferenceRestrictionsVisitor):
         return equals_path_or_string_reference_restrictions(x)
 
     def visit_or(self, x: OrReferenceRestrictions) -> asrt.ValueAssertion:
-        return _equals_or_reference_restrictions(x)
+        return equals_or_reference_restrictions(x)
 
 
 _EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsReferenceRestrictionsVisitor()
