@@ -10,4 +10,9 @@ def error_message(failure: FailureInfo, symbols: SymbolTable) -> str:
     if isinstance(failure, FailureOfDirectReference):
         return failure.error_message
     elif isinstance(failure, FailureOfIndirectReference):
-        return failure.error_message
+        line_separated_parts = []
+        if failure.meaning_of_failure:
+            line_separated_parts.append(failure.meaning_of_failure)
+            line_separated_parts.append('')
+        line_separated_parts.append(failure.error_message)
+        return '\n'.join(line_separated_parts)
