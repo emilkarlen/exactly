@@ -18,14 +18,16 @@ from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstan
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
+from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
@@ -78,9 +80,11 @@ class Expectation:
 class Expectation2:
     def __init__(self,
                  file_ref_resolver: asrt.ValueAssertion,
-                 token_stream: asrt.ValueAssertion):
+                 token_stream: asrt.ValueAssertion,
+                 symbol_table_in_with_all_ref_restrictions_are_satisfied: SymbolTable = None):
         self.file_ref_resolver = file_ref_resolver
         self.token_stream = token_stream
+        self.symbol_table_in_with_all_ref_restrictions_are_satisfied = symbol_table_in_with_all_ref_restrictions_are_satisfied
 
 
 class RelOptionArgumentConfigurationWoSuffixRequirement(tuple):
@@ -139,12 +143,23 @@ class TestParsesBase(unittest.TestCase):
         actual = sut.parse_file_ref(ts,
                                     arrangement.rel_option_argument_configuration)
         # ASSERT #
-        self.__assertions_on_references(actual)
+        self.__assertions_on_reference_restrictions(actual,
+                                                    expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)
         expectation.file_ref_resolver.apply_with_message(self, actual, 'file-ref-resolver')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
-    def __assertions_on_references(self, actual: FileRefResolver):
-        pass
+    def __assertions_on_reference_restrictions(self,
+                                               actual: FileRefResolver,
+                                               symbols: SymbolTable):
+        for idx, reference in enumerate(actual.references):
+            assert isinstance(reference, SymbolReference)  # Type info for IDE
+            value_container = symbols.lookup(reference.name)
+            assert isinstance(value_container, ValueContainer)
+            result = reference.restrictions.is_satisfied_by(symbols,
+                                                            reference.name,
+                                                            value_container)
+            self.assertIsNone(result,
+                              'Result of restriction on reference #' + str(idx))
 
 
 class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
@@ -481,21 +496,24 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                             PathPartAsFixedPath(
-                                                 symbol.value)),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol.name,
-                                             path_part_string_reference_restrictions())),
-                     ]),
-                     symbol_table=
-                     symbol_table_with_single_string_value(symbol.name,
-                                                           symbol.value)),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                         PathPartAsFixedPath(
+                                             symbol.value)),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol.name,
+                                         path_part_string_reference_restrictions())),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_string_value(symbol.name,
+                                                       symbol.value),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Mixed symbol references and constants as path suffix after explicit relativity '
              'SHOULD '
              'become a symbol reference path suffix that must be a strings',
@@ -506,22 +524,24 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                      symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                             PathPartAsFixedPath(
-                                                 symbol_1.value + '/const' + symbol_2.value)),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
-                         equals_symbol_reference(
-                             SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
-                     ]),
-                     symbol_table=
-                     symbol_table_with_string_values([symbol_1, symbol_2])
-                 ),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                         PathPartAsFixedPath(
+                                             symbol_1.value + '/const' + symbol_2.value)),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
+                     equals_symbol_reference(
+                         SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_string_values([symbol_1, symbol_2]),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Mixed symbol references and constants - within soft quotes - as path suffix after explicit relativity '
              'SHOULD '
              'become a symbol reference path suffix that must be a strings',
@@ -533,21 +553,22 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                      symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                             PathPartAsFixedPath(
-                                                 symbol_1.value + '/ const ' + symbol_2.value)),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
-                         equals_symbol_reference(
-                             SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
-                     ]),
-                     symbol_table=
-                     symbol_table_with_string_values([symbol_1, symbol_2])
-                 ),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                         PathPartAsFixedPath(
+                                             symbol_1.value + '/ const ' + symbol_2.value)),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
+                     equals_symbol_reference(
+                         SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_string_values([symbol_1, symbol_2]),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
              )),
             ('Hard quoted symbol reference after explicit relativity'
              ' SHOULD '
@@ -559,13 +580,17 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.of_rel_option(
-                         RelOptionType.REL_HOME,
-                         PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol.name))),
-                     asrt.equals([])),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(
+                     RelOptionType.REL_HOME,
+                     PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol.name))),
+                 expected_symbol_references=
+                 asrt.equals([]),
+                 symbol_table=
+                 empty_symbol_table(),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
              )),
         ]
         for test_name, arrangement, expectation in test_cases:
@@ -596,21 +621,23 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                             PathPartAsFixedPath(symbol.value)),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol.name,
-                                             file_ref_or_string_reference_restrictions(accepted_relativities))
-                         )
-                     ]),
-                     symbol_table=
-                     symbol_table_with_single_string_value(symbol.name, symbol.value)
-                 ),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_ACT,
+                                         PathPartAsFixedPath(symbol.value)),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol.name,
+                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                     )
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_string_value(symbol.name, symbol.value),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Symbol reference as only argument'
              ' SHOULD '
              'be an absolute file ref'
@@ -622,20 +649,22 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.absolute_file_name('/absolute/path'),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol.name,
-                                             file_ref_or_string_reference_restrictions(accepted_relativities))
-                         )
-                         ,
-                     ]),
-                     symbol_table=
-                     symbol_table_with_single_string_value(symbol.name, '/absolute/path')),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_refs.absolute_file_name('/absolute/path'),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol.name,
+                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                     ),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_string_value(symbol.name, '/absolute/path'),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Symbol reference followed by / and constant suffix'
              ' SHOULD '
              'be an absolute file ref'
@@ -647,20 +676,23 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.absolute_file_name('/absolute/path/constant-suffix'),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol.name,
-                                             file_ref_or_string_reference_restrictions(accepted_relativities))
-                         )
-                         ,
-                     ]),
-                     symbol_table=
-                     symbol_table_with_single_string_value(symbol.name, '/absolute/path')),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_refs.absolute_file_name('/absolute/path/constant-suffix'),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol.name,
+                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                     )
+                     ,
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_string_value(symbol.name, '/absolute/path'),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Symbol reference followed by / and symbol ref'
              ' SHOULD '
              'be an absolute file ref'
@@ -674,25 +706,27 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.absolute_file_name('/absolute/path/{symbol_2_value}-constant-suffix'.format(
-                         symbol_2_value=symbol_2.value
-                     )),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol_1.name,
-                                             file_ref_or_string_reference_restrictions(accepted_relativities))),
-                         equals_symbol_reference(
-                             SymbolReference(symbol_2.name,
-                                             path_part_string_reference_restrictions())),
-                     ]),
-                     symbol_table=
-                     symbol_table_with_string_values([(symbol_1.name, '/absolute/path'),
-                                                      symbol_2])
-                 ),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_refs.absolute_file_name('/absolute/path/{symbol_2_value}-constant-suffix'.format(
+                     symbol_2_value=symbol_2.value
+                 )),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol_1.name,
+                                         file_ref_or_string_reference_restrictions(accepted_relativities))),
+                     equals_symbol_reference(
+                         SymbolReference(symbol_2.name,
+                                         path_part_string_reference_restrictions())),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_string_values([(symbol_1.name, '/absolute/path'),
+                                                  symbol_2]),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Symbol reference that is a string (which is not an absolute path), '
              'followed by / and multiple symbol references'
              ' SHOULD '
@@ -708,28 +742,30 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                             PathPartAsFixedPath('non-abs-str/non-abs-str1.non-abs-str2')),
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol.name,
-                                             file_ref_or_string_reference_restrictions(accepted_relativities))),
-                         equals_symbol_reference(
-                             SymbolReference(symbol_1.name,
-                                             path_part_string_reference_restrictions())),
-                         equals_symbol_reference(
-                             SymbolReference(symbol_2.name,
-                                             path_part_string_reference_restrictions())),
-                     ]),
-                     symbol_table=
-                     symbol_table_with_string_values([(symbol.name, 'non-abs-str'),
-                                                      (symbol_1.name, 'non-abs-str1'),
-                                                      (symbol_2.name, 'non-abs-str2')])
-                 ),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_ACT,
+                                         PathPartAsFixedPath('non-abs-str/non-abs-str1.non-abs-str2')),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol.name,
+                                         file_ref_or_string_reference_restrictions(accepted_relativities))),
+                     equals_symbol_reference(
+                         SymbolReference(symbol_1.name,
+                                         path_part_string_reference_restrictions())),
+                     equals_symbol_reference(
+                         SymbolReference(symbol_2.name,
+                                         path_part_string_reference_restrictions())),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_string_values([(symbol.name, 'non-abs-str'),
+                                                  (symbol_1.name, 'non-abs-str1'),
+                                                  (symbol_2.name, 'non-abs-str2')]),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Symbol reference as only argument'
              ' SHOULD '
              'be file ref identical to referenced symbol'
@@ -741,21 +777,24 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     file_ref_rel_home,
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol.name,
-                                             file_ref_or_string_reference_restrictions(accepted_relativities))
-                         )
-                         ,
-                     ]),
-                     symbol_table=
-                     symbol_table_with_single_file_ref_value(symbol.name,
-                                                             file_ref_rel_home)),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
-             )),
+             expect(
+                 resolved_file_ref=
+                 file_ref_rel_home,
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol.name,
+                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                     )
+                     ,
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_file_ref_value(symbol.name,
+                                                         file_ref_rel_home),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
+             )
+             ),
             ('Symbol reference as first argument, followed by / and symbol reference'
              ' SHOULD '
              'be file ref identical to first referenced symbol followed by / and second symbol reference'
@@ -769,31 +808,30 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_TMP),
              ),
-             Expectation2(
-                 file_ref_resolver=equals_file_ref_resolver2(
-                     expected_relativity_and_paths=
-                     file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                             PathPartAsFixedPath('suffix-from-path-symbol/string-symbol-value')),
-                     expected_symbol_references=
-                     asrt.matches_sequence([
-                         equals_symbol_reference(
-                             SymbolReference(symbol_1.name,
-                                             file_ref_or_string_reference_restrictions(accepted_relativities))
-                         ),
-                         equals_symbol_reference(
-                             SymbolReference(symbol_2.name,
-                                             path_part_string_reference_restrictions())
-                         ),
-                     ]),
-                     symbol_table=
-                     symbol_table_from_entries([
-                         entry(symbol_1.name, file_ref_value(file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                                                                     PathPartAsFixedPath(
-                                                                                         'suffix-from-path-symbol')))),
-                         entry(symbol_2.name, string_constant('string-symbol-value')),
-                     ])
-                 ),
-                 token_stream=assert_token_stream2(is_null=asrt.is_true),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                         PathPartAsFixedPath('suffix-from-path-symbol/string-symbol-value')),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol_1.name,
+                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                     ),
+                     equals_symbol_reference(
+                         SymbolReference(symbol_2.name,
+                                         path_part_string_reference_restrictions())
+                     ),
+                 ]),
+                 symbol_table=
+                 symbol_table_from_entries([
+                     entry(symbol_1.name, file_ref_value(file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                                                                 PathPartAsFixedPath(
+                                                                                     'suffix-from-path-symbol')))),
+                     entry(symbol_2.name, string_constant('string-symbol-value')),
+                 ]),
+                 token_stream=
+                 assert_token_stream2(is_null=asrt.is_true),
              )),
         ]
         for test_name, arrangement, expectation in test_cases:
@@ -1014,6 +1052,20 @@ def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativ
             ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))),
         OrRestrictionPart(path_part_string_reference_restrictions()),
     ])
+
+
+def expect(resolved_file_ref: FileRef,
+           expected_symbol_references: asrt.ValueAssertion,
+           symbol_table: SymbolTable,
+           token_stream: asrt.ValueAssertion,
+           ) -> Expectation2:
+    return Expectation2(
+        file_ref_resolver=equals_file_ref_resolver2(resolved_file_ref,
+                                                    expected_symbol_references,
+                                                    symbol_table),
+        symbol_table_in_with_all_ref_restrictions_are_satisfied=symbol_table,
+        token_stream=token_stream,
+    )
 
 
 if __name__ == '__main__':
