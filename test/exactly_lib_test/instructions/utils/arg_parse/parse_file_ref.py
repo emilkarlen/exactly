@@ -31,6 +31,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
     equals_file_ref_resolver2
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
@@ -147,6 +148,9 @@ class TestParsesBase(unittest.TestCase):
                                                     expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)
         expectation.file_ref_resolver.apply_with_message(self, actual, 'file-ref-resolver')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
+        self.__assertions_on_hypothetical_reference_to_resolver(
+            actual,
+            expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)
 
     def __assertions_on_reference_restrictions(self,
                                                actual: FileRefResolver,
@@ -159,7 +163,17 @@ class TestParsesBase(unittest.TestCase):
                                                             reference.name,
                                                             value_container)
             self.assertIsNone(result,
-                              'Result of restriction on reference #' + str(idx))
+                              'Restriction on reference #{}: expects None=satisfaction'.format(idx))
+
+    def __assertions_on_hypothetical_reference_to_resolver(
+            self,
+            actual: FileRefResolver,
+            symbols: SymbolTable):
+        restriction = FileRefRelativityRestriction(PathRelativityVariants(RelOptionType, True))
+        value_container = symbol_utils.file_ref_resolver_container(actual)
+        result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', value_container)
+        self.assertIsNone(result,
+                          'Result of hypothetical restriction on path')
 
 
 class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
