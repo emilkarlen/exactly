@@ -26,7 +26,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
-from exactly_lib.symbol.value_structure import ValueType
+from exactly_lib.symbol.value_structure import ValueType, ValueContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -209,7 +209,8 @@ def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
             ReferenceRestrictionsOnDirectAndIndirect(
                 FileRefRelativityRestriction(conf.options.accepted_relativity_variants)),
             PATH_COMPONENT_STRING_REFERENCES_RESTRICTION,
-        ]))
+        ],
+            _type_must_be_either_path_or_string__err_msg_generator))
     path_part_resolver = _path_suffix_resolver_from_fragments(string_fragments[1:])
     return file_ref_or_string_symbol, path_part_resolver
 
@@ -262,3 +263,13 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndI
         path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
         string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
     )))
+
+
+def _type_must_be_either_path_or_string__err_msg_generator(value: ValueContainer) -> str:
+    v = value.value
+    assert isinstance(v, SymbolValueResolver)  # Type info for IDE
+    return 'Expecting either a {path_type} or a {string_type}. Found a {actual_type}'.format(
+        path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
+        string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
+        actual_type=help_texts.TYPE_INFO_DICT[v.value_type].type_name
+    )
