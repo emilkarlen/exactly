@@ -258,7 +258,7 @@ def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndIndirect(
     direct=StringRestriction(),
     indirect=StringRestriction(),
-    meaning_of_failure_of_indirect_reference=('Every symbol used as a path component for a {path_type} '
+    meaning_of_failure_of_indirect_reference=('Every symbol used as a path component of a {path_type} '
                                               'must be defined as a {string_type}.'.format(
         path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
         string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
@@ -268,7 +268,7 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndI
 def _type_must_be_either_path_or_string__err_msg_generator(value: ValueContainer) -> str:
     v = value.value
     assert isinstance(v, SymbolValueResolver)  # Type info for IDE
-    return 'Expecting either a {path_type} or a {string_type}. Found a {actual_type}'.format(
+    return 'Expecting either a {path_type} or a {string_type}.\nFound: {actual_type}'.format(
         path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
         string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
         actual_type=help_texts.TYPE_INFO_DICT[v.value_type].type_name
