@@ -246,11 +246,21 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
         return None
 
 
+class OrRestrictionPart(tuple):
+    def __new__(cls,
+                restriction: ReferenceRestrictionsOnDirectAndIndirect):
+        return tuple.__new__(cls, (restriction,))
+
+    @property
+    def restriction(self) -> ReferenceRestrictionsOnDirectAndIndirect:
+        return self[0]
+
+
 class OrReferenceRestrictions(ReferenceRestrictions):
     def __init__(self,
-                 simple_reference_restriction_parts: list,
+                 or_restriction_parts: list,
                  value_container_2_error_message_if_no_matching_part: types.FunctionType = None):
-        self._parts = tuple(simple_reference_restriction_parts)
+        self._parts = tuple(or_restriction_parts)
         self._value_container_2_error_message_if_no_matching_part = value_container_2_error_message_if_no_matching_part
 
     @property
@@ -261,15 +271,15 @@ class OrReferenceRestrictions(ReferenceRestrictions):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         value: ValueContainer) -> FailureInfo:
-        for restriction_on_direct_and_indirect in self._parts:
-            assert isinstance(restriction_on_direct_and_indirect, ReferenceRestrictionsOnDirectAndIndirect)
-            on_direct = restriction_on_direct_and_indirect.direct.is_satisfied_by(symbol_table, symbol_name, value)
+        for part in self._parts:
+            assert isinstance(part, OrRestrictionPart)  # Type info for IDE
+            on_direct = part.restriction.direct.is_satisfied_by(symbol_table, symbol_name, value)
             if on_direct is None:
-                if restriction_on_direct_and_indirect.indirect is None:
+                if part.restriction.indirect is None:
                     return None
                 else:
-                    return restriction_on_direct_and_indirect.check_indirect(symbol_table,
-                                                                             value.value.references)
+                    return part.restriction.check_indirect(symbol_table,
+                                                           value.value.references)
         return self._no_satisfied_restriction(value)
 
     def _no_satisfied_restriction(self, value) -> FailureOfDirectReference:

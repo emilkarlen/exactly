@@ -20,6 +20,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestEqualsEitherStringOrFileRefRelativityRestriction),
         unittest.makeSuite(TestEqualsValueRestriction),
         unittest.makeSuite(TestEqualsPathOrStringReferenceRestrictions),
+        unittest.makeSuite(TestEqualsOrReferenceRestrictions),
         unittest.makeSuite(TestEqualsReferenceRestrictions),
     ])
 
@@ -344,6 +345,65 @@ class TestEqualsPathOrStringReferenceRestrictions(unittest.TestCase):
             assertion.apply_without_message(put, actual)
 
 
+class TestEqualsOrReferenceRestrictions(unittest.TestCase):
+    def test_pass(self):
+        cases = [
+            (
+                'no parts',
+                r.OrReferenceRestrictions([]),
+                r.OrReferenceRestrictions([]),
+            ),
+            (
+                'multiple parts',
+                r.OrReferenceRestrictions([
+                    r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())),
+                    r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(
+                        r.StringRestriction(),
+                        r.NoRestriction()))
+                ]),
+                r.OrReferenceRestrictions([
+                    r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())),
+                    r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(
+                        r.StringRestriction(),
+                        r.NoRestriction()))
+                ]),
+            ),
+        ]
+        for description, actual, expected in cases:
+            assertion = sut.equals_or_reference_restrictions(expected)
+            with self.subTest(msg=description):
+                assertion.apply_without_message(self, actual)
+
+    def test_fail__invalid_type(self):
+        expected = r.OrReferenceRestrictions([
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))])
+        actual = r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())
+        self._assert_fails(expected, actual)
+
+    def test_fail__different_number_of_sub_restrictions(self):
+        expected = r.OrReferenceRestrictions([
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())),
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))])
+        actual = r.OrReferenceRestrictions([
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))])
+        self._assert_fails(expected, actual)
+
+    def test_fail__different_part(self):
+        expected = r.OrReferenceRestrictions([
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))])
+        actual = r.OrReferenceRestrictions([
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))])
+        self._assert_fails(expected, actual)
+
+    @staticmethod
+    def _assert_fails(expected: r.OrReferenceRestrictions, actual: r.ReferenceRestrictions):
+        put = test_case_with_failure_exception_set_to_test_exception()
+        with put.assertRaises(TestException):
+            # ACT #
+            assertion = sut.equals_or_reference_restrictions(expected)
+            assertion.apply_without_message(put, actual)
+
+
 class TestEqualsReferenceRestrictions(unittest.TestCase):
     def test_pass(self):
         cases = [
@@ -372,19 +432,6 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                 sut.equals_reference_restrictions(r.OrReferenceRestrictions([])),
                 r.OrReferenceRestrictions([]),
             ),
-            (
-                sut.equals_reference_restrictions(
-                    r.OrReferenceRestrictions([r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()),
-                                               r.ReferenceRestrictionsOnDirectAndIndirect(
-                                                   r.StringRestriction(),
-                                                   r.NoRestriction())
-                                               ])),
-                r.OrReferenceRestrictions([r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()),
-                                           r.ReferenceRestrictionsOnDirectAndIndirect(
-                                               r.StringRestriction(),
-                                               r.NoRestriction())
-                                           ]),
-            ),
         ]
         for assertion, actual in cases:
             with self.subTest(actual=actual):
@@ -408,29 +455,25 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
 
     def test_fail__or__different_sub_restriction(self):
         expected = r.OrReferenceRestrictions([
-            r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())])
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
+        ])
         actual = r.OrReferenceRestrictions([
-            r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())])
-        self._fail(expected, actual)
-
-    def test_fail__or__different_number_of_sub_restrictions(self):
-        expected = r.OrReferenceRestrictions([
-            r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()),
-            r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())])
-        actual = r.OrReferenceRestrictions([
-            r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())])
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))
+        ])
         self._fail(expected, actual)
 
     def test_fail__or__direct_and_indirect(self):
         expected = r.OrReferenceRestrictions([
-            r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())])
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))
+        ])
         actual = r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())
         self._fail(expected, actual)
 
     def test_fail__direct_and_indirect__or(self):
         expected = r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())
         actual = r.OrReferenceRestrictions([
-            r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())])
+            r.OrRestrictionPart(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))
+        ])
         self._fail(expected, actual)
 
     def _fail(self, expected: r.ReferenceRestrictions, actual: r.ReferenceRestrictions):
