@@ -138,11 +138,11 @@ class FailureOfIndirectReference(FailureInfo):
                  failing_symbol: str,
                  path_to_failing_symbol: list,
                  error_message: str,
-                 meaning_of_failure_of_indirect_reference: str = ''):
+                 meaning_of_failure: str = ''):
         self._failing_symbol = failing_symbol
         self._path_to_failing_symbol = path_to_failing_symbol
         self._error_message = error_message
-        self._meaning_of_failure_of_indirect_reference = meaning_of_failure_of_indirect_reference
+        self._meaning_of_failure = meaning_of_failure
 
     @property
     def failing_symbol(self) -> str:
@@ -163,8 +163,8 @@ class FailureOfIndirectReference(FailureInfo):
         return self._error_message
 
     @property
-    def meaning_of_failure_of_indirect_reference(self) -> str:
-        return self._meaning_of_failure_of_indirect_reference
+    def meaning_of_failure(self) -> str:
+        return self._meaning_of_failure
 
 
 class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
@@ -176,9 +176,11 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
 
     def __init__(self,
                  direct: ValueRestriction,
-                 indirect: ValueRestriction = None):
+                 indirect: ValueRestriction = None,
+                 meaning_of_failure_of_indirect_reference: str = ''):
         self._direct = direct
         self._indirect = indirect
+        self._meaning_of_failure_of_indirect_reference = meaning_of_failure_of_indirect_reference
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
@@ -212,6 +214,10 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
         """
         return self._indirect
 
+    @property
+    def meaning_of_failure_of_indirect_reference(self) -> str:
+        return self._meaning_of_failure_of_indirect_reference
+
     def check_indirect(self,
                        symbol_table: SymbolTable,
                        references: list) -> FailureOfIndirectReference:
@@ -225,9 +231,11 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
             symbol_value = symbol_table.lookup(reference.name)
             result = self._indirect.is_satisfied_by(symbol_table, reference.name, symbol_value)
             if result is not None:
-                return FailureOfIndirectReference(failing_symbol=reference.name,
-                                                  path_to_failing_symbol=list(path_to_referring_symbol),
-                                                  error_message=result)
+                return FailureOfIndirectReference(
+                    failing_symbol=reference.name,
+                    path_to_failing_symbol=list(path_to_referring_symbol),
+                    error_message=result,
+                    meaning_of_failure=self._meaning_of_failure_of_indirect_reference)
             result = self._check_indirect(symbol_table,
                                           path_to_referring_symbol + (reference.name,),
                                           symbol_value.value.references)

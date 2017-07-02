@@ -466,13 +466,15 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
             value_container_2_result__fun=function_that_reports_error)
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_that_registers_processed_symbols,
-            direct=unconditionally_satisfied_value_restriction())
+            direct=unconditionally_satisfied_value_restriction(),
+            meaning_of_failure_of_indirect_reference='meaning of failure')
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
         result_assertion = is_failure_of_indirect_reference(failing_symbol=asrt.equals(level_1a_symbol.key),
                                                             path_to_failing_symbol=asrt.equals([]),
-                                                            error_message=asrt.equals(result_that_indicates_error))
+                                                            error_message=asrt.equals(result_that_indicates_error),
+                                                            meaning_of_failure=asrt.equals('meaning of failure'))
         result_assertion.apply_with_message(self, actual_result, 'result of processing')
         actual_processed_symbols = dict(restriction_that_registers_processed_symbols.visited.items())
         expected_processed_symbol = {
@@ -513,12 +515,14 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
             value_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every_indirect,
-            direct=unconditionally_satisfied_value_restriction())
+            direct=unconditionally_satisfied_value_restriction(),
+            meaning_of_failure_of_indirect_reference='meaning of failure')
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
         expected_result = is_failure_of_indirect_reference(failing_symbol=asrt.equals(level_2_symbol.key),
-                                                           path_to_failing_symbol=asrt.equals([level_1a_symbol.key]))
+                                                           path_to_failing_symbol=asrt.equals([level_1a_symbol.key]),
+                                                           meaning_of_failure=asrt.equals('meaning of failure'))
         expected_result.apply_with_message(self, actual_result, 'result of processing')
         actual_processed_symbols = dict(restriction_on_every_indirect.visited.items())
         expected_processed_symbol = {
@@ -564,13 +568,15 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
             value_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every_indirect,
-            direct=unconditionally_satisfied_value_restriction())
+            direct=unconditionally_satisfied_value_restriction(),
+            meaning_of_failure_of_indirect_reference='meaning of failure')
         # ACT #
         actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
         # ASSERT #
         expected_result = is_failure_of_indirect_reference(failing_symbol=asrt.equals(level_3_symbol.key),
                                                            path_to_failing_symbol=asrt.equals([level_1b_symbol.key,
-                                                                                               level_2_symbol.key]))
+                                                                                               level_2_symbol.key]),
+                                                           meaning_of_failure=asrt.equals('meaning of failure'))
         expected_result.apply_with_message(self, actual_result, 'result of processing')
         actual_processed_symbols = dict(restriction_on_every_indirect.visited.items())
         expected_processed_symbol = {

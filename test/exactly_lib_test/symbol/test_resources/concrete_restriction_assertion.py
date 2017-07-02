@@ -58,7 +58,7 @@ def is_failure_of_indirect_reference(
         failing_symbol: asrt.ValueAssertion = asrt.is_instance(str),
         path_to_failing_symbol: asrt.ValueAssertion = asrt.is_instance(list),
         error_message: asrt.ValueAssertion = asrt.is_instance(str),
-        meaning_of_failure_of_indirect_reference: asrt.ValueAssertion = asrt.is_instance(str),
+        meaning_of_failure: asrt.ValueAssertion = asrt.is_instance(str),
 ) -> asrt.ValueAssertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
                                  asrt.and_([
@@ -72,8 +72,8 @@ def is_failure_of_indirect_reference(
                                                         FailureOfIndirectReference.error_message.fget,
                                                         error_message),
                                      asrt.sub_component('meaning_of_failure_of_indirect_reference',
-                                                        FailureOfIndirectReference.meaning_of_failure_of_indirect_reference.fget,
-                                                        meaning_of_failure_of_indirect_reference),
+                                                        FailureOfIndirectReference.meaning_of_failure.fget,
+                                                        meaning_of_failure),
                                  ]))
 
 
@@ -111,19 +111,25 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
         assertion.apply(self.put, self.actual, self.message_builder)
 
 
-def matches_restrictions_on_direct_and_indirect(assertion_on_direct: asrt.ValueAssertion = asrt.anything_goes(),
-                                                assertion_on_every: asrt.ValueAssertion = asrt.anything_goes(),
-                                                ) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(ReferenceRestrictionsOnDirectAndIndirect,
-                                 asrt.and_([
-                                     asrt.sub_component('direct',
-                                                        ReferenceRestrictionsOnDirectAndIndirect.direct.fget,
-                                                        assertion_on_direct),
-                                     asrt.sub_component('indirect',
-                                                        ReferenceRestrictionsOnDirectAndIndirect.indirect.fget,
-                                                        assertion_on_every)
-                                 ])
-                                 )
+def matches_restrictions_on_direct_and_indirect(
+        assertion_on_direct: asrt.ValueAssertion = asrt.anything_goes(),
+        assertion_on_every: asrt.ValueAssertion = asrt.anything_goes(),
+        meaning_of_failure_of_indirect_reference: asrt.ValueAssertion = asrt.is_instance(str),
+) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(
+        ReferenceRestrictionsOnDirectAndIndirect,
+        asrt.and_([
+            asrt.sub_component('direct',
+                               ReferenceRestrictionsOnDirectAndIndirect.direct.fget,
+                               assertion_on_direct),
+            asrt.sub_component('indirect',
+                               ReferenceRestrictionsOnDirectAndIndirect.indirect.fget,
+                               assertion_on_every),
+            asrt.sub_component('meaning_of_failure_of_indirect_reference',
+                               ReferenceRestrictionsOnDirectAndIndirect.meaning_of_failure_of_indirect_reference.fget,
+                               meaning_of_failure_of_indirect_reference)
+        ])
+    )
 
 
 def equals_reference_restrictions(expected: ReferenceRestrictions) -> asrt.ValueAssertion:
