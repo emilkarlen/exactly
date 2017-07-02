@@ -49,7 +49,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
             ),
             (
                 'error message',
-                sut.is_failure_of_indirect_reference(meaning_of_failure_of_indirect_reference=asrt.equals('meaning')),
+                sut.is_failure_of_indirect_reference(meaning_of_failure=asrt.equals('meaning')),
                 FailureOfIndirectReference('symbol_name', [], 'the error message', 'meaning'),
             ),
             (
@@ -86,13 +86,13 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
                                        ['this is a list - not a string']),
         )
 
-    def test__default_behaviour__fail_if_meaning_of_failure_of_indirect_reference_is_not_a_string(self):
+    def test__default_behaviour__fail_if_meaning_of_failure_is_not_a_string(self):
         self._assert_fails(
             sut.is_failure_of_indirect_reference(),
             FailureOfIndirectReference('failing_symbol',
                                        [],
                                        'error message',
-                                       meaning_of_failure_of_indirect_reference=['list - not a string'])
+                                       meaning_of_failure=['list - not a string'])
         )
 
     def test_fail_if_symbol_name_is_unexpected(self):
@@ -117,6 +117,15 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
             FailureOfIndirectReference('failing_symbol',
                                        [],
                                        'actual error message')
+        )
+
+    def test_fail_if_meaning_of_failure_is_unexpected(self):
+        self._assert_fails(
+            sut.is_failure_of_indirect_reference(error_message=asrt.equals('expected meaning of failure')),
+            FailureOfIndirectReference('failing_symbol',
+                                       [],
+                                       'actual error message',
+                                       meaning_of_failure='actual meaning of failure')
         )
 
     def _assert_fails(self,
