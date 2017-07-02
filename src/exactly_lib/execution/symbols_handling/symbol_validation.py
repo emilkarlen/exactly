@@ -83,4 +83,4 @@ def _validate_reference(symbol_reference: su.SymbolReference,
     result = symbol_reference.restrictions.is_satisfied_by(symbols, symbol_reference.name, referenced_value_container)
     if result is None:
         return None
-    return restriction_failure_renderer.error_message(result)
+    return restriction_failure_renderer.error_message(result, symbols)
