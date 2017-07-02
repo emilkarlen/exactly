@@ -4,11 +4,7 @@ $ touch dir1/dir2/file.txt
 
 exitcode 0
 
-# exists --rel-cd @[base]@.@[sfx]@
-
-#exists @[full]@
-
-#exists @[bp]@/dir2/@[base]@.@[sfx]@
+exists @[full]@
 
 [setup]
 
