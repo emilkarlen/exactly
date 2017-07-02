@@ -137,10 +137,12 @@ class FailureOfIndirectReference(FailureInfo):
     def __init__(self,
                  failing_symbol: str,
                  path_to_failing_symbol: list,
-                 error_message: str):
+                 error_message: str,
+                 meaning_of_failure_of_indirect_reference: str = ''):
         self._failing_symbol = failing_symbol
         self._path_to_failing_symbol = path_to_failing_symbol
         self._error_message = error_message
+        self._meaning_of_failure_of_indirect_reference = meaning_of_failure_of_indirect_reference
 
     @property
     def failing_symbol(self) -> str:
@@ -159,6 +161,10 @@ class FailureOfIndirectReference(FailureInfo):
     @property
     def error_message(self) -> str:
         return self._error_message
+
+    @property
+    def meaning_of_failure_of_indirect_reference(self) -> str:
+        return self._meaning_of_failure_of_indirect_reference
 
 
 class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
