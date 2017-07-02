@@ -17,7 +17,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, StringRestriction, \
-    OrReferenceRestrictions, FileRefRelativityRestriction
+    OrReferenceRestrictions, FileRefRelativityRestriction, OrRestrictionPart
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -206,9 +206,9 @@ def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
     file_ref_or_string_symbol = SymbolReference(
         string_fragments[0].value,
         OrReferenceRestrictions([
-            ReferenceRestrictionsOnDirectAndIndirect(
-                FileRefRelativityRestriction(conf.options.accepted_relativity_variants)),
-            PATH_COMPONENT_STRING_REFERENCES_RESTRICTION,
+            OrRestrictionPart(ReferenceRestrictionsOnDirectAndIndirect(
+                FileRefRelativityRestriction(conf.options.accepted_relativity_variants))),
+            OrRestrictionPart(PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         ],
             _type_must_be_either_path_or_string__err_msg_generator))
     path_part_resolver = _path_suffix_resolver_from_fragments(string_fragments[1:])

@@ -10,7 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
     StringRestriction, ReferenceRestrictionsOnDirectAndIndirect, \
-    OrReferenceRestrictions
+    OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -130,7 +130,8 @@ class TestParsesBase(unittest.TestCase):
                                                                                    'file-ref-resolver')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
-    def _check2(self, arrangement: Arrangement,
+    def _check2(self,
+                arrangement: Arrangement,
                 expectation: Expectation2):
         # ARRANGE #
         ts = TokenStream2(arrangement.source)
@@ -138,8 +139,12 @@ class TestParsesBase(unittest.TestCase):
         actual = sut.parse_file_ref(ts,
                                     arrangement.rel_option_argument_configuration)
         # ASSERT #
+        self.__assertions_on_references(actual)
         expectation.file_ref_resolver.apply_with_message(self, actual, 'file-ref-resolver')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
+
+    def __assertions_on_references(self, actual: FileRefResolver):
+        pass
 
 
 class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
@@ -486,6 +491,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                              SymbolReference(symbol.name,
                                              path_part_string_reference_restrictions())),
                      ]),
+                     symbol_table=
                      symbol_table_with_single_string_value(symbol.name,
                                                            symbol.value)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
@@ -511,6 +517,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                          equals_symbol_reference(
                              SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
                      ]),
+                     symbol_table=
                      symbol_table_with_string_values([symbol_1, symbol_2])
                  ),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
@@ -537,6 +544,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                          equals_symbol_reference(
                              SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
                      ]),
+                     symbol_table=
                      symbol_table_with_string_values([symbol_1, symbol_2])
                  ),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
@@ -552,10 +560,11 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              Expectation2(
-                 file_ref_resolver=file_ref_resolver_equals(
-                     FileRefConstant(file_refs.of_rel_option(
+                 file_ref_resolver=equals_file_ref_resolver2(
+                     file_refs.of_rel_option(
                          RelOptionType.REL_HOME,
-                         PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol.name))))),
+                         PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol.name))),
+                     asrt.equals([])),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
         ]
@@ -597,6 +606,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                                              file_ref_or_string_reference_restrictions(accepted_relativities))
                          )
                      ]),
+                     symbol_table=
                      symbol_table_with_single_string_value(symbol.name, symbol.value)
                  ),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
@@ -622,6 +632,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                          )
                          ,
                      ]),
+                     symbol_table=
                      symbol_table_with_single_string_value(symbol.name, '/absolute/path')),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
@@ -646,6 +657,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                          )
                          ,
                      ]),
+                     symbol_table=
                      symbol_table_with_single_string_value(symbol.name, '/absolute/path')),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
              )),
@@ -675,6 +687,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                              SymbolReference(symbol_2.name,
                                              path_part_string_reference_restrictions())),
                      ]),
+                     symbol_table=
                      symbol_table_with_string_values([(symbol_1.name, '/absolute/path'),
                                                       symbol_2])
                  ),
@@ -710,6 +723,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                              SymbolReference(symbol_2.name,
                                              path_part_string_reference_restrictions())),
                      ]),
+                     symbol_table=
                      symbol_table_with_string_values([(symbol.name, 'non-abs-str'),
                                                       (symbol_1.name, 'non-abs-str1'),
                                                       (symbol_2.name, 'non-abs-str2')])
@@ -737,6 +751,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                          )
                          ,
                      ]),
+                     symbol_table=
                      symbol_table_with_single_file_ref_value(symbol.name,
                                                              file_ref_rel_home)),
                  token_stream=assert_token_stream2(is_null=asrt.is_true),
@@ -756,8 +771,10 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
              ),
              Expectation2(
                  file_ref_resolver=equals_file_ref_resolver2(
+                     expected_relativity_and_paths=
                      file_refs.of_rel_option(RelOptionType.REL_HOME,
                                              PathPartAsFixedPath('suffix-from-path-symbol/string-symbol-value')),
+                     expected_symbol_references=
                      asrt.matches_sequence([
                          equals_symbol_reference(
                              SymbolReference(symbol_1.name,
@@ -768,6 +785,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                                              path_part_string_reference_restrictions())
                          ),
                      ]),
+                     symbol_table=
                      symbol_table_from_entries([
                          entry(symbol_1.name, file_ref_value(file_refs.of_rel_option(RelOptionType.REL_HOME,
                                                                                      PathPartAsFixedPath(
@@ -992,8 +1010,9 @@ def path_part_string_reference_restrictions() -> ReferenceRestrictionsOnDirectAn
 def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativityVariants
                                               ) -> ReferenceRestrictions:
     return OrReferenceRestrictions([
-        ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities)),
-        path_part_string_reference_restrictions(),
+        OrRestrictionPart(
+            ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))),
+        OrRestrictionPart(path_part_string_reference_restrictions()),
     ])
 
 
