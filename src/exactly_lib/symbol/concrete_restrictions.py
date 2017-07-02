@@ -1,3 +1,5 @@
+import types
+
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, FailureInfo
@@ -245,8 +247,11 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
 
 
 class OrReferenceRestrictions(ReferenceRestrictions):
-    def __init__(self, simple_reference_restriction_parts: list):
+    def __init__(self,
+                 simple_reference_restriction_parts: list,
+                 value_container_2_error_message_if_no_matching_part: types.FunctionType = None):
         self._parts = tuple(simple_reference_restriction_parts)
+        self._value_container_2_error_message_if_no_matching_part = value_container_2_error_message_if_no_matching_part
 
     @property
     def parts(self) -> tuple:
@@ -265,7 +270,13 @@ class OrReferenceRestrictions(ReferenceRestrictions):
                 else:
                     return restriction_on_direct_and_indirect.check_indirect(symbol_table,
                                                                              value.value.references)
-        return FailureOfDirectReference('OR: no restriction is satisfied. TODO: improve error message')
+        return self._no_satisfied_restriction(value)
+
+    def _no_satisfied_restriction(self, value) -> FailureOfDirectReference:
+        msg = 'No restriction is satisfied.'
+        if self._value_container_2_error_message_if_no_matching_part is not None:
+            msg = self._value_container_2_error_message_if_no_matching_part(value)
+        return FailureOfDirectReference(msg)
 
 
 class PathOrStringReferenceRestrictions(ReferenceRestrictions):

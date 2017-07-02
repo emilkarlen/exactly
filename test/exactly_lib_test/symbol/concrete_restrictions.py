@@ -7,7 +7,7 @@ from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueType
+from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueType, ValueContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -619,19 +619,30 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
             indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
+        value_type_of_referencing_symbol = ValueType.STRING
         referencing_symbol = symbol_table_entry('referencing_symbol',
+                                                value_type=value_type_of_referencing_symbol,
                                                 references=[reference_to(referenced_symbol,
                                                                          restrictions_that_should_not_be_used)])
         symbol_table_entries = [referencing_symbol, referenced_symbol]
 
         symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
 
+        def value_type_error_message_function(value: ValueContainer) -> str:
+            v = value.value
+            assert isinstance(v, SymbolValueResolver)  # Type info for IDE
+            return 'Value type of tested symbol is ' + str(v.value_type)
+
         cases = [
-            ('no restriction parts',
+            ('no restriction parts / default error message generator',
              sut.OrReferenceRestrictions([]),
              is_failure_of_direct_reference(),
              ),
-
+            ('no restriction parts / custom error message generator',
+             sut.OrReferenceRestrictions([], value_type_error_message_function),
+             is_failure_of_direct_reference(error_message=asrt.equals('Value type of tested symbol is ' +
+                                                                      str(value_type_of_referencing_symbol))),
+             ),
             ('single direct: unsatisfied',
              sut.OrReferenceRestrictions([
                  sut.ReferenceRestrictionsOnDirectAndIndirect(
