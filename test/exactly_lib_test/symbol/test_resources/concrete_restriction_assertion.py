@@ -54,10 +54,12 @@ def is_failure_of_direct_reference(error_message: asrt.ValueAssertion = asrt.is_
                                                     error_message))
 
 
-def is_failure_of_indirect_reference(failing_symbol: asrt.ValueAssertion = asrt.is_instance(str),
-                                     path_to_failing_symbol: asrt.ValueAssertion = asrt.is_instance(list),
-                                     error_message: asrt.ValueAssertion = asrt.is_instance(str),
-                                     ) -> asrt.ValueAssertion:
+def is_failure_of_indirect_reference(
+        failing_symbol: asrt.ValueAssertion = asrt.is_instance(str),
+        path_to_failing_symbol: asrt.ValueAssertion = asrt.is_instance(list),
+        error_message: asrt.ValueAssertion = asrt.is_instance(str),
+        meaning_of_failure_of_indirect_reference: asrt.ValueAssertion = asrt.is_instance(str),
+) -> asrt.ValueAssertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
                                  asrt.and_([
                                      asrt.sub_component('failing_symbol',
@@ -69,6 +71,9 @@ def is_failure_of_indirect_reference(failing_symbol: asrt.ValueAssertion = asrt.
                                      asrt.sub_component('error_message',
                                                         FailureOfIndirectReference.error_message.fget,
                                                         error_message),
+                                     asrt.sub_component('meaning_of_failure_of_indirect_reference',
+                                                        FailureOfIndirectReference.meaning_of_failure_of_indirect_reference.fget,
+                                                        meaning_of_failure_of_indirect_reference),
                                  ]))
 
 
