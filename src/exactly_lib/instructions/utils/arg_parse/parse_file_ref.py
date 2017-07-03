@@ -206,9 +206,13 @@ def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
     file_ref_or_string_symbol = SymbolReference(
         string_fragments[0].value,
         OrReferenceRestrictions([
-            OrRestrictionPart(ReferenceRestrictionsOnDirectAndIndirect(
-                FileRefRelativityRestriction(conf.options.accepted_relativity_variants))),
-            OrRestrictionPart(PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+            OrRestrictionPart(
+                ValueType.PATH,
+                ReferenceRestrictionsOnDirectAndIndirect(
+                    FileRefRelativityRestriction(conf.options.accepted_relativity_variants))),
+            OrRestrictionPart(
+                ValueType.STRING,
+                PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
         ],
             _type_must_be_either_path_or_string__err_msg_generator))
     path_part_resolver = _path_suffix_resolver_from_fragments(string_fragments[1:])

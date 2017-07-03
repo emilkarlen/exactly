@@ -18,7 +18,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstan
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.symbol.value_structure import ValueContainer, ValueType
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
@@ -1063,8 +1063,11 @@ def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativ
                                               ) -> ReferenceRestrictions:
     return OrReferenceRestrictions([
         OrRestrictionPart(
+            ValueType.PATH,
             ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))),
-        OrRestrictionPart(path_part_string_reference_restrictions()),
+        OrRestrictionPart(
+            ValueType.STRING,
+            path_part_string_reference_restrictions()),
     ])
 
 
