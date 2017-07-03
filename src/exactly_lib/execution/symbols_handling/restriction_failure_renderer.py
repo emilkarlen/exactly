@@ -41,14 +41,14 @@ def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, s
 
     ret_val = []
     path_to_failing_symbol = [failing_symbol] + path_to_failing_symbol
-    ret_val.append('Referenced via')
+    ret_val.append('\n' + 'Referenced via')
     ret_val.append('\n'.join(map(line_ref_of_symbol, path_to_failing_symbol)))
     return ret_val
 
 
 def _final_how_to_fix(error: ValueRestrictionFailure) -> list:
     if error.how_to_fix:
-        return [error.how_to_fix]
+        return ['\n' + error.how_to_fix]
     return []
 
 
