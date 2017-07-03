@@ -1,0 +1,14 @@
+# Error: Try to define a symbol that has already been defined
+
+[setup]
+
+def string x = 'first definition'
+
+# Cause of error: x has already been defined
+
+def string x = 'second definition'
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'
