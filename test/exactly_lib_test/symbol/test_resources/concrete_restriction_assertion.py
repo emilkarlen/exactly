@@ -48,11 +48,17 @@ def equals_value_restriction(expected: ValueRestriction) -> asrt.ValueAssertion:
 
 
 def is_value_failure(message: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(ValueRestrictionFailure,
-                                 asrt.sub_component('message',
-                                                    ValueRestrictionFailure.message.fget,
-                                                    message)
-                                 )
+    return asrt.is_instance_with(
+        ValueRestrictionFailure,
+        asrt.and_([
+            asrt.sub_component('message',
+                               ValueRestrictionFailure.message.fget,
+                               message),
+            asrt.sub_component('message',
+                               ValueRestrictionFailure.how_to_fix.fget,
+                               asrt.is_instance(str)),
+        ])
+    )
 
 
 def is_failure_of_direct_reference(message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
