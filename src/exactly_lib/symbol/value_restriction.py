@@ -4,12 +4,17 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class ValueRestrictionFailure(tuple):
     def __new__(cls,
-                message: str):
-        return tuple.__new__(cls, (message,))
+                message: str,
+                how_to_fix: str = ''):
+        return tuple.__new__(cls, (message, how_to_fix))
 
     @property
     def message(self) -> str:
         return self[0]
+
+    @property
+    def how_to_fix(self) -> str:
+        return self[1]
 
 
 class ValueRestriction:
