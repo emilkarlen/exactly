@@ -248,12 +248,17 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
 
 class OrRestrictionPart(tuple):
     def __new__(cls,
+                selector: ValueType,
                 restriction: ReferenceRestrictionsOnDirectAndIndirect):
-        return tuple.__new__(cls, (restriction,))
+        return tuple.__new__(cls, (selector, restriction))
+
+    @property
+    def selector(self) -> ValueType:
+        return self[0]
 
     @property
     def restriction(self) -> ReferenceRestrictionsOnDirectAndIndirect:
-        return self[0]
+        return self[1]
 
 
 class OrReferenceRestrictions(ReferenceRestrictions):
@@ -271,15 +276,12 @@ class OrReferenceRestrictions(ReferenceRestrictions):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         value: ValueContainer) -> FailureInfo:
+        resolver = value.value
+        assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
         for part in self._parts:
             assert isinstance(part, OrRestrictionPart)  # Type info for IDE
-            on_direct = part.restriction.direct.is_satisfied_by(symbol_table, symbol_name, value)
-            if on_direct is None:
-                if part.restriction.indirect is None:
-                    return None
-                else:
-                    return part.restriction.check_indirect(symbol_table,
-                                                           value.value.references)
+            if part.selector == resolver.value_type:
+                return part.restriction.is_satisfied_by(symbol_table, symbol_name, value)
         return self._no_satisfied_restriction(value)
 
     def _no_satisfied_restriction(self, value) -> FailureOfDirectReference:

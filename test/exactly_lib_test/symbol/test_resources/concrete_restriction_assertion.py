@@ -144,13 +144,17 @@ REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
 def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> asrt.ValueAssertion:
     expected_sub_restrictions = [
         asrt.is_instance_with(OrRestrictionPart,
-                              asrt.sub_component('restriction',
-                                                 OrRestrictionPart.restriction.fget,
-                                                 _equals_reference_restriction_on_direct_and_indirect(
-                                                     part.restriction)))
+                              asrt.and_([
+                                  asrt.sub_component('selector',
+                                                     OrRestrictionPart.selector.fget,
+                                                     asrt.equals(part.selector)),
+                                  asrt.sub_component('restriction',
+                                                     OrRestrictionPart.restriction.fget,
+                                                     _equals_reference_restriction_on_direct_and_indirect(
+                                                         part.restriction)),
+                              ])
+                              )
         for part in expected.parts]
-    # expected_sub_restrictions = [_equals_reference_restriction_on_direct_and_indirect(sub)
-    #                              for sub in expected.parts]
     return asrt.is_instance_with(OrReferenceRestrictions,
                                  asrt.sub_component('parts',
                                                     OrReferenceRestrictions.parts.fget,
