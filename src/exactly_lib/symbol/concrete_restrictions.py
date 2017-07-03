@@ -33,7 +33,7 @@ class StringRestriction(ValueRestriction):
                         symbol_name: str,
                         value_container: ValueContainer) -> ValueRestrictionFailure:
         if not isinstance(value_container.value, StringResolver):
-            return ValueRestrictionFailure(_invalid_type_msg(ValueType.STRING, symbol_name, value_container))
+            return _invalid_type_msg(ValueType.STRING, symbol_name, value_container)
         return None
 
 
@@ -51,7 +51,7 @@ class FileRefRelativityRestriction(ValueRestriction):
                         value_container: ValueContainer) -> ValueRestrictionFailure:
         value = value_container.value
         if not isinstance(value, FileRefResolver):
-            return ValueRestrictionFailure(_invalid_type_msg(ValueType.PATH, symbol_name, value_container))
+            return _invalid_type_msg(ValueType.PATH, symbol_name, value_container)
         file_ref = value.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         satisfaction = is_satisfied_by(actual_relativity, self._accepted)
@@ -327,7 +327,7 @@ class PathOrStringReferenceRestrictions(ReferenceRestrictions):
 
 def _invalid_type_msg(expected: ValueType,
                       symbol_name: str,
-                      container_of_actual: ValueContainer) -> str:
+                      container_of_actual: ValueContainer) -> ValueRestrictionFailure:
     actual = container_of_actual.value
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
@@ -335,11 +335,13 @@ def _invalid_type_msg(expected: ValueType,
             str(actual)
         ))
     assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
-    lines = _invalid_type_header_lines(expected,
-                                       actual.value_type,
-                                       symbol_name,
-                                       container_of_actual)
-    return '\n'.join(lines)
+    header_lines = _invalid_type_header_lines(expected,
+                                              actual.value_type,
+                                              symbol_name,
+                                              container_of_actual)
+    how_to_fix_lines = _invalid_type_how_to_fix_lines(expected)
+    return ValueRestrictionFailure('\n'.join(header_lines),
+                                   how_to_fix='\n'.join(how_to_fix_lines))
 
 
 class ReferenceRestrictionsVisitor:
@@ -410,8 +412,6 @@ def _invalid_type_header_lines(expected: ValueType,
                                value_container: ValueContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-    from exactly_lib.help_texts.names.formatting import InstructionName
-    def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
     ret_val = [
         'Invalid type, of symbol "{}"'.format(symbol_name),
         'defined at line {}: {}'.format(value_container.definition_source.line_number,
@@ -419,7 +419,21 @@ def _invalid_type_header_lines(expected: ValueType,
         '',
         'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
         'Found    : ' + help_texts.TYPE_INFO_DICT[actual].type_name,
-        '',
+    ]
+    def_instruction_syntax_list = [
+        SYMBOL_DEFINITION_INSTRUCTION_NAME + ' ' + syntax
+        for syntax in help_texts.TYPE_INFO_DICT[expected].def_instruction_syntax_lines_function()
+    ]
+    ret_val.extend(def_instruction_syntax_list)
+    return ret_val
+
+
+def _invalid_type_how_to_fix_lines(expected: ValueType) -> list:
+    from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+    from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
+    from exactly_lib.help_texts.names.formatting import InstructionName
+    def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
+    ret_val = [
         'Define a {} symbol using the {} instruction:'.format(help_texts.TYPE_INFO_DICT[expected].type_name,
                                                               def_name_emphasised),
         '',
