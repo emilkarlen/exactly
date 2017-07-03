@@ -1,0 +1,16 @@
+# Error: a path symbol has a relativity that is not
+# accepted where it is used
+
+[setup]
+
+def path rel_act_path = --rel-act file-name-rel-act
+
+# Cause of error: "install" only accept paths that are relative
+# the home directory
+
+install @[rel_act_path]@
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'

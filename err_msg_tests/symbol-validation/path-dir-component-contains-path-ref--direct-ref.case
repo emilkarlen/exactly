@@ -1,0 +1,17 @@
+#
+# Defines a path variable with a path component that
+# is not a string.
+#
+
+[setup]
+
+# cause of error: dir_component is defined as a path - it must be a string
+
+def path dir_component  = dir-name
+
+def path full = --rel-act @[dir_component]@
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'

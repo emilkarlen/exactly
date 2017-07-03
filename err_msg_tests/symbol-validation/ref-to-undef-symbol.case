@@ -1,0 +1,12 @@
+# Error: reference to an undefined symbol
+
+[setup]
+
+# Cause of error: y is undefined
+
+def string x = @[y]@
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'
