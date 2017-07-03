@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.execution.symbols_handling import restriction_failure_renderer as sut
 from exactly_lib.symbol.concrete_restrictions import FailureOfDirectReference, FailureOfIndirectReference
+from exactly_lib.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_names
 
@@ -16,7 +17,7 @@ def suite() -> unittest.TestSuite:
 class TestRenderFailureOfDirectReference(unittest.TestCase):
     def test(self):
         # ARRANGE #
-        failure = FailureOfDirectReference('error message')
+        failure = FailureOfDirectReference(ValueRestrictionFailure('error message'))
         # ACT #
         actual = sut.error_message('checked_symbol', empty_symbol_table(), failure)
         # ASSERT #
@@ -29,7 +30,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
         path_to_failing_symbol = []
         failure = FailureOfIndirectReference(failing_symbol='name_of_failing_symbol',
                                              path_to_failing_symbol=path_to_failing_symbol,
-                                             error_message='error message')
+                                             error=ValueRestrictionFailure('error message'))
         # ACT #
         checked_symbol = 'checked_symbol'
         symbol_table = symbol_table_from_names([checked_symbol] + path_to_failing_symbol)
@@ -42,7 +43,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
         path_to_failing_symbol = []
         failure = FailureOfIndirectReference(failing_symbol='name_of_failing_symbol',
                                              path_to_failing_symbol=path_to_failing_symbol,
-                                             error_message='error message',
+                                             error=ValueRestrictionFailure('error message'),
                                              meaning_of_failure='meaning of failure')
         # ACT #
         checked_symbol = 'checked_symbol'
@@ -56,7 +57,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
         path_to_failing_symbol = ['symbol_on_path_to_failing_symbol']
         failure = FailureOfIndirectReference(failing_symbol='name_of_failing_symbol',
                                              path_to_failing_symbol=path_to_failing_symbol,
-                                             error_message='error message')
+                                             error=ValueRestrictionFailure('error message'))
         # ACT #
         checked_symbol = 'checked_symbol'
         symbol_table = symbol_table_from_names([checked_symbol] + path_to_failing_symbol)

@@ -2,7 +2,8 @@ import types
 
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, FailureInfo
+from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
+    ValueRestrictionFailure
 from exactly_lib.symbol.value_structure import ValueContainer, ValueType, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
@@ -30,9 +31,9 @@ class StringRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value_container: ValueContainer) -> str:
+                        value_container: ValueContainer) -> ValueRestrictionFailure:
         if not isinstance(value_container.value, StringResolver):
-            return _invalid_type_msg(ValueType.STRING, symbol_name, value_container)
+            return ValueRestrictionFailure(_invalid_type_msg(ValueType.STRING, symbol_name, value_container))
         return None
 
 
@@ -47,21 +48,18 @@ class FileRefRelativityRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value_container: ValueContainer) -> str:
+                        value_container: ValueContainer) -> ValueRestrictionFailure:
         value = value_container.value
         if not isinstance(value, FileRefResolver):
-            return _invalid_type_msg(ValueType.PATH, symbol_name, value_container)
+            return ValueRestrictionFailure(_invalid_type_msg(ValueType.PATH, symbol_name, value_container))
         file_ref = value.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         satisfaction = is_satisfied_by(actual_relativity, self._accepted)
         if satisfaction:
             return None
         else:
-            return _unsatisfied_path_relativity(symbol_name,
-                                                value_container,
-                                                self._accepted,
-                                                actual_relativity,
-                                                )
+            msg = _unsatisfied_path_relativity(symbol_name, value_container, self._accepted, actual_relativity)
+            return ValueRestrictionFailure(msg)
 
     @property
     def accepted(self) -> PathRelativityVariants:
@@ -85,7 +83,7 @@ class EitherStringOrFileRefRelativityRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value_container: ValueContainer) -> str:
+                        value_container: ValueContainer) -> ValueRestrictionFailure:
         value = value_container.value
         if isinstance(value, StringResolver):
             return self.string_restriction.is_satisfied_by(symbol_table, symbol_name, value_container)
@@ -127,23 +125,23 @@ class ValueRestrictionVisitor:
 
 
 class FailureOfDirectReference(FailureInfo):
-    def __init__(self, error_message: str):
-        self._error_message = error_message
+    def __init__(self, error: ValueRestrictionFailure):
+        self._error = error
 
     @property
-    def error_message(self) -> str:
-        return self._error_message
+    def error(self) -> ValueRestrictionFailure:
+        return self._error
 
 
 class FailureOfIndirectReference(FailureInfo):
     def __init__(self,
                  failing_symbol: str,
                  path_to_failing_symbol: list,
-                 error_message: str,
+                 error: ValueRestrictionFailure,
                  meaning_of_failure: str = ''):
         self._failing_symbol = failing_symbol
         self._path_to_failing_symbol = path_to_failing_symbol
-        self._error_message = error_message
+        self._error = error
         self._meaning_of_failure = meaning_of_failure
 
     @property
@@ -161,8 +159,8 @@ class FailureOfIndirectReference(FailureInfo):
         return self._path_to_failing_symbol
 
     @property
-    def error_message(self) -> str:
-        return self._error_message
+    def error(self) -> ValueRestrictionFailure:
+        return self._error
 
     @property
     def meaning_of_failure(self) -> str:
@@ -236,7 +234,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
                 return FailureOfIndirectReference(
                     failing_symbol=reference.name,
                     path_to_failing_symbol=list(path_to_referring_symbol),
-                    error_message=result,
+                    error=result,
                     meaning_of_failure=self._meaning_of_failure_of_indirect_reference)
             result = self._check_indirect(symbol_table,
                                           path_to_referring_symbol + (reference.name,),
@@ -292,7 +290,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
             msg = self._value_container_2_error_message_if_no_matching_part(value)
         else:
             msg = self._default_error_message(symbol_name, value, resolver)
-        return FailureOfDirectReference(msg)
+        return FailureOfDirectReference(ValueRestrictionFailure(msg))
 
     def _default_error_message(self,
                                symbol_name: str,
