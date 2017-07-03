@@ -4,7 +4,7 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
     NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction, ReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, PathOrStringReferenceRestrictions, \
     FailureOfDirectReference, FailureOfIndirectReference, OrRestrictionPart
-from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.value_structure import ValueContainer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.path_relativity import equals_path_relativity_variants
@@ -47,19 +47,27 @@ def equals_value_restriction(expected: ValueRestriction) -> asrt.ValueAssertion:
     return _EqualsValueRestriction(expected)
 
 
-def is_failure_of_direct_reference(error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(FailureOfDirectReference,
-                                 asrt.sub_component('error_message',
-                                                    FailureOfDirectReference.error_message.fget,
-                                                    error_message))
+def is_value_failure(message: asrt.ValueAssertion) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(ValueRestrictionFailure,
+                                 asrt.sub_component('message',
+                                                    ValueRestrictionFailure.message.fget,
+                                                    message)
+                                 )
+
+
+def is_failure_of_direct_reference(message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(
+        FailureOfDirectReference,
+        asrt.sub_component('error',
+                           FailureOfDirectReference.error.fget,
+                           is_value_failure(message)))
 
 
 def is_failure_of_indirect_reference(
         failing_symbol: asrt.ValueAssertion = asrt.is_instance(str),
         path_to_failing_symbol: asrt.ValueAssertion = asrt.is_instance(list),
         error_message: asrt.ValueAssertion = asrt.is_instance(str),
-        meaning_of_failure: asrt.ValueAssertion = asrt.is_instance(str),
-) -> asrt.ValueAssertion:
+        meaning_of_failure: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
     return asrt.is_instance_with(FailureOfIndirectReference,
                                  asrt.and_([
                                      asrt.sub_component('failing_symbol',
@@ -68,9 +76,9 @@ def is_failure_of_indirect_reference(
                                      asrt.sub_component('path_to_failing_symbol',
                                                         FailureOfIndirectReference.path_to_failing_symbol.fget,
                                                         path_to_failing_symbol),
-                                     asrt.sub_component('error_message',
-                                                        FailureOfIndirectReference.error_message.fget,
-                                                        error_message),
+                                     asrt.sub_component('error',
+                                                        FailureOfIndirectReference.error.fget,
+                                                        is_value_failure(error_message)),
                                      asrt.sub_component('meaning_of_failure_of_indirect_reference',
                                                         FailureOfIndirectReference.meaning_of_failure.fget,
                                                         meaning_of_failure),
@@ -195,16 +203,16 @@ def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:
     return ValueRestrictionWithConstantResult(None)
 
 
-def value_restriction_that_is_unconditionally_unsatisfied() -> ValueRestriction:
-    return ValueRestrictionWithConstantResult('error message')
+def value_restriction_that_is_unconditionally_unsatisfied(msg: str = 'error message') -> ValueRestriction:
+    return ValueRestrictionWithConstantResult(ValueRestrictionFailure(msg))
 
 
 class ValueRestrictionWithConstantResult(ValueRestriction):
-    def __init__(self, result):
+    def __init__(self, result: ValueRestrictionFailure):
         self.result = result
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> str:
+                        value: ValueContainer) -> ValueRestrictionFailure:
         return self.result

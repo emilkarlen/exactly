@@ -9,12 +9,12 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
     Renders an error for presentation to the user
     """
     if isinstance(failure, FailureOfDirectReference):
-        return failure.error_message
+        return failure.error.message
     elif isinstance(failure, FailureOfIndirectReference):
         blank_line_separated_parts = []
         if failure.meaning_of_failure:
             blank_line_separated_parts.append(failure.meaning_of_failure)
-        blank_line_separated_parts.append(failure.error_message)
+        blank_line_separated_parts.append(failure.error.message)
         blank_line_separated_parts.extend(_path_to_failing_symbol(failing_symbol,
                                                                   failure.path_to_failing_symbol,
                                                                   symbols))

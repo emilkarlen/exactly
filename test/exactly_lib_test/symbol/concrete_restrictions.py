@@ -5,7 +5,7 @@ from collections import Counter
 from exactly_lib.symbol import concrete_restrictions as sut
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
+from exactly_lib.symbol.value_restriction import ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueType, ValueContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
@@ -344,8 +344,8 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
 
     def test_unsatisfied_restriction(self):
         error_message = 'error message'
-        expected_result = is_failure_of_direct_reference(error_message=asrt.equals(error_message))
-        restriction_on_direct = RestrictionWithConstantResult(error_message)
+        expected_result = is_failure_of_direct_reference(message=asrt.equals(error_message))
+        restriction_on_direct = restriction_with_constant_failure(error_message)
         self._check_direct_with_satisfied_variants_for_restriction_on_every_node(restriction_on_direct,
                                                                                  expected_result)
 
@@ -645,8 +645,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
              ),
             ('no restriction parts / custom error message generator',
              sut.OrReferenceRestrictions([], value_type_error_message_function),
-             is_failure_of_direct_reference(error_message=asrt.equals('Value type of tested symbol is ' +
-                                                                      str(value_type_of_referencing_symbol))),
+             is_failure_of_direct_reference(message=asrt.equals('Value type of tested symbol is ' +
+                                                                str(value_type_of_referencing_symbol))),
              ),
             ('single direct: unsatisfied selector',
              sut.OrReferenceRestrictions([
@@ -734,6 +734,10 @@ def unconditionally_satisfied_value_restriction() -> sut.ValueRestriction:
     return RestrictionWithConstantResult(None)
 
 
+def restriction_with_constant_failure(error_message: str) -> sut.ValueRestriction:
+    return RestrictionWithConstantResult(ValueRestrictionFailure(error_message))
+
+
 class RestrictionWithConstantResult(sut.ValueRestriction):
     def __init__(self, result):
         self.result = result
@@ -761,9 +765,10 @@ class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.ValueContainer) -> str:
+                        value: sut.ValueContainer) -> ValueRestrictionFailure:
         self.visited.update([symbol_name])
-        return self.value_container_2_result__fun(value)
+        error_message = self.value_container_2_result__fun(value)
+        return ValueRestrictionFailure(error_message) if error_message else None
 
 
 class SymbolValueResolverForTest(SymbolValueResolver):
