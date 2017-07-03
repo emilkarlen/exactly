@@ -8,6 +8,7 @@ from exactly_lib.symbol.value_structure import ValueContainer, ValueType, Symbol
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
+from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -299,14 +300,15 @@ class OrReferenceRestrictions(ReferenceRestrictions):
         from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
         accepted_value_types = ', '.join([help_texts.TYPE_INFO_DICT[part.selector].type_name
                                           for part in self._parts])
-        lines = [
-            'Unaccepted type, of symbol "{}"'.format(symbol_name),
-            'defined at line {}: {}'.format(value_container.definition_source.line_number,
-                                            value_container.definition_source.text),
-            '',
-            'Accepted : ' + accepted_value_types,
-            'Found    : ' + help_texts.TYPE_INFO_DICT[resolver.value_type].type_name,
-        ]
+        lines = ([
+                     'Invalid type, of symbol "{}"'.format(symbol_name)
+                 ] +
+                 defined_at_line__err_msg_lines(value_container.definition_source) +
+                 [
+                     '',
+                     'Accepted : ' + accepted_value_types,
+                     'Found    : ' + help_texts.TYPE_INFO_DICT[resolver.value_type].type_name,
+                 ])
         return '\n'.join(lines)
 
 
@@ -393,15 +395,16 @@ def _unsatisfied_path_relativity(symbol_name: str,
 
         return ret_val
 
-    lines = [
-        'Unaccepted relativity, of {} symbol "{}"'.format(help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
-                                                          symbol_name),
-        'defined at line {}: {}'.format(value_container.definition_source.line_number,
-                                        value_container.definition_source.text),
-        '',
-        'Found    : ' + _render_actual_relativity(),
-        'Accepted : ',
-    ]
+    lines = ([
+                 'Unaccepted relativity, of {} symbol "{}"'.format(help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
+                                                                   symbol_name)
+             ] +
+             defined_at_line__err_msg_lines(value_container.definition_source) +
+             [
+                 '',
+                 'Found    : ' + _render_actual_relativity(),
+                 'Accepted : ',
+             ])
     lines.extend(_accepted_relativities_lines())
     return '\n'.join(lines)
 
@@ -411,20 +414,15 @@ def _invalid_type_header_lines(expected: ValueType,
                                symbol_name: str,
                                value_container: ValueContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
-    from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-    ret_val = [
-        'Invalid type, of symbol "{}"'.format(symbol_name),
-        'defined at line {}: {}'.format(value_container.definition_source.line_number,
-                                        value_container.definition_source.text),
-        '',
-        'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
-        'Found    : ' + help_texts.TYPE_INFO_DICT[actual].type_name,
-    ]
-    def_instruction_syntax_list = [
-        SYMBOL_DEFINITION_INSTRUCTION_NAME + ' ' + syntax
-        for syntax in help_texts.TYPE_INFO_DICT[expected].def_instruction_syntax_lines_function()
-    ]
-    ret_val.extend(def_instruction_syntax_list)
+    ret_val = ([
+                   'Invalid type, of symbol "{}"'.format(symbol_name)
+               ] +
+               defined_at_line__err_msg_lines(value_container.definition_source) +
+               [
+                   '',
+                   'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
+                   'Found    : ' + help_texts.TYPE_INFO_DICT[actual].type_name,
+               ])
     return ret_val
 
 
