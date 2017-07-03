@@ -16,8 +16,8 @@ def arguments_for_test_interpreter_and_more_tuple(additional_args: iter) -> tupl
     return ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE + tuple(additional_args)
 
 
-def first_char_is_name_and_rest_is_argument__splitter(s: str) -> (str, str):
-    return s[0], s[1:]
+def first_char_is_name_and_rest_is_argument__splitter(s: str) -> str:
+    return s[0]
 
 
 EMPTY_INSTRUCTIONS_SETUP = InstructionsSetup(
