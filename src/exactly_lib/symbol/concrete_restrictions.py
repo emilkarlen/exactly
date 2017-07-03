@@ -282,13 +282,34 @@ class OrReferenceRestrictions(ReferenceRestrictions):
             assert isinstance(part, OrRestrictionPart)  # Type info for IDE
             if part.selector == resolver.value_type:
                 return part.restriction.is_satisfied_by(symbol_table, symbol_name, value)
-        return self._no_satisfied_restriction(value)
+        return self._no_satisfied_restriction(symbol_name, resolver, value)
 
-    def _no_satisfied_restriction(self, value) -> FailureOfDirectReference:
-        msg = 'No restriction is satisfied.'
+    def _no_satisfied_restriction(self,
+                                  symbol_name: str,
+                                  resolver: SymbolValueResolver,
+                                  value: ValueContainer) -> FailureOfDirectReference:
         if self._value_container_2_error_message_if_no_matching_part is not None:
             msg = self._value_container_2_error_message_if_no_matching_part(value)
+        else:
+            msg = self._default_error_message(symbol_name, value, resolver)
         return FailureOfDirectReference(msg)
+
+    def _default_error_message(self,
+                               symbol_name: str,
+                               value_container: ValueContainer,
+                               resolver: SymbolValueResolver) -> str:
+        from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+        accepted_value_types = ', '.join([help_texts.TYPE_INFO_DICT[part.selector].type_name
+                                          for part in self._parts])
+        lines = [
+            'Unaccepted type, of symbol "{}"'.format(symbol_name),
+            'defined at line {}: {}'.format(value_container.definition_source.line_number,
+                                            value_container.definition_source.text),
+            '',
+            'Accepted : ' + accepted_value_types,
+            'Found    : ' + help_texts.TYPE_INFO_DICT[resolver.value_type].type_name,
+        ]
+        return '\n'.join(lines)
 
 
 class PathOrStringReferenceRestrictions(ReferenceRestrictions):
