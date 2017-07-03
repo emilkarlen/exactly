@@ -1,5 +1,5 @@
 from exactly_lib.symbol.concrete_restrictions import FailureOfDirectReference, FailureOfIndirectReference
-from exactly_lib.symbol.value_restriction import FailureInfo
+from exactly_lib.symbol.value_restriction import FailureInfo, ValueRestrictionFailure
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -9,22 +9,29 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
     Renders an error for presentation to the user
     """
     if isinstance(failure, FailureOfDirectReference):
-        return failure.error.message
+        blank_line_separated_parts = _of_direct(failure.error)
     elif isinstance(failure, FailureOfIndirectReference):
-        blank_line_separated_parts = []
-        if failure.meaning_of_failure:
-            blank_line_separated_parts.append(failure.meaning_of_failure)
-        blank_line_separated_parts.append(failure.error.message)
-        blank_line_separated_parts.extend(_path_to_failing_symbol(failing_symbol,
-                                                                  failure.path_to_failing_symbol,
-                                                                  symbols))
-        return _concat_parts(blank_line_separated_parts)
+        blank_line_separated_parts = _of_indirect(failing_symbol, symbols, failure)
+    return _concat_parts(blank_line_separated_parts)
 
 
-def _concat_parts(blank_line_separated_parts: list) -> str:
-    parts = [part + '\n' for part in blank_line_separated_parts[:-1]]
-    parts.append(blank_line_separated_parts[-1])
-    return '\n'.join(parts)
+def _of_direct(error: ValueRestrictionFailure) -> list:
+    blank_line_separated_parts = [error.message]
+    blank_line_separated_parts.extend(_final_how_to_fix(error))
+    return blank_line_separated_parts
+
+
+def _of_indirect(failing_symbol: str, symbols: SymbolTable, failure: FailureOfIndirectReference) -> list:
+    blank_line_separated_parts = []
+    if failure.meaning_of_failure:
+        blank_line_separated_parts.append(failure.meaning_of_failure)
+    error = failure.error
+    blank_line_separated_parts.append(error.message)
+    blank_line_separated_parts.extend(_path_to_failing_symbol(failing_symbol,
+                                                              failure.path_to_failing_symbol,
+                                                              symbols))
+    blank_line_separated_parts.extend(_final_how_to_fix(error))
+    return blank_line_separated_parts
 
 
 def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, symbols: SymbolTable) -> list:
@@ -37,3 +44,15 @@ def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, s
     ret_val.append('Referenced via')
     ret_val.append('\n'.join(map(line_ref_of_symbol, path_to_failing_symbol)))
     return ret_val
+
+
+def _final_how_to_fix(error: ValueRestrictionFailure) -> list:
+    if error.how_to_fix:
+        return [error.how_to_fix]
+    return []
+
+
+def _concat_parts(blank_line_separated_parts: list) -> str:
+    parts = [part + '\n' for part in blank_line_separated_parts[:-1]]
+    parts.append(blank_line_separated_parts[-1])
+    return '\n'.join(parts)

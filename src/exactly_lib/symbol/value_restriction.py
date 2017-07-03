@@ -16,6 +16,11 @@ class ValueRestrictionFailure(tuple):
     def how_to_fix(self) -> str:
         return self[1]
 
+    def __str__(self) -> str:
+        return '%s{message=%s, how_to_fix=%s}' % (type(self),
+                                                  self.message,
+                                                  self.how_to_fix)
+
 
 class ValueRestriction:
     """
