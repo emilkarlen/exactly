@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import concrete_restrictions as r
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
-    StringRestriction, EitherStringOrFileRefRelativityRestriction, FailureOfIndirectReference
+    StringRestriction, FailureOfIndirectReference
 from exactly_lib.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.symbol.value_structure import ValueType
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -19,7 +19,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsStringRestriction),
         unittest.makeSuite(TestEqualsStringRestriction),
         unittest.makeSuite(TestEqualsFileRefRelativityRestriction),
-        unittest.makeSuite(TestEqualsEitherStringOrFileRefRelativityRestriction),
         unittest.makeSuite(TestEqualsValueRestriction),
         unittest.makeSuite(TestEqualsOrReferenceRestrictions),
         unittest.makeSuite(TestEqualsReferenceRestrictions),
@@ -216,38 +215,6 @@ class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
             sut.equals_file_ref_relativity_restriction(expected).apply_without_message(put, actual)
 
 
-class TestEqualsEitherStringOrFileRefRelativityRestriction(unittest.TestCase):
-    def test_equals(self):
-        test_cases = [
-            EitherStringOrFileRefRelativityRestriction(
-                StringRestriction(),
-                FileRefRelativityRestriction(PathRelativityVariants(set(), False))
-            ),
-            EitherStringOrFileRefRelativityRestriction(
-                StringRestriction(),
-                FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, True))
-            ),
-        ]
-        for restriction in test_cases:
-            with self.subTest():
-                assertion = sut.equals_either_string_or_file_ref_relativity_restriction(restriction)
-                assertion.apply_without_message(self, restriction)
-
-    def test_not_equals__different__file_ref_restriction(self):
-        expected = EitherStringOrFileRefRelativityRestriction(
-            StringRestriction(),
-            FileRefRelativityRestriction(PathRelativityVariants(set(), False))
-        )
-        actual = EitherStringOrFileRefRelativityRestriction(
-            StringRestriction(),
-            FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, True))
-        )
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            assertion = sut.equals_either_string_or_file_ref_relativity_restriction(expected)
-            assertion.apply_without_message(put, actual)
-
-
 class TestEqualsValueRestriction(unittest.TestCase):
     def test_equals(self):
         test_cases = [
@@ -255,9 +222,6 @@ class TestEqualsValueRestriction(unittest.TestCase):
             FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, True)),
             StringRestriction(),
             NoRestriction(),
-            EitherStringOrFileRefRelativityRestriction(
-                StringRestriction(),
-                FileRefRelativityRestriction(PathRelativityVariants(set(), False))),
         ]
         for restriction in test_cases:
             with self.subTest():
@@ -273,15 +237,6 @@ class TestEqualsValueRestriction(unittest.TestCase):
     def test_not_equals__different__types__one_is_string_restriction(self):
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = StringRestriction()
-        actual = NoRestriction()
-        with put.assertRaises(TestException):
-            sut.equals_value_restriction(expected).apply_without_message(put, actual)
-
-    def test_not_equals__different__types__one_is_either_string_or_file_ref_restriction(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = EitherStringOrFileRefRelativityRestriction(
-            StringRestriction(),
-            FileRefRelativityRestriction(PathRelativityVariants(set(), False)))
         actual = NoRestriction()
         with put.assertRaises(TestException):
             sut.equals_value_restriction(expected).apply_without_message(put, actual)

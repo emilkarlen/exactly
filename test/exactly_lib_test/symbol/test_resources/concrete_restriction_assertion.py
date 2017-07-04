@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
-    NoRestriction, ValueRestrictionVisitor, EitherStringOrFileRefRelativityRestriction, ReferenceRestrictionsVisitor, \
+    NoRestriction, ValueRestrictionVisitor, ReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, ValueRestrictionFailure
@@ -24,22 +24,6 @@ def equals_file_ref_relativity_restriction(expected: FileRefRelativityRestrictio
                                  asrt.sub_component('accepted',
                                                     FileRefRelativityRestriction.accepted.fget,
                                                     equals_path_relativity_variants(expected.accepted)))
-
-
-def equals_either_string_or_file_ref_relativity_restriction(expected: EitherStringOrFileRefRelativityRestriction
-                                                            ) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(
-        EitherStringOrFileRefRelativityRestriction,
-        asrt.and_([
-            asrt.sub_component('string_restriction',
-                               EitherStringOrFileRefRelativityRestriction.string_restriction.fget,
-                               equals_string_restriction(expected.string_restriction)),
-
-            asrt.sub_component('file_ref_restriction',
-                               EitherStringOrFileRefRelativityRestriction.file_ref_restriction.fget,
-                               equals_file_ref_relativity_restriction(expected.file_ref_restriction)),
-
-        ]))
 
 
 def equals_value_restriction(expected: ValueRestriction) -> asrt.ValueAssertion:
@@ -118,10 +102,6 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
 
     def visit_file_ref_relativity(self, expected: FileRefRelativityRestriction):
         equals_file_ref_relativity_restriction(expected).apply(self.put, self.actual, self.message_builder)
-
-    def visit_string_or_file_ref_relativity(self, expected: EitherStringOrFileRefRelativityRestriction):
-        assertion = equals_either_string_or_file_ref_relativity_restriction(expected)
-        assertion.apply(self.put, self.actual, self.message_builder)
 
 
 def matches_restrictions_on_direct_and_indirect(
