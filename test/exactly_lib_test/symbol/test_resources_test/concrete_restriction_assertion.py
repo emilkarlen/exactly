@@ -21,7 +21,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestEqualsFileRefRelativityRestriction),
         unittest.makeSuite(TestEqualsEitherStringOrFileRefRelativityRestriction),
         unittest.makeSuite(TestEqualsValueRestriction),
-        unittest.makeSuite(TestEqualsPathOrStringReferenceRestrictions),
         unittest.makeSuite(TestEqualsOrReferenceRestrictions),
         unittest.makeSuite(TestEqualsReferenceRestrictions),
     ])
@@ -295,61 +294,6 @@ class TestEqualsValueRestriction(unittest.TestCase):
             sut.equals_value_restriction(expected).apply_without_message(put, actual)
 
 
-class TestEqualsPathOrStringReferenceRestrictions(unittest.TestCase):
-    def test_pass(self):
-        cases = [
-            (
-                PathRelativityVariants(set(), False),
-                PathRelativityVariants(set(), False),
-            ),
-            (
-                PathRelativityVariants(set(), True),
-                PathRelativityVariants(set(), True),
-            ),
-            (
-                PathRelativityVariants({RelOptionType.REL_TMP}, False),
-                PathRelativityVariants({RelOptionType.REL_TMP}, False),
-            ),
-            (
-                PathRelativityVariants({RelOptionType.REL_HOME, RelOptionType.REL_ACT}, True),
-                PathRelativityVariants({RelOptionType.REL_HOME, RelOptionType.REL_ACT}, True),
-            ),
-        ]
-        for expected_relativity_variants, actual_relativity_variants in cases:
-            expected = r.PathOrStringReferenceRestrictions(expected_relativity_variants)
-            actual = r.PathOrStringReferenceRestrictions(actual_relativity_variants)
-            with self.subTest(actual=actual):
-                assertion = sut.equals_path_or_string_reference_restrictions(expected)
-                assertion.apply_without_message(self, actual)
-
-    def test_fail_because_different_restriction_on_absolute(self):
-        self._fail(PathRelativityVariants(set(), True),
-                   PathRelativityVariants(set(), False))
-
-    def test_fail_because_different_restriction_on_relativity__emptiness(self):
-        self._fail(PathRelativityVariants({RelOptionType.REL_TMP}, False),
-                   PathRelativityVariants(set(), False))
-
-    def test_fail_because_different_restriction_on_relativity__relativity_option(self):
-        self._fail(PathRelativityVariants({RelOptionType.REL_HOME}, False),
-                   PathRelativityVariants({RelOptionType.REL_ACT}, False))
-
-    def test_fail_because_different_restriction_on_relativity__number_of_relativity_options(self):
-        self._fail(PathRelativityVariants({RelOptionType.REL_HOME}, False),
-                   PathRelativityVariants({RelOptionType.REL_HOME, RelOptionType.REL_ACT}, False))
-
-    def _fail(self,
-              expected_relativity_variants: PathRelativityVariants,
-              actual_relativity_variants: PathRelativityVariants):
-        put = test_case_with_failure_exception_set_to_test_exception()
-        expected = r.PathOrStringReferenceRestrictions(expected_relativity_variants)
-        actual = r.PathOrStringReferenceRestrictions(actual_relativity_variants)
-        with put.assertRaises(TestException):
-            # ACT #
-            assertion = sut.equals_path_or_string_reference_restrictions(expected)
-            assertion.apply_without_message(put, actual)
-
-
 class TestEqualsOrReferenceRestrictions(unittest.TestCase):
     def test_pass(self):
         cases = [
@@ -444,13 +388,6 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                                                            r.NoRestriction()),
             ),
             (
-                sut.equals_reference_restrictions(
-                    r.PathOrStringReferenceRestrictions(
-                        PathRelativityVariants({RelOptionType.REL_HOME}, False))),
-                r.PathOrStringReferenceRestrictions(
-                    PathRelativityVariants({RelOptionType.REL_HOME}, False)),
-            ),
-            (
                 sut.equals_reference_restrictions(r.OrReferenceRestrictions([])),
                 r.OrReferenceRestrictions([]),
             ),
@@ -458,17 +395,6 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         for assertion, actual in cases:
             with self.subTest(actual=actual):
                 assertion.apply_without_message(self, actual)
-
-    def test_fail__different_types__path_or_string(self):
-        expected = r.PathOrStringReferenceRestrictions(
-            PathRelativityVariants(set(), True))
-        actual = r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())
-        self._fail(expected, actual)
-
-    def test_fail__path_or_string(self):
-        expected = r.PathOrStringReferenceRestrictions(PathRelativityVariants(set(), True))
-        actual = r.PathOrStringReferenceRestrictions(PathRelativityVariants(set(), False))
-        self._fail(expected, actual)
 
     def test_fail__direct_and_indirect__different_node_restrictions(self):
         expected = r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())
