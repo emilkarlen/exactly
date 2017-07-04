@@ -258,20 +258,6 @@ class TestReferenceRestrictionVisitor(unittest.TestCase):
                          actual_return_value,
                          'return value')
 
-    def test_path_or_string(self):
-        # ARRANGE #
-        expected_return_value = 87
-        visitor = _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(expected_return_value)
-        # ACT #
-        actual_return_value = visitor.visit(sut.PathOrStringReferenceRestrictions(PathRelativityVariants(set(), False)))
-        # ASSERT #
-        self.assertEqual([sut.PathOrStringReferenceRestrictions],
-                         visitor.visited_classes,
-                         'visited classes')
-        self.assertEqual(expected_return_value,
-                         actual_return_value,
-                         'return value')
-
     def test_or(self):
         # ARRANGE #
         expected_return_value = 87
@@ -324,10 +310,6 @@ class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.ReferenceR
 
     def visit_direct_and_indirect(self, x: sut.NoRestriction):
         self.visited_classes.append(sut.ReferenceRestrictionsOnDirectAndIndirect)
-        return self.return_value
-
-    def visit_path_or_string(self, x: sut.PathOrStringReferenceRestrictions):
-        self.visited_classes.append(sut.PathOrStringReferenceRestrictions)
         return self.return_value
 
     def visit_or(self, x: sut.StringRestriction):
