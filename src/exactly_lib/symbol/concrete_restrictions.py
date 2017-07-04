@@ -108,8 +108,6 @@ class ValueRestrictionVisitor:
             return self.visit_string(x)
         if isinstance(x, FileRefRelativityRestriction):
             return self.visit_file_ref_relativity(x)
-        if isinstance(x, EitherStringOrFileRefRelativityRestriction):
-            return self.visit_string_or_file_ref_relativity(x)
         raise TypeError('%s is not an instance of %s' % (str(x), str(ValueRestriction)))
 
     def visit_none(self, x: NoRestriction):
@@ -119,9 +117,6 @@ class ValueRestrictionVisitor:
         raise NotImplementedError()
 
     def visit_file_ref_relativity(self, x: FileRefRelativityRestriction):
-        raise NotImplementedError()
-
-    def visit_string_or_file_ref_relativity(self, x: EitherStringOrFileRefRelativityRestriction):
         raise NotImplementedError()
 
 
