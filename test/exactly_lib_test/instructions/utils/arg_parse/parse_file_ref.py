@@ -48,8 +48,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
 
-    ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream2CasesWithoutRelSymbolRelativity))
-    ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream2CasesWithRelSymbolRelativity))
+    ret_val.addTest(unittest.makeSuite(TestParseWithoutRelSymbolRelativity))
+    ret_val.addTest(unittest.makeSuite(TestParseWithRelSymbolRelativity))
 
     ret_val.addTest(unittest.makeSuite(TestParseWithReferenceEmbeddedInPathSuffix))
 
@@ -176,7 +176,7 @@ class TestParsesBase(unittest.TestCase):
                           'Result of hypothetical restriction on path')
 
 
-class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
+class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_fail_when_no_arguments(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref(TokenStream2(''),
@@ -394,7 +394,7 @@ class TestParseFromTokenStream2CasesWithoutRelSymbolRelativity(TestParsesBase):
                     sut.parse_file_ref(ts, _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
 
 
-class TestParseFromTokenStream2CasesWithRelSymbolRelativity(TestParsesBase):
+class TestParseWithRelSymbolRelativity(TestParsesBase):
     def test_WHEN_rel_symbol_option_is_not_accepted_THEN_parse_SHOULD_fail(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} VARIABLE_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
