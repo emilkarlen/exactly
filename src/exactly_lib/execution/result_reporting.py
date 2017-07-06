@@ -4,6 +4,7 @@ import pathlib
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
 from exactly_lib.help_texts.names.formatting import SectionName
+from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
 from exactly_lib.util import error_message_format
@@ -40,7 +41,9 @@ def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
     output_location(printer,
                     error_info.file,
                     error_info.maybe_section_name,
-                    error_info.line)
+                    error_info.line,
+                    None,
+                    SECTION_CONCEPT_NAME)
     _ErrorDescriptionDisplayer(printer).visit(error_info.description)
 
 
@@ -48,8 +51,8 @@ def output_location(printer: FilePrinter,
                     file: pathlib.Path,
                     section_name: str,
                     line: line_source.Line,
-                    description: str = None,
-                    section_presentation_type_name: str = 'phase'):
+                    description: str,
+                    section_presentation_type_name: str):
     has_output_header = False
     if file:
         printer.write_line('File: ' + str(file))
@@ -97,11 +100,14 @@ class _SourceDisplayer(FailureInfoVisitor):
         output_location(self.out,
                         None,
                         failure_info.phase_step.phase.identifier,
-                        None)
+                        None,
+                        None,
+                        SECTION_CONCEPT_NAME)
 
     def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
         output_location(self.out,
                         None,
                         failure_info.phase_step.phase.identifier,
                         failure_info.source_line,
-                        failure_info.element_description)
+                        failure_info.element_description,
+                        SECTION_CONCEPT_NAME)

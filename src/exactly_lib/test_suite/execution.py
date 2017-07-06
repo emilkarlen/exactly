@@ -3,6 +3,7 @@ import pathlib
 import types
 
 from exactly_lib.execution.result_reporting import output_location
+from exactly_lib.help_texts.test_suite.section_names import SECTION_CONCEPT_NAME
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_case import error_description
@@ -52,7 +53,8 @@ class Executor:
                             ex.suite_file,
                             ex.maybe_section_name,
                             ex.line,
-                            'section')
+                            'section',
+                            SECTION_CONCEPT_NAME)
             file_printer.write_lines(ex.error_message_lines())
             exit_identifier_output_file = FilePrinter(self._std.out)
             exit_value = exit_values.INVALID_SUITE
