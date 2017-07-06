@@ -62,7 +62,8 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
             raise InvalidInstructionArgumentException(first_line,
                                                       name,
                                                       ex.error_message)
-        except Exception:
+        except Exception as ex:
             raise ArgumentParsingImplementationException(first_line,
                                                          name,
-                                                         parser)
+                                                         parser,
+                                                         str(ex))
