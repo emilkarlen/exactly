@@ -75,8 +75,8 @@ class ArgumentParsingImplementationException(SourceError):
     def __init__(self,
                  line: line_source.Line,
                  instruction_name: str,
-                 parser_that_raised_exception: InstructionParser):
-        super().__init__(line,
-                         'Parser implementation error while parsing ' + instruction_name)
+                 parser_that_raised_exception: InstructionParser,
+                 msg: str):
+        super().__init__(line, msg)
         self.instruction_name = instruction_name
         self.parser_that_raised_exception = parser_that_raised_exception
