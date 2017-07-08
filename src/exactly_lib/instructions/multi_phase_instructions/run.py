@@ -25,7 +25,7 @@ from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -222,7 +222,7 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
     def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        tokens = TokenStream2(source.remaining_part_of_current_line)
+        tokens = TokenStream(source.remaining_part_of_current_line)
         source.consume_current_line()
         exe_file = parse_executable_file.parse(tokens)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, tokens)
@@ -230,7 +230,7 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
 
     def _validator__cmd_and_args_resolver(self,
                                           exe_file: ExecutableFile,
-                                          arg_tokens: TokenStream2):
+                                          arg_tokens: TokenStream):
         if arg_tokens.is_null:
             return self._execute(exe_file, '')
         if arg_tokens.head.source_string == INTERPRET_OPTION:
@@ -252,7 +252,7 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
 
     @staticmethod
     def _interpret(exe_file: ExecutableFile,
-                   arg_tokens: TokenStream2):
+                   arg_tokens: TokenStream):
         file_to_interpret = parse_file_ref.parse_file_ref(arg_tokens, parse_file_ref.ALL_REL_OPTIONS_CONFIG)
         file_to_interpret_check = FileRefCheck(file_to_interpret,
                                                file_properties.must_exist_as(file_properties.FileType.REGULAR))

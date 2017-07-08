@@ -9,7 +9,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
@@ -91,7 +91,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
 class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> TheInstructionEmbryo:
-        tokens = TokenParser(TokenStream2(rest_of_line))
+        tokens = TokenParser(TokenStream(rest_of_line))
 
         target_file_ref = tokens.consume_file_ref(RELATIVITY_VARIANTS)
         tokens.report_superfluous_arguments_if_not_at_eol()

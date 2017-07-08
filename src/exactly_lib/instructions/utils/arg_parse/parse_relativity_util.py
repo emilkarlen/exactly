@@ -3,7 +3,7 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import is_option_argum
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -13,7 +13,7 @@ from exactly_lib.util.cli_syntax import option_parsing
 
 
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,
-                                   source: TokenStream2):
+                                   source: TokenStream):
     """
     :return None if relativity is not given explicitly
     
@@ -32,7 +32,7 @@ def parse_explicit_relativity_info(options: RelOptionsConfiguration,
 
 
 def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
-                                 source: TokenStream2) -> SymbolReference:
+                                 source: TokenStream) -> SymbolReference:
     option_str = source.head.string
     if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
@@ -54,7 +54,7 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,
-                           source: TokenStream2) -> RelOptionType:
+                           source: TokenStream) -> RelOptionType:
     option_str = source.head.string
     rel_option_type = _resolve_relativity_option_type(option_str)
     if rel_option_type not in options.accepted_options:

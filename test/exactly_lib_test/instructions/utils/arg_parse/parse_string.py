@@ -7,14 +7,14 @@ from exactly_lib.instructions.utils.arg_parse.symbol_syntax import SymbolWithRef
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
     ConstantStringFragmentResolver, StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
+from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_string_resolver3
@@ -50,11 +50,11 @@ class TC:
 class TestFailWhenNoArgument(unittest.TestCase):
     def test_missing_argument__parse_fragments_from_token(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_fragments_from_tokens(TokenStream2(''))
+            sut.parse_fragments_from_tokens(TokenStream(''))
 
     def test_missing_argument__parse_string_resolver(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_string_resolver(TokenStream2(''))
+            sut.parse_string_resolver(TokenStream(''))
 
 
 def successful_parse_of_constant() -> list:
@@ -62,25 +62,25 @@ def successful_parse_of_constant() -> list:
         TC(_src('plain-word1 plain-word2'),
            Expectation(
                fragments=[constant('plain-word1')],
-               token_stream=assert_token_stream2(head_token=assert_token_string_is('plain-word2')),
+               token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
            )
            ),
         TC(_src('word'),
            Expectation(
                fragments=[constant('word')],
-               token_stream=assert_token_stream2(is_null=asrt.is_true),
+               token_stream=assert_token_stream(is_null=asrt.is_true),
            )
            ),
         TC(_src('"double quoted word" plain-word2'),
            Expectation(
                fragments=[constant('double quoted word')],
-               token_stream=assert_token_stream2(head_token=assert_token_string_is('plain-word2')),
+               token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
            )
            ),
         TC(_src('\'single quoted word\' plain-word2'),
            Expectation(
                fragments=[constant('single quoted word')],
-               token_stream=assert_token_stream2(head_token=assert_token_string_is('plain-word2')),
+               token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
            )
            ),
         TC(_src('{hard_quote}{symbol_reference}{hard_quote} plain-word2',
@@ -88,7 +88,7 @@ def successful_parse_of_constant() -> list:
                 hard_quote=HARD_QUOTE_CHAR),
            Expectation(
                fragments=[constant(symbol_reference_syntax_for_name('sym_name'))],
-               token_stream=assert_token_stream2(head_token=assert_token_string_is('plain-word2')),
+               token_stream=assert_token_stream(head_token=assert_token_string_is('plain-word2')),
            )
            ),
     ]
@@ -102,14 +102,14 @@ def successful_parse_of_single_symbol() -> list:
                 symbol_reference=symbol_ref),
            Expectation(
                fragments=single_symbol,
-               token_stream=assert_token_stream2(is_null=asrt.is_true),
+               token_stream=assert_token_stream(is_null=asrt.is_true),
            )
            ),
         TC(_src('{symbol_reference} rest',
                 symbol_reference=symbol_ref),
            Expectation(
                fragments=single_symbol,
-               token_stream=assert_token_stream2(head_token=assert_token_string_is('rest')),
+               token_stream=assert_token_stream(head_token=assert_token_string_is('rest')),
            )
            ),
         TC(_src('{soft_quote}{symbol_reference}{soft_quote} rest',
@@ -117,7 +117,7 @@ def successful_parse_of_single_symbol() -> list:
                 symbol_reference=symbol_ref),
            Expectation(
                fragments=single_symbol,
-               token_stream=assert_token_stream2(head_token=assert_token_string_is('rest')),
+               token_stream=assert_token_stream(head_token=assert_token_string_is('rest')),
            )
            ),
     ]
@@ -138,7 +138,7 @@ def successful_parse_of_complex_structure() -> list:
                                    symbol_reference_syntax_for_name('not a sym2') +
                                    'const 2'),
                           symbol('sym_name2')],
-               token_stream=assert_token_stream2(is_null=asrt.is_true),
+               token_stream=assert_token_stream(is_null=asrt.is_true),
            ))]
 
 
@@ -146,7 +146,7 @@ class TestParseFragmentsFromToken(unittest.TestCase):
     def _test_case(self, tc: TC):
         with self.subTest(token_stream=tc.source_string):
             # ARRANGE #
-            token_stream = TokenStream2(tc.source_string)
+            token_stream = TokenStream(tc.source_string)
             # ACT #
             actual = sut.parse_fragments_from_tokens(token_stream, CONFIGURATION)
             # ASSERT #
@@ -155,7 +155,7 @@ class TestParseFragmentsFromToken(unittest.TestCase):
 
     def test_missing_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_fragments_from_tokens(TokenStream2(''))
+            sut.parse_fragments_from_tokens(TokenStream(''))
 
     def test_successful_parse_of_single_symbol(self):
         cases = successful_parse_of_single_symbol()
@@ -177,7 +177,7 @@ class TestParseStringResolver(unittest.TestCase):
     def _test_case(self, tc: TC):
         with self.subTest(token_stream=tc.source_string):
             # ARRANGE #
-            token_stream = TokenStream2(tc.source_string)
+            token_stream = TokenStream(tc.source_string)
             # ACT #
             actual = sut.parse_string_resolver(token_stream, CONFIGURATION)
             # ASSERT #
@@ -187,7 +187,7 @@ class TestParseStringResolver(unittest.TestCase):
 
     def test_missing_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_string_resolver(TokenStream2(''))
+            sut.parse_string_resolver(TokenStream(''))
 
     def test_successful_parse_of_single_symbol(self):
         cases = successful_parse_of_single_symbol()
@@ -236,14 +236,14 @@ def _src(s: str,
 
 
 def _single_line_source(s: str,
-                        **kwargs) -> TokenStream2:
-    return TokenStream2(_src(s, **kwargs))
+                        **kwargs) -> TokenStream:
+    return TokenStream(_src(s, **kwargs))
 
 
 def _multi_line_source(lines: list,
-                       **kwargs) -> TokenStream2:
+                       **kwargs) -> TokenStream:
     all_lines = '\n'.join([_src(line, **kwargs) for line in lines])
-    return TokenStream2(all_lines)
+    return TokenStream(all_lines)
 
 
 def assert_equals_string_resolver(fragments: list) -> asrt.ValueAssertion:

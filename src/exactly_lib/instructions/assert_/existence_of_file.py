@@ -13,7 +13,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.instructions.utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
@@ -147,7 +147,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         }
 
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
-        tokens = TokenParser(TokenStream2(rest_of_line),
+        tokens = TokenParser(TokenStream(rest_of_line),
                              self.format_map)
         file_properties_check = tokens.consume_and_handle_first_matching_option(
             _DEFAULT_FILE_PROPERTIES_CHECK,
