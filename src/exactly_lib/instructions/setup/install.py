@@ -14,7 +14,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.section_document.parser_implementations.token_stream_parse import TokenParser
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.test_case import exception_detection
@@ -155,7 +155,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> SetupPhaseInstruction:
-        parser = TokenParser(TokenStream2(rest_of_line))
+        parser = TokenParser(TokenStream(rest_of_line))
         src_file_ref = parser.consume_file_ref(REL_OPTION_ARG_CONF_FOR_SOURCE)
         if parser.is_at_eol:
             return _InstallSourceWithoutExplicitDestinationInstruction(src_file_ref)

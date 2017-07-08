@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations import token_stream2 as sut
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenSyntaxError
+from exactly_lib.section_document.parser_implementations import token_stream as sut
+from exactly_lib.section_document.parser_implementations.token_stream import TokenSyntaxError
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_quoted, assert_plain
 
 
@@ -22,7 +22,7 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
         ]
         for first_line in test_cases:
             with self.subTest(msg=repr(first_line)):
-                ts = sut.TokenStream2(first_line)
+                ts = sut.TokenStream(first_line)
                 self.assertTrue(ts.is_null)
 
     def test_invalid_token(self):
@@ -32,7 +32,7 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
         for first_line in test_cases:
             with self.subTest(msg=repr(first_line)):
                 with self.assertRaises(TokenSyntaxError):
-                    sut.TokenStream2(first_line)
+                    sut.TokenStream(first_line)
 
     def test_valid_token(self):
         test_cases = [
@@ -45,7 +45,7 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
         ]
         for first_line, token_assertion in test_cases:
             with self.subTest(msg=repr(first_line)):
-                ts = sut.TokenStream2(first_line)
+                ts = sut.TokenStream(first_line)
                 token_assertion.apply_with_message(self, ts.head, 'token')
                 actual_remaining_source = first_line[ts.position:]
                 self.assertEqual(first_line,
@@ -64,7 +64,7 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
         for first_line in test_cases:
             with self.subTest(msg=repr(first_line)):
                 with self.assertRaises(TokenSyntaxError):
-                    sut.TokenStream2(first_line)
+                    sut.TokenStream(first_line)
 
     def test_valid_token(self):
         test_cases = [
@@ -108,7 +108,7 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
         ]
         for first_line, token_assertion in test_cases:
             with self.subTest(msg=repr(first_line)):
-                ts = sut.TokenStream2(first_line)
+                ts = sut.TokenStream(first_line)
                 token_assertion.apply_with_message(self, ts.head, 'token')
                 self.assertEqual(first_line,
                                  ts.remaining_source,
@@ -125,7 +125,7 @@ class TestConsume(unittest.TestCase):
         ]
         for source in test_cases:
             with self.subTest(msg=repr(source)):
-                ts = sut.TokenStream2(source)
+                ts = sut.TokenStream(source)
                 ts.consume()
                 self.assertTrue(ts.is_null)
 
@@ -139,7 +139,7 @@ class TestConsume(unittest.TestCase):
         ]
         for source, second_token, remaining_source in test_cases:
             with self.subTest(msg=repr(source)):
-                ts = sut.TokenStream2(source)
+                ts = sut.TokenStream(source)
                 ts.consume()
                 self.assertFalse(ts.is_null)
                 self.assertEqual(second_token, ts.head.string,
@@ -159,7 +159,7 @@ class TestMisc(unittest.TestCase):
         ]
         for source, expected in test_cases:
             with self.subTest(msg=repr(source)):
-                ts = sut.TokenStream2(source)
+                ts = sut.TokenStream(source)
                 actual = ts.remaining_part_of_current_line
                 self.assertEqual(expected, actual)
 
@@ -174,7 +174,7 @@ class TestMisc(unittest.TestCase):
         ]
         for source, expected in test_cases:
             with self.subTest(msg=repr(source)):
-                ts = sut.TokenStream2(source)
+                ts = sut.TokenStream(source)
                 ts.consume()
                 actual = ts.remaining_part_of_current_line
                 self.assertEqual(expected, actual)

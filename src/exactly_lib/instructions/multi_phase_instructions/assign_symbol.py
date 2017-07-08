@@ -15,7 +15,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
@@ -67,7 +67,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 def parse(source: ParseSource) -> SymbolDefinition:
     source_line = source.current_line
-    token_stream = TokenStream2(source.remaining_part_of_current_line)
+    token_stream = TokenStream(source.remaining_part_of_current_line)
     source.consume_current_line()
     if token_stream.is_null:
         err_msg = 'Missing symbol type.\nExpecting one of ' + _TYPES_LIST_IN_ERR_MSG
@@ -122,11 +122,11 @@ A single word, or a single quoted text.
 """
 
 
-def _parse_path(token_stream: TokenStream2) -> SymbolValueResolver:
+def _parse_path(token_stream: TokenStream) -> SymbolValueResolver:
     return parse_file_ref.parse_file_ref(token_stream, REL_OPTION_ARGUMENT_CONFIGURATION)
 
 
-def _parse_string(token_stream: TokenStream2) -> StringResolver:
+def _parse_string(token_stream: TokenStream) -> StringResolver:
     return parse_string_resolver(token_stream)
 
 

@@ -4,7 +4,7 @@ from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.util.cli_syntax.option_parsing import matches
 
@@ -17,7 +17,7 @@ class TokenParser:
     """
 
     def __init__(self,
-                 token_stream: TokenStream2,
+                 token_stream: TokenStream,
                  error_message_format_map: dict = None):
         """
         
@@ -74,7 +74,7 @@ class TokenParser:
         return return_value_if_no_match
 
     @property
-    def token_stream(self) -> TokenStream2:
+    def token_stream(self) -> TokenStream:
         return self._token_stream
 
     def _error(self, error_message_format_string: str):

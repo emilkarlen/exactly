@@ -8,7 +8,7 @@ class TokenSyntaxError(Exception):
     pass
 
 
-class TokenStream2:
+class TokenStream:
     """
     A stream of tokens with look-ahead of one token.
     """

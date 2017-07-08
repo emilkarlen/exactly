@@ -4,7 +4,7 @@ from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure import file_refs
@@ -20,7 +20,7 @@ PYTHON_EXECUTABLE_OPTION_NAME = argument.OptionName(long_name='python')
 PYTHON_EXECUTABLE_OPTION_STRING = long_option_syntax(PYTHON_EXECUTABLE_OPTION_NAME.long)
 
 
-def parse(tokens: TokenStream2) -> ExecutableFile:
+def parse(tokens: TokenStream) -> ExecutableFile:
     """
     :param tokens: instruction argument
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
@@ -37,7 +37,7 @@ def parse(tokens: TokenStream2) -> ExecutableFile:
         return ExecutableFile(the_file_ref, [])
 
 
-def _parse_exe_file_ref(tokens: TokenStream2) -> FileRefResolver:
+def _parse_exe_file_ref(tokens: TokenStream) -> FileRefResolver:
     if tokens.is_null:
         parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
     token = tokens.head
@@ -48,7 +48,7 @@ def _parse_exe_file_ref(tokens: TokenStream2) -> FileRefResolver:
         return parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)
 
 
-def _parse_arguments_and_end_delimiter(tokens: TokenStream2) -> list:
+def _parse_arguments_and_end_delimiter(tokens: TokenStream) -> list:
     arguments = []
     while True:
         if tokens.is_null:

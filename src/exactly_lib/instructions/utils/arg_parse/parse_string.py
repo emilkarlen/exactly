@@ -3,7 +3,7 @@ from exactly_lib.instructions.utils.arg_parse import symbol_syntax
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import StringResolver, ConstantStringFragmentResolver, StringFragmentResolver, \
     SymbolStringFragmentResolver
@@ -27,13 +27,13 @@ def parse_string_resolver_from_parse_source(source: ParseSource,
     :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
     """
 
-    ts = TokenStream2(source.remaining_part_of_current_line)
+    ts = TokenStream(source.remaining_part_of_current_line)
     ret_val = parse_string_resolver(ts, conf)
     source.consume(ts.position)
     return ret_val
 
 
-def parse_string_resolver(tokens: TokenStream2,
+def parse_string_resolver(tokens: TokenStream,
                           conf: Configuration = DEFAULT_CONFIGURATION) -> StringResolver:
     """
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -48,7 +48,7 @@ def parse_string_resolver_from_token(token: Token,
     return string_resolver_from_fragments(fragments, reference_restrictions)
 
 
-def parse_fragments_from_tokens(tokens: TokenStream2,
+def parse_fragments_from_tokens(tokens: TokenStream,
                                 conf: Configuration = DEFAULT_CONFIGURATION) -> list:
     """
     Consumes a single token.

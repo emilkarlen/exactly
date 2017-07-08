@@ -7,7 +7,7 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
     StringRestriction, ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
@@ -28,7 +28,7 @@ from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream2, \
+from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -126,7 +126,7 @@ class TestParsesBase(unittest.TestCase):
                arrangement: Arrangement,
                expectation: Expectation):
         # ARRANGE #
-        ts = TokenStream2(arrangement.source)
+        ts = TokenStream(arrangement.source)
         # ACT #
         actual = sut.parse_file_ref(ts,
                                     arrangement.rel_option_argument_configuration)
@@ -139,7 +139,7 @@ class TestParsesBase(unittest.TestCase):
                 arrangement: Arrangement,
                 expectation: Expectation2):
         # ARRANGE #
-        ts = TokenStream2(arrangement.source)
+        ts = TokenStream(arrangement.source)
         # ACT #
         actual = sut.parse_file_ref(ts,
                                     arrangement.rel_option_argument_configuration)
@@ -179,7 +179,7 @@ class TestParsesBase(unittest.TestCase):
 class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_fail_when_no_arguments(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_file_ref(TokenStream2(''),
+            sut.parse_file_ref(TokenStream(''),
                                _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
 
     def test_WHEN_no_relativity_option_is_given_THEN_default_relativity_SHOULD_be_used(self):
@@ -202,22 +202,22 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             source_and_token_stream_assertion_variants = [
                 (
                     '{file_name_argument} arg3 arg4',
-                    assert_token_stream2(is_null=asrt.is_false,
-                                         head_token=assert_token_string_is('arg3')
-                                         )
+                    assert_token_stream(is_null=asrt.is_false,
+                                        head_token=assert_token_string_is('arg3')
+                                        )
                 ),
                 (
                     '{file_name_argument}',
-                    assert_token_stream2(is_null=asrt.is_true)
+                    assert_token_stream(is_null=asrt.is_true)
                 ),
                 (
                     '    {file_name_argument}',
-                    assert_token_stream2(is_null=asrt.is_true)
+                    assert_token_stream(is_null=asrt.is_true)
                 ),
                 (
                     '{file_name_argument}\nnext line',
-                    assert_token_stream2(is_null=asrt.is_false,
-                                         head_token=assert_token_string_is('next'))
+                    assert_token_stream(is_null=asrt.is_false,
+                                        head_token=assert_token_string_is('next'))
                 ),
             ]
             for source, token_stream_assertion in source_and_token_stream_assertion_variants:
@@ -241,22 +241,22 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             source_and_token_stream_assertion_variants = [
                 (
                     '{option_str} {file_name_argument} arg3 arg4',
-                    assert_token_stream2(is_null=asrt.is_false,
-                                         head_token=assert_token_string_is('arg3')
-                                         )
+                    assert_token_stream(is_null=asrt.is_false,
+                                        head_token=assert_token_string_is('arg3')
+                                        )
                 ),
                 (
                     '{option_str} {file_name_argument}',
-                    assert_token_stream2(is_null=asrt.is_true)
+                    assert_token_stream(is_null=asrt.is_true)
                 ),
                 (
                     '   {option_str}    {file_name_argument}',
-                    assert_token_stream2(is_null=asrt.is_true)
+                    assert_token_stream(is_null=asrt.is_true)
                 ),
                 (
                     '{option_str} {file_name_argument}\nnext line',
-                    assert_token_stream2(is_null=asrt.is_false,
-                                         head_token=assert_token_string_is('next'))
+                    assert_token_stream(is_null=asrt.is_false,
+                                        head_token=assert_token_string_is('next'))
                 ),
             ]
             for source, token_stream_assertion in source_and_token_stream_assertion_variants:
@@ -280,22 +280,22 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             source_and_token_stream_assertion_variants = [
                 (
                     '{option_str} {file_name_argument} arg3 arg4',
-                    assert_token_stream2(is_null=asrt.is_false,
-                                         head_token=assert_token_string_is('arg3')
-                                         )
+                    assert_token_stream(is_null=asrt.is_false,
+                                        head_token=assert_token_string_is('arg3')
+                                        )
                 ),
                 (
                     '{option_str} {file_name_argument}',
-                    assert_token_stream2(is_null=asrt.is_true)
+                    assert_token_stream(is_null=asrt.is_true)
                 ),
                 (
                     '   {option_str}    {file_name_argument}',
-                    assert_token_stream2(is_null=asrt.is_true)
+                    assert_token_stream(is_null=asrt.is_true)
                 ),
                 (
                     '{option_str} {file_name_argument}\nnext line',
-                    assert_token_stream2(is_null=asrt.is_false,
-                                         head_token=assert_token_string_is('next'))
+                    assert_token_stream(is_null=asrt.is_false,
+                                        head_token=assert_token_string_is('next'))
                 ),
             ]
             for source, token_stream_assertion in source_and_token_stream_assertion_variants:
@@ -317,22 +317,22 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         source_and_token_stream_assertion_variants = [
             (
                 '{file_name_argument} arg3 arg4',
-                assert_token_stream2(is_null=asrt.is_false,
-                                     head_token=assert_token_string_is('arg3')
-                                     )
+                assert_token_stream(is_null=asrt.is_false,
+                                    head_token=assert_token_string_is('arg3')
+                                    )
             ),
             (
                 '{file_name_argument}',
-                assert_token_stream2(is_null=asrt.is_true)
+                assert_token_stream(is_null=asrt.is_true)
             ),
             (
                 '      {file_name_argument}',
-                assert_token_stream2(is_null=asrt.is_true)
+                assert_token_stream(is_null=asrt.is_true)
             ),
             (
                 '{file_name_argument}\nnext line',
-                assert_token_stream2(is_null=asrt.is_false,
-                                     head_token=assert_token_string_is('next'))
+                assert_token_stream(is_null=asrt.is_false,
+                                    head_token=assert_token_string_is('next'))
             ),
         ]
         for source, token_stream_assertion in source_and_token_stream_assertion_variants:
@@ -381,7 +381,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                     with self.subTest(msg='used_option={} source={}'.format(option_str, repr(source))):
                         argument_string = source.format(option_str=option_str,
                                                         file_name_argument=file_name_argument)
-                        token_stream = TokenStream2(argument_string)
+                        token_stream = TokenStream(argument_string)
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
                             sut.parse_file_ref(token_stream, arg_config)
 
@@ -389,7 +389,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         for rel_option_info in REL_OPTIONS_MAP.values():
             with self.subTest(msg=rel_option_info.description):
                 option_str = _option_string_for(rel_option_info.option_name)
-                ts = TokenStream2(option_str)
+                ts = TokenStream(option_str)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parse_file_ref(ts, _ARG_CONFIG_FOR_ALL_RELATIVITIES.config_for(True))
 
@@ -398,7 +398,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
     def test_WHEN_rel_symbol_option_is_not_accepted_THEN_parse_SHOULD_fail(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} VARIABLE_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
-        token_stream = TokenStream2(source)
+        token_stream = TokenStream(source)
         arg_config = RelOptionArgumentConfigurationWoSuffixRequirement(
             RelOptionsConfiguration(
                 PathRelativityVariants({RelOptionType.REL_ACT}, True),
@@ -424,13 +424,13 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                     Arrangement(source,
                                 sut.all_rel_options_config('ARG-SYNTAX-NAME', path_suffix_is_required)),
                     Expectation(expected_file_ref_value,
-                                assert_token_stream2(head_token=assert_token_string_is('VARIABLE_NAME')))
+                                assert_token_stream(head_token=assert_token_string_is('VARIABLE_NAME')))
                 )
 
     def test_WHEN_no_file_name_argument_is_given_and_path_suffix_is_required_THEN_parse_SHOULD_fail(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} VARIABLE_NAME'.format(rel_symbol_option=rel_symbol_option)
-        token_stream = TokenStream2(source)
+        token_stream = TokenStream(source)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref(token_stream,
                                sut.all_rel_options_config('ARG-SYNTAX-NAME', True))
@@ -438,7 +438,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
     def test_WHEN_no_file_name_argument_is_given_and_path_suffix_is_not_required_THEN_parse_SHOULD_succeed(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} VARIABLE_NAME'.format(rel_symbol_option=rel_symbol_option)
-        token_stream = TokenStream2(source)
+        token_stream = TokenStream(source)
         sut.parse_file_ref(token_stream,
                            sut.all_rel_options_config('ARG-SYNTAX-NAME', False))
 
@@ -449,22 +449,22 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
         source_and_token_stream_assertion_variants = [
             (
                 '{option_str} {symbol_name} {file_name_argument} arg3 arg4',
-                assert_token_stream2(is_null=asrt.is_false,
-                                     head_token=assert_token_string_is('arg3')
-                                     )
+                assert_token_stream(is_null=asrt.is_false,
+                                    head_token=assert_token_string_is('arg3')
+                                    )
             ),
             (
                 '{option_str} {symbol_name} {file_name_argument}',
-                assert_token_stream2(is_null=asrt.is_true)
+                assert_token_stream(is_null=asrt.is_true)
             ),
             (
                 '   {option_str}   {symbol_name}  {file_name_argument}',
-                assert_token_stream2(is_null=asrt.is_true)
+                assert_token_stream(is_null=asrt.is_true)
             ),
             (
                 '{option_str} {symbol_name}  {file_name_argument}\nnext line',
-                assert_token_stream2(is_null=asrt.is_false,
-                                     head_token=assert_token_string_is('next'))
+                assert_token_stream(is_null=asrt.is_false,
+                                    head_token=assert_token_string_is('next'))
             ),
         ]
         for source, token_stream_assertion in source_and_token_stream_assertion_variants:
@@ -525,7 +525,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table_with_single_string_value(symbol.name,
                                                        symbol.value),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Mixed symbol references and constants as path suffix after explicit relativity '
@@ -553,7 +553,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table=
                  symbol_table_with_string_values([symbol_1, symbol_2]),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Mixed symbol references and constants - within soft quotes - as path suffix after explicit relativity '
@@ -582,7 +582,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table=
                  symbol_table_with_string_values([symbol_1, symbol_2]),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )),
             ('Hard quoted symbol reference after explicit relativity'
              ' SHOULD '
@@ -604,7 +604,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table=
                  empty_symbol_table(),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )),
         ]
         for test_name, arrangement, expectation in test_cases:
@@ -649,7 +649,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table=
                  symbol_table_with_single_string_value(symbol.name, symbol.value),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Symbol reference as only argument'
@@ -676,7 +676,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table=
                  symbol_table_with_single_string_value(symbol.name, '/absolute/path'),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Symbol reference followed by / and constant suffix'
@@ -704,7 +704,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table=
                  symbol_table_with_single_string_value(symbol.name, '/absolute/path'),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Symbol reference followed by / and symbol ref'
@@ -738,7 +738,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table_with_string_values([(symbol_1.name, '/absolute/path'),
                                                   symbol_2]),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Symbol reference that is a string (which is not an absolute path), '
@@ -777,7 +777,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                                                   (symbol_1.name, 'non-abs-str1'),
                                                   (symbol_2.name, 'non-abs-str2')]),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Symbol reference as only argument'
@@ -806,7 +806,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                  symbol_table_with_single_file_ref_value(symbol.name,
                                                          file_ref_rel_home),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )
              ),
             ('Symbol reference as first argument, followed by / and symbol reference'
@@ -845,7 +845,7 @@ class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
                      entry(symbol_2.name, string_constant('string-symbol-value')),
                  ]),
                  token_stream=
-                 assert_token_stream2(is_null=asrt.is_true),
+                 assert_token_stream(is_null=asrt.is_true),
              )),
         ]
         for test_name, arrangement, expectation in test_cases:
@@ -881,7 +881,7 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
                     Arrangement(argument_string,
                                 arg_config),
                     Expectation(expected_file_ref_value,
-                                token_stream=assert_token_stream2(is_null=asrt.is_true))
+                                token_stream=assert_token_stream(is_null=asrt.is_true))
                 )
 
     def test_only_relativity_argument(self):
@@ -908,17 +908,17 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
                 False)
             source_variants = [
                 ('{option_str}',
-                 assert_token_stream2(is_null=asrt.is_true)),
+                 assert_token_stream(is_null=asrt.is_true)),
                 ('   {option_str}',
-                 assert_token_stream2(is_null=asrt.is_true)),
+                 assert_token_stream(is_null=asrt.is_true)),
                 ('{option_str}   ',
-                 assert_token_stream2(is_null=asrt.is_true)),
+                 assert_token_stream(is_null=asrt.is_true)),
             ]
             expected_file_ref = file_refs.of_rel_option(used_option, PathPartAsNothing())
             for source, token_stream_assertion in source_variants:
                 with self.subTest(msg='used_option={} source={}'.format(option_str, repr(source))):
                     argument_string = source.format(option_str=option_str)
-                    token_stream = TokenStream2(argument_string)
+                    token_stream = TokenStream(argument_string)
                     # ACT #
                     actual_file_ref_resolver = sut.parse_file_ref(token_stream, arg_config)
                     # ASSERT #
@@ -1012,7 +1012,7 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                                                          custom_configuration.config_for(path_suffix_is_required))
 
 
-def _remaining_source(ts: TokenStream2) -> str:
+def _remaining_source(ts: TokenStream) -> str:
     return ts.source[ts.position:]
 
 

@@ -15,7 +15,7 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream2 import TokenStream2
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, StringRestriction, \
     OrReferenceRestrictions, FileRefRelativityRestriction, OrRestrictionPart
 from exactly_lib.symbol.concrete_values import FileRefResolver
@@ -86,13 +86,13 @@ def parse_file_ref_from_parse_source(source: ParseSource,
     :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
     """
 
-    ts = TokenStream2(source.remaining_part_of_current_line)
+    ts = TokenStream(source.remaining_part_of_current_line)
     ret_val = parse_file_ref(ts, conf)
     source.consume(ts.position)
     return ret_val
 
 
-def parse_file_ref(tokens: TokenStream2,
+def parse_file_ref(tokens: TokenStream,
                    conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     """
     :param tokens: Argument list
