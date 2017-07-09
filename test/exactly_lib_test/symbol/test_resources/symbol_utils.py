@@ -103,6 +103,16 @@ def symbol_table_from_names(names: iter) -> SymbolTable:
     return SymbolTable(dict(elements))
 
 
+def symbol_table_with_string_values_from_name_and_value(name_and_value_list: iter) -> SymbolTable:
+    """
+    :type name_and_value_list: iter of NameAndValue
+    """
+    elements = [(name_and_value.name,
+                 string_constant_value_container(name_and_value.value))
+                for name_and_value in name_and_value_list]
+    return SymbolTable(dict(elements))
+
+
 def symbol_table_from_symbols(symbols: iter) -> SymbolTable:
     """
     :param symbols: [`ValueDefinition`]
