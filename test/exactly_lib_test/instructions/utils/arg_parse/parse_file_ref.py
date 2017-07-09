@@ -49,6 +49,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
 
+    ret_val.addTest(unittest.makeSuite(TestFailingParseDueToInvalidSyntax))
+
     ret_val.addTest(unittest.makeSuite(TestParseWithoutRelSymbolRelativity))
     ret_val.addTest(unittest.makeSuite(TestParseWithRelSymbolRelativity))
 
@@ -108,6 +110,14 @@ class RelOptionArgumentConfigurationWoSuffixRequirement(tuple):
         return RelOptionArgumentConfiguration(self.options,
                                               self.argument_syntax_name,
                                               path_suffix_is_required)
+
+
+ARBITRARY_REL_OPT_ARG_CONF = RelOptionArgumentConfigurationWoSuffixRequirement(
+    RelOptionsConfiguration(
+        PathRelativityVariants({RelOptionType.REL_ACT}, True),
+        False,
+        RelOptionType.REL_ACT),
+    'argument_syntax_name')
 
 
 class ArrangementWoSuffixRequirement:
@@ -175,6 +185,22 @@ class TestParsesBase(unittest.TestCase):
         result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', value_container)
         self.assertIsNone(result,
                           'Result of hypothetical restriction on path')
+
+
+class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
+    def test_fail_due_to_invalid_quoting(self):
+        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        cases = [
+            '{rel_symbol_option} SYMBOL_NAME {soft_quote}file_name'.format(rel_symbol_option=rel_symbol_option,
+                                                                           soft_quote=SOFT_QUOTE_CHAR),
+            '{rel_symbol_option} SYMBOL_NAME file_name{hard_quote}'.format(rel_symbol_option=rel_symbol_option,
+                                                                           hard_quote=HARD_QUOTE_CHAR),
+        ]
+        for source_string in cases:
+            token_stream = TokenStream(source_string)
+            _assert_raises_invalid_argument_exception(self,
+                                                      token_stream,
+                                                      test_name=source_string)
 
 
 class TestParseWithoutRelSymbolRelativity(TestParsesBase):
@@ -396,6 +422,23 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
 
 
 class TestParseWithRelSymbolRelativity(TestParsesBase):
+    def test_WHEN_symbol_name_is_invalid_THEN_parse_SHOULD_fail(self):
+        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        cases = [
+            '{rel_symbol_option} INVALID_SYMBOL_NAME? file_name'.format(rel_symbol_option=rel_symbol_option),
+            '{rel_symbol_option} ?INVALID_SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option),
+            '{rel_symbol_option} --invalid_symbol_name file_name'.format(rel_symbol_option=rel_symbol_option),
+            '{rel_symbol_option} {soft_quote}invalid_symbol_name{soft_quote} file_name'.format(
+                rel_symbol_option=rel_symbol_option,
+                soft_quote=SOFT_QUOTE_CHAR),
+            '{rel_symbol_option} ?? file_name'.format(rel_symbol_option=rel_symbol_option),
+        ]
+        for source_string in cases:
+            token_stream = TokenStream(source_string)
+            _assert_raises_invalid_argument_exception(self,
+                                                      token_stream,
+                                                      test_name=source_string)
+
     def test_WHEN_rel_symbol_option_is_not_accepted_THEN_parse_SHOULD_fail(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
@@ -406,11 +449,9 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                 False,
                 RelOptionType.REL_ACT),
             'argument_syntax_name')
-        for path_suffix_is_required in [False, True]:
-            with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_file_ref(token_stream,
-                                       arg_config.config_for(path_suffix_is_required))
+        _assert_raises_invalid_argument_exception(self,
+                                                  token_stream,
+                                                  rel_opt_arg_conf=arg_config)
 
     def test_WHEN_rel_symbol_option_is_quoted_THEN_parse_SHOULD_treat_that_string_as_file_name(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
@@ -1104,6 +1145,18 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parse_file_ref_from_parse_source(remaining_source('%s file.txt' % REL_TMP_OPTION),
                                                          custom_configuration.config_for(path_suffix_is_required))
+
+
+def _assert_raises_invalid_argument_exception(
+        put: unittest.TestCase,
+        source: TokenStream,
+        test_name: str = '',
+        rel_opt_arg_conf: RelOptionArgumentConfigurationWoSuffixRequirement = ARBITRARY_REL_OPT_ARG_CONF):
+    for path_suffix_is_required in [False, True]:
+        with put.subTest(test_name=test_name,
+                         path_suffix_is_required=path_suffix_is_required):
+            with put.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.parse_file_ref(source, rel_opt_arg_conf.config_for(path_suffix_is_required))
 
 
 def _remaining_source(ts: TokenStream) -> str:
