@@ -8,7 +8,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def matches_symbol_reference(expected_name: str,
-                             assertion_on_restrictions: asrt.ValueAssertion) -> asrt.ValueAssertion:
+                             assertion_on_restrictions: asrt.ValueAssertion = asrt.anything_goes()
+                             ) -> asrt.ValueAssertion:
     return asrt.is_instance_with(
         su.SymbolReference,
         asrt.and_([
@@ -25,29 +26,14 @@ def matches_symbol_reference(expected_name: str,
 def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str,
                                                               assertion_on_direct_restriction: asrt.ValueAssertion
                                                               ) -> asrt.ValueAssertion:
-    return equals_symbol_reference2(expected_name,
+    return matches_symbol_reference(expected_name,
                                     matches_restrictions_on_direct_and_indirect(
                                         assertion_on_direct=assertion_on_direct_restriction,
                                         assertion_on_every=asrt.ValueIsNone()))
 
 
-def equals_symbol_reference2(expected_name: str,
-                             assertion_on_restrictions: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(
-        su.SymbolReference,
-        asrt.and_([
-            asrt.sub_component('name',
-                               su.SymbolReference.name.fget,
-                               asrt.equals(expected_name)),
-            asrt.sub_component('restrictions',
-                               su.SymbolReference.restrictions.fget,
-                               assertion_on_restrictions)
-
-        ]))
-
-
 def equals_symbol_reference(expected: SymbolReference) -> asrt.ValueAssertion:
-    return equals_symbol_reference2(expected.name,
+    return matches_symbol_reference(expected.name,
                                     equals_reference_restrictions(expected.restrictions))
 
 

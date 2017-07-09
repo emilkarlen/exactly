@@ -9,15 +9,53 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestEqualsSymbolReference)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestMatchesSymbolReference),
+        unittest.makeSuite(TestEqualsSymbolReference),
+    ])
+
+
+class TestMatchesSymbolReference(unittest.TestCase):
+    def test_pass(self):
+        # ARRANGE #
+        symbol_name = 'symbol name'
+        symbol_reference = SymbolReference(symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
+        assertion = sut.matches_symbol_reference(symbol_name,
+                                                 asrt.is_instance(r.ReferenceRestrictionsOnDirectAndIndirect))
+        # ACT & ASSERT #
+        assertion.apply_without_message(self, symbol_reference)
+
+    def test_pass_with_default_assertion_on_restrictions(self):
+        # ARRANGE #
+        symbol_name = 'symbol name'
+        symbol_reference = SymbolReference(symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
+        assertion = sut.matches_symbol_reference(symbol_name)
+        # ACT & ASSERT #
+        assertion.apply_without_message(self, symbol_reference)
+
+    def test_fail__different_name(self):
+        # ARRANGE #
+        actual = SymbolReference('actual value name',
+                                 r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
+        assertion = sut.matches_symbol_reference('expected value name',
+                                                 asrt.anything_goes())
+        _assert_fails(assertion, actual)
+
+    def test_fail__failing_assertion_on_value_restriction(self):
+        # ARRANGE #
+        actual_symbol_name = 'actual value name'
+        actual = SymbolReference(actual_symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
+        assertion = sut.matches_symbol_reference(actual_symbol_name,
+                                                 asrt.is_instance(r.OrReferenceRestrictions))
+        _assert_fails(assertion, actual)
 
 
 class TestEqualsSymbolReference(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
-        value_name = 'value name'
-        symbol_reference = SymbolReference(value_name, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
-        assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(value_name,
+        symbol_name = 'value name'
+        symbol_reference = SymbolReference(symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
+        assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(symbol_name,
                                                                                   asrt.is_instance(r.NoRestriction))
         # ACT & ASSERT #
         assertion.apply_without_message(self, symbol_reference)
@@ -27,17 +65,21 @@ class TestEqualsSymbolReference(unittest.TestCase):
         actual = SymbolReference('actual value name', r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target('expected value name',
                                                                                   asrt.is_instance(r.NoRestriction))
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            assertion.apply_without_message(put, actual)
+        _assert_fails(assertion, actual)
 
     def test_fail__failing_assertion_on_value_restriction(self):
         # ARRANGE #
         common_name = 'actual value name'
         actual = SymbolReference(common_name, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            # ACT #
-            assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(common_name, asrt.is_instance(
-                r.FileRefRelativityRestriction))
-            assertion.apply_without_message(put, actual)
+        assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(
+            common_name,
+            asrt.is_instance(r.FileRefRelativityRestriction))
+        _assert_fails(assertion, actual)
+
+
+def _assert_fails(assertion_on_symbol_reference: asrt.ValueAssertion,
+                  actual: SymbolReference):
+    put = test_case_with_failure_exception_set_to_test_exception()
+    with put.assertRaises(TestException):
+        # ACT #
+        assertion_on_symbol_reference.apply_without_message(put, actual)
