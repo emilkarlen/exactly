@@ -23,7 +23,7 @@ def _format(s: str) -> str:
 
 
 _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
-A value set by the {0} phase that determine how the remaining phases are executed."""
+A value set in the {0} phase that determine how the remaining phases are executed."""
 
 CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target(
     Name('configuration parameter', 'configuration parameters'),
