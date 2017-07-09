@@ -52,7 +52,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestParseWithoutRelSymbolRelativity))
     ret_val.addTest(unittest.makeSuite(TestParseWithRelSymbolRelativity))
 
-    ret_val.addTest(unittest.makeSuite(TestParseWithReferenceEmbeddedInPathSuffix))
+    ret_val.addTest(unittest.makeSuite(TestParseWithReferenceEmbeddedInPathArgument))
 
     ret_val.addTest(unittest.makeSuite(TestParseWithoutRequiredPathSuffix))
 
@@ -589,7 +589,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                         )
 
 
-class TestParseWithReferenceEmbeddedInPathSuffix(TestParsesBase):
+class TestParseWithReferenceEmbeddedInPathArgument(TestParsesBase):
     def test_with_explicit_relativity(self):
         symbol = NameAndValue('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
         symbol_1 = NameAndValue('SYMBOL_NAME_1', 'symbol 1 value')
