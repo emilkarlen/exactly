@@ -12,17 +12,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestPathPartAsFixedPath(unittest.TestCase):
-    def test_file_name(self):
-        # ARRANGE #
-        path_part = sut.PathPartAsFixedPath('the file name')
-        # ACT #
-        actual = path_part.file_name
-        # ASSERT #
-        self.assertEqual('the file name',
-                         actual,
-                         'file name')
-
-    def test_resolve(self):
+    def test_value(self):
         # ARRANGE #
         path_part = sut.PathPartAsFixedPath('the file name')
         # ACT #

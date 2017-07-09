@@ -5,10 +5,6 @@ class PathPartAsFixedPath(PathPart):
     def __init__(self, file_name: str):
         self._file_name = file_name
 
-    @property
-    def file_name(self) -> str:
-        return self._file_name
-
     def value(self) -> str:
         return self._file_name
 

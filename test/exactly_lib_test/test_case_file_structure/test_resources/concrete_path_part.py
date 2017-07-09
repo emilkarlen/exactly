@@ -8,8 +8,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def equals_path_part_string(file_name: str) -> asrt.ValueAssertion:
     return asrt.is_instance_with(PathPartAsFixedPath,
-                                 asrt.sub_component('file_name',
-                                                    PathPartAsFixedPath.file_name.fget,
+                                 asrt.sub_component('value',
+                                                    lambda x: x.value(),
                                                     asrt.equals(file_name)))
 
 
@@ -31,7 +31,7 @@ class _EqualsPathPartVisitor(PathPartVisitor):
         self.actual = actual
 
     def visit_fixed_path(self, expected: PathPartAsFixedPath):
-        return equals_path_part_string(expected.file_name).apply(self.put, self.actual, self.message_builder)
+        return equals_path_part_string(expected.value()).apply(self.put, self.actual, self.message_builder)
 
     def visit_nothing(self, path_suffix: PathPartAsNothing):
         return equals_path_part_nothing().apply(self.put, self.actual, self.message_builder)
