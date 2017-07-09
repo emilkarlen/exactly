@@ -163,6 +163,13 @@ class FailureOfIndirectReference(FailureInfo):
         return self._meaning_of_failure
 
 
+def no_restrictions() -> ReferenceRestrictions:
+    """
+    :return: A restriction that is unconditionally satisfied
+    """
+    return ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())
+
+
 class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
     """
     Restriction with one `ValueRestriction` that is applied on the
