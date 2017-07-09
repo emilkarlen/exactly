@@ -40,7 +40,7 @@ class TestPathPartAsFixedPath(unittest.TestCase):
         # ASSERT #
         self.assertIsInstance(actual, PathPart)
         self.assertEqual('the file name',
-                         actual.resolve(),
+                         actual.value(),
                          'resolved file name')
 
 
@@ -82,7 +82,7 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
         # ASSERT #
         expected_resolved_value = symbol1.value + symbol2.value
         self.assertEqual(expected_resolved_value,
-                         actual.resolve(),
+                         actual.value(),
                          'resolved path part')
 
     @staticmethod

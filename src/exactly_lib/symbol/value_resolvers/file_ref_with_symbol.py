@@ -53,13 +53,13 @@ class StackedFileRef(FileRef):
         return self._combined_path_suffix
 
     def path_suffix_str(self) -> str:
-        return self._combined_path_suffix.resolve()
+        return self._combined_path_suffix.value()
 
     def path_suffix_path(self) -> pathlib.Path:
         return pathlib.Path(self.path_suffix_str())
 
     def _stacked_path_suffix_path(self) -> pathlib.Path:
-        return pathlib.Path(self._stacked_path_suffix.resolve())
+        return pathlib.Path(self._stacked_path_suffix.value())
 
     def has_dir_dependency(self) -> bool:
         return self.base_file_ref.has_dir_dependency()
@@ -82,7 +82,7 @@ def _combine(first: PathPart, second: PathPart) -> PathPart:
         return second
     if isinstance(second, PathPartAsNothing):
         return first
-    p = pathlib.Path(first.resolve()) / pathlib.Path(second.resolve())
+    p = pathlib.Path(first.value()) / pathlib.Path(second.value())
     return PathPartAsFixedPath(str(p))
 
 

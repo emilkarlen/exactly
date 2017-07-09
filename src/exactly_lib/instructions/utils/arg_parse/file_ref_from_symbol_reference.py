@@ -52,7 +52,7 @@ class _SymbolValue2FileRefVisitor(ValueVisitor):
 
     def _visit_file_ref(self, value: FileRefResolver) -> FileRef:
         file_ref = value.resolve(self.symbols)
-        suffix_str = self.suffix_resolver.resolve(self.symbols).resolve()
+        suffix_str = self.suffix_resolver.resolve(self.symbols).value()
         if not suffix_str:
             return file_ref
         suffix_str = suffix_str.lstrip('/')
@@ -61,7 +61,7 @@ class _SymbolValue2FileRefVisitor(ValueVisitor):
     def _visit_string(self, value: StringResolver) -> FileRef:
         sv = value.resolve(self.symbols)
         first_suffix_str = sv.value_when_no_dir_dependencies()
-        following_suffix_str = self.suffix_resolver.resolve(self.symbols).resolve()
+        following_suffix_str = self.suffix_resolver.resolve(self.symbols).value()
         path_str = first_suffix_str + following_suffix_str
         path_value = pathlib.Path(path_str)
         if path_value.is_absolute():

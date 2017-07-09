@@ -3,5 +3,5 @@ class PathPart:
     The relative path that follows the root path of the `FileRef`.
     """
 
-    def resolve(self) -> str:
+    def value(self) -> str:
         raise NotImplementedError()

@@ -9,12 +9,12 @@ class PathPartAsFixedPath(PathPart):
     def file_name(self) -> str:
         return self._file_name
 
-    def resolve(self) -> str:
+    def value(self) -> str:
         return self._file_name
 
 
 class PathPartAsNothing(PathPart):
-    def resolve(self) -> str:
+    def value(self) -> str:
         return ''
 
 

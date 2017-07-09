@@ -15,7 +15,7 @@ class FileRefWithPathSuffixBase(FileRef):
         return self._path_suffix
 
     def path_suffix_str(self) -> str:
-        return self._path_suffix.resolve()
+        return self._path_suffix.value()
 
     def path_suffix_path(self) -> pathlib.Path:
         return pathlib.Path(self.path_suffix_str())
