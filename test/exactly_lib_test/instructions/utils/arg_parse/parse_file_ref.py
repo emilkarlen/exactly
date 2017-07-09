@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
@@ -397,7 +398,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
 class TestParseWithRelSymbolRelativity(TestParsesBase):
     def test_WHEN_rel_symbol_option_is_not_accepted_THEN_parse_SHOULD_fail(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
-        source = '{rel_symbol_option} VARIABLE_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
+        source = '{rel_symbol_option} SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
         token_stream = TokenStream(source)
         arg_config = RelOptionArgumentConfigurationWoSuffixRequirement(
             RelOptionsConfiguration(
@@ -413,7 +414,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
 
     def test_WHEN_rel_symbol_option_is_quoted_THEN_parse_SHOULD_treat_that_string_as_file_name(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
-        source = '"{rel_symbol_option}" VARIABLE_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
+        source = '"{rel_symbol_option}" SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
         expected_file_ref = file_refs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
                                                     PathPartAsFixedPath('{rel_symbol_option}'.format(
                                                         rel_symbol_option=rel_symbol_option)))
@@ -424,12 +425,12 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                     Arrangement(source,
                                 sut.all_rel_options_config('ARG-SYNTAX-NAME', path_suffix_is_required)),
                     Expectation(expected_file_ref_value,
-                                assert_token_stream(head_token=assert_token_string_is('VARIABLE_NAME')))
+                                assert_token_stream(head_token=assert_token_string_is('SYMBOL_NAME')))
                 )
 
     def test_WHEN_no_file_name_argument_is_given_and_path_suffix_is_required_THEN_parse_SHOULD_fail(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
-        source = '{rel_symbol_option} VARIABLE_NAME'.format(rel_symbol_option=rel_symbol_option)
+        source = '{rel_symbol_option} SYMBOL_NAME'.format(rel_symbol_option=rel_symbol_option)
         token_stream = TokenStream(source)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref(token_stream,
@@ -437,12 +438,105 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
 
     def test_WHEN_no_file_name_argument_is_given_and_path_suffix_is_not_required_THEN_parse_SHOULD_succeed(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
-        source = '{rel_symbol_option} VARIABLE_NAME'.format(rel_symbol_option=rel_symbol_option)
+        source = '{rel_symbol_option} SYMBOL_NAME'.format(rel_symbol_option=rel_symbol_option)
         token_stream = TokenStream(source)
         sut.parse_file_ref(token_stream,
                            sut.all_rel_options_config('ARG-SYNTAX-NAME', False))
 
-    def test_parse_with_relativity_option(self):
+    def test_reference_restrictions_on_symbol_references_in_path_suffix_SHOULD_be_is_string_restrictions(self):
+        rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
+        accepted_relativities = PathRelativityVariants({RelOptionType.REL_HOME,
+                                                        RelOptionType.REL_TMP},
+                                                       True)
+        relativity_of_defined_path_symbol = RelOptionType.REL_TMP
+        defined_path_symbol = NameAndValue('DEFINED_PATH_SYMBOL', 'DEFINED_PATH_SYMBOL_VALUE')
+        relativity_file_ref = file_refs.of_rel_option(relativity_of_defined_path_symbol,
+                                                      PathPartAsFixedPath(defined_path_symbol.value))
+
+        suffix_symbol = NameAndValue('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
+        suffix_string_constant = ' string constant'
+        test_cases = [
+            ('Symbol reference in path suffix '
+             'SHOULD '
+             'become a symbol reference that must be a string',
+             ArrangementWoSuffixRequirement(
+                 source='{rel_symbol_option} {defined_path_symbol} {suffix_symbol_reference}'.format(
+                     rel_symbol_option=rel_symbol_option,
+                     defined_path_symbol=defined_path_symbol.name,
+                     suffix_symbol_reference=symbol_reference_syntax_for_name(suffix_symbol.name)),
+                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                     RelOptionType.REL_HOME),
+             ),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(
+                     relativity_of_defined_path_symbol,
+                     PathPartAsFixedPath(str(Path(defined_path_symbol.value) / Path(suffix_symbol.value)))),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(defined_path_symbol.name,
+                                         file_ref_reference_restrictions(accepted_relativities))),
+                     equals_symbol_reference(
+                         SymbolReference(suffix_symbol.name,
+                                         path_part_string_reference_restrictions())),
+                 ]),
+                 symbol_table=
+                 symbol_table_from_entries([
+                     entry(defined_path_symbol.name, file_ref_value(relativity_file_ref)),
+                     entry(suffix_symbol.name, string_constant(suffix_symbol.value)),
+                 ]),
+                 token_stream=
+                 assert_token_stream(is_null=asrt.is_true),
+             )
+             ),
+            ('Symbol reference and string constant in path suffix, inside soft quotes'
+             'SHOULD '
+             'become a symbol reference that must be a string',
+             ArrangementWoSuffixRequirement(
+                 source='{rel_symbol_option} {defined_path_symbol} '
+                        '{soft_quote}{suffix_symbol_reference}{suffix_string_constant}{soft_quote}'.format(
+                     rel_symbol_option=rel_symbol_option,
+                     soft_quote=SOFT_QUOTE_CHAR,
+                     defined_path_symbol=defined_path_symbol.name,
+                     suffix_symbol_reference=symbol_reference_syntax_for_name(suffix_symbol.name),
+                     suffix_string_constant=suffix_string_constant),
+                 rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
+                                                                                     RelOptionType.REL_HOME),
+             ),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(
+                     relativity_of_defined_path_symbol,
+                     PathPartAsFixedPath(
+                         str(Path(defined_path_symbol.value) / Path(suffix_symbol.value + suffix_string_constant)))),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(defined_path_symbol.name,
+                                         file_ref_reference_restrictions(accepted_relativities))),
+                     equals_symbol_reference(
+                         SymbolReference(suffix_symbol.name,
+                                         path_part_string_reference_restrictions())),
+                 ]),
+                 symbol_table=
+                 symbol_table_from_entries([
+                     entry(defined_path_symbol.name, file_ref_value(relativity_file_ref)),
+                     entry(suffix_symbol.name, string_constant(suffix_symbol.value)),
+                 ]),
+                 token_stream=
+                 assert_token_stream(is_null=asrt.is_true),
+             )
+             ),
+        ]
+        for test_name, arrangement, expectation in test_cases:
+            for path_suffix_is_required in [False, True]:
+                with self.subTest(test_name=test_name,
+                                  path_suffix_is_required=path_suffix_is_required):
+                    self._check2(arrangement.for_path_suffix_required(path_suffix_is_required),
+                                 expectation)
+
+    def test_consumption_of_source(self):
         file_name_argument = 'file-name'
         symbol_name = 'symbol_NAME'
         option_str = _option_string_for(REL_SYMBOL_OPTION_NAME)
@@ -1057,6 +1151,11 @@ def _option_string_for_relativity(relativity: RelOptionType) -> str:
 def path_part_string_reference_restrictions() -> ReferenceRestrictionsOnDirectAndIndirect:
     return ReferenceRestrictionsOnDirectAndIndirect(StringRestriction(),
                                                     StringRestriction())
+
+
+def file_ref_reference_restrictions(accepted_relativities: PathRelativityVariants
+                                    ) -> ReferenceRestrictions:
+    return ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))
 
 
 def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativityVariants
