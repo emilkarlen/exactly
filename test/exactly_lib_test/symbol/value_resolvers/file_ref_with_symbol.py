@@ -2,11 +2,11 @@ import pathlib
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
-    ReferenceRestrictionsOnDirectAndIndirect
+    ReferenceRestrictionsOnDirectAndIndirect, NoRestriction, no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
-    PathPartResolverAsStringSymbolReference
+    PathPartResolverAsStringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.value_structure import ValueType
 from exactly_lib.test_case_file_structure import file_refs
@@ -20,6 +20,7 @@ from exactly_lib_test.symbol.test_resources import concrete_restriction_assertio
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as vr_tr
 from exactly_lib_test.symbol.test_resources import symbol_utils as sym_utils
 from exactly_lib_test.symbol.test_resources.symbol_utils import string_constant_value_container
+from exactly_lib_test.symbol.test_resources.value_resolvers import string_resolver_of_single_symbol_reference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -34,30 +35,36 @@ class TestRelSymbol(unittest.TestCase):
         # ARRANGE #
         expected_restriction = FileRefRelativityRestriction(
             PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, True))
+        symbol_name_of_rel_path = 'symbol_name_of_rel_path'
+        symbol_name_of_path_suffix = 'symbol_name_of_path_suffix'
+        restrictions_on_path_suffix_symbol = restrictions.ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())
         expected_mandatory_references = [
-            vr_tr.equals_symbol_reference_with_restriction_on_direct_target('symbol_name',
-                                                                            restrictions.equals_file_ref_relativity_restriction(
-                                                                                expected_restriction))
+            vr_tr.equals_symbol_reference_with_restriction_on_direct_target(
+                symbol_name_of_rel_path,
+                restrictions.equals_file_ref_relativity_restriction(expected_restriction))
         ]
-        value_ref_of_path = SymbolReference('symbol_name',
-                                            ReferenceRestrictionsOnDirectAndIndirect(expected_restriction))
+        symbol_ref_of_path = SymbolReference(symbol_name_of_rel_path,
+                                             ReferenceRestrictionsOnDirectAndIndirect(expected_restriction))
         path_suffix_test_cases = [
             (PathPartResolverAsFixedPath('file.txt'),
              [],
              ),
-            (PathPartResolverAsStringSymbolReference('symbol_name'),
-             [vr_tr.equals_symbol_reference_with_restriction_on_direct_target('symbol_name',
-                                                                              restrictions.is_string_value_restriction)],
-             ),
+            (PathPartResolverAsStringResolver(
+                string_resolver_of_single_symbol_reference(symbol_name_of_path_suffix,
+                                                           restrictions_on_path_suffix_symbol)),
+             [vr_tr.matches_symbol_reference(
+                 symbol_name_of_path_suffix,
+                 vr_tr.matches_restrictions_on_direct_and_indirect())],
+            ),
         ]
-        for path_suffix, additional_expected_references in path_suffix_test_cases:
-            file_ref_resolver = sut.rel_symbol(value_ref_of_path, path_suffix)
+        for path_suffix_resolver, additional_expected_references in path_suffix_test_cases:
+            file_ref_resolver = sut.rel_symbol(symbol_ref_of_path, path_suffix_resolver)
             # ACT #
             actual = file_ref_resolver.references
             # ASSERT #
             expected_references = expected_mandatory_references + additional_expected_references
             assertion = asrt.matches_sequence(expected_references)
-            assertion.apply_with_message(self, actual, 'symbol_references_of_paths')
+            assertion.apply_with_message(self, actual, 'symbol references')
 
     def test_exists_pre_sds(self):
         # ARRANGE #
@@ -73,7 +80,8 @@ class TestRelSymbol(unittest.TestCase):
             (PathPartResolverAsFixedPath('file.txt'),
              ()
              ),
-            (PathPartResolverAsStringSymbolReference('path_suffix_symbol_name'),
+            (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol_name',
+                                                                                         no_restrictions())),
              (Entry('path_suffix_symbol_name',
                     string_constant_value_container('path-suffix')),),
              ),
@@ -110,7 +118,8 @@ class TestRelSymbol(unittest.TestCase):
         path_suffix_test_cases = [
             (PathPartResolverAsFixedPath(path_suffix_str), ()
              ),
-            (PathPartResolverAsStringSymbolReference('path_suffix_symbol'),
+            (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol',
+                                                                                         no_restrictions())),
              (Entry('path_suffix_symbol',
                     string_constant_value_container(path_suffix_str)),)
              ),
