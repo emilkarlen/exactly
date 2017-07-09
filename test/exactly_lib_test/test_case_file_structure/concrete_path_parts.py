@@ -26,7 +26,7 @@ class TestPathPartAsFixedPath(unittest.TestCase):
         # ARRANGE #
         path_part = sut.PathPartAsFixedPath('the file name')
         # ACT #
-        actual = path_part.resolve()
+        actual = path_part.value()
         # ASSERT #
         self.assertEqual('the file name',
                          actual,
@@ -38,7 +38,7 @@ class TestPathPartAsNothing(unittest.TestCase):
         # ARRANGE #
         path_part = sut.PathPartAsNothing()
         # ACT #
-        actual = path_part.resolve()
+        actual = path_part.value()
         # ASSERT #
         self.assertEqual('',
                          actual,
