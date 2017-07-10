@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.symbol import concrete_string_values as csv
 from exactly_lib.symbol import string_value as sut
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
@@ -33,7 +34,7 @@ class TestDirDependency(unittest.TestCase):
             ),
             (
                 'single string constant fragment',
-                sut.StringValue(tuple([sut.ConstantFragment('fragment')])),
+                sut.StringValue(tuple([csv.ConstantFragment('fragment')])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
                     value_when_no_dir_dependencies=do_return('fragment'),
@@ -41,8 +42,8 @@ class TestDirDependency(unittest.TestCase):
             ),
             (
                 'multiple string constant fragment',
-                sut.StringValue(tuple([sut.ConstantFragment('fragment1'),
-                                       sut.ConstantFragment('_fragment2')])),
+                sut.StringValue(tuple([csv.ConstantFragment('fragment1'),
+                                       csv.ConstantFragment('_fragment2')])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
                     value_when_no_dir_dependencies=do_return('fragment1_fragment2'),
@@ -50,7 +51,7 @@ class TestDirDependency(unittest.TestCase):
             ),
             (
                 'multiple dir dependent value/pre sds',
-                sut.StringValue(tuple([sut.FileRefFragment(file_ref_rel_home)])),
+                sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_home)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME},
                     value_of_any_dependency=lambda h_s: str(
@@ -58,7 +59,7 @@ class TestDirDependency(unittest.TestCase):
             ),
             (
                 'multiple dir dependent value/post sds',
-                sut.StringValue(tuple([sut.FileRefFragment(file_ref_rel_sds)])),
+                sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_sds)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.NON_HOME},
                     value_of_any_dependency=lambda h_s: str(
@@ -66,8 +67,8 @@ class TestDirDependency(unittest.TestCase):
             ),
             (
                 'multiple dir dependent value/pre sds + post sds',
-                sut.StringValue(tuple([sut.FileRefFragment(file_ref_rel_home),
-                                       sut.FileRefFragment(file_ref_rel_sds)])),
+                sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_home),
+                                       csv.FileRefFragment(file_ref_rel_sds)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME,
                                             ResolvingDependency.NON_HOME},
