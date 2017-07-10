@@ -4,6 +4,7 @@ from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol import value_structure as struct
 from exactly_lib.symbol.value_structure import SymbolValueResolver
 from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -13,8 +14,8 @@ class StringFragmentResolver(SymbolValueResolver):
     """
 
     @property
-    def value_type(self) -> struct.ValueType:
-        return struct.ValueType.STRING
+    def value_type(self) -> ValueType:
+        return ValueType.STRING
 
     @property
     def is_string_constant(self) -> bool:
@@ -112,8 +113,8 @@ class StringResolver(SymbolValueResolver):
         self._fragment_resolvers = fragment_resolvers
 
     @property
-    def value_type(self) -> struct.ValueType:
-        return struct.ValueType.STRING
+    def value_type(self) -> ValueType:
+        return ValueType.STRING
 
     def resolve(self, symbols: SymbolTable) -> sv.StringValue:
         fragments = [fr.resolve(symbols)

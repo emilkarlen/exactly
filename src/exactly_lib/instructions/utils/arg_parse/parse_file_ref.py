@@ -26,11 +26,12 @@ from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
-from exactly_lib.symbol.value_structure import ValueType, ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.symbol_table import SymbolTable
 
