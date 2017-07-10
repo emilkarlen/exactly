@@ -29,7 +29,7 @@ class TestDirDependency(unittest.TestCase):
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
                     value_when_no_dir_dependencies=do_return(''),
-                    value_pre_or_post_sds=do_return('')),
+                    value_of_any_dependency=do_return('')),
             ),
             (
                 'single string constant fragment',
@@ -37,7 +37,7 @@ class TestDirDependency(unittest.TestCase):
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
                     value_when_no_dir_dependencies=do_return('fragment'),
-                    value_pre_or_post_sds=do_return('fragment')),
+                    value_of_any_dependency=do_return('fragment')),
             ),
             (
                 'multiple string constant fragment',
@@ -46,14 +46,14 @@ class TestDirDependency(unittest.TestCase):
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
                     value_when_no_dir_dependencies=do_return('fragment1_fragment2'),
-                    value_pre_or_post_sds=do_return('fragment1_fragment2')),
+                    value_of_any_dependency=do_return('fragment1_fragment2')),
             ),
             (
                 'multiple dir dependent value/pre sds',
                 sut.StringValue(tuple([sut.FileRefFragment(file_ref_rel_home)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME},
-                    value_pre_or_post_sds=lambda h_s: str(
+                    value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_home.value_pre_sds(h_s.home_dir_path))),
             ),
             (
@@ -61,7 +61,7 @@ class TestDirDependency(unittest.TestCase):
                 sut.StringValue(tuple([sut.FileRefFragment(file_ref_rel_sds)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.NON_HOME},
-                    value_pre_or_post_sds=lambda h_s: str(
+                    value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_sds.value_post_sds(h_s.sds))),
             ),
             (
@@ -71,7 +71,7 @@ class TestDirDependency(unittest.TestCase):
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME,
                                             ResolvingDependency.NON_HOME},
-                    value_pre_or_post_sds=lambda h_s: (
+                    value_of_any_dependency=lambda h_s: (
                         str(file_ref_rel_home.value_pre_sds(h_s.home_dir_path)) +
                         str(file_ref_rel_sds.value_post_sds(h_s.sds)))
                 ),

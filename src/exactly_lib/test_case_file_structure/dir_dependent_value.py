@@ -62,7 +62,8 @@ class DirDependentValue:
         """
         raise NotImplementedError()
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
+        """Gives the value, regardless of actual dependency."""
         raise NotImplementedError()
 
 
@@ -87,7 +88,7 @@ class SingleDirDependentValue(DirDependentValue):
         """
         raise NotImplementedError()
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
         if self.exists_pre_sds():
             return self.value_pre_sds(home_and_sds.home_dir_path)
         else:
@@ -106,5 +107,5 @@ class MultiDirDependentValue(DirDependentValue):
     def exists_pre_sds(self) -> bool:
         return ResolvingDependency.NON_HOME not in self.resolving_dependencies()
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
         raise NotImplementedError()

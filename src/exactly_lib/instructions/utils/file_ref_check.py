@@ -26,7 +26,7 @@ class FileRefCheck:
 
     def pre_or_post_sds_condition_result(self, environment: PathResolvingEnvironmentPreOrPostSds) -> CheckResult:
         fr = self.file_ref_resolver.resolve(environment.symbols)
-        return self.file_properties.apply(fr.value_pre_or_post_sds(environment.home_and_sds))
+        return self.file_properties.apply(fr.value_of_any_dependency(environment.home_and_sds))
 
 
 class FileRefCheckValidator(FileRefValidatorBase):
@@ -69,7 +69,7 @@ def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
     validation_result = file_ref_check.pre_or_post_sds_condition_result(environment)
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
-        file_path = fr.value_pre_or_post_sds(environment.home_and_sds)
+        file_path = fr.value_of_any_dependency(environment.home_and_sds)
         return render_failure(validation_result.cause,
                               file_path)
     return None

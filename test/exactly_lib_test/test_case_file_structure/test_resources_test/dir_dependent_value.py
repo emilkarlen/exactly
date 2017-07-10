@@ -82,11 +82,11 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
         cases = [
             AMultiDirDependentValue(resolving_dependencies=set(),
                                     value_when_no_dir_dependencies=do_return('value when no dep'),
-                                    value_pre_or_post_sds=do_return('value')),
+                                    value_of_any_dependency=do_return('value')),
             AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME},
-                                    value_pre_or_post_sds=do_return('value_pre_or_post_sds')),
+                                    value_of_any_dependency=do_return('value_of_any_dependency')),
             AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME},
-                                    value_pre_or_post_sds=do_return('value_pre_or_post_sds'))
+                                    value_of_any_dependency=do_return('value_of_any_dependency'))
         ]
         for value in cases:
             with self.subTest(value=str(value)):
@@ -122,17 +122,17 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
     def test_fail__value_pre_sds(self):
         self._assert_not_equal(
             AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME},
-                                    value_pre_or_post_sds=do_return('expected')),
+                                    value_of_any_dependency=do_return('expected')),
             AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME},
-                                    value_pre_or_post_sds=do_return('actual')),
+                                    value_of_any_dependency=do_return('actual')),
         )
 
     def test_fail__value_post_sds(self):
         self._assert_not_equal(
             AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME},
-                                    value_pre_or_post_sds=do_return('expected')),
+                                    value_of_any_dependency=do_return('expected')),
             AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME},
-                                    value_pre_or_post_sds=do_return('actual')),
+                                    value_of_any_dependency=do_return('actual')),
         )
 
     @staticmethod
@@ -192,11 +192,11 @@ class AMultiDirDependentValue(sut.MultiDirDependentValue):
     def __init__(self,
                  resolving_dependencies: set,
                  value_when_no_dir_dependencies=do_raise(_ShouldNotBeInvokedTestException()),
-                 value_pre_or_post_sds=do_raise(_ShouldNotBeInvokedTestException()),
+                 value_of_any_dependency=do_raise(_ShouldNotBeInvokedTestException()),
                  ):
         self._resolving_dependencies = resolving_dependencies
         self._value_when_no_dir_dependencies = value_when_no_dir_dependencies
-        self._value_pre_or_post_sds = value_pre_or_post_sds
+        self._value_of_any_dependency = value_of_any_dependency
 
     def resolving_dependencies(self) -> set:
         return self._resolving_dependencies
@@ -213,8 +213,8 @@ class AMultiDirDependentValue(sut.MultiDirDependentValue):
     def value_when_no_dir_dependencies(self):
         return self._value_when_no_dir_dependencies()
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds):
-        return self._value_pre_or_post_sds(home_and_sds)
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
+        return self._value_of_any_dependency(home_and_sds)
 
     def __str__(self):
         return '{}(has_dir_dependency={has_dir_dependency}, exists_pre_sds={exists_pre_sds})'.format(

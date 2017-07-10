@@ -49,8 +49,8 @@ class StringValue(StringWithDirDependency):
     #                         for f in self._fragments]
     #     return ''.join(fragment_strings)
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> str:
-        fragment_strings = [f.value_pre_or_post_sds(home_and_sds)
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
+        fragment_strings = [f.value_of_any_dependency(home_and_sds)
                             for f in self._fragments]
         return ''.join(fragment_strings)
 
@@ -81,7 +81,7 @@ class ConstantFragment(StringFragment):
     # def value_post_sds(self, sds: SandboxDirectoryStructure) -> str:
     #     return self.string_constant
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> str:
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
         return self.string_constant
 
     def __str__(self):
@@ -111,8 +111,8 @@ class _StringFragmentFromDirDependentValue(StringFragment):
     # def value_post_sds(self, sds: SandboxDirectoryStructure) -> str:
     #     return self._to_string(self.value.value_post_sds(sds))
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> str:
-        return self._to_string(self.value.value_pre_or_post_sds(home_and_sds))
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
+        return self._to_string(self.value.value_of_any_dependency(home_and_sds))
 
     def _to_string(self, x) -> str:
         raise NotImplementedError()
