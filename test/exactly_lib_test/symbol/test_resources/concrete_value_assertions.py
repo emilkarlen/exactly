@@ -16,9 +16,9 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value
-from exactly_lib_test.test_case_file_structure.test_resources.file_ref import equals_file_ref
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system_values.test_resources.file_ref import equals_file_ref
 from exactly_lib_test.type_system_values.test_resources.string_value import equals_string_value
 
 
