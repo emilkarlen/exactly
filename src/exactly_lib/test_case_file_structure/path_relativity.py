@@ -45,7 +45,7 @@ DEPENDENCY_DICT = {
                    )),
 }
 
-DIR_DEPENDENCY_OF = {
+RESOLVING_DEPENDENCY_OF = {
     RelOptionType.REL_HOME: ResolvingDependency.HOME,
 
     RelOptionType.REL_ACT: ResolvingDependency.NON_HOME,
