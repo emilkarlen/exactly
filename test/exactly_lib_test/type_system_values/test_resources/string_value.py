@@ -17,32 +17,18 @@ def equals_string_fragment(expected: StringFragment) -> asrt.ValueAssertion:
 
 class _AssertStringFragmentHasSpecifiedProperties(MultiDirDependentValueAssertion):
     def __init__(self, expected: StringFragment):
-        super().__init__(expected)
+        super().__init__(StringFragment, expected)
         self._expected = expected
-
-    def _check_custom_type(self,
-                           put: unittest.TestCase,
-                           actual,
-                           message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(actual, StringFragment,
-                             message_builder.apply('Actual value is expected to be a ' + str(StringFragment)))
 
 
 class _AssertStringValueHasSpecifiedProperties(MultiDirDependentValueAssertion):
     def __init__(self, expected: StringValue):
-        super().__init__(expected)
+        super().__init__(StringValue, expected)
         self._expected = expected
         self._sequence_of_fragment_assertions = []
         for idx, element in enumerate(expected.fragments):
             assert isinstance(element, StringFragment), 'Element must be a StringFragment #' + str(idx)
             self._sequence_of_fragment_assertions.append(equals_string_fragment(element))
-
-    def _check_custom_type(self,
-                           put: unittest.TestCase,
-                           actual,
-                           message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(actual, StringValue,
-                             message_builder.apply('Actual value is expected to be a ' + str(StringValue)))
 
     def _check_custom_multi(self,
                             put: unittest.TestCase,
