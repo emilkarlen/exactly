@@ -16,15 +16,8 @@ def equals_file_ref(expected: FileRef) -> asrt.ValueAssertion:
 
 class _AssertFileRefHasSpecifiedProperties(SingleDirDependentValueAssertion):
     def __init__(self, expected: FileRef):
-        super().__init__(expected)
+        super().__init__(FileRef, expected)
         self._expected = expected
-
-    def _check_custom_type(self,
-                           put: unittest.TestCase,
-                           actual,
-                           message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(actual, FileRef,
-                             message_builder.apply('Actual value is expected to be a ' + str(FileRef)))
 
     def _check_custom(self,
                       put: unittest.TestCase,

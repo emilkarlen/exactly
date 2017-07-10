@@ -8,22 +8,25 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def equals_single_dir_dependent_value(expected: SingleDirDependentValue) -> asrt.ValueAssertion:
-    return SingleDirDependentValueAssertion(expected)
+    return SingleDirDependentValueAssertion(SingleDirDependentValue, expected)
 
 
 def equals_multi_dir_dependent_value(expected: MultiDirDependentValue) -> asrt.ValueAssertion:
-    return MultiDirDependentValueAssertion(expected)
+    return MultiDirDependentValueAssertion(MultiDirDependentValue, expected)
 
 
 class DirDependentValueAssertionBase(asrt.ValueAssertion):
-    def __init__(self, expected: DirDependentValue):
+    def __init__(self,
+                 expected_type,
+                 expected: DirDependentValue):
+        self._expected_type = expected_type
         self._expected = expected
 
     def apply(self,
               put: unittest.TestCase,
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        self._check_custom_type(put, value, message_builder)
+        self._check_type(put, value, message_builder)
         assert isinstance(value, DirDependentValue)
 
         self._check_common_dependencies(put, value, message_builder)
@@ -35,12 +38,13 @@ class DirDependentValueAssertionBase(asrt.ValueAssertion):
 
         self._check_custom(put, value, home_and_sds, message_builder)
 
-    def _check_custom_type(self,
-                           put: unittest.TestCase,
-                           actual,
-                           message_builder: asrt.MessageBuilder
-                           ):
-        raise NotImplementedError()
+    def _check_type(self,
+                    put: unittest.TestCase,
+                    actual,
+                    message_builder: asrt.MessageBuilder
+                    ):
+        put.assertIsInstance(actual, self._expected_type,
+                             message_builder.apply('Actual value is expected to be a ' + str(self._expected_type)))
 
     def _check_custom_dependencies(self,
                                    put: unittest.TestCase,
@@ -91,16 +95,9 @@ class DirDependentValueAssertionBase(asrt.ValueAssertion):
 
 
 class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
-    def __init__(self, expected: SingleDirDependentValue):
-        super().__init__(expected)
+    def __init__(self, expected_type, expected: SingleDirDependentValue):
+        super().__init__(expected_type, expected)
         self._expected_single_dep_value = expected
-
-    def _check_custom_type(self,
-                           put: unittest.TestCase,
-                           actual,
-                           message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(actual, SingleDirDependentValue,
-                             'Actual value is expected to be a ' + str(SingleDirDependentValue))
 
     def _check_custom_dependencies(self,
                                    put: unittest.TestCase,
@@ -135,16 +132,9 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
 
 
 class MultiDirDependentValueAssertion(DirDependentValueAssertionBase):
-    def __init__(self, expected: MultiDirDependentValue):
-        super().__init__(expected)
+    def __init__(self, expected_type, expected: MultiDirDependentValue):
+        super().__init__(expected_type, expected)
         self._expected_multi_dep_value = expected
-
-    def _check_custom_type(self,
-                           put: unittest.TestCase,
-                           actual,
-                           message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(actual, MultiDirDependentValue,
-                             'Actual value is expected to be a ' + str(MultiDirDependentValue))
 
     def _check_custom_dependencies(self,
                                    put: unittest.TestCase,
