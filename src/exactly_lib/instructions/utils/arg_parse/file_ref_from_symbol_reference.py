@@ -6,10 +6,10 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_structure import ValueContainer
-from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 
 

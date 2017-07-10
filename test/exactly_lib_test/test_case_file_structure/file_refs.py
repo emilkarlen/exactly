@@ -2,15 +2,15 @@ import pathlib
 import types
 import unittest
 
-from exactly_lib.test_case_file_structure import file_refs as sut
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency, RelOptionType, \
     RESOLVING_DEPENDENCY_OF
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.type_system_values import file_refs as sut
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.path_part import PathPart
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType

@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath, \
-    PathPartAsNothing
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, \
+    PathPartAsNothing
+from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl

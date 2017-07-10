@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.symbol.value_resolvers import file_ref_resolvers as sut
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.file_ref import equals_file_ref

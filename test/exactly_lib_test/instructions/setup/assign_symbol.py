@@ -14,8 +14,8 @@ from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_structure import ValueContainer, Value
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \

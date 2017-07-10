@@ -2,13 +2,13 @@ import pathlib
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelNonHomeOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import rel_symbol_arg_str

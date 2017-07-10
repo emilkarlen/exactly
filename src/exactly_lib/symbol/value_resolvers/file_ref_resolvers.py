@@ -1,5 +1,5 @@
 from exactly_lib.symbol.concrete_values import FileRefResolver
-from exactly_lib.test_case_file_structure.file_ref import FileRef
+from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 
 
