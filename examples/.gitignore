@@ -9,3 +9,4 @@ organize/bin/do-something-good-with
 setup/copy-stdin-to-stdout
 setup/list-files-under-current-directory
 setup/remove-all-files-in-the-current-directory
+setup/print-environment-variables
