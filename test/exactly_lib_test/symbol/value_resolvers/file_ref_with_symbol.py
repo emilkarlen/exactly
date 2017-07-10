@@ -8,13 +8,13 @@ from exactly_lib.symbol.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.value_structure import ValueType
 from exactly_lib.test_case_file_structure import file_refs
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as restrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as vr_tr

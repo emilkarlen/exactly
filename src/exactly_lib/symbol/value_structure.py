@@ -1,13 +1,7 @@
-from enum import Enum
-
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
-
-
-class ValueType(Enum):
-    STRING = 0
-    PATH = 1
 
 
 class Value:

@@ -4,7 +4,7 @@ from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionC
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
-from exactly_lib.symbol.value_structure import ValueType
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 PATH_TYPE = 'path'

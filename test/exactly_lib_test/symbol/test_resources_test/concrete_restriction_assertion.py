@@ -4,8 +4,8 @@ from exactly_lib.symbol import concrete_restrictions as r
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
     StringRestriction, FailureOfIndirectReference
 from exactly_lib.symbol.value_restriction import ValueRestrictionFailure
-from exactly_lib.symbol.value_structure import ValueType
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException

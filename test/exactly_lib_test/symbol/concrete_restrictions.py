@@ -7,8 +7,9 @@ from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueType, ValueContainer
+from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources import symbol_utils
