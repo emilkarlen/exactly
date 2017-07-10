@@ -20,23 +20,18 @@ def suite() -> unittest.TestSuite:
     configs_for_constant_rel_option_type = [
         _RelativityConfig(sut.rel_home,
                           ResolvingDependency.HOME,
-                          True,
                           lambda home_and_sds: home_and_sds.home_dir_path),
         _RelativityConfig(sut.rel_tmp_user,
                           ResolvingDependency.NON_HOME,
-                          False,
                           lambda home_and_sds: home_and_sds.sds.tmp.user_dir),
         _RelativityConfig(sut.rel_act,
                           ResolvingDependency.NON_HOME,
-                          False,
                           lambda home_and_sds: home_and_sds.sds.act_dir),
         _RelativityConfig(sut.rel_result,
                           ResolvingDependency.NON_HOME,
-                          False,
                           lambda home_and_sds: home_and_sds.sds.result.root_dir),
         _RelativityConfig(sut.rel_cwd,
                           ResolvingDependency.NON_HOME,
-                          False,
                           lambda home_and_sds: pathlib.Path().resolve()),
     ]
     all_configs = configs_for_constant_rel_option_type + configs_for_rel_option_argument()
@@ -52,10 +47,8 @@ def configs_for_rel_option_argument() -> list:
     for rel_option_type in RelOptionType:
         home_and_sds_2_relativity_root = REL_OPTIONS_MAP[rel_option_type].root_resolver.from_home_and_sds
         resolving_dependency = RESOLVING_DEPENDENCY_OF[rel_option_type]
-        exists_pre_sds = resolving_dependency is ResolvingDependency.HOME
         ret_val.append(_RelativityConfig(_of_rel_option__path_suffix_2_file_ref(rel_option_type),
                                          resolving_dependency,
-                                         exists_pre_sds,
                                          home_and_sds_2_relativity_root,
                                          function_name=sut.of_rel_option.__name__,
                                          rel_option_type_for_doc=str(rel_option_type)))
@@ -73,18 +66,20 @@ class _RelativityConfig:
     def __init__(self,
                  path_suffix_2_file_ref: types.FunctionType,
                  resolving_dependency: ResolvingDependency,
-                 exists_pre_sds: bool,
                  home_and_sds_2_relativity_root: types.FunctionType,
                  function_name: str = '',
                  rel_option_type_for_doc: str = ''):
         self.path_suffix_2_file_ref = path_suffix_2_file_ref
-        self.exists_pre_sds = exists_pre_sds
         self.resolving_dependency = resolving_dependency
         self.home_and_sds_2_relativity_root = home_and_sds_2_relativity_root
         self.function_name = function_name
         if not function_name:
             self.function_name = path_suffix_2_file_ref.__name__
         self.rel_option_type = rel_option_type_for_doc
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        return self.resolving_dependency is not ResolvingDependency.NON_HOME
 
     def __str__(self):
         return '_RelativityConfig(function_name={}, resolving_dependency={}, rel_option_type={})'.format(
