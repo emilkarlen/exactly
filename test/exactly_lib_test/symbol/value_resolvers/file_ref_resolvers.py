@@ -5,8 +5,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.test_case_file_structure.test_resources.file_ref import equals_file_ref
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import FileRefTestImpl
+from exactly_lib_test.type_system_values.test_resources.file_ref import equals_file_ref
 
 
 def suite() -> unittest.TestSuite:

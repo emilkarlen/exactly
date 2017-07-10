@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib_test.test_case_file_structure import concrete_path_parts, file_refs, relativity_validation
 from exactly_lib_test.test_case_file_structure import dir_dependent_value
 from exactly_lib_test.test_case_file_structure import relativity_root, relative_path_options
+from exactly_lib_test.test_case_file_structure import relativity_validation
 from exactly_lib_test.test_case_file_structure import sandbox_directory_structure, relativity_root, test_resources_test
 
 
@@ -14,8 +14,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(dir_dependent_value.suite())
     ret_val.addTest(relative_path_options.suite())
     ret_val.addTest(relativity_validation.suite())
-    ret_val.addTest(concrete_path_parts.suite())
-    ret_val.addTest(file_refs.suite())
     return ret_val
 
 

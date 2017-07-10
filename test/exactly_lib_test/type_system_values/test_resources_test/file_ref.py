@@ -5,11 +5,11 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib_test.test_case_file_structure.test_resources import file_ref as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
+from exactly_lib_test.type_system_values.test_resources import file_ref as sut
 
 
 def suite() -> unittest.TestSuite:
