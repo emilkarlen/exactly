@@ -1,8 +1,7 @@
 import unittest
 
-from exactly_lib.symbol import concrete_string_values as csv
 from exactly_lib.symbol import string_resolver as sut
-from exactly_lib.symbol import string_value as sv
+from exactly_lib.type_system_values import string_value as sv, concrete_string_values as csv
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_string_fragments
