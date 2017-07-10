@@ -6,7 +6,6 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixBase, \
     FileRefWithPathSuffixAndIsNotAbsoluteBase
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
     SPECIFIC_ABSOLUTE_RELATIVITY, ResolvingDependency
@@ -20,12 +19,6 @@ class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase
 
     def __init__(self, path_suffix: PathPart):
         super().__init__(path_suffix)
-
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        if self.exists_pre_sds():
-            return self.value_pre_sds(home_and_sds.home_dir_path)
-        else:
-            return self.value_post_sds(home_and_sds.sds)
 
 
 class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
@@ -99,9 +92,6 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
 
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self.path_suffix_path()
-
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self.value_pre_sds(home_and_sds.home_dir_path)
 
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return self.value_when_no_dir_dependencies()

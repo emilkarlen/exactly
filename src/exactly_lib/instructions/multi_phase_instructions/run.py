@@ -206,7 +206,7 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         file_ref = self.file_to_interpret.resolve(environment.symbols)
-        return [str(file_ref.value_pre_or_post_sds(environment.home_and_sds))] + self.argument_list
+        return [str(file_ref.value_of_any_dependency(environment.home_and_sds))] + self.argument_list
 
 
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):

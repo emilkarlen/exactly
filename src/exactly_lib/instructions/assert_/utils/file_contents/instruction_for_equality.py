@@ -77,7 +77,7 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
                                             directory=str(environment.sds.tmp.internal_dir))
         else:
             file_ref = self._expected_contents.file_reference_resolver.resolve(environment.symbols)
-            return file_ref.value_pre_or_post_sds(environment.home_and_sds)
+            return file_ref.value_of_any_dependency(environment.home_and_sds)
 
     def _file_ref_check_for_expected(self) -> FileRefCheck:
         return FileRefCheck(self._expected_contents.file_reference_resolver,

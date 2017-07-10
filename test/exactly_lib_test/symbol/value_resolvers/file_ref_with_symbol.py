@@ -155,7 +155,7 @@ class TestRelSymbol(unittest.TestCase):
                     else:
                         tested_path_msg = 'value_post_sds'
                         actual_path = file_ref_to_check.value_post_sds(environment.sds)
-                    actual_path_pre_or_post_sds = file_ref_to_check.value_pre_or_post_sds(environment.home_and_sds)
+                    actual_path_pre_or_post_sds = file_ref_to_check.value_of_any_dependency(environment.home_and_sds)
                     # ASSERT #
                     self.assertIs(ValueType.PATH,
                                   fr_resolver_to_check.value_type,
@@ -165,7 +165,7 @@ class TestRelSymbol(unittest.TestCase):
                                      tested_path_msg)
                     self.assertEqual(expected_path_str,
                                      str(actual_path_pre_or_post_sds),
-                                     'value_pre_or_post_sds')
+                                     'value_of_any_dependency')
 
 
 def _symbol_reference_of_path_with_accepted(value_name: str,

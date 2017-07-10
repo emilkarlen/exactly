@@ -25,7 +25,7 @@ class PreOrPostSdsValue:
         """
         raise ValueError(str(self) + ': This value exists pre SDS')
 
-    def value_pre_or_post_sds(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
         if self.exists_pre_sds():
             return self.value_pre_sds(home_and_sds.home_dir_path)
         else:

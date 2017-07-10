@@ -37,7 +37,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
 
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
         file_ref = self.file_ref_resolver.resolve(environment.symbols)
-        return file_ref.value_pre_or_post_sds(environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
+        return file_ref.value_of_any_dependency(environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
 
 
 class ActComparisonActualFileForStdFileBase(ComparisonActualFile):

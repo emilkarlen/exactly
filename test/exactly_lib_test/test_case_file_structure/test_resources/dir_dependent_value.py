@@ -85,9 +85,9 @@ class DirDependentValueAssertionBase(asrt.ValueAssertion):
                             actual.value_when_no_dir_dependencies(),
                             message_builder.apply('value_when_no_dir_dependencies'))
 
-        put.assertEqual(self._expected.value_pre_or_post_sds(home_and_sds),
-                        actual.value_pre_or_post_sds(home_and_sds),
-                        message_builder.apply('value_pre_or_post_sds'))
+        put.assertEqual(self._expected.value_of_any_dependency(home_and_sds),
+                        actual.value_of_any_dependency(home_and_sds),
+                        message_builder.apply('value_of_any_dependency'))
 
 
 class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):

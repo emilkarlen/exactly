@@ -172,7 +172,7 @@ class TestFilePath(TestForFixedRelativityBase):
                 else:
                     tested_path_msg = 'file_path_post_sds'
                     actual_path = file_reference.value_post_sds(home_and_sds.sds)
-                actual_path_pre_or_post_sds = file_reference.value_pre_or_post_sds(home_and_sds)
+                actual_path_pre_or_post_sds = file_reference.value_of_any_dependency(home_and_sds)
                 # ASSERT #
                 expected_relativity_root = self.config.home_and_sds_2_relativity_root(home_and_sds)
                 expected_path = expected_relativity_root / expected_path_suffix
