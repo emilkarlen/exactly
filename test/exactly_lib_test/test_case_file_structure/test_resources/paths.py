@@ -9,5 +9,5 @@ def dummy_sds() -> SandboxDirectoryStructure:
 
 
 def dummy_home_and_sds() -> HomeAndSds:
-    return HomeAndSds(pathlib.Path().resolve(),
+    return HomeAndSds(pathlib.Path('home'),
                       dummy_sds())

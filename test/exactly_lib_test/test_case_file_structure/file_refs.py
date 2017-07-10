@@ -7,56 +7,104 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_part import PathPart
+from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency, RelOptionType, \
+    RESOLVING_DEPENDENCY_OF
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
 
 def suite() -> unittest.TestSuite:
-    configs = [
+    configs_for_constant_rel_option_type = [
         _RelativityConfig(sut.rel_home,
+                          ResolvingDependency.HOME,
                           True,
                           lambda home_and_sds: home_and_sds.home_dir_path),
         _RelativityConfig(sut.rel_tmp_user,
+                          ResolvingDependency.NON_HOME,
                           False,
                           lambda home_and_sds: home_and_sds.sds.tmp.user_dir),
         _RelativityConfig(sut.rel_act,
+                          ResolvingDependency.NON_HOME,
                           False,
                           lambda home_and_sds: home_and_sds.sds.act_dir),
         _RelativityConfig(sut.rel_result,
+                          ResolvingDependency.NON_HOME,
                           False,
                           lambda home_and_sds: home_and_sds.sds.result.root_dir),
         _RelativityConfig(sut.rel_cwd,
+                          ResolvingDependency.NON_HOME,
                           False,
                           lambda home_and_sds: pathlib.Path().resolve()),
     ]
-
+    all_configs = configs_for_constant_rel_option_type + configs_for_rel_option_argument()
     ret_val = unittest.TestSuite()
-    for config in configs:
+    for config in all_configs:
         ret_val.addTest(_suite_for_config(config))
+    return ret_val
+
+
+def configs_for_rel_option_argument() -> list:
+    ret_val = []
+
+    for rel_option_type in RelOptionType:
+        home_and_sds_2_relativity_root = REL_OPTIONS_MAP[rel_option_type].root_resolver.from_home_and_sds
+        resolving_dependency = RESOLVING_DEPENDENCY_OF[rel_option_type]
+        exists_pre_sds = resolving_dependency is ResolvingDependency.HOME
+        ret_val.append(_RelativityConfig(_of_rel_option__path_suffix_2_file_ref(rel_option_type),
+                                         resolving_dependency,
+                                         exists_pre_sds,
+                                         home_and_sds_2_relativity_root,
+                                         function_name=sut.of_rel_option.__name__,
+                                         rel_option_type_for_doc=str(rel_option_type)))
+    return ret_val
+
+
+def _of_rel_option__path_suffix_2_file_ref(rel_option_type: RelOptionType) -> types.FunctionType:
+    def ret_val(path_suffix: PathPart) -> FileRef:
+        return sut.of_rel_option(rel_option_type, path_suffix)
+
     return ret_val
 
 
 class _RelativityConfig:
     def __init__(self,
                  path_suffix_2_file_ref: types.FunctionType,
+                 resolving_dependency: ResolvingDependency,
                  exists_pre_sds: bool,
-                 home_and_sds_2_relativity_root: types.FunctionType):
+                 home_and_sds_2_relativity_root: types.FunctionType,
+                 function_name: str = '',
+                 rel_option_type_for_doc: str = ''):
         self.path_suffix_2_file_ref = path_suffix_2_file_ref
         self.exists_pre_sds = exists_pre_sds
+        self.resolving_dependency = resolving_dependency
         self.home_and_sds_2_relativity_root = home_and_sds_2_relativity_root
+        self.function_name = function_name
+        if not function_name:
+            self.function_name = path_suffix_2_file_ref.__name__
+        self.rel_option_type = rel_option_type_for_doc
+
+    def __str__(self):
+        return '_RelativityConfig(function_name={}, resolving_dependency={}, rel_option_type={})'.format(
+            self.function_name,
+            self.resolving_dependency,
+            self.rel_option_type
+        )
 
 
 def _suite_for_config(config: _RelativityConfig) -> unittest.TestSuite:
     return unittest.TestSuite([
         TestExistsPreOrPostSds(config),
+        TestDirDependencies(config),
         TestFilePath(config),
     ])
 
 
 class TestForFixedRelativityBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
     def __init__(self, config: _RelativityConfig):
-        super().__init__(config)
+        super().__init__(str(config))
         self.config = config
 
 
@@ -68,9 +116,35 @@ class TestExistsPreOrPostSds(TestForFixedRelativityBase):
         for path_suffix in test_cases:
             with self.subTest():
                 file_reference = self.config.path_suffix_2_file_ref(path_suffix)
+                assert isinstance(file_reference, FileRef)
                 self.assertEqual(self.config.exists_pre_sds,
                                  file_reference.exists_pre_sds(),
                                  'exist pre SDS')
+
+
+class TestDirDependencies(TestForFixedRelativityBase):
+    def runTest(self):
+        test_cases = [
+            PathPartAsFixedPath('file.txt'),
+        ]
+        for path_suffix in test_cases:
+            with self.subTest():
+                file_reference = self.config.path_suffix_2_file_ref(path_suffix)
+                assert isinstance(file_reference, FileRef)
+                self.assertEqual(True,
+                                 file_reference.has_dir_dependency(),
+                                 'has_dir_dependency')
+                self.assertEqual(self.config.resolving_dependency,
+                                 file_reference.resolving_dependency(),
+                                 'resolving_dependency')
+                if self.config.resolving_dependency is None:
+                    self.assertEqual(set(),
+                                     file_reference.resolving_dependencies(),
+                                     'resolving_dependencies')
+                else:
+                    self.assertEqual({self.config.resolving_dependency},
+                                     file_reference.resolving_dependencies(),
+                                     'resolving_dependencies')
 
 
 class TestFilePath(TestForFixedRelativityBase):
@@ -88,7 +162,11 @@ class TestFilePath(TestForFixedRelativityBase):
                 file_reference = self.config.path_suffix_2_file_ref(path_suffix)
                 assert isinstance(file_reference, FileRef)
                 # ACT #
-                if self.config.exists_pre_sds:
+                if self.config.resolving_dependency is None:
+                    tested_path_msg = 'value_when_no_dir_dependencies'
+                    actual_path = file_reference.value_when_no_dir_dependencies()
+
+                elif self.config.exists_pre_sds:
                     tested_path_msg = 'file_path_pre_sds'
                     actual_path = file_reference.value_pre_sds(home_and_sds.home_dir_path)
                 else:

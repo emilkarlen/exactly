@@ -22,9 +22,6 @@ class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase
         super().__init__(path_suffix)
         self.__exists_pre_sds = exists_pre_sds
 
-    def exists_pre_sds(self) -> bool:
-        return self.__exists_pre_sds
-
     def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self.__exists_pre_sds:
             return self.value_pre_sds(home_and_sds.home_dir_path)

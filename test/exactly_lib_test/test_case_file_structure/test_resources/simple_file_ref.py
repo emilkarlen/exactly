@@ -4,7 +4,8 @@ from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsF
 from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
 from exactly_lib.test_case_file_structure.path_part import PathPart
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, ResolvingDependency, \
+    RESOLVING_DEPENDENCY_OF
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
@@ -25,6 +26,9 @@ class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
         super().__init__(path_suffix)
         self.__relativity = relativity
         self.__path_suffix = path_suffix
+
+    def resolving_dependency(self) -> ResolvingDependency:
+        return RESOLVING_DEPENDENCY_OF[self.__relativity]
 
     def has_dir_dependency(self) -> bool:
         return True

@@ -13,7 +13,11 @@ class TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType(unittest.TestCa
         self.__object_whos_type_is_used_for_short_description = object_whos_type_is_used_for_short_description
 
     def shortDescription(self):
-        return str(type(self)) + '\n/ ' + str(type(self.__object_whos_type_is_used_for_short_description))
+        if isinstance(self.__object_whos_type_is_used_for_short_description, str):
+            object_str = self.__object_whos_type_is_used_for_short_description
+        else:
+            object_str = str(type(self.__object_whos_type_is_used_for_short_description))
+        return str(type(self)) + '\n/ ' + object_str
 
     def runTest(self):
         raise NotImplementedError()
