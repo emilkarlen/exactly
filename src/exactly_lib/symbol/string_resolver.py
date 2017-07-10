@@ -1,3 +1,4 @@
+from exactly_lib.symbol import concrete_string_values as csv
 from exactly_lib.symbol import string_value as sv
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol import value_structure as struct
@@ -65,7 +66,7 @@ class ConstantStringFragmentResolver(StringFragmentResolver):
         return ()
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
-        return sv.ConstantFragment(self._string_constant)
+        return csv.ConstantFragment(self._string_constant)
 
 
 class SymbolStringFragmentResolver(StringFragmentResolver):
@@ -95,9 +96,9 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
         assert isinstance(value_resolver, SymbolValueResolver), 'Value must be a SymbolValueResolver'
         value = value_resolver.resolve(symbols)
         if isinstance(value, sv.StringValue):
-            return sv.StringValueFragment(value)
+            return csv.StringValueFragment(value)
         elif isinstance(value, FileRef):
-            return sv.FileRefFragment(value)
+            return csv.FileRefFragment(value)
         else:
             raise TypeError('Not a {}: {}'.format(type(SymbolValueResolver),
                                                   value))

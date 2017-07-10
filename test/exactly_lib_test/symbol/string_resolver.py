@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.symbol import concrete_string_values as csv
 from exactly_lib.symbol import string_resolver as sut
 from exactly_lib.symbol import string_value as sv
 from exactly_lib.symbol.value_structure import ValueType
@@ -29,7 +30,7 @@ class StringResolverTest(unittest.TestCase):
         # ACT #
         actual = resolver.resolve(empty_symbol_table())
         # ASSERT #
-        assertion = asrt_sv.equals_string_value(sv.StringValue((sv.ConstantFragment(string_value),)))
+        assertion = asrt_sv.equals_string_value(sv.StringValue((csv.ConstantFragment(string_value),)))
         assertion.apply_without_message(self, actual)
 
     def test_fragments(self):
