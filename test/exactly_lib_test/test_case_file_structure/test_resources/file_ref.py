@@ -3,11 +3,11 @@ import unittest
 from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     SingleDirDependentValueAssertion
 from exactly_lib_test.test_case_file_structure.test_resources.path_relativity import equals_path_relativity
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part
 
 
 def equals_file_ref(expected: FileRef) -> asrt.ValueAssertion:

@@ -41,10 +41,10 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
 from exactly_lib_test.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
     symbol_table_from_entries, entry, file_ref_value
-from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part_string
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part_string
 
 
 def suite() -> unittest.TestSuite:
