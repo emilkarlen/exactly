@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib_test.test_case_file_structure.test_resources import concrete_path_part as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
+from exactly_lib_test.type_system_values.test_resources import concrete_path_part as sut
 
 
 def suite() -> unittest.TestSuite:
