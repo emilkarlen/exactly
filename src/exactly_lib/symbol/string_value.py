@@ -39,16 +39,6 @@ class StringValue(StringWithDirDependency):
                             for f in self._fragments]
         return ''.join(fragment_strings)
 
-    # def value_pre_sds(self, home_dir_path: pathlib.Path) -> str:
-    #     fragment_strings = [f.value_pre_sds(home_dir_path)
-    #                         for f in self._fragments]
-    #     return ''.join(fragment_strings)
-    #
-    # def value_post_sds(self, sds: SandboxDirectoryStructure) -> str:
-    #     fragment_strings = [f.value_post_sds(sds)
-    #                         for f in self._fragments]
-    #     return ''.join(fragment_strings)
-
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
         fragment_strings = [f.value_of_any_dependency(home_and_sds)
                             for f in self._fragments]
@@ -75,12 +65,6 @@ class ConstantFragment(StringFragment):
     def value_when_no_dir_dependencies(self):
         return self.string_constant
 
-    # def value_pre_sds(self, home_dir_path: pathlib.Path) -> str:
-    #     return self.string_constant
-    #
-    # def value_post_sds(self, sds: SandboxDirectoryStructure) -> str:
-    #     return self.string_constant
-
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
         return self.string_constant
 
@@ -104,12 +88,6 @@ class _StringFragmentFromDirDependentValue(StringFragment):
 
     def value_when_no_dir_dependencies(self):
         return self.value.value_when_no_dir_dependencies()
-
-    # def value_pre_sds(self, home_dir_path: pathlib.Path) -> str:
-    #     return self._to_string(self.value.value_pre_sds(home_dir_path))
-    #
-    # def value_post_sds(self, sds: SandboxDirectoryStructure) -> str:
-    #     return self._to_string(self.value.value_post_sds(sds))
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
         return self._to_string(self.value.value_of_any_dependency(home_and_sds))
