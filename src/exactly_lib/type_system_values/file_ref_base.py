@@ -1,10 +1,10 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
-from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
     RelOptionType, RESOLVING_DEPENDENCY_OF, ResolvingDependency
+from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.path_part import PathPart
 
 
 class FileRefWithPathSuffixBase(FileRef):

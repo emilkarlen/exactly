@@ -8,9 +8,9 @@ from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantS
 from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import ValueContainer, Value, SymbolValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
+from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table

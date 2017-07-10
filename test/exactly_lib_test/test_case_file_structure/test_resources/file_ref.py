@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib_test.test_case_file_structure.test_resources.concrete_path_part import equals_path_part
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     SingleDirDependentValueAssertion

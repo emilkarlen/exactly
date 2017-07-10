@@ -1,6 +1,6 @@
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.file_ref import FileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.type_system_values.string_value import StringFragment, StringValue
 
 

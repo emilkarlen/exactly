@@ -4,9 +4,9 @@ from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_ins
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \

@@ -1,9 +1,8 @@
 import unittest
 
-from exactly_lib.test_case_file_structure import file_refs
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsNothing
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.type_system_values import string_value as sut, concrete_string_values as csv
+from exactly_lib.type_system_values import string_value as sut, concrete_string_values as csv, file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     equals_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue

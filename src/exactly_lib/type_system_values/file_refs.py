@@ -1,15 +1,15 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure import relativity_root, relative_path_options
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
-from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixBase, \
-    FileRefWithPathSuffixAndIsNotAbsoluteBase
-from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
     SPECIFIC_ABSOLUTE_RELATIVITY, ResolvingDependency
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.file_ref_base import FileRefWithPathSuffixBase, \
+    FileRefWithPathSuffixAndIsNotAbsoluteBase
+from exactly_lib.type_system_values.path_part import PathPart
 
 
 class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase):

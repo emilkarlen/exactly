@@ -1,10 +1,10 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
-from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
     ResolvingDependency
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.type_system_values.path_part import PathPart
 
 
 class FileRef(SingleDirDependentValue):

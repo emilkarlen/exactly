@@ -1,12 +1,12 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.test_case_file_structure.file_ref import FileRef
-from exactly_lib.test_case_file_structure.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
-from exactly_lib.test_case_file_structure.path_part import PathPart
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, ResolvingDependency, \
     RESOLVING_DEPENDENCY_OF
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
+from exactly_lib.type_system_values.path_part import PathPart
 
 
 def file_ref_test_impl(file_name: str = 'file_ref_test_impl',

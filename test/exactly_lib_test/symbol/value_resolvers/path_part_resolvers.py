@@ -4,7 +4,7 @@ from exactly_lib.symbol import string_resolver
 from exactly_lib.symbol.concrete_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers import path_part_resolvers as sut
-from exactly_lib.test_case_file_structure.path_part import PathPart
+from exactly_lib.type_system_values.path_part import PathPart
 from exactly_lib.util import symbol_table as st
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     matches_symbol_reference
