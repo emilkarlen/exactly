@@ -24,8 +24,7 @@ class FileRef(SingleDirDependentValue):
         raise NotImplementedError()
 
     def exists_pre_sds(self) -> bool:
-        resolving_dependency = self.resolving_dependency()
-        return resolving_dependency is None or resolving_dependency is ResolvingDependency.HOME
+        return self.resolving_dependency() is not ResolvingDependency.NON_HOME
 
     def resolving_dependency(self) -> ResolvingDependency:
         relativity = self.relativity()

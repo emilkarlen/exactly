@@ -33,9 +33,6 @@ class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
     def has_dir_dependency(self) -> bool:
         return True
 
-    def exists_pre_sds(self) -> bool:
-        return self.__relativity == RelOptionType.REL_HOME
-
     def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 

@@ -18,12 +18,11 @@ class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase
     Base class for `FileRef`s who's "relativity" is constant.
     """
 
-    def __init__(self, exists_pre_sds: bool, path_suffix: PathPart):
+    def __init__(self, path_suffix: PathPart):
         super().__init__(path_suffix)
-        self.__exists_pre_sds = exists_pre_sds
 
     def value_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        if self.__exists_pre_sds:
+        if self.exists_pre_sds():
             return self.value_pre_sds(home_and_sds.home_dir_path)
         else:
             return self.value_post_sds(home_and_sds.sds)
@@ -33,7 +32,7 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
     def __init__(self,
                  rel_root_resolver: relativity_root.RelRootResolver,
                  path_suffix: PathPart):
-        super().__init__(rel_root_resolver.is_rel_home, path_suffix)
+        super().__init__(path_suffix)
         self._rel_root_resolver = rel_root_resolver
 
     def _relativity(self) -> RelOptionType:
@@ -98,9 +97,6 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
     def has_dir_dependency(self) -> bool:
         return False
 
-    def exists_pre_sds(self) -> bool:
-        return True
-
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self.path_suffix_path()
 
@@ -116,7 +112,7 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
 
 class _FileRefRelHome(_FileRefWithConstantLocationBase):
     def __init__(self, path_suffix: PathPart):
-        super().__init__(True, path_suffix)
+        super().__init__(path_suffix)
 
     def has_dir_dependency(self) -> bool:
         return True
@@ -134,7 +130,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
 
 class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
     def __init__(self, path_suffix: PathPart):
-        super().__init__(False, path_suffix)
+        super().__init__(path_suffix)
 
     def has_dir_dependency(self) -> bool:
         return True
