@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.symbol.concrete_resolvers import FileRefResolver
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.concrete_values import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_restriction import ValueRestriction

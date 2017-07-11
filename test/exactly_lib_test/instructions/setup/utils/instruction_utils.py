@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
-from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.concrete_resolvers import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \

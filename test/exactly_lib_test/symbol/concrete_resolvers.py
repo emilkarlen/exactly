@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol import concrete_values as sut
+from exactly_lib.symbol import concrete_resolvers as sut
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import string_constant
