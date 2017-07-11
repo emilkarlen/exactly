@@ -104,8 +104,5 @@ class MultiDirDependentValue(DirDependentValue):
     def has_dir_dependency(self) -> bool:
         return self.dir_dependency() is not DirDependencies.NONE
 
-    def exists_pre_sds(self) -> bool:
-        return ResolvingDependency.NON_HOME not in self.resolving_dependencies()
-
     def value_of_any_dependency(self, home_and_sds: HomeAndSds):
         raise NotImplementedError()
