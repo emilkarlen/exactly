@@ -11,12 +11,12 @@ def equals_string_value(expected: StringValue) -> asrt.ValueAssertion:
     return _AssertStringValueHasSpecifiedProperties(expected)
 
 
-def equals_string_fragment(expected: StringFragment) -> asrt.ValueAssertion:
+def equals_string_fragment(expected: MultiDirDependentValue) -> asrt.ValueAssertion:
     return _AssertStringFragmentHasSpecifiedProperties(expected)
 
 
 class _AssertStringFragmentHasSpecifiedProperties(MultiDirDependentValueAssertion):
-    def __init__(self, expected: StringFragment):
+    def __init__(self, expected: MultiDirDependentValue):
         super().__init__(StringFragment, expected)
         self._expected = expected
 
