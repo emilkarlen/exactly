@@ -1,6 +1,5 @@
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
 
 
 class StringWithDirDependency(MultiDirDependentValue):
@@ -27,12 +26,6 @@ class StringValue(StringWithDirDependency):
         for fragment in self._fragments:
             ret_val.update(fragment.resolving_dependencies())
         return ret_val
-
-    def has_dir_dependency(self) -> bool:
-        return bool(self.resolving_dependencies())
-
-    def exists_pre_sds(self) -> bool:
-        return ResolvingDependency.NON_HOME not in self.resolving_dependencies()
 
     def value_when_no_dir_dependencies(self) -> str:
         fragment_strings = [f.value_when_no_dir_dependencies()
