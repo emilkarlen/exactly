@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import concrete_restrictions
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.concrete_values import FileRefResolver, ValueVisitor
+from exactly_lib.symbol.concrete_resolvers import FileRefResolver, ValueVisitor
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
 from exactly_lib.symbol.value_restriction import ValueRestriction

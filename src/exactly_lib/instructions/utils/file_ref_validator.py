@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.symbol.concrete_values import FileRefResolver
+from exactly_lib.symbol.concrete_resolvers import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 
