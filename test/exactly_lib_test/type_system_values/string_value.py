@@ -80,6 +80,8 @@ class TestFileRefFragment(unittest.TestCase):
 
 class TestStringValue(unittest.TestCase):
     def test_pass(self):
+        string_fragment_1 = 'string fragment 1'
+        string_fragment_2 = 'string fragment 2'
         file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME,
                                                     PathPartAsNothing())
         file_ref_rel_sds = file_refs.of_rel_option(file_refs.RelOptionType.REL_ACT,
@@ -95,20 +97,20 @@ class TestStringValue(unittest.TestCase):
             ),
             (
                 'single string constant fragment',
-                sut.StringValue(tuple([csv.ConstantFragment('fragment')])),
+                sut.StringValue(tuple([csv.ConstantFragment(string_fragment_1)])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return('fragment'),
-                    value_of_any_dependency=do_return('fragment')),
+                    value_when_no_dir_dependencies=do_return(string_fragment_1),
+                    value_of_any_dependency=do_return(string_fragment_1)),
             ),
             (
                 'multiple string constant fragment',
-                sut.StringValue(tuple([csv.ConstantFragment('fragment1'),
-                                       csv.ConstantFragment('_fragment2')])),
+                sut.StringValue(tuple([csv.ConstantFragment(string_fragment_1),
+                                       csv.ConstantFragment(string_fragment_2)])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return('fragment1_fragment2'),
-                    value_of_any_dependency=do_return('fragment1_fragment2')),
+                    value_when_no_dir_dependencies=do_return(string_fragment_1 + string_fragment_2),
+                    value_of_any_dependency=do_return(string_fragment_1 + string_fragment_2)),
             ),
             (
                 'multiple dir dependent value/pre sds',
