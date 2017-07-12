@@ -3,6 +3,8 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import symbol_table_with_entries
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
@@ -17,6 +19,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -24,11 +27,20 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestInvalidSyntax),
         unittest.makeSuite(TestValidationAndSymbolUsagesOfExecute),
         unittest.makeSuite(TestValidationAndSymbolUsagesOfInterpret),
         unittest.makeSuite(TestValidationAndSymbolUsagesOfSource),
         unittest.makeSuite(TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine),
     ])
+
+
+class TestInvalidSyntax(unittest.TestCase):
+    def test_raise_invalid_instruction_argument_when_invalid_quoting(self):
+        parser = sut.embryo_parser('instruction-name')
+        source = remaining_source('"abc xyz')
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser.parse(source)
 
 
 class TestCaseBase(home_and_sds_test.TestCaseBase):

@@ -15,6 +15,7 @@ from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
+from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -222,7 +223,7 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
     def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        tokens = TokenStream(source.remaining_part_of_current_line)
+        tokens = new_token_stream(source.remaining_part_of_current_line)
         source.consume_current_line()
         exe_file = parse_executable_file.parse(tokens)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, tokens)
