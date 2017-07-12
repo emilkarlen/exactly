@@ -1066,6 +1066,11 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
 
 
 class TestParseFromParseSource(unittest.TestCase):
+    def test_raise_exception_for_invalid_argument_syntax_when_invalid_quoting_of_first_token(self):
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse_file_ref_from_parse_source(remaining_source('"abc'),
+                                                 sut.all_rel_options_config('ARG-SYNTAX-NAME', True))
+
     def test_fail_when_no_arguments_and_path_suffix_is_required(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref_from_parse_source(remaining_source(''),
