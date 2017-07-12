@@ -9,7 +9,7 @@ from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference imp
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
 from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver_from_token, \
     parse_fragments_from_token, string_resolver_from_fragments
-from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument
+from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument, new_token_stream
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.section_document.parse_source import ParseSource
@@ -87,7 +87,7 @@ def parse_file_ref_from_parse_source(source: ParseSource,
     :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
     """
 
-    ts = TokenStream(source.remaining_part_of_current_line)
+    ts = new_token_stream(source.remaining_part_of_current_line)
     ret_val = parse_file_ref(ts, conf)
     source.consume(ts.position)
     return ret_val
