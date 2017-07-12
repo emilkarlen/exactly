@@ -6,18 +6,15 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
-from exactly_lib.help_texts.argument_rendering.path_syntax import SYMBOL_REFERENCE, RELATIVITY_ARGUMENT
+from exactly_lib.help_texts.argument_rendering.path_syntax import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
-from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
-from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -39,13 +36,6 @@ def relativity_syntax_element_descriptions(
         SyntaxElementDescription(relativity_argument.name,
                                  [renderer.list_for(rel_options_conf)]),
     ]
-    if rel_options_conf.is_rel_symbol_option_accepted and not skip_symbol_reference_element:
-        ret_val.append(SyntaxElementDescription(SYMBOL_REFERENCE.name,
-                                                normalize_and_parse(_SYMBOL_REFERENCE_DESCRIPTION.format(
-                                                    symbol_reference=symbol_reference_syntax_for_name('SYMBOL'),
-                                                    symbol_name='SYMBOL',
-                                                    def_instruction=SYMBOL_DEFINITION_INSTRUCTION_NAME,
-                                                ))))
     return ret_val
 
 
