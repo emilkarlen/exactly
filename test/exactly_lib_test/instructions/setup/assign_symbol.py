@@ -12,7 +12,7 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_structure import ValueContainer, Value
+from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -305,5 +305,5 @@ def _multi_line_source(first_line: str,
                             [_src(line, **kwargs) for line in following_lines])
 
 
-def _value_container(value: Value) -> ValueContainer:
+def _value_container(value: SymbolValueResolver) -> ValueContainer:
     return ValueContainer(Line(1, 'source line'), value)

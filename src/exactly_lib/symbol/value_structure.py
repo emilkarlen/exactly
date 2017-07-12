@@ -4,18 +4,7 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
 
 
-class Value:
-    """
-    A value of a type that the type system supports
-    """
-
-    @property
-    def references(self) -> list:
-        """All `SymbolReference` directly referenced by this object"""
-        raise NotImplementedError()
-
-
-class SymbolValueResolver(Value):
+class SymbolValueResolver:
     """
     Base class for values in the symbol table used by Exactly.
     """
@@ -27,9 +16,9 @@ class SymbolValueResolver(Value):
     @property
     def references(self) -> list:
         """
-        Values in the symbol table used by this object.
+        All :class:`SymbolReference` directly referenced by this object.
 
-        :type: [SymbolReference]
+        :type: [`SymbolReference`]
         """
         raise NotImplementedError()
 
@@ -48,7 +37,7 @@ class ValueContainer(SymbolTableValue):
     A value together with meta info
     """
 
-    def __init__(self, source: Line, value: Value):
+    def __init__(self, source: Line, value: SymbolValueResolver):
         self._source = source
         self._value = value
 
@@ -58,5 +47,5 @@ class ValueContainer(SymbolTableValue):
         return self._source
 
     @property
-    def value(self) -> Value:
+    def value(self) -> SymbolValueResolver:
         return self._value
