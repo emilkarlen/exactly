@@ -1,5 +1,5 @@
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ValueContainer, Value
+from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.util.symbol_table import Entry
 
 
@@ -66,7 +66,7 @@ class SymbolUsageVisitor:
             return self._visit_definition(symbol_usage)
         if isinstance(symbol_usage, SymbolReference):
             return self._visit_reference(symbol_usage)
-        raise TypeError('Unknown {}: {}'.format(Value, str(symbol_usage)))
+        raise TypeError('Unknown {}: {}'.format(SymbolValueResolver, str(symbol_usage)))
 
     def _visit_definition(self, symbol_usage: SymbolDefinition):
         raise NotImplementedError()

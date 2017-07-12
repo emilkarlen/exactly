@@ -6,7 +6,7 @@ from exactly_lib.symbol.concrete_resolvers import FileRefResolver, ValueVisitor
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
 from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import ValueContainer, Value, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
@@ -246,13 +246,13 @@ def _symbol_table_with_values_matching_references(references: list) -> SymbolTab
 
 
 class _ValueCorrespondingToValueRestriction(concrete_restrictions.ValueRestrictionVisitor):
-    def visit_none(self, x: concrete_restrictions.NoRestriction) -> Value:
+    def visit_none(self, x: concrete_restrictions.NoRestriction) -> SymbolValueResolver:
         return string_constant('a string (from <no restriction>)')
 
-    def visit_string(self, x: concrete_restrictions.StringRestriction) -> Value:
+    def visit_string(self, x: concrete_restrictions.StringRestriction) -> SymbolValueResolver:
         return string_constant('a string (from <string value restriction>)')
 
-    def visit_file_ref_relativity(self, x: concrete_restrictions.FileRefRelativityRestriction) -> Value:
+    def visit_file_ref_relativity(self, x: concrete_restrictions.FileRefRelativityRestriction) -> SymbolValueResolver:
         return file_ref_val_test_impl(x.accepted)
 
 
