@@ -2,7 +2,20 @@ import shlex
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
 from exactly_lib.util.parse.token import Token
+
+
+def new_token_stream(source: str) -> TokenStream:
+    """
+    Constructs a :class:`TokenStream`
+    :rtype: :class:`TokenStream`
+    :raises :class:`SingleInstructionInvalidArgumentException` Invalid syntax
+    """
+    try:
+        return TokenStream(source)
+    except TokenSyntaxError as ex:
+        raise SingleInstructionInvalidArgumentException('Invalid quoting of arguments: ' + str(ex))
 
 
 def split_arguments_list_string(arguments: str) -> list:
@@ -11,8 +24,8 @@ def split_arguments_list_string(arguments: str) -> list:
     """
     try:
         return shlex.split(arguments)
-    except ValueError:
-        raise SingleInstructionInvalidArgumentException('Invalid quoting of arguments')
+    except ValueError as ex:
+        raise SingleInstructionInvalidArgumentException('Invalid quoting of arguments: ' + str(ex))
 
 
 def is_option_argument(argument: str) -> bool:
