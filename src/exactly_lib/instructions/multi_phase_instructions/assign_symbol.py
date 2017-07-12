@@ -5,6 +5,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver
+from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import is_symbol_name
@@ -67,7 +68,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 def parse(source: ParseSource) -> SymbolDefinition:
     source_line = source.current_line
-    token_stream = TokenStream(source.remaining_part_of_current_line)
+    token_stream = new_token_stream(source.remaining_part_of_current_line)
     source.consume_current_line()
     if token_stream.is_null:
         err_msg = 'Missing symbol type.\nExpecting one of ' + _TYPES_LIST_IN_ERR_MSG

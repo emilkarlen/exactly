@@ -59,6 +59,9 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
         test_cases = [
             ('', 'Empty source'),
             ('not_a_type val_name = value', 'Invalid type name'),
+            ('not_a_type val_name = value', 'Invalid type name'),
+            ('"not_a_type val_name = value', 'Invalid quoting at beginning of type name'),
+            ('{string_type} val_name = va"lue', 'Invalid quoting in value'),
         ]
         setup = sut.setup('instruction-name')
         for (source_str, case_name) in test_cases:
