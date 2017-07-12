@@ -206,6 +206,11 @@ class TestParseStringResolver(unittest.TestCase):
 
 
 class TestParseFromParseSource(unittest.TestCase):
+    def test_raise_exception_for_invalid_argument_syntax_when_invalid_quoting_of_first_token(self):
+        parse_source = remaining_source('  " missing closing double quote')
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse_string_resolver_from_parse_source(parse_source, CONFIGURATION)
+
     def test_missing_argument(self):
         parse_source = remaining_source('')
         with self.assertRaises(SingleInstructionInvalidArgumentException):

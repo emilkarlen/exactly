@@ -1,5 +1,6 @@
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import STRING_TYPE
 from exactly_lib.instructions.utils.arg_parse import symbol_syntax
+from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -27,7 +28,7 @@ def parse_string_resolver_from_parse_source(source: ParseSource,
     :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
     """
 
-    ts = TokenStream(source.remaining_part_of_current_line)
+    ts = new_token_stream(source.remaining_part_of_current_line)
     ret_val = parse_string_resolver(ts, conf)
     source.consume(ts.position)
     return ret_val
