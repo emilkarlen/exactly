@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import concrete_restrictions
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.concrete_resolvers import FileRefResolver, ValueVisitor
+from exactly_lib.symbol.concrete_resolvers import FileRefResolver, SymbolValueResolverVisitor
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
 from exactly_lib.symbol.value_restriction import ValueRestriction
@@ -256,7 +256,7 @@ class _ValueCorrespondingToValueRestriction(concrete_restrictions.ValueRestricti
         return file_ref_val_test_impl(x.accepted)
 
 
-class _EqualsValueVisitor(ValueVisitor):
+class _EqualsSymbolValueResolverVisitor(SymbolValueResolverVisitor):
     def __init__(self,
                  actual,
                  put: unittest.TestCase,
@@ -280,4 +280,4 @@ class _EqualsValue(asrt.ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        _EqualsValueVisitor(value, put, message_builder).visit(self.expected)
+        _EqualsSymbolValueResolverVisitor(value, put, message_builder).visit(self.expected)

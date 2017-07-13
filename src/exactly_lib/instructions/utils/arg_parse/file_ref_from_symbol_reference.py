@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.symbol.concrete_resolvers import ValueVisitor, FileRefResolver
+from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor, FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
@@ -29,9 +29,9 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
         self.default_relativity = default_relativity
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
-        symbol_value_2_file_ref = _SymbolValue2FileRefVisitor(self._suffix_resolver,
-                                                              self.default_relativity,
-                                                              symbols)
+        symbol_value_2_file_ref = _SymbolSymbolValue2FileRefResolverVisitor(self._suffix_resolver,
+                                                                            self.default_relativity,
+                                                                            symbols)
         symbol = symbols.lookup(self._file_ref_or_string_symbol.name)
         assert isinstance(symbol, ValueContainer), 'Implementation consistency/ValueContainer'
         return symbol_value_2_file_ref.visit(symbol.value)
@@ -41,7 +41,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
         return [self._file_ref_or_string_symbol] + self._suffix_resolver.references
 
 
-class _SymbolValue2FileRefVisitor(ValueVisitor):
+class _SymbolSymbolValue2FileRefResolverVisitor(SymbolValueResolverVisitor):
     def __init__(self,
                  suffix_resolver: PathPartResolver,
                  default_relativity: RelOptionType,
