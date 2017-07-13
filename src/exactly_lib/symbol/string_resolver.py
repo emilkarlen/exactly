@@ -106,7 +106,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
 
 class StringResolver(SymbolValueResolver):
     """
-    Resolver who's resolved value is of type `ValueType.STRING` / :class:`str`
+    Resolver who's resolved value is of type `ValueType.STRING` / :class:`StringValue`
     """
 
     def __init__(self, fragment_resolvers: tuple):
