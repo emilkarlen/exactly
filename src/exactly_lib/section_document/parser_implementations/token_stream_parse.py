@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.concrete_resolvers import FileRefResolver
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.util.cli_syntax.option_parsing import matches
 
 

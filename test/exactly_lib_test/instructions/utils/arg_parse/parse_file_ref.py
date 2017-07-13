@@ -9,10 +9,10 @@ from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_refere
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.concrete_resolvers import FileRefResolver
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
     StringRestriction, ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant

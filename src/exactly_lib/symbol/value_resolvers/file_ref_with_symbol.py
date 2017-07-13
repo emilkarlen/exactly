@@ -1,7 +1,7 @@
 import pathlib
 
-from exactly_lib.symbol.concrete_resolvers import FileRefResolver
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
