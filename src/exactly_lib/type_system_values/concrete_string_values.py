@@ -1,6 +1,7 @@
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.list_value import ListValue
 from exactly_lib.type_system_values.string_value import StringFragment, StringValue
 
 
@@ -42,7 +43,7 @@ class _StringFragmentFromDirDependentValue(StringFragment):
         return self.value.exists_pre_sds()
 
     def value_when_no_dir_dependencies(self):
-        return self.value.value_when_no_dir_dependencies()
+        return self._to_string(self.value.value_when_no_dir_dependencies())
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
         return self._to_string(self.value.value_of_any_dependency(home_and_sds))
@@ -60,6 +61,18 @@ class StringValueFragment(_StringFragmentFromDirDependentValue):
 
     def __str__(self):
         return '{}({})'.format('StringValueFragment',
+                               repr(self.value))
+
+
+class ListValueFragment(_StringFragmentFromDirDependentValue):
+    def __init__(self, list_value: ListValue):
+        super().__init__(list_value)
+
+    def _to_string(self, value) -> str:
+        return ' '.join(value)
+
+    def __str__(self):
+        return '{}({})'.format('ListValueFragment',
                                repr(self.value))
 
 
