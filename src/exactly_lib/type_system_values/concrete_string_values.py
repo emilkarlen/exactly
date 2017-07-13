@@ -73,3 +73,11 @@ class FileRefFragment(_StringFragmentFromDirDependentValue):
     def __str__(self):
         return '{}({})'.format('FileRefFragment',
                                repr(self.value))
+
+
+def string_value_of_single_string(value: str) -> StringValue:
+    return StringValue((ConstantFragment(value),))
+
+
+def string_value_of_single_file_ref(value: FileRef) -> StringValue:
+    return StringValue((FileRefFragment(value),))
