@@ -5,7 +5,7 @@ from exactly_lib.symbol.value_structure import SymbolValueResolver
 
 class SymbolValueResolverVisitor:
     """
-    Visitor of `Value`
+    Visitor of `SymbolValueResolver`
     """
 
     def visit(self, value: SymbolValueResolver):
