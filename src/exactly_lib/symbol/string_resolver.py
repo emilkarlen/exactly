@@ -166,3 +166,7 @@ class StringResolver(SymbolValueResolver):
 
 def string_constant(string: str) -> StringResolver:
     return StringResolver((ConstantStringFragmentResolver(string),))
+
+
+def symbol_reference(symbol_ref: su.SymbolReference) -> StringResolver:
+    return StringResolver((SymbolStringFragmentResolver(symbol_ref),))
