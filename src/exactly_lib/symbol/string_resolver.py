@@ -3,6 +3,7 @@ from exactly_lib.symbol import value_structure as struct
 from exactly_lib.symbol.value_structure import SymbolValueResolver
 from exactly_lib.type_system_values import string_value as sv, concrete_string_values as csv
 from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.list_value import ListValue
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -99,8 +100,10 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
             return csv.StringValueFragment(value)
         elif isinstance(value, FileRef):
             return csv.FileRefFragment(value)
+        elif isinstance(value, ListValue):
+            return csv.ListValueFragment(value)
         else:
-            raise TypeError('Not a {}: {}'.format(type(SymbolValueResolver),
+            raise TypeError('Not a {}: {}'.format(str(SymbolValueResolver),
                                                   value))
 
 

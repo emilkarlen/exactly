@@ -69,7 +69,7 @@ class TestFileRefFragment(unittest.TestCase):
                 csv.FileRefFragment(file_ref_abs),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return(file_ref_abs.value_when_no_dir_dependencies()),
+                    value_when_no_dir_dependencies=do_return(str(file_ref_abs.value_when_no_dir_dependencies())),
                     value_of_any_dependency=lambda h_s: str(
                         file_ref_abs.value_when_no_dir_dependencies())),
             ),
