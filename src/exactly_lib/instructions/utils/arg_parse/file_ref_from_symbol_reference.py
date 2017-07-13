@@ -1,6 +1,7 @@
 import pathlib
 
-from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor, FileRefResolver
+from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef

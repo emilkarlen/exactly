@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import concrete_resolvers as sut
+from exactly_lib.symbol import path_resolver as pr
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -23,7 +24,7 @@ class TestValueVisitor(unittest.TestCase):
         self.assertEqual('ret-val', ret_val,
                          'Visitor is expected to return value from visit-method')
         self.assertListEqual(visitor.visited_classes,
-                             [sut.FileRefResolver],
+                             [pr.FileRefResolver],
                              'visited classes')
 
     def test_visit_string(self):
@@ -51,8 +52,8 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.SymbolValueResolve
         self.ret_val = ret_val
         self.visited_classes = []
 
-    def _visit_file_ref(self, value: sut.FileRefResolver):
-        self.visited_classes.append(sut.FileRefResolver)
+    def _visit_file_ref(self, value: pr.FileRefResolver):
+        self.visited_classes.append(pr.FileRefResolver)
         return self.ret_val
 
     def _visit_string(self, value: sr.StringResolver):

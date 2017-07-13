@@ -1,6 +1,6 @@
 import types
 
-from exactly_lib.symbol.concrete_resolvers import FileRefResolver
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
     ValueRestrictionFailure

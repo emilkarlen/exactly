@@ -1,4 +1,4 @@
-from exactly_lib.symbol.concrete_resolvers import FileRefResolver
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 

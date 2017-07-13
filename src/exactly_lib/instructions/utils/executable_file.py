@@ -3,7 +3,7 @@ import stat
 
 from exactly_lib.instructions.utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.symbol.concrete_resolvers import FileRefResolver
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_system_values import file_ref
 from exactly_lib.util.symbol_table import SymbolTable
