@@ -38,7 +38,7 @@ class TestConstantFragment(unittest.TestCase):
 
 
 class TestFileRefFragment(unittest.TestCase):
-    def test_pass(self):
+    def test(self):
         file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME,
                                                     PathPartAsNothing())
         file_ref_rel_sds = file_refs.of_rel_option(file_refs.RelOptionType.REL_ACT,
@@ -79,7 +79,7 @@ class TestFileRefFragment(unittest.TestCase):
 
 
 class TestStringValue(unittest.TestCase):
-    def test_pass(self):
+    def test(self):
         string_fragment_1 = 'string fragment 1'
         string_fragment_2 = 'string fragment 2'
         file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME,
@@ -113,7 +113,7 @@ class TestStringValue(unittest.TestCase):
                     value_of_any_dependency=do_return(string_fragment_1 + string_fragment_2)),
             ),
             (
-                'multiple dir dependent value/pre sds',
+                'single dir dependent value/pre sds',
                 sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_home)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME},
@@ -121,7 +121,7 @@ class TestStringValue(unittest.TestCase):
                         file_ref_rel_home.value_pre_sds(h_s.home_dir_path))),
             ),
             (
-                'multiple dir dependent value/post sds',
+                'single dir dependent value/post sds',
                 sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_sds)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.NON_HOME},
