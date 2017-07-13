@@ -21,6 +21,10 @@ class ListResolver(SymbolValueResolver):
         return ValueType.LIST
 
     @property
+    def elements(self) -> tuple:
+        return self._string_resolver_elements
+
+    @property
     def references(self) -> list:
         ret_val = []
         for string_resolver in self._string_resolver_elements:
