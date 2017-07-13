@@ -75,7 +75,7 @@ class TestValueVisitor(unittest.TestCase):
             visitor.visit('a string is not a SymbolReference')
 
 
-class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.ValueVisitor):
+class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.SymbolValueResolverVisitor):
     def __init__(self, ret_val):
         self.ret_val = ret_val
         self.visited_classes = []

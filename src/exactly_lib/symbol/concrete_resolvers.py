@@ -21,7 +21,7 @@ class FileRefResolver(SymbolValueResolver):
         return str(type(self))
 
 
-class ValueVisitor:
+class SymbolValueResolverVisitor:
     """
     Visitor of `Value`
     """
