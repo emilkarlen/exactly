@@ -115,7 +115,7 @@ def symbol_table_with_string_values_from_name_and_value(name_and_value_list: ite
 
 def symbol_table_from_symbols(symbols: iter) -> SymbolTable:
     """
-    :param symbols: [`ValueDefinition`]
+    :param symbols: [`SymboleDefinition`]
     """
     elements = [(vd.name, vd.value_container)
                 for vd in symbols]
