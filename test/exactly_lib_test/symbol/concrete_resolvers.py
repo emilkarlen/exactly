@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import concrete_resolvers as sut
+from exactly_lib.symbol import list_resolver as lr
 from exactly_lib.symbol import path_resolver as pr
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.string_resolver import string_constant
@@ -39,6 +40,18 @@ class TestValueVisitor(unittest.TestCase):
                              [sr.StringResolver],
                              'visited classes')
 
+    def test_visit_list(self):
+        # ARRANGE #
+        visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
+        # ACT #
+        ret_val = visitor.visit(lr.ListResolver([]))
+        # ASSERT #
+        self.assertEqual('return value', ret_val,
+                         'Visitor is expected to return value from visit-method')
+        self.assertListEqual(visitor.visited_classes,
+                             [lr.ListResolver],
+                             'visited classes')
+
     def test_visit_non_sub_class_should_raise_exception(self):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
@@ -58,4 +71,8 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.SymbolValueResolve
 
     def _visit_string(self, value: sr.StringResolver):
         self.visited_classes.append(sr.StringResolver)
+        return self.ret_val
+
+    def _visit_list(self, value: lr.ListResolver):
+        self.visited_classes.append(lr.ListResolver)
         return self.ret_val
