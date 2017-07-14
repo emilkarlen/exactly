@@ -1,4 +1,4 @@
-from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -30,7 +30,7 @@ class ValueRestriction:
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
-                        symbol_name: str, value: ValueContainer) -> ValueRestrictionFailure:
+                        symbol_name: str, value: ResolverContainer) -> ValueRestrictionFailure:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -53,7 +53,7 @@ class ReferenceRestrictions:
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> FailureInfo:
+                        value: ResolverContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to

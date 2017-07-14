@@ -9,7 +9,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueContainer
+from exactly_lib.symbol.value_structure import SymbolValueResolver, ResolverContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
@@ -18,7 +18,6 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied, \
     is_failure_of_direct_reference, is_failure_of_indirect_reference
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables
@@ -48,9 +47,9 @@ class TestNoRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                value_container = container(value)
+                container = symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -66,9 +65,9 @@ class TestStringRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                value_container = container(value)
+                container = symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -81,9 +80,9 @@ class TestStringRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                value_container = container(value)
+                container = symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -102,9 +101,9 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                value_container = container(value)
+                container = symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
@@ -120,9 +119,9 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                value_container = container(value)
+                container = symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value_container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -314,7 +313,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
             with self.subTest(msg=case_name):
                 restrictions = sut.ReferenceRestrictionsOnDirectAndIndirect(direct=restriction_on_direct_node,
                                                                             indirect=restriction_on_every)
-                assert isinstance(symbol_to_check.value, sut.ValueContainer)
+                assert isinstance(symbol_to_check.value, sut.ResolverContainer)
                 actual_result = restrictions.is_satisfied_by(symbol_table,
                                                              symbol_to_check.key,
                                                              symbol_to_check.value)
@@ -549,7 +548,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
 
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
-        def value_type_error_message_function(value: ValueContainer) -> str:
+        def value_type_error_message_function(value: ResolverContainer) -> str:
             v = value.value
             assert isinstance(v, SymbolValueResolver)  # Type info for IDE
             return 'Value type of tested symbol is ' + str(v.value_type)
@@ -661,7 +660,7 @@ class RestrictionWithConstantResult(sut.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.ValueContainer) -> str:
+                        value: sut.ResolverContainer) -> str:
         return self.result
 
 
@@ -669,7 +668,7 @@ class ValueRestrictionThatRaisesErrorIfApplied(sut.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.ValueContainer) -> str:
+                        value: sut.ResolverContainer) -> str:
         raise NotImplementedError('It is an error if this method is called')
 
 
@@ -681,7 +680,7 @@ class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.ValueContainer) -> ValueRestrictionFailure:
+                        value: sut.ResolverContainer) -> ValueRestrictionFailure:
         self.visited.update([symbol_name])
         error_message = self.value_container_2_result__fun(value)
         return ValueRestrictionFailure(error_message) if error_message else None
@@ -718,19 +717,19 @@ def reference_to(entry: Entry, restrictions: ReferenceRestrictions) -> SymbolRef
     return SymbolReference(entry.key, restrictions)
 
 
-def unconditional_satisfaction(value: sut.ValueContainer) -> str:
+def unconditional_satisfaction(value: sut.ResolverContainer) -> str:
     return None
 
 
 def unconditional_dissatisfaction(result: str) -> types.FunctionType:
-    def ret_val(value: sut.ValueContainer) -> str:
+    def ret_val(value: sut.ResolverContainer) -> str:
         return result
 
     return ret_val
 
 
 def dissatisfaction_if_value_type_is(value_type: ValueType) -> types.FunctionType:
-    def ret_val(value: sut.ValueContainer) -> str:
+    def ret_val(value: sut.ResolverContainer) -> str:
         if value.value.value_type is value_type:
             return 'fail due to value type is ' + str(value_type)
         return None

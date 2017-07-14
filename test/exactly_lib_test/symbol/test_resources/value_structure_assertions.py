@@ -8,19 +8,19 @@ from exactly_lib_test.symbol.test_resources.concrete_value_assertions import res
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def equals_value_container(expected: stc.ValueContainer,
-                           ignore_source_line: bool = True) -> asrt.ValueAssertion:
+def equals_container(expected: stc.ResolverContainer,
+                     ignore_source_line: bool = True) -> asrt.ValueAssertion:
     component_assertions = []
     if not ignore_source_line:
         component_assertions.append(asrt.sub_component('source',
-                                                       stc.ValueContainer.definition_source.fget,
+                                                       stc.ResolverContainer.definition_source.fget,
                                                        equals_line(expected.definition_source)))
     expected_value = expected.value
     assert isinstance(expected_value, SymbolValueResolver), 'All actual values must be SymbolValue'
     component_assertions.append(asrt.sub_component('value',
-                                                   stc.ValueContainer.value.fget,
+                                                   stc.ResolverContainer.value.fget,
                                                    resolver_equals3(expected_value)))
-    return asrt.is_instance_with(stc.ValueContainer,
+    return asrt.is_instance_with(stc.ResolverContainer,
                                  asrt.and_(component_assertions))
 
 
@@ -31,10 +31,10 @@ def equals_symbol(expected: su.SymbolDefinition,
                                      asrt.sub_component('name',
                                                         su.SymbolDefinition.name.fget,
                                                         asrt.equals(expected.name)),
-                                     asrt.sub_component('value_container',
+                                     asrt.sub_component('resolver_container',
                                                         su.SymbolDefinition.value_container.fget,
-                                                        equals_value_container(expected.value_container,
-                                                                               ignore_source_line)),
+                                                        equals_container(expected.value_container,
+                                                                         ignore_source_line)),
 
                                  ])
                                  )
@@ -64,6 +64,6 @@ class _EqualsSymbolTable(asrt.ValueAssertion):
                         message_builder.apply('names in symbol table'))
         for name in self.expected.names_set:
             actual_value = value.lookup(name)
-            expected_value = self.expected.lookup(name)
-            equals_value_container(expected_value).apply_with_message(put, actual_value,
-                                                                      message_builder.apply('Value of symbol ' + name))
+            expected_container = self.expected.lookup(name)
+            equals_container(expected_container).apply_with_message(put, actual_value,
+                                                                    message_builder.apply('Value of symbol ' + name))

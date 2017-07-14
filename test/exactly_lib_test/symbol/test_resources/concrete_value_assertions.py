@@ -8,7 +8,7 @@ from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantS
     SymbolStringFragmentResolver, StringResolver, string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
@@ -230,8 +230,8 @@ def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> FileRe
     return FileRefConstant(file_ref_test_impl('file_ref_test_impl', relativity))
 
 
-def _value_container(value: FileRefResolver) -> ValueContainer:
-    return ValueContainer(Line(1, 'source line'), value)
+def _value_container(value: FileRefResolver) -> ResolverContainer:
+    return ResolverContainer(Line(1, 'source line'), value)
 
 
 def _symbol_table_with_values_matching_references(references: list) -> SymbolTable:

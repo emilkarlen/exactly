@@ -4,7 +4,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
     ValueRestrictionFailure
-from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
@@ -21,7 +21,7 @@ class NoRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> str:
+                        value: ResolverContainer) -> str:
         return None
 
 
@@ -33,9 +33,9 @@ class StringRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value_container: ValueContainer) -> ValueRestrictionFailure:
-        if not isinstance(value_container.value, StringResolver):
-            return _invalid_type_msg(ValueType.STRING, symbol_name, value_container)
+                        container: ResolverContainer) -> ValueRestrictionFailure:
+        if not isinstance(container.value, StringResolver):
+            return _invalid_type_msg(ValueType.STRING, symbol_name, container)
         return None
 
 
@@ -50,17 +50,17 @@ class FileRefRelativityRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value_container: ValueContainer) -> ValueRestrictionFailure:
-        value = value_container.value
-        if not isinstance(value, FileRefResolver):
-            return _invalid_type_msg(ValueType.PATH, symbol_name, value_container)
-        file_ref = value.resolve(symbol_table)
+                        container: ResolverContainer) -> ValueRestrictionFailure:
+        resolver = container.value
+        if not isinstance(resolver, FileRefResolver):
+            return _invalid_type_msg(ValueType.PATH, symbol_name, container)
+        file_ref = resolver.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         satisfaction = is_satisfied_by(actual_relativity, self._accepted)
         if satisfaction:
             return None
         else:
-            msg = _unsatisfied_path_relativity(symbol_name, value_container, self._accepted, actual_relativity)
+            msg = _unsatisfied_path_relativity(symbol_name, container, self._accepted, actual_relativity)
             return ValueRestrictionFailure(msg)
 
     @property
@@ -85,12 +85,12 @@ class EitherStringOrFileRefRelativityRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value_container: ValueContainer) -> ValueRestrictionFailure:
-        value = value_container.value
-        if isinstance(value, StringResolver):
-            return self.string_restriction.is_satisfied_by(symbol_table, symbol_name, value_container)
-        elif isinstance(value, FileRefResolver):
-            return self.file_ref_restriction.is_satisfied_by(symbol_table, symbol_name, value_container)
+                        container: ResolverContainer) -> ValueRestrictionFailure:
+        resolver = container.value
+        if isinstance(resolver, StringResolver):
+            return self.string_restriction.is_satisfied_by(symbol_table, symbol_name, container)
+        elif isinstance(resolver, FileRefResolver):
+            return self.file_ref_restriction.is_satisfied_by(symbol_table, symbol_name, container)
 
     @property
     def string_restriction(self) -> StringRestriction:
@@ -189,7 +189,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> FailureInfo:
+                        value: ResolverContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -266,9 +266,9 @@ class OrRestrictionPart(tuple):
 class OrReferenceRestrictions(ReferenceRestrictions):
     def __init__(self,
                  or_restriction_parts: list,
-                 value_container_2_error_message_if_no_matching_part: types.FunctionType = None):
+                 resolver_container_2_error_message_if_no_matching_part: types.FunctionType = None):
         self._parts = tuple(or_restriction_parts)
-        self._value_container_2_error_message_if_no_matching_part = value_container_2_error_message_if_no_matching_part
+        self._container_2_error_message_if_no_matching_part = resolver_container_2_error_message_if_no_matching_part
 
     @property
     def parts(self) -> tuple:
@@ -277,7 +277,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> FailureInfo:
+                        value: ResolverContainer) -> FailureInfo:
         resolver = value.value
         assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
         for part in self._parts:
@@ -289,16 +289,16 @@ class OrReferenceRestrictions(ReferenceRestrictions):
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
                                   resolver: SymbolValueResolver,
-                                  value: ValueContainer) -> FailureOfDirectReference:
-        if self._value_container_2_error_message_if_no_matching_part is not None:
-            msg = self._value_container_2_error_message_if_no_matching_part(value)
+                                  value: ResolverContainer) -> FailureOfDirectReference:
+        if self._container_2_error_message_if_no_matching_part is not None:
+            msg = self._container_2_error_message_if_no_matching_part(value)
         else:
             msg = self._default_error_message(symbol_name, value, resolver)
         return FailureOfDirectReference(ValueRestrictionFailure(msg))
 
     def _default_error_message(self,
                                symbol_name: str,
-                               value_container: ValueContainer,
+                               container: ResolverContainer,
                                resolver: SymbolValueResolver) -> str:
         from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
         accepted_value_types = ', '.join([help_texts.TYPE_INFO_DICT[part.selector].type_name
@@ -306,7 +306,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
         lines = ([
                      'Invalid type, of symbol "{}"'.format(symbol_name)
                  ] +
-                 defined_at_line__err_msg_lines(value_container.definition_source) +
+                 defined_at_line__err_msg_lines(container.definition_source) +
                  [
                      '',
                      'Accepted : ' + accepted_value_types,
@@ -317,7 +317,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
 
 def _invalid_type_msg(expected: ValueType,
                       symbol_name: str,
-                      container_of_actual: ValueContainer) -> ValueRestrictionFailure:
+                      container_of_actual: ResolverContainer) -> ValueRestrictionFailure:
     actual = container_of_actual.value
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
@@ -350,7 +350,7 @@ class ReferenceRestrictionsVisitor:
 
 
 def _unsatisfied_path_relativity(symbol_name: str,
-                                 value_container: ValueContainer,
+                                 container: ResolverContainer,
                                  accepted: PathRelativityVariants,
                                  actual_relativity: SpecificPathRelativity) -> str:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
@@ -382,7 +382,7 @@ def _unsatisfied_path_relativity(symbol_name: str,
                  'Unaccepted relativity, of {} symbol "{}"'.format(help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
                                                                    symbol_name)
              ] +
-             defined_at_line__err_msg_lines(value_container.definition_source) +
+             defined_at_line__err_msg_lines(container.definition_source) +
              [
                  '',
                  'Found    : ' + _render_actual_relativity(),
@@ -395,12 +395,12 @@ def _unsatisfied_path_relativity(symbol_name: str,
 def _invalid_type_header_lines(expected: ValueType,
                                actual: ValueType,
                                symbol_name: str,
-                               value_container: ValueContainer) -> list:
+                               container: ResolverContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
     ret_val = ([
                    'Invalid type, of symbol "{}"'.format(symbol_name)
                ] +
-               defined_at_line__err_msg_lines(value_container.definition_source) +
+               defined_at_line__err_msg_lines(container.definition_source) +
                [
                    '',
                    'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
