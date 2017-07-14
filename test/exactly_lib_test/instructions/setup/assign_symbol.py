@@ -222,7 +222,7 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
         instruction_argument = _src('{path_type} name = --rel-act component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = FileRefConstant(file_refs.rel_act(PathPartAsFixedPath('component')))
-            expected_container = _value_container(expected_file_ref_resolver)
+            expected_container = _resolver_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
@@ -243,7 +243,7 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
             expected_file_ref_resolver = FileRefConstant(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
                                         PathPartAsFixedPath('component')))
-            expected_container = _value_container(expected_file_ref_resolver)
+            expected_container = _resolver_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
@@ -265,7 +265,7 @@ class TestPathAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                                 ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(
                                     REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 PathPartResolverAsFixedPath('component'))
-            expected_container = _value_container(expected_file_ref_resolver)
+            expected_container = _resolver_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
@@ -308,5 +308,5 @@ def _multi_line_source(first_line: str,
                             [_src(line, **kwargs) for line in following_lines])
 
 
-def _value_container(value: SymbolValueResolver) -> ResolverContainer:
+def _resolver_container(value: SymbolValueResolver) -> ResolverContainer:
     return ResolverContainer(Line(1, 'source line'), value)
