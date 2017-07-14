@@ -4,11 +4,11 @@ from exactly_lib.symbol import concrete_restrictions
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType

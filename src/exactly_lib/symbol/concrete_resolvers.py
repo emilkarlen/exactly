@@ -1,7 +1,7 @@
 from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.symbol.value_structure import SymbolValueResolver
 
 
 class SymbolValueResolverVisitor:

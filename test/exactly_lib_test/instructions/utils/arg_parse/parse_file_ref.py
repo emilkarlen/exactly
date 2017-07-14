@@ -13,13 +13,13 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
     StringRestriction, ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import ResolverContainer
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system_values import file_refs

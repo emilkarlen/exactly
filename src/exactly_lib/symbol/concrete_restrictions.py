@@ -1,10 +1,10 @@
 import types
 
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
     ValueRestrictionFailure
-from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by

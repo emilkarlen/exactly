@@ -1,4 +1,4 @@
-from exactly_lib.symbol import value_structure as vs
+from exactly_lib.symbol import resolver_structure as vs
 from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, NoRestriction
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions, ValueRestriction, ValueRestrictionFailure
 

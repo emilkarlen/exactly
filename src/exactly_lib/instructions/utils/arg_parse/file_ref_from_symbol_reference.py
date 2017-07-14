@@ -2,11 +2,11 @@ import pathlib
 
 from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import ResolverContainer
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
