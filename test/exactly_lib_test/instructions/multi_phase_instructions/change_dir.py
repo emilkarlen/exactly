@@ -11,7 +11,7 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver2
+from exactly_lib_test.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -48,7 +48,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_ACT)
-                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_no_relativity_option_should_use_default_option(self):
@@ -60,7 +60,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD, PathPartAsFixedPath(arguments))
-                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_no_arguments_is_rel_default_option(self):
@@ -72,7 +72,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_CWD)
-                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_fail_when_superfluous_arguments(self):
@@ -94,7 +94,7 @@ class TestParseSet(unittest.TestCase):
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
                                                             PathPartAsFixedPath(arguments.strip()))
-                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_success_when_correct_number_of_arguments__escaped(self):
@@ -107,7 +107,7 @@ class TestParseSet(unittest.TestCase):
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
                                                             PathPartAsFixedPath('expected argument'))
-                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_without_argument(self):
@@ -119,7 +119,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_TMP)
-                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_argument(self):
@@ -132,7 +132,7 @@ class TestParseSet(unittest.TestCase):
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_TMP,
                                                             PathPartAsFixedPath('subdir'))
-                assertion = equals_file_ref_resolver2(expected_file_ref, asrt.is_empty)
+                assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_superfluous_argument(self):

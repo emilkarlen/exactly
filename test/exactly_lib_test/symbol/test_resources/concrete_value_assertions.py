@@ -23,11 +23,11 @@ from exactly_lib_test.type_system_values.test_resources.file_ref import equals_f
 from exactly_lib_test.type_system_values.test_resources.string_value import equals_string_value
 
 
-def resolver_equals3(expected: SymbolValueResolver) -> asrt.ValueAssertion:
+def equals_resolver(expected: SymbolValueResolver) -> asrt.ValueAssertion:
     return _EqualsValue(expected)
 
 
-def file_ref_resolver_equals(expected: FileRefResolver) -> asrt.ValueAssertion:
+def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:
     symbols = _symbol_table_with_values_matching_references(expected.references)
     expected_file_ref = expected.resolve(symbols)
     assertion_on_resolved_value = equals_file_ref(expected_file_ref)
@@ -37,12 +37,12 @@ def file_ref_resolver_equals(expected: FileRefResolver) -> asrt.ValueAssertion:
                                      symbols)
 
 
-def equals_file_ref_resolver2(expected_relativity_and_paths: FileRef,
+def matches_file_ref_resolver(expected_resolved_value: FileRef,
                               expected_symbol_references: asrt.ValueAssertion,
                               symbol_table: SymbolTable = None) -> asrt.ValueAssertion:
     if symbol_table is None:
         symbol_table = empty_symbol_table()
-    assertion_on_resolved_value = equals_file_ref(expected_relativity_and_paths)
+    assertion_on_resolved_value = equals_file_ref(expected_resolved_value)
     return _FileRefResolverAssertion(expected_symbol_references,
                                      assertion_on_resolved_value,
                                      symbol_table)
@@ -62,8 +62,8 @@ def equals_string_fragments(expected_fragments) -> asrt.ValueAssertion:
     return _EqualsStringFragments(expected_fragments)
 
 
-def equals_string_resolver3(expected: StringResolver,
-                            symbols: SymbolTable = None) -> asrt.ValueAssertion:
+def equals_string_resolver(expected: StringResolver,
+                           symbols: SymbolTable = None) -> asrt.ValueAssertion:
     if symbols is None:
         symbols = _symbol_table_with_values_matching_references(expected.references)
     expected_resolved_value = expected.resolve(symbols)
@@ -267,10 +267,10 @@ class _EqualsSymbolValueResolverVisitor(SymbolValueResolverVisitor):
         self.actual = actual
 
     def _visit_file_ref(self, expected: FileRefResolver):
-        return file_ref_resolver_equals(expected).apply(self.put, self.actual, self.message_builder)
+        return equals_file_ref_resolver(expected).apply(self.put, self.actual, self.message_builder)
 
     def _visit_string(self, expected: StringResolver):
-        return equals_string_resolver3(expected).apply(self.put, self.actual, self.message_builder)
+        return equals_string_resolver(expected).apply(self.put, self.actual, self.message_builder)
 
 
 class _EqualsValue(asrt.ValueAssertion):

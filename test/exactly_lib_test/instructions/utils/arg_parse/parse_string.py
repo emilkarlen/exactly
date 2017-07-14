@@ -17,7 +17,7 @@ from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_string_resolver3
+from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_string_resolver
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -253,7 +253,7 @@ def _multi_line_source(lines: list,
 
 def assert_equals_string_resolver(fragments: list) -> asrt.ValueAssertion:
     expected_resolver = string_resolver_from_fragments(fragments)
-    return equals_string_resolver3(expected_resolver)
+    return equals_string_resolver(expected_resolver)
 
 
 def string_resolver_from_fragments(fragments: list) -> StringResolver:

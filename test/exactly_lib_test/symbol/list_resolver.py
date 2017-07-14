@@ -8,7 +8,7 @@ from exactly_lib.type_system_values.concrete_string_values import string_value_o
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_string_resolver3
+from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_string_resolver
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -106,8 +106,8 @@ class ListResolverTest(unittest.TestCase):
         # ACT #
         actual = resolver.elements
         # ASSERT #
-        assertion = asrt.matches_sequence([equals_string_resolver3(element_1),
-                                           equals_string_resolver3(element_2)])
+        assertion = asrt.matches_sequence([equals_string_resolver(element_1),
+                                           equals_string_resolver(element_2)])
         assertion.apply_without_message(self, actual)
 
 
