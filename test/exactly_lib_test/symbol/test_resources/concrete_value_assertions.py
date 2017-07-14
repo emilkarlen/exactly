@@ -6,6 +6,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction
 from exactly_lib.symbol.restrictions import concrete_restrictions
+from exactly_lib.symbol.restrictions import value_restrictions as vr
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -247,7 +248,7 @@ def _symbol_table_with_values_matching_references(references: list) -> SymbolTab
 
 
 class _ValueCorrespondingToValueRestriction(concrete_restrictions.ValueRestrictionVisitor):
-    def visit_none(self, x: concrete_restrictions.NoRestriction) -> SymbolValueResolver:
+    def visit_none(self, x: vr.NoRestriction) -> SymbolValueResolver:
         return string_constant('a string (from <no restriction>)')
 
     def visit_string(self, x: concrete_restrictions.StringRestriction) -> SymbolValueResolver:

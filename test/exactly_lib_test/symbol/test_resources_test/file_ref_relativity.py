@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction, NoRestriction
+from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
