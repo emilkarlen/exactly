@@ -5,6 +5,7 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
     ReferenceRestrictionsOnDirectAndIndirect, NoRestriction, no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers import file_ref_with_symbol as sut
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -19,7 +20,7 @@ from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as restrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as vr_tr
 from exactly_lib_test.symbol.test_resources import symbol_utils as sym_utils
-from exactly_lib_test.symbol.test_resources.symbol_utils import string_constant_value_container
+from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_constant_container
 from exactly_lib_test.symbol.test_resources.value_resolvers import string_resolver_of_single_symbol_reference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -83,7 +84,7 @@ class TestRelSymbol(unittest.TestCase):
             (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol_name',
                                                                                          no_restrictions())),
              (Entry('path_suffix_symbol_name',
-                    string_constant_value_container('path-suffix')),),
+                    string_value_constant_container('path-suffix')),),
              ),
         ]
         file_ref_symbol_name = 'SYMBOL_NAME'
@@ -93,7 +94,7 @@ class TestRelSymbol(unittest.TestCase):
             for path_suffix, sym_tbl_entries in path_suffix_test_cases:
                 symbol_table = singleton_symbol_table(
                     sym_utils.entry(file_ref_symbol_name,
-                                    sym_utils.file_ref_value(file_ref=referenced_file_ref)))
+                                    FileRefConstant(referenced_file_ref)))
                 symbol_table.add_all(sym_tbl_entries)
                 with self.subTest(msg='rel_option_type={} ,path_suffix_type={}'.format(
                         rel_option_type_of_referenced_symbol,
@@ -121,7 +122,7 @@ class TestRelSymbol(unittest.TestCase):
             (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol',
                                                                                          no_restrictions())),
              (Entry('path_suffix_symbol',
-                    string_constant_value_container(path_suffix_str)),)
+                    string_value_constant_container(path_suffix_str)),)
              ),
         ]
         for rel_option, exists_pre_sds in relativity_test_cases:
@@ -130,10 +131,9 @@ class TestRelSymbol(unittest.TestCase):
             path_component_from_referenced_file_ref = 'path-component-from-referenced-file-ref'
             referenced_entry = sym_utils.entry(
                 file_ref_symbol_name,
-                sym_utils.file_ref_value(
-                    file_ref=file_refs.of_rel_option(rel_option,
-                                                     PathPartAsFixedPath(
-                                                         path_component_from_referenced_file_ref))))
+                FileRefConstant(file_refs.of_rel_option(rel_option,
+                                                        PathPartAsFixedPath(
+                                                            path_component_from_referenced_file_ref))))
             for path_suffix, symbol_table_entries in path_suffix_test_cases:
                 fr_resolver_to_check = sut.rel_symbol(
                     _symbol_reference_of_path_with_accepted(file_ref_symbol_name,

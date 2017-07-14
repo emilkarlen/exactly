@@ -3,8 +3,10 @@ import unittest
 from collections import Counter
 
 from exactly_lib.symbol import concrete_restrictions as sut
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import SymbolValueResolver, ValueContainer
@@ -17,9 +19,9 @@ from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion impor
     value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied, \
     is_failure_of_direct_reference, is_failure_of_indirect_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources import symbol_tables
 
 
 def suite() -> unittest.TestSuite:
@@ -40,7 +42,7 @@ class TestNoRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             string_constant('string'),
-            file_ref_value(),
+            file_ref_constant_resolver(),
         ]
         restriction = sut.NoRestriction()
         symbols = empty_symbol_table()
@@ -73,7 +75,7 @@ class TestStringRestriction(unittest.TestCase):
     def test_fail__not_a_string(self):
         # ARRANGE #
         test_cases = [
-            file_ref_value(),
+            file_ref_constant_resolver(),
         ]
         restriction = sut.StringRestriction()
         symbols = empty_symbol_table()
@@ -91,8 +93,8 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
+            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
+            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
         ]
         restriction = sut.FileRefRelativityRestriction(PathRelativityVariants(
             {RelOptionType.REL_ACT, RelOptionType.REL_HOME, RelOptionType.REL_RESULT},
@@ -109,8 +111,8 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
     def test_fail__relative_paths(self):
         # ARRANGE #
         test_cases = [
-            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            file_ref_value(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
+            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
+            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
         ]
         restriction = sut.FileRefRelativityRestriction(PathRelativityVariants(
             {RelOptionType.REL_RESULT},
@@ -234,6 +236,7 @@ class _VisitorThatRegisterClassOfVisitMethod(sut.ValueRestrictionVisitor):
         self.visited_classes.append(sut.FileRefRelativityRestriction)
         return self.return_value
 
+
 class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.ReferenceRestrictionsVisitor):
     def __init__(self, return_value):
         self.visited_classes = []
@@ -276,7 +279,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
                                              reference_to(level_1b_symbol, restrictions_that_should_not_be_used)])
         symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol, level_2_symbol]
 
-        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
             value_container_2_result__fun=unconditional_satisfaction)
@@ -299,12 +302,12 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
             (
                 'restriction on every is None',
                 None,
-                symbol_utils.symbol_table_from_entries([symbol_to_check]),
+                symbol_tables.symbol_table_from_entries([symbol_to_check]),
             ),
             (
                 'restriction on every is unconditionally satisfied',
                 None,
-                symbol_utils.symbol_table_from_entries([symbol_to_check]),
+                symbol_tables.symbol_table_from_entries([symbol_to_check]),
             ),
         ]
         for case_name, restriction_on_every, symbol_table in cases:
@@ -334,7 +337,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                                              reference_to(level_1b_symbol, restrictions_that_should_not_be_used)])
         symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol, level_2_symbol]
 
-        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
             value_container_2_result__fun=unconditional_satisfaction)
@@ -371,7 +374,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                                              reference_to(level_1b_symbol, restrictions_that_should_not_be_used)])
         symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol]
 
-        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         result_that_indicates_error = 'result that indicates error'
         function_that_reports_error = unconditional_dissatisfaction(result_that_indicates_error)
@@ -422,7 +425,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                                             value_type=satisfied_value_type)
         symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol, level_2_symbol]
 
-        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
             value_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
@@ -475,7 +478,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                                             value_type=satisfied_value_type)
         symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol, level_2_symbol, level_3_symbol]
 
-        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
             value_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
@@ -544,7 +547,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                                                                          restrictions_that_should_not_be_used)])
         symbol_table_entries = [referencing_symbol, referenced_symbol]
 
-        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         def value_type_error_message_function(value: ValueContainer) -> str:
             v = value.value
@@ -638,7 +641,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                                                                          restrictions_that_should_not_be_used)])
         symbol_table_entries = [referencing_symbol, referenced_symbol]
 
-        symbol_table = symbol_utils.symbol_table_from_entries(symbol_table_entries)
+        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         return symbol_table, referencing_symbol.key, referencing_symbol.value,
 
@@ -733,3 +736,8 @@ def dissatisfaction_if_value_type_is(value_type: ValueType) -> types.FunctionTyp
         return None
 
     return ret_val
+
+
+def file_ref_constant_resolver() -> FileRefResolver:
+    return FileRefConstant(file_ref_test_impl('file-name-rel-home',
+                                              relativity=RelOptionType.REL_HOME))

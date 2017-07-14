@@ -1,5 +1,3 @@
-import unittest
-
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import string_constant
@@ -14,7 +12,6 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def container(value: SymbolValueResolver,
@@ -24,56 +21,49 @@ def container(value: SymbolValueResolver,
                           value)
 
 
-def string_constant_value_container(string_value: str,
+def string_value_constant_container(string_value: str,
                                     line_num: int = 1,
                                     source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
                           string_constant(string_value))
 
 
-def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> SymbolReference:
-    return SymbolReference(name, ReferenceRestrictionsOnDirectAndIndirect(value_restriction))
-
-
 def string_symbol_definition(name: str, string_value: str = 'string value') -> SymbolDefinition:
-    return SymbolDefinition(name, string_constant_value_container(string_value))
-
-
-def file_ref_symbol_definition(name: str,
-                               file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                                                relativity=RelOptionType.REL_CWD)
-                               ) -> SymbolDefinition:
-    return SymbolDefinition(name, file_ref_value_container(file_ref))
+    return SymbolDefinition(name, string_value_constant_container(string_value))
 
 
 def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
-    return symbol_table_from_symbols([string_symbol_definition(name, string_value)])
+    return symbol_table_from_symbol_definitions([string_symbol_definition(name, string_value)])
 
 
 def symbol_table_with_string_values(name_and_value_pairs: iter) -> SymbolTable:
     sym_defs = [string_symbol_definition(name, value)
                 for (name, value) in name_and_value_pairs]
-    return symbol_table_from_symbols(sym_defs)
+    return symbol_table_from_symbol_definitions(sym_defs)
 
 
-def symbol_table_with_single_file_ref_value(name: str,
-                                            file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                                                             relativity=RelOptionType.REL_CWD),
-                                            line_num: int = 1,
-                                            source_line: str = 'value def line') -> SymbolTable:
-    return symbol_table_from_symbols([file_ref_symbol(name, file_ref, line_num, source_line)])
+def symbol_table_with_string_values_from_name_and_value(name_and_value_list: iter) -> SymbolTable:
+    """
+    :type name_and_value_list: iter of NameAndValue
+    """
+    elements = [(name_and_value.name,
+                 string_value_constant_container(name_and_value.value))
+                for name_and_value in name_and_value_list]
+    return SymbolTable(dict(elements))
 
 
-def file_ref_value(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                                    relativity=RelOptionType.REL_CWD)
-                   ) -> FileRefResolver:
-    return FileRefConstant(file_ref)
+def list_value_constant_container(list_value: ListValue,
+                                  line_num: int = 1,
+                                  source_line: str = 'value def line') -> ValueContainer:
+    return ValueContainer(Line(line_num, source_line),
+                          ListResolverTestImplForConstantListValue(list_value))
 
 
-def file_ref_value_container(file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                                              relativity=RelOptionType.REL_CWD),
-                             line_num: int = 1,
-                             source_line: str = 'value def line') -> ValueContainer:
+def file_ref_constant_container(
+        file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                         relativity=RelOptionType.REL_CWD),
+        line_num: int = 1,
+        source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
                           FileRefConstant(file_ref))
 
@@ -85,19 +75,26 @@ def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
                           file_ref_resolver)
 
 
-def container_for_constant_list_value(list_value: ListValue,
-                                      line_num: int = 1,
-                                      source_line: str = 'value def line') -> ValueContainer:
-    return ValueContainer(Line(line_num, source_line),
-                          ListResolverTestImplForConstantListValue(list_value))
+def file_ref_symbol_definition(name: str,
+                               file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                                                relativity=RelOptionType.REL_CWD),
+                               line_num: int = 1,
+                               source_line: str = 'value def line'
+                               ) -> SymbolDefinition:
+    return SymbolDefinition(name, file_ref_constant_container(file_ref, line_num, source_line))
 
 
-def file_ref_symbol(name: str,
-                    file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                                     relativity=RelOptionType.REL_CWD),
-                    line_num: int = 1,
-                    source_line: str = 'value def line') -> SymbolDefinition:
-    return SymbolDefinition(name, file_ref_value_container(file_ref, line_num, source_line))
+def symbol_table_with_single_file_ref_value(
+        name: str,
+        file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                         relativity=RelOptionType.REL_CWD),
+        line_num: int = 1,
+        source_line: str = 'value def line') -> SymbolTable:
+    return symbol_table_from_symbol_definitions([file_ref_symbol_definition(name, file_ref, line_num, source_line)])
+
+
+def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> SymbolReference:
+    return SymbolReference(name, ReferenceRestrictionsOnDirectAndIndirect(value_restriction))
 
 
 def entry(name: str, value: SymbolValueResolver = string_constant('string value'),
@@ -107,64 +104,15 @@ def entry(name: str, value: SymbolValueResolver = string_constant('string value'
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:
-    elements = [(name, string_constant_value_container(name, source_line='source line for {}'.format(name)))
+    elements = [(name, string_value_constant_container(name, source_line='source line for {}'.format(name)))
                 for name in names]
     return SymbolTable(dict(elements))
 
 
-def symbol_table_with_string_values_from_name_and_value(name_and_value_list: iter) -> SymbolTable:
+def symbol_table_from_symbol_definitions(symbols: iter) -> SymbolTable:
     """
-    :type name_and_value_list: iter of NameAndValue
-    """
-    elements = [(name_and_value.name,
-                 string_constant_value_container(name_and_value.value))
-                for name_and_value in name_and_value_list]
-    return SymbolTable(dict(elements))
-
-
-def symbol_table_from_symbols(symbols: iter) -> SymbolTable:
-    """
-    :param symbols: [`SymboleDefinition`]
+    :param symbols: [`SymbolDefinition`]
     """
     elements = [(vd.name, vd.value_container)
                 for vd in symbols]
     return SymbolTable(dict(elements))
-
-
-def symbol_table_from_entries(entries: iter) -> SymbolTable:
-    """
-    :param entries: [`Entry`]
-    """
-    elements = [(entry.key, entry.value)
-                for entry in entries]
-    return SymbolTable(dict(elements))
-
-
-def assert_symbol_usages_is_singleton_list(assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return asrt.matches_sequence([assertion])
-
-
-class _AssertSymbolTableIsSingleton(asrt.ValueAssertion):
-    def __init__(self,
-                 expected_name: str,
-                 value_assertion: asrt.ValueAssertion):
-        self.expected_name = expected_name
-        self.value_assertion = value_assertion
-
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        assert isinstance(value, SymbolTable)
-        put.assertEqual(1,
-                        len(value.names_set),
-                        'Expecting a single entry')
-        put.assertTrue(value.contains(self.expected_name),
-                       'SymbolTable should contain the expected name')
-        self.value_assertion.apply_with_message(put,
-                                                value.lookup(self.expected_name),
-                                                'value')
-
-
-def assert_symbol_table_is_singleton(expected_name: str, value_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return _AssertSymbolTableIsSingleton(expected_name, value_assertion)

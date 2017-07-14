@@ -40,11 +40,12 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
-    symbol_table_from_entries, entry, file_ref_value
+    entry
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part_string
+from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 
 
 def suite() -> unittest.TestSuite:
@@ -525,7 +526,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
-                     entry(defined_path_symbol.name, file_ref_value(relativity_file_ref)),
+                     entry(defined_path_symbol.name, FileRefConstant(relativity_file_ref)),
                      entry(suffix_symbol.name, string_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
@@ -563,7 +564,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
-                     entry(defined_path_symbol.name, file_ref_value(relativity_file_ref)),
+                     entry(defined_path_symbol.name, FileRefConstant(relativity_file_ref)),
                      entry(suffix_symbol.name, string_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
@@ -975,9 +976,9 @@ class TestParseWithReferenceEmbeddedInPathArgument(TestParsesBase):
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
-                     entry(symbol_1.name, file_ref_value(file_refs.of_rel_option(RelOptionType.REL_HOME,
-                                                                                 PathPartAsFixedPath(
-                                                                                     'suffix-from-path-symbol')))),
+                     entry(symbol_1.name, FileRefConstant(file_refs.of_rel_option(RelOptionType.REL_HOME,
+                                                                                  PathPartAsFixedPath(
+                                                                                      'suffix-from-path-symbol')))),
                      entry(symbol_2.name, string_constant('string-symbol-value')),
                  ]),
                  token_stream=

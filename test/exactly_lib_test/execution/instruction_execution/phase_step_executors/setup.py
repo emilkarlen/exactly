@@ -161,14 +161,14 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
 
 
 def env_with_singleton_symbol_table(definition: su.SymbolDefinition) -> InstructionEnvironmentForPreSdsStep:
-    table = sd_tr.symbol_table_from_symbols([definition])
+    table = sd_tr.symbol_table_from_symbol_definitions([definition])
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
                                                {},
                                                symbols=table)
 
 
 def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
-    symbols = sd_tr.symbol_table_from_symbols(symbols)
+    symbols = sd_tr.symbol_table_from_symbol_definitions(symbols)
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
                                                {},
                                                symbols=symbols)

@@ -14,6 +14,7 @@ from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equ
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.type_system_values.test_resources.string_value import equals_string_fragment, equals_string_value
+from exactly_lib_test.util.test_resources import symbol_tables
 
 
 def suite() -> unittest.TestSuite:
@@ -110,8 +111,9 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
         symbol_reference = su.symbol_reference(symbol.name)
         fragment = sut.SymbolStringFragmentResolver(symbol_reference)
 
-        symbol_table = su.symbol_table_from_entries([Entry(symbol.name,
-                                                           su.container_for_constant_list_value(symbol.value))])
+        symbol_table = symbol_tables.symbol_table_from_entries([Entry(symbol.name,
+                                                                      su.list_value_constant_container(
+                                                                          symbol.value))])
         # ACT #
         actual = fragment.resolve(symbol_table)
         # ASSERT #
@@ -186,8 +188,9 @@ class StringResolverTest(unittest.TestCase):
                 sut.StringResolver((
                     sut.SymbolStringFragmentResolver(
                         su.symbol_reference(list_symbol.name)),)),
-                su.symbol_table_from_entries([Entry(list_symbol.name,
-                                                    su.container_for_constant_list_value(list_symbol.value))]),
+                symbol_tables.symbol_table_from_entries([Entry(list_symbol.name,
+                                                               su.list_value_constant_container(
+                                                                   list_symbol.value))]),
                 csv.StringValue((csv.ListValueFragment(list_symbol.value),)),
             ),
             (
@@ -198,10 +201,10 @@ class StringResolverTest(unittest.TestCase):
                     sut.SymbolStringFragmentResolver(su.symbol_reference(path_symbol.name)),
                     sut.SymbolStringFragmentResolver(su.symbol_reference(list_symbol.name)),
                 )),
-                su.symbol_table_from_entries([
-                    Entry(string_symbol.name, su.string_constant_value_container(string_symbol.value)),
-                    Entry(path_symbol.name, su.file_ref_value_container(path_symbol.value)),
-                    Entry(list_symbol.name, su.container_for_constant_list_value(list_symbol.value)),
+                symbol_tables.symbol_table_from_entries([
+                    Entry(string_symbol.name, su.string_value_constant_container(string_symbol.value)),
+                    Entry(path_symbol.name, su.file_ref_constant_container(path_symbol.value)),
+                    Entry(list_symbol.name, su.list_value_constant_container(list_symbol.value)),
                 ]),
                 csv.StringValue((csv.ConstantFragment(string_symbol.value),
                                  csv.ConstantFragment(string_constant_1),
