@@ -19,6 +19,7 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, StringRestriction, \
     OrReferenceRestrictions, FileRefRelativityRestriction, OrRestrictionPart
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -26,7 +27,6 @@ from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
-from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing

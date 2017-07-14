@@ -2,10 +2,10 @@ import pathlib
 
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import ResolverContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
     SpecificPathRelativity
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure

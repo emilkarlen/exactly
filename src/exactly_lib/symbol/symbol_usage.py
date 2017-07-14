@@ -1,5 +1,5 @@
+from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.util.symbol_table import Entry
 
 

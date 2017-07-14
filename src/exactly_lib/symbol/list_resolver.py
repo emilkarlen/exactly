@@ -1,4 +1,4 @@
-from exactly_lib.symbol.value_structure import SymbolValueResolver
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.type_system_values.list_value import ListValue
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
