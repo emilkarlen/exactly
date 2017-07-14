@@ -9,8 +9,10 @@ from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_ref as _file_ref
+from exactly_lib.type_system_values.list_value import ListValue
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
+from exactly_lib_test.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -81,6 +83,13 @@ def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
                                 source_line: str = 'value def line') -> ValueContainer:
     return ValueContainer(Line(line_num, source_line),
                           file_ref_resolver)
+
+
+def container_for_constant_list_value(list_value: ListValue,
+                                      line_num: int = 1,
+                                      source_line: str = 'value def line') -> ValueContainer:
+    return ValueContainer(Line(line_num, source_line),
+                          ListResolverTestImplForConstantListValue(list_value))
 
 
 def file_ref_symbol(name: str,
