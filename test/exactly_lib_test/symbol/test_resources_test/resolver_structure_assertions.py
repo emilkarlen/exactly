@@ -38,7 +38,7 @@ class TestEqualsValueContainer(unittest.TestCase):
         expected = ResolverContainer(Line(4, 'source code 4'), common_value)
         actual = ResolverContainer(Line(5, 'source code 5'), common_value)
         assertion = sut.equals_container(expected, ignore_source_line=True)
-        assert_that_assertion_fails(assertion, actual)
+        assertion.apply_without_message(self, actual)
 
     def test_fail__different_source_line_and_source_line_check_is_not_ignored(self):
         # ARRANGE #
