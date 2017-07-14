@@ -197,7 +197,7 @@ class RestrictionThatIsAlwaysSatisfied(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: vs.SymbolTable,
                         symbol_name: str,
-                        value: vs.ResolverContainer) -> str:
+                        container: vs.ResolverContainer) -> str:
         return None
 
 
