@@ -1,23 +1,16 @@
 import unittest
 
-from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.symbol.path_resolver import FileRefResolver
-from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
-from exactly_lib.symbol.restriction import ValueRestriction
-from exactly_lib.symbol.restrictions import value_restrictions as vr
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
-    SymbolStringFragmentResolver, StringResolver, string_constant
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+    SymbolStringFragmentResolver, StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
-from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.type_system_values.value_type import ValueType
-from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
+from exactly_lib_test.symbol.test_resources.assertion_utils import symbol_table_with_values_matching_references
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system_values.test_resources.file_ref import equals_file_ref
 from exactly_lib_test.type_system_values.test_resources.string_value import equals_string_value
@@ -28,7 +21,7 @@ def equals_resolver(expected: SymbolValueResolver) -> asrt.ValueAssertion:
 
 
 def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:
-    symbols = _symbol_table_with_values_matching_references(expected.references)
+    symbols = symbol_table_with_values_matching_references(expected.references)
     expected_file_ref = expected.resolve(symbols)
     assertion_on_resolved_value = equals_file_ref(expected_file_ref)
     assertion_on_symbol_references = equals_symbol_references(expected.references)
@@ -65,7 +58,7 @@ def equals_string_fragments(expected_fragments) -> asrt.ValueAssertion:
 def equals_string_resolver(expected: StringResolver,
                            symbols: SymbolTable = None) -> asrt.ValueAssertion:
     if symbols is None:
-        symbols = _symbol_table_with_values_matching_references(expected.references)
+        symbols = symbol_table_with_values_matching_references(expected.references)
     expected_resolved_value = expected.resolve(symbols)
     assertion_on_resolved_value = equals_string_value(expected_resolved_value)
     assertion_on_symbol_references = equals_symbol_references(expected.references)
@@ -222,39 +215,6 @@ class _StringValueResolverAssertion(_EqualsSymbolValueResolverBase):
 
         self._expected_string_fragments.apply(put, actual.fragments,
                                               message_builder.for_sub_component('fragments'))
-
-
-def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> FileRefResolver:
-    relativity = list(valid_relativities.rel_option_types)[0]
-    assert isinstance(relativity, RelOptionType)
-    return FileRefConstant(file_ref_test_impl('file_ref_test_impl', relativity))
-
-
-def _resolver_container(value: FileRefResolver) -> ResolverContainer:
-    return ResolverContainer(Line(1, 'source line'), value)
-
-
-def _symbol_table_with_values_matching_references(references: list) -> SymbolTable:
-    value_constructor = _ValueCorrespondingToValueRestriction()
-    elements = {}
-    for ref in references:
-        assert isinstance(ref, su.SymbolReference), "Informs IDE of type"
-        value_restriction = ref.restrictions.direct
-        assert isinstance(value_restriction, ValueRestriction)
-        value = value_constructor.visit(value_restriction)
-        elements[ref.name] = _resolver_container(value)
-    return SymbolTable(elements)
-
-
-class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):
-    def visit_none(self, x: vr.NoRestriction) -> SymbolValueResolver:
-        return string_constant('a string (from <no restriction>)')
-
-    def visit_string(self, x: vr.StringRestriction) -> SymbolValueResolver:
-        return string_constant('a string (from <string value restriction>)')
-
-    def visit_file_ref_relativity(self, x: vr.FileRefRelativityRestriction) -> SymbolValueResolver:
-        return file_ref_val_test_impl(x.accepted)
 
 
 class _EqualsSymbolValueResolverVisitor(SymbolValueResolverVisitor):

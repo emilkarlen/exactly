@@ -9,9 +9,12 @@ from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstan
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_ref as _file_ref
 from exactly_lib.type_system_values.list_value import ListValue
+from exactly_lib.type_system_values.string_value import StringValue
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
+from exactly_lib_test.symbol.test_resources.value_resolvers import ConstantValueResolver
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 
@@ -29,8 +32,20 @@ def string_value_constant_container(string_value: str,
                              string_constant(string_value))
 
 
+def string_value_constant_container2(string_value: StringValue,
+                                     line_num: int = 1,
+                                     source_line: str = 'value def line') -> ResolverContainer:
+    return ResolverContainer(Line(line_num, source_line),
+                             ConstantValueResolver(ValueType.STRING,
+                                                   string_value))
+
+
 def string_symbol_definition(name: str, string_value: str = 'string value') -> SymbolDefinition:
     return SymbolDefinition(name, string_value_constant_container(string_value))
+
+
+def string_value_symbol_definition(name: str, string_value: StringValue) -> SymbolDefinition:
+    return SymbolDefinition(name, string_value_constant_container2(string_value))
 
 
 def symbol_table_with_single_string_value(name: str, string_value: str = 'string value') -> SymbolTable:
@@ -58,6 +73,14 @@ def list_value_constant_container(list_value: ListValue,
                                   source_line: str = 'value def line') -> ResolverContainer:
     return ResolverContainer(Line(line_num, source_line),
                              ListResolverTestImplForConstantListValue(list_value))
+
+
+def list_symbol_definition(name: str, resolved_value: ListValue) -> SymbolDefinition:
+    return SymbolDefinition(name, list_value_constant_container(resolved_value))
+
+
+def symbol_table_with_single_list_value(symbol_name: str, resolved_value: ListValue) -> SymbolTable:
+    return symbol_table_from_symbol_definitions([list_symbol_definition(symbol_name, resolved_value)])
 
 
 def file_ref_constant_container(
