@@ -3,8 +3,7 @@ import unittest
 import exactly_lib_test.symbol.test_resources.path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib_test.symbol.test_resources import path_relativity as sut
-from exactly_lib_test.test_resources.test_of_test_resources_util import \
-    test_case_with_failure_exception_set_to_test_exception, TestException
+from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:
@@ -27,17 +26,17 @@ class TestEqualsPathRelativityVariants(unittest.TestCase):
                     variants).apply_without_message(self, variants)
 
     def test_not_equals__different__absolute(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         lv = PathRelativityVariants({RelOptionType.REL_ACT}, True)
         rv = PathRelativityVariants({RelOptionType.REL_ACT}, False)
-        with put.assertRaises(TestException):
-            sut.equals_path_relativity_variants(lv).apply_without_message(put, rv)
+        assertion = sut.equals_path_relativity_variants(lv)
+        # ACT & ASSERT #
+        assert_that_assertion_fails(assertion, rv)
 
     def test_not_equals__different__option_sets(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         lv = PathRelativityVariants({RelOptionType.REL_HOME,
                                      RelOptionType.REL_RESULT}, False)
         rv = PathRelativityVariants({RelOptionType.REL_HOME,
                                      RelOptionType.REL_ACT}, False)
-        with put.assertRaises(TestException):
-            sut.equals_path_relativity_variants(lv).apply_without_message(put, rv)
+        assertion = sut.equals_path_relativity_variants(lv)
+        # ACT & ASSERT #
+        assert_that_assertion_fails(assertion, rv)
