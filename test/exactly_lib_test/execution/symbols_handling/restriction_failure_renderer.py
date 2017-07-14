@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.execution.symbols_handling import restriction_failure_renderer as sut
-from exactly_lib.symbol.concrete_restrictions import FailureOfDirectReference, FailureOfIndirectReference
 from exactly_lib.symbol.restriction import ValueRestrictionFailure
+from exactly_lib.symbol.restrictions.concrete_restrictions import FailureOfDirectReference, FailureOfIndirectReference
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_names
 

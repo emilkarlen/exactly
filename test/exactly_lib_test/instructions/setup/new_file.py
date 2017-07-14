@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions.new_file import RELATIVITY_VARIANTS
 from exactly_lib.instructions.setup import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath

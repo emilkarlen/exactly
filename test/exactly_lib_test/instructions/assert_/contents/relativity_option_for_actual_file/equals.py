@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
-from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_refs

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import list_resolver as sut
 from exactly_lib.symbol import string_resolver as sr
-from exactly_lib.symbol.concrete_restrictions import OrReferenceRestrictions
+from exactly_lib.symbol.restrictions.concrete_restrictions import OrReferenceRestrictions
 from exactly_lib.type_system_values import list_value as lv
 from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
 from exactly_lib.type_system_values.value_type import ValueType
