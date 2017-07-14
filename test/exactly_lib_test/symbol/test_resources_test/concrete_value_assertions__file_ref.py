@@ -14,8 +14,6 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import FileRefTestImpl
-from exactly_lib_test.test_resources.test_of_test_resources_util import \
-    test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
 
@@ -99,11 +97,8 @@ class Test1NotEquals(unittest.TestCase):
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
-
     def test_value_ref__differs__restriction_relativity_variants(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
-
         def restriction_with_relativity(relativity: RelOptionType) -> ValueRestriction:
             return _relativity_restriction({relativity},
                                            False)
@@ -119,14 +114,12 @@ class Test1NotEquals(unittest.TestCase):
             [SymbolReference('reffed-name',
                              ReferenceRestrictionsOnDirectAndIndirect(
                                  restriction_with_relativity(RelOptionType.REL_HOME)))])
+        assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_value_ref__differs__symbol_name(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
                                            [SymbolReference('expected_symbol_name',
@@ -134,40 +127,34 @@ class Test1NotEquals(unittest.TestCase):
         actual = resolver_from_constants(file_ref,
                                          [SymbolReference('actual_symbol_name',
                                                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+        assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_differs__no_value_refs__value_refs(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
                                            [SymbolReference('reffed-name',
                                                             ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         actual = resolver_from_constants(file_ref, [])
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assertion = sut.equals_file_ref_resolver(expected)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_differs__value_refs__no_value_refs(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref, [])
         actual = resolver_from_constants(file_ref,
                                          [SymbolReference('reffed-name',
                                                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+        assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_value_ref__invalid_type_of_value_restriction(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
                                            [SymbolReference('reffed-name',
@@ -178,56 +165,47 @@ class Test1NotEquals(unittest.TestCase):
         actual = resolver_from_constants(file_ref,
                                          [SymbolReference('reffed-name',
                                                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+        assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
 
 class Test2NotEquals(unittest.TestCase):
     def test_differs__path_suffix(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
         actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
+        assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
-            assertion.apply_with_message(put, FileRefConstant(actual), 'NotEquals')
+        assert_that_assertion_fails(assertion, FileRefConstant(actual))
 
     def test_differs__exists_pre_sds(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
         actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
+        assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
-            assertion.apply_with_message(put, FileRefConstant(actual), 'NotEquals')
+        assert_that_assertion_fails(assertion, FileRefConstant(actual))
 
     def test_differs__relativity(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
         actual = FileRefTestImpl(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
+        assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
-            assertion.apply_with_message(put, FileRefConstant(actual), 'NotEquals')
+        assert_that_assertion_fails(assertion, FileRefConstant(actual))
 
     def test_differs__symbol_references(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         file_ref = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
         actual = _FileRefResolverWithConstantFileRefAndSymbolReferences(
             file_ref,
             [SymbolReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+        assertion = sut.matches_file_ref_resolver(file_ref,
+                                                  asrt.matches_sequence([]),
+                                                  empty_symbol_table())
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.matches_file_ref_resolver(file_ref,
-                                                      asrt.matches_sequence([]),
-                                                      empty_symbol_table())
-            assertion.apply_with_message(put, actual, 'NotEquals')
+        assert_that_assertion_fails(assertion, actual)
 
 
 def arbitrary_file_ref() -> FileRef:
