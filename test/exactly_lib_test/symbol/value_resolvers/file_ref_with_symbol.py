@@ -18,7 +18,7 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import singleton_symbol_table, Entry
-from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as restrictions
+from exactly_lib_test.symbol.restrictions.test_resources import concrete_restriction_assertion as restrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as vr_tr
 from exactly_lib_test.symbol.test_resources import symbol_utils as sym_utils
 from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_constant_container

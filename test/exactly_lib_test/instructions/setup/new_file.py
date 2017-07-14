@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sh_chec
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed
-from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target

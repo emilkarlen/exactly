@@ -18,7 +18,8 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import rel_symbol_arg_str
-from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import equals_file_ref_relativity_restriction
+from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_with_single_file_ref_value

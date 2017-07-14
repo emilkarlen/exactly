@@ -10,10 +10,10 @@ from exactly_lib.symbol.restrictions import value_restrictions as vr
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied, \
     is_failure_of_direct_reference, is_failure_of_indirect_reference
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables
 
