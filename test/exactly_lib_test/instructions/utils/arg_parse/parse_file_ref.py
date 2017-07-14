@@ -12,9 +12,9 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer
 from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction, \
-    StringRestriction, ReferenceRestrictionsOnDirectAndIndirect, \
+from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
+from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction, FileRefRelativityRestriction
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
