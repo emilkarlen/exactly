@@ -548,8 +548,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
 
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
-        def value_type_error_message_function(value: ResolverContainer) -> str:
-            v = value.value
+        def value_type_error_message_function(container: ResolverContainer) -> str:
+            v = container.resolver
             assert isinstance(v, SymbolValueResolver)  # Type info for IDE
             return 'Value type of tested symbol is ' + str(v.value_type)
 
@@ -729,8 +729,8 @@ def unconditional_dissatisfaction(result: str) -> types.FunctionType:
 
 
 def dissatisfaction_if_value_type_is(value_type: ValueType) -> types.FunctionType:
-    def ret_val(value: sut.ResolverContainer) -> str:
-        if value.value.value_type is value_type:
+    def ret_val(container: sut.ResolverContainer) -> str:
+        if container.resolver.value_type is value_type:
             return 'fail due to value type is ' + str(value_type)
         return None
 
