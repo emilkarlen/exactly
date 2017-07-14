@@ -10,6 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
@@ -25,11 +26,13 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants__with_source_check
 from exactly_lib_test.instructions.utils.arg_parse.parse_string import string_resolver_from_fragments
 from exactly_lib_test.symbol.test_resources import value_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.test_resources.symbol_utils import assert_symbol_table_is_singleton, \
-    string_constant_value_container, file_ref_value, assert_symbol_usages_is_singleton_list, container
+from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import assert_symbol_usages_is_singleton_list
+from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_constant_container, \
+    container
 from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_value_container
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 
 def suite() -> unittest.TestSuite:
@@ -114,12 +117,12 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
         source = _single_line_source('{string_type} name1 = v1')
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition('name1', string_constant_value_container('v1')),
+                vs_asrt.equals_symbol(SymbolDefinition('name1', string_value_constant_container('v1')),
                                       ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 'name1',
-                equals_value_container(string_constant_value_container('v1')),
+                equals_value_container(string_value_constant_container('v1')),
             )
         )
         self._run(source, Arrangement(), expectation)
@@ -218,8 +221,8 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = _src('{path_type} name = --rel-act component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = file_ref_value(file_refs.rel_act(PathPartAsFixedPath('component')))
-            expected_value_container = _value_container(expected_file_ref_value)
+            expected_file_ref_resolver = FileRefConstant(file_refs.rel_act(PathPartAsFixedPath('component')))
+            expected_value_container = _value_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
@@ -237,10 +240,10 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
     def test(self):
         instruction_argument = _src('{path_type} name = component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_file_ref_value = file_ref_value(
+            expected_file_ref_resolver = FileRefConstant(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
                                         PathPartAsFixedPath('component')))
-            expected_value_container = _value_container(expected_file_ref_value)
+            expected_value_container = _value_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(

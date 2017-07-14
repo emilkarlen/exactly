@@ -8,7 +8,7 @@ from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
+from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_none_or_value
 
 
 class ActEnvironment(tuple):

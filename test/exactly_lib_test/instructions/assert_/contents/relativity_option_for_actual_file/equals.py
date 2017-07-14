@@ -25,6 +25,7 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources import symbol_tables
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:
@@ -124,7 +125,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             FileRefConstant(file_refs.of_rel_option(self.relativity_of_expected_file(),
                                                     PathPartAsNothing())))
 
-        symbols_in_arrangement = symbol_utils.symbol_table_from_entries(
+        symbols_in_arrangement = symbol_tables.symbol_table_from_entries(
             [file_ref_sym_tbl_entry_for_expected_file] +
             self.rel_opt.symbols.entries_for_arrangement())
 

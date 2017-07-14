@@ -19,14 +19,14 @@ from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion impor
     equals_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container, \
-    symbol_table_from_entries
+from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_constant_container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import argument_list_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 
 
 def suite() -> unittest.TestSuite:
@@ -92,7 +92,7 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                       Arrangement(
                           symbols=symbol_table_from_entries([
                               symbol_table.Entry('SYMBOL_NAME',
-                                                 file_ref_value_container(
+                                                 file_ref_constant_container(
                                                      file_refs.rel_tmp_user(
                                                          PathPartAsFixedPath('symbol-def-path-arg'))))])
                       ),

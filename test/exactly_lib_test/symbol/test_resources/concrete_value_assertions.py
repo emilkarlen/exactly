@@ -6,6 +6,7 @@ from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver, string_constant
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
@@ -16,7 +17,6 @@ from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system_values.test_resources.file_ref import equals_file_ref
@@ -227,7 +227,7 @@ class _StringValueResolverAssertion(_EqualsSymbolValueResolverBase):
 def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> FileRefResolver:
     relativity = list(valid_relativities.rel_option_types)[0]
     assert isinstance(relativity, RelOptionType)
-    return file_ref_value(file_ref_test_impl('file_ref_test_impl', relativity))
+    return FileRefConstant(file_ref_test_impl('file_ref_test_impl', relativity))
 
 
 def _value_container(value: FileRefResolver) -> ValueContainer:

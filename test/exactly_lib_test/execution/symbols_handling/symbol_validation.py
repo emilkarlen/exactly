@@ -15,7 +15,7 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib_test.symbol.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
-from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container, \
+from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_constant_container, \
     file_ref_resolver_container
 
 
@@ -180,7 +180,7 @@ def symbol_of(name: str) -> su.SymbolDefinition:
 
 
 def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
-    return Entry(name, file_ref_value_container(file_ref))
+    return Entry(name, file_ref_constant_container(file_ref))
 
 
 def string_entry(name: str, value: str = 'string value') -> Entry:

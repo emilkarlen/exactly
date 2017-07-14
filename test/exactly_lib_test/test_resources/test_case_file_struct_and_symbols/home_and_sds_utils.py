@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_util
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.symbol_table import symbol_table_from_none_or_value
+from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_none_or_value
 
 
 def sds_2_home_and_sds_assertion(assertion_on_sds: asrt.ValueAssertion):

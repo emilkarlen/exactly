@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import symbol_usage as sut
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_value_container
+from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_constant_container
 
 
 def suite() -> unittest.TestSuite:
@@ -14,7 +14,7 @@ class TestSymbolUsageVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
-        ret_val = visitor.visit(sut.SymbolDefinition('name', file_ref_value_container()))
+        ret_val = visitor.visit(sut.SymbolDefinition('name', file_ref_constant_container()))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
                              [sut.SymbolReference],
