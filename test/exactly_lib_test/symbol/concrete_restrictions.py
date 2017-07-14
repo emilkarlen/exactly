@@ -281,7 +281,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
-            value_container_2_result__fun=unconditional_satisfaction)
+            resolver_container_2_result__fun=unconditional_satisfaction)
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=restriction_that_registers_processed_symbols)
         # ACT #
@@ -339,7 +339,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
-            value_container_2_result__fun=unconditional_satisfaction)
+            resolver_container_2_result__fun=unconditional_satisfaction)
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_that_registers_processed_symbols,
             direct=unconditionally_satisfied_value_restriction())
@@ -378,7 +378,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         result_that_indicates_error = 'result that indicates error'
         function_that_reports_error = unconditional_dissatisfaction(result_that_indicates_error)
         restriction_that_registers_processed_symbols = RestrictionThatRegistersProcessedSymbols(
-            value_container_2_result__fun=function_that_reports_error)
+            resolver_container_2_result__fun=function_that_reports_error)
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_that_registers_processed_symbols,
             direct=unconditionally_satisfied_value_restriction(),
@@ -427,7 +427,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
-            value_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
+            resolver_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every_indirect,
             direct=unconditionally_satisfied_value_restriction(),
@@ -480,7 +480,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
-            value_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
+            resolver_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every_indirect,
             direct=unconditionally_satisfied_value_restriction(),
@@ -673,8 +673,8 @@ class ValueRestrictionThatRaisesErrorIfApplied(sut.ValueRestriction):
 
 
 class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
-    def __init__(self, value_container_2_result__fun: types.FunctionType):
-        self.value_container_2_result__fun = value_container_2_result__fun
+    def __init__(self, resolver_container_2_result__fun: types.FunctionType):
+        self.resolver_container_2_result__fun = resolver_container_2_result__fun
         self.visited = Counter()
 
     def is_satisfied_by(self,
@@ -682,7 +682,7 @@ class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
                         symbol_name: str,
                         value: sut.ResolverContainer) -> ValueRestrictionFailure:
         self.visited.update([symbol_name])
-        error_message = self.value_container_2_result__fun(value)
+        error_message = self.resolver_container_2_result__fun(value)
         return ValueRestrictionFailure(error_message) if error_message else None
 
 

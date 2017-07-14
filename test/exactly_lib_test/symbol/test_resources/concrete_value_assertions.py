@@ -230,7 +230,7 @@ def file_ref_val_test_impl(valid_relativities: PathRelativityVariants) -> FileRe
     return FileRefConstant(file_ref_test_impl('file_ref_test_impl', relativity))
 
 
-def _value_container(value: FileRefResolver) -> ResolverContainer:
+def _resolver_container(value: FileRefResolver) -> ResolverContainer:
     return ResolverContainer(Line(1, 'source line'), value)
 
 
@@ -242,7 +242,7 @@ def _symbol_table_with_values_matching_references(references: list) -> SymbolTab
         value_restriction = ref.restrictions.direct
         assert isinstance(value_restriction, ValueRestriction)
         value = value_constructor.visit(value_restriction)
-        elements[ref.name] = _value_container(value)
+        elements[ref.name] = _resolver_container(value)
     return SymbolTable(elements)
 
 
