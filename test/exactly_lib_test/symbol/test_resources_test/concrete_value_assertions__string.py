@@ -178,9 +178,9 @@ class TestEquals(unittest.TestCase):
         ]
         for test_case_name, string_value, symbol_table in test_cases:
             assert isinstance(string_value, StringResolver), 'Type info for IDE'
-            with self.subTest(msg='{}::with checked references::{}'.format(sut.equals_string_resolver3.__name__,
+            with self.subTest(msg='{}::with checked references::{}'.format(sut.equals_string_resolver.__name__,
                                                                            test_case_name)):
-                assertion = sut.equals_string_resolver3(string_value)
+                assertion = sut.equals_string_resolver(string_value)
                 assertion.apply_with_message(self, string_value, test_case_name)
 
 
@@ -193,7 +193,7 @@ class TestNotEquals3(unittest.TestCase):
         actual = string_constant('actual value')
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver3(expected)
+            assertion = sut.equals_string_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__number_of_references(self):
@@ -205,7 +205,7 @@ class TestNotEquals3(unittest.TestCase):
                                                            ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver3(expected)
+            assertion = sut.equals_string_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__different_number_of_references(self):
@@ -220,7 +220,7 @@ class TestNotEquals3(unittest.TestCase):
         actual = _StringResolverTestImpl(expected_string, actual_references)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver3(expected)
+            assertion = sut.equals_string_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__different_number_of_fragments(self):
@@ -233,7 +233,7 @@ class TestNotEquals3(unittest.TestCase):
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver3(expected)
+            assertion = sut.equals_string_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__different_fragments(self):
@@ -246,7 +246,7 @@ class TestNotEquals3(unittest.TestCase):
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver3(expected)
+            assertion = sut.equals_string_resolver(expected)
             assertion.apply_without_message(put, actual)
 
 

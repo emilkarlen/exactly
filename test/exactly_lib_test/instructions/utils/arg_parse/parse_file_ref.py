@@ -34,8 +34,8 @@ from exactly_lib_test.section_document.parser_implementations.test_resources imp
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import file_ref_resolver_equals, \
-    equals_file_ref_resolver2
+from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
+    matches_file_ref_resolver
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbol_utils import \
@@ -144,7 +144,7 @@ class TestParsesBase(unittest.TestCase):
         actual = sut.parse_file_ref(ts,
                                     arrangement.rel_option_argument_configuration)
         # ASSERT #
-        file_ref_resolver_equals(expectation.file_ref_resolver).apply_with_message(self, actual,
+        equals_file_ref_resolver(expectation.file_ref_resolver).apply_with_message(self, actual,
                                                                                    'file-ref-resolver')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
@@ -1059,7 +1059,7 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
                     # ACT #
                     actual_file_ref_resolver = sut.parse_file_ref(token_stream, arg_config)
                     # ASSERT #
-                    resolver_assertion = equals_file_ref_resolver2(expected_file_ref,
+                    resolver_assertion = matches_file_ref_resolver(expected_file_ref,
                                                                    asrt.matches_sequence([]),
                                                                    empty_symbol_table())
                     resolver_assertion.apply_with_message(self, actual_file_ref_resolver, 'file-ref-resolver')
@@ -1138,7 +1138,7 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                     remaining_source('file.txt'),
                     custom_configuration.config_for(path_suffix_is_required))
                 expected_resolver = FileRefConstant(file_refs.rel_act(PathPartAsFixedPath('file.txt')))
-                assertion = file_ref_resolver_equals(expected_resolver)
+                assertion = equals_file_ref_resolver(expected_resolver)
                 assertion.apply_with_message(self, actual_resolver, 'file-ref-resolver')
 
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
@@ -1236,7 +1236,7 @@ def expect(resolved_file_ref: FileRef,
            token_stream: asrt.ValueAssertion,
            ) -> Expectation2:
     return Expectation2(
-        file_ref_resolver=equals_file_ref_resolver2(resolved_file_ref,
+        file_ref_resolver=matches_file_ref_resolver(resolved_file_ref,
                                                     expected_symbol_references,
                                                     symbol_table),
         symbol_table_in_with_all_ref_restrictions_are_satisfied=symbol_table,

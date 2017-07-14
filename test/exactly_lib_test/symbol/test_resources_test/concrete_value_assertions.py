@@ -17,13 +17,13 @@ class TestEqualsResolver(unittest.TestCase):
         # ARRANGE #
         value = FileRefConstant(file_ref_test_impl('file-name'))
         # ACT & ASSERT #
-        sut.resolver_equals3(value).apply_without_message(self, value)
+        sut.equals_resolver(value).apply_without_message(self, value)
 
     def test_equals__string(self):
         # ARRANGE #
         value = string_constant('string')
         # ACT & ASSERT #
-        sut.resolver_equals3(value).apply_without_message(self, value)
+        sut.equals_resolver(value).apply_without_message(self, value)
 
     def test_not_equals__different_types(self):
         # ARRANGE #
@@ -32,7 +32,7 @@ class TestEqualsResolver(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            sut.resolver_equals3(expected).apply_without_message(put, actual)
+            sut.equals_resolver(expected).apply_without_message(put, actual)
 
     def test_not_equals__file_ref(self):
         # ARRANGE #
@@ -41,7 +41,7 @@ class TestEqualsResolver(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            sut.resolver_equals3(expected).apply_without_message(put, actual)
+            sut.equals_resolver(expected).apply_without_message(put, actual)
 
     def test_not_equals__string(self):
         # ARRANGE #
@@ -50,4 +50,4 @@ class TestEqualsResolver(unittest.TestCase):
         put = test_case_with_failure_exception_set_to_test_exception()
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            sut.resolver_equals3(expected).apply_without_message(put, actual)
+            sut.equals_resolver(expected).apply_without_message(put, actual)

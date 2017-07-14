@@ -4,7 +4,7 @@ from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol import value_structure as stc
 from exactly_lib.symbol.value_structure import SymbolValueResolver
 from exactly_lib_test.section_document.test_resources.assertions import equals_line
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import resolver_equals3
+from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -19,7 +19,7 @@ def equals_container(expected: stc.ResolverContainer,
     assert isinstance(expected_value, SymbolValueResolver), 'All actual values must be SymbolValue'
     component_assertions.append(asrt.sub_component('value',
                                                    stc.ResolverContainer.value.fget,
-                                                   resolver_equals3(expected_value)))
+                                                   equals_resolver(expected_value)))
     return asrt.is_instance_with(stc.ResolverContainer,
                                  asrt.and_(component_assertions))
 

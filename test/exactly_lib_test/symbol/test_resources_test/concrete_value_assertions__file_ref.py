@@ -57,11 +57,11 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                     file_ref_resolver = _FileRefResolverWithConstantFileRefAndSymbolReferences(file_ref,
                                                                                                symbol_references)
                     test_case_descr = 'relativity:{}, path-suffix: {}'.format(relativity, type(path_suffix))
-                    with self.subTest(msg=sut.file_ref_resolver_equals.__name__ + ' :: ' + test_case_descr):
-                        assertion = sut.file_ref_resolver_equals(file_ref_resolver)
+                    with self.subTest(msg=sut.equals_file_ref_resolver.__name__ + ' :: ' + test_case_descr):
+                        assertion = sut.equals_file_ref_resolver(file_ref_resolver)
                         assertion.apply_without_message(self, file_ref_resolver)
-                    with self.subTest(msg=sut.equals_file_ref_resolver2.__name__ + ' :: ' + test_case_descr):
-                        assertion = sut.equals_file_ref_resolver2(file_ref,
+                    with self.subTest(msg=sut.matches_file_ref_resolver.__name__ + ' :: ' + test_case_descr):
+                        assertion = sut.matches_file_ref_resolver(file_ref,
                                                                   equals_symbol_references(
                                                                       file_ref_resolver.references),
                                                                   symbols)
@@ -76,11 +76,11 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
                 test_case_descr = 'relativity:{}, path-suffix: {}'.format(relativity, type(path_suffix))
                 file_ref = FileRefTestImpl(relativity, path_suffix)
                 file_ref_resolver = FileRefConstant(file_ref)
-                with self.subTest(msg=sut.file_ref_resolver_equals.__name__ + ' :: ' + test_case_descr):
-                    assertion = sut.file_ref_resolver_equals(file_ref_resolver)
+                with self.subTest(msg=sut.equals_file_ref_resolver.__name__ + ' :: ' + test_case_descr):
+                    assertion = sut.equals_file_ref_resolver(file_ref_resolver)
                     assertion.apply_without_message(self, file_ref_resolver)
-                with self.subTest(msg=sut.equals_file_ref_resolver2.__name__ + ' :: ' + test_case_descr):
-                    assertion = sut.equals_file_ref_resolver2(file_ref,
+                with self.subTest(msg=sut.matches_file_ref_resolver.__name__ + ' :: ' + test_case_descr):
+                    assertion = sut.matches_file_ref_resolver(file_ref,
                                                               equals_symbol_references(file_ref_resolver.references),
                                                               symbols)
                     assertion.apply_without_message(self, file_ref_resolver)
@@ -97,7 +97,7 @@ class Test1NotEquals(unittest.TestCase):
                                          symbol_references)
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.file_ref_resolver_equals(expected)
+            assertion = sut.equals_file_ref_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_value_ref__differs__restriction_relativity_variants(self):
@@ -121,7 +121,7 @@ class Test1NotEquals(unittest.TestCase):
                                  restriction_with_relativity(RelOptionType.REL_HOME)))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.file_ref_resolver_equals(expected)
+            assertion = sut.equals_file_ref_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_value_ref__differs__symbol_name(self):
@@ -136,7 +136,7 @@ class Test1NotEquals(unittest.TestCase):
                                                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.file_ref_resolver_equals(expected)
+            assertion = sut.equals_file_ref_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__no_value_refs__value_refs(self):
@@ -149,7 +149,7 @@ class Test1NotEquals(unittest.TestCase):
         actual = resolver_from_constants(file_ref, [])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.file_ref_resolver_equals(expected)
+            assertion = sut.equals_file_ref_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_differs__value_refs__no_value_refs(self):
@@ -162,7 +162,7 @@ class Test1NotEquals(unittest.TestCase):
                                                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.file_ref_resolver_equals(expected)
+            assertion = sut.equals_file_ref_resolver(expected)
             assertion.apply_without_message(put, actual)
 
     def test_value_ref__invalid_type_of_value_restriction(self):
@@ -180,7 +180,7 @@ class Test1NotEquals(unittest.TestCase):
                                                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.file_ref_resolver_equals(expected)
+            assertion = sut.equals_file_ref_resolver(expected)
             assertion.apply_without_message(put, actual)
 
 
@@ -192,7 +192,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver2(expected, asrt.ignore, empty_symbol_table())
+            assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
             assertion.apply_with_message(put, FileRefConstant(actual), 'NotEquals')
 
     def test_differs__exists_pre_sds(self):
@@ -202,7 +202,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver2(expected, asrt.ignore, empty_symbol_table())
+            assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
             assertion.apply_with_message(put, FileRefConstant(actual), 'NotEquals')
 
     def test_differs__relativity(self):
@@ -212,7 +212,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver2(expected, asrt.ignore, empty_symbol_table())
+            assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
             assertion.apply_with_message(put, FileRefConstant(actual), 'NotEquals')
 
     def test_differs__symbol_references(self):
@@ -224,7 +224,7 @@ class Test2NotEquals(unittest.TestCase):
             [SymbolReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         # ACT & ASSERT #
         with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver2(file_ref,
+            assertion = sut.matches_file_ref_resolver(file_ref,
                                                       asrt.matches_sequence([]),
                                                       empty_symbol_table())
             assertion.apply_with_message(put, actual, 'NotEquals')
