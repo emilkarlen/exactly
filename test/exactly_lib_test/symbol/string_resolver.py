@@ -1,9 +1,7 @@
 import unittest
 
-from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol import string_resolver as sut
 from exactly_lib.symbol.concrete_restrictions import OrReferenceRestrictions
-from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system_values import concrete_string_values as csv, file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -108,12 +106,12 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
         expected_list_value = ListValue([string_value_of_single_string(string_value_1),
                                          string_value_of_single_string(string_value_2)])
         symbol = NameAndValue('the_symbol_name',
-                              ListResolver([sr.string_constant(string_value_1),
-                                            sr.string_constant(string_value_2)]))
+                              expected_list_value)
         symbol_reference = su.symbol_reference(symbol.name)
         fragment = sut.SymbolStringFragmentResolver(symbol_reference)
 
-        symbol_table = su.symbol_table_from_entries([su.entry(symbol.name, symbol.value)])
+        symbol_table = su.symbol_table_from_entries([Entry(symbol.name,
+                                                           su.container_for_constant_list_value(symbol.value))])
         # ACT #
         actual = fragment.resolve(symbol_table)
         # ASSERT #
@@ -140,11 +138,10 @@ class StringResolverTest(unittest.TestCase):
                                    file_refs.rel_act(PathPartAsFixedPath('file-name')))
         list_element_1 = 'list element 1'
         list_element_2 = 'list element 2'
-        list_value = ListValue([string_value_of_single_string(list_element_1),
-                                string_value_of_single_string(list_element_2)])
         list_symbol = NameAndValue('list_symbol_name',
-                                   ListResolver([sr.string_constant(list_element_1),
-                                                 sr.string_constant(list_element_2)]))
+                                   ListValue([string_value_of_single_string(list_element_1),
+                                              string_value_of_single_string(list_element_2)])
+                                   )
 
         cases = [
             (
@@ -189,8 +186,9 @@ class StringResolverTest(unittest.TestCase):
                 sut.StringResolver((
                     sut.SymbolStringFragmentResolver(
                         su.symbol_reference(list_symbol.name)),)),
-                su.symbol_table_from_entries([su.entry(list_symbol.name, list_symbol.value)]),
-                csv.StringValue((csv.ListValueFragment(list_value),)),
+                su.symbol_table_from_entries([Entry(list_symbol.name,
+                                                    su.container_for_constant_list_value(list_symbol.value))]),
+                csv.StringValue((csv.ListValueFragment(list_symbol.value),)),
             ),
             (
                 'multiple fragments of different types',
@@ -203,12 +201,12 @@ class StringResolverTest(unittest.TestCase):
                 su.symbol_table_from_entries([
                     Entry(string_symbol.name, su.string_constant_value_container(string_symbol.value)),
                     Entry(path_symbol.name, su.file_ref_value_container(path_symbol.value)),
-                    Entry(list_symbol.name, su.container(list_symbol.value)),
+                    Entry(list_symbol.name, su.container_for_constant_list_value(list_symbol.value)),
                 ]),
                 csv.StringValue((csv.ConstantFragment(string_symbol.value),
                                  csv.ConstantFragment(string_constant_1),
                                  csv.FileRefFragment(path_symbol.value),
-                                 csv.ListValueFragment(list_value),
+                                 csv.ListValueFragment(list_symbol.value),
                                  )),
             ),
         ]
