@@ -3,9 +3,9 @@ import unittest
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.restriction import ValueRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
