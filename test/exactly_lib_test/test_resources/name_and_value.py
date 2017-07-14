@@ -1,4 +1,10 @@
 class NameAndValue(tuple):
+    """
+    A name with an associated value.
+
+    Is a tuple with two elements - so objects can be used wherever pairs can be used.
+    """
+
     def __new__(cls,
                 name, value):
         return tuple.__new__(cls, (name, value))
