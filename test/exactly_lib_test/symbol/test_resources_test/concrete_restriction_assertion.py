@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol import concrete_restrictions as r
 from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
     StringRestriction, FailureOfIndirectReference
-from exactly_lib.symbol.value_restriction import ValueRestrictionFailure
+from exactly_lib.symbol.restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as sut

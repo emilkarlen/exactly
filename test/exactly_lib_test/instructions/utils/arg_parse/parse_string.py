@@ -9,10 +9,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
     ConstantStringFragmentResolver, StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is

@@ -1,5 +1,5 @@
 from exactly_lib.symbol.concrete_restrictions import FailureOfDirectReference, FailureOfIndirectReference
-from exactly_lib.symbol.value_restriction import FailureInfo, ValueRestrictionFailure
+from exactly_lib.symbol.restriction import FailureInfo, ValueRestrictionFailure
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 

@@ -6,10 +6,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_restrictions import NoRestriction, ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.string_resolver import StringResolver, ConstantStringFragmentResolver, StringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_restriction import ReferenceRestrictions
 from exactly_lib.util.parse.token import Token
 
 
