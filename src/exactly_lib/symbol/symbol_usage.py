@@ -24,7 +24,7 @@ class SymbolDefinition(SymbolUsage):
         self._container = container
 
     @property
-    def value_container(self) -> ResolverContainer:
+    def resolver_container(self) -> ResolverContainer:
         return self._container
 
     @property
@@ -34,7 +34,7 @@ class SymbolDefinition(SymbolUsage):
 
     @property
     def symbol_table_entry(self) -> Entry:
-        return Entry(self.name, self.value_container)
+        return Entry(self.name, self.resolver_container)
 
 
 class SymbolReference(SymbolUsage):
