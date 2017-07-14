@@ -113,6 +113,6 @@ def symbol_table_from_symbol_definitions(symbols: iter) -> SymbolTable:
     """
     :param symbols: [`SymbolDefinition`]
     """
-    elements = [(vd.name, vd.value_container)
+    elements = [(vd.name, vd.resolver_container)
                 for vd in symbols]
     return SymbolTable(dict(elements))

@@ -199,7 +199,7 @@ class _ActionThatSetsSymbolInSymbolTable:
 
     def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
         environment.symbols.put(self.symbol.name,
-                                self.symbol.value_container)
+                                self.symbol.resolver_container)
 
 
 def _act_phase_handling_that_records_existence_of_var_in_global_env(

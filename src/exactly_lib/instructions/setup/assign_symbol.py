@@ -34,5 +34,5 @@ class _Instruction(SetupPhaseInstruction):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         environment.symbols.put(self.symbol.name,
-                                self.symbol.value_container)
+                                self.symbol.resolver_container)
         return sh.new_sh_success()

@@ -32,8 +32,8 @@ def equals_symbol(expected: su.SymbolDefinition,
                                                         su.SymbolDefinition.name.fget,
                                                         asrt.equals(expected.name)),
                                      asrt.sub_component('resolver_container',
-                                                        su.SymbolDefinition.value_container.fget,
-                                                        equals_container(expected.value_container,
+                                                        su.SymbolDefinition.resolver_container.fget,
+                                                        equals_container(expected.resolver_container,
                                                                          ignore_source_line)),
 
                                  ])
