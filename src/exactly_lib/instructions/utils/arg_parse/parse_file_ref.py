@@ -271,7 +271,7 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndI
 
 
 def _type_must_be_either_path_or_string__err_msg_generator(value: ResolverContainer) -> str:
-    v = value.value
+    v = value.resolver
     assert isinstance(v, SymbolValueResolver)  # Type info for IDE
     return 'Expecting either a {path_type} or a {string_type}.\nFound: {actual_type}'.format(
         path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,

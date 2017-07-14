@@ -86,6 +86,6 @@ def _combine(first: PathPart, second: PathPart) -> PathPart:
 def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:
     container = symbols.lookup(name)
     assert isinstance(container, ResolverContainer), 'Value in SymTbl must be ResolverContainer'
-    value = container.value
-    assert isinstance(value, FileRefResolver), 'Referenced symbol must be FileRefResolver'
-    return value.resolve(symbols)
+    resolver = container.resolver
+    assert isinstance(resolver, FileRefResolver), 'Referenced symbol must be FileRefResolver'
+    return resolver.resolve(symbols)

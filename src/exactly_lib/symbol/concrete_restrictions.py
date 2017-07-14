@@ -34,7 +34,7 @@ class StringRestriction(ValueRestriction):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         container: ResolverContainer) -> ValueRestrictionFailure:
-        if not isinstance(container.value, StringResolver):
+        if not isinstance(container.resolver, StringResolver):
             return _invalid_type_msg(ValueType.STRING, symbol_name, container)
         return None
 
@@ -51,7 +51,7 @@ class FileRefRelativityRestriction(ValueRestriction):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         container: ResolverContainer) -> ValueRestrictionFailure:
-        resolver = container.value
+        resolver = container.resolver
         if not isinstance(resolver, FileRefResolver):
             return _invalid_type_msg(ValueType.PATH, symbol_name, container)
         file_ref = resolver.resolve(symbol_table)
@@ -86,7 +86,7 @@ class EitherStringOrFileRefRelativityRestriction(ValueRestriction):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         container: ResolverContainer) -> ValueRestrictionFailure:
-        resolver = container.value
+        resolver = container.resolver
         if isinstance(resolver, StringResolver):
             return self.string_restriction.is_satisfied_by(symbol_table, symbol_name, container)
         elif isinstance(resolver, FileRefResolver):
@@ -189,19 +189,19 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ResolverContainer) -> FailureInfo:
+                        container: ResolverContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
         :param value: The value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        result = self._direct.is_satisfied_by(symbol_table, symbol_name, value)
+        result = self._direct.is_satisfied_by(symbol_table, symbol_name, container)
         if result is not None:
             return FailureOfDirectReference(result)
         if self._indirect is None:
             return None
-        return self.check_indirect(symbol_table, value.value.references)
+        return self.check_indirect(symbol_table, container.resolver.references)
 
     @property
     def direct(self) -> ValueRestriction:
@@ -232,8 +232,8 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
                         path_to_referring_symbol: tuple,
                         references: list) -> FailureOfIndirectReference:
         for reference in references:
-            symbol_value = symbol_table.lookup(reference.name)
-            result = self._indirect.is_satisfied_by(symbol_table, reference.name, symbol_value)
+            container = symbol_table.lookup(reference.name)
+            result = self._indirect.is_satisfied_by(symbol_table, reference.name, container)
             if result is not None:
                 return FailureOfIndirectReference(
                     failing_symbol=reference.name,
@@ -242,7 +242,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
                     meaning_of_failure=self._meaning_of_failure_of_indirect_reference)
             result = self._check_indirect(symbol_table,
                                           path_to_referring_symbol + (reference.name,),
-                                          symbol_value.value.references)
+                                          container.resolver.references)
             if result is not None:
                 return result
         return None
@@ -277,14 +277,14 @@ class OrReferenceRestrictions(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ResolverContainer) -> FailureInfo:
-        resolver = value.value
+                        container: ResolverContainer) -> FailureInfo:
+        resolver = container.resolver
         assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
         for part in self._parts:
             assert isinstance(part, OrRestrictionPart)  # Type info for IDE
             if part.selector == resolver.value_type:
-                return part.restriction.is_satisfied_by(symbol_table, symbol_name, value)
-        return self._no_satisfied_restriction(symbol_name, resolver, value)
+                return part.restriction.is_satisfied_by(symbol_table, symbol_name, container)
+        return self._no_satisfied_restriction(symbol_name, resolver, container)
 
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
@@ -318,7 +318,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
 def _invalid_type_msg(expected: ValueType,
                       symbol_name: str,
                       container_of_actual: ResolverContainer) -> ValueRestrictionFailure:
-    actual = container_of_actual.value
+    actual = container_of_actual.resolver
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
             type(SymbolValueResolver),

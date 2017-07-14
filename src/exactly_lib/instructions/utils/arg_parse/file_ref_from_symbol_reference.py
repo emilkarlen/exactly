@@ -33,9 +33,9 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
         symbol_value_2_file_ref = _SymbolSymbolValue2FileRefResolverVisitor(self._suffix_resolver,
                                                                             self.default_relativity,
                                                                             symbols)
-        symbol = symbols.lookup(self._file_ref_or_string_symbol.name)
-        assert isinstance(symbol, ResolverContainer), 'Implementation consistency/ValueContainer'
-        return symbol_value_2_file_ref.visit(symbol.value)
+        container = symbols.lookup(self._file_ref_or_string_symbol.name)
+        assert isinstance(container, ResolverContainer), 'Implementation consistency/ResolverContainer'
+        return symbol_value_2_file_ref.visit(container.resolver)
 
     @property
     def references(self) -> list:

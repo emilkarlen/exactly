@@ -47,5 +47,5 @@ class ResolverContainer(SymbolTableValue):
         return self._source
 
     @property
-    def value(self) -> SymbolValueResolver:
+    def resolver(self) -> SymbolValueResolver:
         return self._value

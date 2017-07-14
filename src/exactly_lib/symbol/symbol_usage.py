@@ -30,7 +30,7 @@ class SymbolDefinition(SymbolUsage):
     @property
     def references(self) -> list:
         """All `SymbolReference` directly referenced by this object"""
-        return self._container.value.references
+        return self._container.resolver.references
 
     @property
     def symbol_table_entry(self) -> Entry:
