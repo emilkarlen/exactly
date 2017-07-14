@@ -188,5 +188,5 @@ class ValueRestrictionWithConstantResult(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ResolverContainer) -> ValueRestrictionFailure:
+                        container: ResolverContainer) -> ValueRestrictionFailure:
         return self.result

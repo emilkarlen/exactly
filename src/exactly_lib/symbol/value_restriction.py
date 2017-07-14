@@ -24,17 +24,21 @@ class ValueRestrictionFailure(tuple):
 
 class ValueRestriction:
     """
-    A restriction on a value in the symbol table, that is applied by the frame work -
-    i.e. not by specific instructions.
+    A restriction on a resolved value in the symbol table.
+
+    Since sometimes, the restriction on the resolved value can be checked
+    just by looking at the resolver - the checking method is given the resolver
+    instead of the resolved value.
     """
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
-                        symbol_name: str, value: ResolverContainer) -> ValueRestrictionFailure:
+                        symbol_name: str,
+                        container: ResolverContainer) -> ValueRestrictionFailure:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
-        :param value: The value that the restriction applies to
+        :param container: The container of the value that the restriction applies to
         :rtype ValueRestrictionFailure
         :return: None if satisfied
         """
@@ -53,11 +57,11 @@ class ReferenceRestrictions:
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ResolverContainer) -> FailureInfo:
+                        container: ResolverContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
-        :param value: The value that the restriction applies to
+        :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
         raise NotImplementedError()

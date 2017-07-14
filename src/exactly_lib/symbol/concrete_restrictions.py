@@ -21,7 +21,7 @@ class NoRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ResolverContainer) -> str:
+                        container: ResolverContainer) -> str:
         return None
 
 
