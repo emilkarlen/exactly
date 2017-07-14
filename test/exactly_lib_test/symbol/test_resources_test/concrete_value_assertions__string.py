@@ -9,8 +9,7 @@ from exactly_lib.type_system_values.concrete_string_values import ConstantFragme
 from exactly_lib.type_system_values.string_value import StringValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources import concrete_value_assertions as sut
-from exactly_lib_test.test_resources.test_of_test_resources_util import \
-    test_case_with_failure_exception_set_to_test_exception, TestException
+from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:
@@ -39,51 +38,43 @@ class TestEqualsFragment(unittest.TestCase):
 
     def test_string_not_equals_symbol_ref(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         value = 'a_value'
         string_fragment = ConstantStringFragmentResolver(value)
         symbol_fragment = SymbolStringFragmentResolver(
             SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
+        assertion = sut.equals_string_fragment(string_fragment)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragment(string_fragment)
-            assertion.apply_without_message(put, symbol_fragment)
+        assert_that_assertion_fails(assertion, symbol_fragment)
 
     def test_symbol_ref_not_equals_string(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         value = 'a_value'
         string_fragment = ConstantStringFragmentResolver(value)
         symbol_fragment = SymbolStringFragmentResolver(
             SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
+        assertion = sut.equals_string_fragment(symbol_fragment)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragment(symbol_fragment)
-            assertion.apply_without_message(put, string_fragment)
+        assert_that_assertion_fails(assertion, string_fragment)
 
     def test_string_not_equals_string_with_different_value(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         fragment1 = ConstantStringFragmentResolver('value 1')
         fragment2 = ConstantStringFragmentResolver('value 2')
+        assertion = sut.equals_string_fragment(fragment1)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragment(fragment1)
-            assertion.apply_without_message(put, fragment2)
+        assert_that_assertion_fails(assertion, fragment2)
 
     def test_symbol_ref_not_equals_symbol_ref_with_different_symbol_name(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         fragment1 = SymbolStringFragmentResolver(SymbolReference('symbol_name_1',
                                                                  ReferenceRestrictionsOnDirectAndIndirect(
                                                                      NoRestriction())))
         fragment2 = SymbolStringFragmentResolver(SymbolReference('symbol_name_2',
                                                                  ReferenceRestrictionsOnDirectAndIndirect(
                                                                      NoRestriction())))
+        assertion = sut.equals_string_fragment(fragment1)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragment(fragment1)
-            assertion.apply_without_message(put, fragment2)
+        assert_that_assertion_fails(assertion, fragment2)
 
 
 class TestEqualsFragments(unittest.TestCase):
@@ -123,45 +114,37 @@ class TestEqualsFragments(unittest.TestCase):
 
     def test_not_equals__different_number_of_fragments__empty__non_empty(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = ()
         actual = (ConstantStringFragmentResolver('value'),)
+        assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragments(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_not_equals__different_number_of_fragments__non_empty__empty(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = (ConstantStringFragmentResolver('value'),)
         actual = ()
+        assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragments(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_not_equals__same_length__different_values(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = (ConstantStringFragmentResolver('expected value'),)
         actual = (ConstantStringFragmentResolver('actual value'),)
+        assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragments(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_not_equals__same_length__different_types(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = (ConstantStringFragmentResolver('value'),)
         actual = (SymbolStringFragmentResolver(SymbolReference('value',
                                                                ReferenceRestrictionsOnDirectAndIndirect(
                                                                    NoRestriction()))),)
+        assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_fragments(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
 
 class TestEquals(unittest.TestCase):
@@ -188,30 +171,25 @@ class TestEquals(unittest.TestCase):
 class TestNotEquals3(unittest.TestCase):
     def test_differs__resolved_value(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
         expected = string_constant(expected_string)
         actual = string_constant('actual value')
+        assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_differs__number_of_references(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
         expected = string_constant(expected_string)
         actual = resolver_with_references([SymbolReference('symbol_name',
                                                            ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+        assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_differs__different_number_of_references(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
         expected_references = [
             SymbolReference('expected_symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
@@ -219,36 +197,31 @@ class TestNotEquals3(unittest.TestCase):
             SymbolReference('actual_symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
         expected = _StringResolverTestImpl(expected_string, expected_references)
         actual = _StringResolverTestImpl(expected_string, actual_references)
+        assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_differs__different_number_of_fragments(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
         expected_fragments = (ConstantStringFragmentResolver('value'),)
         actual_fragments = ()
         expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
+        assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
     def test_differs__different_fragments(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected_string = 'expected value'
         expected_fragments = (ConstantStringFragmentResolver('value 1'),)
         actual_fragments = (ConstantStringFragmentResolver('value 2'),)
         expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
+        assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_string_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
 
 
 def resolver_with_references(symbol_references: list) -> StringResolver:
