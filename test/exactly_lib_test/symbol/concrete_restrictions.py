@@ -6,7 +6,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, ResolverContainer
 from exactly_lib.symbol.restriction import ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.restriction import ValueRestriction
-from exactly_lib.symbol.restrictions import concrete_restrictions as sut
+from exactly_lib.symbol.restrictions import reference_restrictions as sut
 from exactly_lib.symbol.restrictions import value_restrictions as vr
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference

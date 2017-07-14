@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.restriction import ValueRestriction
-from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant

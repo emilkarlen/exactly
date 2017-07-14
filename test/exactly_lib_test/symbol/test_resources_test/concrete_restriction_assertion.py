@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.symbol.restriction import ValueRestrictionFailure
-from exactly_lib.symbol.restrictions import concrete_restrictions as r
+from exactly_lib.symbol.restrictions import reference_restrictions as r
 from exactly_lib.symbol.restrictions import value_restrictions as vr
-from exactly_lib.symbol.restrictions.concrete_restrictions import FailureOfIndirectReference
+from exactly_lib.symbol.restrictions.reference_restrictions import FailureOfIndirectReference
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
     FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType

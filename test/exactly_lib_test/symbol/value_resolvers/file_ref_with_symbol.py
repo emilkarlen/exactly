@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
     no_restrictions
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
