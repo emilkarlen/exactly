@@ -36,8 +36,8 @@ def _of_indirect(failing_symbol: str, symbols: SymbolTable, failure: FailureOfIn
 
 def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, symbols: SymbolTable) -> list:
     def line_ref_of_symbol(symbol_name: str) -> str:
-        value_container = symbols.lookup(symbol_name)
-        return error_message_format.source_line(value_container.definition_source)
+        container = symbols.lookup(symbol_name)
+        return error_message_format.source_line(container.definition_source)
 
     ret_val = []
     path_to_failing_symbol = [failing_symbol] + path_to_failing_symbol

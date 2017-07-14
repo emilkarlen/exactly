@@ -4,7 +4,7 @@ from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_restriction import ValueRestriction
-from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_ref as _file_ref
 from exactly_lib.type_system_values.list_value import ListValue
@@ -16,16 +16,16 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 
 def container(value: SymbolValueResolver,
               line_num: int = 1,
-              source_line: str = 'value def line') -> ValueContainer:
-    return ValueContainer(Line(line_num, source_line),
-                          value)
+              source_line: str = 'value def line') -> ResolverContainer:
+    return ResolverContainer(Line(line_num, source_line),
+                             value)
 
 
 def string_value_constant_container(string_value: str,
                                     line_num: int = 1,
-                                    source_line: str = 'value def line') -> ValueContainer:
-    return ValueContainer(Line(line_num, source_line),
-                          string_constant(string_value))
+                                    source_line: str = 'value def line') -> ResolverContainer:
+    return ResolverContainer(Line(line_num, source_line),
+                             string_constant(string_value))
 
 
 def string_symbol_definition(name: str, string_value: str = 'string value') -> SymbolDefinition:
@@ -54,25 +54,25 @@ def symbol_table_with_string_values_from_name_and_value(name_and_value_list: ite
 
 def list_value_constant_container(list_value: ListValue,
                                   line_num: int = 1,
-                                  source_line: str = 'value def line') -> ValueContainer:
-    return ValueContainer(Line(line_num, source_line),
-                          ListResolverTestImplForConstantListValue(list_value))
+                                  source_line: str = 'value def line') -> ResolverContainer:
+    return ResolverContainer(Line(line_num, source_line),
+                             ListResolverTestImplForConstantListValue(list_value))
 
 
 def file_ref_constant_container(
         file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                          relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
-        source_line: str = 'value def line') -> ValueContainer:
-    return ValueContainer(Line(line_num, source_line),
-                          FileRefConstant(file_ref))
+        source_line: str = 'value def line') -> ResolverContainer:
+    return ResolverContainer(Line(line_num, source_line),
+                             FileRefConstant(file_ref))
 
 
 def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
                                 line_num: int = 1,
-                                source_line: str = 'value def line') -> ValueContainer:
-    return ValueContainer(Line(line_num, source_line),
-                          file_ref_resolver)
+                                source_line: str = 'value def line') -> ResolverContainer:
+    return ResolverContainer(Line(line_num, source_line),
+                             file_ref_resolver)
 
 
 def file_ref_symbol_definition(name: str,
@@ -100,7 +100,7 @@ def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestrict
 def entry(name: str, value: SymbolValueResolver = string_constant('string value'),
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
-    return Entry(name, ValueContainer(Line(line_num, source_line), value))
+    return Entry(name, ResolverContainer(Line(line_num, source_line), value))
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:

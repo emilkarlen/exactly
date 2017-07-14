@@ -6,7 +6,7 @@ from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -34,7 +34,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
                                                                             self.default_relativity,
                                                                             symbols)
         symbol = symbols.lookup(self._file_ref_or_string_symbol.name)
-        assert isinstance(symbol, ValueContainer), 'Implementation consistency/ValueContainer'
+        assert isinstance(symbol, ResolverContainer), 'Implementation consistency/ValueContainer'
         return symbol_value_2_file_ref.visit(symbol.value)
 
     @property

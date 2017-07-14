@@ -7,7 +7,7 @@ class RestrictionThatCannotBeSatisfied(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: vs.SymbolTable,
                         symbol_name: str,
-                        value: vs.ValueContainer) -> ValueRestrictionFailure:
+                        value: vs.ResolverContainer) -> ValueRestrictionFailure:
         return ValueRestrictionFailure('unconditional error')
 
 

@@ -5,7 +5,7 @@ from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestrictio
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
 from exactly_lib.symbol.value_restriction import ValueRestriction, ReferenceRestrictions, ValueRestrictionFailure
-from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -188,5 +188,5 @@ class ValueRestrictionWithConstantResult(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: ValueContainer) -> ValueRestrictionFailure:
+                        value: ResolverContainer) -> ValueRestrictionFailure:
         return self.result

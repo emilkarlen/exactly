@@ -26,7 +26,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
-from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
@@ -270,7 +270,7 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndI
     )))
 
 
-def _type_must_be_either_path_or_string__err_msg_generator(value: ValueContainer) -> str:
+def _type_must_be_either_path_or_string__err_msg_generator(value: ResolverContainer) -> str:
     v = value.value
     assert isinstance(v, SymbolValueResolver)  # Type info for IDE
     return 'Expecting either a {path_type} or a {string_type}.\nFound: {actual_type}'.format(

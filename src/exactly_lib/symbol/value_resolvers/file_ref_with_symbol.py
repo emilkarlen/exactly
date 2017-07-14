@@ -5,7 +5,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
     SpecificPathRelativity
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -84,8 +84,8 @@ def _combine(first: PathPart, second: PathPart) -> PathPart:
 
 
 def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:
-    value_container = symbols.lookup(name)
-    assert isinstance(value_container, ValueContainer), 'Value in SymTbl must be ValueContainer'
-    value = value_container.value
+    container = symbols.lookup(name)
+    assert isinstance(container, ResolverContainer), 'Value in SymTbl must be ResolverContainer'
+    value = container.value
     assert isinstance(value, FileRefResolver), 'Referenced symbol must be FileRefResolver'
     return value.resolve(symbols)

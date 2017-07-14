@@ -1,5 +1,5 @@
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.util.symbol_table import Entry
 
 
@@ -19,18 +19,18 @@ class SymbolDefinition(SymbolUsage):
 
     def __init__(self,
                  name: str,
-                 value_container: ValueContainer):
+                 container: ResolverContainer):
         super().__init__(name)
-        self._value_container = value_container
+        self._container = container
 
     @property
-    def value_container(self) -> ValueContainer:
-        return self._value_container
+    def value_container(self) -> ResolverContainer:
+        return self._container
 
     @property
     def references(self) -> list:
         """All `SymbolReference` directly referenced by this object"""
-        return self._value_container.value.references
+        return self._container.value.references
 
     @property
     def symbol_table_entry(self) -> Entry:

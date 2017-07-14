@@ -30,9 +30,9 @@ class SymbolValueResolver:
         raise NotImplementedError()
 
 
-class ValueContainer(SymbolTableValue):
+class ResolverContainer(SymbolTableValue):
     """
-    The info about a value that is stored in a symbol table.
+    The info about a resolver that is stored in a symbol table.
 
     A value together with meta info
     """

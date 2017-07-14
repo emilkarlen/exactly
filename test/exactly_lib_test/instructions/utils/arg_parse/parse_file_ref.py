@@ -19,7 +19,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstan
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.value_restriction import ReferenceRestrictions
-from exactly_lib.symbol.value_structure import ValueContainer
+from exactly_lib.symbol.value_structure import ResolverContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system_values import file_refs
@@ -170,11 +170,11 @@ class TestParsesBase(unittest.TestCase):
                                                symbols: SymbolTable):
         for idx, reference in enumerate(actual.references):
             assert isinstance(reference, SymbolReference)  # Type info for IDE
-            value_container = symbols.lookup(reference.name)
-            assert isinstance(value_container, ValueContainer)
+            container = symbols.lookup(reference.name)
+            assert isinstance(container, ResolverContainer)
             result = reference.restrictions.is_satisfied_by(symbols,
                                                             reference.name,
-                                                            value_container)
+                                                            container)
             self.assertIsNone(result,
                               'Restriction on reference #{}: expects None=satisfaction'.format(idx))
 
@@ -183,8 +183,8 @@ class TestParsesBase(unittest.TestCase):
             actual: FileRefResolver,
             symbols: SymbolTable):
         restriction = FileRefRelativityRestriction(PathRelativityVariants(RelOptionType, True))
-        value_container = symbol_utils.file_ref_resolver_container(actual)
-        result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', value_container)
+        container = symbol_utils.file_ref_resolver_container(actual)
+        result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', container)
         self.assertIsNone(result,
                           'Result of hypothetical restriction on path')
 

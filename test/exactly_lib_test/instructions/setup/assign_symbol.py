@@ -13,7 +13,7 @@ from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.value_structure import ValueContainer, SymbolValueResolver
+from exactly_lib.symbol.value_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -29,7 +29,7 @@ from exactly_lib_test.symbol.test_resources import value_structure_assertions as
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import assert_symbol_usages_is_singleton_list
 from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_constant_container, \
     container
-from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_value_container
+from exactly_lib_test.symbol.test_resources.value_structure_assertions import equals_container
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
@@ -122,7 +122,7 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 'name1',
-                equals_value_container(string_value_constant_container('v1')),
+                equals_container(string_value_constant_container('v1')),
             )
         )
         self._run(source, Arrangement(), expectation)
@@ -144,7 +144,7 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 name_of_defined_symbol,
-                equals_value_container(container_of_expected_resolver),
+                equals_container(container_of_expected_resolver),
             )
         )
         # ACT & ASSERT #
@@ -168,7 +168,7 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 name_of_defined_symbol,
-                equals_value_container(container_of_expected_resolver),
+                equals_container(container_of_expected_resolver),
             )
         )
         # ACT & ASSERT #
@@ -198,7 +198,7 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 name_of_defined_symbol,
-                equals_value_container(container_of_expected_resolver),
+                equals_container(container_of_expected_resolver),
             )
         )
         # ACT & ASSERT #
@@ -222,16 +222,16 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
         instruction_argument = _src('{path_type} name = --rel-act component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = FileRefConstant(file_refs.rel_act(PathPartAsFixedPath('component')))
-            expected_value_container = _value_container(expected_file_ref_resolver)
+            expected_container = _value_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
                           symbol_usages=assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
-                                  SymbolDefinition('name', expected_value_container))),
+                                  SymbolDefinition('name', expected_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
-                              equals_value_container(expected_value_container))
+                              equals_container(expected_container))
                       )
                       )
 
@@ -243,16 +243,16 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
             expected_file_ref_resolver = FileRefConstant(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
                                         PathPartAsFixedPath('component')))
-            expected_value_container = _value_container(expected_file_ref_resolver)
+            expected_container = _value_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
                           symbol_usages=assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
-                                  SymbolDefinition('name', expected_value_container))),
+                                  SymbolDefinition('name', expected_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
-                              equals_value_container(expected_value_container)))
+                              equals_container(expected_container)))
                       )
 
 
@@ -265,19 +265,19 @@ class TestPathAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                                 ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(
                                     REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 PathPartResolverAsFixedPath('component'))
-            expected_value_container = _value_container(expected_file_ref_resolver)
+            expected_container = _value_container(expected_file_ref_resolver)
             self._run(source,
                       Arrangement(),
                       Expectation(
                           symbol_usages=asrt.matches_sequence([
                               vs_asrt.equals_symbol(
                                   SymbolDefinition('ASSIGNED_NAME',
-                                                   expected_value_container),
+                                                   expected_container),
                                   ignore_source_line=True)
                           ]),
                           symbols_after_main=assert_symbol_table_is_singleton(
                               'ASSIGNED_NAME',
-                              equals_value_container(expected_value_container)))
+                              equals_container(expected_container)))
                       )
 
 
@@ -308,5 +308,5 @@ def _multi_line_source(first_line: str,
                             [_src(line, **kwargs) for line in following_lines])
 
 
-def _value_container(value: SymbolValueResolver) -> ValueContainer:
-    return ValueContainer(Line(1, 'source line'), value)
+def _value_container(value: SymbolValueResolver) -> ResolverContainer:
+    return ResolverContainer(Line(1, 'source line'), value)
