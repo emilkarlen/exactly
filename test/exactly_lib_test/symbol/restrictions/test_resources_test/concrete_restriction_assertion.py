@@ -9,9 +9,8 @@ from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, St
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib_test.symbol.restrictions.test_resources import concrete_restriction_assertion as sut
-from exactly_lib_test.test_resources.test_of_test_resources_util import \
-    test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:
@@ -69,7 +68,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
                 assertion.apply_without_message(self, actual)
 
     def test__default_behaviour__fail_if_symbol_name_is_not_string(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(),
             FailureOfIndirectReference(['this is a list - not a string'],
                                        [],
@@ -77,7 +76,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
         )
 
     def test__default_behaviour__fail_if_path_to_failing_symbol_is_not_a_list(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(),
             FailureOfIndirectReference('failing_symbol',
                                        'this is a string - not a list',
@@ -85,7 +84,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
         )
 
     def test__default_behaviour__fail_if_error_message_is_not_a_string(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(),
             FailureOfIndirectReference('failing_symbol',
                                        [],
@@ -93,7 +92,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
         )
 
     def test__default_behaviour__fail_if_meaning_of_failure_is_not_a_string(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(),
             FailureOfIndirectReference('failing_symbol',
                                        [],
@@ -102,7 +101,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
         )
 
     def test_fail_if_symbol_name_is_unexpected(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(failing_symbol=asrt.equals('expected_failing_symbol')),
             FailureOfIndirectReference('actual_failing_symbol',
                                        [],
@@ -110,7 +109,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
         )
 
     def test_fail_if_path_to_failing_symbol_is_unexpected(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(path_to_failing_symbol=asrt.equals(['sym1', 'sym2'])),
             FailureOfIndirectReference('failing_symbol',
                                        ['sym1'],
@@ -118,7 +117,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
         )
 
     def test_fail_if_error_message_is_unexpected(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(error_message=asrt.equals('expected error message')),
             FailureOfIndirectReference('failing_symbol',
                                        [],
@@ -126,20 +125,13 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
         )
 
     def test_fail_if_meaning_of_failure_is_unexpected(self):
-        self._assert_fails(
+        assert_that_assertion_fails(
             sut.is_failure_of_indirect_reference(error_message=asrt.equals('expected meaning of failure')),
             FailureOfIndirectReference('failing_symbol',
                                        [],
                                        ValueRestrictionFailure('error message'),
                                        meaning_of_failure='actual meaning of failure')
         )
-
-    def _assert_fails(self,
-                      assertion: asrt.ValueAssertion,
-                      actual: FailureOfIndirectReference):
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            assertion.apply_without_message(put, actual)
 
 
 class TestIsNoRestriction(unittest.TestCase):
@@ -152,10 +144,8 @@ class TestIsNoRestriction(unittest.TestCase):
                 sut.is_no_restriction.apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         actual = StringRestriction()
-        with put.assertRaises(TestException):
-            sut.is_no_restriction.apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.is_no_restriction, actual)
 
 
 class TestIsStringRestriction(unittest.TestCase):
@@ -168,10 +158,8 @@ class TestIsStringRestriction(unittest.TestCase):
                 sut.is_string_value_restriction.apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         actual = NoRestriction()
-        with put.assertRaises(TestException):
-            sut.is_string_value_restriction.apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.is_string_value_restriction, actual)
 
 
 class TestEqualsStringRestriction(unittest.TestCase):
@@ -184,11 +172,9 @@ class TestEqualsStringRestriction(unittest.TestCase):
                 sut.equals_string_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = StringRestriction()
         actual = NoRestriction()
-        with put.assertRaises(TestException):
-            sut.equals_string_restriction(expected).apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.equals_string_restriction(expected), actual)
 
 
 class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
@@ -203,18 +189,14 @@ class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
                 sut.equals_file_ref_relativity_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
         actual = NoRestriction()
-        with put.assertRaises(TestException):
-            sut.equals_file_ref_relativity_restriction(expected).apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.equals_file_ref_relativity_restriction(expected), actual)
 
     def test_not_equals__different__accepted_relativity_variants(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
         actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
-        with put.assertRaises(TestException):
-            sut.equals_file_ref_relativity_restriction(expected).apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.equals_file_ref_relativity_restriction(expected), actual)
 
 
 class TestEqualsValueRestriction(unittest.TestCase):
@@ -230,25 +212,19 @@ class TestEqualsValueRestriction(unittest.TestCase):
                 sut.equals_value_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types__one_is_file_ref_relativity_variants(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
         actual = NoRestriction()
-        with put.assertRaises(TestException):
-            sut.equals_value_restriction(expected).apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
     def test_not_equals__different__types__one_is_string_restriction(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = StringRestriction()
         actual = NoRestriction()
-        with put.assertRaises(TestException):
-            sut.equals_value_restriction(expected).apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
     def test_not_equals__same_type__different_accepted_relativity_variants(self):
-        put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
         actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
-        with put.assertRaises(TestException):
-            sut.equals_value_restriction(expected).apply_without_message(put, actual)
+        assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
 
 class TestEqualsOrReferenceRestrictions(unittest.TestCase):
@@ -331,11 +307,8 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
 
     @staticmethod
     def _assert_fails(expected: r.OrReferenceRestrictions, actual: r.ReferenceRestrictions):
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            # ACT #
-            assertion = sut.equals_or_reference_restrictions(expected)
-            assertion.apply_without_message(put, actual)
+        assertion = sut.equals_or_reference_restrictions(expected)
+        assert_that_assertion_fails(assertion, actual)
 
 
 class TestEqualsReferenceRestrictions(unittest.TestCase):
@@ -411,8 +384,5 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         self._fail(expected, actual)
 
     def _fail(self, expected: r.ReferenceRestrictions, actual: r.ReferenceRestrictions):
-        put = test_case_with_failure_exception_set_to_test_exception()
-        with put.assertRaises(TestException):
-            # ACT #
-            assertion = sut.equals_reference_restrictions(expected)
-            assertion.apply_without_message(put, actual)
+        assertion = sut.equals_reference_restrictions(expected)
+        assert_that_assertion_fails(assertion, actual)

@@ -17,6 +17,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:
@@ -89,16 +90,15 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
 class Test1NotEquals(unittest.TestCase):
     def test_differs__file_refs(self):
         # ARRANGE #
-        put = test_case_with_failure_exception_set_to_test_exception()
         symbol_references = []
         expected = resolver_from_constants(file_ref_with_fixed_suffix('expected'),
                                            symbol_references)
         actual = resolver_from_constants(file_ref_with_fixed_suffix('not_expected'),
                                          symbol_references)
+        assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
-        with put.assertRaises(TestException):
-            assertion = sut.equals_file_ref_resolver(expected)
-            assertion.apply_without_message(put, actual)
+        assert_that_assertion_fails(assertion, actual)
+
 
     def test_value_ref__differs__restriction_relativity_variants(self):
         # ARRANGE #
