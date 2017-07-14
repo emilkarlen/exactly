@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.symbol.test_resources_test import concrete_value_assertions__file_ref, \
     concrete_value_assertions__string, concrete_value_assertions, \
     resolver_structure_assertions, symbol_reference_assertions, \
-    path_relativity, file_ref_relativity
+    path_relativity, file_ref_relativity, list_assertions
 
 
 def suite() -> unittest.TestSuite:
@@ -15,6 +15,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(concrete_value_assertions.suite())
     ret_val.addTest(resolver_structure_assertions.suite())
     ret_val.addTest(symbol_reference_assertions.suite())
+    ret_val.addTest(list_assertions.suite())
     return ret_val
 
 
