@@ -7,6 +7,7 @@ from exactly_lib.symbol.resolver_structure import SymbolValueResolver, ResolverC
 from exactly_lib.symbol.restriction import ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.restriction import ValueRestriction
 from exactly_lib.symbol.restrictions import concrete_restrictions as sut
+from exactly_lib.symbol.restrictions import value_restrictions as vr
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -43,7 +44,7 @@ class TestNoRestriction(unittest.TestCase):
             string_constant('string'),
             file_ref_constant_resolver(),
         ]
-        restriction = sut.NoRestriction()
+        restriction = vr.NoRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -133,9 +134,9 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         expected_return_value = 72
         visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
-        actual_return_value = visitor.visit(sut.NoRestriction())
+        actual_return_value = visitor.visit(vr.NoRestriction())
         # ASSERT #
-        self.assertEqual([sut.NoRestriction],
+        self.assertEqual([vr.NoRestriction],
                          visitor.visited_classes,
                          'visited classes')
         self.assertEqual(expected_return_value,
@@ -186,7 +187,8 @@ class TestReferenceRestrictionVisitor(unittest.TestCase):
         expected_return_value = 72
         visitor = _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
-        actual_return_value = visitor.visit(sut.ReferenceRestrictionsOnDirectAndIndirect(sut.NoRestriction()))
+        actual_return_value = visitor.visit(sut.ReferenceRestrictionsOnDirectAndIndirect(
+            vr.NoRestriction()))
         # ASSERT #
         self.assertEqual([sut.ReferenceRestrictionsOnDirectAndIndirect],
                          visitor.visited_classes,
@@ -223,8 +225,8 @@ class _VisitorThatRegisterClassOfVisitMethod(sut.ValueRestrictionVisitor):
         self.visited_classes = []
         self.return_value = return_value
 
-    def visit_none(self, x: sut.NoRestriction):
-        self.visited_classes.append(sut.NoRestriction)
+    def visit_none(self, x: vr.NoRestriction):
+        self.visited_classes.append(vr.NoRestriction)
         return self.return_value
 
     def visit_string(self, x: sut.StringRestriction):
@@ -241,7 +243,7 @@ class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.ReferenceR
         self.visited_classes = []
         self.return_value = return_value
 
-    def visit_direct_and_indirect(self, x: sut.NoRestriction):
+    def visit_direct_and_indirect(self, x: vr.NoRestriction):
         self.visited_classes.append(sut.ReferenceRestrictionsOnDirectAndIndirect)
         return self.return_value
 

@@ -2,8 +2,10 @@ import unittest
 
 from exactly_lib.symbol.restriction import ValueRestrictionFailure
 from exactly_lib.symbol.restrictions import concrete_restrictions as r
-from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction, NoRestriction, \
-    StringRestriction, FailureOfIndirectReference
+from exactly_lib.symbol.restrictions import value_restrictions as vr
+from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
+    FailureOfIndirectReference
+from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import concrete_restriction_assertion as sut
@@ -260,18 +262,20 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
             (
                 'multiple parts',
                 r.OrReferenceRestrictions([
-                    r.OrRestrictionPart(ValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())),
+                    r.OrRestrictionPart(ValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
+                        vr.NoRestriction())),
                     r.OrRestrictionPart(ValueType.STRING,
                                         r.ReferenceRestrictionsOnDirectAndIndirect(
                                             r.StringRestriction(),
-                                            r.NoRestriction()))
+                                            vr.NoRestriction()))
                 ]),
                 r.OrReferenceRestrictions([
-                    r.OrRestrictionPart(ValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())),
+                    r.OrRestrictionPart(ValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
+                        vr.NoRestriction())),
                     r.OrRestrictionPart(ValueType.STRING,
                                         r.ReferenceRestrictionsOnDirectAndIndirect(
                                             r.StringRestriction(),
-                                            r.NoRestriction()))
+                                            vr.NoRestriction()))
                 ]),
             ),
         ]
@@ -313,7 +317,8 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
                                 r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction()))])
         actual = r.OrReferenceRestrictions([
             r.OrRestrictionPart(ValueType.STRING,
-                                r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))])
+                                r.ReferenceRestrictionsOnDirectAndIndirect(
+                                    vr.NoRestriction()))])
         self._assert_fails(expected, actual)
 
     @staticmethod
@@ -329,8 +334,10 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
     def test_pass(self):
         cases = [
             (
-                sut.equals_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())),
-                r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()),
+                sut.equals_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
+                    vr.NoRestriction())),
+                r.ReferenceRestrictionsOnDirectAndIndirect(
+                    vr.NoRestriction()),
             ),
             (
                 sut.equals_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())),
@@ -338,9 +345,9 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
             ),
             (
                 sut.equals_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction(),
-                                                                                             r.NoRestriction())),
+                                                                                             vr.NoRestriction())),
                 r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction(),
-                                                           r.NoRestriction()),
+                                                           vr.NoRestriction()),
             ),
             (
                 sut.equals_reference_restrictions(r.OrReferenceRestrictions([])),
@@ -352,14 +359,16 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                 assertion.apply_without_message(self, actual)
 
     def test_fail__direct_and_indirect__different_node_restrictions(self):
-        expected = r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction())
+        expected = r.ReferenceRestrictionsOnDirectAndIndirect(
+            vr.NoRestriction())
         actual = r.ReferenceRestrictionsOnDirectAndIndirect(r.StringRestriction())
         self._fail(expected, actual)
 
     def test_fail__or__different_sub_restriction(self):
         expected = r.OrReferenceRestrictions([
             r.OrRestrictionPart(ValueType.STRING,
-                                r.ReferenceRestrictionsOnDirectAndIndirect(r.NoRestriction()))
+                                r.ReferenceRestrictionsOnDirectAndIndirect(
+                                    vr.NoRestriction()))
         ])
         actual = r.OrReferenceRestrictions([
             r.OrRestrictionPart(ValueType.STRING,

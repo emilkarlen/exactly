@@ -1,7 +1,7 @@
 from exactly_lib.symbol import resolver_structure as vs
 from exactly_lib.symbol.restriction import ReferenceRestrictions, ValueRestriction, ValueRestrictionFailure
-from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
-    NoRestriction
+from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
 
 
 class RestrictionThatCannotBeSatisfied(ValueRestriction):

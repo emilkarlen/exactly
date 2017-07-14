@@ -3,9 +3,10 @@ import unittest
 from exactly_lib.symbol.resolver_structure import ResolverContainer
 from exactly_lib.symbol.restriction import ValueRestriction, ReferenceRestrictions, ValueRestrictionFailure
 from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction, StringRestriction, \
-    NoRestriction, ValueRestrictionVisitor, ReferenceRestrictionsVisitor, \
+    ValueRestrictionVisitor, ReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
+from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

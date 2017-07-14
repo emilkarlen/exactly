@@ -4,6 +4,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
     ValueRestrictionFailure
+from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
@@ -11,18 +12,6 @@ from exactly_lib.test_case_file_structure.relativity_validation import is_satisf
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-class NoRestriction(ValueRestriction):
-    """
-    No restriction - a restriction that any value satisfies.
-    """
-
-    def is_satisfied_by(self,
-                        symbol_table: SymbolTable,
-                        symbol_name: str,
-                        container: ResolverContainer) -> str:
-        return None
 
 
 class StringRestriction(ValueRestriction):
