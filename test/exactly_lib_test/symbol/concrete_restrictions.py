@@ -62,7 +62,7 @@ class TestStringRestriction(unittest.TestCase):
             string_constant('string'),
             string_constant(''),
         ]
-        restriction = sut.StringRestriction()
+        restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -77,7 +77,7 @@ class TestStringRestriction(unittest.TestCase):
         test_cases = [
             file_ref_constant_resolver(),
         ]
-        restriction = sut.StringRestriction()
+        restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -96,9 +96,10 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
             FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
             FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
         ]
-        restriction = sut.FileRefRelativityRestriction(PathRelativityVariants(
-            {RelOptionType.REL_ACT, RelOptionType.REL_HOME, RelOptionType.REL_RESULT},
-            False))
+        restriction = vr.FileRefRelativityRestriction(
+            PathRelativityVariants(
+                {RelOptionType.REL_ACT, RelOptionType.REL_HOME, RelOptionType.REL_RESULT},
+                False))
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -114,9 +115,10 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
             FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
             FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
         ]
-        restriction = sut.FileRefRelativityRestriction(PathRelativityVariants(
-            {RelOptionType.REL_RESULT},
-            False))
+        restriction = vr.FileRefRelativityRestriction(
+            PathRelativityVariants(
+                {RelOptionType.REL_RESULT},
+                False))
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -148,9 +150,9 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         expected_return_value = 87
         visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
-        actual_return_value = visitor.visit(sut.StringRestriction())
+        actual_return_value = visitor.visit(vr.StringRestriction())
         # ASSERT #
-        self.assertEqual([sut.StringRestriction],
+        self.assertEqual([vr.StringRestriction],
                          visitor.visited_classes,
                          'visited classes')
         self.assertEqual(expected_return_value,
@@ -162,10 +164,11 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         expected_return_value = 69
         visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
-        actual_return_value = visitor.visit(sut.FileRefRelativityRestriction(
-            sut.PathRelativityVariants(set(), False)))
+        actual_return_value = visitor.visit(
+            vr.FileRefRelativityRestriction(
+                PathRelativityVariants(set(), False)))
         # ASSERT #
-        self.assertEqual([sut.FileRefRelativityRestriction],
+        self.assertEqual([vr.FileRefRelativityRestriction],
                          visitor.visited_classes,
                          'visited classes')
         self.assertEqual(expected_return_value,
@@ -220,7 +223,8 @@ class TestReferenceRestrictionVisitor(unittest.TestCase):
             visitor.visit(invalid_value)
 
 
-class _VisitorThatRegisterClassOfVisitMethod(sut.ValueRestrictionVisitor):
+class _VisitorThatRegisterClassOfVisitMethod(
+    vr.ValueRestrictionVisitor):
     def __init__(self, return_value):
         self.visited_classes = []
         self.return_value = return_value
@@ -229,12 +233,13 @@ class _VisitorThatRegisterClassOfVisitMethod(sut.ValueRestrictionVisitor):
         self.visited_classes.append(vr.NoRestriction)
         return self.return_value
 
-    def visit_string(self, x: sut.StringRestriction):
-        self.visited_classes.append(sut.StringRestriction)
+    def visit_string(self, x: vr.StringRestriction):
+        self.visited_classes.append(vr.StringRestriction)
         return self.return_value
 
-    def visit_file_ref_relativity(self, x: sut.FileRefRelativityRestriction):
-        self.visited_classes.append(sut.FileRefRelativityRestriction)
+    def visit_file_ref_relativity(self,
+                                  x: vr.FileRefRelativityRestriction):
+        self.visited_classes.append(vr.FileRefRelativityRestriction)
         return self.return_value
 
 
@@ -247,7 +252,7 @@ class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.ReferenceR
         self.visited_classes.append(sut.ReferenceRestrictionsOnDirectAndIndirect)
         return self.return_value
 
-    def visit_or(self, x: sut.StringRestriction):
+    def visit_or(self, x: vr.StringRestriction):
         self.visited_classes.append(sut.OrReferenceRestrictions)
         return self.return_value
 

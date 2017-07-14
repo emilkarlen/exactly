@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options

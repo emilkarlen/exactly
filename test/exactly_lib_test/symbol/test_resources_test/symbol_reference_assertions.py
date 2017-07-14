@@ -20,8 +20,8 @@ class TestMatchesSymbolReference(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         symbol_name = 'symbol name'
-        symbol_reference = SymbolReference(symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction()))
+        symbol_reference = SymbolReference(symbol_name,
+                                           r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
         assertion = sut.matches_symbol_reference(symbol_name,
                                                  asrt.is_instance(r.ReferenceRestrictionsOnDirectAndIndirect))
         # ACT & ASSERT #
@@ -30,8 +30,8 @@ class TestMatchesSymbolReference(unittest.TestCase):
     def test_pass_with_default_assertion_on_restrictions(self):
         # ARRANGE #
         symbol_name = 'symbol name'
-        symbol_reference = SymbolReference(symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction()))
+        symbol_reference = SymbolReference(symbol_name,
+                                           r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
         assertion = sut.matches_symbol_reference(symbol_name)
         # ACT & ASSERT #
         assertion.apply_without_message(self, symbol_reference)
@@ -48,8 +48,8 @@ class TestMatchesSymbolReference(unittest.TestCase):
     def test_fail__failing_assertion_on_value_restriction(self):
         # ARRANGE #
         actual_symbol_name = 'actual value name'
-        actual = SymbolReference(actual_symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction()))
+        actual = SymbolReference(actual_symbol_name,
+                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
         assertion = sut.matches_symbol_reference(actual_symbol_name,
                                                  asrt.is_instance(r.OrReferenceRestrictions))
         _assert_fails(assertion, actual)
@@ -59,8 +59,8 @@ class TestEqualsSymbolReference(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         symbol_name = 'value name'
-        symbol_reference = SymbolReference(symbol_name, r.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction()))
+        symbol_reference = SymbolReference(symbol_name,
+                                           r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(symbol_name,
                                                                                   asrt.is_instance(
                                                                                       vr.NoRestriction))
@@ -69,8 +69,8 @@ class TestEqualsSymbolReference(unittest.TestCase):
 
     def test_fail__different_name(self):
         # ARRANGE #
-        actual = SymbolReference('actual value name', r.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction()))
+        actual = SymbolReference('actual value name',
+                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target('expected value name',
                                                                                   asrt.is_instance(
                                                                                       vr.NoRestriction))
@@ -79,11 +79,11 @@ class TestEqualsSymbolReference(unittest.TestCase):
     def test_fail__failing_assertion_on_value_restriction(self):
         # ARRANGE #
         common_name = 'actual value name'
-        actual = SymbolReference(common_name, r.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction()))
+        actual = SymbolReference(common_name,
+                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(
             common_name,
-            asrt.is_instance(r.FileRefRelativityRestriction))
+            asrt.is_instance(vr.FileRefRelativityRestriction))
         _assert_fails(assertion, actual)
 
 

@@ -4,7 +4,7 @@ from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
