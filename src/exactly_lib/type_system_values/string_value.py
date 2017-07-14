@@ -1,5 +1,6 @@
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system_values import utils
 
 
 class StringWithDirDependency(MultiDirDependentValue):
@@ -22,10 +23,7 @@ class StringValue(StringWithDirDependency):
         return self._fragments
 
     def resolving_dependencies(self) -> set:
-        ret_val = set()
-        for fragment in self._fragments:
-            ret_val.update(fragment.resolving_dependencies())
-        return ret_val
+        return utils.resolving_dependencies_from_sequence(self._fragments)
 
     def value_when_no_dir_dependencies(self) -> str:
         fragment_strings = [f.value_when_no_dir_dependencies()
