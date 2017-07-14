@@ -7,9 +7,9 @@ from exactly_lib.instructions.utils.arg_parse.symbol_syntax import SymbolWithRef
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.concrete_restrictions import FileRefRelativityRestriction, \
-    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
+from exactly_lib.symbol.restrictions.concrete_restrictions import FileRefRelativityRestriction, \
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol

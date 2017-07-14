@@ -4,8 +4,8 @@ from exactly_lib.execution.instruction_execution.single_instruction_executor imp
 from exactly_lib.execution.symbols_handling import symbol_validation as sut
 from exactly_lib.symbol import resolver_structure as vs
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.restriction import ValueRestriction
+from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath

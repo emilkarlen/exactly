@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import string_resolver as sut
-from exactly_lib.symbol.concrete_restrictions import OrReferenceRestrictions
+from exactly_lib.symbol.restrictions.concrete_restrictions import OrReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system_values import concrete_string_values as csv, file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
