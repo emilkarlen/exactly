@@ -18,7 +18,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
-from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction, FileRefRelativityRestriction
 from exactly_lib.symbol.string_resolver import StringResolver

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.symbol.string_resolver import ConstantStringFragmentResolver, SymbolStringFragmentResolver, \
     StringResolver, string_constant

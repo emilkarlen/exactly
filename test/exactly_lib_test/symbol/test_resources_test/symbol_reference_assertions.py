@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.restrictions import concrete_restrictions as r
+from exactly_lib.symbol.restrictions import reference_restrictions as r
 from exactly_lib.symbol.restrictions import value_restrictions as vr
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sut

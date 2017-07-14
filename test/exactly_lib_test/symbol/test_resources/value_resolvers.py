@@ -1,7 +1,7 @@
 from exactly_lib.symbol import string_resolver
 from exactly_lib.symbol import symbol_usage
 from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.restrictions.concrete_restrictions import no_restrictions
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.string_resolver import StringResolver
 
 

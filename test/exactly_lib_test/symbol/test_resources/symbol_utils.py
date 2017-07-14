@@ -1,7 +1,7 @@
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction
-from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.resolver_structure import ResolverContainer
 from exactly_lib.symbol.restriction import ValueRestriction, ReferenceRestrictions, ValueRestrictionFailure
-from exactly_lib.symbol.restrictions.concrete_restrictions import ReferenceRestrictionsVisitor, \
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
