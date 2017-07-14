@@ -16,7 +16,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
     ConfigurationBase
 from exactly_lib_test.instructions.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
-from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_string_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target

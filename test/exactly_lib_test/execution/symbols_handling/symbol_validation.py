@@ -13,7 +13,7 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
-from exactly_lib_test.symbol.test_resources.concrete_restrictions import \
+from exactly_lib_test.symbol.restrictions.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
 from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_constant_container, \
     file_ref_resolver_container

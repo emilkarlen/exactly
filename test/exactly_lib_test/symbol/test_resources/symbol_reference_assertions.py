@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib_test.symbol.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     matches_restrictions_on_direct_and_indirect, equals_reference_restrictions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
