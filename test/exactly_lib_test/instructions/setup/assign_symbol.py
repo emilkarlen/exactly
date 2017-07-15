@@ -1,14 +1,17 @@
 import unittest
 
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE, STRING_TYPE
+from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import assign_symbol as sut
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol import list_resolver as lr
+from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
+    no_restrictions
 from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -25,7 +28,9 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.instructions.utils.arg_parse.parse_string import string_resolver_from_fragments
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as vs_asrt
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import equals_container
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import assert_symbol_usages_is_singleton_list
 from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_constant_container, \
@@ -41,6 +46,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestFailingParsePerTypeDueToInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestPathFailingParseDueToInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestStringSuccessfulParse))
+    ret_val.addTest(unittest.makeSuite(TestListSuccessfulParse))
     ret_val.addTest(unittest.makeSuite(TestPathSuccessfulParse))
     ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleValidOption))
     ret_val.addTest(unittest.makeSuite(TestPathAssignmentRelativeSingleDefaultOption))
@@ -84,8 +90,8 @@ class TestFailingParsePerTypeDueToInvalidSyntax(unittest.TestCase):
             ('{valid_type} name = {valid_value} superfluous argument', 'Superfluous argument'),
         ]
         type_setups = [
-            (PATH_TYPE, '--rel-act f'),
-            (STRING_TYPE, 'string-value'),
+            (help_texts.PATH_TYPE, '--rel-act f'),
+            (help_texts.STRING_TYPE, 'string-value'),
         ]
         setup = sut.setup('instruction-name')
         for type_name, valid_type_value in type_setups:
@@ -115,10 +121,10 @@ class TestPathFailingParseDueToInvalidSyntax(unittest.TestCase):
 class TestStringSuccessfulParse(TestCaseBaseForParser):
     def test_assignment_of_single_constant_word(self):
         source = _single_line_source('{string_type} name1 = v1')
+        expected_definition = SymbolDefinition('name1', string_value_constant_container('v1'))
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition('name1', string_value_constant_container('v1')),
-                                      ignore_source_line=True)
+                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 'name1',
@@ -202,6 +208,85 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
             )
         )
         # ACT & ASSERT #
+        self._run(source, Arrangement(), expectation)
+
+
+class TestListSuccessfulParse(TestCaseBaseForParser):
+    def test_assignment_of_empty_list(self):
+        symbol_name = 'the_symbol_name'
+        source = _single_line_source('{list_type} {symbol_name} = ',
+                                     symbol_name=symbol_name)
+        expected_resolver = lr.ListResolver([])
+        expected_resolver_container = symbol_utils.container(expected_resolver)
+        expectation = Expectation(
+            symbol_usages=asrt.matches_sequence([
+                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                                      ignore_source_line=True)
+            ]),
+            symbols_after_main=assert_symbol_table_is_singleton(
+                symbol_name,
+                equals_container(expected_resolver_container),
+            )
+        )
+        self._run(source, Arrangement(), expectation)
+
+    def test_assignment_of_list_with_multiple_constant_elements(self):
+        symbol_name = 'the_symbol_name'
+        value_without_space = 'value_without_space'
+        value_with_space = 'value with space'
+        source = remaining_source(_src(
+            '{list_type} {symbol_name} = {value_without_space} {soft_quote}{value_with_space}{soft_quote} ',
+            symbol_name=symbol_name,
+            value_without_space=value_without_space,
+            value_with_space=value_with_space,
+        ),
+            ['following line'],
+        )
+        expected_resolver = lr.ListResolver([lr.StringResolverElement(sr.string_constant(value_without_space)),
+                                             lr.StringResolverElement(sr.string_constant(value_with_space))])
+        expected_resolver_container = symbol_utils.container(expected_resolver)
+
+        expectation = Expectation(
+            symbol_usages=asrt.matches_sequence([
+                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                                      ignore_source_line=True)
+            ]),
+            symbols_after_main=assert_symbol_table_is_singleton(
+                symbol_name,
+                equals_container(expected_resolver_container),
+            ),
+            source=assert_source(current_line_number=asrt.equals(2),
+                                 column_index=asrt.equals(0)),
+        )
+        self._run(source, Arrangement(), expectation)
+
+    def test_assignment_of_list_with_symbol_references(self):
+        symbol_name = 'the_symbol_name'
+        referred_symbol = SymbolWithReferenceSyntax('referred_symbol')
+        source = remaining_source(_src(
+            '{list_type} {symbol_name} = {symbol_reference} ',
+            symbol_name=symbol_name,
+            symbol_reference=referred_symbol,
+        ),
+            ['following line'],
+        )
+        expected_symbol_reference = SymbolReference(referred_symbol.name, no_restrictions())
+        expected_resolver = lr.ListResolver([lr.SymbolReferenceElement(expected_symbol_reference)])
+
+        expected_resolver_container = symbol_utils.container(expected_resolver)
+
+        expectation = Expectation(
+            symbol_usages=asrt.matches_sequence([
+                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                                      ignore_source_line=True)
+            ]),
+            symbols_after_main=assert_symbol_table_is_singleton(
+                symbol_name,
+                equals_container(expected_resolver_container),
+            ),
+            source=assert_source(current_line_number=asrt.equals(2),
+                                 column_index=asrt.equals(0)),
+        )
         self._run(source, Arrangement(), expectation)
 
 
@@ -291,8 +376,11 @@ def _src(s: str,
 
 
 _STD_FORMAT_MAP = {
-    'path_type': PATH_TYPE,
-    'string_type': STRING_TYPE,
+    'path_type': help_texts.PATH_TYPE,
+    'string_type': help_texts.STRING_TYPE,
+    'list_type': help_texts.LIST_TYPE,
+    'soft_quote': SOFT_QUOTE_CHAR,
+    'hard_quote': HARD_QUOTE_CHAR,
 }
 
 
