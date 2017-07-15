@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
@@ -14,10 +13,6 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import e
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system_values.test_resources.file_ref import equals_file_ref
 from exactly_lib_test.type_system_values.test_resources.string_value import equals_string_value
-
-
-def equals_resolver(expected: SymbolValueResolver) -> asrt.ValueAssertion:
-    return _EqualsValue(expected)
 
 
 def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:
@@ -215,30 +210,3 @@ class _StringValueResolverAssertion(_EqualsSymbolValueResolverBase):
 
         self._expected_string_fragments.apply(put, actual.fragments,
                                               message_builder.for_sub_component('fragments'))
-
-
-class _EqualsSymbolValueResolverVisitor(SymbolValueResolverVisitor):
-    def __init__(self,
-                 actual,
-                 put: unittest.TestCase,
-                 message_builder: asrt.MessageBuilder):
-        self.message_builder = message_builder
-        self.put = put
-        self.actual = actual
-
-    def _visit_file_ref(self, expected: FileRefResolver):
-        return equals_file_ref_resolver(expected).apply(self.put, self.actual, self.message_builder)
-
-    def _visit_string(self, expected: StringResolver):
-        return equals_string_resolver(expected).apply(self.put, self.actual, self.message_builder)
-
-
-class _EqualsValue(asrt.ValueAssertion):
-    def __init__(self, expected: SymbolValueResolver):
-        self.expected = expected
-
-    def apply(self,
-              put: unittest.TestCase,
-              value,
-              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        _EqualsSymbolValueResolverVisitor(value, put, message_builder).visit(self.expected)
