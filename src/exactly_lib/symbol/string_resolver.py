@@ -173,3 +173,7 @@ def string_constant(string: str) -> StringResolver:
 
 def symbol_reference(symbol_ref: su.SymbolReference) -> StringResolver:
     return StringResolver((SymbolStringFragmentResolver(symbol_ref),))
+
+
+def resolver_from_fragments(fragments: list) -> StringResolver:
+    return StringResolver(tuple(fragments))
