@@ -9,10 +9,12 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 
 PATH_TYPE = 'path'
 STRING_TYPE = 'string'
+LIST_TYPE = 'list'
 EQUALS_ARGUMENT = '='
 
 SYMBOL_NAME = 'NAME'
 STRING_VALUE = 'STRING'
+LIST_ELEMENT = 'ELEMENT'
 
 PATH_SUFFIX_IS_REQUIRED = False
 
@@ -53,6 +55,12 @@ def _def_instruction_syntax_lines_function__path() -> list:
     ]
 
 
+def _def_instruction_syntax_lines_function__list() -> list:
+    return [
+        definition_of_type_list()
+    ]
+
+
 TYPE_INFO_DICT = {
     ValueType.STRING:
         TypeInfo(STRING_TYPE,
@@ -60,34 +68,49 @@ TYPE_INFO_DICT = {
     ValueType.PATH:
         TypeInfo(PATH_TYPE,
                  _def_instruction_syntax_lines_function__path),
+    ValueType.LIST:
+        TypeInfo(LIST_TYPE,
+                 _def_instruction_syntax_lines_function__list),
 }
 
 
 def definition_of_type_string() -> str:
-    string_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(STRING_TYPE))
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(STRING_TYPE))
     string_value = a.Single(a.Multiplicity.MANDATORY, a.Named(STRING_VALUE))
-    arguments_for_string_type = [
-        string_type,
+    arguments = [
+        type_token,
         _symbol_name(),
         _equals(),
         string_value,
     ]
-    return cl_syntax.cl_syntax_for_args(arguments_for_string_type)
+    return cl_syntax.cl_syntax_for_args(arguments)
 
 
 def definition_of_type_path() -> str:
-    path_type = a.Single(a.Multiplicity.MANDATORY, a.Constant(PATH_TYPE))
-    arguments_for_path_type = [
-        path_type,
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(PATH_TYPE))
+    arguments = [
+        type_token,
         _symbol_name(),
         _equals(),
     ]
-    arguments_for_path_type.extend(
+    arguments.extend(
         path_syntax.mandatory_path_with_optional_relativity(
             path_syntax.PATH_ARGUMENT,
             True,
             PATH_SUFFIX_IS_REQUIRED))
-    return cl_syntax.cl_syntax_for_args(arguments_for_path_type)
+    return cl_syntax.cl_syntax_for_args(arguments)
+
+
+def definition_of_type_list() -> str:
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(LIST_TYPE))
+    elements = a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(LIST_ELEMENT))
+    arguments = [
+        type_token,
+        _symbol_name(),
+        _equals(),
+        elements,
+    ]
+    return cl_syntax.cl_syntax_for_args(arguments)
 
 
 def _symbol_name() -> a.ArgumentUsage:

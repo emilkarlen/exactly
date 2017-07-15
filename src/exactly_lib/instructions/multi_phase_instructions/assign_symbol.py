@@ -4,6 +4,7 @@ from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse import parse_list
 from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver
 from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
@@ -17,6 +18,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
@@ -47,6 +49,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [
             InvokationVariant(syntax_elements.definition_of_type_string()),
             InvokationVariant(syntax_elements.definition_of_type_path()),
+            InvokationVariant(syntax_elements.definition_of_type_list()),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -131,9 +134,14 @@ def _parse_string(token_stream: TokenStream) -> StringResolver:
     return parse_string_resolver(token_stream)
 
 
+def _parse_list(token_stream: TokenStream) -> ListResolver:
+    return parse_list.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
+
+
 _TYPE_SETUPS = {
     syntax_elements.PATH_TYPE: _parse_path,
     syntax_elements.STRING_TYPE: _parse_string,
+    syntax_elements.LIST_TYPE: _parse_list,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
