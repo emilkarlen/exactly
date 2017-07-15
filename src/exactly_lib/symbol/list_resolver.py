@@ -99,7 +99,6 @@ class ListResolver(SymbolValueResolver):
 
     def __init__(self, elements: list):
         """
-
         :param elements: List of :class:`StringResolver`
         """
         self._elements = tuple(elements)
