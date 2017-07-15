@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
 class TestEqualsElement(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            # list_resolver.StringResolverElement(sr.string_constant('value')),
+            list_resolver.StringResolverElement(sr.string_constant('value')),
             list_resolver.SymbolReferenceElement(symbol_reference('symbol_name')),
         ]
         for element in test_cases:
