@@ -1,0 +1,17 @@
+#
+# Uses a symbol reference as a path,
+# but symbol has illegal type - list
+#
+
+[setup]
+
+# cause of error: dir_component is defined as a list - it must be a string
+
+def list list_symbol  = element1 element2
+
+install @[list_symbol]@
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'
