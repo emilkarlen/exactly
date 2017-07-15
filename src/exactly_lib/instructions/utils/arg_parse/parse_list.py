@@ -2,12 +2,26 @@ from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.instructions.utils.arg_parse import symbol_syntax
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse as tp
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol import list_resolver as lr
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.parse.token import Token
+
+
+def parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(source: TokenStream) -> ListResolver:
+    """
+    Variant of parse_list that exists just so that can be used by the
+    current design of the assign_symbol instruction.
+
+    TODO Rewrite assign_symbol so that it uses a ParseSource for parsing!
+    """
+    ret_val = parse_list(ParseSource(source.remaining_source))
+    while not source.is_null:
+        source.consume()
+    return ret_val
 
 
 def parse_list(source: ParseSource) -> ListResolver:
