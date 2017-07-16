@@ -23,20 +23,10 @@ def expect_validation_pre_eds(result: bool) -> Expectation:
     return Expectation(result, True)
 
 
-def check2(put: unittest.TestCase,
-           validator: PreOrPostSdsValidator,
-           environment: PathResolvingEnvironmentPreOrPostSds,
-           expectation: Expectation):
-    check(put, validator, environment,
-          expectation.passes_pre_sds,
-          expectation.passes_post_sds)
-
-
 def check(put: unittest.TestCase,
           validator: PreOrPostSdsValidator,
           environment: PathResolvingEnvironmentPreOrPostSds,
-          passes_pre_sds: bool = True,
-          passes_post_sds: bool = True):
+          expectation: Expectation):
     def _check(f: types.FunctionType,
                message: str,
                expect_none: bool,
@@ -50,15 +40,15 @@ def check(put: unittest.TestCase,
 
     _check(validator.validate_pre_sds_if_applicable,
            'Validation pre SDS',
-           passes_pre_sds,
+           expectation.passes_pre_sds,
            environment)
     _check(validator.validate_post_sds_if_applicable,
            'Validation post SDS',
-           passes_post_sds,
+           expectation.passes_post_sds,
            environment)
     _check(validator.validate_pre_or_post_sds,
            'Validation pre or post SDS',
-           passes_pre_sds and passes_post_sds,
+           expectation.passes_pre_sds and expectation.passes_post_sds,
            environment)
 
 
