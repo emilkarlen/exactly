@@ -6,13 +6,35 @@ from exactly_lib.symbol import path_resolver as pr
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
+    equals_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
+from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
+from exactly_lib_test.test_resources.actions import do_return
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestValueVisitor),
+        unittest.makeSuite(TestConstants),
     ])
+
+
+class TestConstants(unittest.TestCase):
+    def test_list_constant(self):
+        # ARRANGE #
+        constant = ['a', 'b' 'c']
+        # ACT #
+        actual = sut.list_constant(constant)
+        # ASSERT #
+        self.assertEqual([], actual.references,
+                         'references')
+        actual_value = actual.resolve(empty_symbol_table())
+        expected_value = AMultiDirDependentValue(resolving_dependencies=set(),
+                                                 value_when_no_dir_dependencies=do_return(constant),
+                                                 value_of_any_dependency=do_return(constant))
+        equals_multi_dir_dependent_value(expected_value).apply_with_message(self, actual_value, 'resolve value')
 
 
 class TestValueVisitor(unittest.TestCase):

@@ -1,3 +1,5 @@
+from exactly_lib.symbol import list_resolver
+from exactly_lib.symbol import string_resolver
 from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
@@ -29,3 +31,8 @@ class SymbolValueResolverVisitor:
 
     def _visit_list(self, value: ListResolver):
         raise NotImplementedError()
+
+
+def list_constant(str_list: list) -> ListResolver:
+    return ListResolver([list_resolver.string_element(string_resolver.string_constant(s))
+                         for s in str_list])
