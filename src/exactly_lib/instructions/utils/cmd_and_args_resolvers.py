@@ -32,6 +32,8 @@ class CmdAndArgsResolverForExecutableFileBase(CmdAndArgsResolver):
         raise NotImplementedError()
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+        arguments_list_value = self.__executable.arguments.resolve(environment.symbols)
+        argument_strings = arguments_list_value.value_of_any_dependency(environment.home_and_sds)
         return [self.__executable.path_string(environment)] + \
-               self.__executable.arguments + \
+               argument_strings + \
                self._arguments(environment)
