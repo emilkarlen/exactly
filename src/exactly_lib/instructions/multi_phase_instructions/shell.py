@@ -6,6 +6,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_pa
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
+from exactly_lib.instructions.utils.arg_parse.parse_string import string_resolver_from_string
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
@@ -99,9 +100,10 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
     def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        argument = source.remaining_part_of_current_line.strip()
+        argument_string = source.remaining_part_of_current_line.strip()
+        argument = string_resolver_from_string(argument_string)
         source.consume_current_line()
-        if not argument:
+        if not argument_string:
             msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
         return ValidationAndSubProcessExecutionSetup(
