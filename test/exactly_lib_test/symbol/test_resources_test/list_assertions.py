@@ -2,10 +2,18 @@ import unittest
 
 from exactly_lib.symbol import list_resolver as lr
 from exactly_lib.symbol import string_resolver as sr
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.symbol.restrictions.reference_restrictions import OrReferenceRestrictions, \
+    ReferenceRestrictionsOnDirectAndIndirect, no_restrictions
+from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.symbol.string_resolver import string_constant
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
+from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table
 from exactly_lib_test.symbol.test_resources import list_assertions as sut, symbol_utils as su
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_reference
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
 
 
@@ -14,6 +22,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestEqualsElement),
         unittest.makeSuite(TestEqualsResolver),
         unittest.makeSuite(TestEqualsConstantList),
+        unittest.makeSuite(TestMatchesResolver),
     ])
 
 
@@ -135,6 +144,89 @@ class TestEqualsResolver(unittest.TestCase):
                 assert_that_assertion_fails(assertion, case.actual)
 
 
+class TestMatchesResolver(unittest.TestCase):
+    def test_equals(self):
+        string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
+        cases = [
+            MatchesCase('empty list of fragments',
+                        expected=
+                        lr.ListValue([]),
+                        expected_references=
+                        asrt.is_empty_list,
+                        actual=
+                        lr.ListResolver([]),
+                        ),
+            MatchesCase('single fragment',
+                        expected=
+                        lr.ListValue([string_value_of_single_string('expected value')]),
+                        expected_references=
+                        asrt.is_empty_list,
+                        actual=
+                        lr.ListResolver([lr.StringResolverElement(sr.string_constant('expected value'))]),
+                        ),
+            MatchesCase('symbol reference',
+                        expected=
+                        lr.ListValue([string_value_of_single_string(string_symbol.value)]),
+                        expected_references=
+                        equals_symbol_references([SymbolReference(string_symbol.name,
+                                                                  no_restrictions())]),
+                        actual=
+                        lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
+                            SymbolReference(string_symbol.name,
+                                            no_restrictions()),
+                        ))]),
+                        symbols=
+                        singleton_symbol_table(su.Entry(string_symbol.name,
+                                                        su.container(string_constant(string_symbol.value)))),
+                        ),
+        ]
+        for case in cases:
+            with self.subTest(msg=case.name):
+                assertion = sut.matches_list_resolver(case.expected, case.expected_references, case.symbols)
+                assertion.apply_without_message(self, case.actual)
+
+    def test_not_equals(self):
+        string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
+        cases = [
+            MatchesCase('different number of elements',
+                        expected=
+                        lr.ListValue([]),
+                        expected_references=
+                        asrt.is_empty_list,
+                        actual=
+                        lr.ListResolver([lr.StringResolverElement(sr.string_constant('value'))]),
+                        ),
+            MatchesCase('different value of single string',
+                        expected=
+                        lr.ListValue([string_value_of_single_string('expected value')]),
+                        expected_references=
+                        asrt.is_empty_list,
+                        actual=
+                        lr.ListResolver([lr.StringResolverElement(sr.string_constant('actual value'))]),
+                        ),
+            MatchesCase('different references',
+                        expected=
+                        lr.ListValue([string_value_of_single_string(string_symbol.value)]),
+                        expected_references=
+                        equals_symbol_references([SymbolReference(string_symbol.name,
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                                                                      NoRestriction()))]),
+                        actual=
+                        lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
+                            SymbolReference(string_symbol.name,
+                                            OrReferenceRestrictions([])),
+                        ))]),
+                        symbols=
+                        singleton_symbol_table(su.Entry(string_symbol.name,
+                                                        su.container(string_constant(string_symbol.value)))),
+                        ),
+        ]
+        for case in cases:
+            with self.subTest(msg=case.name):
+                assertion = sut.matches_list_resolver(case.expected, case.expected_references, case.symbols)
+                assert_that_assertion_fails(assertion, case.actual)
+
+
 class Case:
     def __init__(self,
                  name: str,
@@ -143,5 +235,19 @@ class Case:
                  symbols: SymbolTable = None):
         self.name = name
         self.expected = expected
+        self.actual = actual
+        self.symbols = symbols
+
+
+class MatchesCase:
+    def __init__(self,
+                 name: str,
+                 expected: lr.ListValue,
+                 expected_references: asrt.ValueAssertion,
+                 actual: lr.ListResolver,
+                 symbols: SymbolTable = None):
+        self.name = name
+        self.expected = expected
+        self.expected_references = expected_references
         self.actual = actual
         self.symbols = symbols
