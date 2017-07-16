@@ -13,7 +13,43 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestEqualsElement),
         unittest.makeSuite(TestEqualsResolver),
+        unittest.makeSuite(TestEqualsConstantList),
     ])
+
+
+class TestEqualsConstantList(unittest.TestCase):
+    def test_equals(self):
+        test_cases = [
+            (
+                lr.ListResolver([]),
+                []
+            ),
+            (
+                lr.ListResolver([lr.StringResolverElement(sr.string_constant('value 1')),
+                                 lr.StringResolverElement(sr.string_constant('value 2'))]),
+                ['value 1', 'value 2']
+            ),
+        ]
+        for actual, expected in test_cases:
+            with self.subTest(expected=repr(expected)):
+                sut.equals_constant_list(expected).apply_without_message(self, actual)
+
+    def test_not_equals(self):
+        test_cases = [
+            (
+                lr.ListResolver([]),
+                ['non empty']
+            ),
+            (
+                lr.ListResolver([lr.StringResolverElement(sr.string_constant('value 1')),
+                                 lr.StringResolverElement(sr.string_constant('value 2 actual'))]),
+                ['value 1', 'value 2 expected']
+            ),
+        ]
+        for actual, expected in test_cases:
+            assertion = sut.equals_constant_list(expected)
+            with self.subTest(expected=repr(expected)):
+                assert_that_assertion_fails(assertion, actual)
 
 
 class TestEqualsElement(unittest.TestCase):
