@@ -18,6 +18,18 @@ class ExecutableFile:
         self._validator = ExistingExecutableFileValidator(file_reference_resolver)
 
     @property
+    def file_resolver(self) -> FileRefResolver:
+        return self._file_reference_resolver
+
+    @property
+    def arguments(self) -> list:
+        return self._arguments
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
+
+    @property
     def symbol_usages(self) -> list:
         return self._file_reference_resolver.references
 
@@ -31,17 +43,9 @@ class ExecutableFile:
     def file_reference(self, symbols: SymbolTable) -> file_ref.FileRef:
         return self._file_reference_resolver.resolve(symbols)
 
-    @property
-    def arguments(self) -> list:
-        return self._arguments
-
     def exists_pre_sds(self, symbols: SymbolTable) -> bool:
         fr = self._file_reference_resolver.resolve(symbols)
         return fr.exists_pre_sds()
-
-    @property
-    def validator(self) -> PreOrPostSdsValidator:
-        return self._validator
 
 
 class ExistingExecutableFileValidator(FileRefValidatorBase):
