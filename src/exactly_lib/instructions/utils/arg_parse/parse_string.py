@@ -6,8 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.string_resolver import StringResolver, ConstantStringFragmentResolver, StringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -89,6 +88,6 @@ def string_resolver_from_fragments(fragments,
     :type fragments: List of `symbol_syntax.Fragment`
     """
     if reference_restrictions is None:
-        reference_restrictions = ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction())
+        reference_restrictions = no_restrictions()
     return StringResolver(tuple([fragment_resolver_from_fragment(f, reference_restrictions)
                                  for f in fragments]))
