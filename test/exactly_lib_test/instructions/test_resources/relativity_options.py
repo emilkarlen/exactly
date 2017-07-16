@@ -103,9 +103,9 @@ class RelativityOptionConfiguration:
         self._cli_option = cli_option
         self._symbols_configuration = symbols_configuration
         if not isinstance(cli_option, OptionStringConfiguration):
-            raise ValueError('Not a OptionStringConfiguration: {}', cli_option)
+            raise ValueError('Not a {}: {}'.format(OptionStringConfiguration, cli_option))
         if not isinstance(symbols_configuration, SymbolsConfiguration):
-            raise ValueError('Not a SymbolsConfiguration: {}', symbols_configuration)
+            raise ValueError('Not a {}: {}'.format(SymbolsConfiguration, symbols_configuration))
 
     @property
     def option_string(self) -> str:
