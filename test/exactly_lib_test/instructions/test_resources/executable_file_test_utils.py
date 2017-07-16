@@ -129,10 +129,10 @@ def check(put: unittest.TestCase,
     with home_and_sds_with_act_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as environment:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
-        validator_util.check2(put,
-                              actual_exe_file.validator,
-                              environment,
-                              expectation.validation_result)
+        validator_util.check(put,
+                             actual_exe_file.validator,
+                             environment,
+                             expectation.validation_result)
 
 
 class CheckBase(unittest.TestCase):
@@ -157,15 +157,16 @@ class CheckBase(unittest.TestCase):
 
     def _assert_passes_validation(self, actual: ExecutableFile,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
-        validator_util.check(self, actual.validator, environment)
+        validator_util.check(self, actual.validator, environment,
+                             validator_util.expect_passes_all_validations())
 
     def _assert_does_not_pass_validation(self, actual: ExecutableFile,
                                          environment: PathResolvingEnvironmentPreOrPostSds):
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds
         validator_util.check(self, actual.validator, environment,
-                             passes_pre_sds=passes_pre_sds,
-                             passes_post_sds=passes_post_sds)
+                             validator_util.Expectation(passes_pre_sds=passes_pre_sds,
+                                                        passes_post_sds=passes_post_sds))
 
 
 class CheckExistingFile(CheckBase):

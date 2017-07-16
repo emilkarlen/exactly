@@ -463,7 +463,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         expected_token_stream_after_parse.apply_with_message(self, source, 'token_stream')
 
         with home_and_sds_with_act_as_curr_dir() as environment:
-            validator_util.check2(self, exe_file.validator, environment, validator_expectation)
+            validator_util.check(self, exe_file.validator, environment, validator_expectation)
 
 
 def _remaining_source(ts: TokenStream) -> str:
