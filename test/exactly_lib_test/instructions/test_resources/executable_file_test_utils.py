@@ -9,8 +9,10 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
+from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
 from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
@@ -42,15 +44,24 @@ class Arrangement:
         self.symbols = symbol_table_from_none_or_value(symbols)
 
 
-token_stream_is_null = asrt.sub_component('is_null',
-                                          TokenStream.is_null.fget,
-                                          asrt.Constant(True))
+token_stream_is_null = assert_token_stream(is_null=asrt.is_true)
 
 
-def token_stream_is(source: str) -> asrt.ValueAssertion:
-    return asrt.sub_component('remaining-source',
-                              TokenStream.remaining_source.fget,
-                              asrt.Equals(source))
+def token_stream_has_remaining_source(source: str) -> asrt.ValueAssertion:
+    return assert_token_stream(is_null=asrt.is_false,
+                               remaining_source=asrt.equals(source))
+
+
+class ExpectationOnExeFile:
+    def __init__(self,
+                 path_suffix: asrt.ValueAssertion,
+                 arguments: list,
+                 path_string: asrt.ValueAssertion = asrt.is_instance(str),
+                 exists_pre_sds: asrt.ValueAssertion = asrt.anything_goes()):
+        self.path_suffix = path_suffix
+        self.path_string = path_string
+        self.exists_pre_sds = exists_pre_sds
+        self.arguments = arguments
 
 
 class Expectation:
@@ -59,10 +70,35 @@ class Expectation:
                  remaining_argument: asrt.ValueAssertion,
                  validation_result: validator_util.Expectation,
                  arguments_of_exe_file_ref: list):
-        self.exists_pre_eds = exists_pre_eds
         self.remaining_argument = remaining_argument
         self.validation_result = validation_result
-        self.arguments_of_exe_file_ref = arguments_of_exe_file_ref
+        self.expectation_on_exe_file = ExpectationOnExeFile(exists_pre_sds=asrt.equals(exists_pre_eds),
+                                                            arguments=arguments_of_exe_file_ref,
+                                                            path_suffix=asrt.anything_goes(),
+                                                            path_string=asrt.anything_goes())
+
+
+def check_exe_file(put: unittest.TestCase,
+                   expectation: ExpectationOnExeFile,
+                   actual: ExecutableFile,
+                   symbols: SymbolTable = None):
+    if symbols is None:
+        symbols = empty_symbol_table()
+    environment = PathResolvingEnvironmentPreOrPostSds(dummy_home_and_sds(),
+                                                       symbols)
+    expectation.path_suffix.apply_with_message(put, actual.file_reference(symbols).path_suffix(),
+                                               'file_reference/path_suffix')
+    actual_path_string = actual.path_string(environment)
+    expectation.exists_pre_sds.apply_with_message(put, actual.exists_pre_sds(symbols),
+                                                  'exists_pre_sds')
+    expectation.path_string.apply_with_message(put,
+                                               actual_path_string,
+                                               'path_string')
+    put.assertEqual(expectation.arguments,
+                    actual.arguments,
+                    'Arguments to executable file')
+    # case.expectation.arguments.apply_with_message(put, ef.arguments,
+    #                                               'Arguments to executable file')
 
 
 def expectation_for_relativity_configuration(conf: RelativityConfiguration,
@@ -79,17 +115,17 @@ def check(put: unittest.TestCase,
           instruction_argument_string: str,
           arrangement: Arrangement,
           expectation: Expectation):
-    arguments = TokenStream(instruction_argument_string)
-    actual_exe_file = sut.parse(arguments)
+    # ARRANGE #
+    source = TokenStream(instruction_argument_string)
+    # ACT #
+    actual_exe_file = sut.parse(source)
+    # ASSERT #
     expectation.remaining_argument.apply_with_message(put,
-                                                      arguments,
+                                                      source,
                                                       'Remaining arguments')
-    put.assertListEqual(expectation.arguments_of_exe_file_ref,
-                        actual_exe_file.arguments,
-                        'Arguments of executable file')
-    put.assertEqual(expectation.exists_pre_eds,
-                    actual_exe_file.exists_pre_sds(arrangement.symbols),
-                    'Existence pre SDS')
+    check_exe_file(put, expectation.expectation_on_exe_file,
+                   actual_exe_file,
+                   arrangement.symbols)
     with home_and_sds_with_act_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as environment:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
@@ -159,7 +195,8 @@ class CheckExistingFileWithArguments(CheckBase):
         arguments_str = '( {} file.exe arg1 -arg2 ) remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
         exe_file = sut.parse(arguments)
-        self.assertEqual(['arg1', '-arg2'],
+        expected_arguments = ['arg1', '-arg2']
+        self.assertEqual(expected_arguments,
                          exe_file.arguments,
                          'Arguments to executable')
         self.assertEqual('remaining args',

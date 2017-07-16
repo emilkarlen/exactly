@@ -9,10 +9,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
-from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for
+from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
+    ExpectationOnExeFile
+from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
+    assert_token_string_is
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
@@ -28,156 +30,186 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part_string
 
 
+def suite() -> unittest.TestSuite:
+    test_case_configurations = [
+        TestCaseConfigurationForPythonExecutable(),
+        TestCaseConfigurationForAbsolutePathOfExistingExecutableFile(),
+        TestCaseConfigurationForAbsolutePathOfNonExistingFile(),
+    ]
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithoutArguments))
+    ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithArguments))
+    ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
+    ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
+    ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
+    for tc_conf in test_case_configurations:
+        ret_val.addTests(suite_for_test_case_configuration(tc_conf))
+    ret_val.addTests(suite_for(conf)
+                     for conf in configurations())
+    return ret_val
+
+
+class TestCaseConfiguration:
+    def __init__(self,
+                 executable: str,
+                 file_ref_type_exists_pre_eds: bool,
+                 validation_result: validator_util.Expectation):
+        self.executable = executable
+        self.file_ref_type_exists_pre_eds = file_ref_type_exists_pre_eds
+        self.validation_result = validation_result
+
+
+def suite_for_test_case_configuration(configuration: TestCaseConfiguration) -> unittest.TestSuite:
+    cases = [
+        NoParenthesesAndNoFollowingArguments,
+        NoParenthesesAndFollowingArguments,
+        ParenthesesWithNoArgumentsInsideAndNoFollowingArguments,
+        ParenthesesWithNoArgumentsInsideAndFollowingArguments,
+        ParenthesesWithArgumentsInsideAndNoFollowingArguments,
+        ParenthesesWithArgumentsInsideAndWithFollowingArguments,
+    ]
+    return unittest.TestSuite([
+        tc(configuration)
+        for tc in cases
+    ])
+
+
+class Case:
+    def __init__(self,
+                 name: str,
+                 source: str,
+                 expectation: ExpectationOnExeFile,
+                 expected_token_stream_after_parse: asrt.ValueAssertion):
+        self.name = name
+        self.source = source
+        self.expectation = expectation
+        self.expected_token_stream_after_parse = expected_token_stream_after_parse
+
+
 class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
-    def test_absolute_path(self):
-        ts = TokenStream(quoting.file_name(sys.executable))
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string(sys.executable).apply_with_message(self,
-                                                                   ef.file_reference(symbols).path_suffix(),
-                                                                   'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self.assertTrue(ts.is_null)
-
-    def test_without_option(self):
-        ts = TokenStream('file arg2')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('file').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self._has_head_with_string(ts, 'arg2')
-
-    def test_relative_file_name_with_space(self):
-        ts = TokenStream('"the file"')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('the file').apply_with_message(self,
-                                                               ef.file_reference(symbols).path_suffix(),
-                                                               'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-
-    def test_relative_file_name_with_space_and_arguments(self):
-        ts = TokenStream('"the file" "an argument"')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('the file').apply_with_message(self,
-                                                               ef.file_reference(symbols).path_suffix(),
-                                                               'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self._has_head_with_string(ts, 'an argument')
-
-    def test_option_without_tail(self):
-        ts = TokenStream('%s THE_FILE' % file_ref_texts.REL_HOME_OPTION)
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('THE_FILE').apply_with_message(self,
-                                                               ef.file_reference(symbols).path_suffix(),
-                                                               'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self.assertTrue(ts.is_null)
-
-    def test_option_with_tail(self):
-        ts = TokenStream('%s FILE tail' % file_ref_texts.REL_CWD_OPTION)
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-
-        self._has_head_with_string(ts, 'tail')
-
-    def _has_head_with_string(self, ts: TokenStream, expected_head_string: str):
-        self.assertFalse(ts.is_null, 'is-null')
-        self.assertEqual(expected_head_string,
-                         ts.head.string,
-                         'head-string')
+    def test(self):
+        cases = [
+            Case('absolute_path',
+                 source=quoting.file_name(sys.executable),
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string(sys.executable),
+                     arguments=[]),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('without_option',
+                 source='file arg2',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('file'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=has_head_with_string('arg2'),
+                 ),
+            Case('relative_file_name_with_space',
+                 source='"the file"',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('the file'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('relative_file_name_with_space_and_arguments',
+                 source='"the file" "an argument"',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('the file'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=has_head_with_string('an argument'),
+                 ),
+            Case('option_without_tail',
+                 source='%s THE_FILE' % file_ref_texts.REL_HOME_OPTION,
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('THE_FILE'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('option_with_tail',
+                 source='%s FILE tail' % file_ref_texts.REL_CWD_OPTION,
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('FILE'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=has_head_with_string('tail'),
+                 ),
+        ]
+        for case in cases:
+            with self.subTest(name=case.name):
+                _parse_and_check(self, case)
 
 
 class TestParseValidSyntaxWithArguments(unittest.TestCase):
-    def test_plain_path_without_tail(self):
-        ts = TokenStream('( FILE )')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self.assertTrue(ts.is_null)
-
-    def test_plain_path_with_space(self):
-        ts = TokenStream('( "A FILE" )')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('A FILE').apply_with_message(self,
-                                                             ef.file_reference(symbols).path_suffix(),
-                                                             'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self.assertTrue(ts.is_null)
-
-    def test_plain_path_with_tail(self):
-        ts = TokenStream('( FILE ) tail arguments')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self.assertEqual('tail arguments',
-                         _remaining_source(ts))
-
-    def test_path_with_option(self):
-        ts = TokenStream('( %s FILE )' % file_ref_texts.REL_HOME_OPTION)
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertFalse(ef.arguments, 'The executable should have no arguments')
-        self.assertTrue(ts.is_null)
-
-    def test_path_with_option_and_arguments(self):
-        ts = TokenStream('( %s FILE arg1 arg2 )' % file_ref_texts.REL_HOME_OPTION)
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertEqual(['arg1', 'arg2'],
-                         ef.arguments,
-                         'Arguments to the executable')
-        self.assertTrue(ts.is_null)
-
-    def test_path_without_option_with_arguments(self):
-        ts = TokenStream('( FILE arg1 arg2 )')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertEqual(['arg1', 'arg2'],
-                         ef.arguments,
-                         'Arguments to the executable')
-        self.assertTrue(ts.is_null)
-
-    def test_path_without_option_with_arguments_with_tail(self):
-        ts = TokenStream('( FILE arg1 arg2 arg3 ) tail1 tail2')
-        ef = sut.parse(ts)
-        symbols = empty_symbol_table()
-        equals_path_part_string('FILE').apply_with_message(self,
-                                                           ef.file_reference(symbols).path_suffix(),
-                                                           'file_reference/path_suffix')
-        self.assertEqual(['arg1', 'arg2', 'arg3'],
-                         ef.arguments,
-                         'Arguments to the executable')
-        self.assertEqual('tail1 tail2',
-                         _remaining_source(ts),
-                         'Remaining arguments')
+    def test(self):
+        cases = [
+            Case('test_plain_path_without_tail',
+                 source='( FILE )',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('FILE'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('test_plain_path_with_space',
+                 source='( "A FILE" )',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('A FILE'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('test_plain_path_with_tail',
+                 source='( FILE ) tail arguments',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('FILE'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=has_remaining_source('tail arguments'),
+                 ),
+            Case('test_path_with_option',
+                 source='( %s FILE )' % file_ref_texts.REL_HOME_OPTION,
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('FILE'),
+                     arguments=[]),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('test_path_with_option_and_arguments',
+                 source='( %s FILE arg1 arg2 )' % file_ref_texts.REL_HOME_OPTION,
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('FILE'),
+                     arguments=['arg1', 'arg2']),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('test_path_without_option_with_arguments',
+                 source='( FILE arg1 arg2 )',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('FILE'),
+                     arguments=['arg1', 'arg2']),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('test_path_without_option_with_arguments_with_tail',
+                 source='( FILE arg1 arg2 arg3 ) tail1 tail2',
+                 expectation=
+                 ExpectationOnExeFile(
+                     path_suffix=equals_path_part_string('FILE'),
+                     arguments=['arg1', 'arg2', 'arg3']),
+                 expected_token_stream_after_parse=has_remaining_source('tail1 tail2'),
+                 ),
+        ]
+        for case in cases:
+            with self.subTest(name=case.name):
+                _parse_and_check(self, case)
 
 
 class TestParseInvalidSyntaxWithArguments(unittest.TestCase):
@@ -202,16 +234,6 @@ class TestParseInvalidSyntax(unittest.TestCase):
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(TokenStream('--invalid-option FILE'))
-
-
-class TestCaseConfiguration:
-    def __init__(self,
-                 executable: str,
-                 file_ref_type_exists_pre_eds: bool,
-                 validation_result: validator_util.Expectation):
-        self.executable = executable
-        self.file_ref_type_exists_pre_eds = file_ref_type_exists_pre_eds
-        self.validation_result = validation_result
 
 
 class TestCaseConfigurationForPythonExecutable(TestCaseConfiguration):
@@ -264,7 +286,7 @@ class NoParenthesesAndFollowingArguments(ExecutableTestBase):
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
                     utils.Expectation(exists_pre_eds=self.configuration.file_ref_type_exists_pre_eds,
-                                      remaining_argument=utils.token_stream_is('arg1 -arg2'),
+                                      remaining_argument=has_remaining_source('arg1 -arg2'),
                                       validation_result=self.configuration.validation_result,
                                       arguments_of_exe_file_ref=[]))
 
@@ -288,7 +310,7 @@ class ParenthesesWithNoArgumentsInsideAndFollowingArguments(ExecutableTestBase):
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
                     utils.Expectation(exists_pre_eds=self.configuration.file_ref_type_exists_pre_eds,
-                                      remaining_argument=utils.token_stream_is('arg1 -arg2'),
+                                      remaining_argument=has_remaining_source('arg1 -arg2'),
                                       validation_result=self.configuration.validation_result,
                                       arguments_of_exe_file_ref=[]))
 
@@ -312,24 +334,9 @@ class ParenthesesWithArgumentsInsideAndWithFollowingArguments(ExecutableTestBase
                     instruction_argument,
                     utils.Arrangement(home_or_sds_pop.empty()),
                     utils.Expectation(exists_pre_eds=True,
-                                      remaining_argument=utils.token_stream_is('--outside1 outside2'),
+                                      remaining_argument=has_remaining_source('--outside1 outside2'),
                                       validation_result=self.configuration.validation_result,
                                       arguments_of_exe_file_ref=['inside']))
-
-
-def suite_for_test_case_configuration(configuration: TestCaseConfiguration) -> unittest.TestSuite:
-    cases = [
-        NoParenthesesAndNoFollowingArguments,
-        NoParenthesesAndFollowingArguments,
-        ParenthesesWithNoArgumentsInsideAndNoFollowingArguments,
-        ParenthesesWithNoArgumentsInsideAndFollowingArguments,
-        ParenthesesWithArgumentsInsideAndNoFollowingArguments,
-        ParenthesesWithArgumentsInsideAndWithFollowingArguments,
-    ]
-    return unittest.TestSuite([
-        tc(configuration)
-        for tc in cases
-    ])
 
 
 class RelHomeConfiguration(RelativityConfiguration):
@@ -410,61 +417,76 @@ def configurations() -> list:
 class TestParseAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
         arguments_str = py_exe.command_line_for_arguments(['remaining', 'args'])
-        arguments = TokenStream(arguments_str)
-        exe_file = sut.parse(arguments)
-        self.assertEqual('remaining args',
-                         _remaining_source(arguments),
-                         'Remaining arguments')
-        self.assertTrue(exe_file.exists_pre_sds(empty_symbol_table()),
-                        'File is expected to exist pre SDS')
-        with home_and_sds_with_act_as_curr_dir(
-                home_dir_contents=DirContents([])) as environment:
-            self.assertEqual(sys.executable,
-                             exe_file.path_string(environment),
-                             'Path string')
-            validator_util.check(self, exe_file.validator, environment)
+        expectation_on_exe_file = ExpectationOnExeFile(
+            path_suffix=asrt.anything_goes(),
+            arguments=[],
+            path_string=asrt.equals(sys.executable),
+            exists_pre_sds=asrt.is_true)
+
+        validator_expectation = validator_util.Expectation(passes_pre_sds=True,
+                                                           passes_post_sds=True)
+
+        self._check(arguments_str,
+                    expected_token_stream_after_parse=has_remaining_source('remaining args'),
+                    expectation_on_exe_file=expectation_on_exe_file,
+                    validator_expectation=validator_expectation)
 
     def test_non_existing_file(self):
         non_existing_file_path = non_existing_absolute_path('/this/file/is/assumed/to/not/exist')
         non_existing_file_path_str = str(non_existing_file_path)
         arguments_str = '{} remaining args'.format(quoting.file_name(non_existing_file_path_str))
-        arguments = TokenStream(arguments_str)
-        exe_file = sut.parse(arguments)
-        self.assertEqual('remaining args',
-                         _remaining_source(arguments),
-                         'Remaining arguments')
-        self.assertTrue(exe_file.exists_pre_sds(empty_symbol_table()),
-                        'File is expected to exist pre SDS')
-        with home_and_sds_with_act_as_curr_dir(
-                home_dir_contents=DirContents([])) as environment:
-            self.assertEqual(non_existing_file_path_str,
-                             exe_file.path_string(environment),
-                             'Path string')
-            validator_util.check(self, exe_file.validator, environment,
-                                 passes_pre_sds=False)
 
+        expectation_on_exe_file = ExpectationOnExeFile(
+            path_suffix=asrt.anything_goes(),
+            arguments=[],
+            path_string=asrt.equals(non_existing_file_path_str),
+            exists_pre_sds=asrt.is_true)
+        validator_expectation = validator_util.Expectation(passes_pre_sds=False,
+                                                           passes_post_sds=True)
 
-def suite() -> unittest.TestSuite:
-    test_case_configurations = [
-        TestCaseConfigurationForPythonExecutable(),
-        TestCaseConfigurationForAbsolutePathOfExistingExecutableFile(),
-        TestCaseConfigurationForAbsolutePathOfNonExistingFile(),
-    ]
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithoutArguments))
-    ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithArguments))
-    ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
-    ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
-    ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
-    for tc_conf in test_case_configurations:
-        ret_val.addTests(suite_for_test_case_configuration(tc_conf))
-    ret_val.addTests(suite_for(conf)
-                     for conf in configurations())
-    return ret_val
+        self._check(arguments_str,
+                    expected_token_stream_after_parse=has_remaining_source('remaining args'),
+                    expectation_on_exe_file=expectation_on_exe_file,
+                    validator_expectation=validator_expectation)
+
+    def _check(self,
+               arguments_str: str,
+               expected_token_stream_after_parse: asrt.ValueAssertion,
+               expectation_on_exe_file: ExpectationOnExeFile,
+               validator_expectation: validator_util.Expectation):
+        # ARRANGE #
+        source = TokenStream(arguments_str)
+        # ACT #
+        exe_file = sut.parse(source)
+        # ASSERT #
+        utils.check_exe_file(self, expectation_on_exe_file, exe_file)
+        expected_token_stream_after_parse.apply_with_message(self, source, 'token_stream')
+
+        with home_and_sds_with_act_as_curr_dir() as environment:
+            validator_util.check2(self, exe_file.validator, environment, validator_expectation)
 
 
 def _remaining_source(ts: TokenStream) -> str:
     return ts.source[ts.position:]
+
+
+def has_remaining_source(expected_remaining_source: str) -> asrt.ValueAssertion:
+    return assert_token_stream(is_null=asrt.is_false,
+                               remaining_source=asrt.equals(expected_remaining_source))
+
+
+def has_head_with_string(expected_head_string: str) -> asrt.ValueAssertion:
+    return assert_token_stream(is_null=asrt.is_false,
+                               head_token=assert_token_string_is(expected_head_string))
+
+
+def _parse_and_check(put: unittest.TestCase,
+                     case: Case):
+    ts = TokenStream(case.source)
+    ef = sut.parse(ts)
+    utils.check_exe_file(put, case.expectation, ef)
+    case.expected_token_stream_after_parse.apply_with_message(put, ts,
+                                                              'token stream after parse')
 
 
 if __name__ == '__main__':
