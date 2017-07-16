@@ -5,6 +5,7 @@ from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.concrete_resolvers import list_constant
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.type_system_values import file_refs
@@ -31,10 +32,10 @@ def parse(tokens: TokenStream) -> ExecutableFile:
         tokens.consume()
         the_file_ref = _parse_exe_file_ref(tokens)
         exe_argument_list = _parse_arguments_and_end_delimiter(tokens)
-        return ExecutableFile(the_file_ref, exe_argument_list)
+        return ExecutableFile(the_file_ref, list_constant(exe_argument_list))
     else:
         the_file_ref = _parse_exe_file_ref(tokens)
-        return ExecutableFile(the_file_ref, [])
+        return ExecutableFile(the_file_ref, list_constant([]))
 
 
 def _parse_exe_file_ref(tokens: TokenStream) -> FileRefResolver:
