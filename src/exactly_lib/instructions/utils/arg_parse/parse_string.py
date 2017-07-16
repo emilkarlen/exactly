@@ -73,6 +73,11 @@ def parse_fragments_from_token(token: Token) -> list:
     return symbol_syntax.split(token.string)
 
 
+def string_resolver_from_string(source: str) -> StringResolver:
+    fragments = symbol_syntax.split(source)
+    return string_resolver_from_fragments(fragments)
+
+
 def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment,
                                     reference_restrictions: ReferenceRestrictions) -> StringFragmentResolver:
     if fragment.is_constant:

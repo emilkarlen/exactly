@@ -12,6 +12,8 @@ from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.symbol import string_resolver
+from exactly_lib.symbol.concrete_resolvers import list_constant
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
@@ -291,14 +293,16 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
 
     def parse(self, source: ParseSource) -> ValidationAndSubProcessExecutionSetup:
         instruction_argument = source.remaining_part_of_current_line
+        argument_resolver = string_resolver.string_constant(instruction_argument)
         source.consume_current_line()
         return ValidationAndSubProcessExecutionSetup(self.validator,
-                                                     ConstantCmdAndArgsResolver(instruction_argument),
+                                                     ConstantCmdAndArgsResolver(argument_resolver),
                                                      is_shell=True)
 
 
 def _resolver_for_execute_py_on_command_line(python_source: str) -> spe.CmdAndArgsResolver:
-    return ConstantCmdAndArgsResolver(non_shell_args_for_that_executes_source_on_command_line(python_source))
+    argument_list_resolver = list_constant(non_shell_args_for_that_executes_source_on_command_line(python_source))
+    return ConstantCmdAndArgsResolver(argument_list_resolver)
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'

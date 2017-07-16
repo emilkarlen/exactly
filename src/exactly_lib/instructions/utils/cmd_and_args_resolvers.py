@@ -1,17 +1,23 @@
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.sub_process_execution import CmdAndArgsResolver
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 
 
 class ConstantCmdAndArgsResolver(CmdAndArgsResolver):
-    def __init__(self, cmd_or_cmd_and_args):
+    def __init__(self, cmd_or_cmd_and_args_resolver: SymbolValueResolver):
         """
         :param cmd_or_cmd_and_args: Either a string or a list of strings
         """
-        self.__cmd_or_cmd_and_args = cmd_or_cmd_and_args
+        self.__cmd_or_cmd_and_args_resolver = cmd_or_cmd_and_args_resolver
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        return self.__cmd_or_cmd_and_args
+        value = self.__cmd_or_cmd_and_args_resolver.resolve(environment.symbols)
+        return value.value_of_any_dependency(environment.home_and_sds)
+
+    @property
+    def symbol_usages(self) -> list:
+        return self.__cmd_or_cmd_and_args_resolver.references
 
 
 class CmdAndArgsResolverForExecutableFileBase(CmdAndArgsResolver):
