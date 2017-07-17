@@ -3,10 +3,14 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol import string_resolver as sr
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.util.symbol_table import symbol_table_with_entries
+from exactly_lib.util.symbol_table import symbol_table_with_entries, SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -16,9 +20,15 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_reference_restrictions
+from exactly_lib_test.symbol.test_resources import symbol_utils as su
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
@@ -85,10 +95,59 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
                     fs.DirContents([EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0])),
                 symbols=relativity_option_conf.symbols.in_arrangement(),
             )
-            with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
+            with self.subTest(option=relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,
                                                                        arrangement,
                                                                        expectation)
+
+    def test_symbol_references(self):
+        python_interpreter_symbol = NameAndValue('python_interpreter_symbol', sys.executable)
+        execute_program_option_symbol = NameAndValue('execute_program_option', '-c')
+        exit_code_symbol = NameAndValue('exit_code_symbol', 5)
+
+        argument = ' ( {python_interpreter} {execute_program_option} ) "exit({exit_code})"'.format(
+            python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
+            execute_program_option=symbol_reference_syntax_for_name(execute_program_option_symbol.name),
+            exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
+        )
+
+        arrangement = ArrangementWithSds(
+            symbols=SymbolTable({
+                python_interpreter_symbol.name: su.container(sr.string_constant(python_interpreter_symbol.value)),
+                execute_program_option_symbol.name: su.container(
+                    sr.string_constant(execute_program_option_symbol.value)),
+                exit_code_symbol.name: su.container(sr.string_constant(str(exit_code_symbol.value))),
+            }),
+        )
+
+        expectation = embryo_check.Expectation(
+            source=assert_source(current_line_number=asrt.equals(2),
+                                 column_index=asrt.equals(0)),
+            symbol_usages=asrt.matches_sequence([
+                matches_symbol_reference(
+                    python_interpreter_symbol.name,
+                    equals_reference_restrictions(
+                        parse_file_ref.path_or_string_reference_restrictions(
+                            sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                        ))),
+                matches_symbol_reference(
+                    execute_program_option_symbol.name,
+                    equals_reference_restrictions(
+                        no_restrictions()
+                    )),
+                matches_symbol_reference(
+                    exit_code_symbol.name,
+                    equals_reference_restrictions(
+                        no_restrictions()
+                    )),
+            ]),
+            main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
+        )
+
+        parser = sut.embryo_parser('instruction-name')
+        following_line = 'following line'
+        source = remaining_source(argument, [following_line])
+        embryo_check.check(self, parser, source, arrangement, expectation)
 
 
 class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
