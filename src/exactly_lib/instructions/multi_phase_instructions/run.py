@@ -15,6 +15,7 @@ from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
+from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list
 from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -27,6 +28,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -184,12 +186,16 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
     def __init__(self,
                  executable: ExecutableFile,
-                 argument_list: list):
+                 argument_list: ListResolver):
         super().__init__(executable)
         self.argument_list = argument_list
 
+    @property
+    def symbol_usages(self) -> list:
+        return super().symbol_usages + self.argument_list.references
+
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
-        return self.argument_list
+        return self.argument_list.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
 
 
 class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
@@ -248,7 +254,8 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
     @staticmethod
     def _execute(exe_file: ExecutableFile,
                  remaining_arguments_str: str):
-        cmd_resolver = CmdAndArgsResolverForExecute(exe_file, shlex.split(remaining_arguments_str))
+        arguments = parse_list(ParseSource(remaining_arguments_str))
+        cmd_resolver = CmdAndArgsResolverForExecute(exe_file, arguments)
         return exe_file.validator, cmd_resolver
 
     @staticmethod
