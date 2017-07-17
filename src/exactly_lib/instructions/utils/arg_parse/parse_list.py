@@ -44,13 +44,13 @@ def _consume_elements(source: ParseSource) -> list:
     next_token = tp.parse_token_on_current_line(source)
 
     while next_token is not None:
-        elements.append(_element_of(next_token))
+        elements.append(element_of(next_token))
         next_token = tp.parse_token_or_none_on_current_line(source)
 
     return elements
 
 
-def _element_of(token: Token) -> lr.Element:
+def element_of(token: Token) -> lr.Element:
     string_fragments = parse_string.parse_fragments_from_token(token)
     if len(string_fragments) == 1:
         single_fragment = string_fragments[0]

@@ -148,7 +148,7 @@ class CheckBase(unittest.TestCase):
 
     def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFile, symbols: SymbolTable):
         self.assertEqual(self.configuration.exists_pre_sds,
-                         actual.exists_pre_sds(symbols),
+                         actual.file_resolver.resolve(symbols).exists_pre_sds(),
                          'Existence pre SDS')
 
     def _check_file_path(self, file_name: str, actual: ExecutableFile,

@@ -3,21 +3,34 @@ import sys
 import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_string_reference_restrictions, \
+    path_relativity_restriction
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
+    no_restrictions
+from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction
+from exactly_lib.symbol.string_resolver import string_constant
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
     ExpectationOnExeFile
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
+from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
@@ -28,6 +41,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_popu
 from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -48,6 +62,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithoutArguments))
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
+    ret_val.addTest(unittest.makeSuite(TestParseWithSymbols))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
     for tc_conf in test_case_configurations:
@@ -253,6 +268,80 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_argument=[],
                  ),
                  expected_token_stream_after_parse=has_remaining_source('tail1 tail2'),
+                 ),
+        ]
+        for case in cases:
+            with self.subTest(name=case.name):
+                _parse_and_check(self, case)
+
+
+class TestParseWithSymbols(unittest.TestCase):
+    def test(self):
+        path_suffix_of_symbol = 'first_path_component'
+        file_symbol = NameAndValue('file_symbol',
+                                   file_ref_of(RelOptionType.REL_TMP, path_suffix_of_symbol))
+        string_symbol = NameAndValue('string_symbol',
+                                     'string symbol value')
+        a_string_constant = 'a_string_constant'
+        reference_of_relativity_symbol = SymbolReference(
+            file_symbol.name,
+            path_relativity_restriction(
+                sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+            ))
+        reference_of_path_symbol = SymbolReference(
+            file_symbol.name,
+            path_or_string_reference_restrictions(
+                sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+            ))
+        reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
+                                                                            ReferenceRestrictionsOnDirectAndIndirect(
+                                                                                direct=StringRestriction(),
+                                                                                indirect=StringRestriction()),
+                                                                            )
+        reference_of_string_symbol_as_argument = SymbolReference(string_symbol.name,
+                                                                 no_restrictions(),
+                                                                 )
+        symbols = SymbolTable({
+            file_symbol.name: su.container(FileRefConstant(file_symbol.value)),
+            string_symbol.name: su.container(string_constant(string_symbol.value)),
+        })
+        cases = [
+            Case('symbol references in file',
+                 source='{rel_symbol_option} {file_symbol} {string_symbol}'.format(
+                     file_symbol=file_symbol.name,
+                     string_symbol=symbol_reference_syntax_for_name(string_symbol.name),
+                     rel_symbol_option=REL_symbol_OPTION,
+                 ),
+                 expectation=
+                 ExpectationOnExeFile(
+                     file_resolver_value=StackedFileRef(file_symbol.value,
+                                                        PathPartAsFixedPath(string_symbol.value)),
+                     expected_symbol_references_of_file=[reference_of_relativity_symbol,
+                                                         reference_of_path_string_symbol_as_path_component],
+                     argument_resolver_value=empty_list_value(),
+                     expected_symbol_references_of_argument=[],
+                     symbol_for_value_checks=symbols,
+                 ),
+                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 ),
+            Case('symbol references in file  and argument',
+                 source=' ( {file_symbol} {a_string_constant} {string_symbol} ) following arg'.format(
+                     file_symbol=symbol_reference_syntax_for_name(file_symbol.name),
+                     string_symbol=symbol_reference_syntax_for_name(string_symbol.name),
+                     a_string_constant=a_string_constant,
+                 ),
+                 expectation=
+                 ExpectationOnExeFile(
+                     file_resolver_value=file_symbol.value,
+                     expected_symbol_references_of_file=[reference_of_path_symbol],
+                     argument_resolver_value=list_value_of_string_constants([
+                         a_string_constant,
+                         string_symbol.value
+                     ]),
+                     expected_symbol_references_of_argument=[reference_of_string_symbol_as_argument],
+                     symbol_for_value_checks=symbols,
+                 ),
+                 expected_token_stream_after_parse=has_remaining_source('following arg'),
                  ),
         ]
         for case in cases:
