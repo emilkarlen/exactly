@@ -1,11 +1,13 @@
 import sys
 
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse import parse_list
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.concrete_resolvers import list_constant
+from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.type_system_values import file_refs
@@ -32,7 +34,7 @@ def parse(tokens: TokenStream) -> ExecutableFile:
         tokens.consume()
         the_file_ref = _parse_exe_file_ref(tokens)
         exe_argument_list = _parse_arguments_and_end_delimiter(tokens)
-        return ExecutableFile(the_file_ref, list_constant(exe_argument_list))
+        return ExecutableFile(the_file_ref, exe_argument_list)
     else:
         the_file_ref = _parse_exe_file_ref(tokens)
         return ExecutableFile(the_file_ref, list_constant([]))
@@ -49,7 +51,7 @@ def _parse_exe_file_ref(tokens: TokenStream) -> FileRefResolver:
         return parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)
 
 
-def _parse_arguments_and_end_delimiter(tokens: TokenStream) -> list:
+def _parse_arguments_and_end_delimiter(tokens: TokenStream) -> ListResolver:
     arguments = []
     while True:
         if tokens.is_null:
@@ -57,6 +59,8 @@ def _parse_arguments_and_end_delimiter(tokens: TokenStream) -> list:
             raise SingleInstructionInvalidArgumentException(msg)
         if tokens.head.is_plain and tokens.head.string == LIST_DELIMITER_END:
             tokens.consume()
-            return arguments
-        arguments.append(tokens.head.string)
+            break
+        else:
+            arguments.append(parse_list.element_of(tokens.head))
         tokens.consume()
+    return ListResolver(arguments)

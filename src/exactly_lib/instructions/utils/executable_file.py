@@ -32,7 +32,7 @@ class ExecutableFile:
 
     @property
     def symbol_usages(self) -> list:
-        return self._file_reference_resolver.references
+        return self._file_reference_resolver.references + self._arguments.references
 
     def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
         fr = self._file_reference_resolver.resolve(environment.symbols)
@@ -43,10 +43,6 @@ class ExecutableFile:
 
     def file_reference(self, symbols: SymbolTable) -> file_ref.FileRef:
         return self._file_reference_resolver.resolve(symbols)
-
-    def exists_pre_sds(self, symbols: SymbolTable) -> bool:
-        fr = self._file_reference_resolver.resolve(symbols)
-        return fr.exists_pre_sds()
 
 
 class ExistingExecutableFileValidator(FileRefValidatorBase):
