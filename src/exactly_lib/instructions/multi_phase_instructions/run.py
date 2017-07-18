@@ -1,5 +1,3 @@
-import shlex
-
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
@@ -15,7 +13,8 @@ from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
-from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list
+from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list, \
+    parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE
 from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -195,25 +194,27 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
         return super().symbol_usages + self.argument_list.references
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
-        return self.argument_list.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        return self.argument_list.resolve_value_of_any_dependency(environment)
 
 
 class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
     def __init__(self,
                  executable: ExecutableFile,
                  file_to_interpret: FileRefResolver,
-                 argument_list: list):
+                 argument_list: ListResolver):
         super().__init__(executable)
         self.file_to_interpret = file_to_interpret
         self.argument_list = argument_list
 
     @property
     def symbol_usages(self) -> list:
-        return super().symbol_usages + self.file_to_interpret.references
+        return super().symbol_usages + self.file_to_interpret.references + self.argument_list.references
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
-        file_ref = self.file_to_interpret.resolve(environment.symbols)
-        return [str(file_ref.value_of_any_dependency(environment.home_and_sds))] + self.argument_list
+        file_ref_path = self.file_to_interpret.resolve_value_of_any_dependency(environment)
+        file_path_str = str(file_ref_path)
+        argument_str_list = self.argument_list.resolve_value_of_any_dependency(environment)
+        return [file_path_str] + argument_str_list
 
 
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
@@ -266,7 +267,7 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
                                                file_properties.must_exist_as(file_properties.FileType.REGULAR))
         validator = AndValidator((exe_file.validator,
                                   FileRefCheckValidator(file_to_interpret_check)))
-        remaining_arguments = shlex.split(arg_tokens.remaining_source)
+        remaining_arguments = parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(arg_tokens)
         cmd_resolver = CmdAndArgsResolverForInterpret(exe_file, file_to_interpret, remaining_arguments)
         return validator, cmd_resolver
 
@@ -283,7 +284,7 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
 
 _DESCRIPTION_OF_EXECUTABLE_ARG = """\
 Specifies a program by giving the path to an executable file,
-and optionally also arguments to the program.
+and optionally also arguments to the executable.
 
 
 Elements are parsed using {shell_syntax_concept}.
