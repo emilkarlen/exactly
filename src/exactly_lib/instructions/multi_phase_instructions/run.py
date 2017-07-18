@@ -9,7 +9,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.instructions.utils import file_properties
-from exactly_lib.instructions.utils.arg_parse import parse_executable_file
+from exactly_lib.instructions.utils.arg_parse import parse_executable_file, parse_string
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
@@ -29,6 +29,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -220,12 +221,16 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
     def __init__(self,
                  executable: ExecutableFile,
-                 source: str):
+                 source: StringResolver):
         super().__init__(executable)
         self.source = source
 
+    @property
+    def symbol_usages(self) -> list:
+        return super().symbol_usages + self.source.references
+
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
-        return [self.source]
+        return [self.source.resolve_value_of_any_dependency(environment)]
 
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
@@ -278,7 +283,8 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
             msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=_SOURCE_SYNTAX_ELEMENT_NAME,
                                                                          option=SOURCE_OPTION)
             raise SingleInstructionInvalidArgumentException(msg)
-        cmd_resolver = CmdAndArgsResolverForSource(exe_file, remaining_arguments_str)
+        source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
+        cmd_resolver = CmdAndArgsResolverForSource(exe_file, source_resolver)
         return exe_file.validator, cmd_resolver
 
 

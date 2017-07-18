@@ -331,6 +331,57 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
                                                                        arrangement,
                                                                        expectation)
 
+    def test_symbol_references(self):
+        python_interpreter_symbol = NameAndValue('python_interpreter_symbol', sys.executable)
+        execute_program_option_symbol = NameAndValue('execute_program_option', '-c')
+        exit_code_symbol = NameAndValue('exit_code_symbol', 87)
+
+        argument = ' ( {python_interpreter} {execute_program_option} ) {source_option}   exit({exit_code})  '.format(
+            python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
+            execute_program_option=symbol_reference_syntax_for_name(execute_program_option_symbol.name),
+            source_option=sut.SOURCE_OPTION,
+            exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
+        )
+
+        arrangement = ArrangementWithSds(
+            symbols=SymbolTable({
+                python_interpreter_symbol.name: su.container(sr.string_constant(python_interpreter_symbol.value)),
+                execute_program_option_symbol.name: su.container(
+                    sr.string_constant(execute_program_option_symbol.value)),
+                exit_code_symbol.name: su.container(sr.string_constant(str(exit_code_symbol.value))),
+            }),
+        )
+
+        source = remaining_source(argument,
+                                  ['following line'])
+
+        expectation = embryo_check.Expectation(
+            source=assert_source(current_line_number=asrt.equals(2),
+                                 column_index=asrt.equals(0)),
+            symbol_usages=asrt.matches_sequence([
+                matches_symbol_reference(
+                    python_interpreter_symbol.name,
+                    equals_reference_restrictions(
+                        parse_file_ref.path_or_string_reference_restrictions(
+                            sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                        ))),
+                matches_symbol_reference(
+                    execute_program_option_symbol.name,
+                    equals_reference_restrictions(
+                        no_restrictions()
+                    )),
+                matches_symbol_reference(
+                    exit_code_symbol.name,
+                    equals_reference_restrictions(
+                        no_restrictions()
+                    )),
+            ]),
+            main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
+        )
+
+        parser = sut.embryo_parser('instruction-name')
+        embryo_check.check(self, parser, source, arrangement, expectation)
+
 
 def _expect_validation_error_and_symbol_usages_of(relativity_option_conf: rel_opt_conf.RelativityOptionConfiguration
                                                   ) -> embryo_check.Expectation:
