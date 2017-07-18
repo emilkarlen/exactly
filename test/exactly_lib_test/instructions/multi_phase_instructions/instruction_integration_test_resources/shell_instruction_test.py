@@ -21,6 +21,18 @@ class Configuration(ConfigurationBase):
         raise NotImplementedError()
 
 
+def suite_for(configuration: Configuration) -> unittest.TestSuite:
+    return unittest.TestSuite([
+        suite_for_documentation_instance(configuration.documentation()),
+        suite_for_cases(configuration,
+                        [
+                            TestParseFailsWhenThereAreNoArguments,
+                            TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
+                            TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero,
+                        ])
+    ])
+
+
 class TestCaseBase(unittest.TestCase):
     def __init__(self, conf: Configuration):
         super().__init__()
@@ -66,15 +78,3 @@ sys.exit(1)
                 self.conf.arrangement(),
                 self.conf.expectation_for_non_zero_exitcode(),
             )
-
-
-def suite_for(configuration: Configuration) -> unittest.TestSuite:
-    return unittest.TestSuite([
-        suite_for_documentation_instance(configuration.documentation()),
-        suite_for_cases(configuration,
-                        [
-                            TestParseFailsWhenThereAreNoArguments,
-                            TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
-                            TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero,
-                        ])
-    ])
