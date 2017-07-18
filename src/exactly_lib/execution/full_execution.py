@@ -21,14 +21,14 @@ def execute(test_case: test_case_doc.TestCase,
     """
     The main method for executing a Test Case.
     """
-    environ = dict(os.environ)
-    _prepare_environment_variables(environ)
     partial_result = _execute_configuration_phase(configuration_builder,
                                                   test_case.configuration_phase)
     if partial_result.status is not PartialResultStatus.PASS:
         return new_configuration_phase_failure_from(partial_result)
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return result.new_skipped()
+    environ = dict(os.environ)
+    _prepare_environment_variables(environ)
     partial_execution_configuration = partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                                       configuration_builder.home_dir_path,
                                                                       environ,
