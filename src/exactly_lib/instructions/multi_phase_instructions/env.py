@@ -4,11 +4,14 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForUnconditionalSuccess
+from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     PhaseLoggingPaths
@@ -46,29 +49,40 @@ or the empty string, if there is no environment variable with that name.
 
 
 class Executor:
-    def execute(self, environ: dict):
+    def execute(self,
+                environ: dict,
+                resolving_environment: PathResolvingEnvironmentPreOrPostSds):
         raise NotImplementedError()
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
-    def __init__(self, executor: Executor):
+    def __init__(self,
+                 executor: Executor,
+                 symbol_references: list):
+        self.symbol_references = symbol_references
         self.executor = executor
+
+    @property
+    def symbol_usages(self) -> list:
+        return self.symbol_references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices):
-        return self.executor.execute(environment.environ)
+        return self.executor.execute(environment.environ,
+                                     environment.path_resolving_environment_pre_or_post_sds)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> TheInstructionEmbryo:
         arguments = split_arguments_list_string(rest_of_line)
         if len(arguments) == 3 and arguments[1] == '=':
-            return TheInstructionEmbryo(_SetExecutor(arguments[0],
-                                                     arguments[2]))
+            value_resolver = parse_string.string_resolver_from_string(arguments[2])
+            executor = _SetExecutor(arguments[0], value_resolver)
+            return TheInstructionEmbryo(executor, value_resolver.references)
         if len(arguments) == 2 and arguments[0] == 'unset':
-            return TheInstructionEmbryo(_UnsetExecutor(arguments[1]))
+            return TheInstructionEmbryo(_UnsetExecutor(arguments[1]), [])
         raise SingleInstructionInvalidArgumentException('Invalid syntax')
 
 
@@ -79,12 +93,28 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 class _SetExecutor(Executor):
     def __init__(self,
                  name: str,
-                 value: str):
+                 value: StringResolver):
         self.name = name
-        self.value = value
+        self.value_resolver = value
 
-    def execute(self, environ: dict):
-        environ[self.name] = _expand_vars(self.value, environ)
+    def execute(self, environ: dict,
+                resolving_environment: PathResolvingEnvironmentPreOrPostSds):
+        value = self._resolve_value(environ, resolving_environment)
+        environ[self.name] = _expand_vars(value, environ)
+
+    def _resolve_value(self,
+                       environ: dict,
+                       resolving_environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+        fragments = []
+        for fragment in self.value_resolver.fragments:
+            if fragment.is_string_constant:
+                fragment_value = _expand_vars(fragment.string_constant, environ)
+            elif fragment.is_symbol:
+                fragment_value = fragment.resolve_value_of_any_dependency(resolving_environment)
+            else:
+                raise TypeError('Unknown String Fragment: ' + str(fragment))
+            fragments.append(fragment_value)
+        return ''.join(fragments)
 
 
 class _UnsetExecutor(Executor):
@@ -92,7 +122,8 @@ class _UnsetExecutor(Executor):
                  name: str):
         self.name = name
 
-    def execute(self, environ: dict):
+    def execute(self, environ: dict,
+                resolving_environment: PathResolvingEnvironmentPreOrPostSds):
         try:
             del environ[self.name]
         except KeyError:
