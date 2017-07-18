@@ -26,7 +26,7 @@ from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_as
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    multiple
+    multiple, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -233,6 +233,63 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                                                                        arrangement,
                                                                        expectation)
 
+    def test_symbol_references(self):
+        file_to_interpret = fs.File('python-program.py',
+                                    python_program_that_exits_with_code_given_as_first_cl_arg)
+        file_to_interpret_symbol = NameAndValue('file_to_interpret_symbol',
+                                                file_to_interpret.file_name)
+        python_interpreter_symbol = NameAndValue('python_interpreter_symbol', sys.executable)
+        exit_code_symbol = NameAndValue('exit_code_symbol', 72)
+
+        argument = ' {python_interpreter} {interpret_option} {file_to_interpret}  "{exit_code}"'.format(
+            python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
+            interpret_option=sut.INTERPRET_OPTION,
+            file_to_interpret=symbol_reference_syntax_for_name(file_to_interpret_symbol.name),
+            exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
+        )
+
+        following_line = 'following line'
+        source = remaining_source(argument, [following_line])
+
+        arrangement = ArrangementWithSds(
+            home_or_sds_contents=HomeOrSdsPopulatorForRelOptionType(
+                parse_file_ref.ALL_REL_OPTIONS_CONFIG.options.default_option,
+                fs.DirContents([file_to_interpret])),
+            symbols=SymbolTable({
+                python_interpreter_symbol.name: su.container(sr.string_constant(python_interpreter_symbol.value)),
+                file_to_interpret_symbol.name: su.container(
+                    sr.string_constant(file_to_interpret_symbol.value)),
+                exit_code_symbol.name: su.container(sr.string_constant(str(exit_code_symbol.value))),
+            }),
+        )
+
+        expectation = embryo_check.Expectation(
+            source=assert_source(current_line_number=asrt.equals(2),
+                                 column_index=asrt.equals(0)),
+            symbol_usages=asrt.matches_sequence([
+                matches_symbol_reference(
+                    python_interpreter_symbol.name,
+                    equals_reference_restrictions(
+                        parse_file_ref.path_or_string_reference_restrictions(
+                            sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                        ))),
+                matches_symbol_reference(
+                    file_to_interpret_symbol.name,
+                    equals_reference_restrictions(
+                        parse_file_ref.path_or_string_reference_restrictions(
+                            parse_file_ref.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
+                        ))),
+                matches_symbol_reference(
+                    exit_code_symbol.name,
+                    equals_reference_restrictions(no_restrictions()
+                                                  )),
+            ]),
+            main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
+        )
+
+        parser = sut.embryo_parser('instruction-name')
+        embryo_check.check(self, parser, source, arrangement, expectation)
+
 
 class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
     def test_success_when_executable_does_exist(self):
@@ -356,6 +413,15 @@ RELATIVITY_OPTIONS = relativity_options('EXECUTABLE_FILE_SYMBOL_NAME')
 python_program_that_exits_with_code_0 = 'exit(0)'
 EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0 = fs.python_executable_file('executable-file',
                                                                    python_program_that_exits_with_code_0)
+
+python_program_that_exits_with_code_given_as_first_cl_arg = """\
+import sys
+
+exit_code = int(sys.argv[1])
+
+sys.exit(exit_code)
+
+"""
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

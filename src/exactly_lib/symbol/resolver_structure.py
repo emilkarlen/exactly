@@ -1,3 +1,4 @@
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.line_source import Line
@@ -28,6 +29,12 @@ class SymbolValueResolver:
         :rtype: Depends on the concrete value.
         """
         raise NotImplementedError()
+
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds):
+        """
+        Short cut for resolving the value_of_any_dependency
+        """
+        return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
 
 
 class ResolverContainer(SymbolTableValue):
