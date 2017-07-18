@@ -28,6 +28,7 @@ class Expectation:
                  main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
+                 main_side_effect_on_environment_variables: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         self.validation_pre_sds = validation_pre_sds
         self.validation_post_sds = validation_post_sds
@@ -36,6 +37,7 @@ class Expectation:
         self.side_effects_on_home_and_sds = side_effects_on_home_and_sds
         self.source = source
         self.symbol_usages = symbol_usages
+        self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
 
 
 class TestCaseBase(unittest.TestCase):
@@ -89,7 +91,7 @@ class Executor:
             home_and_sds = path_resolving_environment.home_and_sds
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
-                                                              self.arrangement.process_execution_settings.environ,
+                                                              _initial_environment_variables_dict(self.arrangement),
                                                               symbols=self.arrangement.symbols)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             self.expectation.symbol_usages.apply_with_message(self.put,
@@ -118,6 +120,10 @@ class Executor:
                                                                          'side_effects_on_files')
             self.expectation.side_effects_on_home_and_sds.apply_with_message(self.put, home_and_sds,
                                                                              'side_effects_on_home_and_sds')
+            self.expectation.main_side_effect_on_environment_variables.apply_with_message(
+                self.put,
+                environment.environ,
+                'main side effects on environment variables')
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages,
                                                               'symbol-usages after ' +
@@ -149,3 +155,10 @@ class Executor:
                                   self.arrangement.os_services)
         self.expectation.main_result.apply_with_message(self.put, result,
                                                         'result from main')
+
+
+def _initial_environment_variables_dict(arrangement: ArrangementWithSds) -> dict:
+    environ = arrangement.process_execution_settings.environ
+    if environ is None:
+        environ = {}
+    return environ

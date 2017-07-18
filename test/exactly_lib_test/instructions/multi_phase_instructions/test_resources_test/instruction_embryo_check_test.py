@@ -5,8 +5,11 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     do_return
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import instruction_embryo_check as sut
@@ -23,6 +26,7 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -69,6 +73,14 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             single_line_source(),
             ArrangementWithSds(),
             sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(HomeAndSds)),
+        )
+
+    def test_environment_variables__is_an_empty_dict(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(main_side_effect_on_environment_variables=asrt.equals({})),
         )
 
 
@@ -226,6 +238,43 @@ class TestMiscCases(TestCaseBase):
                 sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(bool)),
             )
 
+    def test_manipulate_environment_variables(self):
+        env_var = NameAndValue('env_var_name', 'env var value')
+        expected_environment_variables = {
+            env_var.name: env_var.value
+        }
+        instruction = InstructionThatSetsEnvironmentVariable(env_var)
+
+        self._check(
+            ParserThatGives(instruction),
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(main_side_effect_on_environment_variables=asrt.equals(expected_environment_variables)),
+        )
+
+    def test_propagate_environment_variables_from_arrangement(self):
+        env_var_in_arrangement = NameAndValue('env_var_in_arr_name', 'env var in arr value')
+        env_var_to_set = NameAndValue('env_var_name', 'env var value')
+
+        environ_of_arrangement = {
+            env_var_in_arrangement.name: env_var_in_arrangement.value,
+        }
+
+        expected_environment_variables = {
+            env_var_in_arrangement.name: env_var_in_arrangement.value,
+            env_var_to_set.name: env_var_to_set.value
+        }
+        instruction = InstructionThatSetsEnvironmentVariable(env_var_to_set)
+
+        self._check(
+            ParserThatGives(instruction),
+            single_line_source(),
+            ArrangementWithSds(process_execution_settings=
+                               os_process_execution.with_environ(environ_of_arrangement)),
+            sut.Expectation(main_side_effect_on_environment_variables=
+                            asrt.equals(expected_environment_variables)),
+        )
+
 
 class ParserThatGives(embryo.InstructionEmbryoParser):
     def __init__(self,
@@ -237,6 +286,17 @@ class ParserThatGives(embryo.InstructionEmbryoParser):
 
 
 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = ParserThatGives(instruction_embryo_that())
+
+
+class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo):
+    def __init__(self, variable: NameAndValue):
+        self.variable = variable
+
+    def main(self, environment: InstructionEnvironmentForPostSdsStep,
+             logging_paths: PhaseLoggingPaths,
+             os_services: OsServices):
+        variable = self.variable
+        environment.environ[variable.name] = variable.value
 
 
 def run_suite():
