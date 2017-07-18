@@ -1,15 +1,18 @@
 import re
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.help.concepts.names_and_cross_references import SYMBOL_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForUnconditionalSuccess
 from exactly_lib.instructions.utils.arg_parse import parse_string
-from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
@@ -20,7 +23,7 @@ from exactly_lib.util.textformat.structure.structures import paras
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
-        super().__init__(name, {}, is_in_assert_phase)
+        super().__init__(name, _FORMAT_DICT, is_in_assert_phase)
 
     def single_line_description(self) -> str:
         return 'Manipulates environment variables'
@@ -31,20 +34,33 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                'NAME = VALUE',
+                _format('{NAME} = {VALUE}'),
                 self._paragraphs(_DESCRIPTION_OF_SET)),
             InvokationVariant(
-                'unset NAME',
-                paras('Removes the environment variable NAME.')),
+                _format('unset {NAME}'),
+                paras(_format('Removes the environment variable {NAME}.'))),
         ]
 
 
+def _format(template: str) -> str:
+    return template.format_map(_FORMAT_DICT)
+
+
+_FORMAT_DICT = {
+    'NAME': 'NAME',
+    'VALUE': 'VALUE',
+    'SYMBOLS': SYMBOL_CONCEPT_INFO.name.plural,
+}
+
 _DESCRIPTION_OF_SET = """\
-Sets the environment variable NAME to VALUE.
+Sets the environment variable {NAME} to {VALUE}.
 
 
-Elements of the form "${{var_name}}" in VALUE, will be replaced with the value of the environment variable "var_name",
+Elements of the form "${{var_name}}" in {VALUE}, will be replaced with the value of the environment variable "var_name",
 or the empty string, if there is no environment variable with that name.
+
+
+{VALUE} may contain references to {SYMBOLS}.
 """
 
 
@@ -76,15 +92,50 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
 class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> TheInstructionEmbryo:
-        arguments = split_arguments_list_string(rest_of_line)
-        if len(arguments) == 3 and arguments[1] == '=':
-            value_resolver = parse_string.string_resolver_from_string(arguments[2])
-            executor = _SetExecutor(arguments[0], value_resolver)
-            return TheInstructionEmbryo(executor, value_resolver.references)
-        if len(arguments) == 2 and arguments[0] == 'unset':
-            return TheInstructionEmbryo(_UnsetExecutor(arguments[1]), [])
-        raise SingleInstructionInvalidArgumentException('Invalid syntax')
+        try:
+            tokens = new_token_stream(rest_of_line)
+            if tokens.is_null:
+                raise SingleInstructionInvalidArgumentException('Missing arguments')
+            first = tokens.consume()
+            if first.is_quoted:
+                raise SingleInstructionInvalidArgumentException('Variable name must not be quoted')
+            if tokens.is_null:
+                if first.string == UNSET_IDENTIFIER:
+                    raise SingleInstructionInvalidArgumentException('Missing variable name to unset')
+                else:
+                    raise SingleInstructionInvalidArgumentException('Missing arguments of variable assignment')
+            second = tokens.consume()
+            if second.source_string == ASSIGNMENT_IDENTIFIER:
+                return self._parse_set(first.string, tokens)
+            elif first.string == UNSET_IDENTIFIER:
+                if second.is_quoted:
+                    raise SingleInstructionInvalidArgumentException('Variable name must not be quoted')
+                return self._parse_unset(second.string, tokens)
 
+            else:
+                raise SingleInstructionInvalidArgumentException('Invalid syntax')
+        except TokenSyntaxError as ex:
+            raise SingleInstructionInvalidArgumentException('Invalid syntax: ' + str(ex))
+
+    def _parse_unset(self, variable_name: str, remaining_tokens: TokenStream) -> TheInstructionEmbryo:
+        if not remaining_tokens.is_null:
+            raise SingleInstructionInvalidArgumentException(_format('Superfluous arguments.'))
+        return TheInstructionEmbryo(_UnsetExecutor(variable_name), [])
+
+    def _parse_set(self, variable_name: str, tokens_for_value: TokenStream) -> TheInstructionEmbryo:
+        if tokens_for_value.is_null:
+            raise SingleInstructionInvalidArgumentException(_format('Missing {VALUE}.'))
+        value_token = tokens_for_value.consume()
+        if not tokens_for_value.is_null:
+            raise SingleInstructionInvalidArgumentException(_format('Superfluous arguments.'))
+        value_resolver = parse_string.parse_string_resolver_from_token(value_token,
+                                                                       no_restrictions())
+        executor = _SetExecutor(variable_name, value_resolver)
+        return TheInstructionEmbryo(executor, value_resolver.references)
+
+
+UNSET_IDENTIFIER = 'unset'
+ASSIGNMENT_IDENTIFIER = '='
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForUnconditionalSuccess())

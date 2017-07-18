@@ -7,6 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
@@ -53,13 +54,24 @@ class TestParseSet(unittest.TestCase):
         source = source4('name = value')
         self.parser.parse(source)
 
-    def test_both_name_and_value_can_be_shell_quoted(self):
+    def test_variable_name_must_not_be_quoted(self):
         source = source4("'long name' = 'long value'")
-        self.parser.parse(source)
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            self.parser.parse(source)
+
+    def test_raise_invalid_argument_if_invalid_quoting(self):
+        source = source4("name = 'long value")
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            self.parser.parse(source)
 
 
 class TestParseUnset(unittest.TestCase):
     parser = sut.EmbryoParser()
+
+    def test_raise_invalid_argument_if_invalid_quoting(self):
+        source = source4("unset 'invalid_name")
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            self.parser.parse(source)
 
     def test_fail_when_there_is_no_arguments(self):
         source = source4('unset')
@@ -75,9 +87,10 @@ class TestParseUnset(unittest.TestCase):
         source = source4('unset name')
         self.parser.parse(source)
 
-    def test_all_parts_may_be_shell_quoted(self):
-        source = source4("'unset' 'long name'")
-        self.parser.parse(source)
+    def test_unset_identifier_must_not_be_quoted(self):
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            source = source4("'unset' 'long name'")
+            self.parser.parse(source)
 
 
 class TestSet(unittest.TestCase):
@@ -112,9 +125,10 @@ class TestSetWithSymbolReferences(unittest.TestCase):
             YOUR_SYMBOL=symbol_reference_syntax_for_name(your_symbol.name),
         )
 
-        source_line = ' {variable_name} = "{source_value_string}"'.format(
+        source_line = ' {variable_name} = {soft_quote}{source_value_string}{soft_quote}'.format(
             variable_name=variable_name,
             source_value_string=value_source_string,
+            soft_quote=SOFT_QUOTE_CHAR,
         )
 
         following_line = 'following line'
@@ -137,6 +151,43 @@ class TestSetWithSymbolReferences(unittest.TestCase):
                     your_symbol.name,
                     equals_reference_restrictions(no_restrictions())),
             ]),
+            source=assert_source(current_line_number=asrt.equals(2),
+                                 column_index=asrt.equals(0)),
+        )
+
+        parser = sut.EmbryoParser()
+        embryo_check.check(self, parser, source, arrangement, expectation)
+
+    def test_set_value_with_hard_quoted_value_SHOULD_skip_symbol_substitution(self):
+        variable_name = 'variable_to_assign'
+
+        my_symbol = NameAndValue('my_symbol', 'my symbol value')
+        your_symbol = NameAndValue('your_symbol', 'your symbol value')
+
+        value_template = 'pre {MY_SYMBOL} {YOUR_SYMBOL} post'
+
+        value_source_string = value_template.format(
+            MY_SYMBOL=symbol_reference_syntax_for_name(my_symbol.name),
+            YOUR_SYMBOL=symbol_reference_syntax_for_name(your_symbol.name),
+        )
+        expected_environ_after_main = {
+            variable_name: value_source_string,
+        }
+
+        source_line = ' {variable_name} = {hard_quote}{source_value_string}{hard_quote}'.format(
+            variable_name=variable_name,
+            source_value_string=value_source_string,
+            hard_quote=HARD_QUOTE_CHAR,
+        )
+
+        following_line = 'following line'
+        source = remaining_source(source_line, [following_line])
+
+        arrangement = ArrangementWithSds()
+
+        expectation = embryo_check.Expectation(
+            main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
+            symbol_usages=asrt.matches_sequence([]),
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
         )
