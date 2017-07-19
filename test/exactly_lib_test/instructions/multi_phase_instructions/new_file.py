@@ -1,10 +1,14 @@
+import pathlib
+import tempfile
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+    PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, specific_relative_relativity, \
     RelSdsOptionType
 from exactly_lib.util.string import lines_content
@@ -50,7 +54,7 @@ class TestParseWithNoContents(unittest.TestCase):
                                                                       actual_file_ref.path_suffix(),
                                                                       'destination_path/path_suffix')
         self.assertEqual('',
-                         actual.contents)
+                         actual.contents.resolve(symbol_table).value_when_no_dir_dependencies())
 
     def test_fail_when_superfluous_arguments__without_option(self):
         arguments = 'expected-argument superfluous-argument'
@@ -84,7 +88,7 @@ class TestParseWithContents(unittest.TestCase):
         equals_path_part_string('file name').apply_with_message(self, actual_file_ref.path_suffix(),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
-                         actual.contents)
+                         actual.contents.resolve(symbol_table).value_when_no_dir_dependencies())
         self.assertFalse(source.has_current_line)
 
     def test_single_line__with_option(self):
@@ -102,7 +106,7 @@ class TestParseWithContents(unittest.TestCase):
                                                                 actual_file_ref.path_suffix(),
                                                                 'destination_path/path_suffix')
         self.assertEqual(lines_content(['single line']),
-                         actual.contents)
+                         actual.contents.resolve(symbol_table).value_when_no_dir_dependencies())
         self.assertTrue(source.has_current_line)
         self.assertEqual('following line',
                          source.current_line_text)
@@ -120,7 +124,12 @@ class ParseAndCreateFileAction(sds_env_utils.SdsAction):
 
     def apply(self, environment: PathResolvingEnvironmentPostSds):
         file_info = _parse_and_get_file_info(self.source)
-        return sut.create_file(file_info, environment)
+        with tempfile.TemporaryDirectory(prefix='exactly-testing-') as tmp_file_name:
+            home_dir_path = pathlib.Path(tmp_file_name)
+            home_and_sds = HomeAndSds(home_dir_path, environment.sds)
+            env_pre_or_post_sds = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
+                                                                       environment.symbols)
+            return sut.create_file(file_info, env_pre_or_post_sds)
 
 
 class TestCaseBase(sds_test.TestCaseBase):

@@ -13,13 +13,13 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol import string_resolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
-from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -66,7 +66,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 class FileInfo(tuple):
     def __new__(cls,
                 path_resolver: FileRefResolver,
-                contents: str):
+                contents: string_resolver.StringResolver):
         return tuple.__new__(cls, (path_resolver, contents))
 
     @property
@@ -74,8 +74,13 @@ class FileInfo(tuple):
         return self[0]
 
     @property
-    def contents(self) -> str:
+    def contents(self) -> string_resolver.StringResolver:
         return self[1]
+
+    @property
+    def references(self) -> list:
+        return self.file_ref.references + self.contents.references
+
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
@@ -84,27 +89,26 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
     @property
     def symbol_usages(self) -> list:
-        return self.file_info.file_ref.references
+        return self.file_info.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices):
-        return self.custom_main(environment.path_resolving_environment)
+        return self.custom_main(environment.path_resolving_environment_pre_or_post_sds)
 
-    def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def custom_main(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         return create_file(self.file_info, environment)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
     def parse(self, source: ParseSource) -> TheInstructionEmbryo:
         file_ref = parse_file_ref_from_parse_source(source, REL_OPT_ARG_CONF)
-        contents = ''
+        contents = string_resolver.string_constant('')
         if source.is_at_eol__except_for_space:
             source.consume_current_line()
         else:
-            lines = parse_here_document.parse_as_last_argument(False, source)
-            contents = lines_content(lines)
+            contents = parse_here_document.parse_as_last_argument(False, source)
         file_info = FileInfo(file_ref, contents)
         return TheInstructionEmbryo(file_info)
 
@@ -114,7 +118,7 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 
 
 def create_file(file_info: FileInfo,
-                environment: PathResolvingEnvironmentPostSds) -> str:
+                environment: PathResolvingEnvironmentPreOrPostSds) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
@@ -127,8 +131,9 @@ def create_file(file_info: FileInfo,
     failure_message = ensure_parent_directory_does_exist_and_is_a_directory(file_path)
     if failure_message is not None:
         return failure_message
+    contents_str = file_info.contents.resolve_value_of_any_dependency(environment)
     try:
-        write_new_text_file(file_path, file_info.contents)
+        write_new_text_file(file_path, contents_str)
     except IOError:
         return 'Cannot create file: {}'.format(file_path)
     return None

@@ -9,7 +9,8 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source, is_at_beginning_of_line
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source, is_at_beginning_of_line, \
+    source_is_at_end
 from exactly_lib_test.symbol.test_resources import here_doc_assertion_utils as hd
 from exactly_lib_test.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
@@ -45,6 +46,21 @@ class TestHereDoc(unittest.TestCase):
             common=CommonExpectation(
                 symbol_references=[],
                 source=is_at_beginning_of_line(4))
+
+        )
+        _expect_here_doc(self, source, expectation)
+
+    def test_without_symbol_references__without_following_line(self):
+        expected_contents_line = 'contents'
+        source = remaining_source('<<MARKER',
+                                  [expected_contents_line,
+                                   'MARKER',
+                                   ])
+        expectation = ExpectedHereDoc(
+            resolved_here_doc_lines=[expected_contents_line],
+            common=CommonExpectation(
+                symbol_references=[],
+                source=source_is_at_end)
 
         )
         _expect_here_doc(self, source, expectation)

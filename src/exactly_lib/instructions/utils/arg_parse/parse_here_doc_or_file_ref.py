@@ -47,6 +47,8 @@ def parse_from_parse_source(source: ParseSource,
         copy_of_source = source.copy
         here_doc = parse_here_document.parse_as_last_argument(False, copy_of_source)
         source.catch_up_with(copy_of_source)
+        if source.is_at_eol__except_for_space:
+            source.consume_current_line()
         return HereDocOrFileRef(here_doc, None)
     except HereDocumentContentsParsingException as ex:
         raise ex
