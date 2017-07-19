@@ -16,12 +16,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -91,20 +91,23 @@ class Parser(InstructionParser):
                                                                 str(source.remaining_part_of_current_line))
             source.consume_current_line()
         if here_doc_or_file_ref.is_here_document:
-            content = lines_content(here_doc_or_file_ref.here_document)
-            return _InstructionForHereDocument(content)
+            return _InstructionForHereDocument(here_doc_or_file_ref.here_document)
         return _InstructionForFileRef(here_doc_or_file_ref.file_reference_resolver)
 
 
 class _InstructionForHereDocument(SetupPhaseInstruction):
-    def __init__(self, contents: str):
+    def __init__(self, contents: StringResolver):
         self.contents = contents
+
+    def symbol_usages(self) -> list:
+        return self.contents.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        settings_builder.stdin.contents = self.contents
+        contents = self.contents.resolve_value_of_any_dependency(environment.path_resolving_environment_pre_or_post_sds)
+        settings_builder.stdin.contents = contents
         return sh.new_sh_success()
 
 

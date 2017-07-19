@@ -18,7 +18,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh, pfh
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing
-from exactly_lib.util.string import lines_content
 
 
 class EqualsAssertionInstruction(AssertPhaseInstruction):
@@ -69,15 +68,15 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
 
     def _file_path_for_file_with_expected_contents(self,
                                                    environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        if self._expected_contents.is_here_document:
-            contents = lines_content(self._expected_contents.here_document)
+        expected_contents = self._expected_contents
+        if expected_contents.is_here_document:
+            contents = expected_contents.here_document.resolve_value_of_any_dependency(environment)
             return tmp_text_file_containing(contents,
                                             prefix='contents-',
                                             suffix='.txt',
                                             directory=str(environment.sds.tmp.internal_dir))
         else:
-            file_ref = self._expected_contents.file_reference_resolver.resolve(environment.symbols)
-            return file_ref.value_of_any_dependency(environment.home_and_sds)
+            return expected_contents.file_reference_resolver.resolve_value_of_any_dependency(environment)
 
     def _file_ref_check_for_expected(self) -> FileRefCheck:
         return FileRefCheck(self._expected_contents.file_reference_resolver,
