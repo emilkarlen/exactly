@@ -11,6 +11,13 @@ from exactly_lib_test.test_resources.parse import remaining_source, remaining_so
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
+    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenarios))
+    return ret_val
+
+
 class TestFailingScenarios(unittest.TestCase):
     def test_fail_when_document_is_mandatory_but_is_not_given(self):
         test_cases = [
@@ -67,57 +74,86 @@ class TestFailingScenarios(unittest.TestCase):
                                                    remaining_source(first_line, following_lines))
 
 
+class SuccessfulCase:
+    def __init__(self,
+                 source_lines: list,
+                 expected_document_contents: list,
+                 source_after_parse: asrt.ValueAssertion):
+        self.source_lines = source_lines
+        self.expected_document_contents = expected_document_contents
+        self.source_after_parse = source_after_parse
+
+
 class TestSuccessfulScenarios(unittest.TestCase):
-    def test_here_document_is_given(self):
-        source_cases = [
-            ([
-                 '<<MARKER',
-                 'MARKER',
-             ],
-             [],
-             source_is_at_end),
-            ([
-                 '<<eof',
-                 'eof',
-             ],
-             [],
-             source_is_at_end),
-            ([
-                 '<<MARKER',
-                 'MARKER',
-                 ' after',
-             ],
-             [],
-             source_is_not_at_end(current_line_number=asrt.equals(3),
-                                  remaining_part_of_current_line=asrt.equals(' after'))),
-            ([
-                 '<<eof',
-                 'single line contents',
-                 'eof',
-             ],
-             ['single line contents'],
-             source_is_at_end),
-            ([
-                 '<<EOF',
-                 'first line',
+    def test_constant_here_document_is_given(self):
+        cases = [
+            SuccessfulCase(
+                source_lines=[
+                    '<<MARKER',
+                    'MARKER',
+                ],
+                expected_document_contents=
+                [],
+                source_after_parse=
+                source_is_at_end),
+            SuccessfulCase(
+                source_lines=[
+                    '<<eof',
+                    'eof',
+                ],
+                expected_document_contents=
+                [],
+                source_after_parse=
+                source_is_at_end),
+            SuccessfulCase(
+                source_lines=[
+                    '<<MARKER',
+                    'MARKER',
+                    ' after',
+                ],
+                expected_document_contents=
+                [],
+                source_after_parse=
+                source_is_not_at_end(current_line_number=asrt.equals(3),
+                                     remaining_part_of_current_line=asrt.equals(' after'))),
+            SuccessfulCase(
+                source_lines=[
+                    '<<eof',
+                    'single line contents',
+                    'eof',
+                ],
+                expected_document_contents=
+                ['single line contents'],
+                source_after_parse=
+                source_is_at_end),
+            SuccessfulCase(
+                source_lines=[
+                    '<<EOF',
+                    'first line',
+                    'second line',
+                    'EOF',
+                    'line after',
+                ],
+                expected_document_contents=
+                ['first line',
                  'second line',
-                 'EOF',
-                 'line after',
-             ],
-             ['first line',
-              'second line',
-              ],
-             source_is_not_at_end(current_line_number=asrt.equals(5),
-                                  remaining_part_of_current_line=asrt.equals('line after'))),
+                 ],
+                source_after_parse=
+                source_is_not_at_end(current_line_number=asrt.equals(5),
+                                     remaining_part_of_current_line=asrt.equals('line after'))),
         ]
-        for source_lines, expected_document_contents, source_assertion in source_cases:
-            for is_mandatory in [False, True]:
-                with self.subTest(msg=repr((source_lines, expected_document_contents, source_assertion))):
-                    source = remaining_source_lines(source_lines)
-                    actual = sut.parse_as_last_argument(is_mandatory, source)
-                    self.assertEqual(expected_document_contents,
-                                     actual)
-                    source_assertion.apply_with_message(self, source, 'source')
+        for case in cases:
+            self._check_case(case)
+
+    def _check_case(self, case: SuccessfulCase):
+        for is_mandatory in [False, True]:
+            with self.subTest(source_lines=case.source_lines,
+                              is_mandatory=str(is_mandatory)):
+                source = remaining_source_lines(case.source_lines)
+                actual = sut.parse_as_last_argument(is_mandatory, source)
+                self.assertEqual(case.expected_document_contents,
+                                 actual)
+                case.source_after_parse.apply_with_message(self, source, 'source')
 
     def test_document_is_not_mandatory_and_not_present(self):
         source_cases = [
@@ -142,13 +178,6 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 actual = sut.parse_as_last_argument(False, source)
                 self.assertIsNone(actual, 'return value from parsing')
                 source_assertion.apply_with_message(self, source, 'source')
-
-
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenarios))
-    return ret_val
 
 
 if __name__ == '__main__':
