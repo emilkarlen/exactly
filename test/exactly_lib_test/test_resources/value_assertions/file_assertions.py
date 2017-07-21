@@ -20,6 +20,13 @@ def dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.
     return DirContainsExactly(expected_contents)
 
 
+def dir_is_empty() -> asrt.ValueAssertion:
+    """
+    Assumes that the actual value is a pathlib.Path
+    """
+    return DirContainsExactly(file_structure.empty_dir_contents())
+
+
 def dir_contains_at_least(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
     """
     Assumes that the actual value is a pathlib.Path
