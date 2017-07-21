@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
@@ -19,7 +18,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_popu
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction, \
+    MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part_string
@@ -304,13 +304,6 @@ def arrangement_with_cwd_as_none_of_the_relativity_roots(
     return Arrangement(pre_contents_population_action=SETUP_CWD_ACTION,
                        sds_contents_before=sds_contents_before,
                        symbols=symbols)
-
-
-class MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs(SdsAction):
-    def apply(self, environment: PathResolvingEnvironmentPostSds):
-        dir_path = environment.sds.root_dir / 'not-a-std-sub-dir-of-sds'
-        dir_path.mkdir(parents=True, exist_ok=True)
-        os.chdir(str(dir_path))
 
 
 SETUP_CWD_ACTION = MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs()
