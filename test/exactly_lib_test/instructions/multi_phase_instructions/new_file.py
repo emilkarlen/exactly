@@ -26,7 +26,19 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part_string
 
 
-class TestParseWithNoContents(unittest.TestCase):
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestFailingParseWithNoContents),
+        unittest.makeSuite(TestSuccessfulParseWithNoContents),
+        unittest.makeSuite(TestSuccessfulScenariosNoContent),
+        unittest.makeSuite(TestSuccessfulScenariosWithContent),
+        unittest.makeSuite(TestFailingScenarios),
+        unittest.makeSuite(TestParseWithContents),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+    ])
+
+
+class TestFailingParseWithNoContents(unittest.TestCase):
     def test_path_is_mandatory__without_option(self):
         arguments = ''
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -42,6 +54,18 @@ class TestParseWithNoContents(unittest.TestCase):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             _parse_and_get_file_info(single_line_source(arguments))
 
+    def test_fail_when_superfluous_arguments__without_option(self):
+        arguments = 'expected-argument superfluous-argument'
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            _parse_and_get_file_info(single_line_source(arguments))
+
+    def test_fail_when_superfluous_arguments__with_option(self):
+        arguments = '--rel-act expected-argument superfluous-argument'
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            _parse_and_get_file_info(single_line_source(arguments))
+
+
+class TestSuccessfulParseWithNoContents(unittest.TestCase):
     def test_when_no_option_path_should_be_relative_cwd(self):
         arguments = 'single-argument'
         actual = _parse_and_get_file_info(single_line_source(arguments))
@@ -55,16 +79,6 @@ class TestParseWithNoContents(unittest.TestCase):
                                                                       'destination_path/path_suffix')
         self.assertEqual('',
                          actual.contents.resolve(symbol_table).value_when_no_dir_dependencies())
-
-    def test_fail_when_superfluous_arguments__without_option(self):
-        arguments = 'expected-argument superfluous-argument'
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            _parse_and_get_file_info(single_line_source(arguments))
-
-    def test_fail_when_superfluous_arguments__with_option(self):
-        arguments = '--rel-act expected-argument superfluous-argument'
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            _parse_and_get_file_info(single_line_source(arguments))
 
 
 class TestParseWithContents(unittest.TestCase):
@@ -233,17 +247,6 @@ class TestFailingScenarios(TestCaseBase):
                                  ]))),
                              sds_test.Expectation(expected_action_result=is_failure(),
                                                   ))
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParseWithNoContents),
-        unittest.makeSuite(TestSuccessfulScenariosNoContent),
-        unittest.makeSuite(TestSuccessfulScenariosWithContent),
-        unittest.makeSuite(TestFailingScenarios),
-        unittest.makeSuite(TestParseWithContents),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
-    ])
 
 
 if __name__ == '__main__':
