@@ -1,6 +1,7 @@
 """
 Test of test-infrastructure: instruction_embryo_check.
 """
+import pathlib
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -27,6 +28,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -35,6 +37,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestArgumentTypesGivenToAssertions),
         unittest.makeSuite(TestMiscCases),
         unittest.makeSuite(TestSymbols),
+        unittest.makeSuite(TestHomeDirHandling),
     ])
 
 
@@ -73,6 +76,14 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             single_line_source(),
             ArrangementWithSds(),
             sut.Expectation(side_effects_on_home_and_sds=asrt.IsInstance(HomeAndSds)),
+        )
+
+    def test_home(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(side_effects_on_home=asrt.IsInstance(pathlib.Path)),
         )
 
     def test_environment_variables__is_an_empty_dict(self):
@@ -138,6 +149,27 @@ class TestSymbols(TestCaseBase):
             single_line_source(),
             ArrangementWithSds(symbols=symbol_table_of_arrangement),
             sut.Expectation(),
+        )
+
+
+class TestHomeDirHandling(TestCaseBase):
+    def test_fail_due_to_side_effects_on_home(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(side_effects_on_home=f_asrt.dir_contains_at_least(
+                    DirContents([empty_file('file-name.txt')]))),
+            )
+
+    def test_arrangement_and_expectation_of_home_dir_contents(self):
+        home_dir_contents = DirContents([empty_file('file-name.txt')])
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(home_contents=home_dir_contents),
+            sut.Expectation(side_effects_on_home=f_asrt.dir_contains_exactly(home_dir_contents)),
         )
 
 

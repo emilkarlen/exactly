@@ -27,6 +27,7 @@ class Expectation:
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
+                 side_effects_on_home: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  main_side_effect_on_environment_variables: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
@@ -35,6 +36,7 @@ class Expectation:
         self.main_result = main_result
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.side_effects_on_home_and_sds = side_effects_on_home_and_sds
+        self.side_effects_on_home = side_effects_on_home
         self.source = source
         self.symbol_usages = symbol_usages
         self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
@@ -128,6 +130,8 @@ class Executor:
                                                               instruction.symbol_usages,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
+            self.expectation.side_effects_on_home.apply_with_message(self.put, home_and_sds.home_dir_path,
+                                                                     'side_effects_on_home')
 
     def _execute_validate_pre_sds(
             self,
