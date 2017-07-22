@@ -30,10 +30,12 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                 symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             sds_contents=self._populator_for_actual(actual_contents),
             post_sds_population_action=post_sds_population_action,
+            symbols=symbols,
         )
 
     def arrangement_for_contents_from_fun(self,

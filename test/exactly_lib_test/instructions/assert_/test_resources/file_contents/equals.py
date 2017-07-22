@@ -1,6 +1,9 @@
 import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -20,10 +23,13 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end
+from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, is_at_beginning_of_line
+from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 
@@ -50,6 +56,7 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
 
     test_cases_without_rel_opts = [
         _ContentsEqualsAHereDocument,
+        _ContentsEqualsAHereDocumentWithSymbolReferences,
         _ContentsDoNotEqualAHereDocument,
     ]
 
@@ -220,6 +227,35 @@ class _ContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase)
         )
 
 
+class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithConfigurationAndNegationArgumentBase):
+    def runTest(self):
+        expected_content_line_template = 'expected content line, with {symbol} ref'
+
+        def expected_content(symbol_content: str) -> str:
+            return expected_content_line_template.format(symbol=symbol_content)
+
+        symbol = NameAndValue('symbol_name', 'the symbol value')
+        self._check(
+            self.configuration.source_for(
+                args('{maybe_not} {equals} <<EOF',
+                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option),
+                [expected_content(symbol_reference_syntax_for_name(symbol.name)),
+                 'EOF',
+                 'following line']),
+            self.configuration.arrangement_for_contents(
+                lines_content([expected_content(symbol.value)]),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
+                symbols=SymbolTable({
+                    symbol.name: symbol_utils.string_value_constant_container(symbol.value),
+                })),
+            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail,
+                        symbol_usages=equals_symbol_references([
+                            SymbolReference(symbol.name, no_restrictions())
+                        ]),
+                        source=is_at_beginning_of_line(4)),
+        )
+
+
 class _ContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         self._check(
@@ -227,10 +263,11 @@ class _ContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentB
                 args('{maybe_not} {equals} <<EOF',
                      maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option),
                 ['expected content line',
-                 'EOF']),
+                 'EOF',
+                 'the following line']),
             self.configuration.arrangement_for_contents(
                 lines_content(['actual contents that is not equal to expected contents']),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass,
-                        source=source_is_at_end),
+                        source=is_at_beginning_of_line(4)),
         )

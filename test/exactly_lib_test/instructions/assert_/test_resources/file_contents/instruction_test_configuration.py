@@ -28,6 +28,7 @@ class InstructionTestConfiguration:
     def arrangement_for_contents(self,
                                  actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                 symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
 

@@ -13,16 +13,27 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     HomeAndSdsAction
 
 
+def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
+    return unittest.TestSuite([
+        empty.suite_for(configuration),
+        equals.suite_for(configuration),
+        contains.suite_for(configuration),
+
+    ])
+
+
 class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def first_line_argument(self, argument_tail: str) -> str:
         return argument_tail
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                                 symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=(self._act_result_producer(actual_contents)),
             post_sds_population_action=post_sds_population_action,
+            symbols=symbols,
         )
 
     def arrangement_for_actual_and_expected(self,
@@ -44,12 +55,3 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def _act_result_producer(self, contents_of_tested_file: str) -> instruction_check.ActResultProducer:
         act_result = self.act_result(contents_of_tested_file)
         return ActResultProducerFromActResult(act_result)
-
-
-def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
-    return unittest.TestSuite([
-        empty.suite_for(configuration),
-        equals.suite_for(configuration),
-        contains.suite_for(configuration),
-
-    ])
