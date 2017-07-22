@@ -88,6 +88,7 @@ class Executor:
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
+                non_home_contents=self.arrangement.non_home_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             home_and_sds = path_resolving_environment.home_and_sds

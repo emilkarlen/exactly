@@ -18,6 +18,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sh_chec
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import file_structure
@@ -32,6 +33,7 @@ class Arrangement(ArrangementWithSds):
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                 non_home_contents_before_main: non_home_populator.NonHomePopulator = non_home_populator.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT,
@@ -41,6 +43,7 @@ class Arrangement(ArrangementWithSds):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          home_contents=home_dir_contents,
                          sds_contents=sds_contents_before_main,
+                         non_home_contents=non_home_contents_before_main,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
                          home_or_sds_contents=home_or_sds_contents,
@@ -113,6 +116,7 @@ class Executor(InstructionExecutionBase):
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents,
+                non_home_contents=self.arrangement.non_home_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             home_and_sds = path_resolving_environment.home_and_sds

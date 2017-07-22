@@ -27,6 +27,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_resources import file_structure
@@ -42,6 +43,7 @@ class Arrangement(ArrangementWithSds):
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                 non_home_contents: non_home_populator.NonHomePopulator = non_home_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
                  home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  symbols: SymbolTable = None,
@@ -49,6 +51,7 @@ class Arrangement(ArrangementWithSds):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          home_contents=home_dir_contents,
                          sds_contents=sds_contents_before_main,
+                         non_home_contents=non_home_contents,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
                          home_or_sds_contents=home_or_sds_contents,
@@ -164,6 +167,7 @@ class Executor:
                                                                                       self.arrangement.symbols)
                     self.arrangement.pre_contents_population_action.apply(path_resolving_environment)
                     self.arrangement.sds_contents.populate_sds(sds)
+                    self.arrangement.non_home_contents.populate_non_home(sds)
                     self.arrangement.home_or_sds_contents.populate_home_or_sds(home_and_sds)
                     self.arrangement.post_sds_population_action.apply(path_resolving_environment)
                     main_result = self._execute_main(sds, instruction_environment, instruction)
