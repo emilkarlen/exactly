@@ -9,6 +9,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
@@ -24,8 +25,10 @@ from exactly_lib_test.instructions.test_resources.symbol_table_check_help import
 from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    act_dir_contains_exactly
+    act_dir_contains_exactly, tmp_user_dir_contains_exactly, result_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
@@ -38,6 +41,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestMiscCases),
         unittest.makeSuite(TestSymbols),
         unittest.makeSuite(TestHomeDirHandling),
+        unittest.makeSuite(TestPopulate),
     ])
 
 
@@ -170,6 +174,34 @@ class TestHomeDirHandling(TestCaseBase):
             single_line_source(),
             ArrangementWithSds(home_contents=home_dir_contents),
             sut.Expectation(side_effects_on_home=f_asrt.dir_contains_exactly(home_dir_contents)),
+        )
+
+
+class TestPopulate(TestCaseBase):
+    def test_populate_non_home(self):
+        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(
+                non_home_contents=non_home_populator.rel_option(RelNonHomeOptionType.REL_TMP,
+                                                                populated_dir_contents)),
+            sut.Expectation(
+                main_side_effects_on_sds=tmp_user_dir_contains_exactly(
+                    populated_dir_contents)),
+        )
+
+    def test_populate_sds(self):
+        populated_dir_contents = DirContents([empty_file('sds-file.txt')])
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(
+                sds_contents=sds_populator.contents_in(RelSdsOptionType.REL_RESULT,
+                                                       populated_dir_contents)),
+            sut.Expectation(
+                main_side_effects_on_sds=result_dir_contains_exactly(
+                    populated_dir_contents)),
         )
 
 

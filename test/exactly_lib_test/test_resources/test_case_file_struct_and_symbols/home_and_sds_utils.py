@@ -8,6 +8,7 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.file_utils import resolved_path, preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
@@ -40,6 +41,7 @@ class HomeAndSdsActionFromSdsAction(HomeAndSdsAction):
 def home_and_sds_with_act_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
         sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
+        non_home_contents: non_home_populator.NonHomePopulator = non_home_populator.empty(),
         home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
         pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
         symbols: SymbolTable = None) -> PathResolvingEnvironmentPreOrPostSds:
@@ -55,5 +57,6 @@ def home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action.apply(ret_val)
                 home_dir_contents.write_to(home_dir_path)
                 sds_contents.populate_sds(sds)
+                non_home_contents.populate_non_home(sds)
                 home_or_sds_contents.populate_home_or_sds(home_and_sds)
                 yield ret_val

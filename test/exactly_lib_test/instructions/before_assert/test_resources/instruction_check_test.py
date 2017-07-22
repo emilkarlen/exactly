@@ -22,8 +22,10 @@ from exactly_lib_test.instructions.test_resources.symbol_table_check_help import
 from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    act_dir_contains_exactly
+    act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -32,6 +34,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestMiscCases),
+        unittest.makeSuite(TestPopulate),
         unittest.makeSuite(TestSymbols),
     ])
 
@@ -46,6 +49,40 @@ class TestCaseBase(unittest.TestCase):
                arrangement: ArrangementPostAct,
                expectation: sut.Expectation):
         sut.check(self.tc, parser, source, arrangement, expectation)
+
+
+class TestPopulate(TestCaseBase):
+    def test_populate_non_home(self):
+        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            utils.single_line_source(),
+            sut.arrangement(
+                non_home_contents_before_main=non_home_populator.rel_option(
+                    non_home_populator.RelNonHomeOptionType.REL_TMP,
+                    populated_dir_contents)),
+            sut.Expectation(
+                main_side_effects_on_files=tmp_user_dir_contains_exactly(
+                    populated_dir_contents)),
+        )
+
+    def test_populate_sds(self):
+        populated_dir_contents = DirContents([empty_file('sds-file.txt')])
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            utils.single_line_source(),
+            sut.arrangement(
+                sds_contents_before_main=sds_populator.contents_in(
+                    sds_populator.RelSdsOptionType.REL_TMP,
+                    populated_dir_contents)),
+            sut.Expectation(
+                main_side_effects_on_files=tmp_user_dir_contains_exactly(
+                    populated_dir_contents)),
+        )
+
+
+PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = utils.ParserThatGives(
+    before_assert_phase_instruction_that())
 
 
 class TestSymbols(TestCaseBase):

@@ -11,6 +11,14 @@ def rel_option(relativity: RelNonHomeOptionType,
                                                 dir_contents)
 
 
+def multiple(non_home_populator_list: list) -> NonHomePopulator:
+    return _ListOfPopulators(non_home_populator_list)
+
+
+def empty() -> NonHomePopulator:
+    return _ListOfPopulators([])
+
+
 class _NonHomePopulatorForRelativityOption(NonHomePopulator):
     def __init__(self,
                  relativity: RelNonHomeOptionType,
@@ -21,3 +29,12 @@ class _NonHomePopulatorForRelativityOption(NonHomePopulator):
     def populate_non_home(self, sds: SandboxDirectoryStructure):
         root_path = relative_path_options.REL_NON_HOME_OPTIONS_MAP[self.relativity].root_resolver.from_non_home(sds)
         self.dir_contents.write_to(root_path)
+
+
+class _ListOfPopulators(NonHomePopulator):
+    def __init__(self, non_home_populator_list: list):
+        self.__populator_list = non_home_populator_list
+
+    def populate_non_home(self, sds: SandboxDirectoryStructure):
+        for populator in self.__populator_list:
+            populator.populate_non_home(sds)
