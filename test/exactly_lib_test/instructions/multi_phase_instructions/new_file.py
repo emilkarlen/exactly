@@ -18,6 +18,8 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.relativity_options import conf_rel_any, \
     conf_rel_non_home, default_conf_rel_non_home
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
+from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, \
+    is_at_beginning_of_line
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
 from exactly_lib_test.test_resources import file_structure as fs
@@ -37,6 +39,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParseWithContents),
         unittest.makeSuite(TestSuccessfulScenariosWithNoContents),
         unittest.makeSuite(TestSuccessfulScenariosWithContents),
+        unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestFailingScenariosDueToAlreadyExistingFiles),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
@@ -237,6 +240,69 @@ class TestSuccessfulScenariosWithContents(TestCaseBase):
                     ))
 
 
+class TestParserConsumptionOfSource(TestCaseBase):
+    def test_last_line__no_contents(self):
+        expected_file = fs.empty_file('a-file-name.txt')
+        self._check(
+            remaining_source(
+                '{file_name}'.format(file_name=expected_file.file_name),
+            ),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                source=source_is_at_end,
+            ),
+        )
+
+    def test_not_last_line__no_contents(self):
+        expected_file = fs.empty_file('a-file-name.txt')
+        self._check(
+            remaining_source(
+                '{file_name}'.format(file_name=expected_file.file_name),
+                ['following line']),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                source=is_at_beginning_of_line(2),
+            ),
+        )
+
+    def test_last_line__contents(self):
+        expected_file = fs.empty_file('a-file-name.txt')
+        self._check(
+            remaining_source(
+                '{file_name} <<MARKER'.format(file_name=expected_file.file_name),
+                ['MARKER']),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                source=source_is_at_end,
+            ),
+        )
+
+    def test_not_last_line__contents(self):
+        expected_file = fs.empty_file('a-file-name.txt')
+        self._check(
+            remaining_source(
+                '{file_name} <<MARKER'.format(file_name=expected_file.file_name),
+                ['MARKER',
+                 'following line']),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                source=is_at_beginning_of_line(3),
+            ),
+        )
+
+
 def _just_parse(source: ParseSource):
     sut.EmbryoParser().parse(source)
 
@@ -315,8 +381,6 @@ class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
                         main_result=is_failure(),
                     ))
 
-
-SETUP_CWD_REL_SDS_ACTION = MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs()
 
 SETUP_CWD_ACTION = HomeAndSdsActionFromSdsAction(
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs())
