@@ -216,7 +216,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
 
 
 class TestSuccessfulScenariosWithContents(TestCaseBase):
-    def test_accepted_relativity_options_other_than_home(self):
+    def test_single_file(self):
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
