@@ -9,44 +9,63 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
-from exactly_lib.util.string import lines_content
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, RelNonHomeOptionType
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.instructions.test_resources.relativity_options import conf_rel_sds, conf_rel_any
+from exactly_lib_test.instructions.test_resources.relativity_options import conf_rel_sds, conf_rel_any, \
+    conf_rel_non_home, default_conf_rel_non_home
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    act_dir_contains_exactly, tmp_user_dir_contains_exactly, SubDirOfSdsContainsExactly
+    sub_dir_of_sds_contains_exactly, non_home_dir_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.parse import argument_list_source, single_line_source, remaining_source
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test, sds_env_utils
+from exactly_lib_test.test_resources.parse import single_line_source, remaining_source
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_env_utils
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import \
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParseWithNoContents),
         unittest.makeSuite(TestFailingParseWithContents),
-        unittest.makeSuite(TestSuccessfulParseWithNoContents),
+        unittest.makeSuite(TestSuccessfulScenariosWithNoContents),
         unittest.makeSuite(TestSuccessfulParseWithContents),
-        unittest.makeSuite(TestSuccessfulScenariosNoContent),
-        unittest.makeSuite(TestSuccessfulScenariosWithContent),
-        unittest.makeSuite(TestFailingScenarios),
+        unittest.makeSuite(TestSuccessfulScenariosWithFilesUnderDirectories),
+        unittest.makeSuite(TestFailingScenariosDueToAlreadyExistingFiles),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
+
+
+def is_success() -> asrt.ValueAssertion:
+    return asrt.is_none
+
+
+def is_failure() -> asrt.ValueAssertion:
+    return asrt.is_instance(str)
 
 
 DISALLOWED_RELATIVITIES = [
     RelOptionType.REL_RESULT,
     RelOptionType.REL_HOME,
+]
+
+ALLOWED_RELATIVITY_OPTIONS = {RelSdsOptionType.REL_ACT,
+                              RelSdsOptionType.REL_TMP}
+
+ALLOWED_RELATIVITIES = [
+    conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
+    conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
+    conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+    default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+
 ]
 
 
@@ -120,68 +139,68 @@ class TestFailingParseWithContents(unittest.TestCase):
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                source: ParseSource,
-               arrangement: embryo_check.ArrangementWithSds,
-               expectation: embryo_check.Expectation,
+               arrangement: ArrangementWithSds,
+               expectation: Expectation,
                ):
         parser = sut.EmbryoParser()
         embryo_check.check(self, parser, source, arrangement, expectation)
 
 
-class TestSuccessfulParseWithNoContents(TestCaseBase):
+class TestSuccessfulScenariosWithNoContents(TestCaseBase):
     def test_when_no_option_path_should_be_relative_cwd(self):
         file_name = 'file-name.txt'
         expected_file = fs.empty_file(file_name)
-        source = remaining_source('{file_name}'.format(file_name=file_name), )
-        arrangement = embryo_check.ArrangementWithSds(
-            pre_contents_population_action=SETUP_CWD_ACTION,
-        )
-        expectation = embryo_check.Expectation(
-            side_effects_on_home=f_asrt.dir_is_empty(),
-            symbol_usages=asrt.is_empty_list,
-            main_side_effects_on_sds=SubDirOfSdsContainsExactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
-                                                                fs.DirContents([expected_file])),
-        )
-        self._check(source, arrangement, expectation)
+        self._check(
+            remaining_source('{file_name}'.format(file_name=file_name)),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                side_effects_on_home=f_asrt.dir_is_empty(),
+                symbol_usages=asrt.is_empty_list,
+                main_side_effects_on_sds=sub_dir_of_sds_contains_exactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
+                                                                         fs.DirContents([expected_file])),
+            ))
 
-    def test_explicit_relativity_of_home(self):
+    def test_explicit_relativity_of_cwd(self):
         file_name = 'file-name.txt'
         expected_file = fs.empty_file(file_name)
-        source = remaining_source(args_with_rel_ops('{rel_cwd_option} {file_name}  ',
-                                                    file_name=file_name),
-                                  )
-        arrangement = embryo_check.ArrangementWithSds(
-            pre_contents_population_action=SETUP_CWD_ACTION,
-        )
-        expectation = embryo_check.Expectation(
-            side_effects_on_home=f_asrt.dir_is_empty(),
-            symbol_usages=asrt.is_empty_list,
-            main_side_effects_on_sds=SubDirOfSdsContainsExactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
-                                                                fs.DirContents([expected_file])),
-        )
-        self._check(source, arrangement, expectation)
+        self._check(
+            remaining_source(args_with_rel_ops('{rel_cwd_option} {file_name}  ',
+                                               file_name=file_name)),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                side_effects_on_home=f_asrt.dir_is_empty(),
+                symbol_usages=asrt.is_empty_list,
+                main_side_effects_on_sds=sub_dir_of_sds_contains_exactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
+                                                                         fs.DirContents([expected_file])),
+            ))
 
-    def test_accepted_relativity_options_other_than_home(self):
+    def test_accepted_relativity_options_other_than_cwd(self):
         file_name = 'a-file-name.txt'
         expected_file = fs.empty_file(file_name)
-        accepted_relativity_options = {RelSdsOptionType.REL_ACT,
-                                       RelSdsOptionType.REL_TMP}
-        for relativity_option in accepted_relativity_options:
+        for relativity_option in ALLOWED_RELATIVITY_OPTIONS:
             with self.subTest(relativity_option=str(relativity_option)):
                 rel_opt_conf = conf_rel_sds(relativity_option)
-                source = remaining_source(
-                    '{rel_opt} {file_name} '.format(rel_opt=rel_opt_conf.option_string,
-                                                    file_name=file_name),
-                )
-                arrangement = embryo_check.ArrangementWithSds(
-                    pre_contents_population_action=SETUP_CWD_ACTION,
-                )
-                expectation = embryo_check.Expectation(
-                    side_effects_on_home=f_asrt.dir_is_empty(),
-                    symbol_usages=asrt.is_empty_list,
-                    main_side_effects_on_sds=SubDirOfSdsContainsExactly(rel_opt_conf.root_dir__sds,
-                                                                        fs.DirContents([expected_file])),
-                )
-                self._check(source, arrangement, expectation)
+                self._check(
+                    remaining_source(
+                        '{rel_opt} {file_name} '.format(rel_opt=rel_opt_conf.option_string,
+                                                        file_name=file_name),
+                    ),
+                    ArrangementWithSds(
+                        pre_contents_population_action=SETUP_CWD_ACTION,
+                    ),
+                    Expectation(
+                        main_result=is_success(),
+                        side_effects_on_home=f_asrt.dir_is_empty(),
+                        symbol_usages=asrt.is_empty_list,
+                        main_side_effects_on_sds=sub_dir_of_sds_contains_exactly(rel_opt_conf.root_dir__sds,
+                                                                                 fs.DirContents([expected_file])),
+                    ))
 
 
 class TestSuccessfulParseWithContents(TestCaseBase):
@@ -190,65 +209,65 @@ class TestSuccessfulParseWithContents(TestCaseBase):
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
         expected_file = fs.File(file_name, expected_file_contents)
-        source = remaining_source('{file_name} <<MARKER'.format(file_name=file_name),
-                                  [here_doc_line,
-                                   'MARKER'])
-        arrangement = embryo_check.ArrangementWithSds(
-            pre_contents_population_action=SETUP_CWD_ACTION,
-        )
-        expectation = embryo_check.Expectation(
-            side_effects_on_home=f_asrt.dir_is_empty(),
-            symbol_usages=asrt.is_empty_list,
-            main_side_effects_on_sds=SubDirOfSdsContainsExactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
-                                                                fs.DirContents([expected_file])),
-        )
-        self._check(source, arrangement, expectation)
+        self._check(
+            remaining_source('{file_name} <<MARKER'.format(file_name=file_name),
+                             [here_doc_line,
+                              'MARKER']),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                side_effects_on_home=f_asrt.dir_is_empty(),
+                symbol_usages=asrt.is_empty_list,
+                main_side_effects_on_sds=sub_dir_of_sds_contains_exactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
+                                                                         fs.DirContents([expected_file])),
+            ))
 
-    def test_explicit_relativity_of_home(self):
+    def test_explicit_relativity_of_cwd(self):
         file_name = 'file-name.txt'
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
         expected_file = fs.File(file_name, expected_file_contents)
-        source = remaining_source(args_with_rel_ops('{rel_cwd_option} {file_name} <<MARKER',
-                                                    file_name=file_name),
-                                  [here_doc_line,
-                                   'MARKER'])
-        arrangement = embryo_check.ArrangementWithSds(
-            pre_contents_population_action=SETUP_CWD_ACTION,
-        )
-        expectation = embryo_check.Expectation(
-            side_effects_on_home=f_asrt.dir_is_empty(),
-            symbol_usages=asrt.is_empty_list,
-            main_side_effects_on_sds=SubDirOfSdsContainsExactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
-                                                                fs.DirContents([expected_file])),
-        )
-        self._check(source, arrangement, expectation)
+        self._check(
+            remaining_source(args_with_rel_ops('{rel_cwd_option} {file_name} <<MARKER',
+                                               file_name=file_name),
+                             [here_doc_line,
+                              'MARKER']),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                side_effects_on_home=f_asrt.dir_is_empty(),
+                symbol_usages=asrt.is_empty_list,
+                main_side_effects_on_sds=sub_dir_of_sds_contains_exactly(SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
+                                                                         fs.DirContents([expected_file])),
+            ))
 
     def test_accepted_relativity_options_other_than_home(self):
         file_name = 'a-file-name.txt'
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
         expected_file = fs.File(file_name, expected_file_contents)
-        accepted_relativity_options = {RelSdsOptionType.REL_ACT,
-                                       RelSdsOptionType.REL_TMP}
-        for relativity_option in accepted_relativity_options:
-            with self.subTest(relativity_option=str(relativity_option)):
-                rel_opt_conf = conf_rel_sds(relativity_option)
-                source = remaining_source(
-                    '{rel_opt} {file_name} <<THE_MARKER'.format(rel_opt=rel_opt_conf.option_string,
-                                                                file_name=file_name),
-                    [here_doc_line,
-                     'THE_MARKER'])
-                arrangement = embryo_check.ArrangementWithSds(
-                    pre_contents_population_action=SETUP_CWD_ACTION,
-                )
-                expectation = embryo_check.Expectation(
-                    side_effects_on_home=f_asrt.dir_is_empty(),
-                    symbol_usages=asrt.is_empty_list,
-                    main_side_effects_on_sds=SubDirOfSdsContainsExactly(rel_opt_conf.root_dir__sds,
-                                                                        fs.DirContents([expected_file])),
-                )
-                self._check(source, arrangement, expectation)
+        for rel_opt_conf in ALLOWED_RELATIVITIES:
+            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+                self._check(
+                    remaining_source(
+                        '{rel_opt} {file_name} <<THE_MARKER'.format(rel_opt=rel_opt_conf.option_string,
+                                                                    file_name=file_name),
+                        [here_doc_line,
+                         'THE_MARKER']),
+                    ArrangementWithSds(
+                        pre_contents_population_action=SETUP_CWD_ACTION,
+                    ),
+                    Expectation(
+                        main_result=is_success(),
+                        side_effects_on_home=f_asrt.dir_is_empty(),
+                        symbol_usages=asrt.is_empty_list,
+                        main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
+                                                                               fs.DirContents([expected_file])),
+                    ))
 
 
 def _just_parse(source: ParseSource):
@@ -275,107 +294,96 @@ class ParseAndCreateFileAction(sds_env_utils.SdsAction):
             return sut.create_file(file_info, env_pre_or_post_sds)
 
 
-class TestCaseBase(sds_test.TestCaseBase):
-    def _check_argument(self,
-                        source: ParseSource,
-                        arrangement: sds_test.Arrangement,
-                        expectation: sds_test.Expectation):
-        action = ParseAndCreateFileAction(source)
-        self._check(action,
-                    arrangement,
-                    expectation)
-
-
-def is_success() -> ValueAssertion:
-    return ValueIsNone()
-
-
-def is_failure() -> ValueAssertion:
-    return ValueIsNotNone()
-
-
-class TestSuccessfulScenariosNoContent(TestCaseBase):
-    def test_file_relative_cwd(self):
-        self._check_argument(single_line_source('file-name.txt'),
-                             sds_test.Arrangement(),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  expected_sds_contents_after=act_dir_contains_exactly(fs.DirContents([
-                                                      fs.empty_file('file-name.txt')
-                                                  ])),
-                                                  ))
-
+class TestSuccessfulScenariosWithFilesUnderDirectories(TestCaseBase):
     def test_file_in_sub_dir__sub_dir_exists(self):
-        self._check_argument(single_line_source('existing-directory/file-name.txt'),
-                             sds_test.Arrangement(sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
-                                                                                  fs.DirContents([
-                                                                                      fs.empty_dir('existing-directory')
-                                                                                  ]))),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  expected_sds_contents_after=act_dir_contains_exactly(fs.DirContents([
-                                                      fs.Dir('existing-directory', [
-                                                          fs.empty_file('file-name.txt')])
-                                                  ])),
-                                                  ))
+        self._check(
+            single_line_source('existing-directory/non-existing-file.txt'),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+                sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                         fs.DirContents([
+                                             fs.empty_dir('existing-directory')
+                                         ]))),
+            Expectation(
+                main_result=is_success(),
+                main_side_effects_on_sds=sub_dir_of_sds_contains_exactly(
+                    SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
+                    fs.DirContents([
+                        fs.Dir('existing-directory', [
+                            fs.empty_file('non-existing-file.txt')])
+                    ])),
+            ))
 
     def test_file_in_sub_dir__sub_dir_does_not_exist(self):
-        self._check_argument(single_line_source('existing-directory/file-name.txt'),
-                             sds_test.Arrangement(),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  expected_sds_contents_after=act_dir_contains_exactly(fs.DirContents([
-                                                      fs.Dir('existing-directory', [
-                                                          fs.empty_file('file-name.txt')])
-                                                  ])),
-                                                  ))
-
-    def test_file_in_sub_dir__sub_dir_does_not_exist__rel_tmp(self):
-        self._check_argument(single_line_source('--rel-tmp existing-directory/file-name.txt'),
-                             sds_test.Arrangement(),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  expected_sds_contents_after=tmp_user_dir_contains_exactly(
-                                                      fs.DirContents([
-                                                          fs.Dir('existing-directory', [
-                                                              fs.empty_file('file-name.txt')])
-                                                      ])),
-                                                  ))
+        self._check(
+            single_line_source('non-existing-directory/non-existing-file.txt'),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+            ),
+            Expectation(
+                main_result=is_success(),
+                main_side_effects_on_sds=sub_dir_of_sds_contains_exactly(
+                    SETUP_CWD_REL_SDS_ACTION.resolve_dir_path,
+                    fs.DirContents([
+                        fs.Dir('non-existing-directory', [
+                            fs.empty_file('non-existing-file.txt')])
+                    ])),
+            ))
 
 
-class TestSuccessfulScenariosWithContent(TestCaseBase):
-    def test_file_relative_cwd(self):
-        source = argument_list_source(['file-name.txt', '<<MARKER'],
-                                      ['single line',
-                                       'MARKER'])
-        self._check_argument(source,
-                             sds_test.Arrangement(),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  expected_sds_contents_after=act_dir_contains_exactly(fs.DirContents([
-                                                      fs.File('file-name.txt',
-                                                              lines_content(['single line']))
-                                                  ])),
-                                                  ))
+class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
+    def test_argument_is_existing_file(self):
+        for rel_opt_conf in ALLOWED_RELATIVITIES:
+            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+                self._check(
+                    single_line_source('{relativity_option} existing-file'.format(
+                        relativity_option=rel_opt_conf.option_string
+                    )),
+                    ArrangementWithSds(
+                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
+                            fs.DirContents([
+                                fs.empty_file('existing-file')
+                            ]))),
+                    Expectation(
+                        main_result=is_failure(),
+                    ))
 
-
-class TestFailingScenarios(TestCaseBase):
-    def test_argument_is_existing_file__no_contents(self):
-        self._check_argument(single_line_source('existing-file'),
-                             sds_test.Arrangement(
-                                 sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
-                                                                 fs.DirContents([
-                                                                     fs.empty_file('existing-file')
-                                                                 ]))),
-                             sds_test.Expectation(expected_action_result=is_failure(),
-                                                  ))
+    def test_argument_is_existing_dir(self):
+        for rel_opt_conf in ALLOWED_RELATIVITIES:
+            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+                self._check(
+                    single_line_source('{relativity_option} existing-dir'.format(
+                        relativity_option=rel_opt_conf.option_string
+                    )),
+                    ArrangementWithSds(
+                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
+                            fs.DirContents([
+                                fs.empty_dir('existing-dir')
+                            ]))),
+                    Expectation(
+                        main_result=is_failure(),
+                    ))
 
     def test_argument_is_under_path_that_contains_a_component_that_is_an_existing_file(self):
-        self._check_argument(single_line_source('existing-directory/existing-file/directory/file-name.txt'),
-                             sds_test.Arrangement(sds_contents_before=contents_in(
-                                 RelSdsOptionType.REL_ACT,
-                                 fs.DirContents([
-                                     fs.Dir('existing-directory', [
-                                         fs.empty_file('existing-file')
-                                     ])
-                                 ]))),
-                             sds_test.Expectation(expected_action_result=is_failure(),
-                                                  ))
+        for rel_opt_conf in ALLOWED_RELATIVITIES:
+            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+                self._check(
+                    single_line_source('{rel_opt} existing-directory/existing-file/directory/file-name.txt'.format(
+                        rel_opt=rel_opt_conf.option_string
+                    )),
+                    ArrangementWithSds(
+                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
+                            fs.DirContents([
+                                fs.Dir('existing-directory', [
+                                    fs.empty_file('existing-file')
+                                ])
+                            ]))),
+                    Expectation(
+                        main_result=is_failure(),
+                    ))
 
 
 SETUP_CWD_REL_SDS_ACTION = MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs()

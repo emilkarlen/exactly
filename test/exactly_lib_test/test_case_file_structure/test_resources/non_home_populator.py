@@ -19,5 +19,5 @@ class _NonHomePopulatorForRelativityOption(NonHomePopulator):
         self.dir_contents = dir_contents
 
     def populate_non_home(self, sds: SandboxDirectoryStructure):
-        root_path = relative_path_options.REL_NON_HOME_OPTIONS_MAP[self.relativity].root_resolver.from_sds(sds)
+        root_path = relative_path_options.REL_NON_HOME_OPTIONS_MAP[self.relativity].root_resolver.from_non_home(sds)
         self.dir_contents.write_to(root_path)
