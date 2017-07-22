@@ -3,13 +3,20 @@ import tempfile
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
+    PathRelativityVariants
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -20,9 +27,12 @@ from exactly_lib_test.instructions.test_resources.relativity_options import conf
 from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    non_home_dir_contains_exactly
+    non_home_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import single_line_source, remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_env_utils
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -40,6 +50,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithNoContents),
         unittest.makeSuite(TestSuccessfulScenariosWithContents),
         unittest.makeSuite(TestParserConsumptionOfSource),
+        unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestFailingScenariosDueToAlreadyExistingFiles),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
@@ -65,6 +76,11 @@ ALLOWED_RELATIVITIES = [
     default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
 
 ]
+
+ACCEPTED_RELATIVITY_VARIANTS = PathRelativityVariants({RelOptionType.REL_ACT,
+                                                       RelOptionType.REL_TMP,
+                                                       RelOptionType.REL_CWD},
+                                                      absolute=False)
 
 
 class TestFailingParseWithNoContents(unittest.TestCase):
@@ -238,6 +254,98 @@ class TestSuccessfulScenariosWithContents(TestCaseBase):
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                                fs.DirContents([expected_file])),
                     ))
+
+
+class TestSymbolReferences(TestCaseBase):
+    def test_symbol_reference_in_file_argument(self):
+        sub_dir_name = 'sub-dir'
+        relativity = RelOptionType.REL_ACT
+        symbol = NameAndValue('symbol_name',
+                              file_refs.of_rel_option(relativity,
+                                                      PathPartAsFixedPath(sub_dir_name)))
+        expected_symbol_reference = SymbolReference(
+            symbol.name,
+            parse_file_ref.path_or_string_reference_restrictions(
+                ACCEPTED_RELATIVITY_VARIANTS
+            ))
+        here_doc_line = 'single line in here doc'
+        expected_file_contents = here_doc_line + '\n'
+        expected_file = fs.File('a-file-name.txt', expected_file_contents)
+        self._check(
+            remaining_source(
+                '{symbol_ref}/{file_name} <<THE_MARKER'.format(
+                    symbol_ref=symbol_reference_syntax_for_name(symbol.name),
+                    file_name=expected_file.file_name,
+                ),
+                [here_doc_line,
+                 'THE_MARKER']),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+                symbols=symbol_utils.symbol_table_with_single_file_ref_value(
+                    symbol.name,
+                    symbol.value),
+            ),
+            Expectation(
+                main_result=is_success(),
+                symbol_usages=equals_symbol_references([expected_symbol_reference]),
+                main_side_effects_on_sds=dir_contains_exactly(
+                    relativity,
+                    fs.DirContents([
+                        fs.Dir(sub_dir_name, [expected_file])])),
+            ))
+
+    def test_symbol_reference_in_file_argument_and_here_document(self):
+        sub_dir_name = 'sub-dir'
+        relativity = RelOptionType.REL_ACT
+        file_symbol = NameAndValue('file_symbol_name',
+                                   file_refs.of_rel_option(relativity,
+                                                           PathPartAsFixedPath(sub_dir_name)))
+        here_doc_symbol = NameAndValue('here_doc_symbol_name',
+                                       'here doc symbol value')
+
+        expected_file_symbol_reference = SymbolReference(
+            file_symbol.name,
+            parse_file_ref.path_or_string_reference_restrictions(
+                ACCEPTED_RELATIVITY_VARIANTS))
+        expected_here_doc_symbol_reference = SymbolReference(
+            here_doc_symbol.name,
+            no_restrictions())
+
+        here_doc_line_template = 'pre symbol {symbol} post symbol'
+
+        expected_file_contents = here_doc_line_template.format(symbol=here_doc_symbol.value) + '\n'
+
+        expected_file = fs.File('a-file-name.txt', expected_file_contents)
+
+        expected_symbol_references = [expected_file_symbol_reference,
+                                      expected_here_doc_symbol_reference]
+
+        symbol_table = symbol_utils.SymbolTable({
+            file_symbol.name: symbol_utils.file_ref_constant_container(file_symbol.value),
+            here_doc_symbol.name: symbol_utils.string_value_constant_container(here_doc_symbol.value),
+        })
+
+        self._check(
+            remaining_source(
+                '{symbol_ref}/{file_name} <<THE_MARKER'.format(
+                    symbol_ref=symbol_reference_syntax_for_name(file_symbol.name),
+                    file_name=expected_file.file_name,
+                ),
+                [here_doc_line_template.format(
+                    symbol=symbol_reference_syntax_for_name(here_doc_symbol.name)),
+                    'THE_MARKER']),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_ACTION,
+                symbols=symbol_table,
+            ),
+            Expectation(
+                main_result=is_success(),
+                symbol_usages=equals_symbol_references(expected_symbol_references),
+                main_side_effects_on_sds=dir_contains_exactly(
+                    relativity,
+                    fs.DirContents([
+                        fs.Dir(sub_dir_name, [expected_file])])),
+            ))
 
 
 class TestParserConsumptionOfSource(TestCaseBase):

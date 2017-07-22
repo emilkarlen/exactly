@@ -2,11 +2,20 @@ import pathlib
 import types
 import unittest
 
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.file_assertions import DirContainsExactly
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+
+
+def dir_contains_exactly(relativity_option: RelOptionType,
+                         expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+    return asrt.sub_component('relativity_option=' + str(relativity_option),
+                              REL_OPTIONS_MAP[relativity_option].root_resolver.from_non_home,
+                              DirContainsExactly(expected_contents))
 
 
 def act_dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
