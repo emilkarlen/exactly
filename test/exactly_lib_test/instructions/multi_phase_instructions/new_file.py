@@ -1,5 +1,3 @@
-import pathlib
-import tempfile
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
@@ -10,9 +8,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
     PathRelativityVariants
 from exactly_lib.type_system_values import file_refs
@@ -34,7 +29,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import single_line_source, remaining_source
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_env_utils
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import \
@@ -87,12 +81,12 @@ class TestFailingParseWithNoContents(unittest.TestCase):
     def test_path_is_mandatory__without_option(self):
         arguments = ''
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            _parse_and_get_file_info(single_line_source(arguments))
+            _just_parse(single_line_source(arguments))
 
     def test_path_is_mandatory__with_option(self):
         arguments = args_with_rel_ops('{rel_act_option}')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            _parse_and_get_file_info(single_line_source(arguments))
+            _just_parse(single_line_source(arguments))
 
     def test_disallowed_relativities(self):
         for relativity in DISALLOWED_RELATIVITIES:
@@ -108,12 +102,12 @@ class TestFailingParseWithNoContents(unittest.TestCase):
     def test_fail_when_superfluous_arguments__without_option(self):
         arguments = 'expected-argument superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            _parse_and_get_file_info(single_line_source(arguments))
+            _just_parse(single_line_source(arguments))
 
     def test_fail_when_superfluous_arguments__with_option(self):
         arguments = '--rel-act expected-argument superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            _parse_and_get_file_info(single_line_source(arguments))
+            _just_parse(single_line_source(arguments))
 
 
 class TestFailingParseWithContents(unittest.TestCase):
@@ -413,26 +407,6 @@ class TestParserConsumptionOfSource(TestCaseBase):
 
 def _just_parse(source: ParseSource):
     sut.EmbryoParser().parse(source)
-
-
-def _parse_and_get_file_info(source: ParseSource) -> sut.FileInfo:
-    instruction_embryo = sut.EmbryoParser().parse(source)
-    return instruction_embryo.file_info
-
-
-class ParseAndCreateFileAction(sds_env_utils.SdsAction):
-    def __init__(self,
-                 source: ParseSource):
-        self.source = source
-
-    def apply(self, environment: PathResolvingEnvironmentPostSds):
-        file_info = _parse_and_get_file_info(self.source)
-        with tempfile.TemporaryDirectory(prefix='exactly-testing-') as tmp_file_name:
-            home_dir_path = pathlib.Path(tmp_file_name)
-            home_and_sds = HomeAndSds(home_dir_path, environment.sds)
-            env_pre_or_post_sds = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
-                                                                       environment.symbols)
-            return sut.create_file(file_info, env_pre_or_post_sds)
 
 
 class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
