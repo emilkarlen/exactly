@@ -45,6 +45,14 @@ def cwd_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.
                               DirContainsExactly(expected_contents))
 
 
+def sub_dir_of_sds_contains_exactly(sds__2__root_dir_path: types.FunctionType,
+                                    expected_contents: file_structure.DirContents,
+                                    description: str = 'custom sub dir of sds') -> asrt.ValueAssertion:
+    return asrt.sub_component(description,
+                              sds__2__root_dir_path,
+                              DirContainsExactly(expected_contents))
+
+
 class SubDirOfSdsContainsExactly(asrt.ValueAssertion):
     def __init__(self,
                  sds__2__root_dir_path: types.FunctionType,
