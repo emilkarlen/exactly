@@ -25,10 +25,10 @@ class Executor(pa.ExecutorBase):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  interpreter_shell_command: str,
-                 source_code: str):
+                 source_info: pa.SourceInfo):
         super().__init__(os_process_executor,
                          pa.ActSourceFileNameGeneratorForConstantFileName(ACT_PHASE_SOURCE_FILE_BASE_NAME),
-                         source_code)
+                         source_info)
         self.interpreter_shell_command = interpreter_shell_command
 
     def _command_to_execute(self,
