@@ -25,12 +25,12 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     configuration = TheConfiguration()
     ret_val.addTest(single_line_source.suite_for(configuration))
-    ret_val.addTest(unittest.makeSuite(TestValidation))
+    ret_val.addTest(unittest.makeSuite(TestParsingAndValidation))
     ret_val.addTest(suite_for_execution(configuration))
     return ret_val
 
 
-class TestValidation(unittest.TestCase):
+class TestParsingAndValidation(unittest.TestCase):
     def __init__(self, method_name):
         super().__init__(method_name)
         self.constructor = sut.Constructor()
