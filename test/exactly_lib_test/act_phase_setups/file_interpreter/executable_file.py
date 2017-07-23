@@ -3,7 +3,7 @@ import sys
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
@@ -53,11 +53,9 @@ class TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigur
     def runTest(self):
         act_phase_instructions = [instr(["""valid-file-ref 'quoting missing ending single-quote"""]),
                                   instr([''])]
-        actual = self._do_validate_pre_sds(act_phase_instructions,
-                                           home_dir_contents=DirContents([empty_file('valid-file-ref')]))
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      actual.status,
-                      'Validation result')
+        with self.assertRaises(ParseException):
+            self._do_parse(act_phase_instructions,
+                           home_dir_contents=DirContents([empty_file('valid-file-ref')]))
 
 
 class TestFileReferenceCanBeQuoted(unittest.TestCase):

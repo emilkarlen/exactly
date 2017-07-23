@@ -118,6 +118,7 @@ class TestExecuteBase(unittest.TestCase):
         sut = self.source_and_executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                          environment,
                                                          act_phase_instructions)
+        sut.parse(environment)
         step_result = sut.validate_pre_sds(environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             self.fail('Expecting success. Found {}: {}'.format(
@@ -221,6 +222,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 executor_constructor = self.test_setup.sut
                 environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
                 sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
+                sut.parse(environment)
                 step_result = sut.validate_pre_sds(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
