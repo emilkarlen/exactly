@@ -11,6 +11,7 @@ ALL_SETUP_WITH_ENV_ARG = (SETUP__VALIDATE_PRE_SDS,
                           SETUP__VALIDATE_POST_SETUP,
                           SETUP__MAIN)
 
+ACT__PARSE = phase_step.ACT__PARSE.simple
 ACT__VALIDATE_SYMBOLS = phase_step.ACT__VALIDATE_SYMBOLS.simple
 ACT__VALIDATE_PRE_SDS = phase_step.ACT__VALIDATE_PRE_SDS.simple
 ACT__VALIDATE_POST_SETUP = phase_step.ACT__VALIDATE_POST_SETUP.simple

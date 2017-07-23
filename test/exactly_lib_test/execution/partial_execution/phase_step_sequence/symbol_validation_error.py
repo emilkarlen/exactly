@@ -19,7 +19,8 @@ class ConfigForSetupValidateSymbols(validate_symbols_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
                          phase_step.SETUP__VALIDATE_SYMBOLS,
-                         expected_steps_before_failing_instruction=[phase_step.SETUP__VALIDATE_SYMBOLS])
+                         expected_steps_before_failing_instruction=[phase_step.ACT__PARSE,
+                                                                    phase_step.SETUP__VALIDATE_SYMBOLS])
 
     def instruction_that_returns(self, symbol_usages: list) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(symbol_usages=do_return(symbol_usages))
@@ -32,8 +33,9 @@ class ConfigForBeforeAssertValidateSymbols(validate_symbols_utils.Configuration)
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
-                         expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
-                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT +
+                         expected_steps_before_failing_instruction=[phase_step.ACT__PARSE] +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT_AFTER_PARSE +
                                                                    [phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS])
 
     def instruction_that_returns(self, symbol_usages: list) -> TestCaseInstruction:
@@ -47,8 +49,9 @@ class ConfigForAssertValidateSymbols(validate_symbols_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT__VALIDATE_SYMBOLS,
-                         expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
-                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT +
+                         expected_steps_before_failing_instruction=[phase_step.ACT__PARSE] +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT_AFTER_PARSE +
                                                                    ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT +
                                                                    [phase_step.ASSERT__VALIDATE_SYMBOLS])
 
@@ -63,8 +66,9 @@ class ConfigForCleanuptValidateSymbols(validate_symbols_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP__VALIDATE_SYMBOLS,
-                         expected_steps_before_failing_instruction=ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
-                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT +
+                         expected_steps_before_failing_instruction=[phase_step.ACT__PARSE] +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_SETUP +
+                                                                   ALL_RECORDING_INSTRUCTIONS_IN_ACT_AFTER_PARSE +
                                                                    ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT +
                                                                    ALL_RECORDING_INSTRUCTIONS_IN_ASSERT +
                                                                    [phase_step.CLEANUP__VALIDATE_SYMBOLS])
@@ -79,7 +83,7 @@ class ConfigForCleanuptValidateSymbols(validate_symbols_utils.Configuration):
 ALL_RECORDING_INSTRUCTIONS_IN_SETUP = [phase_step.SETUP__VALIDATE_SYMBOLS,
                                        phase_step.SETUP__VALIDATE_SYMBOLS]
 
-ALL_RECORDING_INSTRUCTIONS_IN_ACT = [phase_step.ACT__VALIDATE_SYMBOLS]
+ALL_RECORDING_INSTRUCTIONS_IN_ACT_AFTER_PARSE = [phase_step.ACT__VALIDATE_SYMBOLS]
 
 ALL_RECORDING_INSTRUCTIONS_IN_BEFORE_ASSERT = [phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS,
                                                phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS]

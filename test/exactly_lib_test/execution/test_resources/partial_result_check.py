@@ -4,6 +4,7 @@ from exactly_lib.execution.partial_execution import PartialResultStatus, Partial
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure, \
     ExpectedFailureForNoFailure
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class ExpectedPartialResult:
@@ -26,6 +27,13 @@ class ExpectedPartialResult:
                                   'Sandbox directory structure')
         self.__expected_instruction_failure.assertions(unittest_case,
                                                        actual_result.failure_info)
+
+
+def partial_result_status_is(expected: PartialResultStatus) -> asrt.ValueAssertion:
+    return asrt.is_instance_with(PartialResult,
+                                 asrt.sub_component('status',
+                                                    PartialResult.status.fget,
+                                                    asrt.equals(expected)))
 
 
 def expected_pass(directory_structure: SandboxDirectoryStructure) -> ExpectedPartialResult:

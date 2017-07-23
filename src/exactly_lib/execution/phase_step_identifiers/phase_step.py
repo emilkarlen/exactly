@@ -4,6 +4,7 @@ STEP__VALIDATE_SYMBOLS = 'validate-symbols'
 STEP__VALIDATE_PRE_SDS = 'validate-pre-sds'
 STEP__VALIDATE_POST_SETUP = 'validate-post-setup'
 STEP__MAIN = 'main'
+STEP__ACT__PARSE = 'act-parse'
 STEP__ACT__EXECUTE = 'act-execute'
 STEP__ACT__PREPARE = 'act-prepare'
 
@@ -75,6 +76,7 @@ SETUP__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.SETUP)
 SETUP__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.SETUP)
 SETUP__MAIN = _main_step(phase_identifier.SETUP)
 
+ACT__PARSE = PhaseStep(phase_identifier.ACT, STEP__ACT__PARSE)
 ACT__VALIDATE_SYMBOLS = _validate_symbols_step(phase_identifier.ACT)
 ACT__VALIDATE_PRE_SDS = _validate_pre_sds_step(phase_identifier.ACT)
 ACT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ACT)

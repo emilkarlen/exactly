@@ -24,6 +24,7 @@ class SetupConfig(utils.Configuration):
         super().__init__(PartialPhase.SETUP,
                          phase_step.SETUP__VALIDATE_POST_SETUP,
                          expected_steps=
+                         [phase_step.ACT__PARSE] +
                          SYMBOL_VALIDATION_STEPS__TWICE +
                          PRE_SDS_VALIDATION_STEPS__TWICE + [
                              phase_step.SETUP__MAIN,
@@ -46,6 +47,7 @@ class BeforeAssertConfig(utils.Configuration):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                          expected_steps=
+                         [phase_step.ACT__PARSE] +
                          SYMBOL_VALIDATION_STEPS__TWICE +
                          PRE_SDS_VALIDATION_STEPS__TWICE + [
                              phase_step.SETUP__MAIN,
@@ -71,6 +73,7 @@ class AssertConfig(utils.Configuration):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
                          expected_steps=
+                         [phase_step.ACT__PARSE] +
                          SYMBOL_VALIDATION_STEPS__TWICE +
                          PRE_SDS_VALIDATION_STEPS__TWICE + [
                              phase_step.SETUP__MAIN,

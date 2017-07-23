@@ -46,13 +46,6 @@ class Executor:
         raise NotImplementedError(str(type(self)))
 
 
-class ParseException(Exception):
-    def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
-        self.cause = cause
-        if cause.is_success:
-            raise ValueError('A {} cannot represent SUCCESS'.format(str(type(self))))
-
-
 class Parser:
     def apply(self, act_phase_instructions: list):
         """
@@ -107,11 +100,11 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
         self.__validator = None
         self.__executor = None
 
+    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
+        self._parse_and_construct_validator_and_executor()
+
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        status = self._parse_and_construct_validator_and_executor()
-        if not status.is_success:
-            return status
         return self._validator.validate_pre_sds(environment)
 
     def validate_post_setup(self,
@@ -130,17 +123,14 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
         return self._executor.execute(environment, script_output_dir_path, std_files)
 
     def _parse_and_construct_validator_and_executor(self) -> svh.SuccessOrValidationErrorOrHardError:
-        try:
-            object_to_execute = self.parser.apply(self.act_phase_instructions)
-            self.__validator = self.validator_constructor(self.environment, object_to_execute)
-            assert isinstance(self.__validator, Validator), \
-                'Constructed validator must be instance of ' + str(Validator)
-            self.__executor = self.executor_constructor(self.os_process_executor, self.environment, object_to_execute)
-            assert isinstance(self.__executor, Executor), \
-                'Constructed executor must be instance of ' + str(Executor)
-            return svh.new_svh_success()
-        except ParseException as ex:
-            return ex.cause
+        object_to_execute = self.parser.apply(self.act_phase_instructions)
+        self.__validator = self.validator_constructor(self.environment, object_to_execute)
+        assert isinstance(self.__validator, Validator), \
+            'Constructed validator must be instance of ' + str(Validator)
+        self.__executor = self.executor_constructor(self.os_process_executor, self.environment, object_to_execute)
+        assert isinstance(self.__executor, Executor), \
+            'Constructed executor must be instance of ' + str(Executor)
+        return svh.new_svh_success()
 
     @property
     def _validator(self) -> Validator:

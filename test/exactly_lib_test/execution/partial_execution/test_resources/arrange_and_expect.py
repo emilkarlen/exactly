@@ -27,7 +27,9 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 assertion_on_sds: asrt.ValueAssertion = asrt.anything_goes()):
+                 assertion_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
+                 partial_result: asrt.ValueAssertion = asrt.anything_goes()):
+        self.partial_result = partial_result
         self.assertion_on_sds = assertion_on_sds
 
 
@@ -45,11 +47,16 @@ def execute_and_check(put: unittest.TestCase,
             arrangement.initial_setup_settings,
             program_info.PROGRAM_NAME + '-test-',
             is_keep_execution_directory_root=True)
+
+        expectation.partial_result.apply_with_message(put,
+                                                      partial_result,
+                                                      'partial_result')
         result = Result(home_dir_path, partial_result)
-        expectation.assertion_on_sds.apply(put,
-                                           result.partial_result.sandbox_directory_structure,
-                                           asrt.MessageBuilder('Sandbox Directory Structure'))
+        expectation.assertion_on_sds.apply_with_message(put,
+                                                        result.partial_result.sandbox_directory_structure,
+                                                        'Sandbox Directory Structure')
         # CLEANUP #
         os.chdir(str(result.home_dir_path))
-        if result.sandbox_directory_structure.root_dir.exists():
-            shutil.rmtree(str(result.sandbox_directory_structure.root_dir))
+        if result.sandbox_directory_structure is not None:
+            if result.sandbox_directory_structure.root_dir.exists():
+                shutil.rmtree(str(result.sandbox_directory_structure.root_dir))

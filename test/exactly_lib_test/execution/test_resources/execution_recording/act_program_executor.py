@@ -18,6 +18,9 @@ def do_nothing():
 
 
 class ActSourceAndExecutorThatJustReturnsSuccess(ActSourceAndExecutor):
+    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
+        pass
+
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
@@ -38,6 +41,10 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
                  wrapped: ActSourceAndExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped
+
+    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
+        self.__recorder.recording_of(phase_step.ACT__PARSE).record()
+        self.__wrapped.parse(environment)
 
     def symbol_usages(self) -> list:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_SYMBOLS).record()
@@ -84,16 +91,22 @@ class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecuto
 class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
     def __init__(self,
                  wrapped: ActSourceAndExecutor,
+                 before_wrapped_parse=do_nothing,
                  before_wrapped_validate=do_nothing,
                  before_wrapped_prepare=do_nothing,
                  before_wrapped_execute=do_nothing,
                  before_wrapped_validate_pre_sds=do_nothing
                  ):
         self.__wrapped = wrapped
+        self.before_wrapped_parse = before_wrapped_parse
         self.before_wrapped_validate = before_wrapped_validate
         self.before_wrapped_validate_pre_sds = before_wrapped_validate_pre_sds
         self.before_wrapped_prepare = before_wrapped_prepare
         self.before_wrapped_execute = before_wrapped_execute
+
+    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
+        self.before_wrapped_parse(environment)
+        self.__wrapped.parse(environment)
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -128,29 +141,3 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         return self.executor
-
-
-class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutorConstructor):
-    def __init__(self,
-                 wrapped: ActSourceAndExecutorConstructor,
-                 before_wrapped_validate_pre_sds=do_nothing,
-                 before_wrapped_validate_post_setup=do_nothing,
-                 before_wrapped_prepare=do_nothing,
-                 before_wrapped_execute=do_nothing):
-        self.__wrapped = wrapped
-        self.before_wrapped_validate = before_wrapped_validate_post_setup
-        self.before_wrapped_validate_pre_sds = before_wrapped_validate_pre_sds
-        self.before_wrapped_prepare = before_wrapped_prepare
-        self.before_wrapped_execute = before_wrapped_execute
-
-    def apply(self,
-              os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
-              act_phase_instructions: list) -> ActSourceAndExecutor:
-        wrapped_executor = self.__wrapped.apply(os_process_executor, environment, act_phase_instructions)
-        return ActSourceAndExecutorWrapperWithActions(
-            wrapped_executor,
-            before_wrapped_validate=self.before_wrapped_validate,
-            before_wrapped_prepare=self.before_wrapped_prepare,
-            before_wrapped_execute=self.before_wrapped_execute,
-            before_wrapped_validate_pre_sds=self.before_wrapped_validate_pre_sds)

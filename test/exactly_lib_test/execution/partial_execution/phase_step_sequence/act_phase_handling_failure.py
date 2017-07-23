@@ -33,6 +33,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__VALIDATE_PRE_SDS,
@@ -50,6 +51,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__VALIDATE_PRE_SDS,
@@ -67,6 +69,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             test.ImplementationErrorTestException),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__VALIDATE_PRE_SDS,
@@ -84,6 +87,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
@@ -106,6 +110,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
@@ -128,6 +133,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             test.ImplementationErrorTestException),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
@@ -150,6 +156,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__PREPARE,
                             'error in act/prepare'),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
@@ -175,6 +182,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__PREPARE,
                             test.ImplementationErrorTestException),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
@@ -200,6 +208,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__EXECUTE,
                             'error in execute'),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
@@ -226,6 +235,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__EXECUTE,
                             test.ImplementationErrorTestException),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
                         PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,

@@ -12,7 +12,7 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
-    ActPhaseHandling, ActPhaseOsProcessExecutor
+    ActPhaseHandling, ActPhaseOsProcessExecutor, ParseException
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
@@ -205,8 +205,9 @@ class _PartialExecutor:
     def execute(self) -> PartialResult:
         self.__set_pre_sds_environment_variables()
         res = self._sequence([
+            self.__act__create_executor_and_parse,
             self.__setup__validate_symbols,
-            self.__act__create_executor_and_validate_symbols,
+            self.__act__validate_symbols,
             self.__before_assert__validate_symbols,
             self.__assert__validate_symbols,
             self.__cleanup__validate_symbols,
@@ -300,13 +301,27 @@ class _PartialExecutor:
                                                       self.__instruction_environment_pre_sds),
                                                   self.__test_case.setup_phase)
 
-    def __act__create_executor_and_validate_symbols(self) -> PartialResult:
+    def __act__create_executor_and_parse(self) -> PartialResult:
+        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__PARSE, None)
+
+        def action():
+            res = self.__act__create_and_set_executor(phase_step.ACT__PARSE)
+            if res.is_failure:
+                return res
+            try:
+                self.__act_source_and_executor.parse(self.__instruction_environment_pre_sds)
+            except ParseException as ex:
+                return failure_con.apply(PartialResultStatus(PartialResultStatus.VALIDATE),
+                                         new_failure_details_from_message(ex.cause.failure_message))
+            return new_partial_result_pass(None)
+
+        return self.__execute_action_and_catch_implementation_exception(action,
+                                                                        phase_step.ACT__PARSE)
+
+    def __act__validate_symbols(self) -> PartialResult:
         failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS, None)
 
         def action():
-            res = self.__act__create_and_set_executor(phase_step.ACT__VALIDATE_SYMBOLS)
-            if res.is_failure:
-                return res
             executor = phase_step_executors.ValidateSymbolsExecutor(self.__instruction_environment_pre_sds)
             res = executor.apply(self.__act_source_and_executor)
             if res is None:

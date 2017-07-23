@@ -9,10 +9,27 @@ from exactly_lib.util.process_execution.os_process_execution import Command, Pro
 from exactly_lib.util.std import StdFiles
 
 
+class ParseException(Exception):
+    def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
+        self.cause = cause
+        if cause.is_success:
+            raise ValueError('A {} cannot represent SUCCESS'.format(str(type(self))))
+
+
 class ActSourceAndExecutor(SymbolUser):
     """
     Valid act phase source together with functionality for executing it.
     """
+
+    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
+        """
+        Parses the source that the object represents.
+
+        Must be called before any other method of the object.
+
+        :raises :class:`ParseException` iff source is invalid
+        """
+        raise NotImplementedError()
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -24,7 +41,8 @@ class ActSourceAndExecutor(SymbolUser):
         raise NotImplementedError()
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         """
         post-setup validation of the source that this object represents.
 
