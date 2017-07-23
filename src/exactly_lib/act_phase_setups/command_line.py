@@ -9,7 +9,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_execut
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+    InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
 
@@ -31,8 +31,17 @@ class Constructor(parts.Constructor):
                          _executor)
 
 
+class CommandInfo(SymbolUser):
+    def __init__(self, command: Command):
+        self._command = command
+
+    @property
+    def command(self) -> Command:
+        return self._command
+
+
 class _Parser(Parser):
-    def apply(self, act_phase_instructions: list) -> Command:
+    def apply(self, act_phase_instructions: list) -> CommandInfo:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
         single_line = single_line_parser.apply(act_phase_instructions)
         single_line = single_line.strip()
@@ -42,33 +51,33 @@ class _Parser(Parser):
             return self._parse_executable_file(single_line)
 
     @staticmethod
-    def _parse_shell_command(argument: str) -> Command:
+    def _parse_shell_command(argument: str) -> CommandInfo:
         striped_argument = argument.strip()
         if not striped_argument:
             msg = SHELL_COMMAND_MARKER + ': command string is missing.'
             raise ParseException(svh.new_svh_validation_error(msg))
-        return Command(striped_argument, shell=True)
+        return CommandInfo(Command(striped_argument, shell=True))
 
     @staticmethod
-    def _parse_executable_file(argument: str) -> Command:
+    def _parse_executable_file(argument: str) -> CommandInfo:
         cmd_and_args = shlex.split(argument)
-        return Command(cmd_and_args, shell=False)
+        return CommandInfo(Command(cmd_and_args, shell=False))
 
 
-def _validator(environment: InstructionEnvironmentForPreSdsStep, command: Command) -> parts.Validator:
-    if command.shell:
+def _validator(environment: InstructionEnvironmentForPreSdsStep, command_info: CommandInfo) -> parts.Validator:
+    if command_info.command.shell:
         return parts.UnconditionallySuccessfulValidator()
     else:
-        return _ExecutableFileValidator(command.args)
+        return _ExecutableFileValidator(command_info.command.args)
 
 
 def _executor(os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              command: Command) -> parts.Executor:
-    if command.shell:
-        return _ShellCommandExecutor(os_process_executor, command.args)
+              command_info: CommandInfo) -> parts.Executor:
+    if command_info.command.shell:
+        return _ShellCommandExecutor(os_process_executor, command_info.command.args)
     else:
-        return _ExecutableFileExecutor(os_process_executor, command.args)
+        return _ExecutableFileExecutor(os_process_executor, command_info.command.args)
 
 
 class _ExecutableFileValidator(parts.Validator):
@@ -89,7 +98,8 @@ class _ExecutableFileValidator(parts.Validator):
         return svh.new_svh_success()
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 
