@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from exactly_lib.act_phase_setups import command_line as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
+from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
@@ -38,17 +39,13 @@ class TestValidation(unittest.TestCase):
 
     def test_fails_when_command_is_empty(self):
         act_phase_instructions = [instr([shell_command_source_line_for(''), ])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      actual.status,
-                      'Validation result')
+        with self.assertRaises(ParseException):
+            self._do_parse(act_phase_instructions)
 
     def test_fails_when_command_is_only_space(self):
         act_phase_instructions = [instr([shell_command_source_line_for('    '), ])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      actual.status,
-                      'Validation result')
+        with self.assertRaises(ParseException):
+            self._do_parse(act_phase_instructions)
 
     def test_succeeds_when_there_is_exactly_one_statement_but_surrounded_by_empty_and_comment_lines(self):
         existing_file = abs_path_to_interpreter_quoted_for_exactly()
@@ -58,13 +55,18 @@ class TestValidation(unittest.TestCase):
                                          shell_command_source_line_for(existing_file),
                                          LINE_COMMENT_MARKER + ' line comment text',
                                          ''])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
+        actual = self._do_parse_and_validate(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
 
-    def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
+    def _do_parse(self, act_phase_instructions: list):
         executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
+        executor.parse(self.pre_sds_env)
+
+    def _do_parse_and_validate(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
+        executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
+        executor.parse(self.pre_sds_env)
         return executor.validate_pre_sds(self.pre_sds_env)
 
 

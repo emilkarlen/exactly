@@ -7,7 +7,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
@@ -46,7 +46,7 @@ class _Parser(Parser):
         striped_argument = argument.strip()
         if not striped_argument:
             msg = SHELL_COMMAND_MARKER + ': command string is missing.'
-            raise parts.ParseException(svh.new_svh_validation_error(msg))
+            raise ParseException(svh.new_svh_validation_error(msg))
         return Command(striped_argument, shell=True)
 
     @staticmethod
