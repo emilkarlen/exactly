@@ -55,10 +55,10 @@ class TestConstructor(unittest.TestCase):
                                       validator_constructor,
                                       executor_constructor)
         act_phase_instructions = [instr(['act phase source'])]
-        arrangement = Arrangement(constructor, act_phase_instructions)
+        arrangement = Arrangement(act_phase_instructions)
         expectation = simple_success()
         # ACT (and assert that all methods indicate success) #
-        check_execution(self, arrangement, expectation)
+        check_execution(self, constructor, arrangement, expectation)
         # ASSERT #
         expected_recordings = {
             phase_step.ACT__PARSE: 'act phase source',

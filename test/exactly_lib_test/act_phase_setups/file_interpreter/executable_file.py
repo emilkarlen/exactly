@@ -70,13 +70,14 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         act_phase_instructions = [instr(["""'quoted file name.src'"""]),
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(self.configuration.sut,
-                                                      act_phase_instructions,
+        arrangement = act_phase_execution.Arrangement(act_phase_instructions,
                                                       home_dir_contents=DirContents(
                                                           [empty_file('quoted file name.src')]),
                                                       act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
-        act_phase_execution.check_execution(self, arrangement, expectation)
+        act_phase_execution.check_execution(self,
+                                            self.configuration.sut,
+                                            arrangement, expectation)
         self.assertFalse(executor_that_records_arguments.command.shell,
                          'Should not be executed as a shell command')
         self.assertEqual(2,
@@ -96,12 +97,12 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """]),
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(self.configuration.sut,
-                                                      act_phase_instructions,
+        arrangement = act_phase_execution.Arrangement(act_phase_instructions,
                                                       home_dir_contents=DirContents([empty_file('existing-file.src')]),
                                                       act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
-        act_phase_execution.check_execution(self, arrangement, expectation)
+        act_phase_execution.check_execution(self, self.configuration.sut,
+                                            arrangement, expectation)
         self.assertFalse(executor_that_records_arguments.command.shell,
                          'Should not be executed as a shell command')
         self.assertEqual(5,
