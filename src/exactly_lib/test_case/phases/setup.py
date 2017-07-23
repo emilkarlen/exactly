@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -26,11 +28,11 @@ class StdinSettings:
         self.__stdin_contents = x
 
     @property
-    def file_name(self) -> str:
+    def file_name(self) -> pathlib.Path:
         return self.__stdin_file_name
 
     @file_name.setter
-    def file_name(self, x: str):
+    def file_name(self, x: pathlib.Path):
         self.__stdin_contents = None
         self.__stdin_file_name = x
 
