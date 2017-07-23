@@ -80,10 +80,6 @@ def check_execution(put: unittest.TestCase,
         sut = arrangement.executor_constructor.apply(arrangement.act_phase_process_executor,
                                                      instruction_environment,
                                                      arrangement.act_phase_instructions)
-        expectation.symbol_usages.apply_with_message(put,
-                                                     sut.symbol_usages(),
-                                                     'symbol-usages after ExecutorConstructor')
-
         sut.parse(instruction_environment)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),
