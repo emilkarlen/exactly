@@ -4,6 +4,7 @@ import unittest
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -24,7 +25,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestConstructor(unittest.TestCase):
-    def test_WHEN_parser_raises_exception_THEN_validate_pre_sds_SHOULD_return_corresponding_information(self):
+    def test_WHEN_parser_raises_exception_THEN_parse_SHOULD_raise_this_exception(self):
         # ARRANGE #
         parser_error = svh.new_svh_validation_error('msg')
         constructor = sut.Constructor(ParserThatRaisesException(parser_error),
@@ -34,14 +35,15 @@ class TestConstructor(unittest.TestCase):
         act_phase_instructions = []
         # ACT #
         executor = constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
-        actual = executor.validate_pre_sds(environment)
-        # ASSERT #
-        self.assertIs(parser_error, actual)
+        with self.assertRaises(ParseException) as ex:
+            executor.parse(environment)
+            # ASSERT #
+            self.assertIs(parser_error, ex)
 
     def test_full_sequence_of_steps(self):
         # ARRANGE #
-        parser = ParserThatExpectsSingleInstructionAndReturnsTheTextOfThatInstruction()
         step_recorder = dict()
+        parser = ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction(step_recorder)
 
         def validator_constructor(environment, x):
             return ValidatorThatRecordsSteps(step_recorder, x)
@@ -59,6 +61,7 @@ class TestConstructor(unittest.TestCase):
         check_execution(self, arrangement, expectation)
         # ASSERT #
         expected_recordings = {
+            phase_step.ACT__PARSE: 'act phase source',
             phase_step.ACT__VALIDATE_PRE_SDS: 'act phase source',
             phase_step.ACT__VALIDATE_POST_SETUP: 'act phase source',
             phase_step.ACT__PREPARE: 'act phase source',
@@ -77,14 +80,19 @@ class ParserThatRaisesException(sut.Parser):
         self.cause = cause
 
     def apply(self, act_phase_instructions: list):
-        raise sut.ParseException(self.cause)
+        raise ParseException(self.cause)
 
 
-class ParserThatExpectsSingleInstructionAndReturnsTheTextOfThatInstruction(sut.Parser):
+class ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction(sut.Parser):
+    def __init__(self, recorder: dict):
+        self.recorder = recorder
+
     def apply(self, act_phase_instructions: list):
         instruction = act_phase_instructions[0]
         assert isinstance(instruction, ActPhaseInstruction)
-        return instruction.source_code().text
+        source_text = instruction.source_code().text
+        self.recorder[phase_step.ACT__PARSE] = source_text
+        return source_text
 
 
 def validator_constructor_that_raises(*args):

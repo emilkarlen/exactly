@@ -7,9 +7,10 @@ import unittest
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
+from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
-    ActPhaseHandling, ActSourceAndExecutorConstructor
+    ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
@@ -23,9 +24,14 @@ from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
+from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess
+    ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess, \
+    ActSourceAndExecutorWrapperThatRecordsSteps
+from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
+from exactly_lib_test.execution.test_resources.partial_result_check import partial_result_status_is
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
@@ -34,9 +40,52 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestExecutionSequence),
         unittest.makeSuite(TestCurrentDirectory),
         unittest.makeSuite(TestExecute),
     ])
+
+
+class TestExecutionSequence(unittest.TestCase):
+    def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_validation_error(self):
+        # ARRANGE #
+        expected_cause = svh.new_svh_validation_error('failure message')
+        executor_with_parse_raises_parse_ex = ActSourceAndExecutorThatRunsConstantActions(
+            parse_action=do_raise(ParseException(expected_cause))
+        )
+        step_recorder = ListRecorder()
+        recording_executor = ActSourceAndExecutorWrapperThatRecordsSteps(step_recorder,
+                                                                         executor_with_parse_raises_parse_ex)
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(recording_executor)
+        arrangement = Arrangement(test_case=_empty_test_case(),
+                                  act_phase_handling=ActPhaseHandling(constructor))
+        # ASSERT #
+        expectation = Expectation(partial_result=partial_result_status_is(PartialResultStatus.VALIDATE))
+        # APPLY #
+        execute_and_check(self, arrangement, expectation)
+        self.assertEqual([phase_step.ACT__PARSE],
+                         step_recorder.recorded_elements,
+                         'executed steps')
+
+    def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_implementation_error(self):
+        # ARRANGE #
+        expected_cause = svh.new_svh_validation_error('failure message')
+        executor_with_parse_raises_parse_ex = ActSourceAndExecutorThatRunsConstantActions(
+            parse_action=do_raise(ValueError(expected_cause))
+        )
+        step_recorder = ListRecorder()
+        recording_executor = ActSourceAndExecutorWrapperThatRecordsSteps(step_recorder,
+                                                                         executor_with_parse_raises_parse_ex)
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(recording_executor)
+        arrangement = Arrangement(test_case=_empty_test_case(),
+                                  act_phase_handling=ActPhaseHandling(constructor))
+        # ASSERT #
+        expectation = Expectation(partial_result=partial_result_status_is(PartialResultStatus.IMPLEMENTATION_ERROR))
+        # APPLY #
+        execute_and_check(self, arrangement, expectation)
+        self.assertEqual([phase_step.ACT__PARSE],
+                         step_recorder.recorded_elements,
+                         'executed steps')
 
 
 class TestCurrentDirectory(unittest.TestCase):
@@ -51,8 +100,11 @@ class TestCurrentDirectory(unittest.TestCase):
         home_and_sds = executor_that_records_current_dir.actual_home_and_sds
         sds = home_and_sds.sds
         self.assertEqual(len(phase_step_2_cwd),
-                         4,
-                         'Expects recordings for 4 steps')
+                         5,
+                         'Expects recordings for 5 steps')
+        self.assertEqual(phase_step_2_cwd[phase_step.ACT__PARSE],
+                         str(home_and_sds.home_dir_path),
+                         'Current dir for ' + str(phase_step.ACT__PARSE))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_SDS],
                          str(home_and_sds.home_dir_path),
                          'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_SDS))
@@ -190,6 +242,9 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
     def __init__(self):
         self._home_and_sds = None
         self.phase_step_2_cwd = {}
+
+    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
+        self._register_cwd_for(phase_step.ACT__PARSE)
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:

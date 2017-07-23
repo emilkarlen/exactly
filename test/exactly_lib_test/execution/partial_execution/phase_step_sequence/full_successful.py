@@ -27,6 +27,8 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.PASS,
                         ExpectedFailureForNoFailure(),
 
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
 
                         PRE_SDS_VALIDATION_STEPS__TWICE +

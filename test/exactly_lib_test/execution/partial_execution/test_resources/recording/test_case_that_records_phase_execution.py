@@ -1,6 +1,5 @@
-import unittest
-
 import types
+import unittest
 
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.test_case import test_case_doc
@@ -16,13 +15,14 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    execute_action_that_returns_exit_code, prepare_action_that_returns, action_that_returns
+    execute_action_that_returns_exit_code, prepare_action_that_returns, action_that_returns, do_nothing
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
 class Arrangement(tuple):
     def __new__(cls,
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
+                act_executor_parse=do_nothing,
                 act_executor_validate_post_setup=validate_action_that_returns(svh.new_svh_success()),
                 act_executor_prepare=prepare_action_that_returns(sh.new_sh_success()),
                 act_executor_execute=execute_action_that_returns_exit_code(),
@@ -34,7 +34,8 @@ class Arrangement(tuple):
                                    act_executor_prepare,
                                    act_executor_execute,
                                    act_executor_validate_pre_sds,
-                                   act_executor_symbol_usages))
+                                   act_executor_symbol_usages,
+                                   act_executor_parse))
 
     @property
     def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
@@ -59,6 +60,10 @@ class Arrangement(tuple):
     @property
     def act_executor_symbol_usages(self) -> types.FunctionType:
         return self[5]
+
+    @property
+    def act_executor_parse(self) -> types.FunctionType:
+        return self[6]
 
 
 class Expectation(tuple):
@@ -148,6 +153,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      dbg_do_not_delete_dir_structure=False):
     constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
         symbol_usages_action=arrangement.act_executor_symbol_usages,
+        parse_action=arrangement.act_executor_parse,
         validate_post_setup_action=arrangement.act_executor_validate_post_setup,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,

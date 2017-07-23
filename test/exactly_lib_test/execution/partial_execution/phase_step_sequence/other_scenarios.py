@@ -38,6 +38,7 @@ class Test(TestCaseBase):
                             phase_step.SETUP__MAIN,
                             test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                             'hard error msg from setup'),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -58,6 +59,9 @@ class Test(TestCaseBase):
                             phase_step.SETUP__MAIN,
                             test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                             test.ImplementationErrorTestException),
+
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -78,6 +82,8 @@ class Test(TestCaseBase):
                             phase_step.BEFORE_ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
                             'hard error msg'),
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -112,6 +118,9 @@ class Test(TestCaseBase):
                             phase_step.BEFORE_ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
                             test.ImplementationErrorTestException),
+
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -146,6 +155,9 @@ class Test(TestCaseBase):
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                             'fail msg from ASSERT'),
+
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -182,6 +194,9 @@ class Test(TestCaseBase):
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                             'hard error msg from ASSERT'),
+
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -218,6 +233,9 @@ class Test(TestCaseBase):
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                             test.ImplementationErrorTestException),
+
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -254,6 +272,9 @@ class Test(TestCaseBase):
                             phase_step.CLEANUP__MAIN,
                             test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                             'hard error msg from CLEANUP'),
+
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
@@ -290,6 +311,9 @@ class Test(TestCaseBase):
                             phase_step.CLEANUP__MAIN,
                             test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                             test.ImplementationErrorTestException),
+
+                        [phase_step.ACT__PARSE] +
+
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,

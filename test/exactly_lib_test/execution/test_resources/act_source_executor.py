@@ -9,10 +9,12 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources import test_actions
+from exactly_lib_test.test_resources.actions import do_nothing
 
 
 class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def __init__(self,
+                 parse_action=test_actions.do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_pre_sds_initial_action=test_actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
@@ -23,6 +25,7 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
                  execute_initial_action=test_actions.do_nothing,
                  symbol_usages_action=test_actions.action_that_returns([])
                  ):
+        self.__parse_action = parse_action
         self.__validate_pre_sds_initial_action = validate_pre_sds_initial_action
         self.__validate_pre_sds_action = validate_pre_sds_action
         self.__validate_post_setup_initial_action = validate_post_setup_initial_action
@@ -32,6 +35,9 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
         self.__execute_initial_action = execute_initial_action
         self.__execute_action = execute_action
         self.__symbol_usages_action = symbol_usages_action
+
+    def parse(self, environment: InstructionEnvironmentForPreSdsStep):
+        self.__parse_action(environment)
 
     def symbol_usages(self) -> list:
         return self.__symbol_usages_action()
@@ -61,6 +67,7 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
 
 class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecutorConstructor):
     def __init__(self,
+                 parse_action=do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_pre_sds_initial_action=test_actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
@@ -71,6 +78,7 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
                  execute_initial_action=test_actions.do_nothing,
                  apply_action_before_executor_is_constructed=test_actions.do_nothing):
         self.apply_action_before_executor_is_constructed = apply_action_before_executor_is_constructed
+        self.parse_action = parse_action
         self.validate_pre_sds_initial_action = validate_pre_sds_initial_action
         self.validate_pre_sds_action = validate_pre_sds_action
         self.validate_post_setup_initial_action = validate_post_setup_initial_action
@@ -86,6 +94,7 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
               act_phase_instructions: list) -> ActSourceAndExecutor:
         self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)
         return ActSourceAndExecutorThatRunsConstantActions(
+            parse_action=self.parse_action,
             validate_pre_sds_initial_action=self.validate_pre_sds_initial_action,
             validate_pre_sds_action=self.validate_pre_sds_action,
             validate_post_setup_initial_action=self.validate_post_setup_initial_action,

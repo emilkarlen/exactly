@@ -25,6 +25,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForNoFailure(),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__TWICE +
                         PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,

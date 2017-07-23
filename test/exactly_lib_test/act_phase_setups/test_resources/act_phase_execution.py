@@ -84,6 +84,11 @@ def check_execution(put: unittest.TestCase,
                                                      sut.symbol_usages(),
                                                      'symbol-usages after ExecutorConstructor')
 
+        sut.parse(instruction_environment)
+        expectation.symbol_usages.apply_with_message(put,
+                                                     sut.symbol_usages(),
+                                                     'symbol-usages after ' +
+                                                     phase_step.STEP__ACT__PARSE)
         step_result = sut.validate_pre_sds(instruction_environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
             put.fail('Failure of {}: {}: {}'.format(

@@ -15,13 +15,14 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    execute_action_that_returns_exit_code, prepare_action_that_returns
+    execute_action_that_returns_exit_code, prepare_action_that_returns, do_nothing
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
 class Arrangement(tuple):
     def __new__(cls,
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
+                parse_action=do_nothing,
                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
                 prepare_test_action=prepare_action_that_returns(sh.new_sh_success()),
                 execute_test_action=execute_action_that_returns_exit_code(),
@@ -30,11 +31,16 @@ class Arrangement(tuple):
                                    validate_test_action,
                                    act_executor_validate_pre_sds,
                                    prepare_test_action,
-                                   execute_test_action))
+                                   execute_test_action,
+                                   parse_action))
 
     @property
     def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
         return self[0]
+
+    @property
+    def parse(self) -> types.FunctionType:
+        return self[5]
 
     @property
     def validate_test_action(self) -> types.FunctionType:
@@ -149,6 +155,7 @@ class TestCaseBase(unittest.TestCase):
     def _with_recording_act_program_executor(self,
                                              arrangement: Arrangement) -> ActPhaseHandling:
         constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
+            parse_action=arrangement.validate_test_action,
             validate_post_setup_action=arrangement.validate_test_action,
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,

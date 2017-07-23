@@ -42,6 +42,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                         act_executor_symbol_usages=action_that_returns(symbol_usages)),
             Expectation(PartialResultStatus.PASS,
                         ExpectedFailureForNoFailure(),
+                        [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__ONCE +
 
                         PRE_SDS_VALIDATION_STEPS__ONCE +
@@ -73,6 +74,7 @@ class TestFailingScenarios(TestCaseBase):
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
+                            phase_step.ACT__PARSE,
                             phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.ACT__VALIDATE_SYMBOLS,
                         ],
@@ -86,6 +88,7 @@ class TestFailingScenarios(TestCaseBase):
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
+                            phase_step.ACT__PARSE,
                             phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.ACT__VALIDATE_SYMBOLS,
                         ],
@@ -107,6 +110,7 @@ class TestFailingScenarios(TestCaseBase):
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
+                            phase_step.ACT__PARSE,
                             phase_step.SETUP__VALIDATE_SYMBOLS,
                             phase_step.ACT__VALIDATE_SYMBOLS,
                         ],
