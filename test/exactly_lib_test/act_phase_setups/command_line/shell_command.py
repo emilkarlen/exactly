@@ -4,21 +4,32 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import command_line as sut
+from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.act_phase_setups.test_resources import \
     test_validation_for_single_line_source as single_line_source
+from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
+    check_execution, Arrangement, Expectation
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution, TestCaseSourceSetup
+from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
+from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -26,6 +37,7 @@ def suite() -> unittest.TestSuite:
     configuration = TheConfiguration()
     ret_val.addTest(single_line_source.suite_for(configuration))
     ret_val.addTest(unittest.makeSuite(TestParsingAndValidation))
+    ret_val.addTest(unittest.makeSuite(TestSymbolReferences))
     ret_val.addTest(suite_for_execution(configuration))
     return ret_val
 
@@ -68,6 +80,39 @@ class TestParsingAndValidation(unittest.TestCase):
         executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
         executor.parse(self.pre_sds_env)
         return executor.validate_pre_sds(self.pre_sds_env)
+
+
+class TestSymbolReferences(unittest.TestCase):
+    def test_symbol_reference_on_command_line_SHOULD_be_reported_and_used_in_execution(self):
+        symbol = NameAndValue('symbol_name', 'symbol value')
+
+        string_to_print_template = 'constant and {symbol}'
+        expected_output_template = string_to_print_template + '\n'
+
+        shell_source_line = shell_commands.command_that_prints_to_stdout(
+            string_to_print_template.format(symbol=symbol_reference_syntax_for_name(symbol.name))
+        )
+        act_phase_instructions = [instr([shell_command_source_line_for(shell_source_line)])]
+
+        expected_symbol_references = [
+            SymbolReference(symbol.name, no_restrictions()),
+        ]
+
+        check_execution(
+            self,
+            sut.Constructor(),
+            Arrangement(
+                act_phase_instructions=act_phase_instructions,
+                symbol_table=SymbolTable({
+                    symbol.name: symbol_utils.string_value_constant_container(symbol.value)
+                })
+            ),
+            Expectation(
+                symbol_usages=equals_symbol_references(expected_symbol_references),
+                sub_process_result_from_execute=
+                pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.value)))
+            ),
+        )
 
 
 class TheConfiguration(Configuration):
