@@ -12,12 +12,16 @@ def reference_to(symbol: NameAndValue) -> SymbolReference:
                            reference_restrictions.no_restrictions())
 
 
+def contents_str_from_lines(lines_of_here_doc: list) -> str:
+    return lines_content(lines_of_here_doc)
+
+
 def matches_resolved_value(expected_resolved_primitive_lines: list,
                            symbol_references: list = None,
                            symbols: SymbolTable = None) -> asrt.ValueAssertion:
     symbols = empty_symbol_table() if symbols is None else symbols
     symbol_references = [] if symbol_references is None else symbol_references
     return MatchesPrimitiveValueResolvedOfAnyDependency(
-        asrt.equals(lines_content(expected_resolved_primitive_lines)),
+        asrt.equals(contents_str_from_lines(expected_resolved_primitive_lines)),
         symbol_references,
         symbols)
