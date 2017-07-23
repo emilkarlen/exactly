@@ -38,10 +38,10 @@ class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  script_language_setup: SourceInterpreterSetup,
-                 source_code: str):
+                 source_info: pa.SourceInfo):
         super().__init__(os_process_executor,
                          ActSourceFileNameGeneratorForSourceInterpreterSetup(script_language_setup),
-                         source_code)
+                         source_info)
         self.script_language_setup = script_language_setup
 
     def _command_to_execute(self,

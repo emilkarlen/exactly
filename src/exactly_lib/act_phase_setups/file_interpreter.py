@@ -11,7 +11,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+    InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
 
@@ -47,7 +47,7 @@ class ConstructorForShellCommand(parts.Constructor):
                          functools.partial(_ShellCommandExecutor, shell_command))
 
 
-class _SourceInfo:
+class _SourceInfo(SymbolUser):
     def __init__(self,
                  file_name: str,
                  remaining_arguments):
