@@ -77,6 +77,7 @@ class Expectation:
                  main_side_effects_on_environment: settings_check.Assertion = settings_check.AnythingGoes(),
                  main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),
+                 settings_builder: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
@@ -85,6 +86,7 @@ class Expectation:
         self.main_side_effects_on_environment = main_side_effects_on_environment
         self.main_side_effects_on_files = main_side_effects_on_files
         self.post_validation_result = post_validation_result
+        self.settings_builder = settings_builder
         self.side_effects_check = side_effects_check
         self.source = source
         self.symbol_usages = symbol_usages
@@ -187,6 +189,12 @@ class Executor:
                                                                       instruction.symbol_usages(),
                                                                       'symbol-usages after ' +
                                                                       phase_step.STEP__VALIDATE_POST_SETUP)
+                    self.expectation.settings_builder.apply_with_message(
+                        self.put,
+                        settings_check.Model(self.arrangement.initial_settings_builder,
+                                             instruction_environment),
+                        'settings builder'
+                    )
 
         finally:
             os.chdir(initial_cwd)

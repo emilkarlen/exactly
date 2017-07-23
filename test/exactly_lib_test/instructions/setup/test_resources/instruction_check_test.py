@@ -37,6 +37,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestMiscCases))
     ret_val.addTest(unittest.makeSuite(TestPopulate))
     ret_val.addTest(unittest.makeSuite(TestSymbols))
+    ret_val.addTest(unittest.makeSuite(TestSettingsBuilder))
     return ret_val
 
 
@@ -50,6 +51,46 @@ class TestCaseBase(unittest.TestCase):
                arrangement: sut.Arrangement,
                expectation: sut.Expectation):
         sut.check(self.tc, parser, source, arrangement, expectation)
+
+
+class TestSettingsBuilder(TestCaseBase):
+    def test_type_of_objects_given_to_assertion(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            sut.Arrangement(),
+            sut.Expectation(
+                settings_builder=asrt.is_instance_with(
+                    settings_check.Model,
+                    asrt.and_([
+                        asrt.sub_component('SettingsBuilder',
+                                           settings_check.Model.actual.fget,
+                                           asrt.is_instance(SetupSettingsBuilder)),
+                        asrt.sub_component('environment',
+                                           settings_check.Model.environment.fget,
+                                           asrt.is_instance(InstructionEnvironmentForPostSdsStep)),
+                    ]))),
+        )
+
+    def test_failure(self):
+        initial_settings_builder = SetupSettingsBuilder()
+        expected_contents = 'expected contents'
+        actual_contents = 'actual contents'
+        initial_settings_builder.stdin.contents = expected_contents
+        with self.assertRaises(utils.TestError):
+            self._check(
+                utils.ParserThatGives(InstructionThatSetsStdinToContents(actual_contents)),
+                single_line_source(),
+                sut.Arrangement(
+                    initial_settings_builder=initial_settings_builder
+                ),
+                sut.Expectation(
+                    settings_builder=asrt.sub_component(
+                        'stdin.contents',
+                        lambda model: model.actual.stdin.contents,
+                        asrt.equals(expected_contents))
+                ),
+            )
 
 
 class TestPopulate(TestCaseBase):
@@ -239,6 +280,18 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         utils.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return svh.new_svh_success()
+
+
+class InstructionThatSetsStdinToContents(SetupPhaseInstruction):
+    def __init__(self, contents: str):
+        self.contents = contents
+
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices,
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
+        settings_builder.stdin.contents = self.contents
+        return sh.new_sh_success()
 
 
 class ActDirHasContent(settings_check.Assertion):
