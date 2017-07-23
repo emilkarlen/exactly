@@ -87,8 +87,7 @@ for arg in sys.argv[1:]:
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
-        arrangement = Arrangement(executor_constructor,
-                                  act_phase_instructions,
+        arrangement = Arrangement(act_phase_instructions,
                                   home_dir_contents=fs.DirContents([
                                       fs.python_executable_file(
                                           'system-under-test',
@@ -99,7 +98,8 @@ for arg in sys.argv[1:]:
         expectation = Expectation(result_of_execute=eh_check.is_exit_code(0),
                                   sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                                         'CLI arguments, one per line')))
-        check_execution(self, arrangement, expectation)
+        check_execution(self, executor_constructor,
+                        arrangement, expectation)
 
 
 if __name__ == '__main__':

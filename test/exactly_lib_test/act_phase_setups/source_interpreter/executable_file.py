@@ -79,8 +79,8 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         empty_source = []
         check_execution(self,
-                        Arrangement(act_phase_setup.source_and_executor_constructor,
-                                    empty_source),
+                        act_phase_setup.source_and_executor_constructor,
+                        Arrangement(empty_source),
                         Expectation(result_of_execute=eh_check.is_hard_error))
 
 
@@ -93,7 +93,8 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
             sut.ActSourceFileNameGeneratorForSourceInterpreterSetup.FILE_NAME_STEM)
         exit_code_or_hard_error = check_execution(
             self,
-            Arrangement(act_phase_setup.source_and_executor_constructor, source),
+            act_phase_setup.source_and_executor_constructor,
+            Arrangement(source),
             Expectation(result_of_execute=eh_check.is_hard_error,
                         side_effects_on_files_after_execute=test_case_dir_contains_exactly(DirContents([
                             File(expected_file_name,

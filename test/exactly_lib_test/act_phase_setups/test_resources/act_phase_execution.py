@@ -14,6 +14,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.test_resources import file_structure
@@ -22,6 +23,7 @@ from exactly_lib_test.test_resources.process import capture_process_executor_res
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_none_or_value
 
 
 class HardErrorResultError(Exception):
@@ -34,19 +36,19 @@ class HardErrorResultError(Exception):
 
 class Arrangement:
     def __init__(self,
-                 executor_constructor: ActSourceAndExecutorConstructor,
                  act_phase_instructions: list,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
-                 act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR
+                 act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR,
+                 symbol_table: SymbolTable = None,
                  ):
-        self.executor_constructor = executor_constructor
         self.act_phase_instructions = act_phase_instructions
         self.home_dir_contents = home_dir_contents
         self.environ = {} if environ is None else environ
         self.timeout_in_seconds = timeout_in_seconds
         self.act_phase_process_executor = act_phase_process_executor
+        self.symbol_table = symbol_table_from_none_or_value(symbol_table)
 
 
 class Expectation:
@@ -70,16 +72,18 @@ def simple_success() -> Expectation:
 
 
 def check_execution(put: unittest.TestCase,
+                    executor_constructor: ActSourceAndExecutorConstructor,
                     arrangement: Arrangement,
                     expectation: Expectation) -> ExitCodeOrHardError:
     assert_is_list_of_act_phase_instructions(put, arrangement.act_phase_instructions)
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
         instruction_environment = InstructionEnvironmentForPreSdsStep(home_dir,
                                                                       arrangement.environ,
-                                                                      arrangement.timeout_in_seconds)
-        sut = arrangement.executor_constructor.apply(arrangement.act_phase_process_executor,
-                                                     instruction_environment,
-                                                     arrangement.act_phase_instructions)
+                                                                      arrangement.timeout_in_seconds,
+                                                                      symbols=arrangement.symbol_table)
+        sut = executor_constructor.apply(arrangement.act_phase_process_executor,
+                                         instruction_environment,
+                                         arrangement.act_phase_instructions)
         sut.parse(instruction_environment)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),
@@ -104,7 +108,8 @@ def check_execution(put: unittest.TestCase,
                                                                            instruction_environment.environ,
                                                                            path_resolving_env.sds,
                                                                            phase_identifier.ACT.identifier,
-                                                                           instruction_environment.timeout_in_seconds)
+                                                                           instruction_environment.timeout_in_seconds,
+                                                                           symbols=arrangement.symbol_table)
             step_result = sut.validate_post_setup(instruction_environment)
             put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                             step_result.status,
