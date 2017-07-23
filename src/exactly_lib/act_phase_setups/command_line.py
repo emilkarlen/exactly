@@ -6,7 +6,9 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -31,17 +33,48 @@ class Constructor(parts.Constructor):
                          _executor)
 
 
-class CommandInfo(SymbolUser):
-    def __init__(self, command: Command):
-        self._command = command
+class CommandConfiguration(SymbolUser):
+    def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
+        raise NotImplementedError()
 
-    @property
-    def command(self) -> Command:
-        return self._command
+    def executor(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
+                 environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
+        raise NotImplementedError()
+
+
+class CommandConfigurationForShell(CommandConfiguration):
+    def __init__(self, command_line_resolver: StringResolver):
+        self._command_line_resolver = command_line_resolver
+
+    def symbol_usages(self) -> list:
+        return self._command_line_resolver.references
+
+    def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
+        return parts.UnconditionallySuccessfulValidator()
+
+    def executor(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
+                 environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
+        return _ShellCommandExecutor(os_process_executor,
+                                     self._command_line_resolver)
+
+
+class CommandConfigurationForExecutableFile(CommandConfiguration):
+    def __init__(self, cmd_and_args: list):
+        self._cmd_and_args = cmd_and_args
+
+    def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
+        return _ExecutableFileValidator(self._cmd_and_args)
+
+    def executor(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
+                 environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
+        return _ExecutableFileExecutor(os_process_executor, self._cmd_and_args)
 
 
 class _Parser(Parser):
-    def apply(self, act_phase_instructions: list) -> CommandInfo:
+    def apply(self, act_phase_instructions: list) -> CommandConfiguration:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
         single_line = single_line_parser.apply(act_phase_instructions)
         single_line = single_line.strip()
@@ -51,33 +84,29 @@ class _Parser(Parser):
             return self._parse_executable_file(single_line)
 
     @staticmethod
-    def _parse_shell_command(argument: str) -> CommandInfo:
+    def _parse_shell_command(argument: str) -> CommandConfigurationForShell:
         striped_argument = argument.strip()
         if not striped_argument:
             msg = SHELL_COMMAND_MARKER + ': command string is missing.'
             raise ParseException(svh.new_svh_validation_error(msg))
-        return CommandInfo(Command(striped_argument, shell=True))
+        arg_resolver = parse_string.string_resolver_from_string(striped_argument)
+        return CommandConfigurationForShell(arg_resolver)
 
     @staticmethod
-    def _parse_executable_file(argument: str) -> CommandInfo:
+    def _parse_executable_file(argument: str) -> CommandConfigurationForExecutableFile:
         cmd_and_args = shlex.split(argument)
-        return CommandInfo(Command(cmd_and_args, shell=False))
+        return CommandConfigurationForExecutableFile(cmd_and_args)
 
 
-def _validator(environment: InstructionEnvironmentForPreSdsStep, command_info: CommandInfo) -> parts.Validator:
-    if command_info.command.shell:
-        return parts.UnconditionallySuccessfulValidator()
-    else:
-        return _ExecutableFileValidator(command_info.command.args)
+def _validator(environment: InstructionEnvironmentForPreSdsStep,
+               command_info: CommandConfiguration) -> parts.Validator:
+    return command_info.validator(environment)
 
 
 def _executor(os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              command_info: CommandInfo) -> parts.Executor:
-    if command_info.command.shell:
-        return _ShellCommandExecutor(os_process_executor, command_info.command.args)
-    else:
-        return _ExecutableFileExecutor(os_process_executor, command_info.command.args)
+              command_info: CommandConfiguration) -> parts.Executor:
+    return command_info.executor(os_process_executor, environment)
 
 
 class _ExecutableFileValidator(parts.Validator):
@@ -118,17 +147,21 @@ class _ExecutableFileExecutor(CommandExecutor):
         if not cmd_path.is_absolute():
             cmd_path = environment.home_directory / cmd_path
             self.cmd_and_args[0] = str(cmd_path)
-        return Command(self.cmd_and_args, shell=False)
+        return Command(self.cmd_and_args,
+                       shell=False)
 
 
 class _ShellCommandExecutor(CommandExecutor):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
-                 command_line: str):
+                 command_line_resolver: StringResolver):
         super().__init__(os_process_executor)
-        self.command_line = command_line
+        self._command_line_resolver = command_line_resolver
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        return Command(self.command_line, shell=True)
+        command_line = self._command_line_resolver.resolve_value_of_any_dependency(
+            environment.path_resolving_environment_pre_or_post_sds)
+        return Command(command_line,
+                       shell=True)
