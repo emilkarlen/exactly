@@ -9,18 +9,14 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.string_resolver import StringResolver, string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system_values import file_ref, file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
-    Expectation
-from exactly_lib_test.instructions.setup.test_resources.settings_check import Assertion
+    Expectation, SettingsBuilderAssertionModel
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
@@ -120,7 +116,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                         symbols=rel_opt.symbols.in_arrangement(),
                     ),
                     Expectation(
-                        settings_builder=AssertStdinFileIsSetToFile2(
+                        settings_builder=AssertStdinFileIsSetToFile(
                             file_refs.of_rel_option(rel_opt.relativity,
                                                     PathPartAsFixedPath('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
@@ -147,7 +143,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                         symbols=rel_opt.symbols.in_arrangement(),
                     ),
                     Expectation(
-                        settings_builder=AssertStdinFileIsSetToFile2(
+                        settings_builder=AssertStdinFileIsSetToFile(
                             file_refs.of_rel_option(RelOptionType.REL_HOME,
                                                     PathPartAsFixedPath('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
@@ -204,7 +200,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
                                           symbol=symbol_reference_syntax_for_name(symbol_name)))),
                               symbol_usages=equals_symbol_references(expected_symbol_references),
                               source=is_at_beginning_of_line(4)),
-                  )
+                          )
 
 
 class TestFailingInstructionExecution(TestCaseBaseForParser):
@@ -257,27 +253,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
                   )
 
 
-class AssertStdinFileIsSetToFile(Assertion):
-    def __init__(self,
-                 file_reference: file_ref.FileRef):
-        self._file_reference = file_reference
-
-    def apply(self,
-              put: unittest.TestCase,
-              environment: common.InstructionEnvironmentForPostSdsStep,
-              initial: SetupSettingsBuilder,
-              actual_result: SetupSettingsBuilder):
-        put.assertIsNone(actual_result.stdin.contents,
-                         'contents should not be set when using file')
-        file_path = self._file_reference.value_of_any_dependency(
-            environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
-        put.assertIsNotNone(actual_result.stdin.file_name)
-        put.assertEqual(str(file_path),
-                        actual_result.stdin.file_name,
-                        'Name of stdin file in Setup Settings')
-
-
-class AssertStdinFileIsSetToFile2(asrt.ValueAssertion):
+class AssertStdinFileIsSetToFile(asrt.ValueAssertion):
     def __init__(self,
                  expected_file_reference: file_ref.FileRef):
         self._expected_file_reference = expected_file_reference
@@ -287,7 +263,7 @@ class AssertStdinFileIsSetToFile2(asrt.ValueAssertion):
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         model = value
-        assert isinstance(model, settings_check.Model)  # Type info for IDE
+        assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
         put.assertIsNone(model.actual.stdin.contents,
                          'contents should not be set when using file')
         expected_file_name = str(self._expected_file_reference.value_of_any_dependency(
@@ -307,7 +283,7 @@ class AssertStdinIsSetToContents(asrt.ValueAssertion):
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         model = value
-        assert isinstance(model, settings_check.Model)  # Type info for IDE
+        assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
         put.assertIsNone(model.actual.stdin.file_name,
                          'file name should not be set when using here doc')
         expected_contents_str = self.expected_contents_resolver.resolve_value_of_any_dependency(
