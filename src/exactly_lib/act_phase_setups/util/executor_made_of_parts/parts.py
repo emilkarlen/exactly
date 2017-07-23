@@ -4,7 +4,7 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ActSo
     ActPhaseOsProcessExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+    InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -47,12 +47,12 @@ class Executor:
 
 
 class Parser:
-    def apply(self, act_phase_instructions: list):
+    def apply(self, act_phase_instructions: list) -> SymbolUser:
         """
         :raises ParseException
 
         :return: An object that can be given as argument to constructors of validator and executor designed
-        to be used together with the parser.
+        to be used together with the parser.  The object also reports symbol usages known after parse.
         """
         raise NotImplementedError(str(type(self)))
 
@@ -100,8 +100,13 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
         self.__validator = None
         self.__executor = None
 
+        self.__symbol_usages = []
+
     def parse(self, environment: InstructionEnvironmentForPreSdsStep):
         self._parse_and_construct_validator_and_executor()
+
+    def symbol_usages(self) -> list:
+        return self.__symbol_usages
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -124,6 +129,7 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
 
     def _parse_and_construct_validator_and_executor(self) -> svh.SuccessOrValidationErrorOrHardError:
         object_to_execute = self.parser.apply(self.act_phase_instructions)
+        self.__symbol_usages = object_to_execute.symbol_usages()
         self.__validator = self.validator_constructor(self.environment, object_to_execute)
         assert isinstance(self.__validator, Validator), \
             'Constructed validator must be instance of ' + str(Validator)

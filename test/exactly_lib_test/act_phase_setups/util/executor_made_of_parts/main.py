@@ -4,17 +4,20 @@ import unittest
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case import eh
 from exactly_lib.test_case.act_phase_handling import ParseException
-from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, simple_success, \
-    check_execution
+    check_execution, Expectation
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 
 
@@ -70,6 +73,23 @@ class TestConstructor(unittest.TestCase):
         self.assertDictEqual(expected_recordings,
                              step_recorder)
 
+    def test_symbol_usages_of_object_returned_by_parser_SHOULD_be_reported(self):
+        # ARRANGE #
+        expected_symbol_references = [
+            SymbolReference('symbol_name',
+                            no_restrictions())
+        ]
+        constructor = sut.Constructor(ParserWithConstantResult(
+            SymbolUserWithConstantSymbolReferences(expected_symbol_references)),
+            lambda *x: sut.UnconditionallySuccessfulValidator(),
+            lambda *x: UnconditionallySuccessfulExecutor())
+        # ACT & ASSERT #
+        check_execution(self, constructor,
+                        Arrangement([]),
+                        Expectation(
+                            symbol_usages=equals_symbol_references(expected_symbol_references)
+                        ))
+
 
 def _environment() -> InstructionEnvironmentForPreSdsStep:
     return InstructionEnvironmentForPreSdsStep(pathlib.Path(), dict(os.environ))
@@ -92,7 +112,35 @@ class ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruc
         assert isinstance(instruction, ActPhaseInstruction)
         source_text = instruction.source_code().text
         self.recorder[phase_step.ACT__PARSE] = source_text
-        return source_text
+        return SymbolThatRemembersSource(source_text)
+
+
+class SymbolThatRemembersSource(SymbolUser):
+    def __init__(self, source: str):
+        self._source = source
+
+    def symbol_usages(self) -> list:
+        return []
+
+    @property
+    def source(self) -> str:
+        return self._source
+
+
+class SymbolUserWithConstantSymbolReferences(SymbolUser):
+    def __init__(self, symbol_usages: list):
+        self._symbol_usages = symbol_usages
+
+    def symbol_usages(self) -> list:
+        return self._symbol_usages
+
+
+class ParserWithConstantResult(sut.Parser):
+    def __init__(self, constant_result: SymbolUser):
+        self._constant_result = constant_result
+
+    def apply(self, act_phase_instructions: list) -> SymbolUser:
+        return self._constant_result
 
 
 def validator_constructor_that_raises(*args):
@@ -103,10 +151,19 @@ def executor_constructor_that_raises(*args):
     raise ValueError('executor_constructor_that_raises')
 
 
+class UnconditionallySuccessfulExecutor(sut.Executor):
+    def execute(self,
+                environment: sut.InstructionEnvironmentForPostSdsStep,
+                script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> eh.ExitCodeOrHardError:
+        return eh.new_eh_exit_code(0)
+
+
 class ValidatorThatRecordsSteps(sut.Validator):
-    def __init__(self, recorder: dict, act_phase_source: str):
+    def __init__(self, recorder: dict,
+                 object_with_act_phase_source: SymbolThatRemembersSource):
         self.recorder = recorder
-        self.act_phase_source = act_phase_source
+        self.act_phase_source = object_with_act_phase_source.source
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self.recorder[phase_step.ACT__VALIDATE_PRE_SDS] = self.act_phase_source
@@ -118,15 +175,16 @@ class ValidatorThatRecordsSteps(sut.Validator):
 
 
 class ExecutorThatRecordsSteps(sut.Executor):
-    def __init__(self, recorder: dict, act_phase_source: str):
+    def __init__(self, recorder: dict,
+                 object_with_act_phase_source: SymbolThatRemembersSource):
         self.recorder = recorder
-        self.act_phase_source = act_phase_source
+        self.act_phase_source = object_with_act_phase_source.source
 
     def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.recorder[phase_step.ACT__PREPARE] = self.act_phase_source
         return sh.new_sh_success()
 
     def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles) -> eh.ExitCodeOrHardError:
         self.recorder[phase_step.ACT__EXECUTE] = self.act_phase_source
-        return new_eh_exit_code(0)
+        return eh.new_eh_exit_code(0)
