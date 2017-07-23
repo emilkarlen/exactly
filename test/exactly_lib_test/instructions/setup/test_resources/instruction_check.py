@@ -12,19 +12,20 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
+from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
@@ -34,6 +35,22 @@ from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+
+
+class SettingsBuilderAssertionModel(tuple):
+    def __new__(cls,
+                actual: SetupSettingsBuilder,
+                environment: common.InstructionEnvironmentForPostSdsStep,
+                ):
+        return tuple.__new__(cls, (actual, environment))
+
+    @property
+    def actual(self) -> SetupSettingsBuilder:
+        return self[0]
+
+    @property
+    def environment(self) -> common.InstructionEnvironmentForPostSdsStep:
+        return self[1]
 
 
 class Arrangement(ArrangementWithSds):
@@ -74,7 +91,6 @@ class Expectation:
                  main_result: asrt.ValueAssertion = sh_check.is_success(),
                  post_validation_result: asrt.ValueAssertion = svh_check.is_success(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
-                 main_side_effects_on_environment: settings_check.Assertion = settings_check.AnythingGoes(),
                  main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),
                  settings_builder: asrt.ValueAssertion = asrt.anything_goes(),
@@ -83,7 +99,6 @@ class Expectation:
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result
-        self.main_side_effects_on_environment = main_side_effects_on_environment
         self.main_side_effects_on_files = main_side_effects_on_files
         self.post_validation_result = post_validation_result
         self.settings_builder = settings_builder
@@ -191,8 +206,8 @@ class Executor:
                                                                       phase_step.STEP__VALIDATE_POST_SETUP)
                     self.expectation.settings_builder.apply_with_message(
                         self.put,
-                        settings_check.Model(self.arrangement.initial_settings_builder,
-                                             instruction_environment),
+                        SettingsBuilderAssertionModel(self.arrangement.initial_settings_builder,
+                                                      instruction_environment),
                         'settings builder'
                     )
 
@@ -226,10 +241,6 @@ class Executor:
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
-        self.expectation.main_side_effects_on_environment.apply(self.put,
-                                                                instruction_environment,
-                                                                initial_settings_builder,
-                                                                settings_builder)
         self.expectation.main_side_effects_on_files.apply(self.put, sds)
         return main_result
 

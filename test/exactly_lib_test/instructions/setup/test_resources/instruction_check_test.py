@@ -7,7 +7,6 @@ import exactly_lib_test.test_resources.parse
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -15,7 +14,6 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     setup_phase_instruction_that
 from exactly_lib_test.instructions.setup.test_resources import instruction_check as sut
-from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.symbol_table_check_help import do_fail_if_symbol_table_does_not_equal, \
@@ -61,13 +59,13 @@ class TestSettingsBuilder(TestCaseBase):
             sut.Arrangement(),
             sut.Expectation(
                 settings_builder=asrt.is_instance_with(
-                    settings_check.Model,
+                    sut.SettingsBuilderAssertionModel,
                     asrt.and_([
                         asrt.sub_component('SettingsBuilder',
-                                           settings_check.Model.actual.fget,
+                                           sut.SettingsBuilderAssertionModel.actual.fget,
                                            asrt.is_instance(SetupSettingsBuilder)),
                         asrt.sub_component('environment',
-                                           settings_check.Model.environment.fget,
+                                           sut.SettingsBuilderAssertionModel.environment.fget,
                                            asrt.is_instance(InstructionEnvironmentForPostSdsStep)),
                     ]))),
         )
@@ -209,16 +207,6 @@ class TestMiscCases(TestCaseBase):
                 sut.Expectation(main_result=sh_check.is_hard_error())
             )
 
-    def test_fail_due_to_fail_of_side_effects_on_environment(self):
-        act_dir_has_content = ActDirHasContent(DirContents([empty_file('non-existing-file.txt')]))
-        with self.assertRaises(utils.TestError):
-            self._check(
-                utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                single_line_source(),
-                sut.Arrangement(),
-                sut.Expectation(main_side_effects_on_environment=act_dir_has_content)
-            )
-
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         with self.assertRaises(utils.TestError):
             self._check(utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
@@ -250,14 +238,6 @@ class TestMiscCases(TestCaseBase):
                     sut.Arrangement(),
                     sut.Expectation()
                     )
-
-
-class SettingsCheckRaisesTestError(settings_check.Assertion):
-    def apply(self, put: unittest.TestCase,
-              environment: common.InstructionEnvironmentForPostSdsStep,
-              initial: SetupSettingsBuilder,
-              actual_result: SetupSettingsBuilder):
-        raise utils.TestError('error from settings check')
 
 
 def single_line_source() -> ParseSource:
@@ -292,19 +272,6 @@ class InstructionThatSetsStdinToContents(SetupPhaseInstruction):
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin.contents = self.contents
         return sh.new_sh_success()
-
-
-class ActDirHasContent(settings_check.Assertion):
-    def __init__(self, expected_act_dir_contents: DirContents):
-        self.expected_act_dir_contents = expected_act_dir_contents
-
-    def apply(self,
-              put: unittest.TestCase,
-              environment: common.InstructionEnvironmentForPostSdsStep,
-              initial: SetupSettingsBuilder,
-              actual_result: SetupSettingsBuilder):
-        assertion = act_dir_contains_exactly(self.expected_act_dir_contents)
-        assertion.apply_with_message(put, environment.sds, 'environment check')
 
 
 def run_suite():
