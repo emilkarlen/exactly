@@ -120,7 +120,7 @@ class TestExecute(unittest.TestCase):
         with tmp_dir(fs.DirContents([file_to_redirect])) as abs_tmp_dir_path:
             absolute_name_of_file_to_redirect = abs_tmp_dir_path / 'redirected-to-stdin.txt'
             setup_settings = setup.default_settings()
-            setup_settings.stdin.file_name = str(absolute_name_of_file_to_redirect)
+            setup_settings.stdin.file_name = absolute_name_of_file_to_redirect
             _check_contents_of_stdin_for_setup_settings(self,
                                                         setup_settings,
                                                         'contents of file to redirect')
@@ -143,20 +143,20 @@ class TestExecute(unittest.TestCase):
 
 def _exit_code_result_file_contains(expected_contents: str) -> asrt.ValueAssertion:
     return asrt.sub_component('file for exit code',
-                            lambda sds: sds.result.exitcode_file,
-                            fa.path_is_file_with_contents(expected_contents))
+                              lambda sds: sds.result.exitcode_file,
+                              fa.path_is_file_with_contents(expected_contents))
 
 
 def _stdout_result_file_contains(expected_contents: str) -> asrt.ValueAssertion:
     return asrt.sub_component('file for stdout',
-                            lambda sds: sds.result.stdout_file,
-                            fa.path_is_file_with_contents(expected_contents))
+                              lambda sds: sds.result.stdout_file,
+                              fa.path_is_file_with_contents(expected_contents))
 
 
 def _stderr_result_file_contains(expected_contents: str) -> asrt.ValueAssertion:
     return asrt.sub_component('file for stderr',
-                            lambda sds: sds.result.stderr_file,
-                            fa.path_is_file_with_contents(expected_contents))
+                              lambda sds: sds.result.stderr_file,
+                              fa.path_is_file_with_contents(expected_contents))
 
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
