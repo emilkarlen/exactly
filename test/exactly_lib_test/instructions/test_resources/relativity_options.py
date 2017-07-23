@@ -127,7 +127,7 @@ class RelativityOptionConfiguration:
         return self._symbols_configuration
 
 
-class RelativityOptionConfigurationBase(RelativityOptionConfiguration):
+class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguration):
     def __init__(self,
                  relativity: RelOptionType,
                  cli_option: OptionStringConfiguration,
@@ -139,6 +139,10 @@ class RelativityOptionConfigurationBase(RelativityOptionConfiguration):
             raise ValueError('Not a RelOptionType: {}'.format(relativity))
 
     @property
+    def relativity_option(self) -> RelOptionType:
+        return self.relativity
+
+    @property
     def exists_pre_sds(self) -> bool:
         return self.resolver.exists_pre_sds
 
@@ -146,7 +150,7 @@ class RelativityOptionConfigurationBase(RelativityOptionConfiguration):
         return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
 
 
-class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationBase):
+class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOptionType):
     def __init__(self,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
@@ -263,21 +267,21 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
 
 
 def conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfiguration:
-    return RelativityOptionConfigurationBase(
+    return RelativityOptionConfigurationForRelOptionType(
         relativity,
         OptionStringConfigurationForRelativityOption(relativity))
 
 
-def default_conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfiguration:
-    return RelativityOptionConfigurationBase(
+def default_conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfigurationForRelOptionType:
+    return RelativityOptionConfigurationForRelOptionType(
         relativity,
         OptionStringConfigurationForDefaultRelativity())
 
 
 def symbol_conf_rel_any(relativity: RelOptionType,
                         symbol_name: str,
-                        accepted_relativities: PathRelativityVariants) -> RelativityOptionConfiguration:
-    return RelativityOptionConfigurationBase(
+                        accepted_relativities: PathRelativityVariants) -> RelativityOptionConfigurationForRelOptionType:
+    return RelativityOptionConfigurationForRelOptionType(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
         SymbolsConfigurationForSinglePathSymbol(relativity,
