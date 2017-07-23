@@ -573,13 +573,14 @@ class _ActProgramExecution:
         else:
             return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
 
-    def _run_act_program_with_opened_stdin_file(self, file_name: str) -> ExitCodeOrHardError:
+    def _run_act_program_with_opened_stdin_file(self, file_name: pathlib.Path) -> ExitCodeOrHardError:
         try:
-            with open(file_name) as f_stdin:
+            with file_name.open() as f_stdin:
                 return self._run_act_program_with_stdin_file(f_stdin)
         except IOError as ex:
-            return new_eh_hard_error(new_failure_details_from_exception(ex,
-                                                                        'Failure to open stdin file: ' + file_name))
+            return new_eh_hard_error(new_failure_details_from_exception(
+                ex,
+                'Failure to open stdin file: ' + str(file_name)))
 
     def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
         """
@@ -602,14 +603,14 @@ class _ActProgramExecution:
         with open_and_make_read_only_on_close(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
-    def _custom_stdin_file_name(self) -> str:
+    def _custom_stdin_file_name(self) -> pathlib.Path:
         settings = self.step_execution_result.stdin_settings
         if settings.file_name is not None:
             return settings.file_name
         else:
             file_path = stdin_contents_file(self.home_and_sds.sds)
             write_new_text_file(file_path, settings.contents)
-            return str(file_path)
+            return file_path
 
     def _with_implementation_exception_handling(self, step: phase_step.PhaseStep, action) -> PartialResult:
         try:

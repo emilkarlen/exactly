@@ -266,8 +266,8 @@ class AssertStdinFileIsSetToFile(asrt.ValueAssertion):
         assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
         put.assertIsNone(model.actual.stdin.contents,
                          'contents should not be set when using file')
-        expected_file_name = str(self._expected_file_reference.value_of_any_dependency(
-            model.environment.path_resolving_environment_pre_or_post_sds.home_and_sds))
+        expected_file_name = self._expected_file_reference.value_of_any_dependency(
+            model.environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
         put.assertEqual(expected_file_name,
                         model.actual.stdin.file_name,
                         'Name of stdin file in Setup Settings')
