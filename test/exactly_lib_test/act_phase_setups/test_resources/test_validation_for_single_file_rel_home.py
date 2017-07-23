@@ -46,7 +46,7 @@ class test_succeeds_when_there_is_exactly_one_statement_but_surrounded_by_empty_
                                          existing_file,
                                          LINE_COMMENT_MARKER + ' line comment text',
                                          ''])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
+        actual = self._do_parse_and_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
@@ -56,7 +56,7 @@ class test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_f
     TestCaseForConfigurationForValidation):
     def runTest(self):
         act_phase_instructions = [instr(['name-of-non-existing-file'])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
+        actual = self._do_parse_and_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
@@ -67,7 +67,7 @@ class test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_f
     def runTest(self):
         absolute_name_of_non_existing_file = str(pathlib.Path().resolve() / 'non' / 'existing' / 'file' / 'oiasdlkv')
         act_phase_instructions = [instr([absolute_name_of_non_existing_file])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
+        actual = self._do_parse_and_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
@@ -78,7 +78,7 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_
     def runTest(self):
         existing_file = abs_path_to_interpreter_quoted_for_exactly()
         act_phase_instructions = [instr([existing_file])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
+        actual = self._do_parse_and_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
@@ -90,7 +90,7 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_
         existing_file = abs_path_to_interpreter_quoted_for_exactly()
         abs_path_and_arguments = ' '.join([existing_file, 'arg1', '"quoted arg"'])
         act_phase_instructions = [instr([abs_path_and_arguments])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
+        actual = self._do_parse_and_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
@@ -103,6 +103,7 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_
         with fs_utils.tmp_dir(fs.DirContents([fs.empty_file('system-under-test')])) as home_dir_path:
             environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
+            executor.parse(environment)
             actual = executor.validate_pre_sds(environment)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,

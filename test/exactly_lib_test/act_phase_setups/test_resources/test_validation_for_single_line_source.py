@@ -2,7 +2,7 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
@@ -40,6 +40,27 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
         home_dir_path = pathlib.Path()
         return InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
 
+    def _do_parse(self,
+                  act_phase_instructions: list,
+                  home_dir_contents: DirContents = empty_dir_contents()
+                  ):
+        with tmp_dir(contents=home_dir_contents) as home_dir_path:
+            pre_sds_env = InstructionEnvironmentForPreSdsStep(home_dir_path,
+                                                              dict(os.environ))
+            executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
+            executor.parse(pre_sds_env)
+
+    def _do_parse_and_validate_pre_sds(self,
+                                       act_phase_instructions: list,
+                                       home_dir_contents: DirContents = empty_dir_contents()
+                                       ):
+        with tmp_dir(contents=home_dir_contents) as home_dir_path:
+            pre_sds_env = InstructionEnvironmentForPreSdsStep(home_dir_path,
+                                                              dict(os.environ))
+            executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
+            executor.parse(pre_sds_env)
+            return executor.validate_pre_sds(pre_sds_env)
+
     def _do_validate_pre_sds(self,
                              act_phase_instructions: list,
                              home_dir_contents: DirContents = empty_dir_contents()
@@ -54,29 +75,23 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
 class test_fails_when_there_are_no_instructions(TestCaseForConfigurationForValidation):
     def runTest(self):
         act_phase_instructions = []
-        actual = self._do_validate_pre_sds(act_phase_instructions)
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      actual.status,
-                      'Validation result')
+        with self.assertRaises(ParseException):
+            self._do_parse(act_phase_instructions)
 
 
 class test_fails_when_there_is_more_than_one_instruction(TestCaseForConfigurationForValidation):
     def runTest(self):
         act_phase_instructions = [instr(['']),
                                   instr([''])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      actual.status,
-                      'Validation result')
+        with self.assertRaises(ParseException):
+            self._do_parse(act_phase_instructions)
 
 
 class test_fails_when_there_are_no_statements(TestCaseForConfigurationForValidation):
     def runTest(self):
         act_phase_instructions = [instr([''])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      actual.status,
-                      'Validation result')
+        with self.assertRaises(ParseException):
+            self._do_parse(act_phase_instructions)
 
 
 class test_fails_when_there_is_more_than_one_statement(TestCaseForConfigurationForValidation):
@@ -84,7 +99,5 @@ class test_fails_when_there_is_more_than_one_statement(TestCaseForConfigurationF
         existing_file = abs_path_to_interpreter_quoted_for_exactly()
         act_phase_instructions = [instr([existing_file,
                                          existing_file])]
-        actual = self._do_validate_pre_sds(act_phase_instructions)
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      actual.status,
-                      'Validation result')
+        with self.assertRaises(ParseException):
+            self._do_parse(act_phase_instructions)

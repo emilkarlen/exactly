@@ -55,8 +55,8 @@ class TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForCon
     def runTest(self):
         act_phase_instructions = [instr(["""valid-file-ref 'quoting missing ending single-quote"""]),
                                   instr([''])]
-        actual = self._do_validate_pre_sds(act_phase_instructions,
-                                           home_dir_contents=DirContents([empty_file('valid-file-ref')]))
+        actual = self._do_parse_and_validate_pre_sds(act_phase_instructions,
+                                                     home_dir_contents=DirContents([empty_file('valid-file-ref')]))
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
