@@ -101,11 +101,12 @@ class TestInvalidSyntax(unittest.TestCase):
         act_phase_instructions = [
             instr(['non-existing-executable'])
         ]
-        arrangement = Arrangement(act_phase_instructions)
+        arrangement = Arrangement()
         expectation = Expectation(
             result_of_validate_pre_sds=svh_check.is_validation_error()
         )
         check_execution(self, sut.Constructor(),
+                        act_phase_instructions,
                         arrangement,
                         expectation)
 
@@ -115,13 +116,13 @@ class TestInvalidSyntax(unittest.TestCase):
             instr([executable_file_name])
         ]
         arrangement = Arrangement(
-            act_phase_instructions,
             home_dir_contents=fs.DirContents([fs.empty_file(executable_file_name)])
         )
         expectation = Expectation(
             result_of_validate_pre_sds=svh_check.is_validation_error()
         )
         check_execution(self, sut.Constructor(),
+                        act_phase_instructions,
                         arrangement,
                         expectation)
 
@@ -132,19 +133,21 @@ class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.T
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
-        arrangement = Arrangement(act_phase_instructions,
-                                  home_dir_contents=fs.DirContents([
-                                      fs.python_executable_file(
-                                          'system-under-test',
-                                          PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-                                  ]))
+        arrangement = Arrangement(home_dir_contents=fs.DirContents([
+            fs.python_executable_file(
+                'system-under-test',
+                PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+        ]))
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
         expectation = Expectation(result_of_execute=eh_check.is_exit_code(0),
                                   sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                                         'CLI arguments, one per line')))
-        check_execution(self, executor_constructor,
-                        arrangement, expectation)
+        check_execution(self,
+                        executor_constructor,
+                        act_phase_instructions,
+                        arrangement,
+                        expectation)
 
 
 class TestSymbolUsages(unittest.TestCase):
@@ -165,7 +168,6 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     executable,
@@ -187,6 +189,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
         check_execution(self,
                         sut.Constructor(),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
 
@@ -204,7 +207,6 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     executable,
@@ -225,6 +227,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
         check_execution(self,
                         sut.Constructor(),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
 
@@ -241,7 +244,6 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
@@ -265,6 +267,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
         check_execution(self,
                         sut.Constructor(),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
 
@@ -281,7 +284,6 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
@@ -307,6 +309,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
         check_execution(self,
                         sut.Constructor(),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
 
@@ -333,7 +336,6 @@ class TestSymbolUsages(unittest.TestCase):
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
             ]),
@@ -360,6 +362,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
         check_execution(self,
                         sut.Constructor(),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
 
@@ -376,7 +379,6 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     executable_file_name,
@@ -399,6 +401,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
         check_execution(self,
                         sut.Constructor(),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
 

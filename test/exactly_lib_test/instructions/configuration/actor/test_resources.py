@@ -47,9 +47,9 @@ def check(put: unittest.TestCase,
     executor_constructor = configuration_builder.act_phase_handling.source_and_executor_constructor
     act_phase_execution.check_execution(put,
                                         executor_constructor,
+                                        act_phase_instructions,
                                         act_phase_execution.Arrangement(
                                             home_dir_contents=arrangement.home_dir_contents,
-                                            act_phase_instructions=act_phase_instructions,
                                             act_phase_process_executor=arrangement.act_phase_process_executor),
                                         act_phase_execution.Expectation(
                                             sub_process_result_from_execute=expectation.sub_process_result_from_execute)

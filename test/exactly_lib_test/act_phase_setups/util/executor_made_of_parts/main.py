@@ -58,10 +58,13 @@ class TestConstructor(unittest.TestCase):
                                       validator_constructor,
                                       executor_constructor)
         act_phase_instructions = [instr(['act phase source'])]
-        arrangement = Arrangement(act_phase_instructions)
+        arrangement = Arrangement()
         expectation = simple_success()
         # ACT (and assert that all methods indicate success) #
-        check_execution(self, constructor, arrangement, expectation)
+        check_execution(self, constructor,
+                        act_phase_instructions,
+                        arrangement,
+                        expectation)
         # ASSERT #
         expected_recordings = {
             phase_step.ACT__PARSE: 'act phase source',
@@ -85,7 +88,8 @@ class TestConstructor(unittest.TestCase):
             lambda *x: UnconditionallySuccessfulExecutor())
         # ACT & ASSERT #
         check_execution(self, constructor,
-                        Arrangement([]),
+                        [],
+                        Arrangement(),
                         Expectation(
                             symbol_usages=equals_symbol_references(expected_symbol_references)
                         ))
