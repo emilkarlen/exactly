@@ -10,7 +10,7 @@ from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.act_phase_setups.file_interpreter import test_resources
+from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources import \
@@ -49,7 +49,7 @@ def suite() -> unittest.TestSuite:
     tests.append(suite_for(the_configuration))
     tests.append(suite_for_execution(the_configuration))
 
-    tests.append(test_resources.suite_for(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
+    tests.append(common_tests.suite_for(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
 
     return unittest.TestSuite(tests)
 
