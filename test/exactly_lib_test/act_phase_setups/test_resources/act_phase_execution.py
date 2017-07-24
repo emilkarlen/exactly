@@ -17,6 +17,7 @@ from exactly_lib.util.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import tmp_dir as fs_utils
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
@@ -53,12 +54,14 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
+                 result_of_validate_pre_sds: asrt.ValueAssertion = svh_check.is_success(),
                  result_of_prepare: asrt.ValueAssertion = sh_check.is_success(),
                  result_of_execute: asrt.ValueAssertion = eh_check.is_any_exit_code,
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  side_effects_on_files_after_execute: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_files_after_prepare: asrt.ValueAssertion = asrt.anything_goes(),
                  sub_process_result_from_execute: asrt.ValueAssertion = asrt.anything_goes()):
+        self.result_of_validate_pre_sds = result_of_validate_pre_sds
         self.symbol_usages = symbol_usages
         self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
         self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
@@ -90,11 +93,10 @@ def check_execution(put: unittest.TestCase,
                                                      'symbol-usages after ' +
                                                      phase_step.STEP__ACT__PARSE)
         step_result = sut.validate_pre_sds(instruction_environment)
+        expectation.result_of_validate_pre_sds.apply_with_message(put, step_result,
+                                                                  'validate_pre_sds')
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
-            put.fail('Failure of {}: {}: {}'.format(
-                phase_step.STEP__VALIDATE_PRE_SDS,
-                step_result.status,
-                step_result.failure_message))
+            return None
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of ' + phase_step.STEP__VALIDATE_PRE_SDS)

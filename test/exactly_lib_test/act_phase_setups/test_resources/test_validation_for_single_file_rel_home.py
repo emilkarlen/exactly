@@ -31,7 +31,7 @@ def suite_for_additional(conf: Configuration) -> unittest.TestSuite:
         test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file__absolute_file_name,
         test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_of_existing_file_not_under_home,
         test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_of_existing_file__and_arguments,
-        test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_of_an_existing_file_rel_home,
+        test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_of_an_existing_executable_file_rel_home,
     ]
     return unittest.TestSuite([tc(conf) for tc in test_cases])
 
@@ -96,11 +96,11 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_
                       'Validation result')
 
 
-class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_of_an_existing_file_rel_home(
+class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_of_an_existing_executable_file_rel_home(
     TestCaseForConfigurationForValidation):
     def runTest(self):
         act_phase_instructions = [instr(['system-under-test'])]
-        with fs_utils.tmp_dir(fs.DirContents([fs.empty_file('system-under-test')])) as home_dir_path:
+        with fs_utils.tmp_dir(fs.DirContents([fs.executable_file('system-under-test')])) as home_dir_path:
             environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
             executor.parse(environment)
