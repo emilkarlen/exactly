@@ -58,3 +58,9 @@ sys.stdout.write('{stdout}')
 sys.stderr.write('{stderr}')
 sys.exit({exit_code})
 """
+
+PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES = """\
+import sys
+for arg in sys.argv[1:]:
+  print(arg)
+"""

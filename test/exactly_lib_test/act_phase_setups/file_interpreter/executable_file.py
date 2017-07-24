@@ -6,6 +6,7 @@ from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.string import lines_content
+from exactly_lib_test.act_phase_setups.file_interpreter import test_resources
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources import \
@@ -19,17 +20,24 @@ from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor imp
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 
+COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = Command([sys.executable],
+                                                shell=False)
+
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.constructor(Command([sys.executable], shell=False)))
+        super().__init__(sut.constructor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
 
 
 def suite() -> unittest.TestSuite:
     tests = []
     the_configuration = TheConfiguration()
+
     tests.append(suite_for(the_configuration))
     tests.append(suite_for_execution(the_configuration))
+
+    tests.append(test_resources.suite_for(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
+
     return unittest.TestSuite(tests)
 
 

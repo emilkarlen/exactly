@@ -6,7 +6,7 @@ from exactly_lib_test.act_phase_setups.file_interpreter import executable_file, 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         executable_file.suite(),
-        shell_command.suite()
+        shell_command.suite(),
     ])
 
 
