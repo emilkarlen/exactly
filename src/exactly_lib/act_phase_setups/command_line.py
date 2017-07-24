@@ -1,5 +1,4 @@
 import pathlib
-import shlex
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
@@ -7,17 +6,22 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.instructions.utils.arg_parse import parse_string
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref_from_parse_source
+from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list
+from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.symbol.list_resolver import ListResolver, list_resolver_constant
+from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.type_system_values import file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 SHELL_COMMAND_MARKER = '$'
@@ -29,6 +33,17 @@ def act_phase_setup() -> ActPhaseSetup:
 
 def act_phase_handling() -> ActPhaseHandling:
     return ActPhaseHandling(Constructor())
+
+
+RELATIVITY_CONFIGURATION = RelOptionArgumentConfiguration(
+    RelOptionsConfiguration(
+        PathRelativityVariants({RelOptionType.REL_HOME},
+                               absolute=True),
+        is_rel_symbol_option_accepted=False,
+        default_option=RelOptionType.REL_HOME),
+    argument_syntax_name='EXECUTABLE',
+    path_suffix_is_required=True
+)
 
 
 class Constructor(parts.Constructor):
@@ -72,6 +87,9 @@ class CommandConfigurationForExecutableFile(CommandConfiguration):
         self.executable = executable
         self.arguments = arguments
 
+    def symbol_usages(self) -> list:
+        return self.executable.references + self.arguments.references
+
     def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
         return _ExecutableFileValidator(self.executable)
 
@@ -104,19 +122,23 @@ class _Parser(Parser):
 
     @staticmethod
     def _parse_executable_file(argument: str) -> CommandConfigurationForExecutableFile:
-        cmd_and_args = shlex.split(argument)
-        cmd_resolver = _cmd(cmd_and_args[0])
-        args_resolver = list_resolver_constant(cmd_and_args[1:])
-        return CommandConfigurationForExecutableFile(cmd_resolver, args_resolver)
+        try:
+            source = ParseSource(argument)
+            executable_resolver = parse_file_ref_from_parse_source(source,
+                                                                   RELATIVITY_CONFIGURATION)
+            arguments_resolver = parse_list(source)
+            return CommandConfigurationForExecutableFile(executable_resolver, arguments_resolver)
+        except SingleInstructionInvalidArgumentException as ex:
+            raise ParseException(svh.new_svh_validation_error(ex.error_message))
 
 
-def _cmd(cmd: str) -> FileRefResolver:
-    cmd_path = pathlib.Path(cmd)
-    if cmd_path.is_absolute():
-        file_ref = file_refs.absolute_file_name(cmd)
-    else:
-        file_ref = file_refs.rel_home(PathPartAsFixedPath(cmd))
-    return FileRefConstant(file_ref)
+# def _cmd(cmd: str) -> FileRefResolver:
+#     cmd_path = pathlib.Path(cmd)
+#     if cmd_path.is_absolute():
+#         file_ref = file_refs.absolute_file_name(cmd)
+#     else:
+#         file_ref = file_refs.rel_home(PathPartAsFixedPath(cmd))
+#     return FileRefConstant(file_ref)
 
 
 def _validator(environment: InstructionEnvironmentForPreSdsStep,
