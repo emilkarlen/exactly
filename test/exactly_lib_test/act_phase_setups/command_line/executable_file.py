@@ -362,6 +362,45 @@ class TestSymbolUsages(unittest.TestCase):
                         arrangement,
                         expectation)
 
+    def test_symbol_value_with_space_SHOULD_be_given_as_single_argument_to_program(self):
+        symbol = NameAndValue('symbol_name', 'symbol value with space')
+
+        expected_output = lines_content([symbol.value])
+
+        executable_file_name = 'the-executable_file_name'
+
+        command_line = '{executable_file_name} {symbol}'.format(
+            executable_file_name=executable_file_name,
+            symbol=symbol_reference_syntax_for_name(symbol.name),
+        )
+
+        arrangement = Arrangement(
+            [instr([command_line])],
+            home_dir_contents=fs.DirContents([
+                fs.python_executable_file(
+                    executable_file_name,
+                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+            ]),
+            symbol_table=SymbolTable({
+                symbol.name:
+                    su.string_value_constant_container(symbol.value),
+            })
+        )
+
+        expectation = Expectation(
+            result_of_execute=eh_check.is_exit_code(0),
+            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                  'CLI arguments, one per line')),
+            symbol_usages=equals_symbol_references(
+                [SymbolReference(symbol.name,
+                                 no_restrictions())]
+            )
+        )
+        check_execution(self,
+                        sut.Constructor(),
+                        arrangement,
+                        expectation)
+
 
 PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE = PathRelativityVariants({RelOptionType.REL_HOME},
                                                                  absolute=True)
