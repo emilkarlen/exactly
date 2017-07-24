@@ -8,7 +8,7 @@ from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_stri
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.string import lines_content
@@ -20,6 +20,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution, TestCaseSourceSetup
+from exactly_lib_test.act_phase_setups.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.act_phase_setups.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.execution.test_resources import eh_check
@@ -258,7 +259,7 @@ class TestSymbolUsages(unittest.TestCase):
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
                 SymbolReference(symbol_for_executable.name,
-                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE)),
+                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
             ]
             )
         )
@@ -300,7 +301,7 @@ class TestSymbolUsages(unittest.TestCase):
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
                 SymbolReference(symbol_for_executable.name,
-                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE)),
+                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
                 SymbolReference(argument_symbol.name, no_restrictions()),
             ]),
         )
@@ -351,7 +352,7 @@ class TestSymbolUsages(unittest.TestCase):
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
                 SymbolReference(dir_symbol.name,
-                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE)),
+                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
 
                 SymbolReference(executable_file_name_symbol.name,
                                 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
@@ -401,9 +402,6 @@ class TestSymbolUsages(unittest.TestCase):
                         arrangement,
                         expectation)
 
-
-PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE = PathRelativityVariants({RelOptionType.REL_HOME},
-                                                                 absolute=True)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
