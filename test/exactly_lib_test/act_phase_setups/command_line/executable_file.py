@@ -8,6 +8,7 @@ from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_stri
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -37,6 +38,8 @@ from exactly_lib_test.type_system_values.test_resources import list_values as lv
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     configuration = TheConfiguration()
+
+    ret_val.addTest(unittest.makeSuite(TestInvalidSyntax))
     ret_val.addTest(single_file_rel_home.suite_for(configuration))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments))
     ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
@@ -88,6 +91,30 @@ class TheConfiguration(Configuration):
 def _instructions_for_executing_py_file(src_path: pathlib.Path) -> list:
     cmd = py_exe.command_line_for_interpreting(src_path)
     return [instr([cmd])]
+
+
+class TestInvalidSyntax(unittest.TestCase):
+    def test_invalid_syntax_in_executable_part(self):
+        act_phase_instructions = [
+            instr(['invalid"quoting'])
+        ]
+        arrangement = Arrangement(act_phase_instructions)
+        expectation = Expectation()
+        with self.assertRaises(ParseException):
+            check_execution(self, sut.Constructor(),
+                            arrangement,
+                            expectation)
+
+    def test_invalid_syntax_in_arguments_part(self):
+        act_phase_instructions = [
+            instr(['executable arg1 arg2"invalid double quote'])
+        ]
+        arrangement = Arrangement(act_phase_instructions)
+        expectation = Expectation()
+        with self.assertRaises(ParseException):
+            check_execution(self, sut.Constructor(),
+                            arrangement,
+                            expectation)
 
 
 class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.TestCase):
