@@ -1,6 +1,7 @@
 import functools
 import pathlib
 import shlex
+from copy import copy
 
 from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
@@ -10,12 +11,15 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parse
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref_from_parse_source
+from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream import TokenSyntaxError
+from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -38,19 +42,19 @@ def act_phase_handling(interpreter: Command) -> ActPhaseHandling:
 
 def constructor(interpreter: Command) -> parts.Constructor:
     if interpreter.shell:
-        return ConstructorForShellCommand(interpreter.args)
+        return ConstructorForInterpreterThatIsAShellCommand(interpreter.args)
     else:
-        return ConstructorForExecutableFile(interpreter.args)
+        return ConstructorForInterpreterThatIsAnExecutableFile(interpreter.args)
 
 
-class ConstructorForExecutableFile(parts.Constructor):
+class ConstructorForInterpreterThatIsAnExecutableFile(parts.Constructor):
     def __init__(self, cmd_and_args: list):
         super().__init__(_Parser(is_shell=False),
                          _Validator,
                          functools.partial(_ExecutableFileExecutor, cmd_and_args))
 
 
-class ConstructorForShellCommand(parts.Constructor):
+class ConstructorForInterpreterThatIsAShellCommand(parts.Constructor):
     def __init__(self, shell_command: str):
         super().__init__(_Parser(is_shell=True),
                          _Validator,
@@ -59,10 +63,24 @@ class ConstructorForShellCommand(parts.Constructor):
 
 class _SourceInfo(SymbolUser):
     def __init__(self,
-                 file_name: FileRefResolver,
-                 remaining_arguments):
-        self.remaining_arguments = remaining_arguments
+                 file_name: FileRefResolver):
         self.file_reference = file_name
+
+
+class _SourceInfoForInterpreterThatIsAnExecutableFile(_SourceInfo):
+    def __init__(self,
+                 file_name: FileRefResolver,
+                 arguments: ListResolver):
+        super().__init__(file_name)
+        self.arguments = arguments
+
+
+class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
+    def __init__(self,
+                 file_name: FileRefResolver,
+                 arguments: str):
+        super().__init__(file_name)
+        self.arguments = arguments
 
 
 class _Parser(Parser):
@@ -77,25 +95,29 @@ class _Parser(Parser):
         try:
             source_file_resolver = parse_file_ref_from_parse_source(source,
                                                                     RELATIVITY_CONFIGURATION)
-            remaining_arguments = self._parse_remaining_arguments(source.remaining_source)
-            return _SourceInfo(source_file_resolver, remaining_arguments)
+            if self.is_shell:
+                return self._shell(source_file_resolver, source)
+            else:
+                return self._executable_file(source_file_resolver, source)
+        except TokenSyntaxError as ex:
+            raise ParseException(svh.new_svh_validation_error(str(ex)))
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))
-        except Exception as ex:
-            raise ParseException(svh.new_svh_validation_error(str(ex)))
 
-    def _parse_remaining_arguments(self, tail_source: str):
-        if self.is_shell:
-            if tail_source is None:
-                return None
-            return tail_source.strip()
-        else:
-            if tail_source is None:
-                return []
-            try:
-                return shlex.split(tail_source)
-            except Exception as ex:
-                raise ParseException(svh.new_svh_validation_error(str(ex)))
+    @staticmethod
+    def _executable_file(source_file: FileRefResolver,
+                         source: ParseSource,
+                         ) -> _SourceInfoForInterpreterThatIsAnExecutableFile:
+        arguments = parse_list(source)
+        return _SourceInfoForInterpreterThatIsAnExecutableFile(source_file,
+                                                               arguments)
+
+    @staticmethod
+    def _shell(source_file: FileRefResolver,
+               source: ParseSource,
+               ) -> _SourceInfoForInterpreterThatIsAShellCommand:
+        arguments = source.remaining_source.strip()
+        return _SourceInfoForInterpreterThatIsAShellCommand(source_file, arguments)
 
 
 class _Validator(parts.Validator):
@@ -125,7 +147,7 @@ class _ExecutableFileExecutor(CommandExecutor):
                  cmd_and_args_of_interpreter: list,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
-                 source: _SourceInfo):
+                 source: _SourceInfoForInterpreterThatIsAnExecutableFile):
         super().__init__(os_process_executor)
         self.cmd_and_args_of_interpreter = cmd_and_args_of_interpreter
         self.source = source
@@ -133,8 +155,15 @@ class _ExecutableFileExecutor(CommandExecutor):
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
+        cmd_and_args = copy(self.cmd_and_args_of_interpreter)
+
         src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.home_directory)
-        cmd_and_args = self.cmd_and_args_of_interpreter + [str(src_path)] + self.source.remaining_arguments
+        cmd_and_args.append(str(src_path))
+
+        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
+        args = self.source.arguments.resolve_value_of_any_dependency(path_resolving_env)
+        cmd_and_args.extend(args)
+
         return Command(cmd_and_args, shell=False)
 
 
@@ -143,7 +172,7 @@ class _ShellCommandExecutor(CommandExecutor):
                  shell_command_of_interpreter: str,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
-                 source: _SourceInfo):
+                 source: _SourceInfoForInterpreterThatIsAnExecutableFile):
         super().__init__(os_process_executor)
         self.shell_command_of_interpreter = shell_command_of_interpreter
         self.source = source
@@ -151,12 +180,12 @@ class _ShellCommandExecutor(CommandExecutor):
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        remaining_arguments = '' if not self.source.remaining_arguments else self.source.remaining_arguments
+        remaining_arguments = '' if not self.source.arguments else self.source.arguments
         src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.home_directory)
-        quoted_absolute_path_to_file = shlex.quote(str(src_path))
+        quoted_src_path = shlex.quote(str(src_path))
         command_string = '{interpreter} {source_file} {command_line_arguments}'.format(
             interpreter=self.shell_command_of_interpreter,
-            source_file=quoted_absolute_path_to_file,
+            source_file=quoted_src_path,
             command_line_arguments=remaining_arguments,
         )
         return Command(command_string, shell=True)
