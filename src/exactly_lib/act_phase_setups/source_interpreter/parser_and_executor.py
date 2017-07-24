@@ -2,6 +2,8 @@ import pathlib
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.instructions.utils.arg_parse import parse_string
+from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -9,15 +11,19 @@ from exactly_lib.test_case.phases.result import sh
 
 
 class SourceInfo(SymbolUser):
-    def __init__(self, source: str):
+    def __init__(self, source: StringResolver):
         self.source = source
+
+    def symbol_usages(self) -> list:
+        return self.source.references
 
 
 class Parser(parts.Parser):
     def apply(self, act_phase_instructions: list) -> SourceInfo:
         from exactly_lib.util.string import lines_content_with_os_linesep
-        source = lines_content_with_os_linesep(self._all_source_code_lines(act_phase_instructions))
-        return SourceInfo(source)
+        raw_source = lines_content_with_os_linesep(self._all_source_code_lines(act_phase_instructions))
+        source_resolver = parse_string.string_resolver_from_string(raw_source)
+        return SourceInfo(source_resolver)
 
     @staticmethod
     def _all_source_code_lines(act_phase_instructions) -> list:
@@ -62,15 +68,17 @@ class ExecutorBase(CommandExecutor):
                  source_info: SourceInfo):
         super().__init__(os_process_executor)
         self.file_name_generator = file_name_generator
-        self.source_code = source_info.source
+        self.source_code_resolver = source_info.source
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         script_file_path = self._source_file_path(script_output_dir_path)
+        resolving_env = environment.path_resolving_environment_pre_or_post_sds
+        source_code = self.source_code_resolver.resolve_value_of_any_dependency(resolving_env)
         try:
             with open(str(script_file_path), 'w') as f:
-                f.write(self.source_code)
+                f.write(source_code)
             return sh.new_sh_success()
         except OSError as ex:
             return sh.new_sh_hard_error(str(ex))

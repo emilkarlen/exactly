@@ -1,8 +1,11 @@
 import pathlib
+import shlex
+import sys
 import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups.source_interpreter import shell_command as sut
+from exactly_lib_test.act_phase_setups.source_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
     Configuration, suite_for_execution, TestCaseSourceSetup
@@ -11,7 +14,11 @@ from exactly_lib_test.test_resources.programs.python_program_execution import fi
 
 
 def suite() -> unittest.TestSuite:
-    return suite_for_execution(TheConfiguration())
+    return unittest.TestSuite([
+        suite_for_execution(TheConfiguration()),
+        common_tests.suite_for(sut.Constructor(shlex.quote(sys.executable)),
+                               is_shell=True)
+    ])
 
 
 class TheConfiguration(Configuration):
