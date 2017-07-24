@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.util.process_execution.os_process_execution import Command
-from exactly_lib_test.act_phase_setups.file_interpreter import test_resources
+from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources import \
@@ -28,7 +28,7 @@ def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
         single_file_rel_home.suite_for(configuration),
         custom_suite_for(configuration),
 
-        test_resources.suite_for(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
+        common_tests.suite_for(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
     ])
 
 

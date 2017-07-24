@@ -46,6 +46,16 @@ class TestCaseBase(unittest.TestCase):
             self.command_that_runs_python_file.shell,
         )
 
+    def _check(self,
+               command_line: str,
+               arrangement: Arrangement,
+               expectation: Expectation):
+        check_execution(self,
+                        sut.constructor(self.command_that_runs_python_file),
+                        [instr([command_line])],
+                        arrangement,
+                        expectation)
+
 
 class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
     def runTest(self):
@@ -86,11 +96,9 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
                                 no_restrictions()),
             ]),
         )
-        check_execution(self,
-                        sut.constructor(self.command_that_runs_python_file),
-                        [instr([command_line])],
-                        arrangement,
-                        expectation)
+        self._check(command_line,
+                    arrangement,
+                    expectation)
 
 
 class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
@@ -141,8 +149,6 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
                                 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
             ]),
         )
-        check_execution(self,
-                        sut.constructor(self.command_that_runs_python_file),
-                        [instr([command_line])],
-                        arrangement,
-                        expectation)
+        self._check(command_line,
+                    arrangement,
+                    expectation)
