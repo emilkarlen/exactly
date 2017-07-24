@@ -2,13 +2,21 @@ import functools
 import pathlib
 import shlex
 
+from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.instructions.utils import file_properties
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref_from_parse_source
+from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -16,6 +24,8 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 SHELL_COMMAND_MARKER = '$'
+
+RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check('FILE')
 
 
 def act_phase_setup(interpreter: Command) -> ActPhaseSetup:
@@ -49,7 +59,7 @@ class ConstructorForShellCommand(parts.Constructor):
 
 class _SourceInfo(SymbolUser):
     def __init__(self,
-                 file_name: str,
+                 file_name: FileRefResolver,
                  remaining_arguments):
         self.remaining_arguments = remaining_arguments
         self.file_reference = file_name
@@ -63,28 +73,16 @@ class _Parser(Parser):
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
         single_line = single_line_parser.apply(act_phase_instructions)
         single_line = single_line.strip()
+        source = ParseSource(single_line)
         try:
-            token_stream = TokenStream(single_line)
-            if token_stream.is_null:
-                raise ValueError('Illegal state: cannot read a single token from source: "{}"'.format(single_line))
-            file_name = token_stream.head.string
-            remaining_arguments = self._parse_remaining_arguments(token_stream.remaining_source_after_head)
-            return _SourceInfo(file_name, remaining_arguments)
+            source_file_resolver = parse_file_ref_from_parse_source(source,
+                                                                    RELATIVITY_CONFIGURATION)
+            remaining_arguments = self._parse_remaining_arguments(source.remaining_source)
+            return _SourceInfo(source_file_resolver, remaining_arguments)
+        except SingleInstructionInvalidArgumentException as ex:
+            raise ParseException(svh.new_svh_validation_error(ex.error_message))
         except Exception as ex:
             raise ParseException(svh.new_svh_validation_error(str(ex)))
-
-    @staticmethod
-    def _parse_shell_command(argument: str) -> Command:
-        striped_argument = argument.strip()
-        if not striped_argument:
-            msg = SHELL_COMMAND_MARKER + ': command string is missing.'
-            raise ParseException(svh.new_svh_validation_error(msg))
-        return Command(striped_argument, shell=True)
-
-    @staticmethod
-    def _parse_executable_file(argument: str) -> Command:
-        cmd_and_args = shlex.split(argument)
-        return Command(cmd_and_args, shell=False)
 
     def _parse_remaining_arguments(self, tail_source: str):
         if self.is_shell:
@@ -106,20 +104,15 @@ class _Validator(parts.Validator):
                  source: _SourceInfo):
         self.environment = environment
         self.source = source
+        self.validator = PreOrPostSdsSvhValidationErrorValidator(
+            FileRefCheckValidator(FileRefCheck(source.file_reference,
+                                               file_properties.must_exist_as(file_properties.FileType.REGULAR)))
+        )
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
-        file_path = pathlib.Path(self.source.file_reference)
-        if file_path.is_absolute():
-            if not file_path.exists():
-                return svh.new_svh_validation_error('File does not exist: ' + self.source.file_reference)
-        else:
-            file_abs_path = self.environment.home_directory / self.source.file_reference
-            if not file_abs_path.exists():
-                msg = 'Not an existing file relative home-dir: ' + str(file_abs_path)
-                return svh.new_svh_validation_error(msg)
-        return svh.new_svh_success()
+        return self.validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
 
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
@@ -140,8 +133,8 @@ class _ExecutableFileExecutor(CommandExecutor):
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        absolute_file_name = _resolve_absolute_file_name(self.source.file_reference, environment)
-        cmd_and_args = self.cmd_and_args_of_interpreter + [absolute_file_name] + self.source.remaining_arguments
+        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.home_directory)
+        cmd_and_args = self.cmd_and_args_of_interpreter + [str(src_path)] + self.source.remaining_arguments
         return Command(cmd_and_args, shell=False)
 
 
@@ -159,8 +152,8 @@ class _ShellCommandExecutor(CommandExecutor):
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
         remaining_arguments = '' if not self.source.remaining_arguments else self.source.remaining_arguments
-        absolute_path_to_file = _resolve_absolute_file_name(self.source.file_reference, environment)
-        quoted_absolute_path_to_file = shlex.quote(absolute_path_to_file)
+        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.home_directory)
+        quoted_absolute_path_to_file = shlex.quote(str(src_path))
         command_string = '{interpreter} {source_file} {command_line_arguments}'.format(
             interpreter=self.shell_command_of_interpreter,
             source_file=quoted_absolute_path_to_file,
