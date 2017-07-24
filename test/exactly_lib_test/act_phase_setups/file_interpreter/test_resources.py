@@ -6,7 +6,6 @@ from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_stri
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.process_execution.os_process_execution import Command
@@ -14,6 +13,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
+from exactly_lib_test.act_phase_setups.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.act_phase_setups.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.execution.test_resources import eh_check
@@ -146,7 +146,3 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
                         sut.constructor(self.command_that_runs_python_file),
                         arrangement,
                         expectation)
-
-
-PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN = PathRelativityVariants({RelOptionType.REL_HOME},
-                                                                  absolute=True)
