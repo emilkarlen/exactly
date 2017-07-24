@@ -17,6 +17,7 @@ from exactly_lib_test.act_phase_setups.test_resources.misc import PATH_RELATIVIT
 from exactly_lib_test.act_phase_setups.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.execution.test_resources import eh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -28,6 +29,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite_for(command_that_runs_python_file: Command) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
+
+    ret_val.addTest(TestValidationShouldFailWhenSourceFileDoesNotExist(command_that_runs_python_file))
+    ret_val.addTest(TestValidationShouldFailWhenSourceFileIsADirectory(command_that_runs_python_file))
 
     ret_val.addTest(TestStringSymbolReferenceInSourceAndArgument(command_that_runs_python_file))
     ret_val.addTest(TestMultipleSymbolReferencesInSourceFileRef(command_that_runs_python_file))
@@ -55,6 +59,34 @@ class TestCaseBase(unittest.TestCase):
                         [instr([command_line])],
                         arrangement,
                         expectation)
+
+
+class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseBase):
+    def runTest(self):
+        command_line = 'non-existing-file.src'
+        arrangement = Arrangement()
+
+        expectation = Expectation(
+            result_of_validate_pre_sds=svh_check.is_validation_error()
+        )
+        self._check(command_line,
+                    arrangement,
+                    expectation)
+
+
+class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
+    def runTest(self):
+        source_file = 'source-file.src'
+        command_line = source_file
+        arrangement = Arrangement(
+            home_dir_contents=fs.DirContents([fs.empty_dir(source_file)])
+        )
+        expectation = Expectation(
+            result_of_validate_pre_sds=svh_check.is_validation_error()
+        )
+        self._check(command_line,
+                    arrangement,
+                    expectation)
 
 
 class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
