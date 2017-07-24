@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
@@ -8,8 +9,6 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_execut
 from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.instructions.utils.arg_parse.parse_file_ref import parse_file_ref_from_parse_source
 from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list
-from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
@@ -22,7 +21,6 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, 
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 SHELL_COMMAND_MARKER = '$'
@@ -36,15 +34,7 @@ def act_phase_handling() -> ActPhaseHandling:
     return ActPhaseHandling(Constructor())
 
 
-RELATIVITY_CONFIGURATION = RelOptionArgumentConfiguration(
-    RelOptionsConfiguration(
-        PathRelativityVariants({RelOptionType.REL_HOME},
-                               absolute=True),
-        is_rel_symbol_option_accepted=False,
-        default_option=RelOptionType.REL_HOME),
-    argument_syntax_name='EXECUTABLE',
-    path_suffix_is_required=True
-)
+RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check('EXECUTABLE')
 
 
 class Constructor(parts.Constructor):

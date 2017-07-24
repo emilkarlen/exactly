@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
-from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
@@ -9,8 +8,6 @@ from exactly_lib_test.act_phase_setups.test_resources import \
     test_validation_for_single_file_rel_home as single_file_rel_home
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import suite_for_execution
-from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single_line_source import \
-    TestCaseForConfigurationForValidation
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
@@ -32,7 +29,7 @@ def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
 
 def custom_suite_for(conf: TheConfiguration) -> unittest.TestSuite:
     test_cases = [
-        TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
+        # TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
         TestFileReferenceCanBeQuoted,
         TestArgumentsAreParsedAndPassedToExecutor,
     ]
@@ -51,15 +48,16 @@ if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
 
-class TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigurationForValidation):
-    def runTest(self):
-        act_phase_instructions = [instr(["""valid-file-ref 'quoting missing ending single-quote"""]),
-                                  instr([''])]
-        actual = self._do_parse_and_validate_pre_sds(act_phase_instructions,
-                                                     home_dir_contents=DirContents([empty_file('valid-file-ref')]))
-        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                      actual.status,
-                      'Validation result')
+# TODO Not sure if this case should be supported.
+# class TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigurationForValidation):
+#     def runTest(self):
+#         act_phase_instructions = [instr(["""valid-file-ref 'quoting missing ending single-quote"""]),
+#                                   instr([''])]
+#         actual = self._do_parse_and_validate_pre_sds(act_phase_instructions,
+#                                                      home_dir_contents=DirContents([empty_file('valid-file-ref')]))
+#         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+#                       actual.status,
+#                       'Validation result')
 
 
 class TestFileReferenceCanBeQuoted(unittest.TestCase):
