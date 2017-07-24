@@ -6,9 +6,6 @@ from exactly_lib.act_phase_setups.source_interpreter import executable_file as s
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceFileManager, \
     SourceInterpreterSetup
 from exactly_lib.util.string import lines_content
-# from exactly_lib_test.test_resources.name_and_value import NameAndValue
-# from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
-# from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.act_phase_setups.source_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
@@ -111,39 +108,6 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
                         ]))))
         self.assertTrue(exit_code_or_hard_error.is_hard_error,
                         'Expecting a HARD ERROR')
-
-
-# class TestThatSymbolReferencesAreReportedAndUsed(unittest.TestCase):
-#     def runTest(self):
-#         source_and_executor_constructor = sut.Constructor(python3.script_language_setup())
-#
-#         symbol = NameAndValue('symbol_name', 'the symbol value')
-#
-#         program_that_prints_value_of_symbol = 'print("{symbol}")'
-#
-#         single_source_line = program_that_prints_value_of_symbol.format(
-#             symbol=symbol_reference_syntax_for_name(symbol.name),
-#         )
-#
-#         expected_output = symbol.value + '\n'
-#
-#         act_phase_instructions = [instr([single_source_line])]
-#
-#         check_execution(
-#             self,
-#             source_and_executor_constructor,
-#             act_phase_instructions,
-#             Arrangement(
-#                 symbol_table=SymbolTable({
-#                     symbol.name:
-#                         su.file_ref_constant_container(symbol.value),
-#                 })
-#
-#             ),
-#             Expectation(
-#                 sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-#                                                                       'program output')),
-#             ))
 
 
 class _SourceFileManagerWithNonExistingInterpreter(SourceFileManager):
