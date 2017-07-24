@@ -99,8 +99,8 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
         dir_symbol = NameAndValue('dir_symbol_name',
                                   file_refs.rel_home(PathPartAsFixedPath(sub_dir_of_home)))
 
-        executable_file_name_symbol = NameAndValue('executable_file_name_symbol_name',
-                                                   'the-executable-file')
+        source_file_name_symbol = NameAndValue('source_file_name_symbol_name',
+                                               'the-source-file.py')
 
         argument = 'argument_string'
 
@@ -108,12 +108,12 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
 
         command_line = '{dir}/{file_name}  {argument} '.format(
             dir=symbol_reference_syntax_for_name(dir_symbol.name),
-            file_name=symbol_reference_syntax_for_name(executable_file_name_symbol.name),
+            file_name=symbol_reference_syntax_for_name(source_file_name_symbol.name),
             argument=argument,
         )
 
         executable_file = fs.File(
-            executable_file_name_symbol.value,
+            source_file_name_symbol.value,
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
@@ -125,8 +125,8 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
                 dir_symbol.name:
                     su.file_ref_constant_container(dir_symbol.value),
 
-                executable_file_name_symbol.name:
-                    su.string_value_constant_container(executable_file_name_symbol.value),
+                source_file_name_symbol.name:
+                    su.string_value_constant_container(source_file_name_symbol.value),
             })
         )
 
@@ -138,7 +138,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
                 SymbolReference(dir_symbol.name,
                                 path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
 
-                SymbolReference(executable_file_name_symbol.name,
+                SymbolReference(source_file_name_symbol.name,
                                 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
             ]),
         )
