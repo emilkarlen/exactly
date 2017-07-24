@@ -1,5 +1,5 @@
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
-from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.symbol.string_resolver import StringResolver, string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system_values import concrete_string_values as csv
 from exactly_lib.type_system_values.file_ref import FileRef
@@ -123,3 +123,8 @@ class ListResolver(SymbolValueResolver):
         for resolver_element in self._elements:
             value_elements.extend(resolver_element.resolve(symbols))
         return ListValue(value_elements)
+
+
+def list_resolver_constant(str_elements: list) -> ListResolver:
+    return ListResolver([string_element(string_constant(element))
+                         for element in str_elements])
