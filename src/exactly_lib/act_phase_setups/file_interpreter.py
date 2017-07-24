@@ -29,8 +29,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
 
-SHELL_COMMAND_MARKER = '$'
-
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check('FILE')
 
 
