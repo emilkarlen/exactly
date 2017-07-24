@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib_test.act_phase_setups.file_interpreter import test_resources
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources import \
@@ -14,16 +15,20 @@ from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor imp
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
+COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = Command(abs_path_to_interpreter_quoted_for_exactly(), shell=True)
+
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.constructor(Command(abs_path_to_interpreter_quoted_for_exactly(), shell=True)))
+        super().__init__(sut.constructor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
 
 
 def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
     return unittest.TestSuite([
         single_file_rel_home.suite_for(configuration),
-        custom_suite_for(configuration)
+        custom_suite_for(configuration),
+
+        test_resources.suite_for(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
     ])
 
 
