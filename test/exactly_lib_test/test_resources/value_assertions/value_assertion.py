@@ -235,8 +235,8 @@ class Equals(ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
-        put.assertEqual(value,
-                        self.expected,
+        put.assertEqual(self.expected,
+                        value,
                         message_builder.apply(self.message))
 
 
