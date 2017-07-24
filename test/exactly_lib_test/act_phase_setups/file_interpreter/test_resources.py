@@ -1,11 +1,14 @@
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
-from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_string_reference_restrictions
+from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_string_reference_restrictions, \
+    PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -27,11 +30,12 @@ def suite_for(command_that_runs_python_file: Command) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
 
     ret_val.addTest(TestStringSymbolReferenceInSourceAndArgument(command_that_runs_python_file))
+    ret_val.addTest(TestMultipleSymbolReferencesInSourceFileRef(command_that_runs_python_file))
 
     return ret_val
 
 
-class TestStringSymbolReferenceInSourceAndArgument(unittest.TestCase):
+class TestCaseBase(unittest.TestCase):
     def __init__(self, command_that_runs_python_file: Command):
         super().__init__()
         self.command_that_runs_python_file = command_that_runs_python_file
@@ -42,6 +46,8 @@ class TestStringSymbolReferenceInSourceAndArgument(unittest.TestCase):
             self.command_that_runs_python_file.shell,
         )
 
+
+class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
     def runTest(self):
         symbol_for_source_file = NameAndValue('source_file_symbol_name',
                                               'the-source-file.py')
@@ -76,7 +82,7 @@ class TestStringSymbolReferenceInSourceAndArgument(unittest.TestCase):
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
                 SymbolReference(symbol_for_source_file.name,
-                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE)),
+                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
                 SymbolReference(argument_symbol.name,
                                 no_restrictions()),
             ]),
@@ -87,5 +93,60 @@ class TestStringSymbolReferenceInSourceAndArgument(unittest.TestCase):
                         expectation)
 
 
-PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE = PathRelativityVariants({RelOptionType.REL_HOME},
-                                                                 absolute=True)
+class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
+    def runTest(self):
+        sub_dir_of_home = 'sub-dir'
+        dir_symbol = NameAndValue('dir_symbol_name',
+                                  file_refs.rel_home(PathPartAsFixedPath(sub_dir_of_home)))
+
+        executable_file_name_symbol = NameAndValue('executable_file_name_symbol_name',
+                                                   'the-executable-file')
+
+        argument = 'argument_string'
+
+        expected_output = lines_content([argument])
+
+        command_line = '{dir}/{file_name}  {argument} '.format(
+            dir=symbol_reference_syntax_for_name(dir_symbol.name),
+            file_name=symbol_reference_syntax_for_name(executable_file_name_symbol.name),
+            argument=argument,
+        )
+
+        executable_file = fs.File(
+            executable_file_name_symbol.value,
+            PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+
+        arrangement = Arrangement(
+            [instr([command_line])],
+            home_dir_contents=fs.DirContents([
+                fs.Dir(sub_dir_of_home, [executable_file])
+            ]),
+            symbol_table=SymbolTable({
+                dir_symbol.name:
+                    su.file_ref_constant_container(dir_symbol.value),
+
+                executable_file_name_symbol.name:
+                    su.string_value_constant_container(executable_file_name_symbol.value),
+            })
+        )
+
+        expectation = Expectation(
+            result_of_execute=eh_check.is_exit_code(0),
+            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                  'CLI arguments, one per line')),
+            symbol_usages=equals_symbol_references([
+                SymbolReference(dir_symbol.name,
+                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
+
+                SymbolReference(executable_file_name_symbol.name,
+                                PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+            ]),
+        )
+        check_execution(self,
+                        sut.constructor(self.command_that_runs_python_file),
+                        arrangement,
+                        expectation)
+
+
+PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN = PathRelativityVariants({RelOptionType.REL_HOME},
+                                                                  absolute=True)
