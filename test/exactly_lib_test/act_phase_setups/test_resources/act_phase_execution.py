@@ -37,14 +37,12 @@ class HardErrorResultError(Exception):
 
 class Arrangement:
     def __init__(self,
-                 act_phase_instructions: list,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
                  act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR,
                  symbol_table: SymbolTable = None,
                  ):
-        self.act_phase_instructions = act_phase_instructions
         self.home_dir_contents = home_dir_contents
         self.environ = {} if environ is None else environ
         self.timeout_in_seconds = timeout_in_seconds
@@ -76,9 +74,10 @@ def simple_success() -> Expectation:
 
 def check_execution(put: unittest.TestCase,
                     executor_constructor: ActSourceAndExecutorConstructor,
+                    act_phase_instructions: list,
                     arrangement: Arrangement,
                     expectation: Expectation) -> ExitCodeOrHardError:
-    assert_is_list_of_act_phase_instructions(put, arrangement.act_phase_instructions)
+    assert_is_list_of_act_phase_instructions(put, act_phase_instructions)
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
         instruction_environment = InstructionEnvironmentForPreSdsStep(home_dir,
                                                                       arrangement.environ,
@@ -86,7 +85,7 @@ def check_execution(put: unittest.TestCase,
                                                                       symbols=arrangement.symbol_table)
         sut = executor_constructor.apply(arrangement.act_phase_process_executor,
                                          instruction_environment,
-                                         arrangement.act_phase_instructions)
+                                         act_phase_instructions)
         sut.parse(instruction_environment)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),

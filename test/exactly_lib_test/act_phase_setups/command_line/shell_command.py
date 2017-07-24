@@ -101,8 +101,8 @@ class TestSymbolReferences(unittest.TestCase):
         check_execution(
             self,
             sut.Constructor(),
+            act_phase_instructions,
             Arrangement(
-                act_phase_instructions=act_phase_instructions,
                 symbol_table=SymbolTable({
                     symbol.name: symbol_utils.string_value_constant_container(symbol.value)
                 })

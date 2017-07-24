@@ -73,8 +73,8 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
         act_phase_instructions = [instr([shell_command_source_line_for('act phase source line')])]
         act_phase_execution.check_execution(self,
                                             executor_constructor,
+                                            act_phase_instructions,
                                             act_phase_execution.Arrangement(
-                                                act_phase_instructions=act_phase_instructions,
                                                 act_phase_process_executor=os_process_executor),
                                             act_phase_execution.Expectation())
         # ASSERT #

@@ -62,7 +62,6 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
         )
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.File(
                     symbol_for_source_file.value,
@@ -89,6 +88,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
         )
         check_execution(self,
                         sut.constructor(self.command_that_runs_python_file),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
 
@@ -117,7 +117,6 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
-            [instr([command_line])],
             home_dir_contents=fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
             ]),
@@ -144,5 +143,6 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
         )
         check_execution(self,
                         sut.constructor(self.command_that_runs_python_file),
+                        [instr([command_line])],
                         arrangement,
                         expectation)
