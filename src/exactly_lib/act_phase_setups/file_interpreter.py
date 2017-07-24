@@ -74,6 +74,9 @@ class _SourceInfoForInterpreterThatIsAnExecutableFile(_SourceInfo):
         super().__init__(file_name)
         self.arguments = arguments
 
+    def symbol_usages(self) -> list:
+        return self.file_reference.references + self.arguments.references
+
 
 class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
     def __init__(self,
@@ -81,6 +84,9 @@ class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
                  arguments: str):
         super().__init__(file_name)
         self.arguments = arguments
+
+    def symbol_usages(self) -> list:
+        return self.file_reference.references
 
 
 class _Parser(Parser):
