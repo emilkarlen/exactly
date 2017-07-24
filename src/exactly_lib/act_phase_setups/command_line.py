@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
+from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check, SHELL_COMMAND_MARKER
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
@@ -22,8 +22,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.process_execution.os_process_execution import Command
-
-SHELL_COMMAND_MARKER = '$'
 
 
 def act_phase_setup() -> ActPhaseSetup:

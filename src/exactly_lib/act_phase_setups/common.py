@@ -2,6 +2,8 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelO
     RelOptionsConfiguration
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 
+SHELL_COMMAND_MARKER = '$'
+
 
 def relativity_configuration_of_action_to_check(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(
