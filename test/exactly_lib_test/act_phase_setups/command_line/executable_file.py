@@ -20,6 +20,8 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution, TestCaseSourceSetup
+from exactly_lib_test.act_phase_setups.test_resources.py_program import \
+    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
@@ -133,7 +135,7 @@ class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.T
                                   home_dir_contents=fs.DirContents([
                                       fs.python_executable_file(
                                           'system-under-test',
-                                          _PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                                          PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
                                   ]))
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
@@ -166,7 +168,7 @@ class TestSymbolUsages(unittest.TestCase):
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     executable,
-                    _PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
             ]),
             symbol_table=SymbolTable({
                 list_symbol.name:
@@ -205,7 +207,7 @@ class TestSymbolUsages(unittest.TestCase):
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     executable,
-                    _PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
             ]),
             symbol_table=SymbolTable({
                 symbol.name:
@@ -242,7 +244,7 @@ class TestSymbolUsages(unittest.TestCase):
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
-                    _PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
             ]),
             symbol_table=SymbolTable({
                 symbol_for_executable.name:
@@ -282,7 +284,7 @@ class TestSymbolUsages(unittest.TestCase):
             home_dir_contents=fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
-                    _PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
             ]),
             symbol_table=SymbolTable({
                 symbol_for_executable.name:
@@ -327,7 +329,7 @@ class TestSymbolUsages(unittest.TestCase):
 
         executable_file = fs.python_executable_file(
             executable_file_name_symbol.value,
-            _PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+            PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
             [instr([command_line])],
@@ -363,12 +365,6 @@ class TestSymbolUsages(unittest.TestCase):
 
 PATH_RELATIVITY_VARIANTS_FOR_EXECUTABLE = PathRelativityVariants({RelOptionType.REL_HOME},
                                                                  absolute=True)
-
-_PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES = """\
-import sys
-for arg in sys.argv[1:]:
-  print(arg)
-"""
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
