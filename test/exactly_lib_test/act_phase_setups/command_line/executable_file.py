@@ -8,7 +8,6 @@ from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_stri
 from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -22,6 +21,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.execution.test_resources import eh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -94,27 +94,33 @@ def _instructions_for_executing_py_file(src_path: pathlib.Path) -> list:
 
 
 class TestInvalidSyntax(unittest.TestCase):
-    def test_invalid_syntax_in_executable_part(self):
+    def test_executable_file_must_exist(self):
         act_phase_instructions = [
-            instr(['invalid"quoting'])
+            instr(['non-existing-executable'])
         ]
         arrangement = Arrangement(act_phase_instructions)
-        expectation = Expectation()
-        with self.assertRaises(ParseException):
-            check_execution(self, sut.Constructor(),
-                            arrangement,
-                            expectation)
+        expectation = Expectation(
+            result_of_validate_pre_sds=svh_check.is_validation_error()
+        )
+        check_execution(self, sut.Constructor(),
+                        arrangement,
+                        expectation)
 
-    def test_invalid_syntax_in_arguments_part(self):
+    def test_executable_file_must_be_executable(self):
+        executable_file_name = 'existing-executable'
         act_phase_instructions = [
-            instr(['executable arg1 arg2"invalid double quote'])
+            instr([executable_file_name])
         ]
-        arrangement = Arrangement(act_phase_instructions)
-        expectation = Expectation()
-        with self.assertRaises(ParseException):
-            check_execution(self, sut.Constructor(),
-                            arrangement,
-                            expectation)
+        arrangement = Arrangement(
+            act_phase_instructions,
+            home_dir_contents=fs.DirContents([fs.empty_file(executable_file_name)])
+        )
+        expectation = Expectation(
+            result_of_validate_pre_sds=svh_check.is_validation_error()
+        )
+        check_execution(self, sut.Constructor(),
+                        arrangement,
+                        expectation)
 
 
 class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.TestCase):

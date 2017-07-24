@@ -7,6 +7,7 @@ from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_system_values import file_ref
+from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -43,6 +44,14 @@ class ExecutableFile:
 
     def file_reference(self, symbols: SymbolTable) -> file_ref.FileRef:
         return self._file_reference_resolver.resolve(symbols)
+
+    def non_shell_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        cmd_path = self.file_resolver.resolve_value_of_any_dependency(environment)
+        cmd_and_args = [str(cmd_path)]
+        cmd_and_args.extend(self.arguments.resolve_value_of_any_dependency(environment))
+
+        return Command(cmd_and_args,
+                       shell=False)
 
 
 class ExistingExecutableFileValidator(FileRefValidatorBase):
