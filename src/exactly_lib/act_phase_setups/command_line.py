@@ -8,11 +8,16 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parse
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.symbol.list_resolver import ListResolver, list_resolver_constant
+from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 SHELL_COMMAND_MARKER = '$'
@@ -61,16 +66,21 @@ class CommandConfigurationForShell(CommandConfiguration):
 
 
 class CommandConfigurationForExecutableFile(CommandConfiguration):
-    def __init__(self, cmd_and_args: list):
-        self._cmd_and_args = cmd_and_args
+    def __init__(self,
+                 executable: FileRefResolver,
+                 arguments: ListResolver):
+        self.executable = executable
+        self.arguments = arguments
 
     def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
-        return _ExecutableFileValidator(self._cmd_and_args)
+        return _ExecutableFileValidator(self.executable)
 
     def executor(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
-        return _ExecutableFileExecutor(os_process_executor, self._cmd_and_args)
+        return _ExecutableFileExecutor(os_process_executor,
+                                       self.executable,
+                                       self.arguments)
 
 
 class _Parser(Parser):
@@ -95,7 +105,18 @@ class _Parser(Parser):
     @staticmethod
     def _parse_executable_file(argument: str) -> CommandConfigurationForExecutableFile:
         cmd_and_args = shlex.split(argument)
-        return CommandConfigurationForExecutableFile(cmd_and_args)
+        cmd_resolver = _cmd(cmd_and_args[0])
+        args_resolver = list_resolver_constant(cmd_and_args[1:])
+        return CommandConfigurationForExecutableFile(cmd_resolver, args_resolver)
+
+
+def _cmd(cmd: str) -> FileRefResolver:
+    cmd_path = pathlib.Path(cmd)
+    if cmd_path.is_absolute():
+        file_ref = file_refs.absolute_file_name(cmd)
+    else:
+        file_ref = file_refs.rel_home(PathPartAsFixedPath(cmd))
+    return FileRefConstant(file_ref)
 
 
 def _validator(environment: InstructionEnvironmentForPreSdsStep,
@@ -110,20 +131,14 @@ def _executor(os_process_executor: ActPhaseOsProcessExecutor,
 
 
 class _ExecutableFileValidator(parts.Validator):
-    def __init__(self, cmd_and_args: list):
-        self.cmd_and_args = cmd_and_args
+    def __init__(self, executable: FileRefResolver):
+        self.executable = executable
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        cmd = self.cmd_and_args[0]
-        cmd_path = pathlib.Path(cmd)
-        if cmd_path.is_absolute():
-            if not cmd_path.exists():
-                return svh.new_svh_validation_error('File does not exist: ' + cmd)
-        else:
-            cmd_abs_path = environment.home_directory / cmd
-            if not cmd_abs_path.exists():
-                return svh.new_svh_validation_error('Not a file relative home-dir: ' + str(cmd_abs_path))
+        cmd_path = self.executable.resolve(environment.symbols).value_pre_sds(environment.home_directory)
+        if not cmd_path.exists():
+            return svh.new_svh_validation_error('File does not exist: ' + str(cmd_path))
         return svh.new_svh_success()
 
     def validate_post_setup(self,
@@ -135,19 +150,22 @@ class _ExecutableFileValidator(parts.Validator):
 class _ExecutableFileExecutor(CommandExecutor):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
-                 cmd_and_args: list):
+                 executable: FileRefResolver,
+                 arguments: ListResolver):
         super().__init__(os_process_executor)
-        self.cmd_and_args = cmd_and_args
+        self.executable = executable
+        self.arguments = arguments
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        cmd = self.cmd_and_args[0]
-        cmd_path = pathlib.Path(cmd)
-        if not cmd_path.is_absolute():
-            cmd_path = environment.home_directory / cmd_path
-            self.cmd_and_args[0] = str(cmd_path)
-        return Command(self.cmd_and_args,
+        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
+
+        cmd_path = self.executable.resolve_value_of_any_dependency(path_resolving_env)
+        cmd_and_args = [str(cmd_path)]
+        cmd_and_args.extend(self.arguments.resolve_value_of_any_dependency(path_resolving_env))
+
+        return Command(cmd_and_args,
                        shell=False)
 
 
