@@ -2,12 +2,12 @@ import pathlib
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
-from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case_utils.parse import parse_string
 
 
 class SourceInfo(SymbolUser):

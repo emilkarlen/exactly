@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.instructions.setup import stdin as sut
-from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -10,6 +9,7 @@ from exactly_lib.symbol.string_resolver import StringResolver, string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system_values import file_ref, file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
