@@ -11,7 +11,6 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file
-from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list, \
@@ -29,7 +28,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.parse import parse_string
+from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
 from exactly_lib.util.cli_syntax.elements import argument as a

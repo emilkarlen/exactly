@@ -3,12 +3,12 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
-from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import symbol_table_with_entries, SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \

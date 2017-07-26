@@ -3,11 +3,11 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import command_line as sut
-from exactly_lib.instructions.utils.arg_parse.parse_file_ref import path_or_string_reference_restrictions, \
-    PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
+    PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
