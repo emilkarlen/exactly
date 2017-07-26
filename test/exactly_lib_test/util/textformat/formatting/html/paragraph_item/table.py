@@ -2,8 +2,8 @@ import unittest
 from xml.etree.ElementTree import Element
 
 from exactly_lib.util.textformat.formatting.html.paragraph_item import table as sut
-from exactly_lib.util.textformat.structure.structures import paras, para
-from exactly_lib.util.textformat.structure.table import Table, TableFormat
+from exactly_lib.util.textformat.structure.structures import para, cell
+from exactly_lib.util.textformat.structure.table import Table, TableFormat, single_paragraph_cell, TableCell
 from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import ConstantPRenderer
 from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
 
@@ -61,8 +61,8 @@ class TestMultipleRowsMultipleColumn(unittest.TestCase):
         root = Element('root')
         table = Table(TableFormat(),
                       [
-                          [paras('ignored'), paras('ignored')],
-                          [paras('ignored'), paras('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
                       ])
         # ACT #
         ret_val = sut.render(ConstantPRenderer('para text'),
@@ -92,8 +92,8 @@ class TestHeaderRowTable(unittest.TestCase):
         root = Element('root')
         table = Table(TableFormat(first_row_is_header=True),
                       [
-                          [paras('ignored'), paras('ignored')],
-                          [paras('ignored'), paras('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
                       ])
         # ACT #
         ret_val = sut.render(ConstantPRenderer('para text'),
@@ -123,8 +123,8 @@ class TestHeaderColumnTable(unittest.TestCase):
         root = Element('root')
         table = Table(TableFormat(first_column_is_header=True),
                       [
-                          [paras('ignored'), paras('ignored')],
-                          [paras('ignored'), paras('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
                       ])
         # ACT #
         ret_val = sut.render(ConstantPRenderer('para text'),
@@ -154,8 +154,8 @@ class TestSinglePInTableShouldSKipThePElement(unittest.TestCase):
         root = Element('root')
         table = Table(TableFormat(first_row_is_header=True),
                       [
-                          [paras('ignored'), [para('ignored'), para('ignored')]],
-                          [paras('ignored'), [para('ignored'), para('ignored')]],
+                          [text_cell('ignored'), cell([para('ignored'), para('ignored')])],
+                          [text_cell('ignored'), cell([para('ignored'), para('ignored')])],
                       ])
         # ACT #
         ret_val = sut.render(ConstantPRenderer('para text'),
@@ -186,8 +186,8 @@ class TestHeaderRowAndColumnTable(unittest.TestCase):
         table = Table(TableFormat(first_row_is_header=True,
                                   first_column_is_header=True),
                       [
-                          [paras('ignored'), paras('ignored')],
-                          [paras('ignored'), paras('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
+                          [text_cell('ignored'), text_cell('ignored')],
                       ])
         # ACT #
         ret_val = sut.render(ConstantPRenderer('para text'),
@@ -209,3 +209,7 @@ class TestHeaderRowAndColumnTable(unittest.TestCase):
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
+
+
+def text_cell(content_str: str) -> TableCell:
+    return single_paragraph_cell(para(content_str))
