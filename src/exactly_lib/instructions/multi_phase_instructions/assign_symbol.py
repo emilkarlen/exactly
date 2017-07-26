@@ -8,8 +8,6 @@ from exactly_lib.help_texts.test_case.instructions import assign_symbol as synta
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_list
 from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver
-from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
@@ -22,6 +20,8 @@ from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
+from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
+    RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.symbol_syntax import is_symbol_name
 from exactly_lib.util.cli_syntax.elements import argument as a
 

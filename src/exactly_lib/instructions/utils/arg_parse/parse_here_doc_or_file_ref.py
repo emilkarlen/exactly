@@ -1,12 +1,12 @@
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_here_document
 from exactly_lib.instructions.utils.arg_parse.parse_here_document import HereDocumentContentsParsingException
-from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 
 CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
