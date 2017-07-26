@@ -4,7 +4,6 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import command_line as sut
-from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
@@ -13,6 +12,7 @@ from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.command_line.test_resources import shell_command_source_line_for

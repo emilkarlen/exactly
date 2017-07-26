@@ -2,10 +2,10 @@ import sys
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import shell as sut
-from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol import string_resolver as sr
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
