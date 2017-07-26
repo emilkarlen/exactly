@@ -15,9 +15,8 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.execution.test_resources import eh_check
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
-from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
+from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import tmp_dir as fs_utils
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
@@ -52,9 +51,9 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 result_of_validate_pre_sds: asrt.ValueAssertion = svh_check.is_success(),
-                 result_of_prepare: asrt.ValueAssertion = sh_check.is_success(),
-                 result_of_execute: asrt.ValueAssertion = eh_check.is_any_exit_code,
+                 result_of_validate_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
+                 result_of_prepare: asrt.ValueAssertion = sh_assertions.is_success(),
+                 result_of_execute: asrt.ValueAssertion = eh_assertions.is_any_exit_code,
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  side_effects_on_files_after_execute: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_files_after_prepare: asrt.ValueAssertion = asrt.anything_goes(),

@@ -17,13 +17,13 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
-from exactly_lib_test.instructions.utils.parse.test_resources import rel_symbol_arg_str
 from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_with_single_file_ref_value
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
+from exactly_lib_test.test_case_utils.parse.test_resources import rel_symbol_arg_str
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction

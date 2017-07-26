@@ -35,4 +35,4 @@ def is_validation_error(assertion_on_error_message: asrt.ValueAssertion = asrt.a
 
 def is_svh_and(assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return asrt.And([asrt.IsInstance(svh.SuccessOrValidationErrorOrHardError),
-                   assertion])
+                     assertion])

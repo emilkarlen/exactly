@@ -27,10 +27,10 @@ from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
@@ -87,9 +87,9 @@ class Expectation:
     """
 
     def __init__(self,
-                 pre_validation_result: asrt.ValueAssertion = svh_check.is_success(),
-                 main_result: asrt.ValueAssertion = sh_check.is_success(),
-                 post_validation_result: asrt.ValueAssertion = svh_check.is_success(),
+                 pre_validation_result: asrt.ValueAssertion = svh_assertions.is_success(),
+                 main_result: asrt.ValueAssertion = sh_assertions.is_success(),
+                 post_validation_result: asrt.ValueAssertion = svh_assertions.is_success(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),

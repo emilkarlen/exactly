@@ -11,7 +11,6 @@ from exactly_lib.util import symbol_table
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed
@@ -23,6 +22,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_constan
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
+from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import argument_list_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -80,7 +80,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
                                                                        DirContents([
                                                                            empty_file('existing-file')
                                                                        ]))),
-                      Expectation(main_result=sh_check.is_hard_error())
+                      Expectation(main_result=sh_assertions.is_hard_error())
                       )
 
 

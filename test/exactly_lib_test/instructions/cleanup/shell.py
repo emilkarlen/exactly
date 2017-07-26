@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.cleanup.test_resources.configuration import C
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.shell_instruction_test import \
     Configuration, suite_for
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
+from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 
 
 class TheConfiguration(CleanupConfigurationBase, Configuration):
@@ -14,7 +14,7 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=sh_check.is_hard_error())
+        return Expectation(main_result=sh_assertions.is_hard_error())
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()

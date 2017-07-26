@@ -17,16 +17,16 @@ from exactly_lib_test.act_phase_setups.test_resources import \
     test_validation_for_single_file_rel_home as single_file_rel_home
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution
-from exactly_lib_test.act_phase_setups.test_resources.py_program import \
-    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
-from exactly_lib_test.execution.test_resources import eh_check
+from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case_utils.test_resources.py_program import \
+    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -164,7 +164,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = act_phase_execution.Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references(
