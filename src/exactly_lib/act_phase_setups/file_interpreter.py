@@ -9,7 +9,6 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
-from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_list
 from exactly_lib.instructions.utils.arg_parse import parse_string
@@ -26,6 +25,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, 
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.process_execution.os_process_execution import Command
 
