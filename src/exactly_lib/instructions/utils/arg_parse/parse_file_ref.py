@@ -9,7 +9,6 @@ from exactly_lib.instructions.utils.arg_parse.file_ref_from_symbol_reference imp
 from exactly_lib.instructions.utils.arg_parse.parse_relativity_util import parse_explicit_relativity_info
 from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver_from_token, \
     parse_fragments_from_token, string_resolver_from_fragments
-from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument, new_token_stream
 from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.section_document.parse_source import ParseSource
@@ -29,6 +28,7 @@ from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolv
 from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_utils.parse.misc_utils import ensure_is_not_option_argument, new_token_stream
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef

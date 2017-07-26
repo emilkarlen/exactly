@@ -5,13 +5,13 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.timeout import TIMEOUT_CONFIGURATION_PARAMETER, \
     WHAT_THE_TIMEOUT_APPLIES_TO
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
-from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case_utils.parse.misc_utils import split_arguments_list_string
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
