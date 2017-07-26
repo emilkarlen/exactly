@@ -17,7 +17,6 @@ from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE
 from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list, \
     parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE
 from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
-from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -28,6 +27,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
