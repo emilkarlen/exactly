@@ -27,7 +27,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.instructions.utils.arg_parse.parse_string import string_resolver_from_fragments
+from exactly_lib_test.instructions.utils.parse.parse_string import string_resolver_from_fragments
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.test_resources import symbol_utils

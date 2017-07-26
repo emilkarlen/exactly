@@ -19,7 +19,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import conf_rel_any, \
     conf_rel_non_home, default_conf_rel_non_home
-from exactly_lib_test.instructions.utils.arg_parse.test_resources import args_with_rel_ops
+from exactly_lib_test.instructions.utils.parse.test_resources import args_with_rel_ops
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.symbol.test_resources import symbol_utils

@@ -10,10 +10,10 @@ from exactly_lib.instructions.multi_phase_instructions.utils import \
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
-from exactly_lib.instructions.utils.arg_parse import parse_executable_file
-from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
-    PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.parse import parse_executable_file
+from exactly_lib.instructions.utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
+    PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

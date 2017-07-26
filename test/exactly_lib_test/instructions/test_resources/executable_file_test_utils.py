@@ -2,7 +2,7 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
+from exactly_lib.instructions.utils.parse import parse_executable_file as sut
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
