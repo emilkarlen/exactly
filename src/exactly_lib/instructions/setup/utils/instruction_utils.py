@@ -1,8 +1,8 @@
-from exactly_lib.instructions.utils.file_ref_check import FileRefCheck, pre_sds_validate, pre_or_post_sds_validate
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case_utils.file_ref_check import FileRefCheck, pre_sds_validate, pre_or_post_sds_validate
 
 
 class InstructionWithFileRefsBase(SetupPhaseInstruction):
