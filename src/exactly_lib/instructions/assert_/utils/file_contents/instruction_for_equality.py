@@ -5,7 +5,6 @@ import pathlib
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -14,6 +13,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh, pfh
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util import file_utils

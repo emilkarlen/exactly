@@ -8,12 +8,12 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
     WITH_REPLACED_ENV_VARS_OPTION, NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
-from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.parse.token import TokenType
 from exactly_lib.util.textformat.parse import normalize_and_parse
