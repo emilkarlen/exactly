@@ -7,7 +7,6 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_pa
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
-from exactly_lib.instructions.utils import pre_or_post_validation
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -19,6 +18,7 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program as py
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation

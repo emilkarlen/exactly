@@ -1,7 +1,7 @@
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_embryo import InstructionEmbryo
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib_test.instructions.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.test_resources.actions import do_return, action_of, do_nothing
 
