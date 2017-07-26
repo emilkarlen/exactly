@@ -6,6 +6,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem, ConcreteTe
 from exactly_lib.util.textformat.structure.document import Section, SectionContents
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
+from exactly_lib.util.textformat.structure.table import TableCell
 
 SEPARATION_OF_HEADER_AND_CONTENTS = lists.Separations(1, 1)
 
@@ -122,14 +123,8 @@ def text_from_unknown(str_or_text) -> Text:
         return StringText(str_or_text)
 
 
-def cell(paragraph_items: list) -> list:
-    """
-    Currently, this function exists only to centralize construction of cell elements,
-    to make future refactoring easy (introduction of TableCell class).
-    :param paragraph_items:
-    :return:
-    """
-    return paragraph_items
+def cell(paragraph_items: list) -> TableCell:
+    return TableCell(paragraph_items)
 
 
 def _empty_list_if_none(content) -> list:

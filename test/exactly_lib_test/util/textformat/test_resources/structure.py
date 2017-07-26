@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.structure import core, lists, document as doc
 from exactly_lib.util.textformat.structure.lists import HeaderContentList
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
-from exactly_lib.util.textformat.structure.table import Table, TableFormat
+from exactly_lib.util.textformat.structure.table import Table, TableFormat, TableCell
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -26,7 +26,7 @@ is_cross_reference_text = asrt.is_instance_with(core.CrossReferenceText,
                                                     asrt.sub_component('title',
                                                                        core.CrossReferenceText.title.fget,
                                                                        asrt.IsInstance(str))
-                                              ]))
+                                                ]))
 
 
 def is_cross_reference_target_list(name: str = '') -> asrt.ValueAssertion:
@@ -47,8 +47,8 @@ is_anchor_text = asrt.is_instance_with(
                            core.AnchorText.anchor.fget,
                            asrt.IsInstance(core.CrossReferenceTarget)),
         asrt.sub_component('anchored_text',
-                         core.AnchorText.anchored_text.fget,
-                         is_concrete_text)
+                           core.AnchorText.anchored_text.fget,
+                           is_concrete_text)
     ]))
 
 is_text = asrt.Or([
@@ -92,7 +92,7 @@ class _IsParagraphItem(ParagraphItemVisitor, asrt.ValueAssertion):
                                               Table.format.fget,
                                               asrt.IsInstance(TableFormat))
         is_table_row = asrt.every_element('table row cells',
-                                        is_paragraph_item_list())
+                                          is_table_cell)
         rows_assertion = asrt.sub_component_list('rows', Table.rows.fget, is_table_row, '/')
 
         assertion = asrt.And([format_assertion,
@@ -103,11 +103,16 @@ class _IsParagraphItem(ParagraphItemVisitor, asrt.ValueAssertion):
 
 is_paragraph_item = _IsParagraphItem()
 
+is_table_cell = asrt.is_instance_with(TableCell,
+                                      asrt.sub_component('paragraph items of cell',
+                                                         TableCell.paragraph_items.fget,
+                                                         is_paragraph_item_list()))
+
 is_paragraph = asrt.And([
     asrt.IsInstance(Paragraph),
     asrt.sub_component_list('text blocks',
-                          lambda p: p.start_on_new_line_blocks,
-                          is_text)])
+                            lambda p: p.start_on_new_line_blocks,
+                            is_text)])
 
 
 class SectionAssertion:
@@ -118,8 +123,8 @@ class SectionAssertion:
         asrt.And([
             asrt.IsInstance(doc.SectionContents),
             asrt.sub_component_list('initial_paragraphs',
-                                  doc.SectionContents.initial_paragraphs.fget,
-                                  is_paragraph_item)
+                                    doc.SectionContents.initial_paragraphs.fget,
+                                    is_paragraph_item)
         ]).apply(put, value, message_builder)
         assert isinstance(value, doc.SectionContents)
         sections_message = asrt.sub_component_builder('sections', message_builder)
@@ -150,8 +155,8 @@ is_section = asrt.OfCallable(SECTION_ASSERTION.is_section)
 is_list_item = asrt.And([
     asrt.IsInstance(lists.HeaderContentListItem),
     asrt.sub_component('header',
-                     lists.HeaderContentListItem.header.fget,
-                     is_text),
+                       lists.HeaderContentListItem.header.fget,
+                       is_text),
     asrt.sub_component_list('values',
                             lists.HeaderContentListItem.content_paragraph_items.fget,
                             is_paragraph_item)
@@ -175,8 +180,8 @@ is_list_format = asrt.And([
 is_header_value_list = asrt.And([
     asrt.IsInstance(lists.HeaderContentList),
     asrt.sub_component('format',
-                     lists.HeaderContentList.list_format.fget,
-                     is_list_format),
+                       lists.HeaderContentList.list_format.fget,
+                       is_list_format),
     asrt.sub_component_list('items',
                             lists.HeaderContentList.items.fget,
                             is_list_item),
