@@ -6,6 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.help_texts.test_case.actors import command_line as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -32,7 +33,7 @@ def act_phase_handling() -> ActPhaseHandling:
     return ActPhaseHandling(Constructor())
 
 
-RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check('EXECUTABLE')
+RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.EXECUTABLE)
 
 
 class Constructor(parts.Constructor):
@@ -101,7 +102,8 @@ class _Parser(Parser):
     def _parse_shell_command(argument: str) -> CommandConfigurationForShell:
         striped_argument = argument.strip()
         if not striped_argument:
-            msg = SHELL_COMMAND_MARKER + ': command string is missing.'
+            msg = SHELL_COMMAND_MARKER + ': {COMMAND} string is missing.'.format(
+                COMMAND=texts.COMMAND)
             raise ParseException(svh.new_svh_validation_error(msg))
         arg_resolver = parse_string.string_resolver_from_string(striped_argument)
         return CommandConfigurationForShell(arg_resolver)

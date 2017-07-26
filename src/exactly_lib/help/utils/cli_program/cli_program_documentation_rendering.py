@@ -1,4 +1,5 @@
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
+from exactly_lib.help.utils.doc_utils import synopsis_section, description_section
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
@@ -31,16 +32,15 @@ class _ProgramDocumentationRenderer:
                                     sections)
 
     def _synopsis_section(self, program: CliProgramSyntaxDocumentation) -> docs.Section:
-        return docs.section('SYNOPSIS',
-                            [self._list(map(self._synopsis_list_item, program.synopsises()))])
+        return synopsis_section(
+            docs.SectionContents([self._list(map(self._synopsis_list_item, program.synopsises()))]))
 
     @staticmethod
     def _description_sections(program: CliProgramSyntaxDocumentation) -> list:
         description = program.description()
         if description.rest.is_empty:
             return []
-        return [docs.Section(docs.text('DESCRIPTION'),
-                             description.rest)]
+        return [description_section(description.rest)]
 
     def _options_sections(self, argument_descriptions: list) -> list:
         if not argument_descriptions:

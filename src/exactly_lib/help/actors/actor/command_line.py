@@ -9,15 +9,16 @@ from exactly_lib.help.concepts.configuration_parameters.home_directory import HO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
+from exactly_lib.help.utils import doc_utils
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.names import formatting
+from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class CommandLineActorDocumentation(ActorDocumentation):
@@ -40,10 +41,10 @@ class CommandLineActorDocumentation(ActorDocumentation):
         documentation = ActPhaseDocumentationSyntax()
         initial_paragraphs = self._parser.fnap(SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
         sub_sections = []
-        synopsis_section = doc.Section(text('SYNOPSIS'),
-                                       invokation_variants_content(None,
-                                                                   documentation.invokation_variants(),
-                                                                   documentation.syntax_element_descriptions()))
+        synopsis_section = doc_utils.synopsis_section(
+            invokation_variants_content(None,
+                                        documentation.invokation_variants(),
+                                        documentation.syntax_element_descriptions()))
         sub_sections.append(synopsis_section)
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
@@ -63,9 +64,9 @@ DOCUMENTATION = CommandLineActorDocumentation()
 
 class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
     def __init__(self):
-        self.executable = a.Named('EXECUTABLE')
-        self.argument = a.Named('ARGUMENT')
-        self.command = a.Constant('COMMAND')
+        self.executable = a.Named(command_line_actor.EXECUTABLE)
+        self.argument = a.Named(command_line_actor.ARGUMENT)
+        self.command = a.Constant(command_line_actor.COMMAND)
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         fm = {
             'EXECUTABLE': self.executable.name,
