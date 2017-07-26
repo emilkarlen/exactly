@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_here_document as sut
-from exactly_lib.instructions.utils.arg_parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib_test.section_document.parser_implementations.optional_description_and_instruction_parser import \
     source_is_at_end
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_not_at_end, is_at_beginning_of_line
