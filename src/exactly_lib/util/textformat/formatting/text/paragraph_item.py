@@ -91,7 +91,7 @@ class Formatter:
                               Wrapper(page_width=width),
                               num_item_separator_lines=self.num_item_separator_lines,
                               list_formats=self.list_formats)
-        return lambda paragraph_item_list: formatter.format_paragraph_items(paragraph_item_list)
+        return lambda cell: formatter.format_paragraph_items(cell.paragraph_items)
 
 
 class _ListFormatter:

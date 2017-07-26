@@ -1,13 +1,13 @@
 import unittest
 
-from exactly_lib.util.textformat.structure.table import Table, TableFormat, single_paragraph_cell, empty_cell
+from exactly_lib.util.textformat.structure.table import Table, TableCell, TableFormat, single_paragraph_cell, empty_cell
 from exactly_lib_test.util.textformat.test_resources.constr import formatter_with_page_width, single_text_para
 
 
 class TestSingleRow(unittest.TestCase):
     def test_single_cell(self):
         # ARRANGE
-        row1 = [[single_text_para('row 1/cell 1')]]
+        row1 = [_text_cell('row 1/cell 1')]
         table = Table(TableFormat('|'),
                       [row1])
         formatter = formatter_with_page_width(100)
@@ -19,7 +19,7 @@ class TestSingleRow(unittest.TestCase):
 
     def test_single_cell_with_word_wrap(self):
         # ARRANGE
-        row1 = [[single_text_para('row 1 cell 1')]]
+        row1 = [_text_cell('row 1 cell 1')]
         table = Table(TableFormat('|'),
                       [row1])
         formatter = formatter_with_page_width(7)
@@ -32,8 +32,9 @@ class TestSingleRow(unittest.TestCase):
 
     def test_multiple_cells(self):
         # ARRANGE
-        row1 = [[single_text_para('row 1/cell 1')],
-                [single_text_para('row 1/cell 2')]]
+        row1 = [_text_cell('row 1/cell 1'),
+                _text_cell('row 1/cell 2'),
+                ]
         table = Table(TableFormat('|'),
                       [row1])
         formatter = formatter_with_page_width(100)
@@ -45,9 +46,11 @@ class TestSingleRow(unittest.TestCase):
 
     def test_multiple_cells_with_different_number_of_lines(self):
         # ARRANGE
-        row1 = [[single_text_para('row 1/cell 1 para 1'),
-                 single_text_para('row 1/cell 1 para 2')],
-                [single_text_para('row 1/cell 2')]]
+        row1 = [
+            TableCell([single_text_para('row 1/cell 1 para 1'),
+                       single_text_para('row 1/cell 1 para 2')]),
+            TableCell([single_text_para('row 1/cell 2')]),
+        ]
         table = Table(TableFormat('|'),
                       [row1])
         formatter = formatter_with_page_width(100)
@@ -64,8 +67,8 @@ class TestSingleRow(unittest.TestCase):
 class TestMultipleRows(unittest.TestCase):
     def test_multiple_rows_single_column(self):
         # ARRANGE
-        row1 = [[single_text_para('row 1/cell 1')]]
-        row2 = [[single_text_para('row 2/cell 1')]]
+        row1 = [_text_cell('row 1/cell 1')]
+        row2 = [_text_cell('row 2/cell 1')]
         table = Table(TableFormat('|'),
                       [row1,
                        row2])
@@ -180,7 +183,7 @@ class TestUnderlineHeaderRow(unittest.TestCase):
                          actual)
 
 
-def _text_cell(text_as_string: str) -> list:
+def _text_cell(text_as_string: str) -> TableCell:
     return single_paragraph_cell(single_text_para(text_as_string))
 
 
