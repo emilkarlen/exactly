@@ -23,12 +23,22 @@ class TableFormat:
         return self._first_column_is_header
 
 
+class TableCell(tuple):
+    def __new__(cls,
+                paragraph_items: list):
+        return tuple.__new__(cls, (paragraph_items,))
+
+    @property
+    def paragraph_items(self) -> list:
+        return self[0]
+
+
 class Table(ParagraphItem):
     def __init__(self,
                  format_: TableFormat,
                  rows: list):
         """
-        :param rows: [[ParagraphItem]]
+        :param rows: [TableCell]
         """
         self._format = format_
         self._rows = rows
@@ -42,9 +52,9 @@ class Table(ParagraphItem):
         return self._rows
 
 
-def single_paragraph_cell(paragraph_item: ParagraphItem) -> list:
-    return [paragraph_item]
+def single_paragraph_cell(paragraph_item: ParagraphItem) -> TableCell:
+    return TableCell([paragraph_item])
 
 
-def empty_cell() -> list:
-    return []
+def empty_cell() -> TableCell:
+    return TableCell([])
