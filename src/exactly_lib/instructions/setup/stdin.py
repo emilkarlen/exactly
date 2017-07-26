@@ -1,3 +1,5 @@
+from exactly_lib.common.help.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
@@ -7,8 +9,6 @@ from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.file_properties import FileType
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
 from exactly_lib.section_document.parse_source import ParseSource

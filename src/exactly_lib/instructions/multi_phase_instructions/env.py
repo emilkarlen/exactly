@@ -1,5 +1,7 @@
 import re
 
+from exactly_lib.common.help.instruction_documentation_with_text_parser import \
+    InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import SYMBOL_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -7,8 +9,6 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     MainStepResultTranslatorForUnconditionalSuccess
 from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
-from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError

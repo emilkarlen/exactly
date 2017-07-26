@@ -1,3 +1,5 @@
+from exactly_lib.common.help.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.names_and_cross_references import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
@@ -18,8 +20,6 @@ from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list, \
 from exactly_lib.instructions.utils.arg_parse.parse_utils import new_token_stream
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
