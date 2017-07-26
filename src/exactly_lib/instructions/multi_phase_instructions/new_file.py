@@ -1,3 +1,5 @@
+from exactly_lib.common.help.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.argument_rendering import path_syntax
@@ -10,8 +12,6 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argu
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import string_resolver
 from exactly_lib.symbol.path_resolver import FileRefResolver

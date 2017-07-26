@@ -1,3 +1,5 @@
+from exactly_lib.common.help.instruction_documentation_with_text_parser import \
+    InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.argument_rendering import path_syntax
@@ -8,8 +10,6 @@ from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import argu
 from exactly_lib.instructions.utils.arg_parse.token_stream_parse import TokenParser
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds

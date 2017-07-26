@@ -1,5 +1,7 @@
 import pathlib
 
+from exactly_lib.common.help.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
@@ -8,8 +10,6 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
     ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
-from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

@@ -1,5 +1,7 @@
 import pathlib
 
+from exactly_lib.common.help.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
@@ -14,8 +16,6 @@ from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_ins
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import rel_opts_configuration
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
-from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
