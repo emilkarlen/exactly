@@ -4,8 +4,6 @@ import types
 
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
-from exactly_lib.instructions.utils.arg_parse.parse_string import parse_string_resolver_from_token, \
-    parse_fragments_from_token, string_resolver_from_fragments
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -27,6 +25,8 @@ from exactly_lib.test_case_utils.parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
 from exactly_lib.test_case_utils.parse.misc_utils import ensure_is_not_option_argument, new_token_stream
 from exactly_lib.test_case_utils.parse.parse_relativity import parse_explicit_relativity_info
+from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver_from_token, \
+    parse_fragments_from_token, string_resolver_from_fragments
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.type_system_values import file_refs
