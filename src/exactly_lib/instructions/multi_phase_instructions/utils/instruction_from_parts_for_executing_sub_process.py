@@ -2,14 +2,14 @@ from exactly_lib.instructions.multi_phase_instructions.utils import instruction_
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import MainStepResultTranslator, \
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.instructions.utils import sub_process_execution as spe
-from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case_utils import sub_process_execution as spe
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.sub_process_execution import ResultAndStderr
 
 
 class SubProcessExecutionSetup:

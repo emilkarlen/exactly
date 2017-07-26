@@ -5,7 +5,6 @@ from exactly_lib.help_texts.file_ref import REL_TMP_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
     TheInstructionEmbryo
-from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -13,6 +12,7 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_utils import sub_process_execution as spe
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
