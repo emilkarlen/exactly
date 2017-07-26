@@ -2,7 +2,6 @@ import os
 import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case.os_services import OsServices
@@ -11,6 +10,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
