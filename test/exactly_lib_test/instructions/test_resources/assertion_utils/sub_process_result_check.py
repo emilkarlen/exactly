@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.utils import sub_process_execution as spe
+from exactly_lib.test_case_utils import sub_process_execution as spe
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
