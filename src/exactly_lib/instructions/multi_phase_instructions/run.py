@@ -10,7 +10,6 @@ from exactly_lib.instructions.multi_phase_instructions.utils import \
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
-from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file, parse_string
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
@@ -30,6 +29,7 @@ from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
