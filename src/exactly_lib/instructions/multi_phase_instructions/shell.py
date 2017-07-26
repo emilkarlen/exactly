@@ -9,10 +9,10 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.instructions.utils.arg_parse.parse_string import string_resolver_from_string
-from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.util.cli_syntax.elements import argument as a
 
