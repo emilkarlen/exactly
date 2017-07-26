@@ -1,5 +1,4 @@
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
-from exactly_lib.instructions.utils.arg_parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
@@ -9,6 +8,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.misc_utils import is_option_argument
+from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax import option_parsing
 
 
