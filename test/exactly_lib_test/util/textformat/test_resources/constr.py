@@ -1,6 +1,6 @@
 from exactly_lib.util.textformat.formatting.text import paragraph_item as sut
 from exactly_lib.util.textformat.formatting.text.text import CrossReferenceFormatter, TextFormatter
-from exactly_lib.util.textformat.structure import core, paragraph, lists
+from exactly_lib.util.textformat.structure import core, paragraph, lists, table
 
 BLANK_LINE = ''
 
@@ -15,6 +15,10 @@ def para(texts: iter) -> paragraph.Paragraph:
 
 def single_text_para(string: str) -> paragraph.Paragraph:
     return paragraph.Paragraph([text(string)])
+
+
+def single_text_cell(string: str) -> table.TableCell:
+    return table.single_paragraph_cell(paragraph.Paragraph([text(string)]))
 
 
 def item(header: str,

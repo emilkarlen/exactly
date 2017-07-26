@@ -4,7 +4,7 @@ from exactly_lib.util import tables
 from exactly_lib.util.tables import extend_each_sub_list_to_max_sub_list_length
 from exactly_lib.util.textformat.formatting.text.table.column_max_width import derive_column_max_widths
 from exactly_lib.util.textformat.formatting.text.table.width_distribution import distribute_width
-from exactly_lib.util.textformat.structure.table import Table
+from exactly_lib.util.textformat.structure.table import Table, empty_cell
 
 
 class TableFormatter:
@@ -15,10 +15,10 @@ class TableFormatter:
     UNDER_LINE_CHARACTER = '-'
 
     def __init__(self,
-                 paragraph_items_formatter_for_given_width: types.FunctionType,
+                 cell_formatter_for_given_width: types.FunctionType,
                  available_width: int,
                  table: Table):
-        self.paragraph_items_formatter_for_given_width = paragraph_items_formatter_for_given_width
+        self.cell_formatter_for_given_width = cell_formatter_for_given_width
         self.available_width = available_width
 
         self.table = table
@@ -26,7 +26,7 @@ class TableFormatter:
             self.normalised_rows = []
             self.columns = []
         else:
-            self.normalised_rows = tables.extend_each_sub_list_to_max_sub_list_length(table.rows, [])
+            self.normalised_rows = tables.extend_each_sub_list_to_max_sub_list_length(table.rows, empty_cell())
             self.columns = tables.transpose(self.normalised_rows)
 
         self.num_column_separators = 0 if not self.normalised_rows else (len(self.normalised_rows[0]) - 1)
@@ -43,12 +43,12 @@ class TableFormatter:
         column_widths = self._derive_column_content_widths()
         if 0 in column_widths:
             return []
-        column_formatters = [self.paragraph_items_formatter_for_given_width(width) for width in column_widths]
+        column_formatters = [self.cell_formatter_for_given_width(width) for width in column_widths]
         row_column_cell_lines = self._format_cell_contents(column_formatters)
         return self._combine_cell_contents_into_lines(row_column_cell_lines, column_widths)
 
     def _derive_column_content_widths(self) -> list:
-        columns_with_max_line_width = derive_column_max_widths(self.paragraph_items_formatter_for_given_width,
+        columns_with_max_line_width = derive_column_max_widths(self.cell_formatter_for_given_width,
                                                                self.available_width_for_column_contents,
                                                                self.columns)
         return distribute_width(columns_with_max_line_width, self.available_width_for_column_contents)
