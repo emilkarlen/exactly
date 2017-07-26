@@ -11,7 +11,7 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.utils.arg_parse.test_resources import rel_symbol_arg_str
+from exactly_lib_test.instructions.utils.parse.test_resources import rel_symbol_arg_str
 from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
 from exactly_lib_test.symbol.test_resources import symbol_utils

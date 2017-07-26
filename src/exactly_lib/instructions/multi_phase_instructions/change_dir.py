@@ -10,9 +10,9 @@ from exactly_lib.instructions.multi_phase_instructions.utils import instruction_
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResult
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.instructions.utils.arg_parse.token_stream_parse import TokenParser
 from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPostSds

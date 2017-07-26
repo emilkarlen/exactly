@@ -4,7 +4,7 @@ import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
-from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
+from exactly_lib.instructions.utils.parse import parse_executable_file as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream

@@ -9,9 +9,9 @@ from exactly_lib.help.concepts.plain_concepts.current_working_directory import C
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.instructions.utils.arg_parse.token_stream_parse import TokenParser
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.utils.arg_parse import symbol_syntax, parse_utils, \
+from exactly_lib_test.instructions.utils.parse import symbol_syntax, parse_utils, \
     parse_string, parse_list, parse_file_ref, parse_here_document, \
     parse_executable_file, \
     parse_here_doc_or_file_ref
