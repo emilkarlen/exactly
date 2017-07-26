@@ -2,10 +2,11 @@ import types
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
+from exactly_lib.help.utils.doc_utils import synopsis_section, description_section
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.see_also_section import see_also_sections
 from exactly_lib.util.textformat.structure import document as doc, lists
-from exactly_lib.util.textformat.structure.structures import para, text, section
+from exactly_lib.util.textformat.structure.structures import para
 
 LIST_INDENT = 2
 
@@ -21,14 +22,13 @@ class InstructionManPageRenderer(SectionContentsRenderer):
         documentation = self.documentation
         sub_sections = []
         if documentation.invokation_variants():
-            sub_sections.append(doc.Section(text('SYNOPSIS'),
-                                            invokation_variants_content(documentation.instruction_name(),
-                                                                        documentation.invokation_variants(),
-                                                                        documentation.syntax_element_descriptions())))
+            sub_sections.append(synopsis_section(
+                invokation_variants_content(documentation.instruction_name(),
+                                            documentation.invokation_variants(),
+                                            documentation.syntax_element_descriptions())))
         main_description_rest = documentation.main_description_rest()
         if main_description_rest:
-            sub_sections.append(section('DESCRIPTION',
-                                        main_description_rest))
+            sub_sections.append(description_section(doc.SectionContents(main_description_rest)))
         cross_references = documentation.see_also_items()
         sub_sections.extend(see_also_sections(cross_references, environment, uppercase_title=True))
         prelude_paragraphs = [para(documentation.single_line_description())]

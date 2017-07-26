@@ -9,6 +9,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.help_texts.test_case.actors import file_interpreter as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -27,7 +28,7 @@ from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, pars
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.process_execution.os_process_execution import Command
 
-RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check('FILE')
+RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
 
 
 def act_phase_setup(interpreter: Command) -> ActPhaseSetup:
