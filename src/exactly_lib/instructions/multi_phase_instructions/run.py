@@ -13,8 +13,6 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
 from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
-from exactly_lib.instructions.utils.arg_parse.parse_list import parse_list, \
-    parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -30,6 +28,8 @@ from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
+from exactly_lib.test_case_utils.parse.parse_list import parse_list, \
+    parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
