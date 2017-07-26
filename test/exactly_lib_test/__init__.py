@@ -11,6 +11,7 @@ from exactly_lib_test import section_document
 from exactly_lib_test import symbol
 from exactly_lib_test import test_case
 from exactly_lib_test import test_case_file_structure
+from exactly_lib_test import test_case_utils
 from exactly_lib_test import test_resources
 from exactly_lib_test import test_suite
 from exactly_lib_test import type_system_values
@@ -39,6 +40,7 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(execution.suite())
     ret_val.addTest(processing.suite())
     ret_val.addTest(test_suite.suite())
+    ret_val.addTest(test_case_utils.suite())
     ret_val.addTest(instructions.suite())
     ret_val.addTest(act_phase_setups.suite())
     ret_val.addTest(help.suite())

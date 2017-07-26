@@ -13,7 +13,6 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources import \
     test_validation_for_single_file_rel_home as single_file_rel_home
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
@@ -21,13 +20,13 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.act_phase_setups.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
-from exactly_lib_test.act_phase_setups.test_resources.py_program import \
-    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
-from exactly_lib_test.execution.test_resources import eh_check
-from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
+from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_utils.test_resources import py_program, svh_assertions
+from exactly_lib_test.test_case_utils.test_resources.py_program import \
+    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -103,7 +102,7 @@ class TestInvalidSyntax(unittest.TestCase):
         ]
         arrangement = Arrangement()
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_check.is_validation_error()
+            result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
         check_execution(self, sut.Constructor(),
                         act_phase_instructions,
@@ -119,7 +118,7 @@ class TestInvalidSyntax(unittest.TestCase):
             home_dir_contents=fs.DirContents([fs.empty_file(executable_file_name)])
         )
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_check.is_validation_error()
+            result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
         check_execution(self, sut.Constructor(),
                         act_phase_instructions,
@@ -140,7 +139,7 @@ class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.T
         ]))
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
-        expectation = Expectation(result_of_execute=eh_check.is_exit_code(0),
+        expectation = Expectation(result_of_execute=eh_assertions.is_exit_code(0),
                                   sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                                         'CLI arguments, one per line')))
         check_execution(self,
@@ -180,7 +179,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references(
@@ -219,7 +218,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(str_asrt.contains(file_name_of_referenced_file)),
             symbol_usages=equals_symbol_references(
                 [SymbolReference(symbol.name, no_restrictions())]
@@ -256,7 +255,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
@@ -298,7 +297,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
@@ -349,7 +348,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
@@ -391,7 +390,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references(

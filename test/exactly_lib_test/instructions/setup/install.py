@@ -7,7 +7,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptio
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
@@ -15,6 +14,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check as sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
@@ -82,7 +82,7 @@ class TestValidationErrorScenarios(TestCaseBaseForParser):
                         symbols=relativity_option.symbols.in_arrangement(),
                     ),
                     Expectation(
-                        pre_validation_result=svh_check.is_validation_error(),
+                        pre_validation_result=svh_assertions.is_validation_error(),
                         symbol_usages=relativity_option.symbols.usages_expectation(),
                     ))
 
@@ -95,7 +95,7 @@ class TestValidationErrorScenarios(TestCaseBaseForParser):
                         symbols=relativity_option.symbols.in_arrangement(),
                     ),
                     Expectation(
-                        pre_validation_result=svh_check.is_validation_error(),
+                        pre_validation_result=svh_assertions.is_validation_error(),
                         symbol_usages=relativity_option.symbols.usages_expectation(),
                     ))
 
@@ -317,7 +317,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
                                                                                           [empty_file(file_name)])),
                   ),
                   Expectation(
-                      main_result=sh_check.is_hard_error())
+                      main_result=sh_assertions.is_hard_error())
                   )
 
     def test_destination_already_exists__with_explicit_destination(self):
@@ -333,7 +333,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
                                                                                       cwd_dir_contents),
                   ),
                   Expectation(
-                      main_result=sh_check.is_hard_error()
+                      main_result=sh_assertions.is_hard_error()
                   )
                   )
 
@@ -351,7 +351,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
                                                                                       cwd_dir_contents),
                   ),
                   Expectation(
-                      main_result=sh_check.is_hard_error())
+                      main_result=sh_assertions.is_hard_error())
                   )
 
 

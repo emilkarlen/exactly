@@ -8,9 +8,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -36,11 +36,11 @@ class CleanupConfigurationBase(ConfigurationBase):
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
-        return Expectation(main_result=sh_check.is_hard_error(assertion_on_error_message))
+        return Expectation(main_result=sh_assertions.is_hard_error(assertion_on_error_message))
 
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
-        return Expectation(validate_pre_sds_result=svh_check.is_validation_error(assertion_on_error_message))
+        return Expectation(validate_pre_sds_result=svh_assertions.is_validation_error(assertion_on_error_message))
 
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):

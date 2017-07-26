@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.cleanup.test_resources.configuration import C
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
+from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -25,17 +25,17 @@ class ConfigurationForTheCleanupPhase(CleanupConfigurationBase, test_impl.Config
         return instruction_from_parts.Parser(parts_parser)
 
     def expectation_for_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=sh_check.is_success())
+        return Expectation(main_result=sh_assertions.is_success())
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=sh_check.is_hard_error())
+        return Expectation(main_result=sh_assertions.is_hard_error())
 
     def expect_hard_error_in_main(self) -> Expectation:
-        return Expectation(main_result=sh_check.is_hard_error())
+        return Expectation(main_result=sh_assertions.is_hard_error())
 
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
-        return Expectation(main_result=sh_check.is_hard_error(assertion_on_error_message))
+        return Expectation(main_result=sh_assertions.is_hard_error(assertion_on_error_message))
 
 
 def suite() -> unittest.TestSuite:

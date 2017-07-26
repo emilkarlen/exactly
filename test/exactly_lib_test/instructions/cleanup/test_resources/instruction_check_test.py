@@ -13,7 +13,6 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     cleanup_phase_instruction_that
 from exactly_lib_test.instructions.cleanup.test_resources import instruction_check as sut
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.symbol_table_check_help import do_fail_if_symbol_table_does_not_equal, \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg
@@ -23,6 +22,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -154,7 +154,7 @@ class TestMiscCases(TestCaseBase):
                 utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                 utils.single_line_source(),
                 sut.Arrangement(),
-                sut.Expectation(main_result=sh_check.is_hard_error()),
+                sut.Expectation(main_result=sh_assertions.is_hard_error()),
             )
 
     def test_fail_due_to_unexpected_result_from_validate_pre_sds(self):
@@ -163,7 +163,7 @@ class TestMiscCases(TestCaseBase):
                 utils.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                 utils.single_line_source(),
                 sut.Arrangement(),
-                sut.Expectation(validate_pre_sds_result=svh_check.is_hard_error()),
+                sut.Expectation(validate_pre_sds_result=svh_assertions.is_hard_error()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):

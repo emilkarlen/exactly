@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
+from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -28,7 +28,7 @@ class Arrangement(ArrangementBase):
 
 class Expectation:
     def __init__(self,
-                 main_result: asrt.ValueAssertion = sh_check.is_success(),
+                 main_result: asrt.ValueAssertion = sh_assertions.is_success(),
                  configuration: config_check.Assertion = config_check.AnythingGoes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  ):

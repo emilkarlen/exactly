@@ -7,15 +7,15 @@ from exactly_lib.act_phase_setups.source_interpreter.source_file_management impo
     SourceInterpreterSetup
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.source_interpreter import common_tests
-from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
     Configuration, suite_for_execution, TestCaseSourceSetup
-from exactly_lib_test.execution.test_resources import eh_check
+from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     test_case_dir_contains_exactly
+from exactly_lib_test.test_case_utils.test_resources import py_program
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 
@@ -86,7 +86,7 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
                         act_phase_setup.source_and_executor_constructor,
                         empty_source,
                         Arrangement(),
-                        Expectation(result_of_execute=eh_check.is_hard_error))
+                        Expectation(result_of_execute=eh_assertions.is_hard_error))
 
 
 class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
@@ -101,7 +101,7 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
             act_phase_setup.source_and_executor_constructor,
             source,
             Arrangement(),
-            Expectation(result_of_execute=eh_check.is_hard_error,
+            Expectation(result_of_execute=eh_assertions.is_hard_error,
                         side_effects_on_files_after_execute=test_case_dir_contains_exactly(DirContents([
                             File(expected_file_name,
                                  lines_content(['print(1)']))

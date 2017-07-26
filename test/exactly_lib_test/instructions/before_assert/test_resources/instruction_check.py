@@ -15,13 +15,13 @@ from exactly_lib.util.process_execution.os_process_execution import ProcessExecu
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment, ActResultProducerFromActResult
-from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_utils
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -52,9 +52,9 @@ def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAct
 
 class Expectation(ExpectationBase):
     def __init__(self,
-                 validation_pre_sds: asrt.ValueAssertion = svh_check.is_success(),
-                 validation_post_setup: asrt.ValueAssertion = svh_check.is_success(),
-                 main_result: asrt.ValueAssertion = sh_check.is_success(),
+                 validation_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
+                 validation_post_setup: asrt.ValueAssertion = svh_assertions.is_success(),
+                 main_result: asrt.ValueAssertion = sh_assertions.is_success(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
                  home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
@@ -62,7 +62,7 @@ class Expectation(ExpectationBase):
                  ):
         super().__init__(validation_pre_sds, main_side_effects_on_files, home_and_sds)
         self.validation_post_setup = validation_post_setup
-        self.main_result = sh_check.is_sh_and(main_result)
+        self.main_result = sh_assertions.is_sh_and(main_result)
         self.source = source
         self.symbol_usages = symbol_usages
 

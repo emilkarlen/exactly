@@ -14,13 +14,13 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
-from exactly_lib_test.act_phase_setups.test_resources.py_program import \
-    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
-from exactly_lib_test.execution.test_resources import eh_check
-from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
+from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions
+from exactly_lib_test.test_case_utils.test_resources.py_program import \
+    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -67,7 +67,7 @@ class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseBase):
         arrangement = Arrangement()
 
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_check.is_validation_error()
+            result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
         self._check(command_line,
                     arrangement,
@@ -82,7 +82,7 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
             home_dir_contents=fs.DirContents([fs.empty_dir(source_file)])
         )
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_check.is_validation_error()
+            result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
         self._check(command_line,
                     arrangement,
@@ -118,7 +118,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
@@ -170,7 +170,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_check.is_exit_code(0),
+            result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([

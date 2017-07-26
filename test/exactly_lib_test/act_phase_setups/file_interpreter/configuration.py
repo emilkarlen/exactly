@@ -3,9 +3,9 @@ from contextlib import contextmanager
 
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_utils.test_resources import py_program
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.file_structure import File
 
