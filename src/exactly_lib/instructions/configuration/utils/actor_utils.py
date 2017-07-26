@@ -14,6 +14,7 @@ from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -22,7 +23,7 @@ from exactly_lib.util.process_execution.os_process_execution import Command
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
 COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
 
-SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = '$'
+SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = SHELL_KEYWORD
 
 SOURCE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='source')
 SOURCE_INTERPRETER_OPTION = long_option_syntax(SOURCE_INTERPRETER_OPTION_NAME.long)

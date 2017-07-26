@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.configuration import actor as sut
+from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, \
     ActSourceAndExecutorConstructor
@@ -13,6 +14,10 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+
+
+def shell_command_syntax_for(command: str) -> str:
+    return actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' ' + command
 
 
 class Arrangement:
