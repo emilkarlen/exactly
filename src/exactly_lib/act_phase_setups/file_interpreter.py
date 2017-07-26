@@ -14,7 +14,6 @@ from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_list
 from exactly_lib.instructions.utils.arg_parse import parse_string
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -27,6 +26,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, 
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check('FILE')

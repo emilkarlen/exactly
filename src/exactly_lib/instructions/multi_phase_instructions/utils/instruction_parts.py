@@ -2,12 +2,12 @@
 Utilities to help constructing an instruction for a specific phase, from phase-independent parts.
 """
 
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 
 
 class MainStepExecutor:
