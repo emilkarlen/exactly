@@ -38,7 +38,7 @@ class Table(ParagraphItem):
                  format_: TableFormat,
                  rows: list):
         """
-        :param rows: [TableCell]
+        :param rows: [[TableCell]]
         """
         self._format = format_
         self._rows = rows
