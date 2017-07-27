@@ -11,8 +11,8 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
-    OrReferenceRestrictions, OrRestrictionPart
-from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction, FileRefRelativityRestriction
+    OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings
+from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -270,14 +270,12 @@ def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
     return PathPartResolverAsStringResolver(string_resolver)
 
 
-PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = ReferenceRestrictionsOnDirectAndIndirect(
-    direct=StringRestriction(),
-    indirect=StringRestriction(),
-    meaning_of_failure_of_indirect_reference=('Every symbol used as a path component of a {path_type} '
-                                              'must be defined as a {string_type}.'.format(
+PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
+    'Every symbol used as a path component of a {path_type} '
+    'must be defined as a {string_type}.'.format(
         path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
         string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
-    )))
+    ))
 
 
 def _type_must_be_either_path_or_string__err_msg_generator(value: ResolverContainer) -> str:
