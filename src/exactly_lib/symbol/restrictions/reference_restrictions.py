@@ -3,7 +3,7 @@ import types
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
     ValueRestrictionFailure
-from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
@@ -50,13 +50,6 @@ class FailureOfIndirectReference(FailureInfo):
     @property
     def meaning_of_failure(self) -> str:
         return self._meaning_of_failure
-
-
-def no_restrictions() -> ReferenceRestrictions:
-    """
-    :return: A restriction that is unconditionally satisfied
-    """
-    return ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())
 
 
 class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
@@ -216,3 +209,18 @@ class ReferenceRestrictionsVisitor:
 
     def visit_or(self, x: OrReferenceRestrictions):
         raise NotImplementedError()
+
+
+def no_restrictions() -> ReferenceRestrictions:
+    """
+    :return: A restriction that is unconditionally satisfied
+    """
+    return ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())
+
+
+def string_made_up_by_just_strings(meaning_of_failure_of_indirect_reference: str = ''
+                                   ) -> ReferenceRestrictionsOnDirectAndIndirect:
+    return ReferenceRestrictionsOnDirectAndIndirect(
+        direct=StringRestriction(),
+        indirect=StringRestriction(),
+        meaning_of_failure_of_indirect_reference=meaning_of_failure_of_indirect_reference)
