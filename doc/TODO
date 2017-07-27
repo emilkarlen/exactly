@@ -889,8 +889,6 @@ def get_document() -> Description:
   return Description(...)
 
 * TODO Refaktoreringar
-** TODO Rename: ExecutionDirectoryStructure -> SandboxDirectoryStructure
-eds -> sds
 ** TODO Rendering
 *** TODO Extrahera test av textrenderare till eget test
 Idag är del av test av paragraph.
@@ -902,8 +900,10 @@ förbättras testerna genom att verifiera att rätt element renderas.
 
 *** TODO Test av FullParagraphItemRenderer
 ** TODO Modulorganisation
-*** TODO [#A] script_language
-
+*** TODO script_language
+SourceInterpreterSetup
+Bör kunna tas bort.
+Är enb en wrapper av SourceFileManager
 *** TODO instructions, act_phase_setups
 Var ska de ligga!!!???
 De har det gemensamt att de tillhör test-case och att de är "utvidningsbar"
