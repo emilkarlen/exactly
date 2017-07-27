@@ -10,3 +10,7 @@ class Paragraph(ParagraphItem):
         on a new line.
         """
         self.start_on_new_line_blocks = start_on_new_line_blocks
+
+    def __str__(self):
+        return '{}({})'.format(str(type(self)),
+                               repr(self.start_on_new_line_blocks))

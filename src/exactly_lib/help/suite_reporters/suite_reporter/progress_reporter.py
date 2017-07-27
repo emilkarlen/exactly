@@ -25,17 +25,17 @@ class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
     def _exit_value_table(self, exit_value_and_description_list: list) -> ParagraphItem:
         def _row(exit_value: ExitValue, description: str) -> list:
             return [
-                paras(str(exit_value.exit_code)),
-                paras(exit_value.exit_identifier),
-                self._parser.fnap(description),
+                cell(paras(str(exit_value.exit_code))),
+                cell(paras(exit_value.exit_identifier)),
+                cell(self._parser.fnap(description)),
             ]
 
         return first_row_is_header_table(
             [
                 [
-                    paras('Exit code'),
-                    paras('Exit identifier'),
-                    paras('When'),
+                    cell(paras('Exit code')),
+                    cell(paras('Exit identifier')),
+                    cell(paras('When')),
                 ]] +
             [_row(exit_value, description) for exit_value, description in exit_value_and_description_list],
             '  ')

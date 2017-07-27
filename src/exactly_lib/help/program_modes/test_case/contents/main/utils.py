@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.structures import first_column_is_header_table, para
+from exactly_lib.util.textformat.structure.structures import first_column_is_header_table, para, cell
 
 
 class TestCaseHelpRendererBase(SectionContentsRenderer):
@@ -27,8 +27,14 @@ class Setup(tuple):
 
 def singe_exit_value_display(exit_value_on_error) -> ParagraphItem:
     return first_column_is_header_table([
-        [[para('Exit code')], [para(str(exit_value_on_error.exit_code))]],
-        [[para('Exit identifier')], [para(exit_value_on_error.exit_identifier)]],
+        [
+            cell([para('Exit code')]),
+            cell([para(str(exit_value_on_error.exit_code))]),
+        ],
+        [
+            cell([para('Exit identifier')]),
+            cell([para(exit_value_on_error.exit_identifier)]),
+        ],
     ])
 
 
