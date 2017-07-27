@@ -1,6 +1,7 @@
 from exactly_lib.util.textformat.structure import lists, table, structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents, Section
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
+from exactly_lib.util.textformat.structure.structures import cell
 
 
 def append_section_if_contents_is_non_empty(output_list_of_sections: list,
@@ -31,8 +32,8 @@ def transform_list_to_table(l: lists.HeaderContentList) -> table.Table:
     rows = []
     for item in l.items:
         assert isinstance(item, lists.HeaderContentListItem)
-        header_cell = [Paragraph([item.header])]
-        value_cell = item.content_paragraph_items
+        header_cell = cell([Paragraph([item.header])])
+        value_cell = cell(item.content_paragraph_items)
         rows.append([header_cell, value_cell])
     return table.Table(table.TableFormat(),
                        rows)

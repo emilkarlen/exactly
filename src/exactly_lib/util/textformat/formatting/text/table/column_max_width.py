@@ -5,7 +5,7 @@ def derive_column_max_widths(cell_formatter_for_given_width: types.FunctionType,
                              available_width: int,
                              columns_with_cell_content: list) -> list:
     """
-    :type columns_with_cell_content:[TableCell]
+    :type columns_with_cell_content:[[cell]]
     :return: [int]
     """
     cell_formatter = cell_formatter_for_given_width(

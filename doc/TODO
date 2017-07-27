@@ -901,10 +901,6 @@ Om en renderare av endat ett enda fall men som renderar riktig data så
 förbättras testerna genom att verifiera att rätt element renderas.
 
 *** TODO Test av FullParagraphItemRenderer
-** TODO textformat/Table: Bör ha separat klass för TableCell
-Idag är det en lista av PI.  Knölig o inflexibel struktur.
-Svår att förstå o skapa tabeller.
-Inflexibel vad gäller möjlighet att ha skiftande cell-egenskaper.
 ** TODO Modulorganisation
 *** TODO [#A] script_language
 

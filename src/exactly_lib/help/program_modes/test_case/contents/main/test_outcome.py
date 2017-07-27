@@ -78,16 +78,17 @@ def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
 
 def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
     def _row(mode: str, assert_outcome: PartialResultStatus, test_outcome: FullResultStatus) -> list:
-        return [paras(mode),
-                paras(assert_outcome.name if assert_outcome is not None else ''),
-                paras(test_outcome.name)
+        return [cell(paras(mode)),
+                cell(paras(assert_outcome.name if assert_outcome is not None else '')),
+                cell(paras(test_outcome.name)),
                 ]
 
     return first_row_is_header_table([
         [
-            paras('Mode'),
-            paras('{phase[assert]:syntax}'.format(phase=setup.phase_names)),
-            paras('Test Case')],
+            cell(paras('Mode')),
+            cell(paras('{phase[assert]:syntax}'.format(phase=setup.phase_names))),
+            cell(paras('Test Case')),
+        ],
         _row(exactly_lib.test_case.execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
         _row(exactly_lib.test_case.execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
 
@@ -167,15 +168,16 @@ def _exit_value_table_for_all_exit_values(setup: Setup) -> ParagraphItem:
 def _exit_value_table_for(setup: Setup,
                           exit_value_list: list) -> ParagraphItem:
     def _row(exit_value: ExitValue) -> list:
-        return [paras(exit_value.exit_identifier),
-                paras(str(exit_value.exit_code)),
-                ]
+        return [
+            cell(paras(exit_value.exit_identifier)),
+            cell(paras(str(exit_value.exit_code))),
+        ]
 
     return first_row_is_header_table(
         [
             [
-                paras('Exit identifier'),
-                paras('Exit code')
+                cell(paras('Exit identifier')),
+                cell(paras('Exit code'))
             ]] +
         [_row(exit_value) for exit_value in exit_value_list],
         '  ')
@@ -184,17 +186,18 @@ def _exit_value_table_for(setup: Setup,
 def _outcome_and_exit_value_table_for(setup: Setup,
                                       exit_value_list: list) -> ParagraphItem:
     def _row(exit_value: ExitValue) -> list:
-        return [paras(exit_value.exit_identifier),
-                paras(exit_value.exit_identifier),
-                paras(str(exit_value.exit_code)),
-                ]
+        return [
+            cell(paras(exit_value.exit_identifier)),
+            cell(paras(exit_value.exit_identifier)),
+            cell(paras(str(exit_value.exit_code))),
+        ]
 
     return first_row_is_header_table(
         [
             [
-                paras('Test Case'),
-                paras('Exit identifier'),
-                paras('Exit code')
+                cell(paras('Test Case')),
+                cell(paras('Exit identifier')),
+                cell(paras('Exit code')),
             ]] +
         [_row(exit_value) for exit_value in exit_value_list],
         '  ')

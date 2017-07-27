@@ -25,6 +25,7 @@ from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.structures import cell
 
 
 class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstructions):
@@ -118,15 +119,16 @@ The escape sequences are only recognized at the first non-space characters of a 
 
 def _escape_sequence_table() -> docs.ParagraphItem:
     def _row(escape_sequence: str, translation: str) -> list:
-        return [docs.paras(escape_sequence),
-                docs.paras(translation),
-                ]
+        return [
+            cell(docs.paras(escape_sequence)),
+            cell(docs.paras(translation)),
+        ]
 
     return docs.first_row_is_header_table(
         [
             [
-                docs.paras('Source'),
-                docs.paras('Translation')
+                cell(docs.paras('Source')),
+                cell(docs.paras('Translation')),
             ]] +
         [
             _row('\\[', '['),
