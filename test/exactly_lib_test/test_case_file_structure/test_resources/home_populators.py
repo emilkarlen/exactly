@@ -123,10 +123,10 @@ class _ListOfPopulators(HomePopulator):
             assert isinstance(populator, HomePopulator)
         self.__populator_list = home_populators
 
-    def populate_hds(self, hds: HomeDirectoryStructure):
+    def populate_home(self, home_dir: pathlib.Path):
         for populator in self.__populator_list:
             assert isinstance(populator, HomePopulator)
-            populator.populate_hds(hds)
+            populator.populate_home(home_dir)
 
 
 class _FilesInCaseHomeDir(HomePopulator):
