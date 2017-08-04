@@ -31,7 +31,7 @@ from exactly_lib_test.instructions.test_resources.executable_file_test_utils imp
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
@@ -499,7 +499,7 @@ class RelHomeConfiguration(RelativityConfiguration):
         super().__init__(file_ref_texts.REL_HOME_OPTION, True)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return HomePopulator(DirContents([file]))
+        return home_populators.case_home_dir_contents(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
@@ -512,7 +512,7 @@ class DefaultConfiguration(RelativityConfiguration):
         super().__init__('', True)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return HomePopulator(DirContents([file]))
+        return home_populators.case_home_dir_contents(DirContents([file]))
 
     def installed_file_path(self,
                             file_name: str,
