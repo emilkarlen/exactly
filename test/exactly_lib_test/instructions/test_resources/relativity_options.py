@@ -16,6 +16,7 @@ from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_as
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
@@ -157,7 +158,7 @@ class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOp
         super().__init__(RelOptionType.REL_HOME, cli_option, symbols_configuration)
 
     def populator_for_relativity_option_root__home(self, contents: DirContents) -> HomePopulator:
-        return HomePopulator(contents)
+        return home_populators.case_home_dir_contents(contents)
 
     @property
     def exists_pre_sds(self) -> bool:
