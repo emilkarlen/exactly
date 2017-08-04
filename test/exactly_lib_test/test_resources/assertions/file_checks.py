@@ -20,15 +20,24 @@ class FileChecker:
 
     def assert_exists_dir_with_given_number_of_files_in_it(self,
                                                            p: pathlib.Path,
-                                                           expected_number_of_files: int):
+                                                           expected_number_of_files: int,
+                                                           expected_file_system_elements: list = None):
         self.assert_exists_dir(p)
         directory_contents = list(p.iterdir())
+        expected_file_names = ''
+        if expected_file_system_elements is not None:
+            expected_file_names = str([fse.name for fse in expected_file_system_elements])
         self.put.assertEqual(
             expected_number_of_files,
             len(directory_contents),
-            self._msg('The directory "%s" should contain exactly %s files. Found %s' % (str(p),
-                                                                                        expected_number_of_files,
-                                                                                        str(directory_contents))))
+            self._msg('The directory "{dir}"\n'
+                      'should contain exactly {expected_num_files} files {expected_file_names}\n'
+                      'Found {actual_num_files} {actual_file_names}'.format(
+                dir=str(p),
+                expected_num_files=expected_number_of_files,
+                expected_file_names=expected_file_names,
+                actual_num_files=str(len(directory_contents)),
+                actual_file_names=str(directory_contents))))
 
     def assert_exists_dir(self, p: pathlib.Path):
         self.put.assertTrue(p.exists(), self._msg('"%s" should exist (as a directory)' % p.name))
@@ -63,7 +72,8 @@ class FileChecker:
                                    dir_path: pathlib.Path,
                                    expected: list):
         self.assert_exists_dir_with_given_number_of_files_in_it(dir_path,
-                                                                len(expected))
+                                                                len(expected),
+                                                                expected_file_system_elements=expected)
         self.assert_dir_contains_at_least(dir_path, expected)
 
     def assert_dir_contains_at_least(self,

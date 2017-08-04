@@ -10,6 +10,10 @@ class FileSystemElement:
                  parent_dir_path: pathlib.Path):
         raise NotImplementedError()
 
+    @property
+    def name(self) -> str:
+        return ''
+
 
 class File(FileSystemElement):
     def __init__(self,
@@ -17,6 +21,10 @@ class File(FileSystemElement):
                  contents: str):
         self.file_name = file_name
         self.contents = contents
+
+    @property
+    def name(self) -> str:
+        return self.file_name
 
     def write_to(self,
                  parent_dir_path: pathlib.Path):
@@ -69,6 +77,10 @@ class Dir(FileSystemElement):
         self.file_name = file_name
         self.file_system_element_contents = file_system_element_contents
 
+    @property
+    def name(self) -> str:
+        return self.file_name
+
     def write_to(self,
                  parent_dir_path: pathlib.Path):
         dir_path = parent_dir_path / self.file_name
@@ -87,6 +99,10 @@ class Link(FileSystemElement):
                  target: str):
         self.file_name = file_name
         self.target = target
+
+    @property
+    def name(self) -> str:
+        return self.file_name
 
     def write_to(self,
                  parent_dir_path: pathlib.Path):
