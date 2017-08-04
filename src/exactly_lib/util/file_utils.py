@@ -20,7 +20,7 @@ def resolved_path(existing_path: str) -> pathlib.Path:
 
 
 def resolved_path_name(existing_path: str) -> str:
-    return str(pathlib.Path(existing_path).resolve())
+    return str(resolved_path(existing_path))
 
 
 def write_new_text_file(file_path: pathlib.Path,

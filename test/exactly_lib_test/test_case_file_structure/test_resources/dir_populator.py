@@ -1,8 +1,8 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources import file_structure
 
 
 class HomeOrSdsPopulator:
@@ -16,17 +16,17 @@ class HomeOrSdsPopulator:
 
 class HomePopulator(HomeOrSdsPopulator):
     """
-    Populates the home directory.
+    Populates the home directory structure.
     """
 
-    def __init__(self, home_dir_contents: file_structure.DirContents):
-        self.home_dir_contents = home_dir_contents
-
     def populate_home(self, home_dir: pathlib.Path):
-        self.home_dir_contents.write_to(home_dir)
+        raise NotImplementedError()
+
+    def populate_hds(self, hds: HomeDirectoryStructure):
+        self.populate_home(hds.case_dir)
 
     def populate_home_or_sds(self, home_or_sds: HomeAndSds):
-        self.populate_home(home_or_sds.home_dir_path)
+        self.populate_hds(home_or_sds.hds)
 
 
 class NonHomePopulator(HomeOrSdsPopulator):
