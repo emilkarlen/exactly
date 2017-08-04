@@ -7,5 +7,5 @@ class HomeDirectoryStructure:
         self._case_home = case_home
 
     @property
-    def case_home(self) -> pathlib.Path:
+    def case_dir(self) -> pathlib.Path:
         return self._case_home
