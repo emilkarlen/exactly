@@ -16,4 +16,4 @@ class Test(unittest.TestCase):
         actual = sut.HomeDirectoryStructure(case_home=case_home)
         # ASSERT #
         self.assertEqual(case_home,
-                         actual.case_home)
+                         actual.case_dir)
