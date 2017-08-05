@@ -162,7 +162,6 @@ class Executor:
                                           contents=self.arrangement.hds_contents,
                                           case_dir_contents=self.arrangement.home_contents,
                                           ) as hds:
-                home_dir_path = hds.case_dir
                 environment = InstructionEnvironmentForPreSdsStep(hds,
                                                                   self.arrangement.process_execution_settings.environ,
                                                                   symbols=self.arrangement.symbols)
@@ -183,7 +182,7 @@ class Executor:
                         phase_identifier.SETUP.identifier,
                         timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                         symbols=self.arrangement.symbols)
-                    home_and_sds = HomeAndSds(home_dir_path, sds)
+                    home_and_sds = HomeAndSds(hds, sds)
                     path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
                                                                                       self.arrangement.symbols)
                     self.arrangement.pre_contents_population_action.apply(path_resolving_environment)
