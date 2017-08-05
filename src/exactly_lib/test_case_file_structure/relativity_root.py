@@ -3,6 +3,7 @@ import types
 
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, RelNonHomeOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -19,6 +20,10 @@ class RelRootResolver:
         raise NotImplementedError()
 
     def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        raise ValueError('Root is not relative home: ' + str(self._relativity))
+
+    def from_home_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        # TODO Rename to from_home, when from_home has been deleted
         raise ValueError('Root is not relative home: ' + str(self._relativity))
 
     def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
@@ -47,6 +52,9 @@ class RelPathResolverRelHome(RelRootResolver):
 
     def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return home_dir_path
+
+    def from_home_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        return self.from_home(hds.case_dir)
 
     def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         return self.from_home(home_and_sds.home_dir_path)

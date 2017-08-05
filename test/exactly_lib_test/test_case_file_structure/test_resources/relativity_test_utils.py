@@ -124,6 +124,9 @@ class AnyRelativityResolverHelper:
                              actual_resolver.from_home(self.home_and_sds.home_dir_path),
                              'from_home')
         self.put.assertEqual(expected_root,
+                             actual_resolver.from_home_hds(self.home_and_sds.hds),
+                             'from_home_hds')
+        self.put.assertEqual(expected_root,
                              actual_resolver.from_home_and_sds(self.home_and_sds),
                              'from_home_and_sds')
         self.put.assertFalse(actual_resolver.is_rel_sds,
@@ -159,6 +162,10 @@ class AnyRelativityResolverHelper:
                             'is_rel_cwd')
 
 
+def home_and_sds_2_home_case_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
+    return home_and_sds.hds.case_dir
+
+
 def sds_2_act_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
     return sds.act_dir
 
@@ -173,10 +180,6 @@ def sds_2_tmp_user_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
 
 def sds_2_cwd_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
     return pathlib.Path().cwd()
-
-
-def home_and_sds_2_home_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
-    return home_and_sds.home_dir_path
 
 
 def home_and_sds_2_cwd_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
