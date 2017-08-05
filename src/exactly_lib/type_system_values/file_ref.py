@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
     ResolvingDependency
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -45,7 +46,7 @@ class FileRef(SingleDirDependentValue):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         raise NotImplementedError()
 
-    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:

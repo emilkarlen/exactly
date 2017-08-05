@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies, \
     dir_dependency_of_resolving_dependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dependent_value as sut
@@ -176,8 +177,8 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
     def value_when_no_dir_dependencies(self):
         return self._value_when_no_dir_dependencies()
 
-    def value_pre_sds(self, home_dir_path: pathlib.Path):
-        return self._value_pre_sds(home_dir_path)
+    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        return self._value_pre_sds(hds)
 
     def value_post_sds(self, sds: SandboxDirectoryStructure):
         return self._value_post_sds(sds)

@@ -6,6 +6,7 @@ from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, \
     SpecificPathRelativity
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -67,8 +68,8 @@ class StackedFileRef(FileRef):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self.base_file_ref.value_when_no_dir_dependencies() / self._stacked_path_suffix_path()
 
-    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
-        return self.base_file_ref.value_pre_sds(home_dir_path) / self._stacked_path_suffix_path()
+    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        return self.base_file_ref.value_pre_sds_hds(hds) / self._stacked_path_suffix_path()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.base_file_ref.value_post_sds(sds) / self._stacked_path_suffix_path()
