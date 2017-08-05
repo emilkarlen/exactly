@@ -1,8 +1,9 @@
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.test_case_file_structure import relativity_root
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType, \
+    RelHomeOptionType
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType, RelRootResolver, \
-    RelSdsRootResolver, RelNonHomeRootResolver
+    RelSdsRootResolver, RelNonHomeRootResolver, RelHomeRootResolver
 from exactly_lib.util.cli_syntax.elements import argument
 
 
@@ -19,6 +20,26 @@ class RelOptionInfo(tuple):
 
     @property
     def root_resolver(self) -> RelRootResolver:
+        return self[1]
+
+    @property
+    def description(self) -> str:
+        return self[2]
+
+
+class RelHomeOptionInfo(tuple):
+    def __new__(cls,
+                option_name: argument.OptionName,
+                root_resolver: RelHomeRootResolver,
+                description: str):
+        return tuple.__new__(cls, (option_name, root_resolver, description))
+
+    @property
+    def option_name(self) -> argument.OptionName:
+        return self[0]
+
+    @property
+    def root_resolver(self) -> RelHomeRootResolver:
         return self[1]
 
     @property
@@ -65,6 +86,12 @@ class RelNonHomeOptionInfo(tuple):
     def description(self) -> str:
         return self[2]
 
+
+REL_HOME_OPTIONS_MAP = {
+    RelHomeOptionType.REL_HOME: RelHomeOptionInfo(file_ref_texts.REL_HOME_OPTION_NAME,
+                                                  relativity_root.resolver_for_home_case,
+                                                  file_ref_texts.RELATIVITY_DESCRIPTION_HOME),
+}
 
 REL_SDS_OPTIONS_MAP = {
     RelSdsOptionType.REL_ACT: RelSdsOptionInfo(file_ref_texts.REL_ACT_OPTION_NAME,
