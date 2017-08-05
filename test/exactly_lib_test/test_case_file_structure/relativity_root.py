@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure import relativity_root as sut
 from exactly_lib_test.test_case_file_structure.test_resources import relativity_test_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources.relativity_test_utils import sds_2_act_dir, \
-    sds_2_result_dir, sds_2_tmp_user_dir, home_and_sds_2_home_dir, home_and_sds_2_cwd_dir
+    sds_2_result_dir, sds_2_tmp_user_dir, home_and_sds_2_home_case_dir, home_and_sds_2_cwd_dir
 
 
 def suite() -> unittest.TestSuite:
@@ -79,7 +79,7 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_under_home(self):
         cases = [
-            (sut.RelOptionType.REL_HOME, sut.resolver_for_home, home_and_sds_2_home_dir),
+            (sut.RelOptionType.REL_HOME, sut.resolver_for_home, home_and_sds_2_home_case_dir),
         ]
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
