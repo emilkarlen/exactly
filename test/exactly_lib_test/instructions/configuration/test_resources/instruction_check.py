@@ -20,8 +20,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 class Arrangement(ArrangementBase):
     def __init__(self,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
-                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.'),
-                                                                                            act_phase_handling_that_runs_constant_actions())):
+                 initial_configuration_builder: ConfigurationBuilder =
+                 ConfigurationBuilder(pathlib.Path('.'),
+                                      act_phase_handling_that_runs_constant_actions())):
         super().__init__(hds_contents=hds_contents)
         self.initial_configuration_builder = initial_configuration_builder
 

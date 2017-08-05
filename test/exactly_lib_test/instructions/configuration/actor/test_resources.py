@@ -25,11 +25,9 @@ class Arrangement:
     def __init__(self,
                  source: ParseSource,
                  act_phase_source_lines: list,
-                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
-        self.home_dir_contents = home_dir_contents
         self.hds_contents = hds_contents
         self.source = source
         self.act_phase_source_lines = act_phase_source_lines
@@ -57,7 +55,6 @@ def check(put: unittest.TestCase,
                                         executor_constructor,
                                         act_phase_instructions,
                                         act_phase_execution.Arrangement(
-                                            home_dir_contents=arrangement.home_dir_contents,
                                             hds_contents=arrangement.hds_contents,
                                             act_phase_process_executor=arrangement.act_phase_process_executor),
                                         act_phase_execution.Expectation(
