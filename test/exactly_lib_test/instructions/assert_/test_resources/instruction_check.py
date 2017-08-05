@@ -16,12 +16,11 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
-from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
@@ -29,7 +28,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                hds_contents: home_populators.HomePopulator = home_populators.empty(),
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 non_home_contents_before_main: non_home_populator.NonHomePopulator = non_home_populator.empty(),
                 home_or_sds_contents_before_main: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
@@ -39,7 +38,7 @@ def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAct
                 symbols: SymbolTable = None,
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(pre_contents_population_action=pre_contents_population_action,
-                              home_contents=home_dir_contents,
+                              hds_contents=hds_contents,
                               sds_contents=sds_contents_before_main,
                               non_home_contents=non_home_contents_before_main,
                               act_result_producer=act_result_producer,

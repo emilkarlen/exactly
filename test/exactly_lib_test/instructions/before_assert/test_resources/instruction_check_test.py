@@ -204,9 +204,6 @@ class TestMiscCases(TestCaseBase):
             )
 
 
-PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = utils.ParserThatGives(before_assert_phase_instruction_that())
-
-
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(BeforeAssertPhaseInstruction):
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep

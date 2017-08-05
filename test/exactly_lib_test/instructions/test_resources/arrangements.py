@@ -75,7 +75,6 @@ class ArrangementWithSds(ArrangementBase):
 class ArrangementPostAct(ArrangementWithSds):
     def __init__(self,
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                 home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_home_contents: non_home_populator.NonHomePopulator = non_home_populator.empty(),
@@ -87,7 +86,6 @@ class ArrangementPostAct(ArrangementWithSds):
                  symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
-                         home_contents=home_contents,
                          sds_contents=sds_contents,
                          hds_contents=hds_contents,
                          non_home_contents=non_home_contents,
