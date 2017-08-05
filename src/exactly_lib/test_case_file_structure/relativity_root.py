@@ -20,11 +20,7 @@ class RelRootResolver:
     def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         raise NotImplementedError()
 
-    def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
-        raise ValueError('Root is not relative home: ' + str(self._relativity))
-
-    def from_home_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
-        # TODO Rename to from_home, when from_home has been deleted
+    def from_home(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         raise ValueError('Root is not relative home: ' + str(self._relativity))
 
     def from_non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
@@ -59,14 +55,11 @@ class RelHomeRootResolver(RelRootResolver):
     def home_relativity_type(self) -> RelHomeOptionType:
         return self._relativity_type_hds
 
-    def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
-        return home_dir_path
-
-    def from_home_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def from_home(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         return self._hds_2_root_fun(hds)
 
     def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        return self.from_home(home_and_sds.home_dir_path)
+        return self.from_home(home_and_sds.hds)
 
     @property
     def is_rel_home(self) -> bool:

@@ -24,8 +24,8 @@ class HomeRelativityResolverHelper:
                           actual_resolver.home_relativity_type,
                           'home_relativity_type')
         self.put.assertEqual(expected_root,
-                             actual_resolver.from_home_hds(self.hds),
-                             'from_home_hds')
+                             actual_resolver.from_home(self.hds),
+                             'from_home')
 
 
 class SdsRelativityResolverHelper:
@@ -142,11 +142,8 @@ class AnyRelativityResolverHelper:
                             'existence pre SDS')
         expected_root = expected_root_resolver(self.home_and_sds)
         self.put.assertEqual(expected_root,
-                             actual_resolver.from_home(self.home_and_sds.home_dir_path),
+                             actual_resolver.from_home(self.home_and_sds.hds),
                              'from_home')
-        self.put.assertEqual(expected_root,
-                             actual_resolver.from_home_hds(self.home_and_sds.hds),
-                             'from_home_hds')
         self.put.assertEqual(expected_root,
                              actual_resolver.from_home_and_sds(self.home_and_sds),
                              'from_home_and_sds')

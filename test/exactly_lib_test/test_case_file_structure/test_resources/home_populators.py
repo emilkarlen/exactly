@@ -30,7 +30,7 @@ class _HomePopulatorForRelHomeOptionType(HomePopulator):
         self.dir_contents = dir_contents
 
     def populate_hds(self, hds: HomeDirectoryStructure):
-        target_dir = relative_path_options.REL_HOME_OPTIONS_MAP[self.relativity].root_resolver.from_home_hds(hds)
+        target_dir = relative_path_options.REL_HOME_OPTIONS_MAP[self.relativity].root_resolver.from_home(hds)
         self.dir_contents.write_to(target_dir)
 
 
