@@ -1,5 +1,3 @@
-import pathlib
-
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -22,9 +20,9 @@ EXISTS_AT_BEFORE_ASSERT_MAIN = EXISTS_AT_SETUP_MAIN + SET_AT_BEFORE_ASSERT__ENV_
 ALL_REPLACED_ENV_VARS = EXISTS_AT_SETUP_MAIN
 
 
-def set_at_setup_pre_validate(home_dir_path: pathlib.Path) -> dict:
+def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
     return {
-        ENV_VAR_HOME: str(home_dir_path),
+        ENV_VAR_HOME: str(hds.case_dir),
     }
 
 
@@ -45,22 +43,22 @@ def exists_at_config() -> dict:
     return {}
 
 
-def exists_at_setup_pre_validate(home_dir_path: pathlib.Path) -> dict:
+def exists_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
     ret_val = exists_at_config()
-    ret_val.update(set_at_setup_pre_validate(home_dir_path))
+    ret_val.update(set_at_setup_pre_validate(hds))
     return ret_val
 
 
-def exists_at_setup_main(home_dir_path: pathlib.Path,
+def exists_at_setup_main(hds: HomeDirectoryStructure,
                          sds: SandboxDirectoryStructure) -> dict:
-    ret_val = set_at_setup_pre_validate(home_dir_path)
+    ret_val = set_at_setup_pre_validate(hds)
     ret_val.update(set_at_setup_main(sds))
     return ret_val
 
 
-def exists_at_assert(home_dir_path: pathlib.Path,
+def exists_at_assert(hds: HomeDirectoryStructure,
                      sds: SandboxDirectoryStructure) -> dict:
-    ret_val = exists_at_setup_main(home_dir_path, sds)
+    ret_val = exists_at_setup_main(hds, sds)
     ret_val.update(set_at_assert(sds))
     return ret_val
 
@@ -70,4 +68,4 @@ def replaced(hds: HomeDirectoryStructure,
     """
     The environment variables that are replaced by the --with-replaced-env-vars.
     """
-    return exists_at_setup_main(hds.case_dir, sds)
+    return exists_at_setup_main(hds, sds)

@@ -441,7 +441,7 @@ class _PartialExecutor:
 
     def __set_pre_sds_environment_variables(self):
         self.__configuration.environ.update(
-            environment_variables.set_at_setup_pre_validate(self.__configuration.home_dir_path))
+            environment_variables.set_at_setup_pre_validate(self.__configuration.hds))
 
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._sds.act_dir))
