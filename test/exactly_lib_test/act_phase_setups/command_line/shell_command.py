@@ -12,6 +12,7 @@ from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
@@ -47,7 +48,8 @@ class TestParsingAndValidation(unittest.TestCase):
         super().__init__(method_name)
         self.constructor = sut.Constructor()
         self.home_dir_as_current_dir = pathlib.Path()
-        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir, dict(os.environ))
+        self.hds = HomeDirectoryStructure(self.home_dir_as_current_dir)
+        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.hds, dict(os.environ))
 
     def test_fails_when_command_is_empty(self):
         act_phase_instructions = [instr([shell_command_source_line_for(''), ])]

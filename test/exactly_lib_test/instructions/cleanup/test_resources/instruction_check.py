@@ -124,7 +124,7 @@ class Executor(InstructionExecutionBase):
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             home_and_sds = path_resolving_environment.home_and_sds
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
                                                               self.arrangement.process_execution_settings.environ,
                                                               symbols=self.arrangement.symbols)
             result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)

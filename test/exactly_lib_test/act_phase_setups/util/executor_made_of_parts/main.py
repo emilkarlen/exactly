@@ -14,6 +14,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution, Expectation
@@ -96,7 +97,8 @@ class TestConstructor(unittest.TestCase):
 
 
 def _environment() -> InstructionEnvironmentForPreSdsStep:
-    return InstructionEnvironmentForPreSdsStep(pathlib.Path(), dict(os.environ))
+    hds = HomeDirectoryStructure(pathlib.Path())
+    return InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
 
 
 class ParserThatRaisesException(sut.Parser):

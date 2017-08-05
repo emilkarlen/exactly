@@ -6,9 +6,10 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstru
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
+from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.file_structure import empty_dir_contents
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
@@ -38,14 +39,15 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
     @staticmethod
     def _new_environment() -> InstructionEnvironmentForPreSdsStep:
         home_dir_path = pathlib.Path()
-        return InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
+        hds = HomeDirectoryStructure(home_dir_path)
+        return InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
 
     def _do_parse(self,
                   act_phase_instructions: list,
                   home_dir_contents: DirContents = empty_dir_contents()
                   ):
-        with tmp_dir(contents=home_dir_contents) as home_dir_path:
-            pre_sds_env = InstructionEnvironmentForPreSdsStep(home_dir_path,
+        with home_directory_structure(case_dir_contents=home_dir_contents) as hds:
+            pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               dict(os.environ))
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
             executor.parse(pre_sds_env)
@@ -54,8 +56,8 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                                        act_phase_instructions: list,
                                        home_dir_contents: DirContents = empty_dir_contents()
                                        ):
-        with tmp_dir(contents=home_dir_contents) as home_dir_path:
-            pre_sds_env = InstructionEnvironmentForPreSdsStep(home_dir_path,
+        with home_directory_structure(case_dir_contents=home_dir_contents) as hds:
+            pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               dict(os.environ))
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
             executor.parse(pre_sds_env)
@@ -65,8 +67,8 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                              act_phase_instructions: list,
                              home_dir_contents: DirContents = empty_dir_contents()
                              ) -> svh.SuccessOrValidationErrorOrHardError:
-        with tmp_dir(contents=home_dir_contents) as home_dir_path:
-            pre_sds_env = InstructionEnvironmentForPreSdsStep(home_dir_path,
+        with home_directory_structure(case_dir_contents=home_dir_contents) as hds:
+            pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               dict(os.environ))
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
             return executor.validate_pre_sds(pre_sds_env)

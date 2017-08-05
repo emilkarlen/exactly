@@ -21,6 +21,7 @@ from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
     stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
@@ -52,6 +53,10 @@ class Configuration(tuple):
     @property
     def home_dir_path(self) -> pathlib.Path:
         return self[0]
+
+    @property
+    def hds(self) -> HomeDirectoryStructure:
+        return HomeDirectoryStructure(self.home_dir_path)
 
     @property
     def timeout_in_seconds(self) -> int:
@@ -197,7 +202,7 @@ class _PartialExecutor:
         self.__act_source_and_executor = None
         self.__act_source_and_executor_constructor = act_phase_handling.source_and_executor_constructor
         self.__instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
-            self.__configuration.home_dir_path,
+            self.__configuration.hds,
             self.__configuration.environ,
             self.__configuration.timeout_in_seconds,
             empty_symbol_table())
