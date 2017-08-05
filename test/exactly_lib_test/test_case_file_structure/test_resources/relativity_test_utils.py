@@ -4,7 +4,28 @@ import unittest
 
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+
+
+class HomeRelativityResolverHelper:
+    def __init__(self, put: unittest.TestCase):
+        self.put = put
+        self.hds = HomeDirectoryStructure(pathlib.Path('hds-case'))
+
+    def check(self,
+              actual_resolver,
+              expected_relativity_option: relativity_root.RelHomeOptionType,
+              expected_root_resolver: types.FunctionType):
+        self.put.assertIsInstance(actual_resolver, relativity_root.RelHomeRootResolver)
+        assert isinstance(actual_resolver, relativity_root.RelHomeRootResolver)
+        expected_root = expected_root_resolver(self.hds)
+        self.put.assertIs(expected_relativity_option,
+                          actual_resolver.home_relativity_type,
+                          'home_relativity_type')
+        self.put.assertEqual(expected_root,
+                             actual_resolver.from_home_hds(self.hds),
+                             'from_home_hds')
 
 
 class SdsRelativityResolverHelper:
@@ -160,6 +181,10 @@ class AnyRelativityResolverHelper:
                              'is_rel_home')
         self.put.assertTrue(actual_resolver.is_rel_cwd,
                             'is_rel_cwd')
+
+
+def hds_2_case_dir(hds: HomeDirectoryStructure) -> pathlib.Path:
+    return hds.case_dir
 
 
 def home_and_sds_2_home_case_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
