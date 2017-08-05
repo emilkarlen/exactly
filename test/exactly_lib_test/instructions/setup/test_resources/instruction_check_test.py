@@ -176,7 +176,7 @@ class TestSymbols(TestCaseBase):
                     setup_phase_instruction_that(
                         symbol_usages=do_return(symbol_usages_of_instruction))),
                 single_line_source(),
-                sut.arrangement(),
+                sut.Arrangement(),
                 sut.Expectation(
                     symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
             )

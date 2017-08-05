@@ -31,7 +31,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import h
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
-from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -56,7 +55,6 @@ class SettingsBuilderAssertionModel(tuple):
 class Arrangement(ArrangementWithSds):
     def __init__(self,
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
@@ -67,7 +65,6 @@ class Arrangement(ArrangementWithSds):
                  symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
-                         home_contents=home_dir_contents,
                          hds_contents=hds_contents,
                          sds_contents=sds_contents_before_main,
                          non_home_contents=non_home_contents,
@@ -76,9 +73,6 @@ class Arrangement(ArrangementWithSds):
                          home_or_sds_contents=home_or_sds_contents,
                          symbols=symbols)
         self.initial_settings_builder = initial_settings_builder
-
-
-arrangement = Arrangement
 
 
 class Expectation:
