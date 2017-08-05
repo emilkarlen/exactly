@@ -57,6 +57,15 @@ class TestSdsRelativityResolver(unittest.TestCase):
                                   rel_option_type,
                                   expected_root_path_resolver)
 
+    def test_dict_keys(self):
+        expected = {
+            sut.RelSdsOptionType.REL_ACT,
+            sut.RelSdsOptionType.REL_RESULT,
+            sut.RelSdsOptionType.REL_TMP,
+        }
+        self.assertEqual(expected,
+                         sut.REL_SDS_OPTIONS_MAP.keys())
+
 
 class TestNonHomeRelativityResolver(unittest.TestCase):
     def __init__(self, methodName):
@@ -86,6 +95,16 @@ class TestNonHomeRelativityResolver(unittest.TestCase):
                 self.helper.check_cwd(resolver,
                                       rel_option_type,
                                       expected_root_path_resolver)
+
+    def test_dict_keys(self):
+        expected = {
+            sut.RelNonHomeOptionType.REL_ACT,
+            sut.RelNonHomeOptionType.REL_RESULT,
+            sut.RelNonHomeOptionType.REL_TMP,
+            sut.RelNonHomeOptionType.REL_CWD,
+        }
+        self.assertEqual(expected,
+                         sut.REL_NON_HOME_OPTIONS_MAP.keys())
 
 
 class TestAnyRelativityResolver(unittest.TestCase):
@@ -127,3 +146,14 @@ class TestAnyRelativityResolver(unittest.TestCase):
                 self.helper.check_cwd(resolver,
                                       rel_option_type,
                                       expected_root_path_resolver)
+
+    def test_dict_keys(self):
+        expected = {
+            sut.RelOptionType.REL_HOME,
+            sut.RelOptionType.REL_ACT,
+            sut.RelOptionType.REL_RESULT,
+            sut.RelOptionType.REL_TMP,
+            sut.RelOptionType.REL_CWD,
+        }
+        self.assertEqual(expected,
+                         sut.REL_OPTIONS_MAP.keys())
