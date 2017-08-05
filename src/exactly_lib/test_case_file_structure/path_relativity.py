@@ -28,6 +28,13 @@ class RelNonHomeOptionType(enum.Enum):
     REL_CWD = 4
 
 
+class RelHomeOptionType(enum.Enum):
+    """
+    Id values must match those of `RelOptionType`
+    """
+    REL_HOME = 3
+
+
 class ResolvingDependency(enum.Enum):
     HOME = 1
     NON_HOME = 2
@@ -65,6 +72,10 @@ def rel_any_from_rel_sds(rel_sds: RelSdsOptionType) -> RelOptionType:
 
 def rel_any_from_rel_non_home(rel_sds_or_cwd: RelNonHomeOptionType) -> RelOptionType:
     return RelOptionType(rel_sds_or_cwd.value)
+
+
+def rel_any_from_rel_home(rel_home: RelHomeOptionType) -> RelOptionType:
+    return RelOptionType(rel_home.value)
 
 
 class SpecificPathRelativity:
