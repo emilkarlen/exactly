@@ -177,7 +177,7 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
     def value_when_no_dir_dependencies(self):
         return self._value_when_no_dir_dependencies()
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         return self._value_pre_sds(hds)
 
     def value_post_sds(self, sds: SandboxDirectoryStructure):

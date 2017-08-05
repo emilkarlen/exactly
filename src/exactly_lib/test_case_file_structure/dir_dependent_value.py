@@ -77,7 +77,7 @@ class SingleDirDependentValue(DirDependentValue):
         """
         raise NotImplementedError()
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         """
         :raises DirDependencyError: This file exists only post-SDS.
         """
@@ -91,7 +91,7 @@ class SingleDirDependentValue(DirDependentValue):
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds):
         if self.exists_pre_sds():
-            return self.value_pre_sds_hds(home_and_sds.hds)
+            return self.value_pre_sds(home_and_sds.hds)
         else:
             return self.value_post_sds(home_and_sds.sds)
 
