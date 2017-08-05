@@ -21,10 +21,10 @@ class PathResolvingEnvironment:
 
 class PathResolvingEnvironmentPreSds(PathResolvingEnvironment):
     def __init__(self,
-                 home_dir_path: pathlib.Path,
+                 hds: HomeDirectoryStructure,
                  symbols: SymbolTable = None):
         super().__init__(symbols)
-        self._hds = HomeDirectoryStructure(home_dir_path)
+        self._hds = hds
 
     @property
     def hds(self) -> HomeDirectoryStructure:
@@ -51,7 +51,7 @@ class PathResolvingEnvironmentPreOrPostSds(PathResolvingEnvironmentPreSds, PathR
     def __init__(self,
                  home_and_sds: HomeAndSds,
                  symbols: SymbolTable = None):
-        PathResolvingEnvironmentPreSds.__init__(self, home_and_sds.home_dir_path, symbols)
+        PathResolvingEnvironmentPreSds.__init__(self, home_and_sds.hds, symbols)
         PathResolvingEnvironmentPostSds.__init__(self, home_and_sds.sds, symbols)
         self._home_and_sds = home_and_sds
 
