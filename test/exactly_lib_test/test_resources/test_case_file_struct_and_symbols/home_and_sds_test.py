@@ -4,7 +4,6 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
@@ -23,14 +22,12 @@ class PostActionCheck:
 class Arrangement:
     def __init__(self,
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                 home_dir_contents_before: DirContents = empty_dir_contents(),
                  hds_contents_before: home_populators.HomePopulator = home_populators.empty(),
                  sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
                  pre_action_action: HomeAndSdsAction = HomeAndSdsAction(),
                  symbols: SymbolTable = None):
         self.pre_contents_population_action = pre_contents_population_action
         self.hds_contents_before = hds_contents_before
-        self.home_dir_contents_before = home_dir_contents_before
         self.sds_contents_before = sds_contents_before
         self.pre_action_action = pre_action_action
         self.symbols = symbol_table_from_none_or_value(symbols)
@@ -62,7 +59,6 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
     with home_and_sds_with_act_as_curr_dir(pre_contents_population_action=arrangement.pre_contents_population_action,
-                                           home_dir_contents=arrangement.home_dir_contents_before,
                                            hds_contents=arrangement.hds_contents_before,
                                            sds_contents=arrangement.sds_contents_before,
                                            symbols=arrangement.symbols,

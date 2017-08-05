@@ -17,6 +17,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sub_pro
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.parse import single_line_source
@@ -116,9 +117,9 @@ class TestExecuteInterpret(TestCaseBase):
                                                'exit-with-value-on-command-line.py',
                                                0]),
             home_and_sds_test.Arrangement(
-                home_dir_contents_before=DirContents([
+                hds_contents_before=case_home_dir_contents(DirContents([
                     File('exit-with-value-on-command-line.py',
-                         py_pgm_that_exits_with_value_on_command_line(''))])),
+                         py_pgm_that_exits_with_value_on_command_line(''))]))),
             home_and_sds_test.Expectation(
                 expected_action_result=spr_check.is_success_result(0,
                                                                    None),
@@ -148,9 +149,9 @@ class TestExecuteInterpret(TestCaseBase):
                                                'exit-with-value-on-command-line.py',
                                                2]),
             home_and_sds_test.Arrangement(
-                home_dir_contents_before=DirContents([
+                hds_contents_before=case_home_dir_contents(DirContents([
                     File('exit-with-value-on-command-line.py',
-                         py_pgm_that_exits_with_value_on_command_line('on stderr'))])),
+                         py_pgm_that_exits_with_value_on_command_line('on stderr'))]))),
             home_and_sds_test.Expectation(
                 expected_action_result=spr_check.is_success_result(2,
                                                                    'on stderr'),
@@ -165,9 +166,9 @@ class TestExecuteInterpret(TestCaseBase):
         self._check_single_line_arguments_with_source_variants(
             argument,
             home_and_sds_test.Arrangement(
-                home_dir_contents_before=DirContents([
+                hds_contents_before=case_home_dir_contents(DirContents([
                     File('exit-with-value-on-command-line.py',
-                         py_pgm_that_exits_with_value_on_command_line(''))])),
+                         py_pgm_that_exits_with_value_on_command_line(''))]))),
             home_and_sds_test.Expectation(
                 expected_action_result=spr_check.IsFailure(),
 
