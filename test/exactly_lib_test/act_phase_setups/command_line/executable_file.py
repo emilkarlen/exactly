@@ -317,7 +317,7 @@ class TestSymbolUsages(unittest.TestCase):
     def test_multiple_symbol_references_in_executable(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  file_refs.rel_home(PathPartAsFixedPath(sub_dir_of_home)))
+                                  file_refs.rel_home_case(PathPartAsFixedPath(sub_dir_of_home)))
 
         executable_file_name_symbol = NameAndValue('executable_file_name_symbol_name',
                                                    'the-executable-file')
