@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -23,11 +24,15 @@ class PathResolvingEnvironmentPreSds(PathResolvingEnvironment):
                  home_dir_path: pathlib.Path,
                  symbols: SymbolTable = None):
         super().__init__(symbols)
-        self._home_dir_path = home_dir_path
+        self._hds = HomeDirectoryStructure(home_dir_path)
 
     @property
-    def home_dir_path(self):
-        return self._home_dir_path
+    def hds(self) -> HomeDirectoryStructure:
+        return self._hds
+
+    @property
+    def home_dir_path(self) -> pathlib.Path:
+        return self._hds.case_dir
 
 
 class PathResolvingEnvironmentPostSds(PathResolvingEnvironment):

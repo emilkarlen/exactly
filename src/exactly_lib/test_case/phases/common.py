@@ -6,6 +6,7 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -16,14 +17,18 @@ class InstructionEnvironmentForPreSdsStep:
                  environ: dict,
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None):
-        self.__home_dir = home_dir
+        self.__hds = HomeDirectoryStructure(home_dir)
         self.__timeout_in_seconds = timeout_in_seconds
         self.__environ = environ
         self.__symbols = SymbolTable() if symbols is None else symbols
 
     @property
     def home_directory(self) -> pathlib.Path:
-        return self.__home_dir
+        return self.__hds.case_dir
+
+    @property
+    def hds(self) -> HomeDirectoryStructure:
+        return self.__hds
 
     @property
     def environ(self) -> dict:
@@ -50,7 +55,7 @@ class InstructionEnvironmentForPreSdsStep:
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPreSds:
-        return PathResolvingEnvironmentPreSds(self.__home_dir, self.__symbols)
+        return PathResolvingEnvironmentPreSds(self.__hds.case_dir, self.__symbols)
 
 
 class PhaseLoggingPaths:
