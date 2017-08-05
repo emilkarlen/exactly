@@ -135,7 +135,7 @@ class Executor(InstructionExecutionBase):
             if not result_of_validate_pre_sds.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
-                environment.home_directory,
+                environment.hds,
                 environment.environ,
                 home_and_sds.sds,
                 phase_identifier.CLEANUP.identifier,
