@@ -27,6 +27,7 @@ from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple, HomeOrSdsPopulatorForRelOptionType
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -208,7 +209,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
             arrangement = ArrangementWithSds(
                 symbols=relativity_option_conf.symbols.in_arrangement(),
-                home_contents=home_dir_contents,
+                hds_contents=case_home_dir_contents(home_dir_contents),
             )
             with self.subTest(msg='option=' + relativity_option_conf.test_case_description):
                 self._check_single_line_arguments_with_source_variants(argument,

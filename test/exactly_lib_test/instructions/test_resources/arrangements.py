@@ -49,7 +49,6 @@ class ArrangementBase:
 class ArrangementWithSds(ArrangementBase):
     def __init__(self,
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                 home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_home_contents: non_home_populator.NonHomePopulator = non_home_populator.empty(),
@@ -59,8 +58,7 @@ class ArrangementWithSds(ArrangementBase):
                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  symbols: SymbolTable = None,
                  ):
-        super().__init__(home_contents=home_contents,
-                         hds_contents=hds_contents,
+        super().__init__(hds_contents=hds_contents,
                          process_execution_settings=process_execution_settings)
         self.pre_contents_population_action = pre_contents_population_action
         self.sds_contents = sds_contents
