@@ -9,10 +9,10 @@ SHELL_COMMAND_MARKER = SHELL_KEYWORD
 def relativity_configuration_of_action_to_check(argument_syntax_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(
         RelOptionsConfiguration(
-            PathRelativityVariants({RelOptionType.REL_HOME},
+            PathRelativityVariants({RelOptionType.REL_HOME_CASE},
                                    absolute=True),
             is_rel_symbol_option_accepted=False,
-            default_option=RelOptionType.REL_HOME),
+            default_option=RelOptionType.REL_HOME_CASE),
         argument_syntax_name=argument_syntax_name,
         path_suffix_is_required=True
     )

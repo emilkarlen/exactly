@@ -24,13 +24,13 @@ class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
                 sut.equals_file_ref_relativity_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = NoRestriction()
         assertion = sut.equals_file_ref_relativity_restriction(expected)
         assert_that_assertion_fails(assertion, actual)
 
     def test_not_equals__different__accepted_relativity_variants(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         assertion = sut.equals_file_ref_relativity_restriction(expected)
         assert_that_assertion_fails(assertion, actual)

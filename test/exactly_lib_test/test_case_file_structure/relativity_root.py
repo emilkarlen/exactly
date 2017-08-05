@@ -22,7 +22,7 @@ class TestHomeRelativityResolver(unittest.TestCase):
 
     def test(self):
         cases = [
-            (sut.RelHomeOptionType.REL_HOME, sut.resolver_for_home_case, hds_2_case_dir),
+            (sut.RelHomeOptionType.REL_HOME_CASE, sut.resolver_for_home_case, hds_2_case_dir),
         ]
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(rel_option_type=str(rel_option_type)):
@@ -96,7 +96,7 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_under_home(self):
         cases = [
-            (sut.RelOptionType.REL_HOME, sut.resolver_for_home_case, home_and_sds_2_home_case_dir),
+            (sut.RelOptionType.REL_HOME_CASE, sut.resolver_for_home_case, home_and_sds_2_home_case_dir),
         ]
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):

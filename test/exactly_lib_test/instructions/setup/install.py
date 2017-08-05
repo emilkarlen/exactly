@@ -204,7 +204,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                 ]),
             ),
         ]
-        src_rel_option = rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME)
+        src_rel_option = rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME_CASE)
         for dst_rel_option in some_destination_relativity_options():
             for destination_setup in destination_dir_contents_cases:
                 self._sub_test__install_file(
@@ -360,10 +360,10 @@ class TestFailingScenarios(TestCaseBaseForParser):
 
 def source_relativity_options(symbol_name: str) -> list:
     return [
-        rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME),
-        rel_opt_conf.conf_rel_home(RelHomeOptionType.REL_HOME),
+        rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
+        rel_opt_conf.conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
         rel_opt_conf.symbol_conf_rel_home(
-            RelHomeOptionType.REL_HOME,
+            RelHomeOptionType.REL_HOME_CASE,
             symbol_name,
             sut.REL_OPTION_ARG_CONF_FOR_SOURCE.options.accepted_relativity_variants),
     ]

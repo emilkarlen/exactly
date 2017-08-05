@@ -103,7 +103,7 @@ _FORMAT_MAP = {
     'not': instruction_options.NOT_ARGUMENT,
     'replace_env_vars_option': long_option_syntax(
         instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
-    'rel_home_option': file_ref_texts.REL_HOME_OPTION,
+    'rel_home_option': file_ref_texts.REL_HOME_CASE_OPTION,
     'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
     'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
     'rel_symbol_option': file_ref_texts.REL_symbol_OPTION,

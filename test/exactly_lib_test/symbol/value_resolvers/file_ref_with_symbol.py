@@ -36,7 +36,7 @@ class TestRelSymbol(unittest.TestCase):
     def test_symbol_references(self):
         # ARRANGE #
         expected_restriction = FileRefRelativityRestriction(
-            PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, True))
+            PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE}, True))
         symbol_name_of_rel_path = 'symbol_name_of_rel_path'
         symbol_name_of_path_suffix = 'symbol_name_of_path_suffix'
         restrictions_on_path_suffix_symbol = restrictions.ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())
@@ -71,7 +71,7 @@ class TestRelSymbol(unittest.TestCase):
     def test_exists_pre_sds(self):
         # ARRANGE #
         relativity_test_cases = [
-            (RelOptionType.REL_HOME,
+            (RelOptionType.REL_HOME_CASE,
              True,
              ),
             (RelOptionType.REL_TMP,
@@ -113,7 +113,7 @@ class TestRelSymbol(unittest.TestCase):
 
     def test_file_path_and_value_type(self):
         relativity_test_cases = [
-            (RelOptionType.REL_HOME, True),
+            (RelOptionType.REL_HOME_CASE, True),
             (RelOptionType.REL_ACT, False),
         ]
         path_suffix_str = 'path-suffix-file.txt'

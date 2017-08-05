@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
+from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -201,7 +201,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                        ' {rel_home_option} {existing_file}'.format(
                 relativity_option=relativity_option_conf.option_string,
                 interpret_option=sut.INTERPRET_OPTION,
-                rel_home_option=REL_HOME_OPTION,
+                rel_home_option=REL_HOME_CASE_OPTION,
                 existing_file=existing_file_to_interpret,
             )
 
@@ -446,7 +446,7 @@ IS_VALIDATION_ERROR = asrt.is_instance_with(str, asrt.casted_to_boolean_is(True)
 
 def relativity_options(symbol_name: str) -> list:
     return [
-        rel_opt.default_conf_rel_any(RelOptionType.REL_HOME),
+        rel_opt.default_conf_rel_any(RelOptionType.REL_HOME_CASE),
 
         rel_opt.conf_rel_any(RelOptionType.REL_ACT),
         rel_opt.conf_rel_any(RelOptionType.REL_TMP),
@@ -454,7 +454,7 @@ def relativity_options(symbol_name: str) -> list:
         rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                     symbol_name,
                                     sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
-        rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME,
+        rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME_CASE,
                                     symbol_name,
                                     sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
     ]

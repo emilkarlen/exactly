@@ -19,7 +19,7 @@ class TestListValue(unittest.TestCase):
     def test(self):
         string_fragment_1 = 'string fragment 1'
         string_fragment_2 = 'string fragment 2'
-        file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME,
+        file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME_CASE,
                                                     PathPartAsNothing())
         file_ref_rel_sds = file_refs.of_rel_option(file_refs.RelOptionType.REL_ACT,
                                                    PathPartAsNothing())

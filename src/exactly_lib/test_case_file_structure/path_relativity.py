@@ -5,7 +5,7 @@ class RelOptionType(enum.Enum):
     REL_ACT = 0
     REL_RESULT = 1
     REL_TMP = 2
-    REL_HOME = 3
+    REL_HOME_CASE = 3
     REL_CWD = 4
 
 
@@ -32,7 +32,7 @@ class RelHomeOptionType(enum.Enum):
     """
     Id values must match those of `RelOptionType`
     """
-    REL_HOME = 3
+    REL_HOME_CASE = 3
 
 
 class ResolvingDependency(enum.Enum):
@@ -42,7 +42,7 @@ class ResolvingDependency(enum.Enum):
 
 DEPENDENCY_DICT = {
     ResolvingDependency.HOME:
-        frozenset((RelOptionType.REL_HOME,)),
+        frozenset((RelOptionType.REL_HOME_CASE,)),
 
     ResolvingDependency.NON_HOME:
         frozenset((RelOptionType.REL_ACT,
@@ -53,7 +53,7 @@ DEPENDENCY_DICT = {
 }
 
 RESOLVING_DEPENDENCY_OF = {
-    RelOptionType.REL_HOME: ResolvingDependency.HOME,
+    RelOptionType.REL_HOME_CASE: ResolvingDependency.HOME,
 
     RelOptionType.REL_ACT: ResolvingDependency.NON_HOME,
     RelOptionType.REL_RESULT: ResolvingDependency.NON_HOME,

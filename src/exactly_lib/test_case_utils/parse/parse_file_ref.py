@@ -40,7 +40,7 @@ ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
 
 ALL_REL_OPTION_VARIANTS = PathRelativityVariants(ALL_REL_OPTIONS, True)
 
-ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {RelOptionType.REL_HOME}
+ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {RelOptionType.REL_HOME_CASE}
 
 ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
     ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
@@ -55,7 +55,7 @@ def all_rel_options_config(argument_syntax_name: str,
                            path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
                                                                   True,
-                                                                  RelOptionType.REL_HOME),
+                                                                  RelOptionType.REL_HOME_CASE),
                                           argument_syntax_name,
                                           path_suffix_is_required)
 
@@ -63,7 +63,7 @@ def all_rel_options_config(argument_syntax_name: str,
 ALL_REL_OPTIONS_CONFIG = all_rel_options_config(path_syntax.PATH_SYNTAX_ELEMENT_NAME)
 
 STANDARD_NON_HOME_RELATIVITY_VARIANTS = PathRelativityVariants(
-    ALL_REL_OPTIONS - {RelOptionType.REL_HOME},
+    ALL_REL_OPTIONS - {RelOptionType.REL_HOME_CASE},
     True)
 
 STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HOME_RELATIVITY_VARIANTS,

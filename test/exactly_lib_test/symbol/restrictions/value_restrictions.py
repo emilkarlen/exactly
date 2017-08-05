@@ -77,11 +77,11 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
+            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
         ]
         restriction = vr.FileRefRelativityRestriction(
             PathRelativityVariants(
-                {RelOptionType.REL_ACT, RelOptionType.REL_HOME, RelOptionType.REL_RESULT},
+                {RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE, RelOptionType.REL_RESULT},
                 False))
         symbols = empty_symbol_table()
         for value in test_cases:
@@ -96,7 +96,7 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME)),
+            FileRefConstant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
         ]
         restriction = vr.FileRefRelativityRestriction(
             PathRelativityVariants(
@@ -188,4 +188,4 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
 
 def file_ref_constant_resolver() -> FileRefResolver:
     return FileRefConstant(file_ref_test_impl('file-name-rel-home',
-                                              relativity=RelOptionType.REL_HOME))
+                                              relativity=RelOptionType.REL_HOME_CASE))
