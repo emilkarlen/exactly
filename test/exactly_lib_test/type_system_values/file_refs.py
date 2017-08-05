@@ -163,7 +163,7 @@ class TestFilePath(TestForFixedRelativityBase):
 
                 elif self.config.exists_pre_sds:
                     tested_path_msg = 'file_path_pre_sds'
-                    actual_path = file_reference.value_pre_sds(home_and_sds.home_dir_path)
+                    actual_path = file_reference.value_pre_sds_hds(home_and_sds.hds)
                 else:
                     tested_path_msg = 'file_path_post_sds'
                     actual_path = file_reference.value_post_sds(home_and_sds.sds)
