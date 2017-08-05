@@ -55,8 +55,10 @@ class TestCaseBaseForParser(TestCaseBase):
             initial_configuration_builder.set_timeout_in_seconds(None)
             self._check(sut.Parser(),
                         source,
-                        Arrangement(initial_configuration_builder=initial_configuration_builder),
-                        Expectation(configuration=AssertTimeout(expected)))
+                        Arrangement(
+                            initial_configuration_builder=initial_configuration_builder),
+                        Expectation(
+                            configuration=AssertTimeout(expected)))
 
 
 class TestSetTimeout(TestCaseBaseForParser):

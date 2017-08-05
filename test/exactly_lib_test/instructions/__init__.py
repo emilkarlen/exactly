@@ -12,8 +12,8 @@ from exactly_lib_test.instructions import utils
 def suite():
     return unittest.TestSuite([
         utils.suite(),
-        multi_phase_instructions.suite(),
         configuration.suite(),
+        multi_phase_instructions.suite(),
         setup.suite(),
         before_assert.suite(),
         assert_.suite(),

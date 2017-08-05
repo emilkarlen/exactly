@@ -14,18 +14,15 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_utils.test_resources import sh_assertions
-from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Arrangement(ArrangementBase):
     def __init__(self,
-                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.'),
                                                                                             act_phase_handling_that_runs_constant_actions())):
-        super().__init__(home_contents=home_dir_contents,
-                         hds_contents=hds_contents)
+        super().__init__(hds_contents=hds_contents)
         self.initial_configuration_builder = initial_configuration_builder
 
 

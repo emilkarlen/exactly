@@ -10,6 +10,7 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
 
@@ -59,8 +60,10 @@ class TestFailingExecution(TestCaseBaseForParser):
         file_name = 'existing-plain-file'
         self._run(
             file_name,
-            Arrangement(home_dir_contents=DirContents([empty_file(file_name)])),
-            Expectation(main_result=sh_assertions.is_hard_error())
+            Arrangement(
+                hds_contents=case_home_dir_contents(DirContents([empty_file(file_name)]))),
+            Expectation(
+                main_result=sh_assertions.is_hard_error())
         )
 
 
@@ -69,8 +72,10 @@ class TestSuccessfulExecution(TestCaseBaseForParser):
         directory_name = 'existing-directory'
         self._run(
             directory_name,
-            Arrangement(home_dir_contents=DirContents([empty_dir(directory_name)])),
-            Expectation(configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name))
+            Arrangement(
+                hds_contents=case_home_dir_contents(DirContents([empty_dir(directory_name)]))),
+            Expectation(
+                configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name))
         )
 
     def test_change_to_2_level_sub_dir(self):
@@ -78,10 +83,13 @@ class TestSuccessfulExecution(TestCaseBaseForParser):
         second_dir = 'second_dir'
         self._run(
             '{}/{}'.format(first_dir, second_dir),
-            Arrangement(home_dir_contents=DirContents([Dir(first_dir,
-                                                           [empty_dir(second_dir)])])),
-            Expectation(configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
-                                                                                         second_dir))
+            Arrangement(
+                hds_contents=case_home_dir_contents(
+                    DirContents([Dir(first_dir,
+                                     [empty_dir(second_dir)])]))),
+            Expectation(
+                configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
+                                                                                 second_dir))
         )
 
     def test_change_to_parent_dir(self):
