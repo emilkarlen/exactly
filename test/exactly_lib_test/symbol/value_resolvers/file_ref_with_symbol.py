@@ -151,8 +151,8 @@ class TestRelSymbol(unittest.TestCase):
                     # ACT #
                     file_ref_to_check = fr_resolver_to_check.resolve(environment.symbols)
                     if exists_pre_sds:
-                        tested_path_msg = 'value_pre_sds_hds'
-                        actual_path = file_ref_to_check.value_pre_sds_hds(environment.hds)
+                        tested_path_msg = 'value_pre_sds'
+                        actual_path = file_ref_to_check.value_pre_sds(environment.hds)
                     else:
                         tested_path_msg = 'value_post_sds'
                         actual_path = file_ref_to_check.value_post_sds(environment.sds)

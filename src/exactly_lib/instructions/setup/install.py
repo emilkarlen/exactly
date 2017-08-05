@@ -185,7 +185,7 @@ class _InstallInstructionBase(SetupPhaseInstruction):
 
     def _src_path(self,
                   environment: InstructionEnvironmentForPreSdsStep) -> pathlib.Path:
-        return self.source_file_ref.resolve(environment.symbols).value_pre_sds_hds(environment.hds)
+        return self.source_file_ref.resolve(environment.symbols).value_pre_sds(environment.hds)
 
 
 class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBase):

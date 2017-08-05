@@ -35,7 +35,7 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
     def has_dir_dependency(self) -> bool:
         return True
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         suffix = self.path_suffix_path()
         root = self._rel_root_resolver.from_home_hds(hds)
         return root / suffix
@@ -94,7 +94,7 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self.path_suffix_path()
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         return self.value_when_no_dir_dependencies()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
@@ -111,7 +111,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         raise DirDependencyError(ResolvingDependency.HOME)
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         return hds.case_dir / self.path_suffix_path()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
@@ -126,7 +126,7 @@ class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
     def has_dir_dependency(self) -> bool:
         return True
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         raise DirDependencyError(ResolvingDependency.NON_HOME,
                                  'This file does not exist pre-SDS')
 

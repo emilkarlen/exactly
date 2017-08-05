@@ -68,8 +68,8 @@ class StackedFileRef(FileRef):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self.base_file_ref.value_when_no_dir_dependencies() / self._stacked_path_suffix_path()
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
-        return self.base_file_ref.value_pre_sds_hds(hds) / self._stacked_path_suffix_path()
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        return self.base_file_ref.value_pre_sds(hds) / self._stacked_path_suffix_path()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.base_file_ref.value_post_sds(sds) / self._stacked_path_suffix_path()

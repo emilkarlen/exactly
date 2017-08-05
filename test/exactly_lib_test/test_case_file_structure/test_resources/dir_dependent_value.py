@@ -114,9 +114,9 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase):
                       home_and_sds: HomeAndSds,
                       message_builder: asrt.MessageBuilder):
         if self._expected.exists_pre_sds():
-            put.assertEqual(self._expected_single_dep_value.value_pre_sds_hds(home_and_sds.hds),
-                            actual.value_pre_sds_hds(home_and_sds.hds),
-                            message_builder.apply('value_pre_sds_hds'))
+            put.assertEqual(self._expected_single_dep_value.value_pre_sds(home_and_sds.hds),
+                            actual.value_pre_sds(home_and_sds.hds),
+                            message_builder.apply('value_pre_sds'))
         else:
             put.assertEqual(self._expected_single_dep_value.value_post_sds(home_and_sds.sds),
                             actual.value_post_sds(home_and_sds.sds),

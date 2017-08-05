@@ -46,7 +46,7 @@ class FileRef(SingleDirDependentValue):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         raise NotImplementedError()
 
-    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
