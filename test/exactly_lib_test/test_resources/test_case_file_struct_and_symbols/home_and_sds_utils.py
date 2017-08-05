@@ -40,7 +40,7 @@ class HomeAndSdsActionFromSdsAction(HomeAndSdsAction):
 @contextmanager
 def home_and_sds_with_act_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
-        home_contents: home_populators.HomePopulator = home_populators.empty(),
+        hds_contents: home_populators.HomePopulator = home_populators.empty(),
         sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
         non_home_contents: non_home_populator.NonHomePopulator = non_home_populator.empty(),
         home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
@@ -57,7 +57,7 @@ def home_and_sds_with_act_as_curr_dir(
                 os.chdir(str(sds.act_dir))
                 pre_contents_population_action.apply(ret_val)
                 home_dir_contents.write_to(home_dir_path)
-                home_contents.populate_hds(home_and_sds.hds)
+                hds_contents.populate_hds(home_and_sds.hds)
                 sds_contents.populate_sds(sds)
                 non_home_contents.populate_non_home(sds)
                 home_or_sds_contents.populate_home_or_sds(home_and_sds)

@@ -11,6 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -25,9 +26,11 @@ class Arrangement:
                  source: ParseSource,
                  act_phase_source_lines: list,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
         self.home_dir_contents = home_dir_contents
+        self.hds_contents = hds_contents
         self.source = source
         self.act_phase_source_lines = act_phase_source_lines
         self.act_phase_process_executor = act_phase_process_executor
@@ -55,6 +58,7 @@ def check(put: unittest.TestCase,
                                         act_phase_instructions,
                                         act_phase_execution.Arrangement(
                                             home_dir_contents=arrangement.home_dir_contents,
+                                            hds_contents=arrangement.hds_contents,
                                             act_phase_process_executor=arrangement.act_phase_process_executor),
                                         act_phase_execution.Expectation(
                                             sub_process_result_from_execute=expectation.sub_process_result_from_execute)

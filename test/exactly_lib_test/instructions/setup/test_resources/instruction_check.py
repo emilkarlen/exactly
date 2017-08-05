@@ -1,6 +1,5 @@
 import copy
 import os
-import pathlib
 import tempfile
 import unittest
 from time import strftime, localtime
@@ -27,7 +26,8 @@ from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
+from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
@@ -57,6 +57,7 @@ class Arrangement(ArrangementWithSds):
     def __init__(self,
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
@@ -67,6 +68,7 @@ class Arrangement(ArrangementWithSds):
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          home_contents=home_dir_contents,
+                         hds_contents=hds_contents,
                          sds_contents=sds_contents_before_main,
                          non_home_contents=non_home_contents,
                          os_services=os_services,
@@ -156,10 +158,12 @@ class Executor:
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         initial_cwd = os.getcwd()
         try:
-            with tempfile.TemporaryDirectory(prefix=prefix + '-home-') as home_dir_name:
-                home_dir_path = pathlib.Path(home_dir_name).resolve()
-                self.arrangement.home_contents.write_to(home_dir_path)
-                environment = InstructionEnvironmentForPreSdsStep(home_dir_path,
+            with home_directory_structure(prefix=prefix + "-home-",
+                                          contents=self.arrangement.hds_contents,
+                                          case_dir_contents=self.arrangement.home_contents,
+                                          ) as hds:
+                home_dir_path = hds.case_dir
+                environment = InstructionEnvironmentForPreSdsStep(hds.case_dir,
                                                                   self.arrangement.process_execution_settings.environ,
                                                                   symbols=self.arrangement.symbols)
                 pre_validate_result = self._execute_pre_validate(environment, instruction)
