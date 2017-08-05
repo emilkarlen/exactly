@@ -9,6 +9,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestRelativityOptionTypeTranslations),
         unittest.makeSuite(TestDependencyDict),
+        unittest.makeSuite(TestResolvingDependencyOf),
     ])
 
 
@@ -76,3 +77,20 @@ class TestDependencyDict(unittest.TestCase):
         actual = sut.DEPENDENCY_DICT[ResolvingDependency.NON_HOME]
         self.assertEqual(expected,
                          actual)
+
+
+class TestResolvingDependencyOf(unittest.TestCase):
+    def test(self):
+        cases = [
+            (RelOptionType.REL_HOME, ResolvingDependency.HOME),
+
+            (RelOptionType.REL_ACT, ResolvingDependency.NON_HOME),
+            (RelOptionType.REL_RESULT, ResolvingDependency.NON_HOME),
+            (RelOptionType.REL_TMP, ResolvingDependency.NON_HOME),
+            (RelOptionType.REL_CWD, ResolvingDependency.NON_HOME),
+        ]
+        for rel_option, expected_resolving_dependency in cases:
+            with self.subTest(rel_option=str(rel_option)):
+                actual = sut.RESOLVING_DEPENDENCY_OF[rel_option]
+                self.assertIs(expected_resolving_dependency,
+                              actual)
