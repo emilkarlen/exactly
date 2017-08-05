@@ -114,7 +114,7 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
     @property
     def home_and_sds(self) -> HomeAndSds:
-        return HomeAndSds(self.hds.case_dir,
+        return HomeAndSds(self.hds,
                           self.sds)
 
     @property

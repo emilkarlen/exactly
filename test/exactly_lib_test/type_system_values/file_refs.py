@@ -2,8 +2,6 @@ import pathlib
 import types
 import unittest
 
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency, RelOptionType, \
     RESOLVING_DEPENDENCY_OF
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
@@ -12,6 +10,7 @@ from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPa
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.type_system_values.path_part import PathPart
 from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -151,7 +150,7 @@ class TestFilePath(TestForFixedRelativityBase):
              'file.txt'
              ),
         ]
-        home_and_sds = _home_and_sds()
+        home_and_sds = dummy_home_and_sds()
         for path_suffix, symbol_table, expected_path_suffix in test_cases:
             with self.subTest():
                 file_reference = self.config.path_suffix_2_file_ref(path_suffix)
@@ -177,11 +176,6 @@ class TestFilePath(TestForFixedRelativityBase):
                 self.assertEqual(str(expected_path),
                                  str(actual_path_pre_or_post_sds),
                                  'file_path_pre_or_post_sds')
-
-
-def _home_and_sds() -> HomeAndSds:
-    return HomeAndSds(pathlib.Path('home'),
-                      _sds.SandboxDirectoryStructure('sds'))
 
 
 if __name__ == '__main__':

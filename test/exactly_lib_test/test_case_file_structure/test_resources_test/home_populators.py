@@ -40,7 +40,7 @@ class TestCaseHomeDirPopulator(unittest.TestCase):
 
         sds = dummy_sds()
         with home_directory_structure() as hds:
-            home_and_sds = HomeAndSds(hds.case_dir, sds)
+            home_and_sds = HomeAndSds(hds, sds)
             # ACT #
             populator.populate_home_or_sds(home_and_sds)
             # ASSERT #
@@ -72,7 +72,7 @@ class TestContentsInDirOfRelHomeOptionType(unittest.TestCase):
 
         sds = dummy_sds()
         with home_directory_structure() as hds:
-            home_and_sds = HomeAndSds(hds.case_dir, sds)
+            home_and_sds = HomeAndSds(hds, sds)
             # ACT #
             populator.populate_home_or_sds(home_and_sds)
             # ASSERT #
@@ -113,7 +113,7 @@ class TestMultiplePopulators(unittest.TestCase):
 
         sds = dummy_sds()
         with home_directory_structure() as hds:
-            home_and_sds = HomeAndSds(hds.case_dir, sds)
+            home_and_sds = HomeAndSds(hds, sds)
             # ACT #
             populator.populate_home_or_sds(home_and_sds)
             # ASSERT #
@@ -154,7 +154,7 @@ class TestEmptyPopulator(unittest.TestCase):
 
         sds = dummy_sds()
         with home_directory_structure() as hds:
-            home_and_sds = HomeAndSds(hds.case_dir, sds)
+            home_and_sds = HomeAndSds(hds, sds)
             # ACT #
             populator.populate_home_or_sds(home_and_sds)
             # ASSERT #
