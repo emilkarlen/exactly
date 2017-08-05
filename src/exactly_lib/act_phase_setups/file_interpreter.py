@@ -164,7 +164,7 @@ class _ExecutableFileExecutor(CommandExecutor):
                             script_output_dir_path: pathlib.Path) -> Command:
         cmd_and_args = copy(self.cmd_and_args_of_interpreter)
 
-        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.home_directory)
+        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds_hds(environment.hds)
         cmd_and_args.append(str(src_path))
 
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
@@ -190,7 +190,7 @@ class _ShellCommandExecutor(CommandExecutor):
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         remaining_arguments = self.source.arguments.resolve_value_of_any_dependency(path_resolving_env)
 
-        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.home_directory)
+        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds_hds(environment.hds)
         quoted_src_path = shlex.quote(str(src_path))
 
         command_string = '{interpreter} {source_file} {command_line_arguments}'.format(

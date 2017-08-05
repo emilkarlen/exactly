@@ -18,7 +18,7 @@ class FileRefCheck:
 
     def pre_sds_condition_result(self, environment: PathResolvingEnvironmentPreSds) -> CheckResult:
         fr = self.file_ref_resolver.resolve(environment.symbols)
-        return self.file_properties.apply(fr.value_pre_sds(environment.home_dir_path))
+        return self.file_properties.apply(fr.value_pre_sds_hds(environment.hds))
 
     def post_sds_condition_result(self, environment: PathResolvingEnvironmentPostSds) -> CheckResult:
         fr = self.file_ref_resolver.resolve(environment.symbols)
@@ -47,7 +47,7 @@ def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
     validation_result = file_ref_check.pre_sds_condition_result(environment)
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
-        file_path = fr.value_pre_sds(environment.home_dir_path)
+        file_path = fr.value_pre_sds_hds(environment.hds)
         return render_failure(validation_result.cause,
                               file_path)
     return None
@@ -80,7 +80,7 @@ def pre_sds_validate(file_ref_check: FileRefCheck,
     validation_result = file_ref_check.pre_sds_condition_result(environment)
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
-        file_path = fr.value_pre_sds(environment.home_dir_path)
+        file_path = fr.value_pre_sds_hds(environment.hds)
         return svh.new_svh_validation_error(render_failure(validation_result.cause,
                                                            file_path))
     return svh.new_svh_success()

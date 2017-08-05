@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, ResolvingDependency, \
     RESOLVING_DEPENDENCY_OF
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -33,7 +34,7 @@ class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
     def has_dir_dependency(self) -> bool:
         return True
 
-    def value_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         return pathlib.Path(str(self.__relativity)) / self.path_suffix_path()
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
