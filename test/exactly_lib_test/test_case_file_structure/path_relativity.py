@@ -2,11 +2,14 @@ import unittest
 
 from exactly_lib.test_case_file_structure import path_relativity as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType, \
-    RelSdsOptionType
+    RelSdsOptionType, ResolvingDependency
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestRelativityOptionTypeTranslations)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestRelativityOptionTypeTranslations),
+        unittest.makeSuite(TestDependencyDict),
+    ])
 
 
 class TestRelativityOptionTypeTranslations(unittest.TestCase):
@@ -56,3 +59,20 @@ class TestRelativityOptionTypeTranslations(unittest.TestCase):
                 actual = sut.rel_non_home_from_rel_sds(rel_sds_option)
                 self.assertIs(expected_rel_option,
                               actual)
+
+
+class TestDependencyDict(unittest.TestCase):
+    def test_dependency_of_home(self):
+        expected = {RelOptionType.REL_HOME}
+        actual = sut.DEPENDENCY_DICT[ResolvingDependency.HOME]
+        self.assertEqual(expected,
+                         actual)
+
+    def test_dependency_of_non_home(self):
+        expected = {RelOptionType.REL_ACT,
+                    RelOptionType.REL_TMP,
+                    RelOptionType.REL_RESULT,
+                    RelOptionType.REL_CWD}
+        actual = sut.DEPENDENCY_DICT[ResolvingDependency.NON_HOME]
+        self.assertEqual(expected,
+                         actual)
