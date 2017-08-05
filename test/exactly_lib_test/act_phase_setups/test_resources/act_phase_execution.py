@@ -16,9 +16,10 @@ from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import tmp_dir as fs_utils
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -37,12 +38,14 @@ class HardErrorResultError(Exception):
 class Arrangement:
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
                  act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR,
                  symbol_table: SymbolTable = None,
                  ):
         self.home_dir_contents = home_dir_contents
+        self.hds_contents = hds_contents
         self.environ = {} if environ is None else environ
         self.timeout_in_seconds = timeout_in_seconds
         self.act_phase_process_executor = act_phase_process_executor
@@ -77,8 +80,10 @@ def check_execution(put: unittest.TestCase,
                     arrangement: Arrangement,
                     expectation: Expectation) -> ExitCodeOrHardError:
     assert_is_list_of_act_phase_instructions(put, act_phase_instructions)
-    with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
-        instruction_environment = InstructionEnvironmentForPreSdsStep(home_dir,
+    with home_directory_structure(contents=arrangement.hds_contents,
+                                  case_dir_contents=arrangement.home_dir_contents,
+                                  ) as hds:
+        instruction_environment = InstructionEnvironmentForPreSdsStep(hds.case_dir,
                                                                       arrangement.environ,
                                                                       arrangement.timeout_in_seconds,
                                                                       symbols=arrangement.symbol_table)

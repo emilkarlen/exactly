@@ -11,6 +11,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check as sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
@@ -224,7 +225,9 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
             dst_file_name: str,
             home_dir_contents: DirContents,
             expected_destination_dir_contents: DirContents,
-            sds_populator_before_main: sds_populator.SdsPopulator):
+            sds_populator_before_main: sds_populator.SdsPopulator,
+            hds_contents: home_populators.HomePopulator = home_populators.empty(),
+    ):
         test_case_name = 'src_file_name={}  src_rel_option={}  dst_rel_option={}'.format(
             src_file_name,
             src_rel_option.test_case_description,
@@ -249,6 +252,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                         Arrangement(
                             pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
                             home_dir_contents=home_dir_contents,
+                            hds_contents=hds_contents,
                             sds_contents_before_main=sds_populator_before_main,
                             symbols=symbols_in_arrangement,
                         ),
