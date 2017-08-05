@@ -7,6 +7,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -42,10 +43,10 @@ class _ShellExecutionCheckerHelper:
         for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
             # ARRANGE #
             os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-            arrangement = Arrangement(source,
-                                      act_phase_source_lines,
+            arrangement = Arrangement(source=source,
+                                      act_phase_source_lines=act_phase_source_lines,
                                       act_phase_process_executor=os_process_executor,
-                                      home_dir_contents=home_dir_contents)
+                                      hds_contents=case_home_dir_contents(home_dir_contents))
             expectation = Expectation(source_after_parse=source_assertion)
             # ACT #
             check(put, arrangement, expectation)
@@ -157,9 +158,10 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
     def runTest(self):
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = Arrangement(remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
-                                  [shell_command_syntax_for('act phase source')],
-                                  act_phase_process_executor=os_process_executor)
+        arrangement = Arrangement(
+            source=remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
+            act_phase_source_lines=[shell_command_syntax_for('act phase source')],
+            act_phase_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #
         check(self, arrangement, expectation)
@@ -178,8 +180,10 @@ class TestShellHandlingViaExecution(unittest.TestCase):
         act_phase_source_line = shell_command_syntax_for(
             shell_commands.command_that_prints_line_to_stdout('output on stdout'))
         check(self,
-              Arrangement(remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
-                          [act_phase_source_line]),
-              Expectation(sub_process_result_from_execute=pr.stdout(asrt.Equals('output on stdout\n',
-                                                                                'expected output on stdout')))
+              Arrangement(
+                  source=remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
+                  act_phase_source_lines=[act_phase_source_line]),
+              Expectation(
+                  sub_process_result_from_execute=pr.stdout(asrt.Equals('output on stdout\n',
+                                                                        'expected output on stdout')))
               )

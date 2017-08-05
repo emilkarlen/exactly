@@ -8,6 +8,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -48,7 +49,7 @@ class _NonShellExecutionCheckHelper:
             arrangement = Arrangement(source,
                                       act_phase_source_lines,
                                       act_phase_process_executor=os_process_executor,
-                                      home_dir_contents=home_dir_contents)
+                                      hds_contents=case_home_dir_contents(home_dir_contents))
             expectation = Expectation(source_after_parse=source_assertion)
             # ACT #
             check(put, arrangement, expectation)
@@ -170,8 +171,8 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutable
         # ARRANGE #
         executable_file = sys.executable
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = Arrangement(remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
-                                  [executable_file],
+        arrangement = Arrangement(source=remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
+                                  act_phase_source_lines=[executable_file],
                                   act_phase_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #

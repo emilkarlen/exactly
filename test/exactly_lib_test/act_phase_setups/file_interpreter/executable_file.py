@@ -25,6 +25,7 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import e
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_utils.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.test_resources import file_structure as fs
@@ -96,8 +97,9 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         act_phase_instructions = [instr(["""'quoted file name.src'"""]),
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(home_dir_contents=DirContents(
-            [empty_file('quoted file name.src')]),
+        arrangement = act_phase_execution.Arrangement(
+            hds_contents=case_home_dir_contents(DirContents([
+                empty_file('quoted file name.src')])),
             act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self,
@@ -123,8 +125,10 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """]),
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(home_dir_contents=DirContents([empty_file('existing-file.src')]),
-                                                      act_phase_process_executor=executor_that_records_arguments)
+        arrangement = act_phase_execution.Arrangement(
+            hds_contents=case_home_dir_contents(
+                DirContents([empty_file('existing-file.src')])),
+            act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self, self.configuration.sut,
                                             act_phase_instructions,
@@ -152,11 +156,11 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = act_phase_execution.Arrangement(
-            home_dir_contents=fs.DirContents([
+            hds_contents=case_home_dir_contents(fs.DirContents([
                 fs.File(
                     source_file,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ]),
+            ])),
             symbol_table=SymbolTable({
                 symbol.name:
                     su.string_value_constant_container(symbol.value),

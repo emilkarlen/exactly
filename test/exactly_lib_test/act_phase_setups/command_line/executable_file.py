@@ -24,6 +24,7 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_utils.test_resources import py_program, svh_assertions
 from exactly_lib_test.test_case_utils.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
@@ -115,7 +116,7 @@ class TestInvalidSyntax(unittest.TestCase):
             instr([executable_file_name])
         ]
         arrangement = Arrangement(
-            home_dir_contents=fs.DirContents([fs.empty_file(executable_file_name)])
+            hds_contents=case_home_dir_contents(fs.DirContents([fs.empty_file(executable_file_name)]))
         )
         expectation = Expectation(
             result_of_validate_pre_sds=svh_assertions.is_validation_error()
@@ -132,11 +133,12 @@ class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.T
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
-        arrangement = Arrangement(home_dir_contents=fs.DirContents([
-            fs.python_executable_file(
-                'system-under-test',
-                PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-        ]))
+        arrangement = Arrangement(
+            hds_contents=case_home_dir_contents(fs.DirContents([
+                fs.python_executable_file(
+                    'system-under-test',
+                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+            ])))
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
         expectation = Expectation(result_of_execute=eh_assertions.is_exit_code(0),
@@ -167,11 +169,11 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            home_dir_contents=fs.DirContents([
+            hds_contents=case_home_dir_contents(fs.DirContents([
                 fs.python_executable_file(
                     executable,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ]),
+            ])),
             symbol_table=SymbolTable({
                 list_symbol.name:
                     su.list_value_constant_container(lv.list_value_of_string_constants(list_symbol.value)),
@@ -206,11 +208,11 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            home_dir_contents=fs.DirContents([
+            hds_contents=case_home_dir_contents(fs.DirContents([
                 fs.python_executable_file(
                     executable,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ]),
+            ])),
             symbol_table=SymbolTable({
                 symbol.name:
                     su.file_ref_constant_container(symbol.value),
@@ -243,11 +245,11 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            home_dir_contents=fs.DirContents([
+            hds_contents=case_home_dir_contents(fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ]),
+            ])),
             symbol_table=SymbolTable({
                 symbol_for_executable.name:
                     su.string_value_constant_container(symbol_for_executable.value),
@@ -283,11 +285,11 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            home_dir_contents=fs.DirContents([
+            hds_contents=case_home_dir_contents(fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ]),
+            ])),
             symbol_table=SymbolTable({
                 symbol_for_executable.name:
                     su.string_value_constant_container(symbol_for_executable.value),
@@ -335,9 +337,9 @@ class TestSymbolUsages(unittest.TestCase):
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
-            home_dir_contents=fs.DirContents([
+            hds_contents=case_home_dir_contents(fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
-            ]),
+            ])),
             symbol_table=SymbolTable({
                 dir_symbol.name:
                     su.file_ref_constant_container(dir_symbol.value),
@@ -378,11 +380,11 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            home_dir_contents=fs.DirContents([
+            hds_contents=case_home_dir_contents(fs.DirContents([
                 fs.python_executable_file(
                     executable_file_name,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ]),
+            ])),
             symbol_table=SymbolTable({
                 symbol.name:
                     su.string_value_constant_container(symbol.value),
