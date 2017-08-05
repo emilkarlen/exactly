@@ -504,7 +504,7 @@ class RelHomeConfiguration(RelativityConfiguration):
     def installed_file_path(self,
                             file_name: str,
                             home_and_sds: HomeAndSds) -> pathlib.Path:
-        return home_and_sds.home_dir_path / file_name
+        return home_and_sds.hds.case_dir / file_name
 
 
 class DefaultConfiguration(RelativityConfiguration):
@@ -517,7 +517,7 @@ class DefaultConfiguration(RelativityConfiguration):
     def installed_file_path(self,
                             file_name: str,
                             home_and_sds: HomeAndSds) -> pathlib.Path:
-        return home_and_sds.home_dir_path / file_name
+        return home_and_sds.hds.case_dir / file_name
 
 
 class RelActConfiguration(RelativityConfiguration):

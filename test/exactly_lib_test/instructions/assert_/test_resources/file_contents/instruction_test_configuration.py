@@ -41,7 +41,8 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
         return remaining_source(self.first_line_argument(argument_tail),
                                 following_lines)
 
-    def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
+    def arrangement_for_contents_from_fun(self,
+                                          home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
                                           post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                           symbols: SymbolTable = None,

@@ -121,7 +121,7 @@ class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
 class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
-            return str(home_and_sds.home_dir_path)
+            return str(home_and_sds.hds.case_dir)
 
         reg_ex = environment_variables.ENV_VAR_HOME
 
@@ -140,7 +140,7 @@ class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArg
 class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         def home_dir_path_name(home_and_sds: HomeAndSds):
-            return str(home_and_sds.home_dir_path)
+            return str(home_and_sds.hds.case_dir)
 
         reg_ex = environment_variables.ENV_VAR_HOME
 

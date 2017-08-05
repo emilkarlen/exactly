@@ -103,10 +103,10 @@ class TestCurrentDirectory(unittest.TestCase):
                          5,
                          'Expects recordings for 5 steps')
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__PARSE],
-                         str(home_and_sds.home_dir_path),
+                         str(home_and_sds.hds.case_dir),
                          'Current dir for ' + str(phase_step.ACT__PARSE))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_SDS],
-                         str(home_and_sds.home_dir_path),
+                         str(home_and_sds.hds.case_dir),
                          'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_SDS))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_POST_SETUP],
                          str(sds.act_dir),

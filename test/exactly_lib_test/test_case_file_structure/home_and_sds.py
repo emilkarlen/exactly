@@ -32,7 +32,7 @@ class Test(unittest.TestCase):
         sds = dummy_sds()
         # ACT #
         home_and_sds = sut.HomeAndSds(case_home, sds)
-        actual = home_and_sds.home_dir_path
+        actual = home_and_sds.hds.case_dir
         # ASSERT #
         self.assertEqual(case_home,
                          actual,

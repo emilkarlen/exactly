@@ -12,10 +12,6 @@ class HomeAndSds:
         self._sds = sds
 
     @property
-    def home_dir_path(self) -> pathlib.Path:
-        return self._hds.case_dir
-
-    @property
     def hds(self) -> HomeDirectoryStructure:
         return self._hds
 
