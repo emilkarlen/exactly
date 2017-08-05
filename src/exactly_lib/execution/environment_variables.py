@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 ENV_VAR_HOME = 'EXACTLY_HOME'
@@ -64,9 +65,9 @@ def exists_at_assert(home_dir_path: pathlib.Path,
     return ret_val
 
 
-def replaced(home_dir_path: pathlib.Path,
+def replaced(hds: HomeDirectoryStructure,
              sds: SandboxDirectoryStructure) -> dict:
     """
     The environment variables that are replaced by the --with-replaced-env-vars.
     """
-    return exists_at_setup_main(home_dir_path, sds)
+    return exists_at_setup_main(hds.case_dir, sds)

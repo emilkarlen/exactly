@@ -17,7 +17,7 @@ class ReplacedEnvVarsFileContentsGenerator:
         self.sorted_env_var_keys = sorted(environment_variables.ALL_REPLACED_ENV_VARS)
 
     def contents_before_replacement(self, home_and_sds: HomeAndSds) -> str:
-        env_vars_dict = environment_variables.replaced(home_and_sds.home_dir_path,
+        env_vars_dict = environment_variables.replaced(home_and_sds.hds,
                                                        home_and_sds.sds)
         values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
         return self._content_from_values(values_in_determined_order,

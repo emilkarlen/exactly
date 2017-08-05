@@ -31,7 +31,7 @@ class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
         dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
-        env_vars_to_replace = environment_variables.replaced(environment.home_directory,
+        env_vars_to_replace = environment_variables.replaced(environment.hds,
                                                              environment.sds)
         self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
                                                        src_file_path,
