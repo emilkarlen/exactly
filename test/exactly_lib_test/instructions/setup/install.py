@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.instructions.setup import install as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelHomeOptionType
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
@@ -202,7 +202,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                 ]),
             ),
         ]
-        src_rel_option = rel_opt_conf.default_conf_rel_home()
+        src_rel_option = rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME)
         for dst_rel_option in some_destination_relativity_options():
             for destination_setup in destination_dir_contents_cases:
                 self._sub_test__install_file(
@@ -357,9 +357,10 @@ class TestFailingScenarios(TestCaseBaseForParser):
 
 def source_relativity_options(symbol_name: str) -> list:
     return [
-        rel_opt_conf.default_conf_rel_home(),
-        rel_opt_conf.conf_rel_home(),
+        rel_opt_conf.default_conf_rel_home(RelHomeOptionType.REL_HOME),
+        rel_opt_conf.conf_rel_home(RelHomeOptionType.REL_HOME),
         rel_opt_conf.symbol_conf_rel_home(
+            RelHomeOptionType.REL_HOME,
             symbol_name,
             sut.REL_OPTION_ARG_CONF_FOR_SOURCE.options.accepted_relativity_variants),
     ]
