@@ -53,7 +53,7 @@ class SetupConfigurationBase(ConfigurationBase):
                     environ: dict = None,
                     os_services: OsServices = new_default(),
                     symbols: SymbolTable = None):
-        return ic.arrangement(pre_contents_population_action=pre_contents_population_action,
+        return ic.Arrangement(pre_contents_population_action=pre_contents_population_action,
                               sds_contents_before_main=sds_contents_before_main,
                               home_or_sds_contents=home_or_sds_contents,
                               process_execution_settings=with_environ(environ),
@@ -61,5 +61,5 @@ class SetupConfigurationBase(ConfigurationBase):
                               symbols=symbols)
 
     def arrangement_with_timeout(self, timeout_in_seconds: int):
-        return ic.arrangement(
+        return ic.Arrangement(
             process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))

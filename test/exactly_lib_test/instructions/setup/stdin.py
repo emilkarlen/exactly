@@ -24,6 +24,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, is_at_beginning_of_line
 from exactly_lib_test.symbol.test_resources import here_doc_assertion_utils as hd, symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -138,8 +139,8 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     relativity_option=rel_opt.option_string),
                     ['following line']),
                     Arrangement(
-                        home_dir_contents=DirContents([
-                            empty_file('file.txt')]),
+                        hds_contents=case_home_dir_contents(
+                            DirContents([empty_file('file.txt')])),
                         symbols=rel_opt.symbols.in_arrangement(),
                     ),
                     Expectation(
@@ -245,8 +246,8 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
 
     def test_referenced_file_is_a_directory(self):
         self._run(source4('--rel-home directory'),
-                  Arrangement(home_dir_contents=DirContents([
-                      empty_dir('directory')])
+                  Arrangement(
+                      hds_contents=case_home_dir_contents(DirContents([empty_dir('directory')]))
                   ),
                   Expectation(pre_validation_result=svh_assertions.is_validation_error(),
                               source=source_is_at_end)
