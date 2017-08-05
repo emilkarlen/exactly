@@ -100,7 +100,7 @@ REL_NON_HOME_OPTIONS_MAP = {
 
 REL_OPTIONS_MAP = {
     RelOptionType.REL_HOME: RelOptionInfo(file_ref_texts.REL_HOME_OPTION_NAME,
-                                          relativity_root.resolver_for_home,
+                                          relativity_root.resolver_for_home_case,
                                           file_ref_texts.RELATIVITY_DESCRIPTION_HOME),
 
     RelOptionType.REL_CWD: RelOptionInfo(file_ref_texts.REL_CWD_OPTION_NAME,

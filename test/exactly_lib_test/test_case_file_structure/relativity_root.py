@@ -3,15 +3,32 @@ import unittest
 from exactly_lib.test_case_file_structure import relativity_root as sut
 from exactly_lib_test.test_case_file_structure.test_resources import relativity_test_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources.relativity_test_utils import sds_2_act_dir, \
-    sds_2_result_dir, sds_2_tmp_user_dir, home_and_sds_2_home_case_dir, home_and_sds_2_cwd_dir
+    sds_2_result_dir, sds_2_tmp_user_dir, home_and_sds_2_home_case_dir, home_and_sds_2_cwd_dir, hds_2_case_dir
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestHomeRelativityResolver),
         unittest.makeSuite(TestSdsRelativityResolver),
         unittest.makeSuite(TestNonHomeRelativityResolver),
         unittest.makeSuite(TestAnyRelativityResolver),
     ])
+
+
+class TestHomeRelativityResolver(unittest.TestCase):
+    def __init__(self, methodName):
+        super().__init__(methodName)
+        self.helper = utils.HomeRelativityResolverHelper(self)
+
+    def test(self):
+        cases = [
+            (sut.RelHomeOptionType.REL_HOME, sut.resolver_for_home_case, hds_2_case_dir),
+        ]
+        for rel_option_type, resolver, expected_root_path_resolver in cases:
+            with self.subTest(rel_option_type=str(rel_option_type)):
+                self.helper.check(resolver,
+                                  rel_option_type,
+                                  expected_root_path_resolver)
 
 
 class TestSdsRelativityResolver(unittest.TestCase):
@@ -79,7 +96,7 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_under_home(self):
         cases = [
-            (sut.RelOptionType.REL_HOME, sut.resolver_for_home, home_and_sds_2_home_case_dir),
+            (sut.RelOptionType.REL_HOME, sut.resolver_for_home_case, home_and_sds_2_home_case_dir),
         ]
         for rel_option_type, resolver, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):

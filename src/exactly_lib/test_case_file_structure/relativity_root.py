@@ -4,7 +4,8 @@ import types
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import \
+    RelOptionType, RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
@@ -46,15 +47,23 @@ class RelRootResolver:
         raise NotImplementedError()
 
 
-class RelPathResolverRelHome(RelRootResolver):
-    def __init__(self):
-        super().__init__(RelOptionType.REL_HOME)
+class RelHomeRootResolver(RelRootResolver):
+    def __init__(self,
+                 relativity_type: RelHomeOptionType,
+                 hds_2_root_fun: types.FunctionType):
+        super().__init__(path_relativity.rel_any_from_rel_home(relativity_type))
+        self._relativity_type_hds = relativity_type
+        self._hds_2_root_fun = hds_2_root_fun
+
+    @property
+    def home_relativity_type(self) -> RelHomeOptionType:
+        return self._relativity_type_hds
 
     def from_home(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return home_dir_path
 
     def from_home_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
-        return self.from_home(hds.case_dir)
+        return self._hds_2_root_fun(hds)
 
     def from_home_and_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         return self.from_home(home_and_sds.home_dir_path)
@@ -157,4 +166,5 @@ resolver_for_tmp_user = RelSdsRootResolver(RelSdsOptionType.REL_TMP,
 
 resolver_for_cwd = RelNonHomeRootResolverForCwd()
 
-resolver_for_home = RelPathResolverRelHome()
+resolver_for_home_case = RelHomeRootResolver(RelHomeOptionType.REL_HOME,
+                                             HomeDirectoryStructure.case_dir.fget)
