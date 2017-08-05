@@ -1,5 +1,3 @@
-import pathlib
-
 from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
@@ -31,9 +29,6 @@ class _HomePopulatorForRelHomeOptionType(HomePopulator):
         self.relativity = relativity
         self.dir_contents = dir_contents
 
-    def populate_home(self, home_dir: pathlib.Path):
-        self.dir_contents.write_to(home_dir)
-
     def populate_hds(self, hds: HomeDirectoryStructure):
         target_dir = relative_path_options.REL_HOME_OPTIONS_MAP[self.relativity].root_resolver.from_home_hds(hds)
         self.dir_contents.write_to(target_dir)
@@ -45,10 +40,10 @@ class _ListOfPopulators(HomePopulator):
             assert isinstance(populator, HomePopulator)
         self.__populator_list = home_populators
 
-    def populate_home(self, home_dir: pathlib.Path):
+    def populate_hds(self, hds: HomeDirectoryStructure):
         for populator in self.__populator_list:
             assert isinstance(populator, HomePopulator)
-            populator.populate_home(home_dir)
+            populator.populate_hds(hds)
 
 
 class _FilesInCaseHomeDir(HomePopulator):
@@ -56,8 +51,5 @@ class _FilesInCaseHomeDir(HomePopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def populate_home(self, home_dir: pathlib.Path):
-        self.test_root_contents.write_to(home_dir)
-
     def populate_hds(self, hds: HomeDirectoryStructure):
-        self.populate_home(hds.case_dir)
+        self.test_root_contents.write_to(hds.case_dir)

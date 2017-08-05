@@ -19,21 +19,6 @@ def suite() -> unittest.TestSuite:
 
 
 class TestCaseHomeDirPopulator(unittest.TestCase):
-    def test_populate_home__TO_BE_REMOVED(self):
-        # TODO remove this test when populate_home is removed
-
-        # ARRANGE #
-        expected_dir_contents = fs.DirContents([fs.File('file-name.txt', 'file contents')])
-        populator = sut.case_home_dir_contents(expected_dir_contents)
-        expectation = f_asrt.dir_contains_exactly(expected_dir_contents)
-
-        with home_directory_structure() as hds:
-            # ACT #
-            populator.populate_home(hds.case_dir)
-            # ASSERT #
-            expectation.apply_with_message(self, hds.case_dir,
-                                           'contents of home/case dir')
-
     def test_populate_hds(self):
         # ARRANGE #
         expected_dir_contents = fs.DirContents([fs.File('file-name.txt', 'file contents')])
@@ -64,22 +49,6 @@ class TestCaseHomeDirPopulator(unittest.TestCase):
 
 
 class TestContentsInDirOfRelHomeOptionType(unittest.TestCase):
-    def test_populate_home__TO_BE_REMOVED(self):
-        # TODO remove this test when populate_home is removed
-
-        # ARRANGE #
-        expected_dir_contents = fs.DirContents([fs.File('file-name.txt', 'file contents')])
-        populator = sut.contents_in(RelHomeOptionType.REL_HOME,
-                                    expected_dir_contents)
-        expectation = f_asrt.dir_contains_exactly(expected_dir_contents)
-
-        with home_directory_structure() as hds:
-            # ACT #
-            populator.populate_home(hds.case_dir)
-            # ASSERT #
-            expectation.apply_with_message(self, hds.case_dir,
-                                           'contents of home/case dir')
-
     def test_populate_hds(self):
         # ARRANGE #
         expected_dir_contents = fs.DirContents([fs.File('file-name.txt', 'file contents')])
@@ -114,25 +83,6 @@ class TestContentsInDirOfRelHomeOptionType(unittest.TestCase):
 class TestMultiplePopulators(unittest.TestCase):
     first_file = fs.File('first-file-name.txt', 'contents of first file')
     second_file = fs.File('second-file-name.txt', 'contents of second file')
-
-    def test_two_populators_populate_home__TO_BE_REMOVED(self):
-        # TODO remove this test when populate_home is removed
-
-        # ARRANGE #
-        expected_dir_contents = fs.DirContents([self.first_file,
-                                                self.second_file])
-        first_populator = sut.case_home_dir_contents(fs.DirContents([self.first_file]))
-        second_populator = sut.case_home_dir_contents(fs.DirContents([self.second_file]))
-        populator = sut.multiple([first_populator,
-                                  second_populator])
-        expectation = f_asrt.dir_contains_exactly(expected_dir_contents)
-
-        with home_directory_structure() as hds:
-            # ACT #
-            populator.populate_home(hds.case_dir)
-            # ASSERT #
-            expectation.apply_with_message(self, hds.case_dir,
-                                           'contents of home/case dir')
 
     def test_two_populators_populate_hds(self):
         # ARRANGE #
@@ -185,20 +135,6 @@ class TestMultiplePopulators(unittest.TestCase):
 
 
 class TestEmptyPopulator(unittest.TestCase):
-    def test_populate_home__TO_BE_REMOVED(self):
-        # TODO remove this test when populate_home is removed
-
-        # ARRANGE #
-        populator = sut.empty()
-        expectation = f_asrt.dir_is_empty()
-
-        with home_directory_structure() as hds:
-            # ACT #
-            populator.populate_home(hds.case_dir)
-            # ASSERT #
-            expectation.apply_with_message(self, hds.case_dir,
-                                           'contents of home/case dir')
-
     def test_populate_hds(self):
         # ARRANGE #
         populator = sut.empty()
