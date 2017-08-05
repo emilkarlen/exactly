@@ -154,7 +154,6 @@ class Executor:
         try:
             with home_directory_structure(prefix=prefix + "-home-",
                                           contents=self.arrangement.hds_contents,
-                                          case_dir_contents=self.arrangement.home_contents,
                                           ) as hds:
                 environment = InstructionEnvironmentForPreSdsStep(hds,
                                                                   self.arrangement.process_execution_settings.environ,
