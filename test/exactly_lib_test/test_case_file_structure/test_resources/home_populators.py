@@ -14,7 +14,7 @@ def multiple(home_populators: list) -> HomePopulator:
 
 
 def case_home_dir_contents(contents: DirContents) -> HomePopulator:
-    return _FilesInCaseHomeDir(contents)
+    return contents_in(RelHomeOptionType.REL_HOME_CASE, contents)
 
 
 def contents_in(relativity: RelHomeOptionType,
@@ -44,12 +44,3 @@ class _ListOfPopulators(HomePopulator):
         for populator in self.__populator_list:
             assert isinstance(populator, HomePopulator)
             populator.populate_hds(hds)
-
-
-class _FilesInCaseHomeDir(HomePopulator):
-    def __init__(self,
-                 contents: DirContents):
-        self.test_root_contents = contents
-
-    def populate_hds(self, hds: HomeDirectoryStructure):
-        self.test_root_contents.write_to(hds.case_dir)
