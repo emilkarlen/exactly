@@ -19,12 +19,12 @@ class InstructionExecutionBase:
 
     def _check_instruction(self, expected_class: type, instruction):
         validation = asrt.IsInstance(expected_class,
-                                   'The instruction must be an instance of ' + str(expected_class))
+                                     'The instruction must be an instance of ' + str(expected_class))
         validation.apply(self.put, instruction)
 
     def _check_result_of_main__sh(self, actual):
         validation = asrt.IsInstance(sh.SuccessOrHardError,
-                                   'The result from main must be an instance of ' + str(sh.SuccessOrHardError))
+                                     'The result from main must be an instance of ' + str(sh.SuccessOrHardError))
         validation.apply(self.put, actual)
 
     def _check_result_of_validate_pre_sds(self, actual):

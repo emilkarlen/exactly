@@ -26,6 +26,7 @@ from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils i
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly, result_dir_contains_exactly
@@ -172,8 +173,10 @@ class TestHomeDirHandling(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
-            ArrangementWithSds(home_contents=home_dir_contents),
-            sut.Expectation(side_effects_on_home=f_asrt.dir_contains_exactly(home_dir_contents)),
+            ArrangementWithSds(
+                hds_contents=case_home_dir_contents(home_dir_contents)),
+            sut.Expectation(
+                side_effects_on_home=f_asrt.dir_contains_exactly(home_dir_contents)),
         )
 
 
@@ -333,10 +336,11 @@ class TestMiscCases(TestCaseBase):
         self._check(
             ParserThatGives(instruction),
             single_line_source(),
-            ArrangementWithSds(process_execution_settings=
-                               os_process_execution.with_environ(environ_of_arrangement)),
-            sut.Expectation(main_side_effect_on_environment_variables=
-                            asrt.equals(expected_environment_variables)),
+            ArrangementWithSds(
+                process_execution_settings=os_process_execution.with_environ(environ_of_arrangement)),
+            sut.Expectation(
+                main_side_effect_on_environment_variables=
+                asrt.equals(expected_environment_variables)),
         )
 
 
