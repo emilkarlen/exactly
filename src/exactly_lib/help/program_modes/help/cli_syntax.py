@@ -21,7 +21,7 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def synopsises(self) -> list:
         return [
-            _synopsis([], 'Brief description of the program.'),
+            _synopsis([], 'Gives a brief description of the program.'),
             _synopsis([_c(clo.HELP)], 'Displays this help.'),
             _synopsis([_c(clo.HTML_DOCUMENTATION)],
                       'Generates a HTML version of all help information available in the program.'),
