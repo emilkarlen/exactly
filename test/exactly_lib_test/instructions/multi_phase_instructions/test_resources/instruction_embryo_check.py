@@ -132,7 +132,7 @@ class Executor:
                                                               instruction.symbol_usages,
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
-            self.expectation.side_effects_on_home.apply_with_message(self.put, home_and_sds.home_dir_path,
+            self.expectation.side_effects_on_home.apply_with_message(self.put, home_and_sds.hds.case_dir,
                                                                      'side_effects_on_home')
 
     def _execute_validate_pre_sds(

@@ -20,7 +20,7 @@ def suite() -> unittest.TestSuite:
     configs_for_constant_rel_option_type = [
         _RelativityConfig(sut.rel_home,
                           ResolvingDependency.HOME,
-                          lambda home_and_sds: home_and_sds.home_dir_path),
+                          lambda home_and_sds: home_and_sds.hds.case_dir),
         _RelativityConfig(sut.rel_tmp_user,
                           ResolvingDependency.NON_HOME,
                           lambda home_and_sds: home_and_sds.sds.tmp.user_dir),
