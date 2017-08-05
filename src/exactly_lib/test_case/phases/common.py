@@ -23,10 +23,6 @@ class InstructionEnvironmentForPreSdsStep:
         self.__symbols = SymbolTable() if symbols is None else symbols
 
     @property
-    def home_directory(self) -> pathlib.Path:
-        return self.__hds.case_dir
-
-    @property
     def hds(self) -> HomeDirectoryStructure:
         return self.__hds
 
@@ -118,7 +114,7 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
     @property
     def home_and_sds(self) -> HomeAndSds:
-        return HomeAndSds(self.home_directory,
+        return HomeAndSds(self.hds.case_dir,
                           self.sds)
 
     @property
