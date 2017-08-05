@@ -13,7 +13,6 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_none_or_value
@@ -40,7 +39,6 @@ class HomeAndSdsActionFromSdsAction(HomeAndSdsAction):
 
 @contextmanager
 def home_and_sds_with_act_as_curr_dir(
-        home_dir_contents: DirContents = empty_dir_contents(),
         hds_contents: home_populators.HomePopulator = home_populators.empty(),
         sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
         non_home_contents: non_home_populator.NonHomePopulator = non_home_populator.empty(),
@@ -58,7 +56,6 @@ def home_and_sds_with_act_as_curr_dir(
             with preserved_cwd():
                 os.chdir(str(sds.act_dir))
                 pre_contents_population_action.apply(ret_val)
-                home_dir_contents.write_to(hds.case_dir)
                 hds_contents.populate_hds(hds)
                 sds_contents.populate_sds(sds)
                 non_home_contents.populate_non_home(sds)
