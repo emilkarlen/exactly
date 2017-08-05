@@ -2,6 +2,7 @@ import pathlib
 from enum import Enum
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -82,6 +83,9 @@ class SingleDirDependentValue(DirDependentValue):
         """
         raise NotImplementedError()
 
+    def value_pre_sds_hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+        return self.value_pre_sds(hds.case_dir)
+
     def value_post_sds(self, sds: SandboxDirectoryStructure):
         """
         :raises DirDependencyError: This file exists pre-SDS.
@@ -90,7 +94,7 @@ class SingleDirDependentValue(DirDependentValue):
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds):
         if self.exists_pre_sds():
-            return self.value_pre_sds(home_and_sds.home_dir_path)
+            return self.value_pre_sds_hds(home_and_sds.hds)
         else:
             return self.value_post_sds(home_and_sds.sds)
 
