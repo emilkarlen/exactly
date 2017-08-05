@@ -24,6 +24,7 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables
@@ -50,7 +51,8 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
-                home_contents=DirContents([empty_file('expected.txt')]),
+                hds_contents=case_home_dir_contents(
+                    DirContents([empty_file('expected.txt')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
@@ -65,7 +67,8 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
-                home_contents=DirContents([File('expected.txt', 'expected contents')]),
+                hds_contents=case_home_dir_contents(
+                    DirContents([File('expected.txt', 'expected contents')])),
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
@@ -82,7 +85,8 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
-                home_contents=DirContents([File('expected.txt', 'expected contents')]),
+                hds_contents=case_home_dir_contents(
+                    DirContents([File('expected.txt', 'expected contents')])),
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'not equal to expected contents')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
@@ -102,7 +106,8 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
-                home_contents=DirContents([File('expected.txt', 'expected contents')]),
+                hds_contents=case_home_dir_contents(
+                    DirContents([File('expected.txt', 'expected contents')])),
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'expected contents')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
