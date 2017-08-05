@@ -61,7 +61,7 @@ def absolute_file_name(file_name: str) -> FileRef:
     return _FileRefAbsolute(PathPartAsFixedPath(file_name))
 
 
-def rel_home(path_suffix: PathPart) -> FileRef:
+def rel_home_case(path_suffix: PathPart) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_home_case, path_suffix)
 
 

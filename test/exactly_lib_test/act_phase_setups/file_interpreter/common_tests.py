@@ -138,7 +138,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
     def runTest(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  file_refs.rel_home(PathPartAsFixedPath(sub_dir_of_home)))
+                                  file_refs.rel_home_case(PathPartAsFixedPath(sub_dir_of_home)))
 
         source_file_name_symbol = NameAndValue('source_file_name_symbol_name',
                                                'the-source-file.py')

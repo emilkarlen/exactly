@@ -17,7 +17,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 
 def suite() -> unittest.TestSuite:
     configs_for_constant_rel_option_type = [
-        _RelativityConfig(sut.rel_home,
+        _RelativityConfig(sut.rel_home_case,
                           ResolvingDependency.HOME,
                           lambda home_and_sds: home_and_sds.hds.case_dir),
         _RelativityConfig(sut.rel_tmp_user,
