@@ -69,7 +69,6 @@ class Executor:
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         with home_directory_structure(prefix=prefix + "-home-",
                                       contents=self.arrangement.hds_contents,
-                                      case_dir_contents=self.arrangement.home_contents,
                                       ) as hds:
             configuration_builder = self.arrangement.initial_configuration_builder
             configuration_builder.set_home_dir(hds.case_dir)

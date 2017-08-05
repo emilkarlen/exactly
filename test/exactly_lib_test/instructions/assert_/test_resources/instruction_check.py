@@ -112,7 +112,6 @@ class Executor:
                                                           'symbol-usages after parse')
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
-                home_dir_contents=self.arrangement.home_contents,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
                 non_home_contents=self.arrangement.non_home_contents,

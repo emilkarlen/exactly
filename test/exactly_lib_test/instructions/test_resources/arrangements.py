@@ -5,7 +5,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution.utils import ActResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
@@ -37,12 +36,10 @@ class ActResultProducerFromActResult(ActResultProducer):
 
 class ArrangementBase:
     def __init__(self,
-                 home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  process_execution_settings=with_no_timeout(),
                  ):
         self.hds_contents = hds_contents
-        self.home_contents = home_contents
         self.process_execution_settings = process_execution_settings
 
 

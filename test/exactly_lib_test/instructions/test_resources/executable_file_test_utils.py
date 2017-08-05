@@ -132,7 +132,8 @@ def check(put: unittest.TestCase,
                                                       'Remaining arguments')
     check_exe_file(put, expectation.expectation_on_exe_file,
                    actual_exe_file)
-    with home_and_sds_with_act_as_curr_dir(home_or_sds_contents=arrangement.home_or_sds_populator) as environment:
+    with home_and_sds_with_act_as_curr_dir(
+            home_or_sds_contents=arrangement.home_or_sds_populator) as environment:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
         validator_util.check(put,
