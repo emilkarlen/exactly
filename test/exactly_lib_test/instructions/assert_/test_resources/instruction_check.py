@@ -131,7 +131,7 @@ class Executor:
             if not validate_result.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
-                environment.home_directory,
+                environment.hds,
                 environment.environ,
                 home_and_sds.sds,
                 phase_identifier.ASSERT.identifier,

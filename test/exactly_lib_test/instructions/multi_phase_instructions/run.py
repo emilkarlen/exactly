@@ -41,7 +41,7 @@ class ExecuteAction(HomeAndSdsAction):
         self.instruction_embryo = instruction_embryo
 
     def apply(self, environment: PathResolvingEnvironmentPreOrPostSds) -> spe.ResultAndStderr:
-        return self.instruction_embryo.main(InstructionEnvironmentForPostSdsStep(environment.home_dir_path,
+        return self.instruction_embryo.main(InstructionEnvironmentForPostSdsStep(environment.hds,
                                                                                  dict(os.environ),
                                                                                  environment.sds,
                                                                                  'the-phase'),

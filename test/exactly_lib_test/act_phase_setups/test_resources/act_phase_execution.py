@@ -109,7 +109,7 @@ def check_execution(put: unittest.TestCase,
                                                      phase_step.STEP__VALIDATE_PRE_SDS)
         with sds_with_act_as_curr_dir(symbols=instruction_environment.symbols
                                       ) as path_resolving_env:
-            instruction_environment = InstructionEnvironmentForPostSdsStep(instruction_environment.home_directory,
+            instruction_environment = InstructionEnvironmentForPostSdsStep(instruction_environment.hds,
                                                                            instruction_environment.environ,
                                                                            path_resolving_env.sds,
                                                                            phase_identifier.ACT.identifier,

@@ -105,7 +105,7 @@ class Executor:
             if validate_result is not None:
                 return
             environment = InstructionEnvironmentForPostSdsStep(
-                environment.home_directory,
+                environment.hds,
                 environment.environ,
                 home_and_sds.sds,
                 'phase_identifier_for_unknown_phase',

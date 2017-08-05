@@ -129,7 +129,7 @@ class TestExecuteBase(unittest.TestCase):
                 step_result.failure_message,
             ))
         with sds_with_act_as_curr_dir() as path_resolving_env:
-            environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
+            environment = InstructionEnvironmentForPostSdsStep(environment.hds,
                                                                environment.environ,
                                                                path_resolving_env.sds,
                                                                phase_identifier.ACT.identifier,
@@ -233,7 +233,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 with sds_with_act_as_curr_dir(contents_in(RelSdsOptionType.REL_ACT,
                                                           DirContents([empty_dir('expected-cwd')]))
                                               ) as path_resolving_env:
-                    environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
+                    environment = InstructionEnvironmentForPostSdsStep(environment.hds,
                                                                        environment.environ,
                                                                        path_resolving_env.sds,
                                                                        phase_identifier.ACT.identifier,

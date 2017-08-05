@@ -452,7 +452,7 @@ class _PartialExecutor:
 
     def __post_sds_environment(self,
                                phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
-        return common.InstructionEnvironmentForPostSdsStep(self.__configuration.home_dir_path,
+        return common.InstructionEnvironmentForPostSdsStep(self.__configuration.hds,
                                                            self.__configuration.environ,
                                                            self.__sandbox_directory_structure,
                                                            phase.identifier,

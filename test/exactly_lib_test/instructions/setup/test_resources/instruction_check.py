@@ -177,7 +177,7 @@ class Executor:
                     sds = sandbox_directory_structure.construct_at(resolved_path_name(sds_root_dir_name))
                     os.chdir(str(sds.act_dir))
                     instruction_environment = i.InstructionEnvironmentForPostSdsStep(
-                        environment.home_directory,
+                        environment.hds,
                         environment.environ,
                         sds,
                         phase_identifier.SETUP.identifier,

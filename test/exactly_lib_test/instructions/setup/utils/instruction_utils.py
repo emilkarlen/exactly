@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -46,7 +46,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
@@ -58,7 +58,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertFalse(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
             self.assertTrue(post_validate.is_success)
 
 
@@ -72,7 +72,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
@@ -84,15 +84,15 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds.sds, environment))
             self.assertFalse(post_validate.is_success)
 
 
-def _env_from(home_and_sds: HomeAndSds,
+def _env_from(sds: SandboxDirectoryStructure,
               environment: InstructionEnvironmentForPreSdsStep) -> InstructionEnvironmentForPostSdsStep:
-    return InstructionEnvironmentForPostSdsStep(environment.home_directory,
+    return InstructionEnvironmentForPostSdsStep(environment.hds,
                                                 environment.environ,
-                                                home_and_sds.sds,
+                                                sds,
                                                 'phase-identifier')
 
 
