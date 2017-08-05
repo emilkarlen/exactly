@@ -159,5 +159,5 @@ resolver_for_tmp_user = RelSdsRootResolver(RelSdsOptionType.REL_TMP,
 
 resolver_for_cwd = RelNonHomeRootResolverForCwd()
 
-resolver_for_home_case = RelHomeRootResolver(RelHomeOptionType.REL_HOME,
+resolver_for_home_case = RelHomeRootResolver(RelHomeOptionType.REL_HOME_CASE,
                                              HomeDirectoryStructure.case_dir.fget)

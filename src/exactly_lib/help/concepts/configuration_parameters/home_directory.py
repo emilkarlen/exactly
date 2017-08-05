@@ -3,7 +3,7 @@ from exactly_lib.execution.environment_variables import ENV_VAR_HOME
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import HOME_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help.utils.name_and_cross_ref import Name
-from exactly_lib.help_texts.file_ref import REL_HOME_OPTION
+from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
@@ -22,7 +22,7 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
                                             .format(phase=phase_name_dictionary(),
                                                     the_concept=_NAME.singular,
                                                     home_dir_env_var=ENV_VAR_HOME,
-                                                    rel_home_option=formatting.cli_option(REL_HOME_OPTION)))))
+                                                    rel_home_option=formatting.cli_option(REL_HOME_CASE_OPTION)))))
 
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'

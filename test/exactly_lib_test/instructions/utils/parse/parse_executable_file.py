@@ -162,11 +162,11 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  expected_token_stream_after_parse=has_head_with_string('an argument'),
                  ),
             Case('option_without_tail',
-                 source='%s THE_FILE' % file_ref_texts.REL_HOME_OPTION,
+                 source='%s THE_FILE' % file_ref_texts.REL_HOME_CASE_OPTION,
                  expectation=
                  ExpectationOnExeFile(
                      argument_resolver_value=empty_list_value(),
-                     file_resolver_value=file_ref_of(RelOptionType.REL_HOME, 'THE_FILE'),
+                     file_resolver_value=file_ref_of(RelOptionType.REL_HOME_CASE, 'THE_FILE'),
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
@@ -226,7 +226,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                  expected_token_stream_after_parse=has_remaining_source('tail arguments'),
                  ),
             Case('test_path_with_option',
-                 source='( %s FILE )' % file_ref_texts.REL_HOME_OPTION,
+                 source='( %s FILE )' % file_ref_texts.REL_HOME_CASE_OPTION,
                  expectation=
                  ExpectationOnExeFile(
                      argument_resolver_value=empty_list_value(),
@@ -237,7 +237,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                  expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
                  ),
             Case('test_path_with_option_and_arguments',
-                 source='( %s FILE arg1 arg2 )' % file_ref_texts.REL_HOME_OPTION,
+                 source='( %s FILE arg1 arg2 )' % file_ref_texts.REL_HOME_CASE_OPTION,
                  expectation=
                  ExpectationOnExeFile(
                      argument_resolver_value=list_value_of_string_constants(['arg1', 'arg2']),
@@ -366,7 +366,7 @@ class TestParseInvalidSyntaxWithArguments(unittest.TestCase):
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream(file_ref_texts.REL_HOME_OPTION))
+            sut.parse(TokenStream(file_ref_texts.REL_HOME_CASE_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -496,7 +496,7 @@ class ParenthesesWithArgumentsInsideAndWithFollowingArguments(ExecutableTestBase
 
 class RelHomeConfiguration(RelativityConfiguration):
     def __init__(self):
-        super().__init__(file_ref_texts.REL_HOME_OPTION, True)
+        super().__init__(file_ref_texts.REL_HOME_CASE_OPTION, True)
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
         return home_populators.case_home_dir_contents(DirContents([file]))

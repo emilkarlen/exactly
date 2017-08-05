@@ -27,7 +27,7 @@ class TestEqualsPathRelativity(unittest.TestCase):
     def test_relative(self):
         for rel_option in RelOptionType:
             # ARRANGE #
-            relativity = specific_relative_relativity(RelOptionType.REL_HOME)
+            relativity = specific_relative_relativity(RelOptionType.REL_HOME_CASE)
             with self.subTest(msg='RelOptionType=' + str(rel_option)):
                 assertion = sut.equals_path_relativity(relativity)
                 # ACT & ASSERT #
@@ -46,7 +46,7 @@ class TestNotEqualsPathRelativity(unittest.TestCase):
     def test_differs__both_are_relative_but_with_different_relativity(self):
         # ARRANGE #
         expected = specific_relative_relativity(RelOptionType.REL_ACT)
-        actual = specific_relative_relativity(RelOptionType.REL_HOME)
+        actual = specific_relative_relativity(RelOptionType.REL_HOME_CASE)
         assertion = sut.equals_path_relativity(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -74,7 +74,7 @@ class TestNotEqualsPathRelativityVariants(unittest.TestCase):
         assert_that_assertion_fails(assertion, actual)
 
     def test_differs__rel_option_types__expected_has_super_set(self):
-        expected = PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME}, False)
+        expected = PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE}, False)
         actual = PathRelativityVariants({RelOptionType.REL_ACT}, False)
         assertion = sut.path_relativity_variants_equals(expected)
         # ACT & ASSERT #
@@ -82,7 +82,7 @@ class TestNotEqualsPathRelativityVariants(unittest.TestCase):
 
     def test_differs__rel_option_types__single_different_value(self):
         expected = PathRelativityVariants({RelOptionType.REL_ACT}, False)
-        actual = PathRelativityVariants({RelOptionType.REL_HOME}, False)
+        actual = PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False)
         assertion = sut.path_relativity_variants_equals(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)

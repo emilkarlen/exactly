@@ -42,10 +42,10 @@ OPTION_ARGUMENT_FOR_SOURCE = a.Named('SOURCE')
 
 REL_OPTION_ARG_CONF_FOR_SOURCE = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
-        path_relativity.PathRelativityVariants({RelOptionType.REL_HOME},
+        path_relativity.PathRelativityVariants({RelOptionType.REL_HOME_CASE},
                                                True),
         True,
-        RelOptionType.REL_HOME),
+        RelOptionType.REL_HOME_CASE),
     OPTION_ARGUMENT_FOR_SOURCE.name,
     path_suffix_is_required=True)
 

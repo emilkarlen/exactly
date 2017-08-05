@@ -42,7 +42,7 @@ class TestConstantFragment(unittest.TestCase):
 
 class TestFileRefFragment(unittest.TestCase):
     def test(self):
-        file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME,
+        file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME_CASE,
                                                     PathPartAsNothing())
         file_ref_rel_sds = file_refs.of_rel_option(file_refs.RelOptionType.REL_ACT,
                                                    PathPartAsNothing())
@@ -84,7 +84,7 @@ class TestFileRefFragment(unittest.TestCase):
 class TestListFragment(unittest.TestCase):
     def test(self):
         string_of_file_ref_rel_home = string_value_of_single_file_ref(
-            file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME,
+            file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME_CASE,
                                     PathPartAsNothing()))
         string_1 = 'string value 1'
         string_2 = 'string value 2'
@@ -125,7 +125,7 @@ class TestStringValue(unittest.TestCase):
     def test(self):
         string_fragment_1 = 'string fragment 1'
         string_fragment_2 = 'string fragment 2'
-        file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME,
+        file_ref_rel_home = file_refs.of_rel_option(file_refs.RelOptionType.REL_HOME_CASE,
                                                     PathPartAsNothing())
         file_ref_rel_sds = file_refs.of_rel_option(file_refs.RelOptionType.REL_ACT,
                                                    PathPartAsNothing())

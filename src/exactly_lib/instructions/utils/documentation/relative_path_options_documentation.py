@@ -212,11 +212,11 @@ _ALL = {
                                                   CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
                                               _REL_CWD_DESCRIPTION,
                                               [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
-    RelOptionType.REL_HOME: _RelOptionTypeInfo(file_ref_texts.REL_HOME_OPTION_NAME,
-                                               formatting.concept(
+    RelOptionType.REL_HOME_CASE: _RelOptionTypeInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
+                                                    formatting.concept(
                                                    HOME_DIRECTORY_CONCEPT_INFO.singular_name),
-                                               _REL_HOME_DESCRIPTION,
-                                               [HOME_DIRECTORY_CONCEPT_INFO]),
+                                                    _REL_HOME_DESCRIPTION,
+                                                    [HOME_DIRECTORY_CONCEPT_INFO]),
 }
 
 _DEFAULT_RELATIVITY = """\

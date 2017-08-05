@@ -70,15 +70,15 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
 
 
 _RELATIVITY_OPTION_CONFIGURATIONS_FOR_EXPECTED_FILE = [
-    rel_opt.conf_rel_any(RelOptionType.REL_HOME),
+    rel_opt.conf_rel_any(RelOptionType.REL_HOME_CASE),
     RelativityOptionConfigurationForRelCwdForTestCwdDir(),
     rel_opt.conf_rel_any(RelOptionType.REL_ACT),
     rel_opt.conf_rel_any(RelOptionType.REL_TMP),
-    rel_opt.default_conf_rel_any(RelOptionType.REL_HOME),
+    rel_opt.default_conf_rel_any(RelOptionType.REL_HOME_CASE),
     rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                 'EXPECTED_FILE_SYMBOL',
                                 EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
-    rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME,
+    rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME_CASE,
                                 'EXPECTED_FILE_SYMBOL',
                                 EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants),
 ]

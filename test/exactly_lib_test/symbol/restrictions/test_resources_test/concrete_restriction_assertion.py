@@ -189,12 +189,12 @@ class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
                 sut.equals_file_ref_relativity_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = NoRestriction()
         assert_that_assertion_fails(sut.equals_file_ref_relativity_restriction(expected), actual)
 
     def test_not_equals__different__accepted_relativity_variants(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         assert_that_assertion_fails(sut.equals_file_ref_relativity_restriction(expected), actual)
 
@@ -212,7 +212,7 @@ class TestEqualsValueRestriction(unittest.TestCase):
                 sut.equals_value_restriction(restriction).apply_without_message(self, restriction)
 
     def test_not_equals__different__types__one_is_file_ref_relativity_variants(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = NoRestriction()
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
@@ -222,7 +222,7 @@ class TestEqualsValueRestriction(unittest.TestCase):
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
     def test_not_equals__same_type__different_accepted_relativity_variants(self):
-        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME}, False))
+        expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
         actual = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, False))
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 

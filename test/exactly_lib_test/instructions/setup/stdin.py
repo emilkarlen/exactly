@@ -126,10 +126,10 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
 
     def test_file__rel_home(self):
         accepted_relativity_options = [
-            rel_opt_conf.conf_rel_any(RelOptionType.REL_HOME),
-            rel_opt_conf.default_conf_rel_any(RelOptionType.REL_HOME),
+            rel_opt_conf.conf_rel_any(RelOptionType.REL_HOME_CASE),
+            rel_opt_conf.default_conf_rel_any(RelOptionType.REL_HOME_CASE),
             rel_opt_conf.symbol_conf_rel_any(
-                RelOptionType.REL_HOME,
+                RelOptionType.REL_HOME_CASE,
                 'SYMBOL',
                 sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
         ]
@@ -145,7 +145,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ),
                     Expectation(
                         settings_builder=AssertStdinFileIsSetToFile(
-                            file_refs.of_rel_option(RelOptionType.REL_HOME,
+                            file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
                                                     PathPartAsFixedPath('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
@@ -214,7 +214,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
 
     def test_referenced_file_does_not_exist__rel_symbol(self):
         symbol_rel_opt = rel_opt_conf.symbol_conf_rel_any(
-            RelOptionType.REL_HOME,
+            RelOptionType.REL_HOME_CASE,
             'SYMBOL',
             sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(source4('{relativity_option} file.txt'.format(

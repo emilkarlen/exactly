@@ -62,7 +62,7 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_HOME, PathPartAsFixedPath('file-name'))
+        actual = FileRefTestImpl(RelOptionType.REL_HOME_CASE, PathPartAsFixedPath('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
@@ -81,7 +81,7 @@ class TestNotEquals_DifferentTypeOfPathSuffix(unittest.TestCase):
             sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
 
 
-_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME
+_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME_CASE
 _NOT_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_ACT
 
 

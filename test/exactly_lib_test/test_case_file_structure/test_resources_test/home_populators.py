@@ -52,7 +52,7 @@ class TestContentsInDirOfRelHomeOptionType(unittest.TestCase):
     def test_populate_hds(self):
         # ARRANGE #
         expected_dir_contents = fs.DirContents([fs.File('file-name.txt', 'file contents')])
-        populator = sut.contents_in(RelHomeOptionType.REL_HOME,
+        populator = sut.contents_in(RelHomeOptionType.REL_HOME_CASE,
                                     expected_dir_contents)
         expectation = f_asrt.dir_contains_exactly(expected_dir_contents)
 
@@ -66,7 +66,7 @@ class TestContentsInDirOfRelHomeOptionType(unittest.TestCase):
     def test_populate_home_or_sds(self):
         # ARRANGE #
         expected_dir_contents = fs.DirContents([fs.File('a-file-name.txt', 'the file contents')])
-        populator = sut.contents_in(RelHomeOptionType.REL_HOME,
+        populator = sut.contents_in(RelHomeOptionType.REL_HOME_CASE,
                                     expected_dir_contents)
         expectation = f_asrt.dir_contains_exactly(expected_dir_contents)
 

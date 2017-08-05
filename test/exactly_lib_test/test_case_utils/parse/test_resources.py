@@ -9,7 +9,7 @@ def args_with_rel_ops(arg_str: str, **kwargs) -> str:
 
 
 _FORMAT_MAP = {
-    'rel_home_option': file_ref_texts.REL_HOME_OPTION,
+    'rel_home_option': file_ref_texts.REL_HOME_CASE_OPTION,
     'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
     'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
     'rel_act_option': file_ref_texts.REL_ACT_OPTION,

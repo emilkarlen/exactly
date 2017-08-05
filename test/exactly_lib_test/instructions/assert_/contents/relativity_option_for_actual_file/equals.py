@@ -174,7 +174,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
 
 class _ContentsEqualsWithExpectedFileRelHomeSymbol(_ContentsEqualsWithExpectedRelSymbolBase):
     def relativity_of_expected_file(self) -> RelOptionType:
-        return RelOptionType.REL_HOME
+        return RelOptionType.REL_HOME_CASE
 
 
 class _ContentsEqualsWithExpectedFileRelTmpSymbol(_ContentsEqualsWithExpectedRelSymbolBase):

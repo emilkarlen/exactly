@@ -33,9 +33,9 @@ class TestEqualsPathRelativityVariants(unittest.TestCase):
         assert_that_assertion_fails(assertion, rv)
 
     def test_not_equals__different__option_sets(self):
-        lv = PathRelativityVariants({RelOptionType.REL_HOME,
+        lv = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
                                      RelOptionType.REL_RESULT}, False)
-        rv = PathRelativityVariants({RelOptionType.REL_HOME,
+        rv = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
                                      RelOptionType.REL_ACT}, False)
         assertion = sut.equals_path_relativity_variants(lv)
         # ACT & ASSERT #

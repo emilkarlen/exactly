@@ -22,7 +22,7 @@ class TestHomeRelativityResolver(unittest.TestCase):
 
     def test_resolvers(self):
         cases = [
-            (sut.RelHomeOptionType.REL_HOME, hds_2_case_dir),
+            (sut.RelHomeOptionType.REL_HOME_CASE, hds_2_case_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             resolver = sut.REL_HOME_OPTIONS_MAP[rel_option_type].root_resolver
@@ -33,7 +33,7 @@ class TestHomeRelativityResolver(unittest.TestCase):
 
     def test_dict_keys(self):
         expected = {
-            sut.RelHomeOptionType.REL_HOME,
+            sut.RelHomeOptionType.REL_HOME_CASE,
         }
         self.assertEqual(expected,
                          sut.REL_HOME_OPTIONS_MAP.keys())
@@ -127,7 +127,7 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_under_home(self):
         cases = [
-            (sut.RelOptionType.REL_HOME, home_and_sds_2_home_case_dir),
+            (sut.RelOptionType.REL_HOME_CASE, home_and_sds_2_home_case_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -149,7 +149,7 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_dict_keys(self):
         expected = {
-            sut.RelOptionType.REL_HOME,
+            sut.RelOptionType.REL_HOME_CASE,
             sut.RelOptionType.REL_ACT,
             sut.RelOptionType.REL_RESULT,
             sut.RelOptionType.REL_TMP,

@@ -63,7 +63,7 @@ class TestFailingValidationOfRelHomePath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(file_ref_texts.REL_HOME_OPTION, 'non-existing-file.py'),
+            source_for_interpreting(file_ref_texts.REL_HOME_CASE_OPTION, 'non-existing-file.py'),
             self.conf.arrangement(),
             self.conf.expect_failing_validation_pre_sds(),
         )
