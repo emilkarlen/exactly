@@ -83,7 +83,7 @@ def check_execution(put: unittest.TestCase,
     with home_directory_structure(contents=arrangement.hds_contents,
                                   case_dir_contents=arrangement.home_dir_contents,
                                   ) as hds:
-        instruction_environment = InstructionEnvironmentForPreSdsStep(hds.case_dir,
+        instruction_environment = InstructionEnvironmentForPreSdsStep(hds,
                                                                       arrangement.environ,
                                                                       arrangement.timeout_in_seconds,
                                                                       symbols=arrangement.symbol_table)

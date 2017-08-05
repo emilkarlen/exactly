@@ -42,7 +42,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, dict(os.environ))
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
@@ -54,7 +54,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, dict(os.environ))
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertFalse(pre_validate.is_success)
 
@@ -68,7 +68,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, dict(os.environ))
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
@@ -80,7 +80,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_with_act_as_curr_dir() as path_resolving_env:
             home_and_sds = path_resolving_env.home_and_sds
-            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.hds, dict(os.environ))
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 

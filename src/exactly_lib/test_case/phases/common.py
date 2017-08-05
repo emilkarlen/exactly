@@ -13,11 +13,11 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
-                 home_dir: pathlib.Path,
+                 hds: HomeDirectoryStructure,
                  environ: dict,
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None):
-        self.__hds = HomeDirectoryStructure(home_dir)
+        self.__hds = hds
         self.__timeout_in_seconds = timeout_in_seconds
         self.__environ = environ
         self.__symbols = SymbolTable() if symbols is None else symbols
@@ -104,7 +104,7 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
                  phase_identifier: str,
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None):
-        super().__init__(home_dir, environ, timeout_in_seconds, symbols)
+        super().__init__(HomeDirectoryStructure(home_dir), environ, timeout_in_seconds, symbols)
         self.__sds = sds
         self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
 

@@ -163,7 +163,7 @@ class Executor:
                                           case_dir_contents=self.arrangement.home_contents,
                                           ) as hds:
                 home_dir_path = hds.case_dir
-                environment = InstructionEnvironmentForPreSdsStep(hds.case_dir,
+                environment = InstructionEnvironmentForPreSdsStep(hds,
                                                                   self.arrangement.process_execution_settings.environ,
                                                                   symbols=self.arrangement.symbols)
                 pre_validate_result = self._execute_pre_validate(environment, instruction)

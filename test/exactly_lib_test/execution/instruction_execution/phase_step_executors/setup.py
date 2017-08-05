@@ -7,6 +7,7 @@ from exactly_lib.execution.instruction_execution.single_instruction_executor imp
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.symbol.test_resources import symbol_utils as sd_tr
@@ -157,19 +158,22 @@ class Expectation:
 
 
 def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
-    return InstructionEnvironmentForPreSdsStep(pathlib.Path(), {})
+    hds = HomeDirectoryStructure(pathlib.Path())
+    return InstructionEnvironmentForPreSdsStep(hds, {})
 
 
 def env_with_singleton_symbol_table(definition: su.SymbolDefinition) -> InstructionEnvironmentForPreSdsStep:
     table = sd_tr.symbol_table_from_symbol_definitions([definition])
-    return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
+    hds = HomeDirectoryStructure(pathlib.Path())
+    return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
                                                symbols=table)
 
 
 def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
     symbols = sd_tr.symbol_table_from_symbol_definitions(symbols)
-    return InstructionEnvironmentForPreSdsStep(pathlib.Path(),
+    hds = HomeDirectoryStructure(pathlib.Path())
+    return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
                                                symbols=symbols)
 

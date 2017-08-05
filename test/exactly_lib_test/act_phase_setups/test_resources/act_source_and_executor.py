@@ -10,11 +10,13 @@ from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
@@ -114,7 +116,8 @@ class TestExecuteBase(unittest.TestCase):
         environ = dict(os.environ) if environ is None else environ
         assert_is_list_of_act_phase_instructions(self, act_phase_instructions)
 
-        environment = InstructionEnvironmentForPreSdsStep(home_dir, environ)
+        environment = InstructionEnvironmentForPreSdsStep(HomeDirectoryStructure(home_dir),
+                                                          environ)
         sut = self.source_and_executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                          environment,
                                                          act_phase_instructions)
@@ -217,10 +220,10 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
 
 class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
     def runTest(self):
-        with tmp_dir() as home_dir_path:
-            with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(home_dir_path) as source:
+        with home_directory_structure() as hds:
+            with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds.case_dir) as source:
                 executor_constructor = self.test_setup.sut
-                environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
+                environment = InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
                 sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
                 sut.parse(environment)
                 step_result = sut.validate_pre_sds(environment)

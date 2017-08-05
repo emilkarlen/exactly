@@ -12,8 +12,8 @@ from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor im
 from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.execution import tmp_dir as fs_utils
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 
@@ -100,8 +100,9 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_
     TestCaseForConfigurationForValidation):
     def runTest(self):
         act_phase_instructions = [instr(['system-under-test'])]
-        with fs_utils.tmp_dir(fs.DirContents([fs.executable_file('system-under-test')])) as home_dir_path:
-            environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
+        with home_directory_structure(
+                case_dir_contents=fs.DirContents([fs.executable_file('system-under-test')])) as hds:
+            environment = InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
             executor.parse(environment)
             actual = executor.validate_pre_sds(environment)
