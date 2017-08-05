@@ -33,19 +33,19 @@ class Arrangement(ArrangementWithSds):
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_home_contents_before_main: non_home_populator.NonHomePopulator = non_home_populator.empty(),
+                 home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT,
-                 home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          hds_contents=hds_contents,
                          sds_contents=sds_contents_before_main,
                          non_home_contents=non_home_contents_before_main,
+                         home_or_sds_contents=home_or_sds_contents,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
-                         home_or_sds_contents=home_or_sds_contents,
                          symbols=symbols)
         self.previous_phase = previous_phase
 
