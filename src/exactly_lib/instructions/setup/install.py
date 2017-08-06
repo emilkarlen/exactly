@@ -114,8 +114,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         relativity_of_file_seds = rel_opts.relativity_syntax_element_descriptions(
             path_syntax.PATH_ARGUMENT,
             REL_OPTION_ARG_CONF_FOR_SOURCE.options,
-            relativity_of_arg,
-            skip_symbol_reference_element=self._destination_file_may_be_rel_symbol())
+            relativity_of_arg)
 
         return [file_arg_sed] + relativity_of_file_seds
 
@@ -150,10 +149,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         rel_path_doc.add_concepts_if_not_listed(concepts,
                                                 rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_SOURCE.options))
         return rel_path_doc.cross_refs_for_concepts(concepts)
-
-    @staticmethod
-    def _destination_file_may_be_rel_symbol() -> bool:
-        return REL_OPTION_ARG_CONF_FOR_DESTINATION.options.is_rel_symbol_option_accepted
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
