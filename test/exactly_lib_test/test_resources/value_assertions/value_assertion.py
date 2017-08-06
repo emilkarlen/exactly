@@ -503,6 +503,7 @@ class _WithTransformedMessage(ValueAssertion):
 
 
 is_instance = IsInstance
+is_ = Is
 is_none = ValueIsNone()
 is_not_none = ValueIsNotNone()
 equals = Equals
