@@ -9,10 +9,10 @@ from exactly_lib.test_case.phases.result.sh import SuccessOrHardError
 
 class ConfigurationBuilder:
     def __init__(self,
-                 home_dir_path: pathlib.Path,
+                 home_case_dir_path: pathlib.Path,
                  act_phase_handling: ActPhaseHandling,
                  timeout_in_seconds: int = None):
-        self.__home_dir_path = home_dir_path
+        self.__home_case_dir_path = home_case_dir_path
         self.__act_phase_handling = act_phase_handling
         self.__execution_mode = ExecutionMode.NORMAL
         self.__timeout_in_seconds = timeout_in_seconds
@@ -26,15 +26,15 @@ class ConfigurationBuilder:
         self.__execution_mode = x
 
     @property
-    def home_dir(self) -> str:
-        return str(self.__home_dir_path)
+    def home_case_dir(self) -> str:
+        return str(self.__home_case_dir_path)
 
     @property
-    def home_dir_path(self) -> pathlib.Path:
-        return self.__home_dir_path
+    def home_case_dir_path(self) -> pathlib.Path:
+        return self.__home_case_dir_path
 
     def set_home_case_dir(self, x: pathlib.Path):
-        self.__home_dir_path = x
+        self.__home_case_dir_path = x
 
     @property
     def act_phase_handling(self) -> ActPhaseHandling:

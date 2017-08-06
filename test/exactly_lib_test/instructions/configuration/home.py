@@ -109,8 +109,8 @@ class AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(config_check.Assertion)
               put: unittest.TestCase,
               initial: ConfigurationBuilder,
               actual_result: ConfigurationBuilder):
-        put.assertEqual(initial.home_dir_path / self.name_of_sub_dir,
-                        actual_result.home_dir_path)
+        put.assertEqual(initial.home_case_dir_path / self.name_of_sub_dir,
+                        actual_result.home_case_dir_path)
 
 
 class AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(config_check.Assertion):
@@ -124,8 +124,8 @@ class AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(config_check.Assertion)
               put: unittest.TestCase,
               initial: ConfigurationBuilder,
               actual_result: ConfigurationBuilder):
-        put.assertEqual(initial.home_dir_path / self.first_sub_dir / self.second_sub_dir,
-                        actual_result.home_dir_path)
+        put.assertEqual(initial.home_case_dir_path / self.first_sub_dir / self.second_sub_dir,
+                        actual_result.home_case_dir_path)
 
 
 class AssertActualHomeDirIsParentOfOriginalHomeDir(config_check.Assertion):
@@ -133,5 +133,5 @@ class AssertActualHomeDirIsParentOfOriginalHomeDir(config_check.Assertion):
               put: unittest.TestCase,
               initial: ConfigurationBuilder,
               actual_result: ConfigurationBuilder):
-        put.assertEqual(initial.home_dir_path.parent,
-                        actual_result.home_dir_path)
+        put.assertEqual(initial.home_case_dir_path.parent,
+                        actual_result.home_case_dir_path)

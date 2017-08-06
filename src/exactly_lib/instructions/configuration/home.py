@@ -87,4 +87,4 @@ class _Instruction(ConfigurationPhaseInstruction):
         delta = pathlib.Path(self.argument)
         if delta.is_absolute():
             return delta
-        return configuration_builder.home_dir_path / delta
+        return configuration_builder.home_case_dir_path / delta
