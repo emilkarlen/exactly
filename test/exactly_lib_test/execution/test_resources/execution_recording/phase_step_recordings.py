@@ -1,5 +1,6 @@
 import types
 import unittest
+from operator import attrgetter
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
@@ -32,16 +33,17 @@ class Phase2step2recordedValueAssertion(asrt.ValueAssertion):
         put.assertIsInstance(actual_phase_2_step_2_recorded_value, dict,
                              'actual value should be a dictionary')
 
-        for phase in self.expected_phase_2_step_2_recorded_value:
+        for phase in sorted(self.expected_phase_2_step_2_recorded_value.keys(),
+                            key=attrgetter('value')):
             put.assertIn(phase, self.expected_phase_2_step_2_recorded_value)
-            expected = self.expected_phase_2_step_2_recorded_value[phase]
+            expected_steps = self.expected_phase_2_step_2_recorded_value[phase]
             actual = actual_phase_2_step_2_recorded_value[phase]
-            for step in expected:
-                put.assertIn(step, actual, 'Phase {}: Missing step: {}'.format(phase, step))
-                put.assertEqual(expected[step],
-                                actual[step],
-                                'Phase {}/Step {}'.format(phase, step))
-                put.assertEqual(len(expected),
+            for expected_step in sorted(expected_steps.keys()):
+                put.assertIn(expected_step, actual, 'Phase {}: Missing step: {}'.format(phase, expected_step))
+                put.assertEqual(expected_steps[expected_step],
+                                actual[expected_step],
+                                '{}/{}'.format(phase, expected_step))
+                put.assertEqual(len(expected_steps),
                                 len(actual),
                                 'Actual number of recorded steps for phase {} must not exceed expected'.format(phase))
                 put.assertEqual(len(self.expected_phase_2_step_2_recorded_value),
