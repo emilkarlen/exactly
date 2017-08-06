@@ -19,7 +19,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
     check_execution, Expectation
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_hds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 
 
 def suite() -> unittest.TestSuite:
@@ -97,7 +97,7 @@ class TestConstructor(unittest.TestCase):
 
 
 def _environment() -> InstructionEnvironmentForPreSdsStep:
-    hds = dummy_hds()
+    hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
 
 

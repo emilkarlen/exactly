@@ -18,7 +18,7 @@ from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_as
     equals_reference_restrictions
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.parse import source4
@@ -241,4 +241,4 @@ class TestUnset(unittest.TestCase):
 
 
 def dummy_resolving_env() -> PathResolvingEnvironmentPreOrPostSds:
-    return PathResolvingEnvironmentPreOrPostSds(dummy_home_and_sds())
+    return PathResolvingEnvironmentPreOrPostSds(fake_home_and_sds())

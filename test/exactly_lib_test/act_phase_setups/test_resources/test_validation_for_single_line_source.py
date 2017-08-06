@@ -10,7 +10,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor im
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_hds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.file_structure import empty_dir_contents
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
@@ -39,7 +39,7 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
 
     @staticmethod
     def _new_environment() -> InstructionEnvironmentForPreSdsStep:
-        hds = dummy_hds()
+        hds = fake_hds()
         return InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
 
     def _do_parse(self,

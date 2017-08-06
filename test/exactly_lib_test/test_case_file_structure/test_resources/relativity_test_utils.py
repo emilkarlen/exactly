@@ -6,13 +6,13 @@ from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds, dummy_hds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds, fake_hds
 
 
 class HomeRelativityResolverHelper:
     def __init__(self, put: unittest.TestCase):
         self.put = put
-        self.hds = dummy_hds()
+        self.hds = fake_hds()
 
     def check(self,
               actual_resolver,
@@ -99,7 +99,7 @@ class NonHomeRelativityResolverHelper:
 class AnyRelativityResolverHelper:
     def __init__(self, put: unittest.TestCase):
         self.put = put
-        self.home_and_sds = dummy_home_and_sds()
+        self.home_and_sds = fake_home_and_sds()
         self.sds = self.home_and_sds.sds
 
     def check_under_sds(self,
