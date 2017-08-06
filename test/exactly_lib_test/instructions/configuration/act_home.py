@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.instructions.configuration import home as sut
+from exactly_lib.instructions.configuration import act_home as sut
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
@@ -15,11 +15,11 @@ def suite() -> unittest.TestSuite:
 
 class TheConfiguration(set_home_dir.Configuration):
     def __init__(self):
-        super().__init__(RelHomeOptionType.REL_HOME_CASE)
+        super().__init__(RelHomeOptionType.REL_HOME_ACT)
 
     def get_property_dir_path(self,
                               configuration_builder: ConfigurationBuilder) -> pathlib.Path:
-        return configuration_builder.home_case_dir_path
+        return configuration_builder.home_act_dir_path
 
     def parser(self) -> InstructionParser:
         return sut.Parser()
@@ -31,7 +31,7 @@ class TheConfiguration(set_home_dir.Configuration):
 # class Test(setting_of_home_dirs.TestSuccessfulExecution_change_to_parent_dir):
 #     def __init__(self, methodName):
 #         super().__init__(TheConfiguration())
-
-
+#
+#
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

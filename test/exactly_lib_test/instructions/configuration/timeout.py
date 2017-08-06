@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.instructions.configuration import timeout as sut
@@ -50,15 +49,11 @@ class TestCaseBaseForParser(TestCaseBase):
              expected: int,
              argument: str):
         for source in equivalent_source_variants__with_source_check(self, argument):
-            initial_home_dir = pathlib.Path()
-            initial_configuration_builder = ConfigurationBuilder(initial_home_dir,
-                                                                 initial_home_dir,
-                                                                 act_phase_handling_that_runs_constant_actions())
-            initial_configuration_builder.set_timeout_in_seconds(None)
             self._check(sut.Parser(),
                         source,
                         Arrangement(
-                            initial_configuration_builder=initial_configuration_builder),
+                            act_phase_handling=act_phase_handling_that_runs_constant_actions(),
+                            timeout_in_seconds=None),
                         Expectation(
                             configuration=AssertTimeout(expected)))
 

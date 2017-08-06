@@ -4,8 +4,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.configuration_parameters.home_act_directory import \
+    HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -26,12 +26,12 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
-            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'target_directory': formatting.concept(HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'PATH': _ARG_NAME
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {home_directory}')
+        return self._format('Sets the {target_directory}')
 
     def invokation_variants(self) -> list:
         return [
@@ -46,7 +46,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def _see_also_cross_refs(self) -> list:
-        return [HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
+        return [HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 
 _ARG_NAME = 'PATH'
@@ -55,7 +55,7 @@ _PATH_DESCRIPTION = """\
 An absolute or relative name of an existing directory.
 
 
-If {PATH} is relative, then it's relative to the current {home_directory}.
+If {PATH} is relative, then it's relative to the current {target_directory}.
 """
 
 
@@ -79,7 +79,7 @@ class _Instruction(ConfigurationPhaseInstruction):
             return sh.new_sh_hard_error('Directory does not exist: {}'.format(new_path))
         if not new_path.is_dir():
             return sh.new_sh_hard_error('Not a directory: {}'.format(new_path))
-        configuration_builder.set_home_case_dir(new_path.resolve())
+        configuration_builder.set_home_act_dir(new_path.resolve())
         return sh.new_sh_success()
 
     def _new_path(self,
@@ -87,4 +87,4 @@ class _Instruction(ConfigurationPhaseInstruction):
         delta = pathlib.Path(self.argument)
         if delta.is_absolute():
             return delta
-        return configuration_builder.home_case_dir_path / delta
+        return configuration_builder.home_act_dir_path / delta

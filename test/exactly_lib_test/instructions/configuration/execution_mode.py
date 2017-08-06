@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 import exactly_lib.test_case.execution_mode
@@ -35,14 +34,10 @@ class TestCaseBaseForParser(TestCaseBase):
              initial: ExecutionMode,
              argument: str):
         for source in equivalent_source_variants__with_source_check(self, argument):
-            initial_home_dir = pathlib.Path()
-            initial_configuration_builder = ConfigurationBuilder(initial_home_dir,
-                                                                 initial_home_dir,
-                                                                 act_phase_handling_that_runs_constant_actions())
-            initial_configuration_builder.set_execution_mode(initial)
             self._check(sut.Parser(),
                         source,
-                        Arrangement(initial_configuration_builder=initial_configuration_builder),
+                        Arrangement(execution_mode=initial,
+                                    act_phase_handling=act_phase_handling_that_runs_constant_actions()),
                         Expectation(configuration=AssertExecutionMode(expected)))
 
 

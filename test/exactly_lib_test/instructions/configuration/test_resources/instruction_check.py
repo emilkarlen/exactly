@@ -1,14 +1,15 @@
 import copy
-import pathlib
 import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions
+from exactly_lib_test.execution.partial_execution.test_resources.basic import dummy_act_phase_handling
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
@@ -20,12 +21,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 class Arrangement(ArrangementBase):
     def __init__(self,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
-                 initial_configuration_builder: ConfigurationBuilder =
-                 ConfigurationBuilder(pathlib.Path(),
-                                      pathlib.Path(),
-                                      act_phase_handling_that_runs_constant_actions())):
+                 act_phase_handling: ActPhaseHandling = dummy_act_phase_handling(),
+                 execution_mode: ExecutionMode = ExecutionMode.NORMAL,
+                 timeout_in_seconds: int = None):
         super().__init__(hds_contents=hds_contents)
-        self.initial_configuration_builder = initial_configuration_builder
+        self.act_phase_handling = act_phase_handling
+        self.execution_mode = execution_mode
+        self.timeout_in_seconds = timeout_in_seconds
 
 
 class Expectation:
@@ -72,8 +74,11 @@ class Executor:
         with home_directory_structure(prefix=prefix + '-home',
                                       contents=self.arrangement.hds_contents,
                                       ) as hds:
-            configuration_builder = self.arrangement.initial_configuration_builder
-            configuration_builder.set_home_case_dir(hds.case_dir)
+            configuration_builder = ConfigurationBuilder(hds.case_dir,
+                                                         hds.act_dir,
+                                                         self.arrangement.act_phase_handling,
+                                                         timeout_in_seconds=self.arrangement.timeout_in_seconds)
+            configuration_builder.set_execution_mode(self.arrangement.execution_mode)
             self._execute_main(configuration_builder,
                                instruction)
 
@@ -84,7 +89,8 @@ class Executor:
         main_result = instruction.main(configuration_builder)
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
-        self.expectation.main_result.apply(self.put, main_result)
+        self.expectation.main_result.apply_with_message(self.put, main_result,
+                                                        'result of main')
         self.expectation.configuration.apply(self.put,
                                              initial_configuration_builder,
                                              configuration_builder)
