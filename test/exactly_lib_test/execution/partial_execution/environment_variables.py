@@ -6,7 +6,6 @@ import unittest
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import Result, test__va, dummy_act_phase_handling
@@ -135,7 +134,6 @@ class SetEnvironmentVariableViaInstructionArguments:
 
     def __call__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 os_services: OsServices,
                  *args, **kwargs):
         environment.environ[self.variable_name] = 'value that is not used by the test'
 
@@ -169,6 +167,7 @@ class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty
 def _act_phase_handling_that_records_existence_of_var_in_global_env(
         recorder: _RecorderOfExistenceOfGlobalEnvVar) -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
+        parse_action=recorder.for_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder.for_step(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder.for_step(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=recorder.for_step(step.ACT__PREPARE),
