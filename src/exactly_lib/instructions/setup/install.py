@@ -4,6 +4,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help.concepts.configuration_parameters.home_act_directory import \
+    HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
@@ -43,7 +45,8 @@ OPTION_ARGUMENT_FOR_SOURCE = a.Named('SOURCE')
 
 REL_OPTION_ARG_CONF_FOR_SOURCE = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
-        path_relativity.PathRelativityVariants({RelOptionType.REL_HOME_CASE},
+        path_relativity.PathRelativityVariants({RelOptionType.REL_HOME_CASE,
+                                                RelOptionType.REL_HOME_ACT},
                                                True),
         True,
         RelOptionType.REL_HOME_CASE),
@@ -146,6 +149,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _see_also_cross_refs(self) -> list:
         return [
             HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+            HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
             CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
 
