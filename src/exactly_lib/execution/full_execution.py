@@ -59,7 +59,7 @@ def new_configuration_phase_failure_from(partial_result: PartialResult) -> FullR
 def new_named_phases_result_from(execution_mode: ExecutionMode,
                                  partial_result: PartialResult) -> FullResult:
     return FullResult(translate_status(execution_mode, partial_result.status),
-                      partial_result.sandbox_directory_structure,
+                      partial_result.sds,
                       partial_result.failure_info)
 
 

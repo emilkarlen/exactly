@@ -41,12 +41,12 @@ class Result(tuple):
         return self[0]
 
     @property
-    def partial_result(self) -> PartialResult:
-        return self[1]
+    def sds(self) -> SandboxDirectoryStructure:
+        return self.partial_result.sds
 
     @property
-    def sandbox_directory_structure(self) -> SandboxDirectoryStructure:
-        return self.partial_result.sandbox_directory_structure
+    def partial_result(self) -> PartialResult:
+        return self[1]
 
 
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
@@ -134,8 +134,8 @@ def test(unittest_case: unittest.TestCase,
         assertions(unittest_case,
                    result)
     # CLEANUP #
-    if result.sandbox_directory_structure.root_dir.exists():
-        shutil.rmtree(str(result.sandbox_directory_structure.root_dir))
+    if result.sds.root_dir.exists():
+        shutil.rmtree(str(result.sds.root_dir))
 
 
 def test__va(unittest_case: unittest.TestCase,
@@ -151,8 +151,8 @@ def test__va(unittest_case: unittest.TestCase,
                                    result,
                                    asrt.MessageBuilder('Result'))
     # CLEANUP #
-    if result.sandbox_directory_structure.root_dir.exists():
-        shutil.rmtree(str(result.sandbox_directory_structure.root_dir))
+    if result.sds.root_dir.exists():
+        shutil.rmtree(str(result.sds.root_dir))
 
 
 def _execute(test_case: partial_execution.TestCase,

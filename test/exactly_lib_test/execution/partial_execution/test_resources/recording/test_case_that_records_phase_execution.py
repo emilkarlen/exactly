@@ -129,11 +129,11 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                                  self.__recorder.recorded_elements,
                                  msg)
         if self.__expectation.sandbox_directory_structure_should_exist:
-            self.put.assertTrue(self.partial_result.has_sandbox_directory_structure)
-            self.put.assertIsNotNone(self.partial_result.sandbox_directory_structure)
+            self.put.assertTrue(self.partial_result.has_sds)
+            self.put.assertIsNotNone(self.partial_result.sds)
         else:
-            self.put.assertFalse(self.partial_result.has_sandbox_directory_structure)
-            self.put.assertIsNone(self.partial_result.sandbox_directory_structure)
+            self.put.assertFalse(self.partial_result.has_sds)
+            self.put.assertIsNone(self.partial_result.sds)
 
 
 class TestCaseBase(unittest.TestCase):

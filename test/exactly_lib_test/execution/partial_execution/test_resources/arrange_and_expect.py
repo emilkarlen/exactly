@@ -59,9 +59,9 @@ def execute_and_check(put: unittest.TestCase,
                                                       'partial_result')
         result = Result(hds, partial_result)
         expectation.assertion_on_sds.apply_with_message(put,
-                                                        result.partial_result.sandbox_directory_structure,
+                                                        result.partial_result.sds,
                                                         'Sandbox Directory Structure')
     # CLEANUP #
-    if result is not None and result.sandbox_directory_structure is not None:
-        if result.sandbox_directory_structure.root_dir.exists():
-            shutil.rmtree(str(result.sandbox_directory_structure.root_dir))
+    if result is not None and result.sds is not None:
+        if result.sds.root_dir.exists():
+            shutil.rmtree(str(result.sds.root_dir))
