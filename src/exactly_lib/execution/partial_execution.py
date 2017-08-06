@@ -29,7 +29,7 @@ from exactly_lib.util.failure_details import FailureDetails, new_failure_details
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name, preserved_cwd, \
     open_and_make_read_only_on_close
 from exactly_lib.util.std import StdOutputFiles, StdFiles
-from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable, symbol_table_from_none_or_value
+from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from . import result
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
@@ -214,7 +214,7 @@ class _PartialExecutor:
             self.__configuration.hds,
             self.__configuration.environ,
             self.__configuration.timeout_in_seconds,
-            empty_symbol_table())
+            self.__configuration.predefined_symbols.copy())
 
     def execute(self) -> PartialResult:
         self.__set_pre_sds_environment_variables()
@@ -291,7 +291,7 @@ class _PartialExecutor:
         self.os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_sds_environment_variables()
-        self.__post_sds_symbol_table = empty_symbol_table()
+        self.__post_sds_symbol_table = self.__configuration.predefined_symbols.copy()
 
     def __setup__validate_symbols(self) -> PartialResult:
         return self.__validate_symbols(phase_step.SETUP__VALIDATE_SYMBOLS,

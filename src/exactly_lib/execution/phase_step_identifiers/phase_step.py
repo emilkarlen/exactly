@@ -1,12 +1,12 @@
 from exactly_lib.test_case import phase_identifier
 
-STEP__VALIDATE_SYMBOLS = 'validate-symbols'
-STEP__VALIDATE_PRE_SDS = 'validate-pre-sds'
-STEP__VALIDATE_POST_SETUP = 'validate-post-setup'
-STEP__MAIN = 'main'
-STEP__ACT__PARSE = 'act-parse'
-STEP__ACT__EXECUTE = 'act-execute'
-STEP__ACT__PREPARE = 'act-prepare'
+STEP__VALIDATE_SYMBOLS = '1:validate-symbols'
+STEP__VALIDATE_PRE_SDS = '2:validate-pre-sds'
+STEP__VALIDATE_POST_SETUP = '3:validate-post-setup'
+STEP__MAIN = '9:main'
+STEP__ACT__PARSE = '0:act-parse'
+STEP__ACT__EXECUTE = '4:act-execute'
+STEP__ACT__PREPARE = '5:act-prepare'
 
 
 class SimplePhaseStep(tuple):

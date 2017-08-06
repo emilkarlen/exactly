@@ -65,9 +65,10 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                       actual_phase_2_step_2_names_set)
 
     def test_one_symbol_is_defined_in_the_setup_phase(self):
-        symbol_name = 'symbol_name'
-        all_defined_symbols = frozenset((symbol_name,))
-        symbol_definition = symbol_utils.string_symbol_definition(symbol_name, 'symbol value (not used in test)')
+        symbol = NameAndValue('symbol name',
+                              'symbol value (not used in test)')
+        all_defined_symbols = frozenset((symbol.name,))
+        symbol_definition = symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
         steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_AFTER_PARSE, all_defined_symbols)
@@ -170,6 +171,91 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
             test_case,
             Arrangement(psr.act_phase_handling_that_records__a_value_per_step(recorder_for),
                         predefined_symbols=expected_predefined_symbols),
+            asrt.anything_goes())
+        _check_result(self,
+                      expected_phase_2_step_2_names_set,
+                      actual_phase_2_step_2_names_set)
+
+    def test_one_symbol_is_predefined_and_one_symbol_is_defined_in_the_setup_phase(self):
+        predefined_symbol = NameAndValue('predefined symbol',
+                                         'predefined string constant symbol value')
+        defined_symbol = NameAndValue('defined symbol',
+                                      'value of symbol defined in the setup phase (not used in this test)')
+        predefined_symbols_table = SymbolTable({
+            predefined_symbol.name: symbol_utils.string_constant(predefined_symbol.value)
+        })
+        predefined_symbols = frozenset((predefined_symbol.name,))
+        predefined_and_defined_symbols = frozenset((predefined_symbol.name, defined_symbol.name))
+
+        symbol_definition = symbol_utils.string_symbol_definition(defined_symbol.name, defined_symbol.value)
+
+        symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
+
+        expected_phase_2_step_2_names_set = {
+            PhaseEnum.SETUP: {
+                step.SETUP__VALIDATE_PRE_SDS.step: predefined_and_defined_symbols,
+                step.SETUP__MAIN.step: predefined_symbols,
+                step.SETUP__VALIDATE_POST_SETUP.step: predefined_and_defined_symbols,
+            },
+            PhaseEnum.ACT: {
+                step.ACT__PARSE.step: predefined_symbols,
+                step.ACT__VALIDATE_PRE_SDS.step: predefined_and_defined_symbols,
+                step.ACT__VALIDATE_POST_SETUP.step: predefined_and_defined_symbols,
+                step.ACT__PREPARE.step: predefined_and_defined_symbols,
+                step.ACT__EXECUTE.step: predefined_and_defined_symbols,
+            },
+            PhaseEnum.BEFORE_ASSERT: {
+                step.BEFORE_ASSERT__VALIDATE_PRE_SDS.step: predefined_and_defined_symbols,
+                step.BEFORE_ASSERT__VALIDATE_POST_SETUP.step: predefined_and_defined_symbols,
+                step.BEFORE_ASSERT__MAIN.step: predefined_and_defined_symbols,
+
+            },
+            PhaseEnum.ASSERT: {
+                step.ASSERT__VALIDATE_PRE_SDS.step: predefined_and_defined_symbols,
+                step.ASSERT__VALIDATE_POST_SETUP.step: predefined_and_defined_symbols,
+                step.ASSERT__MAIN.step: predefined_and_defined_symbols,
+            },
+            PhaseEnum.CLEANUP: {
+                step.CLEANUP__VALIDATE_PRE_SDS.step: predefined_and_defined_symbols,
+                step.CLEANUP__MAIN.step: predefined_and_defined_symbols,
+            },
+        }
+        actual_phase_2_step_2_names_set = psr.new_phase_enum_2_empty_dict()
+
+        def recorder_for(phase_step: SimplePhaseStep):
+            return psr.StepRecordingAction(phase_step,
+                                           actual_phase_2_step_2_names_set,
+                                           get_symbols_name_set_from_instruction_environment)
+
+        test_case = partial_test_case_with_instructions(
+            [
+                setup_phase_instruction_that(
+                    symbol_usages=do_return(symbol_usages_of_instruction_that_defines_symbol),
+                    validate_pre_sds_initial_action=recorder_for(step.SETUP__VALIDATE_PRE_SDS),
+                    main_initial_action=Sequence([
+                        recorder_for(step.SETUP__MAIN),
+                        _ActionThatSetsSymbolInSymbolTable(symbol_definition),
+                    ]),
+                    validate_post_setup_initial_action=recorder_for(step.SETUP__VALIDATE_POST_SETUP),
+                )
+            ],
+            psr.act_phase_instructions_that_does_nothing(),
+            [
+                psr.before_assert_phase_instruction_that_records_a_value_per_step(recorder_for)
+            ],
+            [
+                psr.assert_phase_instruction_that_records_a_value_per_step(recorder_for)
+            ],
+            [
+                psr.cleanup_phase_instruction_that_records_a_value_per_step(recorder_for)
+            ],
+        )
+        test__va(
+            self,
+            test_case,
+            Arrangement(
+                act_phase_handling=psr.act_phase_handling_that_records__a_value_per_step(recorder_for),
+                predefined_symbols=predefined_symbols_table),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
