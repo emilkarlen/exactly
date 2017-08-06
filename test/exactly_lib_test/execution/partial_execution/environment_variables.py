@@ -49,8 +49,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             _act_phase_handling_that_records_existence_of_var_in_global_env(recorder),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
-            is_keep_execution_directory_root=False)
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_before_assert(self):
         recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
@@ -71,8 +70,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             dummy_act_phase_handling(),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
-            is_keep_execution_directory_root=False)
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_assert(self):
         recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
@@ -91,8 +89,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             dummy_act_phase_handling(),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
-            is_keep_execution_directory_root=False)
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_cleanup(self):
         recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
@@ -110,8 +107,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             dummy_act_phase_handling(),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
-            is_keep_execution_directory_root=False)
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
 
 
 def _act_phase_instructions_that_are_not_relevant_to_this_test():

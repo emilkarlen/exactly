@@ -21,7 +21,8 @@ class Arrangement(ArrangementBase):
     def __init__(self,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  initial_configuration_builder: ConfigurationBuilder =
-                 ConfigurationBuilder(pathlib.Path('.'),
+                 ConfigurationBuilder(pathlib.Path(),
+                                      pathlib.Path(),
                                       act_phase_handling_that_runs_constant_actions())):
         super().__init__(hds_contents=hds_contents)
         self.initial_configuration_builder = initial_configuration_builder

@@ -48,8 +48,12 @@ class Test(FullExecutionTestCaseBase):
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(
-            [configuration_phase_instruction_that(
-                main_initial_action=_ConfigurationPhaseActionThatSetsHomeCaseDirToParent())],
+            [
+                configuration_phase_instruction_that(
+                    main_initial_action=_ConfigurationPhaseActionThatSetsHomeCaseDirToParent()),
+                configuration_phase_instruction_that(
+                    main_initial_action=_ConfigurationPhaseActionThatSetsHomeActDirToParentParent())
+            ],
             [setup_phase_instruction_that(
                 validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.SETUP__VALIDATE_PRE_SDS),
@@ -93,20 +97,21 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
-        home_dir_after_configuration = str(self.initial_home_dir_path.parent)
+        home_case_dir_after_configuration = str(self.initial_home_dir_path.parent)
+        home_act_dir_after_configuration = str(self.initial_home_dir_path.parent.parent)
         for_pre_sds = {
-            environment_variables.ENV_VAR_HOME_CASE: home_dir_after_configuration,
-            environment_variables.ENV_VAR_HOME_ACT: home_dir_after_configuration,
+            environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
+            environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
         }
         set_at_sds_creation = {
-            environment_variables.ENV_VAR_HOME_CASE: home_dir_after_configuration,
-            environment_variables.ENV_VAR_HOME_ACT: home_dir_after_configuration,
+            environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
+            environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.sds.tmp.user_dir),
         }
         set_after_act = {
-            environment_variables.ENV_VAR_HOME_CASE: home_dir_after_configuration,
-            environment_variables.ENV_VAR_HOME_ACT: home_dir_after_configuration,
+            environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
+            environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.sds.tmp.user_dir),
             environment_variables.ENV_VAR_RESULT: str(self.sds.result.root_dir),
@@ -170,6 +175,11 @@ class _ActionWithPhaseStepAndRecording:
 class _ConfigurationPhaseActionThatSetsHomeCaseDirToParent:
     def __call__(self, configuration_builder: ConfigurationBuilder, *args):
         configuration_builder.set_home_case_dir(configuration_builder.home_case_dir_path.parent)
+
+
+class _ConfigurationPhaseActionThatSetsHomeActDirToParentParent:
+    def __call__(self, configuration_builder: ConfigurationBuilder, *args):
+        configuration_builder.set_home_act_dir(configuration_builder.home_act_dir_path.parent.parent)
 
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):

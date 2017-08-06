@@ -119,8 +119,10 @@ class _Executor(processing_utils.Executor):
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
+        dir_containing_test_case_file = test_case_file_path.parent.resolve()
         return full_execution.execute(test_case,
-                                      ConfigurationBuilder(test_case_file_path.parent.resolve(),
+                                      ConfigurationBuilder(dir_containing_test_case_file,
+                                                           dir_containing_test_case_file,
                                                            act_phase_handling_for_setup(self.default_act_phase_setup)),
                                       self._execution_directory_root_name_prefix,
                                       self._is_keep_execution_directory_root)

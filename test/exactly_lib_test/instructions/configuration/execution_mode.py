@@ -35,7 +35,9 @@ class TestCaseBaseForParser(TestCaseBase):
              initial: ExecutionMode,
              argument: str):
         for source in equivalent_source_variants__with_source_check(self, argument):
-            initial_configuration_builder = ConfigurationBuilder(pathlib.Path(),
+            initial_home_dir = pathlib.Path()
+            initial_configuration_builder = ConfigurationBuilder(initial_home_dir,
+                                                                 initial_home_dir,
                                                                  act_phase_handling_that_runs_constant_actions())
             initial_configuration_builder.set_execution_mode(initial)
             self._check(sut.Parser(),

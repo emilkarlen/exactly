@@ -5,14 +5,17 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.phases.result.sh import SuccessOrHardError
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 
 
 class ConfigurationBuilder:
     def __init__(self,
                  home_case_dir_path: pathlib.Path,
+                 home_act_dir_path: pathlib.Path,
                  act_phase_handling: ActPhaseHandling,
                  timeout_in_seconds: int = None):
         self.__home_case_dir_path = home_case_dir_path
+        self.__home_act_dir_path = home_act_dir_path
         self.__act_phase_handling = act_phase_handling
         self.__execution_mode = ExecutionMode.NORMAL
         self.__timeout_in_seconds = timeout_in_seconds
@@ -26,15 +29,23 @@ class ConfigurationBuilder:
         self.__execution_mode = x
 
     @property
-    def home_case_dir(self) -> str:
-        return str(self.__home_case_dir_path)
-
-    @property
     def home_case_dir_path(self) -> pathlib.Path:
         return self.__home_case_dir_path
 
     def set_home_case_dir(self, x: pathlib.Path):
         self.__home_case_dir_path = x
+
+    @property
+    def home_act_dir_path(self) -> pathlib.Path:
+        return self.__home_act_dir_path
+
+    def set_home_act_dir(self, x: pathlib.Path):
+        self.__home_act_dir_path = x
+
+    @property
+    def hds(self) -> HomeDirectoryStructure:
+        return HomeDirectoryStructure(case_dir=self.home_case_dir_path,
+                                      act_dir=self.home_act_dir_path)
 
     @property
     def act_phase_handling(self) -> ActPhaseHandling:

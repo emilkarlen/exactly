@@ -13,7 +13,9 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.execution.test_resources import utils
+from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 
 
 class PartialExecutionTestCaseBase:
@@ -25,7 +27,6 @@ class PartialExecutionTestCaseBase:
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__partial_result = None
         self.__sandbox_directory_structure = None
-        self.__initial_home_dir_path = None
         self.__act_phase_handling = act_phase_handling
         if self.__act_phase_handling is None:
             self.__act_phase_handling = act_phase_handling_for_setup(
@@ -33,23 +34,23 @@ class PartialExecutionTestCaseBase:
 
     def execute(self):
         # SETUP #
-        self.__initial_home_dir_path = pathlib.Path().resolve()
-        # ACT #
-        partial_result = partial_execution.execute(
-            self.__act_phase_handling,
-            self._test_case(),
-            partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                            self.initial_home_dir_path,
-                                            dict(os.environ)),
-            setup.default_settings(),
-            program_info.PROGRAM_NAME + '-test-',
-            self.__dbg_do_not_delete_dir_structure)
+        with preserved_cwd():
+            with home_directory_structure() as hds:
+                # ACT #
+                partial_result = partial_execution.execute(
+                    self.__act_phase_handling,
+                    self._test_case(),
+                    partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                                    hds,
+                                                    dict(os.environ)),
+                    setup.default_settings(),
+                    program_info.PROGRAM_NAME + '-test-',
+                    self.__dbg_do_not_delete_dir_structure)
 
-        # ASSERT #
-        self.__partial_result = partial_result
-        self._assertions()
+                # ASSERT #
+                self.__partial_result = partial_result
+                self._assertions()
         # CLEANUP #
-        os.chdir(str(self.initial_home_dir_path))
         if not self.__dbg_do_not_delete_dir_structure and self.sds:
             if self.sds.root_dir.exists():
                 shutil.rmtree(str(self.sds.root_dir))
@@ -66,10 +67,6 @@ class PartialExecutionTestCaseBase:
     @property
     def put(self) -> unittest.TestCase:
         return self.__put
-
-    @property
-    def initial_home_dir_path(self) -> pathlib.Path:
-        return self.__initial_home_dir_path
 
     @property
     def partial_result(self) -> PartialResult:

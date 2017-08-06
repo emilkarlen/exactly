@@ -37,7 +37,9 @@ class Test(unittest.TestCase):
         test_case = test_case_that_records_property_of_env_for_each_step_of_partial_execution(recorder_builder).build()
         act_phase_handling = act_phase_handling_that_records_property_of_constructor_argument(ACT_EXE_CONSTRUCTOR,
                                                                                               recorder_builder)
-        configuration_builder_with_default_timeout = ConfigurationBuilder(_current_dir(),
+        default_home_dir = _current_dir()
+        configuration_builder_with_default_timeout = ConfigurationBuilder(default_home_dir,
+                                                                          default_home_dir,
                                                                           act_phase_handling,
                                                                           default_timeout)
         arrangement = execution_check.Arrangement(test_case,
@@ -67,7 +69,9 @@ class Test(unittest.TestCase):
         test_case = test_case_builder.build()
         act_phase_handling = act_phase_handling_that_records_property_of_constructor_argument(ACT_EXE_CONSTRUCTOR,
                                                                                               recorder_builder)
-        configuration_builder_with_default_timeout = ConfigurationBuilder(_current_dir(),
+        default_home_dir = _current_dir()
+        configuration_builder_with_default_timeout = ConfigurationBuilder(default_home_dir,
+                                                                          default_home_dir,
                                                                           act_phase_handling,
                                                                           expected_timeout)
         arrangement = execution_check.Arrangement(test_case,

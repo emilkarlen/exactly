@@ -20,6 +20,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
@@ -213,8 +214,7 @@ def _stderr_result_file_contains(expected_contents: str) -> asrt.ValueAssertion:
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
                                                 setup_settings: SetupSettingsBuilder,
-                                                expected_contents_of_stdin: str,
-                                                home_dir_path: pathlib.Path = pathlib.Path().resolve()) -> sut.PartialResult:
+                                                expected_contents_of_stdin: str) -> sut.PartialResult:
     """
     Tests contents of stdin by executing a Python program that stores
     the contents of stdin in a file.
@@ -227,10 +227,11 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
             python_program_file.write_to(tmp_dir_path)
             executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgramFile(
                 tmp_dir_path / 'program.py')
-            constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_contents_of_stdin)
+            constructor = ActSourceAndExecutorConstructorForConstantExecutor(
+                executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
-            result = _execute(constructor, test_case, setup_settings, home_dir_path=home_dir_path)
+            result = _execute(constructor, test_case, setup_settings)
             # ASSERT #
             file_checker = FileChecker(put)
             file_checker.assert_file_contents(output_file_path,
@@ -247,12 +248,14 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         self._register_cwd_for(phase_step.ACT__PARSE)
 
     def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         self._register_cwd_for(phase_step.ACT__VALIDATE_PRE_SDS)
         return svh.new_svh_success()
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         self._home_and_sds = environment.home_and_sds
         self._register_cwd_for(phase_step.ACT__VALIDATE_POST_SETUP)
         return svh.new_svh_success()
@@ -344,13 +347,16 @@ def _empty_test_case() -> sut.TestCase:
 def _execute(constructor: ActSourceAndExecutorConstructor,
              test_case: sut.TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
-             is_keep_execution_directory_root: bool = False,
-             home_dir_path: pathlib.Path = pathlib.Path().resolve()) -> sut.PartialResult:
+             is_keep_execution_directory_root: bool = False
+             ) -> sut.PartialResult:
+    # with home_directory_structure() as hds:
+    hds = HomeDirectoryStructure(pathlib.Path().resolve(),
+                                 pathlib.Path().resolve())
     return sut.execute(
         ActPhaseHandling(constructor),
         test_case,
         sut.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
-                          home_dir_path,
+                          hds,
                           dict(os.environ)),
         setup_settings,
         program_info.PROGRAM_NAME + '-test-',
