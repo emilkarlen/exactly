@@ -1,10 +1,11 @@
-import pathlib
+import shlex
 import shlex
 import sys
 import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups.source_interpreter import shell_command as sut
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib_test.act_phase_setups.source_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
     Configuration, suite_for_execution, TestCaseSourceSetup
@@ -27,34 +28,34 @@ class TheConfiguration(Configuration):
         super().__init__(self.setup.source_and_executor_constructor)
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
         yield _instructions_for(py_program.copy_stdin_to_stdout())
 
     @contextmanager
     def program_that_prints_to_stderr(self,
-                                      home_dir_path: pathlib.Path,
+                                      hds: HomeDirectoryStructure,
                                       string_to_print: str) -> list:
         yield _instructions_for(py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
     def program_that_prints_to_stdout(self,
-                                      home_dir_path: pathlib.Path,
+                                      hds: HomeDirectoryStructure,
                                       string_to_print: str) -> list:
         yield _instructions_for(py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
     def program_that_exits_with_code(self,
-                                     home_dir_path: pathlib.Path,
+                                     hds: HomeDirectoryStructure,
                                      exit_code: int) -> list:
         yield _instructions_for(py_program.exit_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> list:
         yield _instructions_for(py_program.write_cwd_to_stdout())
 
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self,
-                                                                    home_dir_path: pathlib.Path,
+                                                                    hds: HomeDirectoryStructure,
                                                                     var_name: str) -> list:
         yield _instructions_for(py_program.write_value_of_environment_variable_to_stdout(var_name))
 

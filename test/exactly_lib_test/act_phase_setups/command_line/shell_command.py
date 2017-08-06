@@ -122,34 +122,34 @@ class TheConfiguration(Configuration):
         super().__init__(sut.Constructor())
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
         yield self._instruction_for(shell_commands.command_that_copes_stdin_to_stdout())
 
     @contextmanager
     def program_that_prints_to_stderr(self,
-                                      home_dir_path: pathlib.Path,
+                                      hds: HomeDirectoryStructure,
                                       string_to_print: str) -> list:
         yield self._instruction_for(shell_commands.command_that_prints_to_stderr(string_to_print))
 
     @contextmanager
     def program_that_prints_to_stdout(self,
-                                      home_dir_path: pathlib.Path,
+                                      hds: HomeDirectoryStructure,
                                       string_to_print: str) -> list:
         yield self._instruction_for(shell_commands.command_that_prints_to_stdout(string_to_print))
 
     @contextmanager
     def program_that_exits_with_code(self,
-                                     home_dir_path: pathlib.Path,
+                                     hds: HomeDirectoryStructure,
                                      exit_code: int) -> list:
         yield self._instruction_for(shell_commands.command_that_exits_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> list:
         yield self._instruction_for(shell_commands.command_that_prints_cwd_line_to_stdout())
 
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self,
-                                                                    home_dir_path: pathlib.Path,
+                                                                    hds: HomeDirectoryStructure,
                                                                     var_name: str) -> list:
         yield self._instruction_for(
             shell_commands.command_that_prints_value_of_environment_variable_to_stdout(var_name))

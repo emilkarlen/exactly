@@ -1,5 +1,4 @@
 import os
-import pathlib
 import random
 import unittest
 from contextlib import contextmanager
@@ -19,7 +18,6 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
@@ -38,7 +36,7 @@ class Configuration:
         self.sut = sut
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
         """
         :return: List of ActPhaseInstruction
         """
@@ -46,7 +44,7 @@ class Configuration:
 
     @contextmanager
     def program_that_prints_to_stdout(self,
-                                      home_dir_path: pathlib.Path,
+                                      hds: HomeDirectoryStructure,
                                       string_to_print: str) -> list:
         """
         :return: List of ActPhaseInstruction
@@ -55,7 +53,7 @@ class Configuration:
 
     @contextmanager
     def program_that_prints_to_stderr(self,
-                                      home_dir_path: pathlib.Path,
+                                      hds: HomeDirectoryStructure,
                                       string_to_print: str) -> list:
         """
         :return: List of ActPhaseInstruction
@@ -64,7 +62,7 @@ class Configuration:
 
     @contextmanager
     def program_that_exits_with_code(self,
-                                     home_dir_path: pathlib.Path,
+                                     hds: HomeDirectoryStructure,
                                      exit_code: int) -> list:
         """
         :return: List of ActPhaseInstruction
@@ -72,7 +70,8 @@ class Configuration:
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self,
+                                                           hds: HomeDirectoryStructure) -> list:
         """
         :return: List of ActPhaseInstruction
         """
@@ -80,7 +79,7 @@ class Configuration:
 
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self,
-                                                                    home_dir_path: pathlib.Path,
+                                                                    hds: HomeDirectoryStructure,
                                                                     var_name: str) -> list:
         """
         :return: List of ActPhaseInstruction
@@ -110,14 +109,14 @@ class TestExecuteBase(unittest.TestCase):
         self.source_and_executor_constructor = source_and_executor_constructor
 
     def _execute(self,
-                 home_dir: pathlib.Path,
+                 hds: HomeDirectoryStructure,
                  act_phase_instructions: list,
                  stdin_contents: str = '',
                  environ: dict = None) -> SubProcessResult:
         environ = dict(os.environ) if environ is None else environ
         assert_is_list_of_act_phase_instructions(self, act_phase_instructions)
 
-        environment = InstructionEnvironmentForPreSdsStep(HomeDirectoryStructure(home_dir),
+        environment = InstructionEnvironmentForPreSdsStep(hds,
                                                           environ)
         sut = self.source_and_executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                          environment,
@@ -162,10 +161,10 @@ class TestBase(TestExecuteBase):
 
 class TestStdoutIsConnectedToProgram(TestBase):
     def runTest(self):
-        with tmp_dir() as home_dir_path:
-            with self.test_setup.program_that_prints_to_stdout(home_dir_path,
+        with home_directory_structure() as hds:
+            with self.test_setup.program_that_prints_to_stdout(hds,
                                                                'expected output on stdout') as program:
-                process_result = self._execute(home_dir_path, program)
+                process_result = self._execute(hds, program)
                 self.assertEqual('expected output on stdout\n',
                                  process_result.stdout,
                                  'Contents of stdout')
@@ -173,10 +172,10 @@ class TestStdoutIsConnectedToProgram(TestBase):
 
 class TestStderrIsConnectedToProgram(TestBase):
     def runTest(self):
-        with tmp_dir() as home_dir_path:
-            with self.test_setup.program_that_prints_to_stderr(home_dir_path,
+        with home_directory_structure() as hds:
+            with self.test_setup.program_that_prints_to_stderr(hds,
                                                                'expected output on stderr') as program:
-                process_result = self._execute(home_dir_path, program)
+                process_result = self._execute(hds, program)
                 self.assertEqual('expected output on stderr\n',
                                  process_result.stderr,
                                  'Contents of stderr')
@@ -184,9 +183,9 @@ class TestStderrIsConnectedToProgram(TestBase):
 
 class TestStdinAndStdoutAreConnectedToProgram(TestBase):
     def runTest(self):
-        with tmp_dir() as home_dir_path:
-            with self.test_setup.program_that_copes_stdin_to_stdout(home_dir_path) as program:
-                process_result = self._execute(home_dir_path,
+        with home_directory_structure() as hds:
+            with self.test_setup.program_that_copes_stdin_to_stdout(hds) as program:
+                process_result = self._execute(hds,
                                                program,
                                                stdin_contents='contents of stdin')
                 self.assertEqual('contents of stdin',
@@ -196,9 +195,9 @@ class TestStdinAndStdoutAreConnectedToProgram(TestBase):
 
 class TestExitCodeIsReturned(TestBase):
     def runTest(self):
-        with tmp_dir() as home_dir_path:
-            with self.test_setup.program_that_exits_with_code(home_dir_path, 87) as program:
-                process_result = self._execute(home_dir_path, program)
+        with home_directory_structure() as hds:
+            with self.test_setup.program_that_exits_with_code(hds, 87) as program:
+                process_result = self._execute(hds, program)
                 self.assertEqual(87,
                                  process_result.exitcode,
                                  'Exit Code')
@@ -210,10 +209,11 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
         var_value = str(random.getrandbits(32))
         environ = dict(os.environ)
         environ[var_name] = var_value
-        with tmp_dir() as home_dir_path:
-            with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(home_dir_path,
-                                                                                             var_name) as program:
-                process_result = self._execute(home_dir_path, program, environ=environ)
+        with home_directory_structure() as hds:
+            with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(
+                    hds,
+                    var_name) as program:
+                process_result = self._execute(hds, program, environ=environ)
                 self.assertEqual(var_value + '\n',
                                  process_result.stdout,
                                  'Contents of stdout should be value of environment variable')
@@ -222,7 +222,7 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
 class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
     def runTest(self):
         with home_directory_structure() as hds:
-            with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds.case_dir) as source:
+            with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds) as source:
                 executor_constructor = self.test_setup.sut
                 environment = InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
                 sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
