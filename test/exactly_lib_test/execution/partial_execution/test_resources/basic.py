@@ -126,11 +126,13 @@ class Arrangement:
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR,
                  hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
                                                                       pathlib.Path().resolve()),
-                 environ: dict = None):
+                 environ: dict = None,
+                 timeout_in_seconds: int = None):
         self.act_phase_handling = act_phase_handling
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.hds = hds
         self.environ = environ
+        self.timeout_in_seconds = timeout_in_seconds
 
 
 def test(put: unittest.TestCase,
@@ -178,7 +180,8 @@ def _execute(test_case: partial_execution.TestCase,
         test_case,
         partial_execution.Configuration(arrangement.act_phase_os_process_executor,
                                         arrangement.hds,
-                                        environ),
+                                        environ,
+                                        timeout_in_seconds=arrangement.timeout_in_seconds),
         setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)
