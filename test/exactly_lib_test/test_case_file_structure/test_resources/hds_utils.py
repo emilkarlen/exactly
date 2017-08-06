@@ -12,7 +12,9 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_populator impo
 def home_directory_structure(contents: HomePopulator = home_populators.empty(),
                              prefix: str = program_info.PROGRAM_NAME + '-test-hds-') \
         -> HomeDirectoryStructure:
-    with tempfile.TemporaryDirectory(prefix=prefix) as case_dir_name:
-        hds = HomeDirectoryStructure(resolved_path(case_dir_name))
-        contents.populate_hds(hds)
-        yield hds
+    with tempfile.TemporaryDirectory(prefix=prefix + '-case') as case_dir_name:
+        with tempfile.TemporaryDirectory(prefix=prefix + '-act') as act_dir_name:
+            hds = HomeDirectoryStructure(case_dir=resolved_path(case_dir_name),
+                                         act_dir=resolved_path(act_dir_name))
+            contents.populate_hds(hds)
+            yield hds

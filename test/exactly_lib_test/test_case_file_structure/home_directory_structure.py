@@ -11,9 +11,22 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_construct_and_get_case_home(self):
         # ARRANGE #
-        case_home = pathlib.Path('case_home')
+        case_dir = pathlib.Path('case')
+        act_dir = pathlib.Path('act')
         # ACT #
-        actual = sut.HomeDirectoryStructure(case_home=case_home)
+        hds = sut.HomeDirectoryStructure(case_dir=case_dir, act_dir=act_dir)
+        actual = hds.case_dir
         # ASSERT #
-        self.assertEqual(case_home,
-                         actual.case_dir)
+        self.assertEqual(case_dir,
+                         actual)
+
+    def test_construct_and_get_home_act(self):
+        # ARRANGE #
+        case_dir = pathlib.Path('case')
+        act_dir = pathlib.Path('act')
+        # ACT #
+        hds = sut.HomeDirectoryStructure(case_dir=case_dir, act_dir=act_dir)
+        actual = hds.act_dir
+        # ASSERT #
+        self.assertEqual(act_dir,
+                         actual)

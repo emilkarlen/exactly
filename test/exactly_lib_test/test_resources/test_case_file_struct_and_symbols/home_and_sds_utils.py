@@ -47,17 +47,20 @@ def home_and_sds_with_act_as_curr_dir(
         symbols: SymbolTable = None) -> PathResolvingEnvironmentPreOrPostSds:
     symbols = symbol_table_from_none_or_value(symbols)
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
-    with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
-        home_dir_path = resolved_path(home_dir)
-        with sandbox_directory_structure(prefix=prefix + "-sds-") as sds:
-            hds = HomeDirectoryStructure(home_dir_path)
-            home_and_sds = HomeAndSds(hds, sds)
-            ret_val = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbols)
-            with preserved_cwd():
-                os.chdir(str(sds.act_dir))
-                pre_contents_population_action.apply(ret_val)
-                hds_contents.populate_hds(hds)
-                sds_contents.populate_sds(sds)
-                non_home_contents.populate_non_home(sds)
-                home_or_sds_contents.populate_home_or_sds(home_and_sds)
-                yield ret_val
+    with tempfile.TemporaryDirectory(prefix=prefix + '-home-case') as home_case_dir:
+        with tempfile.TemporaryDirectory(prefix=prefix + '-home-act') as home_act_dir:
+            home_case_dir_path = resolved_path(home_case_dir)
+            home_act_dir_path = resolved_path(home_act_dir)
+            with sandbox_directory_structure(prefix=prefix + "-sds-") as sds:
+                hds = HomeDirectoryStructure(case_dir=home_case_dir_path,
+                                             act_dir=home_act_dir_path)
+                home_and_sds = HomeAndSds(hds, sds)
+                ret_val = PathResolvingEnvironmentPreOrPostSds(home_and_sds, symbols)
+                with preserved_cwd():
+                    os.chdir(str(sds.act_dir))
+                    pre_contents_population_action.apply(ret_val)
+                    hds_contents.populate_hds(hds)
+                    sds_contents.populate_sds(sds)
+                    non_home_contents.populate_non_home(sds)
+                    home_or_sds_contents.populate_home_or_sds(home_and_sds)
+                    yield ret_val

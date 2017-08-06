@@ -50,12 +50,12 @@ class TestParsingAndValidation(unittest.TestCase):
         self.hds = fake_hds()
         self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.hds, dict(os.environ))
 
-    def test_fails_when_command_is_empty(self):
+    def test_parse_fails_when_command_is_empty(self):
         act_phase_instructions = [instr([shell_command_source_line_for(''), ])]
         with self.assertRaises(ParseException):
             self._do_parse(act_phase_instructions)
 
-    def test_fails_when_command_is_only_space(self):
+    def test_parse_fails_when_command_is_only_space(self):
         act_phase_instructions = [instr([shell_command_source_line_for('    '), ])]
         with self.assertRaises(ParseException):
             self._do_parse(act_phase_instructions)
