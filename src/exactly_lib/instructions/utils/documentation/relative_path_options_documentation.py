@@ -2,7 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
-    HOME_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO, SYMBOL_CONCEPT_INFO
+    HOME_CASE_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO, SYMBOL_CONCEPT_INFO
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
@@ -214,9 +214,9 @@ _ALL = {
                                               [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
     RelOptionType.REL_HOME_CASE: _RelOptionTypeInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                     formatting.concept(
-                                                   HOME_DIRECTORY_CONCEPT_INFO.singular_name),
+                                                        HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
                                                     _REL_HOME_DESCRIPTION,
-                                                    [HOME_DIRECTORY_CONCEPT_INFO]),
+                                                    [HOME_CASE_DIRECTORY_CONCEPT_INFO]),
 }
 
 _DEFAULT_RELATIVITY = """\

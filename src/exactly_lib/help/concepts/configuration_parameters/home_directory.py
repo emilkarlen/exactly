@@ -1,7 +1,7 @@
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.execution.environment_variables import ENV_VAR_HOME
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help.concepts.names_and_cross_references import HOME_DIRECTORY_CONCEPT_INFO
+from exactly_lib.help.concepts.names_and_cross_references import HOME_CASE_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.help_texts.names import formatting
@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.parse import normalize_and_parse
 
 class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(HOME_DIRECTORY_CONCEPT_INFO)
+        super().__init__(HOME_CASE_DIRECTORY_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(
