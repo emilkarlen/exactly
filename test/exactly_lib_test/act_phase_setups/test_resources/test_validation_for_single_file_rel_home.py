@@ -1,4 +1,4 @@
-import os
+import pathlib
 import pathlib
 import unittest
 
@@ -104,7 +104,7 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_
         with home_directory_structure(
                 contents=case_home_dir_contents(fs.DirContents([
                     fs.executable_file('system-under-test')]))) as hds:
-            environment = InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
+            environment = InstructionEnvironmentForPreSdsStep(hds, {})
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
             executor.parse(environment)
             actual = executor.validate_pre_sds(environment)

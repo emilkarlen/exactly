@@ -113,7 +113,7 @@ class TestExecuteBase(unittest.TestCase):
                  act_phase_instructions: list,
                  stdin_contents: str = '',
                  environ: dict = None) -> SubProcessResult:
-        environ = dict(os.environ) if environ is None else environ
+        environ = {} if environ is None else environ
         assert_is_list_of_act_phase_instructions(self, act_phase_instructions)
 
         environment = InstructionEnvironmentForPreSdsStep(hds,
@@ -224,7 +224,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
         with home_directory_structure() as hds:
             with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds) as source:
                 executor_constructor = self.test_setup.sut
-                environment = InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
+                environment = InstructionEnvironmentForPreSdsStep(hds, {})
                 sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
                 sut.parse(environment)
                 step_result = sut.validate_pre_sds(environment)
