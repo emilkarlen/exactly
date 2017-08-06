@@ -89,7 +89,6 @@ def check(additional_arguments: list,
         arguments_for_interpreter = setup.arguments_for_interpreter()
         arguments = first_arguments + arguments_for_interpreter + additional_arguments + [file_argument]
         sub_process_result = runner(put, arguments)
-        # print(sub_process_result.stderr)
         setup.check(put,
                     tmp_dir_path,
                     sub_process_result)

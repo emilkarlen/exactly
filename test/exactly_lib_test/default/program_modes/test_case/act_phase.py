@@ -6,8 +6,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor, \
-    TestForSetupWithoutPreprocessor
+from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndDefaultActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
@@ -30,14 +29,6 @@ class EmptyTestCaseShouldFailDueToMissingActPhase(SetupWithoutPreprocessorAndDef
 
     def test_case(self) -> str:
         return ''
-
-
-class TCForDebugging(unittest.TestCase):
-    def runTest(self):
-        tc = TestForSetupWithoutPreprocessor(
-            DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(),
-            run_via_main_program_internally_with_default_setup())
-        tc.runTest()
 
 
 class DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(
