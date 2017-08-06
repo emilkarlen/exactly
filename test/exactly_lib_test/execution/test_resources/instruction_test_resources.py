@@ -19,7 +19,7 @@ class ImplementationErrorTestException(Exception):
     pass
 
 
-def configuration_phase_instruction_that(main=do_return(sh.SuccessOrHardError),
+def configuration_phase_instruction_that(main=do_return(sh.new_sh_success()),
                                          main_initial_action=None) -> ConfigurationPhaseInstruction:
     return _ConfigurationPhaseInstructionThat(main=action_of(main_initial_action, main))
 
@@ -214,5 +214,3 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
              os_services: OsServices,
              previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         return self.do_main(environment, os_services, previous_phase)
-
-
