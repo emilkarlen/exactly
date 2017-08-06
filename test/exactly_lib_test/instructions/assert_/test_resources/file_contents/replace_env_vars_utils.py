@@ -13,12 +13,12 @@ class ReplacedEnvVarsFileContentsGenerator:
     The contents is a bit contrived - to make the test check both a single value on a single line,
     and multiple values on a single line.
     """
+
     def __init__(self):
         self.sorted_env_var_keys = sorted(environment_variables.ALL_REPLACED_ENV_VARS)
 
     def contents_before_replacement(self, home_and_sds: HomeAndSds) -> str:
-        env_vars_dict = environment_variables.replaced(home_and_sds.hds,
-                                                       home_and_sds.sds)
+        env_vars_dict = environment_variables.replaced(home_and_sds)
         values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
         return self._content_from_values(values_in_determined_order,
                                          home_and_sds)
