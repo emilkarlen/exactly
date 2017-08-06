@@ -33,7 +33,7 @@ class ConfigurationBuilder:
     def home_dir_path(self) -> pathlib.Path:
         return self.__home_dir_path
 
-    def set_home_dir(self, x: pathlib.Path):
+    def set_home_case_dir(self, x: pathlib.Path):
         self.__home_dir_path = x
 
     @property

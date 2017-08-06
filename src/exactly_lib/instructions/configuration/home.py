@@ -5,7 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_DIRECTORY_CONFIGURATION_PARAMETER
+    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -26,7 +26,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
-            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'PATH': _ARG_NAME
         })
 
@@ -46,7 +46,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def _see_also_cross_refs(self) -> list:
-        return [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
+        return [HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 
 _ARG_NAME = 'PATH'
@@ -79,7 +79,7 @@ class _Instruction(ConfigurationPhaseInstruction):
             return sh.new_sh_hard_error('Directory does not exist: {}'.format(new_home_dir_path))
         if not new_home_dir_path.is_dir():
             return sh.new_sh_hard_error('Not a directory: {}'.format(new_home_dir_path))
-        configuration_builder.set_home_dir(new_home_dir_path.resolve())
+        configuration_builder.set_home_case_dir(new_home_dir_path.resolve())
         return sh.new_sh_success()
 
     def _new_home(self,

@@ -1,10 +1,7 @@
-from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs, SOURCE_INTERPRETER_ACTOR
-from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_INFO
 from exactly_lib.help.utils.textformat_parser import TextParser
@@ -23,12 +20,9 @@ class _ActorConcept(ConfigurationParameterDocumentation):
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({
             'actor_concept': formatting.concept(self.name().singular),
-            'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
         })
         contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION) + parse.fnap(HOW_TO_SPECIFY_ACTOR)
         return DescriptionWithSubSections(self.single_line_description(),

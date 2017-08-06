@@ -6,7 +6,7 @@ from exactly_lib.help.actors.actor.common import SINGLE_LINE_PROGRAM_ACT_PHASE_C
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_DIRECTORY_CONFIGURATION_PARAMETER
+    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
@@ -55,7 +55,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
 
 def see_also_targets() -> list:
     return [
-        HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+        HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
         SHELL_SYNTAX_CONCEPT.cross_reference_target(),
     ]
 

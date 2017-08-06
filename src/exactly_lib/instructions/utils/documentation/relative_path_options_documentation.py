@@ -2,7 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts import names_and_cross_references as ci
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_DIRECTORY_CONFIGURATION_PARAMETER
+    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
@@ -131,7 +131,7 @@ class RelOptionRenderer:
             'SYMBOL_NAME': _SYMBOL_NAME,
             'PATH_SYMBOL_TYPE': PATH_TYPE,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'sandbox_concept': formatting.concept(ci.SANDBOX_CONCEPT_INFO.singular_name),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
