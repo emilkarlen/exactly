@@ -62,7 +62,8 @@ class TestConstructor(unittest.TestCase):
         arrangement = Arrangement()
         expectation = simple_success()
         # ACT (and assert that all methods indicate success) #
-        check_execution(self, constructor,
+        check_execution(self,
+                        constructor,
                         act_phase_instructions,
                         arrangement,
                         expectation)
@@ -88,7 +89,8 @@ class TestConstructor(unittest.TestCase):
             lambda *x: sut.UnconditionallySuccessfulValidator(),
             lambda *x: UnconditionallySuccessfulExecutor())
         # ACT & ASSERT #
-        check_execution(self, constructor,
+        check_execution(self,
+                        constructor,
                         [],
                         Arrangement(),
                         Expectation(

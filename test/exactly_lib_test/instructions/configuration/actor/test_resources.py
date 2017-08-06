@@ -9,11 +9,11 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, 
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
-from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.file_structure import empty_file
+from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -78,5 +78,6 @@ class _ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorCo
         raise ValueError('the method should never be called')
 
 
-def file_in_home_dir(file_name: str) -> file_structure.DirContents:
-    return file_structure.DirContents([empty_file(file_name)])
+def file_in_home_act_dir(file_name: str) -> home_populators.HomePopulator:
+    return home_populators.contents_in(RelHomeOptionType.REL_HOME_ACT,
+                                       fs.DirContents([fs.empty_file(file_name)]))

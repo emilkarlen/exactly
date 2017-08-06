@@ -6,6 +6,7 @@ from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.act_phase_handling import ParseException
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.string import lines_content
@@ -14,7 +15,7 @@ from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources import \
-    test_validation_for_single_file_rel_home as single_file_rel_home
+    test_validation_for_single_file_rel_home_act as single_file_rel_home
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution
 from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single_line_source import \
@@ -25,7 +26,7 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import e
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_case_utils.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.test_resources import file_structure as fs
@@ -82,7 +83,7 @@ class TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigur
                                   instr([''])]
         with self.assertRaises(ParseException):
             self._do_parse(act_phase_instructions,
-                           home_dir_contents=DirContents([empty_file('valid-file-ref')]))
+                           home_act_dir_contents=DirContents([empty_file('valid-file-ref')]))
 
 
 class TestFileReferenceCanBeQuoted(unittest.TestCase):
@@ -98,7 +99,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=case_home_dir_contents(DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
                 empty_file('quoted file name.src')])),
             act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
@@ -126,11 +127,12 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=case_home_dir_contents(
-                DirContents([empty_file('existing-file.src')])),
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
+                empty_file('existing-file.src')])),
             act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
-        act_phase_execution.check_execution(self, self.configuration.sut,
+        act_phase_execution.check_execution(self,
+                                            self.configuration.sut,
                                             act_phase_instructions,
                                             arrangement, expectation)
         self.assertFalse(executor_that_records_arguments.command.shell,
@@ -156,7 +158,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.File(
                     source_file,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)

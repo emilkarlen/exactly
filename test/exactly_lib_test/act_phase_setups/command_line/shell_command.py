@@ -155,7 +155,7 @@ class TheConfiguration(Configuration):
 
     @contextmanager
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
-        yield TestCaseSourceSetup(self._instruction_for(
+        yield TestCaseSourceSetup(act_phase_instructions=self._instruction_for(
             shell_commands.program_that_sleeps_at_least(number_of_seconds)))
 
     @staticmethod

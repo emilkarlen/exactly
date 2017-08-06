@@ -1,18 +1,19 @@
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources import \
-    test_validation_for_single_file_rel_home as single_file_rel_home
+    test_validation_for_single_file_rel_home_act as single_file_rel_home
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import suite_for_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
@@ -79,7 +80,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=case_home_dir_contents(DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
                 empty_file('quoted file name.src')])),
             act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
@@ -108,7 +109,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         should_be_last_part_of_command_line = """un-quoted 'single quoted' "double-quoted\""""
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
-            hds_contents=case_home_dir_contents(DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, DirContents([
                 empty_file('existing-file.src')])),
             act_phase_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
