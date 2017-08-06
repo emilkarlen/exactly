@@ -51,7 +51,11 @@ class ResolverContainer(SymbolTableValue):
 
     @property
     def definition_source(self) -> Line:
-        """The source code of the definition of the value."""
+        """
+        The source code of the definition of the value.
+
+        :rtype None iff the symbol is built in.
+        """
         return self._source
 
     @property
