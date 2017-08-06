@@ -195,7 +195,11 @@ def _assert_table_is_empty(put: unittest.TestCase,
 
 class ASymbolTableValue(sut.SymbolTableValue):
     def __init__(self, value):
-        self.value = value
+        self._value = value
+
+    @property
+    def value(self) -> sut.SymbolTableValue:
+        return self._value
 
 
 if __name__ == '__main__':
