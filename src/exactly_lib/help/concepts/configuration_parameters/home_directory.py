@@ -18,11 +18,12 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(
             Description(self.single_line_description(),
-                        normalize_and_parse(_HOME_DIRECTORY_REST_DESCRIPTION
-                                            .format(phase=phase_name_dictionary(),
-                                                    the_concept=_NAME.singular,
-                                                    home_dir_env_var=ENV_VAR_HOME,
-                                                    rel_home_option=formatting.cli_option(REL_HOME_CASE_OPTION)))))
+                        normalize_and_parse(
+                            _HOME_DIRECTORY_REST_DESCRIPTION
+                                .format(phase=phase_name_dictionary(),
+                                        the_concept=_NAME.singular,
+                                        home_dir_env_var=ENV_VAR_HOME,
+                                        rel_home_case_option=formatting.cli_option(REL_HOME_CASE_OPTION)))))
 
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'
@@ -56,5 +57,5 @@ sandbox.
 The environment variable {home_dir_env_var} contains the absolute path of this directory.
 
 
-The option {rel_home_option} (accepted by many instructions) refers to this directory.
+The option {rel_home_case_option} (accepted by many instructions) refers to this directory.
 """
