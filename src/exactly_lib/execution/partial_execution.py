@@ -29,7 +29,7 @@ from exactly_lib.util.failure_details import FailureDetails, new_failure_details
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name, preserved_cwd, \
     open_and_make_read_only_on_close
 from exactly_lib.util.std import StdOutputFiles, StdFiles
-from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable, symbol_table_from_none_or_value
 from . import result
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
@@ -42,14 +42,13 @@ class Configuration(tuple):
                 timeout_in_seconds: int = None,
                 predefined_symbols: SymbolTable = None):
         """
-        :param home_case_dir_path:
         :param timeout_in_seconds: None if no timeout
         """
         return tuple.__new__(cls, (hds,
                                    timeout_in_seconds,
                                    environ,
                                    act_phase_os_process_executor,
-                                   predefined_symbols))
+                                   symbol_table_from_none_or_value(predefined_symbols)))
 
     @property
     def act_phase_os_process_executor(self) -> ActPhaseOsProcessExecutor:
@@ -70,6 +69,15 @@ class Configuration(tuple):
         These may be both read and written.
         """
         return self[2]
+
+    @property
+    def predefined_symbols(self) -> SymbolTable:
+        """
+        Symbols that should be available in all steps.
+
+        Should probably not be updated.
+        """
+        return self[4]
 
 
 class _ExecutionConfiguration(tuple):
