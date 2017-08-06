@@ -1,6 +1,5 @@
-import copy
 import os
-import tempfile
+import os
 import unittest
 from time import strftime, localtime
 
@@ -19,10 +18,9 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
-from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.file_utils import resolved_path_name
+from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
@@ -30,6 +28,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_home_po
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
@@ -150,9 +149,8 @@ class Executor:
         self.expectation.symbol_usages.apply_with_message(self.put, instruction.symbol_usages(),
                                                           'symbol-usages')
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
-        initial_cwd = os.getcwd()
-        try:
-            with home_directory_structure(prefix=prefix + "-home-",
+        with preserved_cwd():
+            with home_directory_structure(prefix=prefix + '-home',
                                           contents=self.arrangement.hds_contents,
                                           ) as hds:
                 environment = InstructionEnvironmentForPreSdsStep(hds,
@@ -165,8 +163,7 @@ class Executor:
                                                                   phase_step.STEP__VALIDATE_PRE_SDS)
                 if not pre_validate_result.is_success:
                     return
-                with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as sds_root_dir_name:
-                    sds = sandbox_directory_structure.construct_at(resolved_path_name(sds_root_dir_name))
+                with sandbox_directory_structure(prefix=prefix + '-sds-') as sds:
                     os.chdir(str(sds.act_dir))
                     instruction_environment = i.InstructionEnvironmentForPostSdsStep(
                         environment.hds,
@@ -207,9 +204,6 @@ class Executor:
                         'settings builder'
                     )
 
-        finally:
-            os.chdir(initial_cwd)
-
     def _execute_pre_validate(self,
                               environment: InstructionEnvironmentForPreSdsStep,
                               instruction: SetupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
@@ -227,7 +221,6 @@ class Executor:
                       instruction_environment: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
         settings_builder = self.arrangement.initial_settings_builder
-        initial_settings_builder = copy.deepcopy(settings_builder)
         main_result = instruction.main(instruction_environment,
                                        self.arrangement.os_services,
                                        settings_builder)

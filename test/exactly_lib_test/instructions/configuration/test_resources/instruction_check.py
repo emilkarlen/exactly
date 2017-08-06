@@ -69,7 +69,7 @@ class Executor:
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, ConfigurationPhaseInstruction)
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
-        with home_directory_structure(prefix=prefix + "-home-",
+        with home_directory_structure(prefix=prefix + '-home',
                                       contents=self.arrangement.hds_contents,
                                       ) as hds:
             configuration_builder = self.arrangement.initial_configuration_builder
