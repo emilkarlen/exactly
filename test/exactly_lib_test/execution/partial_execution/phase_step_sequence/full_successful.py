@@ -16,10 +16,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class Test(TestCaseBase):
     def test_full_sequence(self):
         self._check(
@@ -55,3 +51,7 @@ class Test(TestCaseBase):
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          ],
                         True))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

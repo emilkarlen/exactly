@@ -20,7 +20,7 @@ from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def suite() -> unittest.makeSuite:
+def suite() -> unittest.TestSuite:
     return unittest.makeSuite(
         TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVariablesOfTheWholeProcess)
 
@@ -49,7 +49,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             _act_phase_handling_that_records_existence_of_var_in_global_env(recorder),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_before_assert(self):
         recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
@@ -70,7 +70,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             dummy_act_phase_handling(),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_assert(self):
         recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
@@ -89,7 +89,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             dummy_act_phase_handling(),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
     def test_set_environment_variable_in_phase_cleanup(self):
         recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
@@ -107,7 +107,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             self,
             test_case,
             dummy_act_phase_handling(),
-            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps))
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
 
 def _act_phase_instructions_that_are_not_relevant_to_this_test():
@@ -152,7 +152,7 @@ class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
             self.phases_that_contains_the_environment_variable.add(self.phase_step)
 
 
-class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(asrt.ValueAssertion):
+class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(asrt.ValueAssertion):
     def __init__(self,
                  phases_that_contains_the_environment_variable: set):
         self.phases_that_contains_the_environment_variable = phases_that_contains_the_environment_variable

@@ -41,10 +41,6 @@ def suite() -> unittest.TestSuite:
     return suite_for(run_via_main_program_internally_with_default_setup())
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessorAndTestActor):
     def additional_arguments(self) -> list:
         return ['--invalid-option-that-should-cause-failure']
@@ -229,3 +225,6 @@ MISC_TESTS = [
     WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(),
     EnvironmentVariablesAreSetCorrectly(),
 ]
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

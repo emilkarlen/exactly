@@ -15,6 +15,18 @@ from exactly_lib_test.test_resources.main_program.main_program_runner import Mai
 from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
 
 
+def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(
+        tests_for_setup_without_preprocessor(_TESTS,
+                                             main_program_runner))
+    return ret_val
+
+
+def suite_for_running_main_program_internally() -> unittest.TestSuite:
+    return suite_for(run_via_main_program_internally_with_default_setup())
+
+
 class SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(
     main_program_check_for_test_suite.SetupWithoutPreprocessorWithDefaultActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
@@ -53,19 +65,6 @@ class SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(
 _TESTS = [
     SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(),
 ]
-
-
-def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(
-        tests_for_setup_without_preprocessor(_TESTS,
-                                             main_program_runner))
-    return ret_val
-
-
-def suite_for_running_main_program_internally() -> unittest.TestSuite:
-    return suite_for(run_via_main_program_internally_with_default_setup())
-
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite_for_running_main_program_internally())

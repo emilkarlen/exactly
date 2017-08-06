@@ -18,6 +18,10 @@ from exactly_lib_test.test_resources.expected_instruction_failure import \
     new_expected_exception
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
 class Test(unittest.TestCase):
     def test_when_there_are_no_elements_no_executor_should_be_invoked_and_the_result_should_be_pass(self):
         phase_contents = SectionContents(())
@@ -300,11 +304,5 @@ class Test(unittest.TestCase):
                          'Recorded executions')
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

@@ -12,11 +12,9 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 
 
-def suite() -> unittest.TextTestRunner:
-    ret_val = unittest.TestSuite()
-    ret_val.addTests(utils.suite_for(conf)
-                     for conf in _instruction_validation_invocations())
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([utils.suite_for(conf)
+                               for conf in _instruction_validation_invocations()])
 
 
 class SetupConfig(utils.Configuration):

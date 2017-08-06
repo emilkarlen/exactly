@@ -17,6 +17,10 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
     ExpectedFailureForInstructionFailure
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
 class Test(TestCaseBase):
     def test_full_sequence(self):
         self._check(
@@ -81,12 +85,5 @@ class Test(TestCaseBase):
                         False))
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+    unittest.TextTestRunner().run(suite())

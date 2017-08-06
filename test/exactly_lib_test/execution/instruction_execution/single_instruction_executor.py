@@ -14,9 +14,7 @@ from exactly_lib_test.section_document.test_resources.elements import new_ls_fro
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
+    return unittest.makeSuite(Test)
 
 
 if __name__ == '__main__':

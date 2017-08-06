@@ -8,6 +8,10 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
 class Test(unittest.TestCase):
     def test_keep_execution_directory_root(self):
         test(
@@ -47,12 +51,6 @@ def test_case_that_does_nothing() -> sut.TestCase:
     return partial_test_case_with_instructions(
         act_phase_instructions=[act_phase_instruction_with_source(LineSequence(1, ('line',)))],
     )
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
 
 
 if __name__ == '__main__':

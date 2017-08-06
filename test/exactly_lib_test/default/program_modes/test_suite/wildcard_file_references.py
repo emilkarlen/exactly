@@ -15,6 +15,22 @@ from exactly_lib_test.test_suite.reporters.test_resources.simple_progress_report
     SetupWithReplacementOfVariableOutputWithPlaceholders
 
 
+def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(
+        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_CASE_FILES,
+                                             main_program_runner))
+    ret_val.addTest(
+        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_SUITE_FILES,
+                                             main_program_runner))
+    return ret_val
+
+
+def suite_for_running_main_program_internally() -> unittest.TestSuite:
+    from exactly_lib_test import run_via_main_program_internally_with_default_setup
+    return suite_for(run_via_main_program_internally_with_default_setup())
+
+
 class ReferencesToCaseFilesThatMatchesNoFiles(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -547,23 +563,6 @@ TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_SUITE_FILES = [
     ReferencesToSuiteFilesInAnyDirectSubDir(),
     ReferencesToSuiteFilesInAnySubDir(),
 ]
-
-
-def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(
-        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_CASE_FILES,
-                                             main_program_runner))
-    ret_val.addTest(
-        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_SUITE_FILES,
-                                             main_program_runner))
-    return ret_val
-
-
-def suite_for_running_main_program_internally() -> unittest.TestSuite:
-    from exactly_lib_test import run_via_main_program_internally_with_default_setup
-    return suite_for(run_via_main_program_internally_with_default_setup())
-
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite_for_running_main_program_internally())

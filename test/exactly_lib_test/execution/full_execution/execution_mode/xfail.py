@@ -23,10 +23,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
@@ -160,3 +156,7 @@ class Test(TestCaseBase):
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          ],
                         True))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
