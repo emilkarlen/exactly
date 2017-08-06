@@ -23,11 +23,15 @@ EXISTS_AT_BEFORE_ASSERT_MAIN = EXISTS_AT_SETUP_MAIN + SET_AT_BEFORE_ASSERT__ENV_
 ALL_REPLACED_ENV_VARS = EXISTS_AT_SETUP_MAIN
 
 
-def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
+def env_vars_rel_home(hds: HomeDirectoryStructure) -> dict:
     return {
         ENV_VAR_HOME_CASE: str(hds.case_dir),
         ENV_VAR_HOME_ACT: str(hds.act_dir),
     }
+
+
+def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
+    return env_vars_rel_home(hds)
 
 
 def set_at_setup_main(sds: SandboxDirectoryStructure) -> dict:
