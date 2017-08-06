@@ -61,7 +61,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            _act_phase_handling_that_records_existence_of_var_in_global_env(recorder_for),
+            _act_phase_handling_that_records_each_step_with_symbols(recorder_for),
             asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
@@ -113,7 +113,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            _act_phase_handling_that_records_existence_of_var_in_global_env(recorder_for),
+            _act_phase_handling_that_records_each_step_with_symbols(recorder_for),
             asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
@@ -183,12 +183,16 @@ def _act_phase_instructions_that_are_not_relevant_to_this_test():
 class _StepRecordingAction:
     def __init__(self,
                  phase_step: SimplePhaseStep,
-                 phase_step_dict: dict):
-        self.phase_step_dict = phase_step_dict
+                 phase_2_step_2_recorded_value: dict):
+        self.phase_2_step_2_recorded_value = phase_2_step_2_recorded_value
         self.phase_step = phase_step
 
-    def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
-        self.phase_step_dict[self.phase_step.phase][self.phase_step.step] = environment.symbols.names_set
+    def __call__(self, *args, **kwargs):
+        value_to_record = self._value_to_record(*args, **kwargs)
+        self.phase_2_step_2_recorded_value[self.phase_step.phase][self.phase_step.step] = value_to_record
+
+    def _value_to_record(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
+        return environment.symbols.names_set
 
 
 class _ActionThatSetsSymbolInSymbolTable:
@@ -200,7 +204,7 @@ class _ActionThatSetsSymbolInSymbolTable:
                                 self.symbol.resolver_container)
 
 
-def _act_phase_handling_that_records_existence_of_var_in_global_env(
+def _act_phase_handling_that_records_each_step_with_symbols(
         recorder_for_step: types.FunctionType) -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
         validate_pre_sds_initial_action=recorder_for_step(step.ACT__VALIDATE_PRE_SDS),
