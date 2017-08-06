@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from exactly_lib.act_phase_setups import command_line as sut
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
@@ -55,27 +56,27 @@ class TheConfiguration(Configuration):
         super().__init__(sut.Constructor())
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.copy_stdin_to_stdout())
 
     @contextmanager
-    def program_that_prints_to_stderr(self, home_dir_path: pathlib.Path, string_to_print: str) -> list:
+    def program_that_prints_to_stderr(self, hds: HomeDirectoryStructure, string_to_print: str) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
-    def program_that_prints_to_stdout(self, home_dir_path: pathlib.Path, string_to_print: str) -> list:
+    def program_that_prints_to_stdout(self, hds: HomeDirectoryStructure, string_to_print: str) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
-    def program_that_exits_with_code(self, home_dir_path: pathlib.Path, exit_code: int) -> list:
+    def program_that_exits_with_code(self, hds: HomeDirectoryStructure, exit_code: int) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.exit_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, home_dir_path: pathlib.Path) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> list:
         return self._instructions_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, home_dir_path: pathlib.Path,
+    def program_that_prints_value_of_environment_variable_to_stdout(self, hds: HomeDirectoryStructure,
                                                                     var_name: str) -> list:
         return self._instructions_for_executing_source_from_py_file(
             py_program.write_value_of_environment_variable_to_stdout(var_name))
