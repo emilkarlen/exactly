@@ -15,6 +15,10 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
     ExpectedFailureForInstructionFailure
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
 class Test(TestCaseBase):
     def test_execution_mode_skipped(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
@@ -67,12 +71,5 @@ class Test(TestCaseBase):
             unittest.main()
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+    unittest.TextTestRunner().run(suite())

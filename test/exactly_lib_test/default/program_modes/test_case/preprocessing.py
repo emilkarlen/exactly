@@ -16,11 +16,10 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 def suite() -> unittest.TestSuite:
     return suite_for(run_via_main_program_internally_with_default_setup())
 
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
 TESTS = [
     default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass(),
     default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError(),
 ]
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

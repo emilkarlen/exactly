@@ -4,9 +4,7 @@ from exactly_lib.default.instruction_name_and_argument_splitter import splitter
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCase))
-    return ret_val
+    return unittest.makeSuite(TestCase)
 
 
 class TestCase(unittest.TestCase):

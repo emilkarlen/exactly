@@ -9,10 +9,8 @@ from exactly_lib_test.test_resources.actions import do_return, do_raise
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTests(validate_symbols_utils.suite_for(conf)
-                     for conf in _configurations())
-    return ret_val
+    return unittest.TestSuite([validate_symbols_utils.suite_for(conf)
+                               for conf in _configurations()])
 
 
 class ConfigForSetupValidateSymbols(validate_symbols_utils.Configuration):

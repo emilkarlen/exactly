@@ -21,10 +21,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class Test(TestCaseBase):
     def test_hard_error_in_setup_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -337,3 +333,7 @@ class Test(TestCaseBase):
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          ],
                         True))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

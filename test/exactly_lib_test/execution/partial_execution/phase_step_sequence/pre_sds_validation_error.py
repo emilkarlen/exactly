@@ -11,10 +11,8 @@ from exactly_lib_test.test_resources.actions import do_return, do_raise
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTests(validate_pre_sds_utils.suite_for(conf)
-                     for conf in _instruction_validation_invocations())
-    return ret_val
+    return unittest.TestSuite([validate_pre_sds_utils.suite_for(conf)
+                               for conf in _instruction_validation_invocations()])
 
 
 class ConfigForSetupValidatePreSds(validate_pre_sds_utils.Configuration):

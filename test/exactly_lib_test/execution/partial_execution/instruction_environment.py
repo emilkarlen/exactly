@@ -15,6 +15,10 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 
 
+def suite() -> unittest.makeSuite:
+    return unittest.makeSuite(Test)
+
+
 class Test(unittest.TestCase):
     def test_instruction_environment_specifies_correct_log_dir_for_each_phase(self):
         recorder = {}
@@ -61,10 +65,6 @@ class RecordLogDirForPhase:
 
     def __call__(self, environment: InstructionEnvironmentForPostSdsStep, *args):
         self.recorder[self.phase] = environment.phase_logging.dir_path
-
-
-def suite() -> unittest.makeSuite:
-    return unittest.makeSuite(Test)
 
 
 if __name__ == '__main__':
