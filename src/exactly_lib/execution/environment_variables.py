@@ -1,12 +1,14 @@
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
-ENV_VAR_HOME = 'EXACTLY_HOME'
+ENV_VAR_HOME_CASE = 'EXACTLY_HOME'
+ENV_VAR_HOME_ACT = 'EXACTLY_ACT_HOME'
 ENV_VAR_ACT = 'EXACTLY_ACT'
 ENV_VAR_TMP = 'EXACTLY_TMP'
 ENV_VAR_RESULT = 'EXACTLY_RESULT'
 
-SET_AT_SETUP__ENV_VARS = [ENV_VAR_HOME]
+SET_AT_SETUP__ENV_VARS = [ENV_VAR_HOME_CASE,
+                          ENV_VAR_HOME_ACT]
 SET_AT_SDS__ENV_VARS = [ENV_VAR_ACT,
                         ENV_VAR_TMP]
 SET_AT_BEFORE_ASSERT__ENV_VARS = [ENV_VAR_RESULT]
@@ -22,7 +24,8 @@ ALL_REPLACED_ENV_VARS = EXISTS_AT_SETUP_MAIN
 
 def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
     return {
-        ENV_VAR_HOME: str(hds.case_dir),
+        ENV_VAR_HOME_CASE: str(hds.case_dir),
+        ENV_VAR_HOME_ACT: str(hds.act_dir),
     }
 
 

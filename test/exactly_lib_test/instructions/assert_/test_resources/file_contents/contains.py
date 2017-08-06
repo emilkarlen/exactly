@@ -123,7 +123,7 @@ class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArg
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.hds.case_dir)
 
-        reg_ex = environment_variables.ENV_VAR_HOME
+        reg_ex = environment_variables.ENV_VAR_HOME_CASE
 
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
@@ -142,7 +142,7 @@ class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegat
         def home_dir_path_name(home_and_sds: HomeAndSds):
             return str(home_and_sds.hds.case_dir)
 
-        reg_ex = environment_variables.ENV_VAR_HOME
+        reg_ex = environment_variables.ENV_VAR_HOME_CASE
 
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(

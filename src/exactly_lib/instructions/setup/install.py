@@ -5,7 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_DIRECTORY_CONFIGURATION_PARAMETER
+    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts.argument_rendering import path_syntax
@@ -65,7 +65,7 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {
-            'home_dir': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_dir': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'current_dir': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'SOURCE': OPTION_ARGUMENT_FOR_SOURCE.name,
@@ -145,7 +145,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _see_also_cross_refs(self) -> list:
         return [
-            HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+            HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
             CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
 

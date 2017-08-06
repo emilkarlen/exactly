@@ -78,12 +78,12 @@ EXECUTION_MODE_CONCEPT_INFO = name_and_ref_target(
 
 HOME_CASE_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     Name('home directory', 'home directories'),
-    'Default location of (external, existing) files referenced from the test case.'
+    'Default location of files referenced from the test case.'
 )
 
 HOME_ACT_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     Name('act-home directory', 'act-home directories'),
-    _format('Default location of (external, existing) files referenced from the {phase[act]} phase.')
+    _format('Default location of files referenced from the {phase[act]} phase.')
 )
 
 TIMEOUT_CONCEPT_INFO = name_and_ref_target(

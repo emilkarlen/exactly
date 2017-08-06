@@ -164,7 +164,7 @@ class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
         test_case_source_lines = [
             '[act]',
             'import os',
-            _print_variable_name__equals__variable_value(environment_variables.ENV_VAR_HOME),
+            _print_variable_name__equals__variable_value(environment_variables.ENV_VAR_HOME_CASE),
             _print_variable_name__equals__variable_value(environment_variables.ENV_VAR_ACT),
             _print_variable_name__equals__variable_value(environment_variables.ENV_VAR_TMP),
         ]
@@ -186,7 +186,7 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(asrt.ValueAssertion):
         sds = sandbox_directory_structure.SandboxDirectoryStructure(actual_sds_directory)
         actually_printed_variables = _get_act_output_to_stdout(sds).splitlines()
         expected_printed_variables = [
-            '%s=%s' % (environment_variables.ENV_VAR_HOME, str(value.file_argument.parent)),
+            '%s=%s' % (environment_variables.ENV_VAR_HOME_CASE, str(value.file_argument.parent)),
             '%s=%s' % (environment_variables.ENV_VAR_ACT, str(sds.act_dir)),
             '%s=%s' % (environment_variables.ENV_VAR_TMP, str(sds.tmp.user_dir)),
         ]

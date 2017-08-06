@@ -72,7 +72,7 @@ class Executor:
                                       contents=self.arrangement.hds_contents,
                                       ) as hds:
             configuration_builder = self.arrangement.initial_configuration_builder
-            configuration_builder.set_home_dir(hds.case_dir)
+            configuration_builder.set_home_case_dir(hds.case_dir)
             self._execute_main(configuration_builder,
                                instruction)
 

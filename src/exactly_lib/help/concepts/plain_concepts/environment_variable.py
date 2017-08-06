@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_DIRECTORY_CONFIGURATION_PARAMETER
+    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
     SANDBOX_CONCEPT_INFO, \
@@ -21,7 +21,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
         super().__init__(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
         self.format_map = {
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'act_sub_dir': sds.SUB_DIRECTORY__ACT,
             'tmp_sub_dir': sds.PATH__TMP_USER,
             'result_sub_dir': sds.SUB_DIRECTORY__RESULT,
@@ -43,7 +43,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
     def _variables_from_setup(self) -> docs.Section:
         return _variables_section(SETUP_PHASE_NAME,
                                   _variables_list_paragraphs([
-                                      self._item(environment_variables.ENV_VAR_HOME, _DESCRIPTION_HOME),
+                                      self._item(environment_variables.ENV_VAR_HOME_CASE, _DESCRIPTION_HOME),
                                       self._item(environment_variables.ENV_VAR_ACT, _DESCRIPTION_ACT),
                                       self._item(environment_variables.ENV_VAR_TMP, _DESCRIPTION_TMP),
                                   ]))

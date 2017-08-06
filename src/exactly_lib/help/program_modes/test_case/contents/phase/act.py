@@ -5,7 +5,7 @@ from exactly_lib.common.help.cross_reference_id import TestCasePhaseCrossReferen
 from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
-    HOME_DIRECTORY_CONFIGURATION_PARAMETER
+    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
@@ -36,8 +36,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         self.phase_name_dictionary = phase_name_dictionary()
         self.format_map = {
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'actor': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'actor': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
@@ -80,7 +80,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                    ACTOR_CONCEPT.cross_reference_target(),
                    SANDBOX_CONCEPT.cross_reference_target(),
                    ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
-                   HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+                   HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
                    TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
