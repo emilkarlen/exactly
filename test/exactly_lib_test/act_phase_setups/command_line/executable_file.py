@@ -43,7 +43,7 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     configuration = TheConfiguration()
 
-    ret_val.addTest(unittest.makeSuite(TestInvalidSyntax))
+    ret_val.addTest(unittest.makeSuite(TestValidationErrorPreSds))
     ret_val.addTest(single_file_rel_home.suite_for(configuration))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHomeActWithCommandLineArguments))
     ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
@@ -97,7 +97,7 @@ def _instructions_for_executing_py_file(src_path: pathlib.Path) -> list:
     return [instr([cmd])]
 
 
-class TestInvalidSyntax(unittest.TestCase):
+class TestValidationErrorPreSds(unittest.TestCase):
     def test_executable_file_must_exist(self):
         act_phase_instructions = [
             instr(['non-existing-executable'])
