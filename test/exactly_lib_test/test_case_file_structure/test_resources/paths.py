@@ -6,6 +6,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 
 
 def fake_hds() -> HomeDirectoryStructure:
+    """Gives a HDS with different sub-dirs for case, act."""
     return HomeDirectoryStructure(case_dir=pathlib.Path('hds-case'),
                                   act_dir=pathlib.Path('hds-act'))
 
