@@ -134,18 +134,3 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
 
     def _relativity(self) -> RelOptionType:
         return rel_any_from_rel_home(self._rel_option)
-
-
-class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
-    def __init__(self, path_suffix: PathPart):
-        super().__init__(path_suffix)
-
-    def has_dir_dependency(self) -> bool:
-        return True
-
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
-        raise DirDependencyError(ResolvingDependency.NON_HOME,
-                                 'This file does not exist pre-SDS')
-
-    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return sds.tmp.internal_dir / self.path_suffix_path()
