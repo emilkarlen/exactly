@@ -19,8 +19,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
@@ -31,10 +30,11 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
     ActSourceAndExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.execution.test_resources.partial_result_check import partial_result_status_is
+from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
+from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir, tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -92,32 +92,33 @@ class TestExecutionSequence(unittest.TestCase):
 class TestCurrentDirectory(unittest.TestCase):
     def runTest(self):
         # ARRANGE
-        executor_that_records_current_dir = _ExecutorThatRecordsCurrentDir()
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_current_dir)
-        # ACT #
-        _execute(constructor, _empty_test_case())
-        # ASSERT #
-        phase_step_2_cwd = executor_that_records_current_dir.phase_step_2_cwd
-        home_and_sds = executor_that_records_current_dir.actual_home_and_sds
-        sds = home_and_sds.sds
-        self.assertEqual(len(phase_step_2_cwd),
-                         5,
-                         'Expects recordings for 5 steps')
-        self.assertEqual(phase_step_2_cwd[phase_step.ACT__PARSE],
-                         str(home_and_sds.hds.case_dir),
-                         'Current dir for ' + str(phase_step.ACT__PARSE))
-        self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_SDS],
-                         str(home_and_sds.hds.case_dir),
-                         'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_SDS))
-        self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_POST_SETUP],
-                         str(sds.act_dir),
-                         'Current dir for ' + str(phase_step.ACT__VALIDATE_POST_SETUP))
-        self.assertEqual(phase_step_2_cwd[phase_step.ACT__PREPARE],
-                         str(sds.act_dir),
-                         'Current dir for ' + str(phase_step.ACT__PREPARE))
-        self.assertEqual(phase_step_2_cwd[phase_step.ACT__EXECUTE],
-                         str(sds.act_dir),
-                         'Current dir for ' + str(phase_step.ACT__EXECUTE))
+        with tmp_dir_as_cwd() as expected_current_directory_pre_validate_post_setup:
+            executor_that_records_current_dir = _ExecutorThatRecordsCurrentDir()
+            constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_current_dir)
+            # ACT #
+            _execute(constructor, _empty_test_case(),
+                     current_directory=expected_current_directory_pre_validate_post_setup)
+            # ASSERT #
+            phase_step_2_cwd = executor_that_records_current_dir.phase_step_2_cwd
+            sds = executor_that_records_current_dir.actual_sds
+            self.assertEqual(len(phase_step_2_cwd),
+                             5,
+                             'Expects recordings for 5 steps')
+            self.assertEqual(phase_step_2_cwd[phase_step.ACT__PARSE],
+                             expected_current_directory_pre_validate_post_setup,
+                             'Current dir for ' + str(phase_step.ACT__PARSE))
+            self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_SDS],
+                             expected_current_directory_pre_validate_post_setup,
+                             'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_SDS))
+            self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_POST_SETUP],
+                             sds.act_dir,
+                             'Current dir for ' + str(phase_step.ACT__VALIDATE_POST_SETUP))
+            self.assertEqual(phase_step_2_cwd[phase_step.ACT__PREPARE],
+                             sds.act_dir,
+                             'Current dir for ' + str(phase_step.ACT__PREPARE))
+            self.assertEqual(phase_step_2_cwd[phase_step.ACT__EXECUTE],
+                             sds.act_dir,
+                             'Current dir for ' + str(phase_step.ACT__EXECUTE))
 
 
 class TestExecute(unittest.TestCase):
@@ -219,8 +220,8 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
     Tests contents of stdin by executing a Python program that stores
     the contents of stdin in a file.
     """
-    with preserved_cwd():
-        with tmp_dir() as tmp_dir_path:
+    with tmp_dir() as tmp_dir_path:
+        with preserved_cwd():
             # ARRANGE #
             output_file_path = tmp_dir_path / 'output.txt'
             python_program_file = fs.File('program.py', _python_program_that_prints_stdin_to(output_file_path))
@@ -241,7 +242,7 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
 
 class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
     def __init__(self):
-        self._home_and_sds = None
+        self._actual_sds = None
         self.phase_step_2_cwd = {}
 
     def parse(self, environment: InstructionEnvironmentForPreSdsStep):
@@ -256,7 +257,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
-        self._home_and_sds = environment.home_and_sds
+        self._actual_sds = environment.sds
         self._register_cwd_for(phase_step.ACT__VALIDATE_POST_SETUP)
         return svh.new_svh_success()
 
@@ -274,11 +275,11 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         return new_eh_exit_code(0)
 
     def _register_cwd_for(self, step):
-        self.phase_step_2_cwd[step] = str(pathlib.Path().resolve())
+        self.phase_step_2_cwd[step] = pathlib.Path.cwd()
 
     @property
-    def actual_home_and_sds(self) -> HomeAndSds:
-        return self._home_and_sds
+    def actual_sds(self) -> SandboxDirectoryStructure:
+        return self._actual_sds
 
 
 class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturnsSuccess):
@@ -347,20 +348,23 @@ def _empty_test_case() -> sut.TestCase:
 def _execute(constructor: ActSourceAndExecutorConstructor,
              test_case: sut.TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
-             is_keep_execution_directory_root: bool = False
+             is_keep_execution_directory_root: bool = False,
+             current_directory: pathlib.Path = None,
              ) -> sut.PartialResult:
-    # with home_directory_structure() as hds:
-    hds = HomeDirectoryStructure(pathlib.Path().resolve(),
-                                 pathlib.Path().resolve())
-    return sut.execute(
-        ActPhaseHandling(constructor),
-        test_case,
-        sut.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
-                          hds,
-                          dict(os.environ)),
-        setup_settings,
-        program_info.PROGRAM_NAME + '-test-',
-        is_keep_execution_directory_root)
+    if current_directory is None:
+        current_directory = pathlib.Path.cwd()
+    with home_directory_structure() as hds:
+        with preserved_cwd():
+            os.chdir(str(current_directory))
+            return sut.execute(
+                ActPhaseHandling(constructor),
+                test_case,
+                sut.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                  hds,
+                                  dict(os.environ)),
+                setup_settings,
+                program_info.PROGRAM_NAME + '-test-',
+                is_keep_execution_directory_root)
 
 
 def _python_program_that_prints_stdin_to(output_file_path: pathlib.Path) -> str:
