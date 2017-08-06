@@ -17,6 +17,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestMisc),
         unittest.makeSuite(TestSubDirRelationshipBetweenHomeActAndHomeCase),
+        unittest.makeSuite(TestWhenRelHomeCaseIsEqualToRelHomeActThenRelHomeCaseShouldBeUsed),
     ])
 
 
@@ -31,6 +32,23 @@ class TestMisc(unittest.TestCase):
                                  generator.contents_before_replacement(home_and_sds))
             # ASSERT #
             expected = generator.expected_contents_after_replacement(home_and_sds)
+            self.assertEqual(expected,
+                             actual)
+
+
+class TestWhenRelHomeCaseIsEqualToRelHomeActThenRelHomeCaseShouldBeUsed(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+        with sandbox_directory_structure() as sds:
+            the_dir = pathlib.Path.cwd()
+            hds = HomeDirectoryStructure(case_dir=the_dir,
+                                         act_dir=the_dir)
+            home_and_sds = HomeAndSds(hds, sds)
+            contents_before_replacement = str(the_dir)
+            # ACT #
+            actual = sut.replace(home_and_sds, contents_before_replacement)
+            # ASSERT #
+            expected = environment_variables.ENV_VAR_HOME_CASE
             self.assertEqual(expected,
                              actual)
 

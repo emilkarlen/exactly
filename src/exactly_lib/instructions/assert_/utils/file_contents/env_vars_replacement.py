@@ -15,7 +15,9 @@ def replace(home_and_sds: HomeAndSds,
 def _derive_name_and_value_list(home_and_sds: HomeAndSds) -> iter:
     hds = home_and_sds.hds
     all_vars = environment_variables.replaced(home_and_sds)
-    if _dir_is_sub_dir_of(hds.case_dir, hds.act_dir):
+    if hds.case_dir == hds.act_dir:
+        return _first_is(environment_variables.ENV_VAR_HOME_CASE, all_vars)
+    elif _dir_is_sub_dir_of(hds.case_dir, hds.act_dir):
         return _first_is(environment_variables.ENV_VAR_HOME_CASE, all_vars)
     elif _dir_is_sub_dir_of(hds.act_dir, hds.case_dir):
         return _first_is(environment_variables.ENV_VAR_HOME_ACT, all_vars)
