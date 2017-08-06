@@ -53,7 +53,7 @@ class Phase2step2recordedValueAssertion(asrt.ValueAssertion):
                                 'Recordings per phase and step')
 
 
-def setup_phase_instruction_that_records__a_value_per_step(recorder_for) -> SetupPhaseInstruction:
+def setup_phase_instruction_that_records_a_value_per_step(recorder_for) -> SetupPhaseInstruction:
     return setup_phase_instruction_that(
         validate_pre_sds_initial_action=recorder_for(step.SETUP__VALIDATE_PRE_SDS),
         main_initial_action=recorder_for(step.SETUP__MAIN),

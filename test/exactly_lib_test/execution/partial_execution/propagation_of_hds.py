@@ -36,7 +36,7 @@ class TestPropagationOfHomeDirectoryStructureBetweenSteps(unittest.TestCase):
 
         test_case = partial_test_case_with_instructions(
             [
-                psr.setup_phase_instruction_that_records__a_value_per_step(recorder_for),
+                psr.setup_phase_instruction_that_records_a_value_per_step(recorder_for),
             ],
             psr.act_phase_instructions_that_does_nothing(),
             [

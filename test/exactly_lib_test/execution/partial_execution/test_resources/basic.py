@@ -14,6 +14,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.functional import Composition
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
@@ -127,12 +128,14 @@ class Arrangement:
                  hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
                                                                       pathlib.Path().resolve()),
                  environ: dict = None,
-                 timeout_in_seconds: int = None):
+                 timeout_in_seconds: int = None,
+                 predefined_symbols: SymbolTable = None):
         self.act_phase_handling = act_phase_handling
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.hds = hds
         self.environ = environ
         self.timeout_in_seconds = timeout_in_seconds
+        self.predefined_symbols_or_none = predefined_symbols
 
 
 def test(put: unittest.TestCase,
@@ -181,7 +184,8 @@ def _execute(test_case: partial_execution.TestCase,
         partial_execution.Configuration(arrangement.act_phase_os_process_executor,
                                         arrangement.hds,
                                         environ,
-                                        timeout_in_seconds=arrangement.timeout_in_seconds),
+                                        timeout_in_seconds=arrangement.timeout_in_seconds,
+                                        predefined_symbols=arrangement.predefined_symbols_or_none),
         setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)
