@@ -11,7 +11,7 @@ from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equ
     equals_string_resolver
 from exactly_lib_test.symbol.test_resources.list_assertions import equals_list_resolver
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -37,7 +37,7 @@ class MatchesPrimitiveValueResolvedOfAnyDependency(asrt.ValueAssertion):
         equals_symbol_references(self.symbol_references).apply_with_message(put,
                                                                             value.references,
                                                                             'symbol references')
-        environment = PathResolvingEnvironmentPreOrPostSds(dummy_home_and_sds(),
+        environment = PathResolvingEnvironmentPreOrPostSds(fake_home_and_sds(),
                                                            self.symbols)
         actual_resolved_prim_val = value.resolve_value_of_any_dependency(environment)
         self.expected_resolved_primitive_value.apply_with_message(put, actual_resolved_prim_val,

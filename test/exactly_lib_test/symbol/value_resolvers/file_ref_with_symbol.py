@@ -22,7 +22,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources import symbol_utils as sym_utils
 from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_constant_container
 from exactly_lib_test.symbol.test_resources.value_resolvers import string_resolver_of_single_symbol_reference
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -142,7 +142,7 @@ class TestRelSymbol(unittest.TestCase):
                     path_suffix)
                 symbol_table = singleton_symbol_table(referenced_entry)
                 symbol_table.add_all(symbol_table_entries)
-                home_and_sds = dummy_home_and_sds()
+                home_and_sds = fake_home_and_sds()
                 expected_root_path = _root_path_of_option(rel_option, home_and_sds)
                 expected_path = expected_root_path / path_component_from_referenced_file_ref / path_suffix_str
                 expected_path_str = str(expected_path)

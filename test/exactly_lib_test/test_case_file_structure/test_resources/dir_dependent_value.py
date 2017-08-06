@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, SingleDirDependentValue, \
     MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_home_and_sds
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -32,7 +32,7 @@ class DirDependentValueAssertionBase(asrt.ValueAssertion):
         self._check_common_dependencies(put, value, message_builder)
         self._check_existence(put, value, message_builder)
 
-        home_and_sds = dummy_home_and_sds()
+        home_and_sds = fake_home_and_sds()
         self._check_custom_dependencies(put, value, home_and_sds, message_builder)
         self._check_value(put, value, home_and_sds, message_builder)
 
