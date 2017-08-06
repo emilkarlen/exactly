@@ -1,5 +1,4 @@
 import os
-import pathlib
 import unittest
 from contextlib import contextmanager
 
@@ -26,6 +25,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor im
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_hds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
@@ -47,8 +47,7 @@ class TestParsingAndValidation(unittest.TestCase):
     def __init__(self, method_name):
         super().__init__(method_name)
         self.constructor = sut.Constructor()
-        self.home_dir_as_current_dir = pathlib.Path()
-        self.hds = HomeDirectoryStructure(self.home_dir_as_current_dir)
+        self.hds = dummy_hds()
         self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.hds, dict(os.environ))
 
     def test_fails_when_command_is_empty(self):
