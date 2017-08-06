@@ -41,7 +41,10 @@ class TestCases(instruction_check.TestCaseBase):
 
 
 class ConfigurationCheckRaisesTestError(configuration_check.Assertion):
-    def apply(self, put: unittest.TestCase, initial: ConfigurationBuilder, actual_result: ConfigurationBuilder):
+    def apply(self,
+              put: unittest.TestCase,
+              initial: ConfigurationBuilder,
+              actual_result: ConfigurationBuilder):
         raise test_misc.TestError()
 
 

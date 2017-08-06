@@ -62,8 +62,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
             self,
             test_case,
             _act_phase_handling_that_records_existence_of_var_in_global_env(recorder_for),
-            asrt.anything_goes(),
-            is_keep_execution_directory_root=False)
+            asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
 
@@ -115,8 +114,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
             self,
             test_case,
             _act_phase_handling_that_records_existence_of_var_in_global_env(recorder_for),
-            asrt.anything_goes(),
-            is_keep_execution_directory_root=False)
+            asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
 

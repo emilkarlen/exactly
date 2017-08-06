@@ -31,9 +31,11 @@ class FullExecutionTestCaseBase:
         # SETUP #
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
+        initial_home_dir_path = self.initial_home_dir_path.resolve()
         full_result = full_execution.execute(
             self._test_case(),
-            ConfigurationBuilder(self.initial_home_dir_path.resolve(),
+            ConfigurationBuilder(initial_home_dir_path,
+                                 initial_home_dir_path,
                                  self._act_phase_handling()),
             program_info.PROGRAM_NAME + '-test-',
             True)

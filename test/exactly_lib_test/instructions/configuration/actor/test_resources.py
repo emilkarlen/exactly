@@ -64,7 +64,9 @@ def check(put: unittest.TestCase,
 
 
 def _configuration_builder_with_exception_throwing_act_phase_setup() -> ConfigurationBuilder:
-    return ConfigurationBuilder(pathlib.Path(),
+    initial_home_dir = pathlib.Path()
+    return ConfigurationBuilder(initial_home_dir,
+                                initial_home_dir,
                                 ActPhaseHandling(_ActSourceAndExecutorConstructorThatRaisesException()))
 
 
