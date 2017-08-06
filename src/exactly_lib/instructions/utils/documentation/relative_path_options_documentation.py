@@ -6,6 +6,7 @@ from exactly_lib.help.concepts.configuration_parameters.home_act_directory impor
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.utils.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.argument_rendering.path_syntax import RELATIVITY_ARGUMENT
@@ -63,6 +64,10 @@ def add_concepts_if_not_listed(output: list,
     for concept in concepts_to_add:
         if concept not in output:
             output.append(concept)
+
+
+def cross_refs_for_concepts(concepts: list) -> list:
+    return list(map(SingularAndPluralNameAndCrossReferenceId.cross_reference_target.fget, concepts))
 
 
 class _RelOptionInfo(tuple):

@@ -114,7 +114,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(_REL_OPTION_CONFIG.options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
-        refs = [concept.cross_reference_target for concept in concepts]
+        refs = rel_path_doc.cross_refs_for_concepts(concepts)
         refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
         return refs
 

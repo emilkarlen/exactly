@@ -4,8 +4,6 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.concepts.configuration_parameters.home_act_directory import \
-    HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
@@ -14,6 +12,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
@@ -147,11 +146,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [file_arg_sed] + relativity_of_file_seds
 
     def _see_also_cross_refs(self) -> list:
-        return [
-            HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
-            HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
-            CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
-        ]
+        concepts = rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_DESTINATION.options)
+        rel_path_doc.add_concepts_if_not_listed(concepts,
+                                                rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_SOURCE.options))
+        return rel_path_doc.cross_refs_for_concepts(concepts)
 
     @staticmethod
     def _destination_file_may_be_rel_symbol() -> bool:
