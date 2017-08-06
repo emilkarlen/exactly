@@ -1,3 +1,4 @@
+from exactly_lib.symbol.resolver_structure import ResolverContainer
 from exactly_lib.symbol.restriction import FailureInfo, ValueRestrictionFailure
 from exactly_lib.symbol.restrictions.reference_restrictions import FailureOfDirectReference, FailureOfIndirectReference
 from exactly_lib.util import error_message_format
@@ -12,6 +13,9 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
         blank_line_separated_parts = _of_direct(failure.error)
     elif isinstance(failure, FailureOfIndirectReference):
         blank_line_separated_parts = _of_indirect(failing_symbol, symbols, failure)
+    else:
+        raise TypeError('Unknown type of {}: {}'.format(str(FailureInfo),
+                                                        str(failure)))
     return _concat_parts(blank_line_separated_parts)
 
 
@@ -37,7 +41,8 @@ def _of_indirect(failing_symbol: str, symbols: SymbolTable, failure: FailureOfIn
 def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, symbols: SymbolTable) -> list:
     def line_ref_of_symbol(symbol_name: str) -> str:
         container = symbols.lookup(symbol_name)
-        return error_message_format.source_line(container.definition_source)
+        assert isinstance(container, ResolverContainer), 'Only known type of SymbolTableValue'
+        return error_message_format.source_line_of_symbol(container.definition_source)
 
     ret_val = []
     path_to_failing_symbol = [failing_symbol] + path_to_failing_symbol
