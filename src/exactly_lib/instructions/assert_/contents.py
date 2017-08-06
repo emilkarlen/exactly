@@ -11,8 +11,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
     ActualFileTransformerForEnvVarsReplacementBase
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ActComparisonActualFileForFileRef
-from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts, \
-    EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -85,17 +84,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         relativity_of_actual_file_seds = rel_opts.relativity_syntax_element_descriptions(
             path_syntax.PATH_ARGUMENT,
             ACTUAL_RELATIVITY_CONFIGURATION.options,
-            relativity_of_actual_arg,
-            skip_symbol_reference_element=self._expected_file_may_be_rel_symbol())
+            relativity_of_actual_arg)
 
         return [actual_file_arg_sed] + relativity_of_actual_file_seds + self._help_parts.syntax_element_descriptions()
 
     def see_also_items(self) -> list:
         return self._help_parts.see_also_items()
-
-    @staticmethod
-    def _expected_file_may_be_rel_symbol() -> bool:
-        return EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.is_rel_symbol_option_accepted
 
 
 class Parser(InstructionParser):
