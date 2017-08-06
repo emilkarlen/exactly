@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure import relativity_root, relative_path_
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
-    SPECIFIC_ABSOLUTE_RELATIVITY, ResolvingDependency
+    SPECIFIC_ABSOLUTE_RELATIVITY, ResolvingDependency, rel_any_from_rel_home
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system_values.file_ref import FileRef
@@ -61,8 +61,17 @@ def absolute_file_name(file_name: str) -> FileRef:
     return _FileRefAbsolute(PathPartAsFixedPath(file_name))
 
 
+def rel_home(rel_option: relativity_root.RelHomeOptionType,
+             path_suffix: PathPart) -> FileRef:
+    return _FileRefRelHome(rel_option, path_suffix)
+
+
 def rel_home_case(path_suffix: PathPart) -> FileRef:
-    return of_rel_root(relativity_root.resolver_for_home_case, path_suffix)
+    return rel_home(relativity_root.RelHomeOptionType.REL_HOME_CASE, path_suffix)
+
+
+def rel_home_act(path_suffix: PathPart) -> FileRef:
+    return rel_home(relativity_root.RelHomeOptionType.REL_HOME_ACT, path_suffix)
 
 
 def rel_cwd(path_suffix: PathPart) -> FileRef:
@@ -102,8 +111,11 @@ class _FileRefAbsolute(FileRefWithPathSuffixBase):
 
 
 class _FileRefRelHome(_FileRefWithConstantLocationBase):
-    def __init__(self, path_suffix: PathPart):
+    def __init__(self,
+                 rel_option: relativity_root.RelHomeOptionType,
+                 path_suffix: PathPart):
         super().__init__(path_suffix)
+        self._rel_option = rel_option
 
     def has_dir_dependency(self) -> bool:
         return True
@@ -112,11 +124,16 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         raise DirDependencyError(ResolvingDependency.HOME)
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
-        return hds.case_dir / self.path_suffix_path()
+        suffix = self.path_suffix_path()
+        root = relative_path_options.REL_HOME_OPTIONS_MAP[self._rel_option].root_resolver.from_home(hds)
+        return root / suffix
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise DirDependencyError(ResolvingDependency.HOME,
                                  'This file exists pre-SDS')
+
+    def _relativity(self) -> RelOptionType:
+        return rel_any_from_rel_home(self._rel_option)
 
 
 class _FileRefRelTmpInternal(_FileRefWithConstantLocationBase):
