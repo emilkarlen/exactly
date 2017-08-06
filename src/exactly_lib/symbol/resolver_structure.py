@@ -44,9 +44,10 @@ class ResolverContainer(SymbolTableValue):
     A value together with meta info
     """
 
-    def __init__(self, source: Line, resolver: SymbolValueResolver):
+    def __init__(self, value_resolver: SymbolValueResolver, source: Line):
         self._source = source
-        self._resolver = resolver
+        self._resolver = value_resolver
+        self._source = source
 
     @property
     def definition_source(self) -> Line:

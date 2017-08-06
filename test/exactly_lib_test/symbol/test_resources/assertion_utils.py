@@ -3,6 +3,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction
 from exactly_lib.symbol.restrictions import value_restrictions as vr
+from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.string_resolver import string_constant
 from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
@@ -17,7 +18,10 @@ def symbol_table_with_values_matching_references(references: list) -> SymbolTabl
     elements = {}
     for ref in references:
         assert isinstance(ref, su.SymbolReference), "Informs IDE of type"
-        value_restriction = ref.restrictions.direct
+        restrictions = ref.restrictions
+        assert isinstance(restrictions,
+                          ReferenceRestrictionsOnDirectAndIndirect), 'Only handled/needed case for the moment'
+        value_restriction = restrictions.direct
         assert isinstance(value_restriction, ValueRestriction)
         value = value_constructor.visit(value_restriction)
         elements[ref.name] = _resolver_container(value)
@@ -42,4 +46,4 @@ class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):
 
 
 def _resolver_container(value: FileRefResolver) -> ResolverContainer:
-    return ResolverContainer(Line(1, 'source line'), value)
+    return ResolverContainer(value, Line(1, 'source line'))

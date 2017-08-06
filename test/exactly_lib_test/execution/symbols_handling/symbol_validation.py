@@ -175,18 +175,18 @@ class TestValidationOfList(unittest.TestCase):
 
 def symbol_of(name: str) -> su.SymbolDefinition:
     return su.SymbolDefinition(name,
-                               vs.ResolverContainer(Line(1, 'source code'),
-                                                    string_constant('string value')))
+                               vs.ResolverContainer(string_constant('string value'),
+                                                    Line(1, 'source code')))
 
 
-def file_ref_entry(name: str, file_ref: FileRef) -> Entry:
-    return Entry(name, file_ref_constant_container(file_ref))
+def file_ref_entry(name: str, file_ref_value: FileRef) -> Entry:
+    return Entry(name, file_ref_constant_container(file_ref_value))
 
 
-def string_entry(name: str, value: str = 'string value') -> Entry:
+def string_entry(name: str, constant: str = 'string value') -> Entry:
     return Entry(name,
-                 vs.ResolverContainer(Line(1, 'source code'),
-                                      string_constant(value)))
+                 vs.ResolverContainer(string_constant(constant),
+                                      Line(1, 'source code')))
 
 
 def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRelativityVariants:

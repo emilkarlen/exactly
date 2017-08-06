@@ -396,5 +396,5 @@ def _multi_line_source(first_line: str,
                             [_src(line, **kwargs) for line in following_lines])
 
 
-def _resolver_container(value: SymbolValueResolver) -> ResolverContainer:
-    return ResolverContainer(Line(1, 'source line'), value)
+def _resolver_container(value_resolver: SymbolValueResolver) -> ResolverContainer:
+    return ResolverContainer(value_resolver, Line(1, 'source line'))
