@@ -1,19 +1,30 @@
 #
 # Some instructions reference files relative to a "home" directory.
 #
-# This Home Directory is initialy set to the directory containing the
+# There are two home directories:
+#   "act home"  : This is where the [act] phase looks for the program to run
+#                 The "act-home" instruction sets this directory.
+#
+#   "case home" : This is where many instructions looks for files that are used
+#                 by the current test case
+#                 The "home" instruction sets this directory.
+
+# Both these directories are initially set to the directory containing the
 # test case file.
 #
-# The "home" instruction can change this default.
 
 [conf]
 
 
-home ..
+act-home ../bin
+
+home     ..
 
 
 [setup]
 
+
+# The "install" instruction looks for referenced files in the "case home" directory.
 
 install testdata/test-file.txt
 
@@ -21,10 +32,14 @@ install testdata/test-file.txt
 [act]
 
 
-bin/do-something-good-with test-file.txt
+# The "act" phase looks for referenced files in the "act home" directory.
+
+do-something-good-with test-file.txt
 
 
 [assert]
 
+
+# The "contents" instruction looks for referenced files in the "case home" directory.
 
 contents test-file.txt equals expectation/expected.txt
