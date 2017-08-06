@@ -18,9 +18,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
     TestWithConfigurationAndRelativityOptionAndNegationBase, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
-    ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
+    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, is_at_beginning_of_line
@@ -161,7 +161,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
 class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_generator = ReplacedEnvVarsFileContentsGenerator()
+        contents_generator = ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables()
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
@@ -187,7 +187,7 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
 class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_generator = ReplacedEnvVarsFileContentsGenerator()
+        contents_generator = ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables()
 
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(

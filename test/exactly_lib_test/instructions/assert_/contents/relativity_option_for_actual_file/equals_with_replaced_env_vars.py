@@ -10,9 +10,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     suite_for__conf__rel_opts__negations, TestWithConfigurationAndRelativityOptionAndNegationBase, \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.replace_env_vars_utils import \
-    ReplacedEnvVarsFileContentsGenerator
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
+    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import multiple
@@ -30,7 +30,7 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
 
 class _ContentsEqualsWhenRelHomeCaseIsSubDirOfRelHomeAct(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_generator = ReplacedEnvVarsFileContentsGenerator()
+        contents_generator = ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables()
         rel_tmp_opt = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
         populator_of_expected = populator_for_relativity_option_root_for_contents_from_fun(
             rel_tmp_opt,
@@ -60,7 +60,7 @@ class _ContentsEqualsWhenRelHomeCaseIsSubDirOfRelHomeAct(TestWithConfigurationAn
 
 class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_generator = ReplacedEnvVarsFileContentsGenerator()
+        contents_generator = ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables()
         rel_tmp_opt = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
         populator_of_expected = populator_for_relativity_option_root_for_contents_from_fun(
             rel_tmp_opt,
@@ -90,7 +90,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
 
 class _ContentsNotEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        contents_generator = ReplacedEnvVarsFileContentsGenerator()
+        contents_generator = ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables()
         rel_tmp_opt = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
         populator_of_expected = populator_for_relativity_option_root_for_contents_from_fun(
             rel_tmp_opt,

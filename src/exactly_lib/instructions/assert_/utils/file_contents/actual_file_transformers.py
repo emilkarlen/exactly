@@ -1,8 +1,9 @@
 import pathlib
 
-from exactly_lib.execution import environment_variables
+from exactly_lib.instructions.assert_.utils.file_contents import env_vars_replacement
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 
@@ -31,8 +32,7 @@ class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
         dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
-        env_vars_to_replace = environment_variables.replaced(environment.home_and_sds)
-        self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
+        self._replace_env_vars_and_write_result_to_dst(environment.home_and_sds,
                                                        src_file_path,
                                                        dst_file_path)
         return dst_file_path
@@ -47,14 +47,12 @@ class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
         raise NotImplementedError()
 
     @staticmethod
-    def _replace_env_vars_and_write_result_to_dst(env_vars_to_replace: dict,
+    def _replace_env_vars_and_write_result_to_dst(home_and_sds: HomeAndSds,
                                                   src_file_path: pathlib.Path,
                                                   dst_file_path: pathlib.Path):
         with src_file_path.open() as src_file:
-            # TODO Handle reading/replacing in chunks, if file is too large to be read in one chunk
-            contents = src_file.read()
-        for var_name, var_value in env_vars_to_replace.items():
-            contents = contents.replace(var_value, var_name)
+            original_contents = src_file.read()
+        replaced_contents = env_vars_replacement.replace(home_and_sds, original_contents)
         ensure_parent_directory_does_exist(dst_file_path)
         with open(str(dst_file_path), 'w') as dst_file:
-            dst_file.write(contents)
+            dst_file.write(replaced_contents)
