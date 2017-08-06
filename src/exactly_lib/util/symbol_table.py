@@ -1,3 +1,6 @@
+import copy
+
+
 class SymbolTableValue:
     """A value in a symbol table, that is assigned to a name."""
     pass
@@ -60,6 +63,9 @@ class SymbolTable:
             return self._key_2_value[name]
         except KeyError:
             raise KeyError('Name not in symbol table: "{}"'.format(name))
+
+    def copy(self):
+        return SymbolTable(copy.copy(self._key_2_value))
 
 
 def empty_symbol_table() -> SymbolTable:

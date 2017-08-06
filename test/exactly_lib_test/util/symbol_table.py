@@ -9,6 +9,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestConstruction),
         unittest.makeSuite(TestUpdate),
         unittest.makeSuite(TestLookup),
+        unittest.makeSuite(TestCopy),
     ])
 
 
@@ -126,6 +127,43 @@ class TestLookup(unittest.TestCase):
             table.lookup('symbol_name')
 
 
+class TestCopy(unittest.TestCase):
+    def test_WHEN_updating_a_copy_THEN_the_copy_SHOULD_be_updated_but_not_the_original(self):
+        # ARRANGE #
+        symbol = NameAndValue('the symbol name',
+                              ASymbolTableValue('the symbol value'))
+        original_table = sut.empty_symbol_table()
+        # ACT #
+        copied_table = original_table.copy()
+        copied_table.put(symbol.name, symbol.value)
+        # ASSERT #
+        _assert_table_contains_single_value(self,
+                                            copied_table,
+                                            symbol)
+        _assert_table_is_empty(self,
+                               original_table)
+
+    def test_WHEN_updating_a_copy_THEN_the_original_SHOULD_not_loose_elements(self):
+        # ARRANGE #
+        symbol_in_original = NameAndValue('the original symbol name',
+                                          ASymbolTableValue('the original symbol value'))
+        symbol_in_copy = NameAndValue('the copy symbol name',
+                                      ASymbolTableValue('the copy symbol value'))
+        original_table = sut.SymbolTable({symbol_in_original.name: symbol_in_original.value})
+        # ACT #
+        copied_table = original_table.copy()
+        copied_table.put(symbol_in_copy.name, symbol_in_copy.value)
+        # ASSERT #
+        _assert_table_contains(self, copied_table, symbol_in_original)
+        _assert_table_contains(self, copied_table, symbol_in_copy)
+        self.assertEqual(2,
+                         len(copied_table.names_set),
+                         'the copy SHOULD contain the original symbol and the symbol added to the copy')
+        _assert_table_contains_single_value(self,
+                                            original_table,
+                                            symbol_in_original)
+
+
 def _assert_table_contains_single_value(put: unittest.TestCase,
                                         table: sut.SymbolTable,
                                         expected_symbol: NameAndValue):
@@ -146,6 +184,13 @@ def _assert_table_contains(put: unittest.TestCase,
     put.assertIs(expected_symbol.value,
                  table.lookup(expected_symbol.name),
                  'lookup should fins the value')
+
+
+def _assert_table_is_empty(put: unittest.TestCase,
+                           table: sut.SymbolTable):
+    put.assertEqual(frozenset(),
+                    table.names_set,
+                    'table SHOULD not contain any values')
 
 
 class ASymbolTableValue(sut.SymbolTableValue):
