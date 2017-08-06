@@ -47,7 +47,7 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
 class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_option} expected.txt',
+            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
@@ -63,7 +63,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
 class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual-dir {maybe_not} {equals} {rel_home_option} expected.txt',
+            args('{relativity_option} actual-dir {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
@@ -81,7 +81,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
 class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_option} expected.txt',
+            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(
@@ -102,7 +102,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
 class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_option} expected.txt',
+            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
             ArrangementPostAct(

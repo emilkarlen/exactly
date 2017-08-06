@@ -198,10 +198,10 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
         home_dir_contents = fs.DirContents([fs.empty_file(existing_file_to_interpret)])
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {interpret_option}' \
-                       ' {rel_home_option} {existing_file}'.format(
+                       ' {rel_home_case_option} {existing_file}'.format(
                 relativity_option=relativity_option_conf.option_string,
                 interpret_option=sut.INTERPRET_OPTION,
-                rel_home_option=REL_HOME_CASE_OPTION,
+                rel_home_case_option=REL_HOME_CASE_OPTION,
                 existing_file=existing_file_to_interpret,
             )
 

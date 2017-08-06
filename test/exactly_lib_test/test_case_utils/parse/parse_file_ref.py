@@ -642,8 +642,8 @@ class TestParseWithReferenceEmbeddedInPathArgument(TestParsesBase):
              'SHOULD '
              'become a symbol reference path suffix that must be a string',
              ArrangementWoSuffixRequirement(
-                 source='{rel_home_option} {symbol_reference}'.format(
-                     rel_home_option=_option_string_for_relativity(RelOptionType.REL_HOME_CASE),
+                 source='{rel_home_case_option} {symbol_reference}'.format(
+                     rel_home_case_option=_option_string_for_relativity(RelOptionType.REL_HOME_CASE),
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
@@ -725,8 +725,8 @@ class TestParseWithReferenceEmbeddedInPathArgument(TestParsesBase):
              ' SHOULD '
              'become a path suffix that is the literal quoted symbol reference',
              ArrangementWoSuffixRequirement(
-                 source='{rel_home_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
-                     rel_home_option=_option_string_for_relativity(RelOptionType.REL_HOME_CASE),
+                 source='{rel_home_case_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
+                     rel_home_case_option=_option_string_for_relativity(RelOptionType.REL_HOME_CASE),
                      hard_quote=HARD_QUOTE_CHAR,
                      symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
