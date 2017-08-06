@@ -76,7 +76,7 @@ EXECUTION_MODE_CONCEPT_INFO = name_and_ref_target(
             'or if the test case should be skipped.')
 )
 
-HOME_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
+HOME_CASE_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     Name('home directory', 'home directories'),
     'Default location of (external, existing) files referenced from the test case.'
 )
