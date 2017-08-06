@@ -36,8 +36,7 @@ class ExecutableFile:
         return self._file_reference_resolver.references + self._arguments.references
 
     def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        fr = self._file_reference_resolver.resolve(environment.symbols)
-        return fr.value_of_any_dependency(environment.home_and_sds)
+        return self._file_reference_resolver.resolve_value_of_any_dependency(environment)
 
     def path_string(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         return str(self.path(environment))
