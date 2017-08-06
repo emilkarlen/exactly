@@ -29,17 +29,17 @@ class Test(unittest.TestCase):
 def sandbox_directory_structure_exists(put: unittest.TestCase,
                                        actual: Result):
     _common_assertions(actual, put)
-    put.assertTrue(actual.partial_result.sandbox_directory_structure.root_dir.is_dir())
+    put.assertTrue(actual.partial_result.sds.root_dir.is_dir())
 
 
 def sandbox_directory_structure_does_not_exist(put: unittest.TestCase,
                                                actual: Result):
     _common_assertions(actual, put)
-    put.assertFalse(actual.partial_result.sandbox_directory_structure.root_dir.exists())
+    put.assertFalse(actual.partial_result.sds.root_dir.exists())
 
 
 def _common_assertions(actual, put):
-    put.assertTrue(actual.partial_result.has_sandbox_directory_structure,
+    put.assertTrue(actual.partial_result.has_sds,
                    'SDS is expected to have been created')
 
 

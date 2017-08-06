@@ -60,10 +60,10 @@ class Executor:
         result = self._process(True)
         full_result = result.execution_result
 
-        copy_file(full_result.sandbox_directory_structure.result.stdout_file, self._std.out)
-        copy_file(full_result.sandbox_directory_structure.result.stderr_file, self._std.err)
-        exit_code = act_phase_exit_code(full_result.sandbox_directory_structure.result.exitcode_file)
-        shutil.rmtree(str(full_result.sandbox_directory_structure.root_dir))
+        copy_file(full_result.sds.result.stdout_file, self._std.out)
+        copy_file(full_result.sds.result.stderr_file, self._std.err)
+        exit_code = act_phase_exit_code(full_result.sds.result.exitcode_file)
+        shutil.rmtree(str(full_result.sds.root_dir))
         return exit_code
 
     def _report_full_result(self, the_full_result: full_execution.FullResult):
@@ -74,7 +74,7 @@ class Executor:
         if self._settings.output is Output.STATUS_CODE:
             self._out_printer.write_line(the_full_result.status.name)
         elif self._settings.output is Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT:
-            self._out_printer.write_line(str(the_full_result.sandbox_directory_structure.root_dir))
+            self._out_printer.write_line(str(the_full_result.sds.root_dir))
 
     def _process(self,
                  is_keep_sds: bool) -> test_case_processing.Result:

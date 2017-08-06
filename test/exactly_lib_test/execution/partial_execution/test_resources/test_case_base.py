@@ -74,7 +74,7 @@ class PartialExecutionTestCaseBase:
 
     @property
     def sds(self) -> SandboxDirectoryStructure:
-        return self.__partial_result.sandbox_directory_structure
+        return self.__partial_result.sds
 
     def assert_is_regular_file_with_contents(self,
                                              path: pathlib.Path,

@@ -77,18 +77,18 @@ class FailureInfoVisitor:
 
 class ResultBase:
     def __init__(self,
-                 sandbox_directory_structure: SandboxDirectoryStructure,
+                 sds: SandboxDirectoryStructure,
                  failure_info: FailureInfo):
-        self.__sandbox_directory_structure = sandbox_directory_structure
+        self.__sds = sds
         self.__failure_info = failure_info
 
     @property
-    def has_sandbox_directory_structure(self) -> bool:
-        return self.__sandbox_directory_structure is not None
+    def has_sds(self) -> bool:
+        return self.__sds is not None
 
     @property
-    def sandbox_directory_structure(self) -> SandboxDirectoryStructure:
-        return self.__sandbox_directory_structure
+    def sds(self) -> SandboxDirectoryStructure:
+        return self.__sds
 
     @property
     def is_failure(self) -> bool:
@@ -116,9 +116,9 @@ class PartialResultStatus(Enum):
 class PartialResult(ResultBase):
     def __init__(self,
                  status: PartialResultStatus,
-                 sandbox_directory_structure: SandboxDirectoryStructure,
+                 sds: SandboxDirectoryStructure,
                  failure_info: FailureInfo):
-        super().__init__(sandbox_directory_structure, failure_info)
+        super().__init__(sds, failure_info)
         self.__status = status
 
     @property
@@ -130,9 +130,9 @@ class PartialResult(ResultBase):
         return self.__status is not PartialResultStatus.PASS
 
 
-def new_partial_result_pass(sandbox_directory_structure: SandboxDirectoryStructure) -> PartialResult:
+def new_partial_result_pass(sds: SandboxDirectoryStructure) -> PartialResult:
     return PartialResult(PartialResultStatus.PASS,
-                         sandbox_directory_structure,
+                         sds,
                          None)
 
 
@@ -153,9 +153,9 @@ class FullResultStatus(Enum):
 class FullResult(ResultBase):
     def __init__(self,
                  status: FullResultStatus,
-                 sandbox_directory_structure: SandboxDirectoryStructure,
+                 sds: SandboxDirectoryStructure,
                  failure_info: FailureInfo):
-        super().__init__(sandbox_directory_structure, failure_info)
+        super().__init__(sds, failure_info)
         self.__status = status
 
     @property
@@ -169,7 +169,7 @@ def new_skipped() -> FullResult:
                       None)
 
 
-def new_pass(sandbox_directory_structure: SandboxDirectoryStructure) -> FullResult:
+def new_pass(sds: SandboxDirectoryStructure) -> FullResult:
     return FullResult(FullResultStatus.PASS,
-                      sandbox_directory_structure,
+                      sds,
                       None)

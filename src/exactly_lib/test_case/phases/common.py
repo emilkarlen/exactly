@@ -105,10 +105,6 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
         self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
 
     @property
-    def sandbox_directory_structure(self) -> _sds.SandboxDirectoryStructure:
-        return self.__sds
-
-    @property
     def sds(self) -> _sds.SandboxDirectoryStructure:
         return self.__sds
 

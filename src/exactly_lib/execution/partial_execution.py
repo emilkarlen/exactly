@@ -179,8 +179,8 @@ def execute(act_phase_handling: ActPhaseHandling,
             return ret_val
     finally:
         if not is_keep_execution_directory_root:
-            if ret_val is not None and ret_val.has_sandbox_directory_structure:
-                shutil.rmtree(str(ret_val.sandbox_directory_structure.root_dir))
+            if ret_val is not None and ret_val.has_sds:
+                shutil.rmtree(str(ret_val.sds.root_dir))
 
 
 class _PartialExecutor:
