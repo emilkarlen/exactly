@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
-from exactly_lib_test.execution.partial_execution.test_resources.basic import test__va
+from exactly_lib_test.execution.partial_execution.test_resources.basic import Arrangement, test__va
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
@@ -63,7 +63,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            _act_phase_handling_that_records__a_value_per_step(recorder_for),
+            Arrangement(_act_phase_handling_that_records__a_value_per_step(recorder_for)),
             asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
@@ -121,7 +121,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            _act_phase_handling_that_records__a_value_per_step(recorder_for),
+            Arrangement(_act_phase_handling_that_records__a_value_per_step(recorder_for)),
             asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
