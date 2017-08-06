@@ -181,12 +181,20 @@ class AnyRelativityResolverHelper:
                             'is_rel_cwd')
 
 
-def hds_2_case_dir(hds: HomeDirectoryStructure) -> pathlib.Path:
+def hds_2_home_case_dir(hds: HomeDirectoryStructure) -> pathlib.Path:
     return hds.case_dir
+
+
+def hds_2_home_act_dir(hds: HomeDirectoryStructure) -> pathlib.Path:
+    return hds.act_dir
 
 
 def home_and_sds_2_home_case_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
     return home_and_sds.hds.case_dir
+
+
+def home_and_sds_2_home_act_dir(home_and_sds: HomeAndSds) -> pathlib.Path:
+    return home_and_sds.hds.act_dir
 
 
 def sds_2_act_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:

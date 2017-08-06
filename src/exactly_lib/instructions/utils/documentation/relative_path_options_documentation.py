@@ -1,8 +1,8 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.execution import environment_variables as env
-from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
-    HOME_CASE_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO, SYMBOL_CONCEPT_INFO
+from exactly_lib.help.concepts import names_and_cross_references as ci
+from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
+    HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
@@ -51,8 +51,8 @@ def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
             if concept not in ret_val:
                 ret_val.append(concept)
     if rel_options_conf.is_rel_symbol_option_accepted:
-        if SYMBOL_CONCEPT_INFO not in ret_val:
-            ret_val.append(SYMBOL_CONCEPT_INFO)
+        if ci.SYMBOL_CONCEPT_INFO not in ret_val:
+            ret_val.append(ci.SYMBOL_CONCEPT_INFO)
     return ret_val
 
 
@@ -132,7 +132,7 @@ class RelOptionRenderer:
             'PATH_SYMBOL_TYPE': PATH_TYPE,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'sandbox_concept': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
+            'sandbox_concept': formatting.concept(ci.SANDBOX_CONCEPT_INFO.singular_name),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
 
@@ -197,26 +197,31 @@ _ALL = {
     RelOptionType.REL_TMP: _RelOptionTypeInfo(file_ref_texts.REL_TMP_OPTION_NAME,
                                               env.ENV_VAR_TMP,
                                               _REL_TMP_DESCRIPTION,
-                                              [SANDBOX_CONCEPT_INFO],
+                                              [ci.SANDBOX_CONCEPT_INFO],
                                               ),
     RelOptionType.REL_ACT: _RelOptionTypeInfo(file_ref_texts.REL_ACT_OPTION_NAME,
                                               env.ENV_VAR_ACT,
                                               _REL_ACT_DESCRIPTION,
-                                              [SANDBOX_CONCEPT_INFO]),
+                                              [ci.SANDBOX_CONCEPT_INFO]),
     RelOptionType.REL_RESULT: _RelOptionTypeInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
                                                  env.ENV_VAR_RESULT,
                                                  _REL_RESULT_DESCRIPTION,
-                                                 [SANDBOX_CONCEPT_INFO]),
+                                                 [ci.SANDBOX_CONCEPT_INFO]),
     RelOptionType.REL_CWD: _RelOptionTypeInfo(file_ref_texts.REL_CWD_OPTION_NAME,
                                               formatting.concept(
-                                                  CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
+                                                  ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
                                               _REL_CWD_DESCRIPTION,
-                                              [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
+                                              [ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
     RelOptionType.REL_HOME_CASE: _RelOptionTypeInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                     formatting.concept(
-                                                        HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
+                                                        ci.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
                                                     _REL_HOME_DESCRIPTION,
-                                                    [HOME_CASE_DIRECTORY_CONCEPT_INFO]),
+                                                    [ci.HOME_CASE_DIRECTORY_CONCEPT_INFO]),
+    RelOptionType.REL_HOME_ACT: _RelOptionTypeInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
+                                                   formatting.concept(
+                                                       ci.HOME_ACT_DIRECTORY_CONCEPT_INFO.singular_name),
+                                                   _REL_HOME_DESCRIPTION,
+                                                   [ci.HOME_ACT_DIRECTORY_CONCEPT_INFO]),
 }
 
 _DEFAULT_RELATIVITY = """\
