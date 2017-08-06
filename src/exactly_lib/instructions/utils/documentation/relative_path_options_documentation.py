@@ -1,6 +1,8 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts import names_and_cross_references as ci
+from exactly_lib.help.concepts.configuration_parameters.home_act_directory import \
+    HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
@@ -131,7 +133,8 @@ class RelOptionRenderer:
             'SYMBOL_NAME': _SYMBOL_NAME,
             'PATH_SYMBOL_TYPE': PATH_TYPE,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_case_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'home_act_directory': formatting.concept(HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'sandbox_concept': formatting.concept(ci.SANDBOX_CONCEPT_INFO.singular_name),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
@@ -184,8 +187,12 @@ _REL_CWD_DESCRIPTION = """\
 {PATH} is relative the {cwd}.
 """
 
-_REL_HOME_DESCRIPTION = """\
-{PATH} is relative the {home_directory}.
+_REL_HOME_CASE_DESCRIPTION = """\
+{PATH} is relative the {home_case_directory}.
+"""
+
+_REL_HOME_ACT_DESCRIPTION = """\
+{PATH} is relative the {home_act_directory}.
 """
 
 _REL_SYMBOL_DESCRIPTION = """\
@@ -215,12 +222,12 @@ _ALL = {
     RelOptionType.REL_HOME_CASE: _RelOptionTypeInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                     formatting.concept(
                                                         ci.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
-                                                    _REL_HOME_DESCRIPTION,
+                                                    _REL_HOME_CASE_DESCRIPTION,
                                                     [ci.HOME_CASE_DIRECTORY_CONCEPT_INFO]),
     RelOptionType.REL_HOME_ACT: _RelOptionTypeInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
                                                    formatting.concept(
                                                        ci.HOME_ACT_DIRECTORY_CONCEPT_INFO.singular_name),
-                                                   _REL_HOME_DESCRIPTION,
+                                                   _REL_HOME_ACT_DESCRIPTION,
                                                    [ci.HOME_ACT_DIRECTORY_CONCEPT_INFO]),
 }
 
