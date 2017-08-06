@@ -95,11 +95,11 @@ def parse(source: ParseSource) -> SymbolDefinition:
     if token_stream.is_null or token_stream.head.source_string != syntax_elements.EQUALS_ARGUMENT:
         raise SingleInstructionInvalidArgumentException('Missing ' + syntax_elements.EQUALS_ARGUMENT)
     token_stream.consume()
-    value = value_parser(token_stream)
+    value_resolver = value_parser(token_stream)
     if not token_stream.is_null:
         msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return SymbolDefinition(name_str, ResolverContainer(source_line, value))
+    return SymbolDefinition(name_str, ResolverContainer(value_resolver, source_line))
 
 
 _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT

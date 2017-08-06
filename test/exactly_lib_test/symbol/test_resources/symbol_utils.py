@@ -21,23 +21,22 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 def container(value: SymbolValueResolver,
               line_num: int = 1,
               source_line: str = 'value def line') -> ResolverContainer:
-    return ResolverContainer(Line(line_num, source_line),
-                             value)
+    return ResolverContainer(value, Line(line_num, source_line))
 
 
 def string_value_constant_container(string_value: str,
                                     line_num: int = 1,
                                     source_line: str = 'value def line') -> ResolverContainer:
-    return ResolverContainer(Line(line_num, source_line),
-                             string_constant(string_value))
+    return ResolverContainer(string_constant(string_value),
+                             Line(line_num, source_line))
 
 
 def string_value_constant_container2(string_value: StringValue,
                                      line_num: int = 1,
                                      source_line: str = 'value def line') -> ResolverContainer:
-    return ResolverContainer(Line(line_num, source_line),
-                             ConstantValueResolver(ValueType.STRING,
-                                                   string_value))
+    return ResolverContainer(ConstantValueResolver(ValueType.STRING,
+                                                   string_value),
+                             Line(line_num, source_line))
 
 
 def string_symbol_definition(name: str, string_value: str = 'string value') -> SymbolDefinition:
@@ -71,8 +70,8 @@ def symbol_table_with_string_values_from_name_and_value(name_and_value_list: ite
 def list_value_constant_container(list_value: ListValue,
                                   line_num: int = 1,
                                   source_line: str = 'value def line') -> ResolverContainer:
-    return ResolverContainer(Line(line_num, source_line),
-                             ListResolverTestImplForConstantListValue(list_value))
+    return ResolverContainer(ListResolverTestImplForConstantListValue(list_value),
+                             Line(line_num, source_line))
 
 
 def list_symbol_definition(name: str, resolved_value: ListValue) -> SymbolDefinition:
@@ -84,28 +83,30 @@ def symbol_table_with_single_list_value(symbol_name: str, resolved_value: ListVa
 
 
 def file_ref_constant_container(
-        file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                         relativity=RelOptionType.REL_CWD),
+        file_ref_value: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                               relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
         source_line: str = 'value def line') -> ResolverContainer:
-    return ResolverContainer(Line(line_num, source_line),
-                             FileRefConstant(file_ref))
+    return ResolverContainer(FileRefConstant(file_ref_value),
+                             Line(line_num, source_line))
 
 
 def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
                                 line_num: int = 1,
                                 source_line: str = 'value def line') -> ResolverContainer:
-    return ResolverContainer(Line(line_num, source_line),
-                             file_ref_resolver)
+    return ResolverContainer(file_ref_resolver,
+                             Line(line_num, source_line))
 
 
-def file_ref_symbol_definition(name: str,
-                               file_ref: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
-                                                                                relativity=RelOptionType.REL_CWD),
-                               line_num: int = 1,
-                               source_line: str = 'value def line'
-                               ) -> SymbolDefinition:
-    return SymbolDefinition(name, file_ref_constant_container(file_ref, line_num, source_line))
+def file_ref_symbol_definition(
+        name: str,
+        file_ref_value: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
+                                                               relativity=RelOptionType.REL_CWD),
+        line_num: int = 1,
+        source_line: str = 'value def line'
+) -> SymbolDefinition:
+    return SymbolDefinition(name,
+                            file_ref_constant_container(file_ref_value, line_num, source_line))
 
 
 def symbol_table_with_single_file_ref_value(
@@ -124,11 +125,13 @@ def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestrict
 def entry(name: str, value: SymbolValueResolver = string_constant('string value'),
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
-    return Entry(name, ResolverContainer(Line(line_num, source_line), value))
+    return Entry(name, ResolverContainer(value,
+                                         Line(line_num, source_line)))
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:
-    elements = [(name, string_value_constant_container(name, source_line='source line for {}'.format(name)))
+    elements = [(name, string_value_constant_container(name,
+                                                       source_line='source line for {}'.format(name)))
                 for name in names]
     return SymbolTable(dict(elements))
 
