@@ -1,6 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
-from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
+    HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
     SANDBOX_CONCEPT_INFO, \

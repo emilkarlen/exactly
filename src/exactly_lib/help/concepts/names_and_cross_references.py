@@ -81,6 +81,11 @@ HOME_CASE_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     'Default location of (external, existing) files referenced from the test case.'
 )
 
+HOME_ACT_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
+    Name('act-home directory', 'act-home directories'),
+    _format('Default location of (external, existing) files referenced from the {phase[act]} phase.')
+)
+
 TIMEOUT_CONCEPT_INFO = name_and_ref_target(
     Name('timeout', 'timeouts'),
     _format('Timeout of sub processes executed by instructions and the {phase[act]} phase.')

@@ -11,7 +11,7 @@ from exactly_lib.util.description import Description, DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 
 
-class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
+class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
         super().__init__(HOME_CASE_DIRECTORY_CONCEPT_INFO)
 
@@ -37,7 +37,7 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
 
 _NAME = Name('home directory', 'home directories')
 
-HOME_DIRECTORY_CONFIGURATION_PARAMETER = _HomeDirectoryConfigurationParameter()
+HOME_DIRECTORY_CONFIGURATION_PARAMETER = _HomeCaseDirectoryConfigurationParameter()
 
 _HOME_DIRECTORY_REST_DESCRIPTION = """\
 Instructions and phases may use predefined input in terms of files

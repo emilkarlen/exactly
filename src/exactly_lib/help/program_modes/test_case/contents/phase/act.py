@@ -4,7 +4,8 @@ from exactly_lib.common.help.cross_reference_id import TestCasePhaseCrossReferen
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
-from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
+    HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \

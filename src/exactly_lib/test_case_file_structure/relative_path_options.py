@@ -90,7 +90,10 @@ class RelNonHomeOptionInfo(tuple):
 REL_HOME_OPTIONS_MAP = {
     RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                        relativity_root.resolver_for_home_case,
-                                                       file_ref_texts.RELATIVITY_DESCRIPTION_HOME),
+                                                       file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE),
+    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
+                                                      relativity_root.resolver_for_home_act,
+                                                      file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT),
 }
 
 REL_SDS_OPTIONS_MAP = {
@@ -128,7 +131,11 @@ REL_NON_HOME_OPTIONS_MAP = {
 REL_OPTIONS_MAP = {
     RelOptionType.REL_HOME_CASE: RelOptionInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                relativity_root.resolver_for_home_case,
-                                               file_ref_texts.RELATIVITY_DESCRIPTION_HOME),
+                                               file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE),
+
+    RelOptionType.REL_HOME_ACT: RelOptionInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
+                                              relativity_root.resolver_for_home_act,
+                                              file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT),
 
     RelOptionType.REL_CWD: RelOptionInfo(file_ref_texts.REL_CWD_OPTION_NAME,
                                          relativity_root.resolver_for_cwd,

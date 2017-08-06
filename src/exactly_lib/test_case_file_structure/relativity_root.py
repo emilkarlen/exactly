@@ -161,3 +161,6 @@ resolver_for_cwd = RelNonHomeRootResolverForCwd()
 
 resolver_for_home_case = RelHomeRootResolver(RelHomeOptionType.REL_HOME_CASE,
                                              HomeDirectoryStructure.case_dir.fget)
+
+resolver_for_home_act = RelHomeRootResolver(RelHomeOptionType.REL_HOME_ACT,
+                                            HomeDirectoryStructure.act_dir.fget)

@@ -3,7 +3,8 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.common.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs, SOURCE_INTERPRETER_ACTOR
-from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
+    HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_INFO
 from exactly_lib.help.utils.textformat_parser import TextParser

@@ -1,9 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_file_structure import relative_path_options as sut
+from exactly_lib_test.test_case_file_structure.test_resources import relativity_test_utils as dir_fun
 from exactly_lib_test.test_case_file_structure.test_resources import relativity_test_utils as utils
-from exactly_lib_test.test_case_file_structure.test_resources.relativity_test_utils import sds_2_act_dir, \
-    sds_2_result_dir, sds_2_tmp_user_dir, home_and_sds_2_home_case_dir, home_and_sds_2_cwd_dir, hds_2_case_dir
 
 
 def suite() -> unittest.TestSuite:
@@ -22,7 +21,8 @@ class TestHomeRelativityResolver(unittest.TestCase):
 
     def test_resolvers(self):
         cases = [
-            (sut.RelHomeOptionType.REL_HOME_CASE, hds_2_case_dir),
+            (sut.RelHomeOptionType.REL_HOME_CASE, dir_fun.hds_2_home_case_dir),
+            (sut.RelHomeOptionType.REL_HOME_ACT, dir_fun.hds_2_home_act_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             resolver = sut.REL_HOME_OPTIONS_MAP[rel_option_type].root_resolver
@@ -34,6 +34,7 @@ class TestHomeRelativityResolver(unittest.TestCase):
     def test_dict_keys(self):
         expected = {
             sut.RelHomeOptionType.REL_HOME_CASE,
+            sut.RelHomeOptionType.REL_HOME_ACT,
         }
         self.assertEqual(expected,
                          sut.REL_HOME_OPTIONS_MAP.keys())
@@ -46,9 +47,9 @@ class TestSdsRelativityResolver(unittest.TestCase):
 
     def test(self):
         cases = [
-            (sut.RelSdsOptionType.REL_RESULT, sds_2_result_dir),
-            (sut.RelSdsOptionType.REL_ACT, sds_2_act_dir),
-            (sut.RelSdsOptionType.REL_TMP, sds_2_tmp_user_dir),
+            (sut.RelSdsOptionType.REL_RESULT, dir_fun.sds_2_result_dir),
+            (sut.RelSdsOptionType.REL_ACT, dir_fun.sds_2_act_dir),
+            (sut.RelSdsOptionType.REL_TMP, dir_fun.sds_2_tmp_user_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             resolver = sut.REL_SDS_OPTIONS_MAP[rel_option_type].root_resolver
@@ -74,9 +75,9 @@ class TestNonHomeRelativityResolver(unittest.TestCase):
 
     def test_under_sds(self):
         cases = [
-            (sut.RelNonHomeOptionType.REL_RESULT, sds_2_result_dir),
-            (sut.RelNonHomeOptionType.REL_ACT, sds_2_act_dir),
-            (sut.RelNonHomeOptionType.REL_TMP, sds_2_tmp_user_dir),
+            (sut.RelNonHomeOptionType.REL_RESULT, dir_fun.sds_2_result_dir),
+            (sut.RelNonHomeOptionType.REL_ACT, dir_fun.sds_2_act_dir),
+            (sut.RelNonHomeOptionType.REL_TMP, dir_fun.sds_2_tmp_user_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -87,7 +88,7 @@ class TestNonHomeRelativityResolver(unittest.TestCase):
 
     def test_cwd(self):
         cases = [
-            (sut.RelNonHomeOptionType.REL_CWD, home_and_sds_2_cwd_dir),
+            (sut.RelNonHomeOptionType.REL_CWD, dir_fun.home_and_sds_2_cwd_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -114,9 +115,9 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_under_sds(self):
         cases = [
-            (sut.RelOptionType.REL_RESULT, sds_2_result_dir),
-            (sut.RelOptionType.REL_ACT, sds_2_act_dir),
-            (sut.RelOptionType.REL_TMP, sds_2_tmp_user_dir),
+            (sut.RelOptionType.REL_RESULT, dir_fun.sds_2_result_dir),
+            (sut.RelOptionType.REL_ACT, dir_fun.sds_2_act_dir),
+            (sut.RelOptionType.REL_TMP, dir_fun.sds_2_tmp_user_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -127,7 +128,8 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_under_home(self):
         cases = [
-            (sut.RelOptionType.REL_HOME_CASE, home_and_sds_2_home_case_dir),
+            (sut.RelOptionType.REL_HOME_CASE, dir_fun.home_and_sds_2_home_case_dir),
+            (sut.RelOptionType.REL_HOME_ACT, dir_fun.home_and_sds_2_home_act_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -138,7 +140,7 @@ class TestAnyRelativityResolver(unittest.TestCase):
 
     def test_cwd(self):
         cases = [
-            (sut.RelOptionType.REL_CWD, home_and_sds_2_cwd_dir),
+            (sut.RelOptionType.REL_CWD, dir_fun.home_and_sds_2_cwd_dir),
         ]
         for rel_option_type, expected_root_path_resolver in cases:
             with self.subTest(msg=str(rel_option_type)):
@@ -150,6 +152,7 @@ class TestAnyRelativityResolver(unittest.TestCase):
     def test_dict_keys(self):
         expected = {
             sut.RelOptionType.REL_HOME_CASE,
+            sut.RelOptionType.REL_HOME_ACT,
             sut.RelOptionType.REL_ACT,
             sut.RelOptionType.REL_RESULT,
             sut.RelOptionType.REL_TMP,
