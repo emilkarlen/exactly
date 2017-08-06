@@ -1,9 +1,10 @@
+import functools
 import pathlib
 import types
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency, RelOptionType, \
-    RESOLVING_DEPENDENCY_OF
+    RESOLVING_DEPENDENCY_OF, RelHomeOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system_values import file_refs as sut
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -20,6 +21,20 @@ def suite() -> unittest.TestSuite:
         _RelativityConfig(sut.rel_home_case,
                           ResolvingDependency.HOME,
                           lambda home_and_sds: home_and_sds.hds.case_dir),
+        _RelativityConfig(sut.rel_home_act,
+                          ResolvingDependency.HOME,
+                          lambda home_and_sds: home_and_sds.hds.act_dir),
+        _RelativityConfig(functools.partial(sut.rel_home, RelHomeOptionType.REL_HOME_CASE),
+                          ResolvingDependency.HOME,
+                          lambda home_and_sds: home_and_sds.hds.case_dir,
+                          function_name='sut.rel_home(RelHomeOptionType.REL_HOME_CASE, PATH_SUFFIX)'),
+        _RelativityConfig(functools.partial(sut.rel_home, RelHomeOptionType.REL_HOME_ACT),
+                          ResolvingDependency.HOME,
+                          lambda home_and_sds: home_and_sds.hds.act_dir,
+                          function_name='sut.rel_home(RelHomeOptionType.REL_HOME_ACT, PATH_SUFFIX)'),
+        _RelativityConfig(sut.rel_home_act,
+                          ResolvingDependency.HOME,
+                          lambda home_and_sds: home_and_sds.hds.act_dir),
         _RelativityConfig(sut.rel_tmp_user,
                           ResolvingDependency.NON_HOME,
                           lambda home_and_sds: home_and_sds.sds.tmp.user_dir),
