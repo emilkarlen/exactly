@@ -151,8 +151,9 @@ class RelOptionRenderer:
 
     def list_for(self, rel_options_conf: RelOptionsConfiguration) -> lists.HeaderContentList:
         items = []
-        for rel_option_type in rel_options_conf.accepted_relativity_variants.rel_option_types:
-            items.append(self.item_for(self.option_info_for(rel_option_type)))
+        for rel_option_type in _DISPLAY_ORDER:
+            if rel_option_type in rel_options_conf.accepted_relativity_variants.rel_option_types:
+                items.append(self.item_for(self.option_info_for(rel_option_type)))
         if rel_options_conf.is_rel_symbol_option_accepted:
             items.append(self._rel_symbol_item())
         return lists.HeaderContentList(items,
@@ -199,6 +200,15 @@ _REL_SYMBOL_DESCRIPTION = """\
 {PATH} is relative the path denoted by the symbol {SYMBOL_NAME}
 (which must have been defined as a {PATH_SYMBOL_TYPE} symbol).
 """
+
+_DISPLAY_ORDER = (
+    RelOptionType.REL_HOME_CASE,
+    RelOptionType.REL_HOME_ACT,
+    RelOptionType.REL_ACT,
+    RelOptionType.REL_TMP,
+    RelOptionType.REL_RESULT,
+    RelOptionType.REL_CWD,
+)
 
 _ALL = {
     RelOptionType.REL_TMP: _RelOptionTypeInfo(file_ref_texts.REL_TMP_OPTION_NAME,
