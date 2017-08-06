@@ -44,7 +44,10 @@ class Configuration(tuple):
         :param home_dir_path:
         :param timeout_in_seconds: None if no timeout
         """
-        return tuple.__new__(cls, (home_dir_path, timeout_in_seconds, environ, act_phase_os_process_executor))
+        return tuple.__new__(cls, (home_dir_path,
+                                   timeout_in_seconds,
+                                   environ,
+                                   act_phase_os_process_executor))
 
     @property
     def act_phase_os_process_executor(self) -> ActPhaseOsProcessExecutor:
@@ -56,7 +59,8 @@ class Configuration(tuple):
 
     @property
     def hds(self) -> HomeDirectoryStructure:
-        return HomeDirectoryStructure(self.home_dir_path)
+        return HomeDirectoryStructure(case_dir=self.home_dir_path,
+                                      act_dir=self.home_dir_path)
 
     @property
     def timeout_in_seconds(self) -> int:
