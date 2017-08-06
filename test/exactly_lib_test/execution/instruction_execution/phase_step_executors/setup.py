@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.execution.instruction_execution.phase_step_executors import ValidateSymbolsExecutor
@@ -7,10 +6,10 @@ from exactly_lib.execution.instruction_execution.single_instruction_executor imp
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.symbol.test_resources import symbol_utils as sd_tr
+from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_hds
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -158,13 +157,13 @@ class Expectation:
 
 
 def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
-    hds = HomeDirectoryStructure(pathlib.Path())
+    hds = dummy_hds()
     return InstructionEnvironmentForPreSdsStep(hds, {})
 
 
 def env_with_singleton_symbol_table(definition: su.SymbolDefinition) -> InstructionEnvironmentForPreSdsStep:
     table = sd_tr.symbol_table_from_symbol_definitions([definition])
-    hds = HomeDirectoryStructure(pathlib.Path())
+    hds = dummy_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
                                                symbols=table)
@@ -172,7 +171,7 @@ def env_with_singleton_symbol_table(definition: su.SymbolDefinition) -> Instruct
 
 def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
     symbols = sd_tr.symbol_table_from_symbol_definitions(symbols)
-    hds = HomeDirectoryStructure(pathlib.Path())
+    hds = dummy_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
                                                symbols=symbols)

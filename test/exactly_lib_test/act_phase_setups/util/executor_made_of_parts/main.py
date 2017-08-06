@@ -14,12 +14,12 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution, Expectation
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_file_structure.test_resources.paths import dummy_hds
 
 
 def suite() -> unittest.TestSuite:
@@ -97,7 +97,7 @@ class TestConstructor(unittest.TestCase):
 
 
 def _environment() -> InstructionEnvironmentForPreSdsStep:
-    hds = HomeDirectoryStructure(pathlib.Path())
+    hds = dummy_hds()
     return InstructionEnvironmentForPreSdsStep(hds, dict(os.environ))
 
 
