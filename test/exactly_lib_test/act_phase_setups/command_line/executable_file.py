@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups import command_line as sut
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHomeOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
@@ -15,7 +15,7 @@ from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPa
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources import \
-    test_validation_for_single_file_rel_home as single_file_rel_home
+    test_validation_for_single_file_rel_home_act as single_file_rel_home
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
@@ -25,7 +25,7 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_case_utils.test_resources import py_program, svh_assertions
 from exactly_lib_test.test_case_utils.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
@@ -45,7 +45,7 @@ def suite() -> unittest.TestSuite:
 
     ret_val.addTest(unittest.makeSuite(TestInvalidSyntax))
     ret_val.addTest(single_file_rel_home.suite_for(configuration))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments))
+    ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHomeActWithCommandLineArguments))
     ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
     ret_val.addTest(suite_for_execution(configuration))
     return ret_val
@@ -85,7 +85,7 @@ class TheConfiguration(Configuration):
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
         statements = py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)
         with tmp_file_containing_lines(statements) as src_path:
-            yield TestCaseSourceSetup(_instructions_for_executing_py_file(src_path))
+            yield TestCaseSourceSetup(act_phase_instructions=_instructions_for_executing_py_file(src_path))
 
     def _instructions_for_executing_source_from_py_file(self, statements: list) -> list:
         with tmp_file_containing_lines(statements) as src_path:
@@ -106,7 +106,8 @@ class TestInvalidSyntax(unittest.TestCase):
         expectation = Expectation(
             result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
-        check_execution(self, sut.Constructor(),
+        check_execution(self,
+                        sut.Constructor(),
                         act_phase_instructions,
                         arrangement,
                         expectation)
@@ -117,25 +118,27 @@ class TestInvalidSyntax(unittest.TestCase):
             instr([executable_file_name])
         ]
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([fs.empty_file(executable_file_name)]))
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT,
+                                     fs.DirContents([fs.empty_file(executable_file_name)]))
         )
         expectation = Expectation(
             result_of_validate_pre_sds=svh_assertions.is_validation_error()
         )
-        check_execution(self, sut.Constructor(),
+        check_execution(self,
+                        sut.Constructor(),
                         act_phase_instructions,
                         arrangement,
                         expectation)
 
 
-class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.TestCase):
+class TestSuccessfulExecutionOfProgramRelHomeActWithCommandLineArguments(unittest.TestCase):
     def runTest(self):
         executor_constructor = sut.Constructor()
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.python_executable_file(
                     'system-under-test',
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -170,7 +173,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.python_executable_file(
                     executable,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -209,7 +212,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.python_executable_file(
                     executable,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -246,7 +249,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -286,7 +289,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.python_executable_file(
                     symbol_for_executable.value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
@@ -318,7 +321,7 @@ class TestSymbolUsages(unittest.TestCase):
     def test_multiple_symbol_references_in_executable(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  file_refs.rel_home_case(PathPartAsFixedPath(sub_dir_of_home)))
+                                  file_refs.rel_home_act(PathPartAsFixedPath(sub_dir_of_home)))
 
         executable_file_name_symbol = NameAndValue('executable_file_name_symbol_name',
                                                    'the-executable-file')
@@ -338,7 +341,7 @@ class TestSymbolUsages(unittest.TestCase):
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
             ])),
             symbol_table=SymbolTable({
@@ -381,7 +384,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=case_home_dir_contents(fs.DirContents([
+            hds_contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                 fs.python_executable_file(
                     executable_file_name,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)

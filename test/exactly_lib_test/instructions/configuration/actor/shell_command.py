@@ -2,14 +2,12 @@ import unittest
 
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
-    file_in_home_dir, shell_command_syntax_for
+    file_in_home_act_dir, shell_command_syntax_for
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
-from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -34,7 +32,7 @@ class _ShellExecutionCheckerHelper:
               instruction_argument_source_template: str,
               act_phase_source_lines: list,
               expectation_of_cmd_and_args: asrt.ValueAssertion,
-              home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+              hds_contents: home_populators.HomePopulator = home_populators.empty(),
               ):
         instruction_argument_source = instruction_argument_source_template.format(
             actor_option=self.cli_option,
@@ -46,7 +44,7 @@ class _ShellExecutionCheckerHelper:
             arrangement = Arrangement(source=source,
                                       act_phase_source_lines=act_phase_source_lines,
                                       act_phase_process_executor=os_process_executor,
-                                      hds_contents=case_home_dir_contents(home_dir_contents))
+                                      hds_contents=hds_contents)
             expectation = Expectation(source_after_parse=source_assertion)
             # ACT #
             check(put, arrangement, expectation)
@@ -127,31 +125,31 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
     def _check(self, instruction_argument_source_template: str,
                act_phase_source_lines: list,
                expected_command_except_final_file_name_part: asrt.ValueAssertion,
-               home_dir_contents: DirContents,
+               hds_contents: home_populators.HomePopulator,
                ):
         self.helper.apply(self,
                           instruction_argument_source_template,
                           act_phase_source_lines,
                           expected_command_except_final_file_name_part,
-                          home_dir_contents)
+                          hds_contents)
 
     def test_single_command(self):
         self._check('{actor_option} {shell_option} interpreter',
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is('interpreter'),
-                    home_dir_contents=file_in_home_dir('file.src'))
+                    hds_contents=file_in_home_act_dir('file.src'))
 
     def test_command_with_arguments(self):
         self._check('{actor_option} {shell_option} interpreter with --arg2',
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is('interpreter with --arg2'),
-                    home_dir_contents=file_in_home_dir('file.src'))
+                    hds_contents=file_in_home_act_dir('file.src'))
 
     def test_quoting(self):
         self._check("{actor_option} {shell_option} 'interpreter with quoting' arg2 \"arg 3\"",
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is("'interpreter with quoting' arg2 \"arg 3\""),
-                    home_dir_contents=file_in_home_dir('file.src'))
+                    hds_contents=file_in_home_act_dir('file.src'))
 
 
 class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand(unittest.TestCase):

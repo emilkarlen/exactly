@@ -6,6 +6,7 @@ from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import \
     test_validation_for_single_line_source as single_line_source
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
@@ -13,7 +14,7 @@ from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single
     TestCaseForConfigurationForValidation
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
@@ -102,7 +103,7 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_
     def runTest(self):
         act_phase_instructions = [instr(['system-under-test'])]
         with home_directory_structure(
-                contents=case_home_dir_contents(fs.DirContents([
+                contents=contents_in(RelHomeOptionType.REL_HOME_ACT, fs.DirContents([
                     fs.executable_file('system-under-test')]))) as hds:
             environment = InstructionEnvironmentForPreSdsStep(hds, {})
             executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)

@@ -10,15 +10,15 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, empty_dir_contents
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
@@ -26,8 +26,8 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_u
 
 class TestCaseSourceSetup:
     def __init__(self, act_phase_instructions: list,
-                 home_dir_contents: DirContents = DirContents([])):
-        self.home_dir_contents = home_dir_contents
+                 home_act_dir_contents: DirContents = empty_dir_contents()):
+        self.home_act_dir_contents = home_act_dir_contents
         self.act_phase_instructions = act_phase_instructions
 
 
@@ -276,7 +276,8 @@ class TestTimeoutValueIsUsed(unittest.TestCase):
     def runTest(self):
         with self.configuration.program_that_sleeps_at_least(5) as test_case_setup:
             arrangement = act_phase_execution.Arrangement(
-                hds_contents=case_home_dir_contents(test_case_setup.home_dir_contents),
+                hds_contents=home_populators.contents_in(RelHomeOptionType.REL_HOME_ACT,
+                                                         test_case_setup.home_act_dir_contents),
                 timeout_in_seconds=1)
             expectation = act_phase_execution.Expectation(result_of_execute=eh_assertions.is_hard_error)
             act_phase_execution.check_execution(self,

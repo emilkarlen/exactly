@@ -1,5 +1,4 @@
 import shlex
-import shlex
 import sys
 import unittest
 from contextlib import contextmanager
@@ -61,7 +60,7 @@ class TheConfiguration(Configuration):
 
     @contextmanager
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
-        yield TestCaseSourceSetup(_instructions_for(
+        yield TestCaseSourceSetup(act_phase_instructions=_instructions_for(
             py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)))
 
 
