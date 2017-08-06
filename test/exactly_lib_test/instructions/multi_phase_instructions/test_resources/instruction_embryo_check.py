@@ -8,7 +8,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_utils
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -84,7 +85,7 @@ class Executor:
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages,
                                                           'symbol-usages after parse')
-        with home_and_sds_utils.home_and_sds_with_act_as_curr_dir(
+        with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
                 sds_contents=self.arrangement.sds_contents,
