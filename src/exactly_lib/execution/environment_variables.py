@@ -1,3 +1,4 @@
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -52,23 +53,20 @@ def exists_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
     return ret_val
 
 
-def exists_at_setup_main(hds: HomeDirectoryStructure,
-                         sds: SandboxDirectoryStructure) -> dict:
-    ret_val = set_at_setup_pre_validate(hds)
-    ret_val.update(set_at_setup_main(sds))
+def exists_at_setup_main(home_and_sds: HomeAndSds) -> dict:
+    ret_val = set_at_setup_pre_validate(home_and_sds.hds)
+    ret_val.update(set_at_setup_main(home_and_sds.sds))
     return ret_val
 
 
-def exists_at_assert(hds: HomeDirectoryStructure,
-                     sds: SandboxDirectoryStructure) -> dict:
-    ret_val = exists_at_setup_main(hds, sds)
-    ret_val.update(set_at_assert(sds))
+def exists_at_assert(home_and_sds: HomeAndSds) -> dict:
+    ret_val = exists_at_setup_main(home_and_sds)
+    ret_val.update(set_at_assert(home_and_sds.sds))
     return ret_val
 
 
-def replaced(hds: HomeDirectoryStructure,
-             sds: SandboxDirectoryStructure) -> dict:
+def replaced(home_and_sds: HomeAndSds) -> dict:
     """
     The environment variables that are replaced by the --with-replaced-env-vars.
     """
-    return exists_at_setup_main(hds, sds)
+    return exists_at_setup_main(home_and_sds)
