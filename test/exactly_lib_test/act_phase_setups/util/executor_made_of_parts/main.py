@@ -171,7 +171,8 @@ class ValidatorThatRecordsSteps(sut.Validator):
         self.recorder = recorder
         self.act_phase_source = object_with_act_phase_source.source
 
-    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         self.recorder[phase_step.ACT__VALIDATE_PRE_SDS] = self.act_phase_source
         return svh.new_svh_success()
 
