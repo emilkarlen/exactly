@@ -30,7 +30,7 @@ def execute(test_case: test_case_doc.TestCase,
     environ = dict(os.environ)
     _prepare_environment_variables(environ)
     partial_execution_configuration = partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                                                      configuration_builder.home_dir_path,
+                                                                      configuration_builder.home_case_dir_path,
                                                                       environ,
                                                                       configuration_builder.timeout_in_seconds)
     partial_result = partial_execution.execute(configuration_builder.act_phase_handling,

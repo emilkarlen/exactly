@@ -169,7 +169,7 @@ class _ActionWithPhaseStepAndRecording:
 
 class _ConfigurationPhaseActionThatSetsHomeCaseDirToParent:
     def __call__(self, configuration_builder: ConfigurationBuilder, *args):
-        configuration_builder.set_home_case_dir(configuration_builder.home_dir_path.parent)
+        configuration_builder.set_home_case_dir(configuration_builder.home_case_dir_path.parent)
 
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):

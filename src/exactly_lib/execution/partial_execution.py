@@ -37,14 +37,14 @@ from .result import PartialResult, PartialResultStatus, new_partial_result_pass,
 class Configuration(tuple):
     def __new__(cls,
                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
-                home_dir_path: pathlib.Path,
+                home_case_dir_path: pathlib.Path,
                 environ: dict,
                 timeout_in_seconds: int = None):
         """
-        :param home_dir_path:
+        :param home_case_dir_path:
         :param timeout_in_seconds: None if no timeout
         """
-        return tuple.__new__(cls, (home_dir_path,
+        return tuple.__new__(cls, (home_case_dir_path,
                                    timeout_in_seconds,
                                    environ,
                                    act_phase_os_process_executor))
@@ -54,13 +54,13 @@ class Configuration(tuple):
         return self[3]
 
     @property
-    def home_dir_path(self) -> pathlib.Path:
+    def home_case_dir_path(self) -> pathlib.Path:
         return self[0]
 
     @property
     def hds(self) -> HomeDirectoryStructure:
-        return HomeDirectoryStructure(case_dir=self.home_dir_path,
-                                      act_dir=self.home_dir_path)
+        return HomeDirectoryStructure(case_dir=self.home_case_dir_path,
+                                      act_dir=self.home_case_dir_path)
 
     @property
     def timeout_in_seconds(self) -> int:
