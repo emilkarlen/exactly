@@ -41,27 +41,29 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         actual_phase_2_step_2_names_set = _new_phase_enum_2_empty_dict()
 
         def recorder_for(phase_step: SimplePhaseStep):
-            return _StepRecordingAction(phase_step, actual_phase_2_step_2_names_set)
+            return _StepRecordingAction(phase_step,
+                                        actual_phase_2_step_2_names_set,
+                                        get_symbols_name_set)
 
         test_case = partial_test_case_with_instructions(
             [
-                _setup_phase_instruction_that_records_each_step_with_symbols(recorder_for)
+                _setup_phase_instruction_that_records__a_value_per_step(recorder_for)
             ],
             _act_phase_instructions_that_are_not_relevant_to_this_test(),
             [
-                _before_assert_phase_instruction_that_records_each_step_with_symbols(recorder_for)
+                _before_assert_phase_instruction_that_records_a_value_per_step(recorder_for)
             ],
             [
-                _assert_phase_instruction_that_records_each_step_with_symbols(recorder_for)
+                _assert_phase_instruction_that_records_a_value_per_step(recorder_for)
             ],
             [
-                _cleanup_phase_instruction_that_records_each_step_with_symbols(recorder_for)
+                _cleanup_phase_instruction_that_records__a_value_per_step(recorder_for)
             ],
         )
         test__va(
             self,
             test_case,
-            _act_phase_handling_that_records_each_step_with_symbols(recorder_for),
+            _act_phase_handling_that_records__a_value_per_step(recorder_for),
             asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
@@ -71,13 +73,17 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         all_defined_symbols = frozenset((symbol_name,))
         symbol_definition = symbol_utils.string_symbol_definition(symbol_name, 'symbol value (not used in test)')
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
+
+        steps_for_act = _for_steps(step.ALL_ACT_AFTER_PARSE, all_defined_symbols)
+        steps_for_act[step.ACT__PARSE.step] = frozenset()
+
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
                 step.SETUP__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.SETUP__MAIN.step: frozenset(),
                 step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
-            PhaseEnum.ACT: _for_steps(step.ALL_ACT_WITH_ENV_ARG, all_defined_symbols),
+            PhaseEnum.ACT: steps_for_act,
             PhaseEnum.BEFORE_ASSERT: _for_steps(step.ALL_BEFORE_ASSERT_WITH_ENV_ARG, all_defined_symbols),
             PhaseEnum.ASSERT: _for_steps(step.ALL_ASSERT_WITH_ENV_ARG, all_defined_symbols),
             PhaseEnum.CLEANUP: _for_steps(step.ALL_CLEANUP_WITH_ENV_ARG, all_defined_symbols),
@@ -85,7 +91,9 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         actual_phase_2_step_2_names_set = _new_phase_enum_2_empty_dict()
 
         def recorder_for(phase_step: SimplePhaseStep):
-            return _StepRecordingAction(phase_step, actual_phase_2_step_2_names_set)
+            return _StepRecordingAction(phase_step,
+                                        actual_phase_2_step_2_names_set,
+                                        get_symbols_name_set)
 
         test_case = partial_test_case_with_instructions(
             [
@@ -101,19 +109,19 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
             ],
             _act_phase_instructions_that_are_not_relevant_to_this_test(),
             [
-                _before_assert_phase_instruction_that_records_each_step_with_symbols(recorder_for)
+                _before_assert_phase_instruction_that_records_a_value_per_step(recorder_for)
             ],
             [
-                _assert_phase_instruction_that_records_each_step_with_symbols(recorder_for)
+                _assert_phase_instruction_that_records_a_value_per_step(recorder_for)
             ],
             [
-                _cleanup_phase_instruction_that_records_each_step_with_symbols(recorder_for)
+                _cleanup_phase_instruction_that_records__a_value_per_step(recorder_for)
             ],
         )
         test__va(
             self,
             test_case,
-            _act_phase_handling_that_records_each_step_with_symbols(recorder_for),
+            _act_phase_handling_that_records__a_value_per_step(recorder_for),
             asrt.anything_goes())
         self._check_result(expected_phase_2_step_2_names_set,
                            actual_phase_2_step_2_names_set)
@@ -145,7 +153,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                          'Recordings per phase and step')
 
 
-def _setup_phase_instruction_that_records_each_step_with_symbols(recorder_for) -> SetupPhaseInstruction:
+def _setup_phase_instruction_that_records__a_value_per_step(recorder_for) -> SetupPhaseInstruction:
     return setup_phase_instruction_that(
         validate_pre_sds_initial_action=recorder_for(step.SETUP__VALIDATE_PRE_SDS),
         main_initial_action=recorder_for(step.SETUP__MAIN),
@@ -153,7 +161,7 @@ def _setup_phase_instruction_that_records_each_step_with_symbols(recorder_for) -
     )
 
 
-def _before_assert_phase_instruction_that_records_each_step_with_symbols(recorder_for) -> BeforeAssertPhaseInstruction:
+def _before_assert_phase_instruction_that_records_a_value_per_step(recorder_for) -> BeforeAssertPhaseInstruction:
     return before_assert_phase_instruction_that(
         validate_pre_sds_initial_action=recorder_for(step.BEFORE_ASSERT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder_for(step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
@@ -161,7 +169,7 @@ def _before_assert_phase_instruction_that_records_each_step_with_symbols(recorde
     )
 
 
-def _assert_phase_instruction_that_records_each_step_with_symbols(recorder_for) -> AssertPhaseInstruction:
+def _assert_phase_instruction_that_records_a_value_per_step(recorder_for) -> AssertPhaseInstruction:
     return assert_phase_instruction_that(
         validate_pre_sds_initial_action=recorder_for(step.ASSERT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder_for(step.ASSERT__VALIDATE_POST_SETUP),
@@ -169,7 +177,7 @@ def _assert_phase_instruction_that_records_each_step_with_symbols(recorder_for) 
     )
 
 
-def _cleanup_phase_instruction_that_records_each_step_with_symbols(recorder_for) -> CleanupPhaseInstruction:
+def _cleanup_phase_instruction_that_records__a_value_per_step(recorder_for) -> CleanupPhaseInstruction:
     return cleanup_phase_instruction_that(
         validate_pre_sds_initial_action=recorder_for(step.CLEANUP__VALIDATE_PRE_SDS),
         main_initial_action=recorder_for(step.CLEANUP__MAIN),
@@ -183,16 +191,19 @@ def _act_phase_instructions_that_are_not_relevant_to_this_test():
 class _StepRecordingAction:
     def __init__(self,
                  phase_step: SimplePhaseStep,
-                 phase_2_step_2_recorded_value: dict):
+                 phase_2_step_2_recorded_value: dict,
+                 value_to_record_getter: types.FunctionType):
+        self.value_to_record_getter = value_to_record_getter
         self.phase_2_step_2_recorded_value = phase_2_step_2_recorded_value
         self.phase_step = phase_step
 
     def __call__(self, *args, **kwargs):
-        value_to_record = self._value_to_record(*args, **kwargs)
+        value_to_record = self.value_to_record_getter(*args, **kwargs)
         self.phase_2_step_2_recorded_value[self.phase_step.phase][self.phase_step.step] = value_to_record
 
-    def _value_to_record(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
-        return environment.symbols.names_set
+
+def get_symbols_name_set(environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
+    return environment.symbols.names_set
 
 
 class _ActionThatSetsSymbolInSymbolTable:
@@ -204,9 +215,10 @@ class _ActionThatSetsSymbolInSymbolTable:
                                 self.symbol.resolver_container)
 
 
-def _act_phase_handling_that_records_each_step_with_symbols(
+def _act_phase_handling_that_records__a_value_per_step(
         recorder_for_step: types.FunctionType) -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
+        parse_action=recorder_for_step(step.ACT__PARSE),
         validate_pre_sds_initial_action=recorder_for_step(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder_for_step(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=recorder_for_step(step.ACT__PREPARE),

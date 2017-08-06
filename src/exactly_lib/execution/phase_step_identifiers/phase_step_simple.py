@@ -18,10 +18,11 @@ ACT__VALIDATE_POST_SETUP = phase_step.ACT__VALIDATE_POST_SETUP.simple
 ACT__PREPARE = phase_step.ACT__PREPARE.simple
 ACT__EXECUTE = phase_step.ACT__EXECUTE.simple
 
-ALL_ACT_WITH_ENV_ARG = (ACT__VALIDATE_PRE_SDS,
-                        ACT__VALIDATE_POST_SETUP,
-                        ACT__PREPARE,
-                        ACT__EXECUTE)
+ALL_ACT_AFTER_PARSE = (ACT__VALIDATE_PRE_SDS,
+                       ACT__VALIDATE_POST_SETUP,
+                       ACT__PREPARE,
+                       ACT__EXECUTE)
+ALL_ACT_WITH_ENV_ARG = (ACT__PARSE,) + ALL_ACT_AFTER_PARSE
 
 BEFORE_ASSERT__VALIDATE_SYMBOLS = phase_step.BEFORE_ASSERT__VALIDATE_SYMBOLS.simple
 BEFORE_ASSERT__VALIDATE_PRE_SDS = phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS.simple
