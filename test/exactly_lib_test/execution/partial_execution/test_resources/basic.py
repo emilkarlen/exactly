@@ -1,4 +1,3 @@
-import os
 import pathlib
 import shutil
 import types
@@ -7,7 +6,7 @@ import unittest
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.result import PartialResult
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
@@ -121,33 +120,46 @@ def dummy_act_phase_handling() -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions())
 
 
-def test(unittest_case: unittest.TestCase,
+class Arrangement:
+    def __init__(self,
+                 act_phase_handling: ActPhaseHandling = dummy_act_phase_handling(),
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR,
+                 hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
+                                                                      pathlib.Path().resolve()),
+                 environ: dict = None):
+        self.act_phase_handling = act_phase_handling
+        self.act_phase_os_process_executor = act_phase_os_process_executor
+        self.hds = hds
+        self.environ = environ
+
+
+def test(put: unittest.TestCase,
          test_case: partial_execution.TestCase,
          act_phase_handling: ActPhaseHandling,
          assertions: types.FunctionType,
          is_keep_execution_directory_root: bool = True):
     with preserved_cwd():
         result = _execute(test_case,
-                          act_phase_handling,
+                          Arrangement(act_phase_handling=act_phase_handling),
                           is_keep_execution_directory_root=is_keep_execution_directory_root)
 
-        assertions(unittest_case,
+        assertions(put,
                    result)
     # CLEANUP #
     if result.sds.root_dir.exists():
         shutil.rmtree(str(result.sds.root_dir))
 
 
-def test__va(unittest_case: unittest.TestCase,
+def test__va(put: unittest.TestCase,
              test_case: partial_execution.TestCase,
-             act_phase_handling: ActPhaseHandling,
+             arrangement: Arrangement,
              assertions_on_result: asrt.ValueAssertion):
     with preserved_cwd():
         result = _execute(test_case,
-                          act_phase_handling,
+                          arrangement,
                           is_keep_execution_directory_root=False)
 
-        assertions_on_result.apply(unittest_case,
+        assertions_on_result.apply(put,
                                    result,
                                    asrt.MessageBuilder('Result'))
     # CLEANUP #
@@ -156,20 +168,19 @@ def test__va(unittest_case: unittest.TestCase,
 
 
 def _execute(test_case: partial_execution.TestCase,
-             act_phase_handling: ActPhaseHandling,
+             arrangement: Arrangement,
              is_keep_execution_directory_root: bool = True) -> Result:
-    home_case_dir_path = pathlib.Path().resolve()
-    home_act_dir_path = pathlib.Path().resolve()
-    hds = HomeDirectoryStructure(case_dir=home_case_dir_path,
-                                 act_dir=home_act_dir_path)
+    environ = arrangement.environ
+    if environ is None:
+        environ = {}
     partial_result = partial_execution.execute(
-        act_phase_handling,
+        arrangement.act_phase_handling,
         test_case,
-        partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                        hds,
-                                        dict(os.environ)),
+        partial_execution.Configuration(arrangement.act_phase_os_process_executor,
+                                        arrangement.hds,
+                                        environ),
         setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)
-    return Result(hds,
+    return Result(arrangement.hds,
                   partial_result)
