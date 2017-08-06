@@ -74,3 +74,7 @@ def symbol_table_with_entries(entries: iter) -> SymbolTable:
 
 def singleton_symbol_table(entry: Entry) -> SymbolTable:
     return SymbolTable({entry.key: entry.value})
+
+
+def symbol_table_from_none_or_value(symbol_table_or_none: SymbolTable) -> SymbolTable:
+    return SymbolTable() if symbol_table_or_none is None else symbol_table_or_none

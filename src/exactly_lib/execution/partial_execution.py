@@ -29,7 +29,7 @@ from exactly_lib.util.failure_details import FailureDetails, new_failure_details
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name, preserved_cwd, \
     open_and_make_read_only_on_close
 from exactly_lib.util.std import StdOutputFiles, StdFiles
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from . import result
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
@@ -39,7 +39,8 @@ class Configuration(tuple):
                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                 hds: HomeDirectoryStructure,
                 environ: dict,
-                timeout_in_seconds: int = None):
+                timeout_in_seconds: int = None,
+                predefined_symbols: SymbolTable = None):
         """
         :param home_case_dir_path:
         :param timeout_in_seconds: None if no timeout
@@ -47,7 +48,8 @@ class Configuration(tuple):
         return tuple.__new__(cls, (hds,
                                    timeout_in_seconds,
                                    environ,
-                                   act_phase_os_process_executor))
+                                   act_phase_os_process_executor,
+                                   predefined_symbols))
 
     @property
     def act_phase_os_process_executor(self) -> ActPhaseOsProcessExecutor:

@@ -4,6 +4,10 @@ import unittest
 from exactly_lib.util import functional as sut
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
 class Test(unittest.TestCase):
     def test(self):
         composition = sut.Composition(operator.neg, len)
@@ -12,11 +16,5 @@ class Test(unittest.TestCase):
                          actual)
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

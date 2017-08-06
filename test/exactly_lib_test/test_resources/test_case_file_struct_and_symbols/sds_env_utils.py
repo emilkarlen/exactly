@@ -8,9 +8,8 @@ from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathRe
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds_module
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, preserved_cwd
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_none_or_value
 
 
 class SdsAction:

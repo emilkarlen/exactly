@@ -14,7 +14,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
@@ -23,7 +23,6 @@ from exactly_lib_test.test_resources.process import capture_process_executor_res
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_none_or_value
 
 
 class HardErrorResultError(Exception):
