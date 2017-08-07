@@ -4,6 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.cli import main_program
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
+from exactly_lib.execution import full_execution
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util.std import StdOutputFiles
@@ -14,14 +15,17 @@ class MainProgram(main_program.MainProgram):
                  output: StdOutputFiles,
                  instruction_name_extractor_function,
                  instruction_setup: InstructionsSetup,
+                 predefined_properties: full_execution.PredefinedProperties,
                  default: TestCaseHandlingSetup):
         super().__init__(output, instruction_setup, default)
         self._instruction_name_extractor_function = instruction_name_extractor_function
+        self._predefined_properties = predefined_properties
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         executor = test_case_execution.Executor(self._std,
                                                 self._instruction_name_extractor_function,
                                                 self._instruction_set,
+                                                self._predefined_properties,
                                                 settings)
         return executor.execute()
 
@@ -33,6 +37,7 @@ class MainProgram(main_program.MainProgram):
         default_configuration = case_processing.Configuration(self._instruction_name_extractor_function,
                                                               self._instruction_set,
                                                               test_suite_execution_settings.handling_setup,
+                                                              self._predefined_properties,
                                                               False,
                                                               self._sds_root_name_prefix_for_suite())
         executor = test_suite_execution.Executor(default_configuration,

@@ -15,12 +15,14 @@ class Executor:
                  output: StdOutputFiles,
                  instruction_name_extractor_function,
                  instruction_setup: InstructionsSetup,
+                 predefined_properties: full_execution.PredefinedProperties,
                  settings: TestCaseExecutionSettings):
         self._std = output
         self._out_printer = FilePrinter(output.out)
         self._err_printer = FilePrinter(output.err)
         self._instruction_name_extractor_function = instruction_name_extractor_function
         self._instruction_setup = instruction_setup
+        self._predefined_properties = predefined_properties
         self._settings = settings
 
     def execute(self) -> int:
@@ -81,6 +83,7 @@ class Executor:
         configuration = processors.Configuration(self._instruction_name_extractor_function,
                                                  self._instruction_setup,
                                                  self._settings.handling_setup,
+                                                 self._predefined_properties,
                                                  is_keep_sds,
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)

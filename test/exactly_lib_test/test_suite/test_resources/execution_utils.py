@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.execution import full_execution
 from exactly_lib.execution import result
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.processing import processors as case_processing
@@ -53,6 +54,7 @@ DUMMY_CASE_PROCESSING = case_processing.Configuration(
     lambda x: ((), ()),
     InstructionsSetup({}, {}, {}, {}, {}),
     test_case_handling_setup_with_identity_preprocessor(),
+    full_execution.PredefinedProperties(),
     False)
 
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
