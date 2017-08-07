@@ -6,7 +6,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem, ConcreteTe
 from exactly_lib.util.textformat.structure.document import Section, SectionContents
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
-from exactly_lib.util.textformat.structure.table import TableCell
+from exactly_lib.util.textformat.structure.table import TableCell, Table, TableFormat
 
 SEPARATION_OF_HEADER_AND_CONTENTS = lists.Separations(1, 1)
 
@@ -125,6 +125,21 @@ def text_from_unknown(str_or_text) -> Text:
 
 def cell(paragraph_items: list) -> TableCell:
     return TableCell(paragraph_items)
+
+
+def text_cell(str_or_text) -> TableCell:
+    return cell(paras(str_or_text))
+
+
+def single_text_cell_table(single_text_cell_rows: list) -> Table:
+    return Table(TableFormat(),
+                 [
+                     [
+                         text_cell(raw_cell)
+                         for raw_cell in row
+                     ]
+                     for row in single_text_cell_rows
+                 ])
 
 
 def _empty_list_if_none(content) -> list:
