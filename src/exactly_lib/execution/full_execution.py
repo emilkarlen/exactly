@@ -10,11 +10,25 @@ from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.util.symbol_table import SymbolTable
 from . import result
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 
 
+class PredefinedProperties:
+    """Properties that are forwarded to the right place in the execution."""
+
+    def __init__(self,
+                 predefined_symbols: SymbolTable = None):
+        self.__predefined_symbols = predefined_symbols
+
+    @property
+    def predefined_symbols(self) -> SymbolTable:
+        return self.__predefined_symbols
+
+
 def execute(test_case: test_case_doc.TestCase,
+            predefined_properties: PredefinedProperties,
             configuration_builder: ConfigurationBuilder,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> FullResult:
@@ -29,10 +43,12 @@ def execute(test_case: test_case_doc.TestCase,
         return result.new_skipped()
     environ = dict(os.environ)
     _prepare_environment_variables(environ)
-    partial_execution_configuration = partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                                                      configuration_builder.hds,
-                                                                      environ,
-                                                                      configuration_builder.timeout_in_seconds)
+    partial_execution_configuration = partial_execution.Configuration(
+        ACT_PHASE_OS_PROCESS_EXECUTOR,
+        configuration_builder.hds,
+        environ,
+        configuration_builder.timeout_in_seconds,
+        predefined_symbols=predefined_properties.predefined_symbols)
     partial_result = partial_execution.execute(configuration_builder.act_phase_handling,
                                                partial_execution.TestCase(test_case.setup_phase,
                                                                           test_case.act_phase,

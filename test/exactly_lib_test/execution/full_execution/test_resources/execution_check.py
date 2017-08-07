@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.execution import full_execution
+from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
@@ -12,8 +13,11 @@ class Arrangement:
     def __init__(self,
                  test_case: test_case_doc.TestCase,
                  configuration_builder: ConfigurationBuilder,
-                 initial_settings_builder: SetupSettingsBuilder = None):
+                 initial_settings_builder: SetupSettingsBuilder = None,
+                 predefined_properties: PredefinedProperties = PredefinedProperties(),
+                 ):
         self.test_case = test_case
+        self.predefined_properties = predefined_properties
         self.configuration_builder = configuration_builder
         if not initial_settings_builder:
             initial_settings_builder = SetupSettingsBuilder()
@@ -31,6 +35,7 @@ def check(put: unittest.TestCase,
           expectation: Expectation,
           is_keep_execution_directory_root: bool = False):
     result = full_execution.execute(arrangement.test_case,
+                                    arrangement.predefined_properties,
                                     arrangement.configuration_builder,
                                     program_info.PROGRAM_NAME + '-full-execution',
                                     is_keep_execution_directory_root)
