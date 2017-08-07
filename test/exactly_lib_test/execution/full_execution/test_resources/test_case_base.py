@@ -6,6 +6,7 @@ import unittest
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups.source_interpreter import python3
 from exactly_lib.execution import full_execution
+from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc
@@ -34,6 +35,7 @@ class FullExecutionTestCaseBase:
         initial_home_dir_path = self.initial_home_dir_path.resolve()
         full_result = full_execution.execute(
             self._test_case(),
+            PredefinedProperties(),
             ConfigurationBuilder(initial_home_dir_path,
                                  initial_home_dir_path,
                                  self._act_phase_handling()),

@@ -4,6 +4,7 @@ import exactly_lib.section_document.exceptions
 from exactly_lib import program_info
 from exactly_lib.default.program_modes.test_case import test_case_parser
 from exactly_lib.execution import full_execution
+from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
@@ -121,8 +122,10 @@ class _Executor(processing_utils.Executor):
               test_case: test_case_doc.TestCase) -> FullResult:
         dir_containing_test_case_file = test_case_file_path.parent.resolve()
         return full_execution.execute(test_case,
+                                      PredefinedProperties(),
                                       ConfigurationBuilder(dir_containing_test_case_file,
                                                            dir_containing_test_case_file,
                                                            act_phase_handling_for_setup(self.default_act_phase_setup)),
                                       self._execution_directory_root_name_prefix,
-                                      self._is_keep_execution_directory_root)
+                                      self._is_keep_execution_directory_root,
+                                      )
