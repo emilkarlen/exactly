@@ -1,0 +1,16 @@
+# Error: a path symbol has an illegal relativity (at point of use)
+# via reference to a builtin symbol with illegal relativity
+
+[setup]
+
+def path WHAT_TO_INSTALL = @[EXACTLY_ACT]@
+
+# Cause of error: "install" only accept paths that are relative
+# the home directory
+
+install @[WHAT_TO_INSTALL]@
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'

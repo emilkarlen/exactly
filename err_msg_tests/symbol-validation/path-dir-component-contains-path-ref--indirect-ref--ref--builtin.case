@@ -1,0 +1,25 @@
+#
+# References a path variable with a path component that
+# is not a string.
+#
+# Also: failing symbol is referenced indirectly, so error message
+# should display the "path" to the definition to that symbol.
+#
+
+[setup]
+
+def path bp = --rel-home dir1
+
+# cause of error: ba is defined as a path - it must be a string
+
+def string se   = le
+def string base = @[EXACTLY_TMP]@@[se]@
+
+def string sfx  = txt
+
+install @[bp]@/dir2/@[base]@.@[sfx]@
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'
