@@ -1,3 +1,4 @@
+from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction, ValueRestrictionFailure
@@ -6,7 +7,6 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
     RelOptionType
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
 from exactly_lib.type_system_values.value_type import ValueType
-from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
 
 

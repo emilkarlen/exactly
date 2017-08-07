@@ -1,11 +1,11 @@
 import types
 
+from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
     ValueRestrictionFailure
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
 from exactly_lib.type_system_values.value_type import ValueType
-from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
 
 
