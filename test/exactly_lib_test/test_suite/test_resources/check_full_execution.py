@@ -3,6 +3,7 @@ import tempfile
 import unittest
 
 from exactly_lib import program_info
+from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -60,6 +61,7 @@ def _default_case_configuration(test_case_handling_setup: TestCaseHandlingSetup)
     return case_processing.Configuration(white_space_name_and_argument_splitter,
                                          INSTRUCTION_SETUP,
                                          test_case_handling_setup,
+                                         PredefinedProperties(),
                                          False)
 
 

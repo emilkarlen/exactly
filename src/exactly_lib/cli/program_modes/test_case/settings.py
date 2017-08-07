@@ -17,8 +17,9 @@ class TestCaseExecutionSettings:
                  initial_home_dir_path: pathlib.Path,
                  output: Output,
                  handling_setup: TestCaseHandlingSetup,
-                 is_keep_execution_directory_root: bool=False,
-                 execution_directory_root_name_prefix: str= program_info.PROGRAM_NAME + '-'):
+                 is_keep_execution_directory_root: bool = False,
+                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-',
+                 ):
         self.__file_path = file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output

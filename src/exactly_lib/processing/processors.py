@@ -4,7 +4,6 @@ import exactly_lib.section_document.exceptions
 from exactly_lib import program_info
 from exactly_lib.default.program_modes.test_case import test_case_parser
 from exactly_lib.execution import full_execution
-from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
@@ -26,8 +25,10 @@ class Configuration:
                  instruction_name_extractor_function,
                  instruction_setup: InstructionsSetup,
                  default_handling_setup: TestCaseHandlingSetup,
+                 predefined_properties: full_execution.PredefinedProperties,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
+        self.predefined_properties = predefined_properties
         self.default_handling_setup = default_handling_setup
         self.instruction_setup = instruction_setup
         self.instruction_name_extractor_function = instruction_name_extractor_function
@@ -64,6 +65,7 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
     return _Executor(configuration.default_handling_setup.default_act_phase_setup,
                      configuration.is_keep_execution_directory_root,
+                     configuration.predefined_properties,
                      configuration.execution_directory_root_name_prefix)
 
 
@@ -112,7 +114,9 @@ class _Executor(processing_utils.Executor):
     def __init__(self,
                  default_act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
+                 predefined_properties: full_execution.PredefinedProperties,
                  execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
+        self.predefined_properties = predefined_properties
         self.default_act_phase_setup = default_act_phase_setup
         self._is_keep_execution_directory_root = is_keep_execution_directory_root
         self._execution_directory_root_name_prefix = execution_directory_root_name_prefix
@@ -122,7 +126,7 @@ class _Executor(processing_utils.Executor):
               test_case: test_case_doc.TestCase) -> FullResult:
         dir_containing_test_case_file = test_case_file_path.parent.resolve()
         return full_execution.execute(test_case,
-                                      PredefinedProperties(),
+                                      self.predefined_properties,
                                       ConfigurationBuilder(dir_containing_test_case_file,
                                                            dir_containing_test_case_file,
                                                            act_phase_handling_for_setup(self.default_act_phase_setup)),
