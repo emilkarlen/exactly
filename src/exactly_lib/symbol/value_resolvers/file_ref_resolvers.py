@@ -1,6 +1,15 @@
 from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.test_case_file_structure import relativity_root
+from exactly_lib.type_system_values import file_refs
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
+
+
+def resolver_of_rel_option(rel_option: relativity_root.RelOptionType,
+                           path_suffix: PathPart = PathPartAsNothing()) -> FileRefResolver:
+    return FileRefConstant(file_refs.of_rel_option(rel_option, path_suffix))
 
 
 class FileRefConstant(FileRefResolver):

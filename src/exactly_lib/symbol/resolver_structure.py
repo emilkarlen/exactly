@@ -61,3 +61,7 @@ class ResolverContainer(SymbolTableValue):
     @property
     def resolver(self) -> SymbolValueResolver:
         return self._resolver
+
+
+def container_of_builtin(value_resolver: SymbolValueResolver) -> ResolverContainer:
+    return ResolverContainer(value_resolver, None)

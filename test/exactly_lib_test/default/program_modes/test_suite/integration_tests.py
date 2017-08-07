@@ -8,7 +8,7 @@ from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
-    run_via_main_program_internally_with_default_setup
+    main_program_runner_with_default_setup_in_same_process
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor, tests_for_setup_with_preprocessor
@@ -30,7 +30,7 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 def suite_for_running_main_program_internally() -> unittest.TestSuite:
-    return suite_for(run_via_main_program_internally_with_default_setup())
+    return suite_for(main_program_runner_with_default_setup_in_same_process())
 
 
 class InvalidOptions(SetupWithReplacementOfVariableOutputWithPlaceholders):

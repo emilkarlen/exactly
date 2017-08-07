@@ -14,8 +14,8 @@ sys.path.insert(0, src_dir)
 os.chdir(this_dir)
 
 import unittest
-import exactly_lib_test
+import complete_test_suite
 
-suite = exactly_lib_test.suite_that_does_not_require_main_program_runner()
+suite = complete_test_suite.complete_without_main_program_runner()
 runner = unittest.TextTestRunner()
 runner.run(suite)

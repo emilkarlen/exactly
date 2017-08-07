@@ -1,3 +1,4 @@
+from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ValueRestriction
@@ -25,7 +26,7 @@ def container(value_resolver: SymbolValueResolver,
 
 
 def container_of_builtin(value_resolver: SymbolValueResolver) -> ResolverContainer:
-    return ResolverContainer(value_resolver, None)
+    return resolver_structure.container_of_builtin(value_resolver)
 
 
 def string_value_constant_container(constant_str: str,
