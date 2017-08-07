@@ -17,13 +17,7 @@ from exactly_lib_test import test_suite
 from exactly_lib_test import type_system_values
 from exactly_lib_test import util
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from exactly_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
-
-
-def complete_suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    ret_val = suite_that_does_not_require_main_program_runner()
-    ret_val.addTests(suite_that_does_require_main_program_runner(main_program_runner))
-    return ret_val
+from exactly_lib_test.test_resources.main_program.main_program_runners import RunDefaultMainProgramViaOsInSubProcess
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
@@ -49,15 +43,41 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     return ret_val
 
 
-def suite_that_does_require_main_program_runner(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+def suite_that_does_require_any_main_program_runner(mpr: MainProgramRunner) -> unittest.TestSuite:
     from exactly_lib_test import cli
-    ret_val = default.suite_that_does_require_main_program_runner(main_program_runner)
-    ret_val.addTests(cli.suite_that_does_require_main_program_runner(main_program_runner))
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(default.suite_that_does_require_main_program_runner(mpr))
+    ret_val.addTest(cli.suite_that_does_require_main_program_runner(mpr))
+    return ret_val
+
+
+def suite_that_does_require_main_program_runner_with_default_setup(
+        mpr: MainProgramRunner) -> unittest.TestSuite:
+    return default.suite_that_does_require_main_program_runner_with_default_setup(mpr)
+
+
+def complete_without_main_program_runner() -> unittest.TestSuite:
+    return suite_that_does_not_require_main_program_runner()
+
+
+def complete_with_any_main_program_runner(mpr: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(complete_without_main_program_runner())
+    ret_val.addTest(suite_that_does_require_any_main_program_runner(mpr))
+    return ret_val
+
+
+def complete_with_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(complete_with_any_main_program_runner(mpr))
+    ret_val.addTest(suite_that_does_require_main_program_runner_with_default_setup(mpr))
     return ret_val
 
 
 if __name__ == '__main__':
     from exactly_lib_test.default.test_resources.internal_main_program_runner import \
-        run_via_main_program_internally_with_default_setup
+        main_program_runner_with_default_setup_in_same_process
 
-    unittest.TextTestRunner().run(complete_suite_for(run_via_main_program_internally_with_default_setup()))
+    unittest.TextTestRunner().run(
+        complete_with_main_program_runner_with_default_setup(
+            main_program_runner_with_default_setup_in_same_process()))

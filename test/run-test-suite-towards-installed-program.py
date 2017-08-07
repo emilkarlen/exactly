@@ -1,13 +1,17 @@
 """
 A python 3 program that runs the test suite towards an installed program.
 """
+import unittest
+
 import complete_test_suite
 from exactly_lib import program_info
-from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.main_program_runner import \
+from exactly_lib_test.test_resources.cli_main_program_via_sub_process_utils.main_program_runner import \
     RunInstalledProgramViaOsInSubProcess
 
 # This value is from setup.py
 EXECUTABLE_NAME = program_info.PROGRAM_NAME
 
-main_program_runner = RunInstalledProgramViaOsInSubProcess(EXECUTABLE_NAME)
-complete_test_suite.run_suite_for(main_program_runner)
+mpr = RunInstalledProgramViaOsInSubProcess(EXECUTABLE_NAME)
+suite = complete_test_suite.complete_with_main_program_runner_with_default_setup(mpr)
+runner = unittest.TextTestRunner()
+runner.run(suite)
