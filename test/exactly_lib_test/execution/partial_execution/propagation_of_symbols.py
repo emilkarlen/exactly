@@ -58,7 +58,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records__a_value_per_step(recorder_for)),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for)),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
@@ -119,7 +119,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records__a_value_per_step(recorder_for)),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for)),
             asrt.anything_goes())
         _check_result(self,
                       expected_phase_2_step_2_names_set,
@@ -169,7 +169,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
         test__va(
             self,
             test_case,
-            Arrangement(psr.act_phase_handling_that_records__a_value_per_step(recorder_for),
+            Arrangement(psr.act_phase_handling_that_records_a_value_per_step(recorder_for),
                         predefined_symbols=expected_predefined_symbols),
             asrt.anything_goes())
         _check_result(self,
@@ -254,7 +254,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
             self,
             test_case,
             Arrangement(
-                act_phase_handling=psr.act_phase_handling_that_records__a_value_per_step(recorder_for),
+                act_phase_handling=psr.act_phase_handling_that_records_a_value_per_step(recorder_for),
                 predefined_symbols=predefined_symbols_table),
             asrt.anything_goes())
         _check_result(self,

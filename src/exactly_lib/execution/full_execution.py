@@ -48,7 +48,8 @@ def execute(test_case: test_case_doc.TestCase,
         configuration_builder.hds,
         environ,
         configuration_builder.timeout_in_seconds,
-        predefined_symbols=predefined_properties.predefined_symbols)
+        predefined_symbols=predefined_properties.predefined_symbols,
+    )
     partial_result = partial_execution.execute(configuration_builder.act_phase_handling,
                                                partial_execution.TestCase(test_case.setup_phase,
                                                                           test_case.act_phase,
