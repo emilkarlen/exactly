@@ -9,6 +9,10 @@ def assert_symbol_table_is_singleton(expected_name: str,
     return _AssertSymbolTableIsSingleton(expected_name, value_assertion)
 
 
+def assert_symbol_table_keys_equals(expected_keys: iter) -> asrt.ValueAssertion:
+    return _AssertSymbolTableKeysEquals(expected_keys)
+
+
 class _AssertSymbolTableIsSingleton(asrt.ValueAssertion):
     def __init__(self,
                  expected_name: str,
@@ -29,3 +33,18 @@ class _AssertSymbolTableIsSingleton(asrt.ValueAssertion):
         self.value_assertion.apply_with_message(put,
                                                 value.lookup(self.expected_name),
                                                 'value')
+
+
+class _AssertSymbolTableKeysEquals(asrt.ValueAssertion):
+    def __init__(self,
+                 expected_keys: iter):
+        self.expected_keys = expected_keys
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        assert isinstance(value, SymbolTable)
+        put.assertEqual(frozenset(self.expected_keys),
+                        value.names_set,
+                        'keys are expected to match')

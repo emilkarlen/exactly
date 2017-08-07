@@ -9,7 +9,10 @@ from exactly_lib_test.util.test_resources import symbol_table_assertions as sut
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestSymbolTableIsSingleton)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestSymbolTableIsSingleton),
+        unittest.makeSuite(TestSymbolTableKeysEquals),
+    ])
 
 
 class TestSymbolTableIsSingleton(unittest.TestCase):
@@ -68,6 +71,88 @@ class TestSymbolTableIsSingleton(unittest.TestCase):
             with self.subTest(name=name):
                 assertion = sut.assert_symbol_table_is_singleton(symbol_name, value_assertion)
                 assert_that_assertion_fails(assertion, table)
+
+
+class TestSymbolTableKeysEquals(unittest.TestCase):
+    def test_pass(self):
+        a_symbol = NameAndValue('symbol name',
+                                ASymbolTableValue('symbol value'))
+        a_different_symbol = NameAndValue('a different symbol name',
+                                          ASymbolTableValue('a different symbol value'))
+        cases = [
+            (
+                'empty table',
+                frozenset(),
+                empty_symbol_table(),
+            ),
+            (
+                'table with a single value',
+                {a_symbol.name},
+                SymbolTable({
+                    a_symbol.name: a_symbol.value,
+                }),
+            ),
+            (
+                'table with a multiple values',
+                {a_symbol.name,
+                 a_different_symbol.name},
+                SymbolTable({
+                    a_symbol.name: a_symbol.value,
+                    a_different_symbol.name: a_different_symbol.value,
+                }),
+            ),
+        ]
+        for name, expected_keys, actual_symbol_table in cases:
+            with self.subTest(name=name):
+                # ARRANGE #
+                assertion = sut.assert_symbol_table_keys_equals(expected_keys)
+                # ACT #
+                assertion.apply_without_message(self, actual_symbol_table)
+
+    def test_fail(self):
+        a_symbol = NameAndValue('symbol name',
+                                ASymbolTableValue('symbol value'))
+
+        a_different_symbol = NameAndValue('a different symbol name',
+                                          ASymbolTableValue('a different symbol value'))
+        a_different_symbol_2 = NameAndValue('a different symbol name 2',
+                                            ASymbolTableValue('a different symbol value 2'))
+        cases = [
+            (
+                'expecting a single key but actual table is empty',
+                {a_symbol.name},
+                empty_symbol_table(),
+            ),
+            (
+                'expecting empty set of keys but actual table is non-empty',
+                frozenset(),
+                SymbolTable({
+                    a_symbol.name: a_symbol.value,
+                }),
+            ),
+            (
+                'number of keys is expected, but value is different',
+                {a_symbol.name},
+                SymbolTable({
+                    a_different_symbol.name: a_different_symbol.value,
+                }),
+            ),
+            (
+                'number of keys is expected, but one of the keys is not expected',
+                {a_symbol.name,
+                 a_different_symbol.name},
+                SymbolTable({
+                    a_symbol.name: a_symbol.value,
+                    a_different_symbol_2.name: a_different_symbol_2.value,
+                }),
+            ),
+        ]
+        for name, expected_keys, actual_symbol_table in cases:
+            with self.subTest(name=name):
+                # ARRANGE #
+                assertion = sut.assert_symbol_table_keys_equals(expected_keys)
+                # ACT #
+                assert_that_assertion_fails(assertion, actual_symbol_table)
 
 
 def assert_string_value_equals(expected_value: str) -> asrt.ValueAssertion:
