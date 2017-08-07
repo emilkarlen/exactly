@@ -104,7 +104,7 @@ class StepRecordingAction:
         self.phase_2_step_2_recorded_value[self.phase_step.phase][self.phase_step.step] = value_to_record
 
 
-def act_phase_handling_that_records__a_value_per_step(
+def act_phase_handling_that_records_a_value_per_step(
         recorder_for_step: types.FunctionType) -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions(
         parse_action=recorder_for_step(step.ACT__PARSE),
