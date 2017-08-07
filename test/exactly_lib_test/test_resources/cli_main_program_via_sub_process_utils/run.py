@@ -9,14 +9,14 @@ MAIN_PROGRAM_FILE_NAME = 'default-main-program-runner.py'
 
 
 def main_program_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:
-    return dir_of_this_file.parent / SRC_DIR_NAME / MAIN_PROGRAM_FILE_NAME
+    return pathlib.Path(dir_of_this_file.parent) / SRC_DIR_NAME / MAIN_PROGRAM_FILE_NAME
 
 
-def run_main_program_in_sub_process(puc: unittest.TestCase,
-                                    arguments: list,
-                                    stdin_contents: str = '') -> SubProcessResult:
+def run_default_main_program_via_sub_process(put: unittest.TestCase,
+                                             arguments: list,
+                                             stdin_contents: str = '') -> SubProcessResult:
     cwd = pathlib.Path.cwd()
-    py_exe.assert_interpreter_is_available(puc)
+    py_exe.assert_interpreter_is_available(put)
     main_program_path = main_program_src_path(cwd)
     cmd_and_args = py_exe.args_for_interpreting(main_program_path, arguments)
     return run_subprocess(cmd_and_args, stdin_contents)

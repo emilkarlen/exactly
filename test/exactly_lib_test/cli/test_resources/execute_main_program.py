@@ -31,13 +31,14 @@ EMPTY_INSTRUCTIONS_SETUP = InstructionsSetup(
 
 def execute_main_program(arguments: list,
                          instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP,
-                         name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter
+                         name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter,
+                         predefined_properties: PredefinedProperties = PredefinedProperties(),
                          ) -> SubProcessResult:
     str_std_out_files = StringStdOutFiles()
     program = sut.MainProgram(str_std_out_files.stdout_files,
                               name_and_argument_splitter,
                               instructions_setup,
-                              PredefinedProperties(),
+                              predefined_properties,
                               test_case_handling_setup())
     exit_status = program.execute(arguments)
     str_std_out_files.finish()

@@ -27,8 +27,8 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 def suite_for_running_main_program_internally() -> unittest.TestSuite:
-    from exactly_lib_test import run_via_main_program_internally_with_default_setup
-    return suite_for(run_via_main_program_internally_with_default_setup())
+    from exactly_lib_test import main_program_runner_with_default_setup__in_same_process
+    return suite_for(main_program_runner_with_default_setup__in_same_process())
 
 
 class ReferencesToCaseFilesThatMatchesNoFiles(SetupWithReplacementOfVariableOutputWithPlaceholders):

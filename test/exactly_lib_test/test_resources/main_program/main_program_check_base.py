@@ -7,7 +7,7 @@ from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
     ARGUMENTS_FOR_TEST_INTERPRETER
-from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import run_main_program_in_sub_process
+from exactly_lib_test.test_resources.cli_main_program_via_sub_process_utils import run
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -64,13 +64,13 @@ class SetupWithoutPreprocessor(SetupBase):
         return ARGUMENTS_FOR_TEST_INTERPRETER
 
 
-def run_in_sub_process(put: unittest.TestCase,
-                       arguments: list) -> SubProcessResult:
-    return run_main_program_in_sub_process(put, arguments)
+def run_default_main_program_via_sub_process(put: unittest.TestCase,
+                                             arguments: list) -> SubProcessResult:
+    return run.run_default_main_program_via_sub_process(put, arguments)
 
 
-def run_internally(put: unittest.TestCase,
-                   arguments: list) -> SubProcessResult:
+def run_stripped_main_program_internally(put: unittest.TestCase,
+                                         arguments: list) -> SubProcessResult:
     return execute_main_program(arguments)
 
 
@@ -130,7 +130,8 @@ class TestForSetupWithoutPreprocessor(unittest.TestCase):
 
     def runTest(self):
         check(self.setup.additional_arguments(),
-              self.setup, self,
+              self.setup,
+              self,
               self.main_program_runner)
 
     def shortDescription(self):
