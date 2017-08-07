@@ -6,7 +6,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
     SPECIFIC_ABSOLUTE_RELATIVITY, ResolvingDependency, rel_any_from_rel_home
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.type_system_values.file_ref_base import FileRefWithPathSuffixBase, \
     FileRefWithPathSuffixAndIsNotAbsoluteBase
@@ -47,12 +47,12 @@ class _FileRefFromRelRootResolver(_FileRefWithConstantLocationBase):
 
 
 def of_rel_root(rel_root_resolver: relativity_root.RelRootResolver,
-                path_suffix: PathPart) -> FileRef:
+                path_suffix: PathPart = PathPartAsNothing()) -> FileRef:
     return _FileRefFromRelRootResolver(rel_root_resolver, path_suffix)
 
 
 def of_rel_option(rel_option: relativity_root.RelOptionType,
-                  path_suffix: PathPart) -> FileRef:
+                  path_suffix: PathPart = PathPartAsNothing()) -> FileRef:
     return _FileRefFromRelRootResolver(relative_path_options.REL_OPTIONS_MAP[rel_option].root_resolver,
                                        path_suffix)
 

@@ -3,6 +3,7 @@ A python 3 program that runs the test suite towards the source file structure.
 """
 import os
 import sys
+import unittest
 
 SRC_DIR_NAME = 'src'
 
@@ -13,8 +14,10 @@ sys.path.insert(0, src_dir)
 
 os.chdir(this_dir)
 
-from exactly_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
+from exactly_lib_test.test_resources.main_program.main_program_runners import RunDefaultMainProgramViaOsInSubProcess
 import complete_test_suite
 
-main_program_runner = RunViaOsInSubProcess()
-complete_test_suite.run_suite_for(main_program_runner)
+mpr = RunDefaultMainProgramViaOsInSubProcess()
+suite = complete_test_suite.complete_with_main_program_runner_with_default_setup(mpr)
+runner = unittest.TextTestRunner()
+runner.run(suite)

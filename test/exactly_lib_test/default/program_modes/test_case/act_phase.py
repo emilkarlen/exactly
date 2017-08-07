@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.execution import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
-    run_via_main_program_internally_with_default_setup
+    main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
@@ -20,7 +20,7 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 def suite() -> unittest.TestSuite:
-    return suite_for(run_via_main_program_internally_with_default_setup())
+    return suite_for(main_program_runner_with_default_setup__in_same_process())
 
 
 class EmptyTestCaseShouldFailDueToMissingActPhase(SetupWithoutPreprocessorAndDefaultActor):
