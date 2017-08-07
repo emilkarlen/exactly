@@ -1,6 +1,6 @@
 from exactly_lib.util.line_source import Line
 
-_WHICH_IS_A_BUILTIN_SYMBOL = 'which is a builtin'
+_WHICH_IS_A_BUILTIN_SYMBOL = 'which is a builtin symbol'
 
 
 def source_line(line: Line) -> str:

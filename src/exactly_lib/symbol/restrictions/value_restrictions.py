@@ -123,9 +123,9 @@ def _unsatisfied_path_relativity(symbol_name: str,
             return file_ref_texts.RELATIVITY_DESCRIPTION_ABSOLUTE
         return option_description(actual_relativity.relativity_type)
 
-    def _accepted_relativities_lines() -> list:
+    def _legal_relativities_lines() -> list:
         ret_val = []
-        header = '   '
+        header = '     '
         if accepted.absolute:
             ret_val.append(header + file_ref_texts.RELATIVITY_DESCRIPTION_ABSOLUTE)
         for rel_opt in accepted.rel_option_types:
@@ -134,16 +134,16 @@ def _unsatisfied_path_relativity(symbol_name: str,
         return ret_val
 
     lines = ([
-                 'Unaccepted relativity, of {} symbol "{}"'.format(help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
-                                                                   symbol_name)
+                 'Illegal relativity, of {} symbol "{}"'.format(help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
+                                                                symbol_name)
              ] +
              defined_at_line__err_msg_lines(container.definition_source) +
              [
                  '',
                  'Found    : ' + _render_actual_relativity(),
-                 'Accepted : ',
+                 'Expected : ',
              ])
-    lines.extend(_accepted_relativities_lines())
+    lines.extend(_legal_relativities_lines())
     return '\n'.join(lines)
 
 
@@ -153,13 +153,13 @@ def _invalid_type_header_lines(expected: ValueType,
                                container: ResolverContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
     ret_val = ([
-                   'Invalid type, of symbol "{}"'.format(symbol_name)
+                   'Illegal type, of symbol "{}"'.format(symbol_name)
                ] +
                defined_at_line__err_msg_lines(container.definition_source) +
                [
                    '',
-                   'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
                    'Found    : ' + help_texts.TYPE_INFO_DICT[actual].type_name,
+                   'Expected : ' + help_texts.TYPE_INFO_DICT[expected].type_name,
                ])
     return ret_val
 
