@@ -1,0 +1,14 @@
+# Error: a path symbol has an illegal relativity (at point of use)
+# via reference to a builtin symbol with illegal relativity
+
+[setup]
+
+# Cause of error: "install" only accept paths that are relative
+# the home directories
+
+install @[EXACTLY_ACT]@
+
+
+[act]
+
+$ echo 'behaviour of act phase is irrelevant'
