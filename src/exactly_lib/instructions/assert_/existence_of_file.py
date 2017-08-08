@@ -10,7 +10,6 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -19,6 +18,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
+from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -67,23 +67,20 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         self.type_argument = a.Named(_TYPE_ARGUMENT_STR)
+        self.negation_argument = a.Constant(NEGATION_OPERATOR)
         super().__init__(name, {
             'PATH': _PATH_ARGUMENT.name,
             'TYPE': _TYPE_ARGUMENT_STR,
             'SYM_LNK': file_properties.type_name[file_properties.FileType.SYMLINK],
+            'NEGATION_OPERATOR': NEGATION_OPERATOR,
         })
 
     def single_line_description(self) -> str:
         return 'Tests the existence, and optionally type, of a file'
 
     def main_description_rest(self) -> list:
-        text = """\
-        PASS if, and only if, {PATH} exists, and is a file of the given type.
-
-
-        If {TYPE} is not given, {PATH} may be any type of file.
-        """
-        specific_for_instruction = self._paragraphs(text)
+        specific_for_instruction = self._paragraphs(
+            _PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION)
         default_relativity = rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
                                                                               _REL_OPTION_CONFIG.options.default_option)
         path_syntax_paragraphs = dt.paths_uses_posix_syntax()
@@ -91,11 +88,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         type_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.type_argument)]
+        negation_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.negation_argument)]
         path_arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
             _REL_OPTION_CONFIG.options.is_rel_symbol_option_accepted,
             _REL_OPTION_CONFIG.path_suffix_is_required)
-        arguments = type_arguments + path_arguments
+        arguments = negation_arguments + type_arguments + path_arguments
 
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
@@ -103,13 +101,17 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
+        negation_elements = [
+            SyntaxElementDescription(self.negation_argument.name,
+                                     self._negation_element_description(), []),
+        ]
         type_elements = [
             SyntaxElementDescription(self.type_argument.name,
-                                     [self._file_type_list()], []),
+                                     self._type_element_description(), []),
         ]
         path_elements = rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
                                                                             _REL_OPTION_CONFIG.options)
-        all_elements = type_elements + path_elements
+        all_elements = negation_elements + type_elements + path_elements
 
         return all_elements
 
@@ -119,6 +121,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         refs = rel_path_doc.cross_refs_for_concepts(concepts)
         refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
         return refs
+
+    def _type_element_description(self):
+        return self._paragraphs(_TYPE_ELEMENT_DESCRIPTION_INTRO) + [self._file_type_list()]
+
+    def _negation_element_description(self):
+        return self._paragraphs(_NEGATION_ELEMENT_DESCRIPTION)
 
     def _file_type_list(self) -> core.ParagraphItem:
         def type_description(file_type: file_properties.FileType) -> list:
@@ -149,12 +157,15 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         }
 
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
-        tokens = TokenParser(TokenStream(rest_of_line),
+        tokens = TokenParser(new_token_stream(rest_of_line),
                              self.format_map)
+        is_negated = tokens.consume_and_return_true_if_first_argument_is_unquoted_and_equals(NEGATION_OPERATOR)
         file_properties_check = tokens.consume_and_handle_first_matching_option(
             _DEFAULT_FILE_PROPERTIES_CHECK,
             _file_type_2_file_properties_check,
             FILE_TYPE_OPTIONS)
+        if is_negated:
+            file_properties_check = file_properties.negation_of(file_properties_check)
         file_ref_resolver = tokens.consume_file_ref(_REL_OPTION_CONFIG)
         tokens.report_superfluous_arguments_if_not_at_eol()
         return _Instruction(file_ref_resolver, file_properties_check)
@@ -185,3 +196,28 @@ class _Instruction(AssertPhaseInstruction):
                          self._expected_file_properties),
             environment.path_resolving_environment_pre_or_post_sds)
         return pfh.new_pfh_fail_if_has_failure_message(failure_message)
+
+
+_NEGATION_ELEMENT_DESCRIPTION = """\
+Negates the assertion.
+"""
+
+_TYPE_ELEMENT_DESCRIPTION_INTRO = """\
+Includes the file type in the assertion.
+"""
+
+_PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION = """\
+If {TYPE} is not given, the type of the file is ignored.
+
+
+When not negated, the assertion will
+PASS if, and only if:
+
+{PATH} exists, and is a file of the asserted type.
+
+
+When negated, the assertion will
+FAIL if, and only if:
+
+{PATH} exists, and is a file of the asserted type.
+"""
