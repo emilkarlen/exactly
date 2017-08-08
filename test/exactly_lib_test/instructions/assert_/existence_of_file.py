@@ -11,7 +11,7 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
-    Expectation, is_pass
+    Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.change_dir import ChangeDirTo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
@@ -50,7 +50,7 @@ class CheckType(Enum):
 
 
 class TestParseInvalidSyntax(TestCaseBase):
-    test_cases = [
+    test_cases_with_no_negation_operator = [
         '',
         '{type_option} file-name unexpected-argument'.format(
             type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
@@ -63,7 +63,18 @@ class TestParseInvalidSyntax(TestCaseBase):
 
     def test_raise_exception_WHEN_syntax_is_invalid(self):
 
-        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(self.test_cases)
+        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(
+            self.test_cases_with_no_negation_operator)
+
+    def test_raise_exception_WHEN_syntax_is_invalid_WITH_not_operator(self):
+
+        test_cases_with_negation_operator = [
+            sut.NEGATION_OPERATOR + ' ' + case_with_no_negation_operator
+            for case_with_no_negation_operator in self.test_cases_with_no_negation_operator
+        ]
+
+        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(
+            test_cases_with_negation_operator)
 
     def _assert_each_case_raises_SingleInstructionInvalidArgumentException(self, test_cases: list):
         parser = sut.Parser()
@@ -118,8 +129,7 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
         self._run_test_cases_with_act_dir_contents(
             self.cases_with_existing_file_of_different_types,
             main_result=pfh_check.is_pass(),
-            instruction_arguments=args_for(file_name=self.file_name,
-                                           check_type=CheckType.POSITIVE),
+            instruction_arguments=args_for(file_name=self.file_name),
         )
 
     def test_fail_WHEN_file_does_not_exist(self):
@@ -129,29 +139,60 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
                       main_result=pfh_check.is_fail()),
                   )
 
+    def test_fail_WHEN_file_exists_AND_assertion_is_negated(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_file_of_different_types,
+            main_result=pfh_check.is_fail(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           check_type=CheckType.NEGATIVE),
+        )
+
+    def test_pass_WHEN_file_does_not_exist_AND_assertion_is_negated(self):
+        self._run(with_negation_argument('non-existing-file'),
+                  ArrangementPostAct(),
+                  Expectation(
+                      main_result=pfh_check.is_pass()),
+                  )
+
 
 class TestOfCurrentDirectoryIsNotActDir(TestCaseBaseForParser):
+    name_of_existing_file = 'existing-file'
+    cases_with_existing_file_of_different_type = [
+        ('dir',
+         DirContents([empty_dir(name_of_existing_file)])),
+        ('regular file',
+         DirContents([empty_file(name_of_existing_file)])),
+        ('sym-link',
+         DirContents(
+             [empty_dir('directory'),
+              Link(name_of_existing_file, 'directory')])
+         ),
+    ]
+
     def test_pass_WHEN_file_exists(self):
-        file_name = 'existing-file'
-        cases = [
-            ('dir',
-             DirContents([empty_dir(file_name)])),
-            ('regular file',
-             DirContents([empty_file(file_name)])),
-            ('sym-link',
-             DirContents(
-                 [empty_dir('directory'),
-                  Link(file_name, 'directory')])
-             ),
-        ]
         change_dir_to_tmp_usr_dir = HomeAndSdsActionFromSdsAction(ChangeDirTo(lambda sds: sds.tmp.user_dir))
-        for file_type, dir_contents in cases:
-            with self.subTest(msg=file_type):
-                self._run(file_name,
+        for case_name, dir_contents in self.cases_with_existing_file_of_different_type:
+            with self.subTest(case_name=case_name):
+                self._run(self.name_of_existing_file,
                           ArrangementPostAct(
                               sds_contents=contents_in(RelSdsOptionType.REL_TMP, dir_contents),
                               pre_contents_population_action=change_dir_to_tmp_usr_dir),
-                          is_pass(),
+                          Expectation(
+                              main_result=pfh_check.is_pass(),
+                          ),
+                          )
+
+    def test_fail_WHEN_file_exists_AND_assertion_is_negated(self):
+        change_dir_to_tmp_usr_dir = HomeAndSdsActionFromSdsAction(ChangeDirTo(lambda sds: sds.tmp.user_dir))
+        for case_name, dir_contents in self.cases_with_existing_file_of_different_type:
+            with self.subTest(case_name=case_name):
+                self._run(with_negation_argument(self.name_of_existing_file),
+                          ArrangementPostAct(
+                              sds_contents=contents_in(RelSdsOptionType.REL_TMP, dir_contents),
+                              pre_contents_population_action=change_dir_to_tmp_usr_dir),
+                          Expectation(
+                              main_result=pfh_check.is_fail(),
+                          ),
                           )
 
 
@@ -198,6 +239,24 @@ class TestCheckForDirectory(TestCaseBaseForParser):
                                            file_type=sut.TYPE_NAME_DIRECTORY),
         )
 
+    def test_fail_WHEN_file_is_an_existing_directory_AND_assertion_is_negated(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_directory,
+            main_result=pfh_check.is_fail(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_DIRECTORY,
+                                           check_type=CheckType.NEGATIVE),
+        )
+
+    def test_pass_WHEN_file_exists_but_is_not_a_directory_AND_assertion_is_negated(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_not_directories,
+            main_result=pfh_check.is_pass(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_DIRECTORY,
+                                           check_type=CheckType.NEGATIVE),
+        )
+
 
 class TestCheckForRegularFile(TestCaseBaseForParser):
     file_name = 'name-of-checked-file'
@@ -233,12 +292,30 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
                                            file_type=sut.TYPE_NAME_REGULAR),
         )
 
-    def test_fail(self):
+    def test_fail_WHE_file_exists_but_is_not_a_regular_file(self):
         self._run_test_cases_with_act_dir_contents(
             self.cases_with_existing_files_that_are_not_regular_files,
             main_result=pfh_check.is_fail(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_REGULAR),
+        )
+
+    def test_fail_WHEN_file_exists_and_is_a_regular_file_AND_assertion_is_negated(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_regular_files,
+            main_result=pfh_check.is_fail(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_REGULAR,
+                                           check_type=CheckType.NEGATIVE),
+        )
+
+    def test_pass_WHE_file_exists_but_is_not_a_regular_file_AND_assertion_is_negated(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_not_regular_files,
+            main_result=pfh_check.is_pass(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_REGULAR,
+                                           check_type=CheckType.NEGATIVE),
         )
 
 
@@ -280,12 +357,30 @@ class TestCheckForSymLink(TestCaseBaseForParser):
                                            file_type=sut.TYPE_NAME_SYMLINK),
         )
 
-    def test_fail(self):
+    def test_fail_file_exists_but_is_not_a_regular_file(self):
         self._run_test_cases_with_act_dir_contents(
             self.cases_with_existing_files_that_are_not_symbolic_links,
             main_result=pfh_check.is_fail(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_SYMLINK),
+        )
+
+    def test_fail_WHEN_file_exists_and_is_a_regular_file_AND_assertion_is_negated(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_symbolic_links,
+            main_result=pfh_check.is_fail(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_SYMLINK,
+                                           check_type=CheckType.NEGATIVE),
+        )
+
+    def test_pass_file_exists_but_is_not_a_regular_file_AND_assertion_is_negated(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_not_symbolic_links,
+            main_result=pfh_check.is_pass(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_SYMLINK,
+                                           check_type=CheckType.NEGATIVE),
         )
 
 
@@ -299,7 +394,7 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
             ArrangementPostAct(
                 sds_contents=contents_in(RelSdsOptionType.REL_ACT,
                                          DirContents([empty_file(file_name)]))),
-            Expectation(symbol_usages=asrt.is_empty_list),
+            asrt.is_empty_list,
         ),
         (
             'exists in tmp/usr dir',
@@ -308,7 +403,7 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
             ArrangementPostAct(
                 sds_contents=contents_in(RelSdsOptionType.REL_TMP,
                                          DirContents([empty_dir(file_name)]))),
-            Expectation(symbol_usages=asrt.is_empty_list),
+            asrt.is_empty_list,
         ),
         (
             'exists relative symbol',
@@ -321,35 +416,58 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
                                             PathPartAsNothing())),
                 sds_contents=contents_in(RelSdsOptionType.REL_TMP,
                                          DirContents([empty_dir(file_name)]))),
-            Expectation(symbol_usages=asrt.matches_sequence([
+            asrt.matches_sequence([
                 equals_symbol_reference_with_restriction_on_direct_target(
                     'SYMBOL_NAME',
                     equals_file_ref_relativity_restriction(
                         FileRefRelativityRestriction(
                             sut._REL_OPTION_CONFIG.options.accepted_relativity_variants)
                     ))
-            ])),
+            ]),
         ),
     ]
 
     def test_pass(self):
-        for case_name, expected_file_type, relativity_option, arrangement, expectation in self.cases:
-            with self.subTest(msg=case_name):
+        for case_name, expected_file_type, relativity_option, arrangement, expected_symbol_usages in self.cases:
+            with self.subTest(case_name=case_name):
                 self._run(args_for(file_name=self.file_name,
                                    relativity_option=relativity_option,
                                    file_type=expected_file_type),
                           arrangement,
-                          expectation,
+                          Expectation(
+                              main_result=pfh_check.is_pass(),
+                              symbol_usages=expected_symbol_usages,
+                          ),
                           )
+
+    def test_fail_WHEN_assertion_is_negated(self):
+        for case_name, expected_file_type, relativity_option, arrangement, expected_symbol_usages in self.cases:
+            with self.subTest(case_name=case_name):
+                self._run(args_for(file_name=self.file_name,
+                                   relativity_option=relativity_option,
+                                   file_type=expected_file_type,
+                                   check_type=CheckType.NEGATIVE),
+                          arrangement,
+                          Expectation(
+                              main_result=pfh_check.is_fail(),
+                              symbol_usages=expected_symbol_usages,
+                          ),
+                          )
+
+
+def with_negation_argument(instruction_arguments: str) -> str:
+    return sut.NEGATION_OPERATOR + ' ' + instruction_arguments
 
 
 def args_for(file_name: str,
              file_type: str = None,
              check_type: CheckType = CheckType.POSITIVE,
              relativity_option: str = '') -> str:
-    negation_prefix = '' if check_type is CheckType.POSITIVE else sut.NEGATION_OPERATOR
     file_type_option = '' if file_type is None else long_option_syntax(file_type)
-    return negation_prefix + ' ' + file_type_option + ' ' + relativity_option + ' ' + file_name
+    arguments = file_type_option + ' ' + relativity_option + ' ' + file_name
+    if check_type is CheckType.NEGATIVE:
+        arguments = with_negation_argument(arguments)
+    return arguments
 
 
 if __name__ == '__main__':
