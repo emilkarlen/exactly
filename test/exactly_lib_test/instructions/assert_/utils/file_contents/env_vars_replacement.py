@@ -17,7 +17,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestMisc),
         unittest.makeSuite(TestSubDirRelationshipBetweenHomeActAndHomeCase),
-        unittest.makeSuite(TestWhenRelHomeCaseIsEqualToRelHomeActThenRelHomeCaseShouldBeUsed),
+        unittest.makeSuite(TestWhenRelHomeCaseIsEqualToRelHomeActThenVariableWithPrecedenceShouldBeUsed),
     ])
 
 
@@ -36,7 +36,7 @@ class TestMisc(unittest.TestCase):
                              actual)
 
 
-class TestWhenRelHomeCaseIsEqualToRelHomeActThenRelHomeCaseShouldBeUsed(unittest.TestCase):
+class TestWhenRelHomeCaseIsEqualToRelHomeActThenVariableWithPrecedenceShouldBeUsed(unittest.TestCase):
     def test(self):
         # ARRANGE #
         with sandbox_directory_structure() as sds:
@@ -48,7 +48,7 @@ class TestWhenRelHomeCaseIsEqualToRelHomeActThenRelHomeCaseShouldBeUsed(unittest
             # ACT #
             actual = sut.replace(home_and_sds, contents_before_replacement)
             # ASSERT #
-            expected = environment_variables.ENV_VAR_HOME_CASE
+            expected = sut.HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE
             self.assertEqual(expected,
                              actual)
 

@@ -1,13 +1,10 @@
 import re
 
-from exactly_lib import program_info
-from exactly_lib.execution import environment_variables
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformers
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
-    WITH_REPLACED_ENV_VARS_OPTION, NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
+    NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -16,26 +13,8 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.parse.token import TokenType
-from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure import structures as docs
 
 EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
-
-
-def with_replaced_env_vars_help(checked_file: str) -> list:
-    header_text = """\
-    Every occurrence of a path that matches any of the {program_name} environment variables
-    in {checked_file} is replaced with the name of the matching variable.
-    (Variable values are replaced with variable names.)
-
-
-    These environment variables are:
-    """.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
-               option=WITH_REPLACED_ENV_VARS_OPTION,
-               checked_file=checked_file)
-    variables_list = [docs.simple_header_only_list(sorted(environment_variables.ALL_REPLACED_ENV_VARS),
-                                                   docs.lists.ListType.VARIABLE_LIST)]
-    return normalize_and_parse(header_text) + variables_list
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
