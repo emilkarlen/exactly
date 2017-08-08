@@ -37,6 +37,8 @@ TYPE_NAME_SYMLINK = 'symlink'
 TYPE_NAME_REGULAR = 'file'
 TYPE_NAME_DIRECTORY = 'dir'
 
+NEGATION_OPERATOR = '!'
+
 FILE_TYPE_OPTIONS = [
     (file_properties.FileType.SYMLINK, a.OptionName(long_name=TYPE_NAME_SYMLINK)),
     (file_properties.FileType.REGULAR, a.OptionName(long_name=TYPE_NAME_REGULAR)),

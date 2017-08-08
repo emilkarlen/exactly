@@ -47,14 +47,28 @@ class TestParseInvalidSyntax(TestCaseBase):
     def test_raise_exception_when_syntax_is_invalid(self):
         test_cases = [
             '',
-            '{} file-name unexpected-argument'.format(long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
-            '{}'.format(long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
-            '{} file-name'.format(long_option_syntax('invalidOption')),
+            '{type_option} file-name unexpected-argument'.format(
+                type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+            '{type_option}'.format(
+                type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+            '{invalid_option} file-name'.format(
+                invalid_option=long_option_syntax('invalidOption')),
             'file-name unexpected-argument',
         ]
+
+        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(test_cases)
+
+        test_cases_with_initial_negation_operator = [
+            sut.NEGATION_OPERATOR + ' ' + arg_without_neg_operator
+            for arg_without_neg_operator in test_cases]
+
+        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(
+            test_cases_with_initial_negation_operator)
+
+    def _assert_each_case_raises_SingleInstructionInvalidArgumentException(self, test_cases: list):
         parser = sut.Parser()
         for instruction_argument in test_cases:
-            with self.subTest(msg=instruction_argument):
+            with self.subTest(instruction_argument=instruction_argument):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         parser.parse(source)
