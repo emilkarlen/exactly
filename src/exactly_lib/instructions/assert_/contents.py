@@ -86,7 +86,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             ACTUAL_RELATIVITY_CONFIGURATION.options,
             relativity_of_actual_arg)
 
-        return [actual_file_arg_sed] + relativity_of_actual_file_seds + self._help_parts.syntax_element_descriptions()
+        return (self._help_parts.syntax_element_descriptions_at_top() +
+                [actual_file_arg_sed] +
+                relativity_of_actual_file_seds +
+                self._help_parts.syntax_element_descriptions_at_bottom())
 
     def see_also_items(self) -> list:
         return self._help_parts.see_also_items()

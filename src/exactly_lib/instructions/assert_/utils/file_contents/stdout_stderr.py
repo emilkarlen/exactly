@@ -45,7 +45,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._help_parts.invokation_variants()
 
     def syntax_element_descriptions(self) -> list:
-        return self._help_parts.syntax_element_descriptions()
+        return (self._help_parts.syntax_element_descriptions_at_top() +
+                self._help_parts.syntax_element_descriptions_at_bottom())
 
     def see_also_items(self) -> list:
         return self._help_parts.see_also_items()
