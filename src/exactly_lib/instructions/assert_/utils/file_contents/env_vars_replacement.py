@@ -3,6 +3,8 @@ import pathlib
 from exactly_lib.execution import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 
+HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CASE
+
 
 def replace(home_and_sds: HomeAndSds,
             contents: str) -> str:
@@ -16,7 +18,7 @@ def _derive_name_and_value_list(home_and_sds: HomeAndSds) -> iter:
     hds = home_and_sds.hds
     all_vars = environment_variables.replaced(home_and_sds)
     if hds.case_dir == hds.act_dir:
-        return _first_is(environment_variables.ENV_VAR_HOME_CASE, all_vars)
+        return _first_is(HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE, all_vars)
     elif _dir_is_sub_dir_of(hds.case_dir, hds.act_dir):
         return _first_is(environment_variables.ENV_VAR_HOME_CASE, all_vars)
     elif _dir_is_sub_dir_of(hds.act_dir, hds.case_dir):

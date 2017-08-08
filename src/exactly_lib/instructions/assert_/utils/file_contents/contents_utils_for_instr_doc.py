@@ -1,5 +1,7 @@
+from exactly_lib import program_info
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.names_and_cross_references import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.utils.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help.utils.textformat_parser import TextParser
@@ -7,13 +9,14 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.instructions.assert_.utils import negation_of_assertion
+from exactly_lib.instructions.assert_.utils.file_contents import env_vars_replacement
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help, \
-    EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure import structures as docs
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 
@@ -33,6 +36,10 @@ class FileContentsHelpParts:
             'checked_file': checked_file,
             'expected_file_arg': self.expected_file_arg.name,
             'not_option': negation_of_assertion.NEGATION_ARGUMENT_STR,
+            'program_name': program_info.PROGRAM_NAME,
+            'home_act_env_var': environment_variables.ENV_VAR_HOME_ACT,
+            'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,
+            'home_env_var_with_replacement_precedence': env_vars_replacement.HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE,
         }
         self._parser = TextParser(format_map)
 
@@ -113,7 +120,7 @@ class FileContentsHelpParts:
                                             self._parser.fnap('A Python regular expression.')),
                    cl_syntax.cli_argument_syntax_element_description(
                        self.with_replaced_env_vars_option,
-                       with_replaced_env_vars_help(self._parser.format('the contents of {checked_file}'))),
+                       self._with_replaced_env_vars_help()),
                    dt.here_document_syntax_element_description(self.instruction_name,
                                                                dt.HERE_DOCUMENT),
                ]
@@ -137,19 +144,38 @@ class FileContentsHelpParts:
         """
         return self._parser.fnap(s, extra)
 
+    def _with_replaced_env_vars_help(self) -> list:
+        prologue = self._paragraphs(_WITH_REPLACED_ENV_VARS_PROLOGUE)
+        variables_list = [docs.simple_header_only_list(sorted(environment_variables.ALL_REPLACED_ENV_VARS),
+                                                       docs.lists.ListType.VARIABLE_LIST)]
+        return prologue + variables_list
+
 
 _DESCRIPTION_OF_EMPTY = """\
 Asserts that {checked_file} is empty.
 """
 
 _DESCRIPTION_OF_EQUALS_HERE_DOC = """\
-Asserts that the contents of file {checked_file} is equal to the contents of a "here document".
+Asserts that the contents of {checked_file} is equal to the contents of a "here document".
 """
 
 _DESCRIPTION_OF_EQUALS_FILE = """\
-Asserts that the contents of file {checked_file} is equal to the contents of file {expected_file_arg}.
+Asserts that the contents of {checked_file} is equal to the contents of file {expected_file_arg}.
 """
 
 _DESCRIPTION_OF_CONTAINS = """\
-Asserts that the contents of file {checked_file} contains a line matching a regular expression.
+Asserts that the contents of {checked_file} contains a line matching a regular expression.
+"""
+
+_WITH_REPLACED_ENV_VARS_PROLOGUE = """\
+Every occurrence of a path that matches an {program_name} environment variable
+in contents of {checked_file} is replaced with the name of the matching variable.
+(Variable values are replaced with variable names.)
+
+
+If {home_case_env_var} and {home_act_env_var} are equal, then paths will be replaced with
+{home_env_var_with_replacement_precedence}.
+
+
+The environment variables that are replaced are:
 """
