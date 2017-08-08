@@ -44,7 +44,7 @@ class Properties(tuple):
         return self[1] is not None
 
     @property
-    def is_type_of_existing_file(self) -> FileType:
+    def is_type_of_existing_file(self) -> bool:
         return not self.is_existence
 
     @property
@@ -96,9 +96,14 @@ class CheckResult(tuple):
         return self[1]
 
 
-def negate(result: CheckResult) -> CheckResult:
+def negate_properties(properties_with_neg: PropertiesWithNegation) -> PropertiesWithNegation:
+    return PropertiesWithNegation(not properties_with_neg.is_negated,
+                                  properties_with_neg.properties)
+
+
+def negate_result(result: CheckResult) -> CheckResult:
     return CheckResult(not result.is_success,
-                       result.cause)
+                       negate_properties(result.cause))
 
 
 class FilePropertiesCheck:
@@ -106,18 +111,18 @@ class FilePropertiesCheck:
         raise NotImplementedError()
 
 
-def must_exist(follow_symlinks: bool=True) -> FilePropertiesCheck:
+def must_exist(follow_symlinks: bool = True) -> FilePropertiesCheck:
     return _MustExist(follow_symlinks)
 
 
 def must_exist_as(file_type: FileType,
-                  follow_symlinks: bool=True) -> FilePropertiesCheck:
+                  follow_symlinks: bool = True) -> FilePropertiesCheck:
     if follow_symlinks and file_type is FileType.SYMLINK:
         raise ValueError('Cannot follow symlinks when testing for symlink')
     return _MustExistAs(follow_symlinks, file_type)
 
 
-def negation_of(check: FilePropertiesCheck):
+def negation_of(check: FilePropertiesCheck) -> FilePropertiesCheck:
     return _NegationOf(check)
 
 
@@ -125,21 +130,20 @@ def render_failure(properties_with_neg: PropertiesWithNegation.properties,
                    file_path: pathlib.Path) -> str:
     is_follow_symlinks = properties_with_neg.properties.is_follow_symlinks
     sym_links = 'symbolic links followed' if is_follow_symlinks else 'symbolic links not followed'
+    negation = '' if properties_with_neg.is_negated else 'not '
+
     properties = properties_with_neg.properties
-    if properties_with_neg.is_negated:
-        if properties.is_existence:
-            return 'File does exist ({}): {}'.format(sym_links, str(file_path))
-        else:
-            return os.linesep.join(['File is a {} ({}):'.format(type_name[properties.type_of_existing_file],
-                                                                sym_links),
-                                    str(file_path)])
+    if properties.is_existence:
+        return 'File does {negation}exist ({sym_links}): {path}'.format(
+            negation=negation,
+            sym_links=sym_links,
+            path=str(file_path))
     else:
-        if properties.is_existence:
-            return 'File does not exist ({}):{}'.format(sym_links, str(file_path))
-        else:
-            return os.linesep.join(['File is not a {} ({}):'.format(type_name[properties.type_of_existing_file],
-                                                                    sym_links),
-                                    str(file_path)])
+        return os.linesep.join(['File is {negation}a {file_type} ({sym_links}):'.format(
+            negation=negation,
+            file_type=type_name[properties.type_of_existing_file],
+            sym_links=sym_links),
+            str(file_path)])
 
 
 class _NegationOf(FilePropertiesCheck):
@@ -148,7 +152,7 @@ class _NegationOf(FilePropertiesCheck):
 
     def apply(self, path: pathlib.Path) -> CheckResult:
         sub_result = self.__check.apply(path)
-        return negate(sub_result)
+        return negate_result(sub_result)
 
 
 class _MustExistBase(FilePropertiesCheck):
