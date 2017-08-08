@@ -6,9 +6,10 @@ from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case_utils.sub_process_execution import ProcessExecutionSettings
 from exactly_lib.util.process_execution.os_process_execution import with_environ
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, check, Expectation
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import check, Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
@@ -31,13 +32,15 @@ class AssertConfigurationBase(ConfigurationBase):
         return True
 
     def arrangement_with_timeout(self, timeout_in_seconds: int):
-        return arrangement(process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
+        return ArrangementPostAct(
+            process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
 
     def expect_success(self,
                        main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
                        symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
-        return Expectation(main_side_effects_on_files=main_side_effects_on_files,
-                           symbol_usages=symbol_usages)
+        return Expectation(
+            main_side_effects_on_files=main_side_effects_on_files,
+            symbol_usages=symbol_usages)
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
@@ -58,9 +61,10 @@ class AssertConfigurationBase(ConfigurationBase):
                     environ: dict = None,
                     os_services: OsServices = new_default(),
                     symbols: SymbolTable = None):
-        return arrangement(pre_contents_population_action=pre_contents_population_action,
-                           sds_contents_before_main=sds_contents_before_main,
-                           home_or_sds_contents_before_main=home_or_sds_contents,
-                           process_execution_settings=with_environ(environ),
-                           os_services=os_services,
-                           symbols=symbols)
+        return ArrangementPostAct(
+            pre_contents_population_action=pre_contents_population_action,
+            sds_contents=sds_contents_before_main,
+            home_or_sds_contents=home_or_sds_contents,
+            process_execution_settings=with_environ(environ),
+            os_services=os_services,
+            symbols=symbols)

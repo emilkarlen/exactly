@@ -13,7 +13,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     assert_phase_instruction_that
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check as sut
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, is_pass, \
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import is_pass, \
     Expectation
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
@@ -59,8 +59,8 @@ class TestPopulate(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             utils.single_line_source(),
-            sut.arrangement(
-                non_home_contents_before_main=non_home_populator.rel_option(
+            sut.ArrangementPostAct(
+                non_home_contents=non_home_populator.rel_option(
                     non_home_populator.RelNonHomeOptionType.REL_TMP,
                     populated_dir_contents)),
             sut.Expectation(
@@ -73,8 +73,8 @@ class TestPopulate(TestCaseBase):
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             utils.single_line_source(),
-            sut.arrangement(
-                sds_contents_before_main=sds_populator.contents_in(
+            sut.ArrangementPostAct(
+                sds_contents=sds_populator.contents_in(
                     sds_populator.RelSdsOptionType.REL_TMP,
                     populated_dir_contents)),
             sut.Expectation(
@@ -96,7 +96,7 @@ class TestSymbolUsages(TestCaseBase):
                     assert_phase_instruction_that(
                         symbol_usages=do_return(unexpected_symbol_usages))),
                 utils.single_line_source(),
-                sut.arrangement(),
+                sut.ArrangementPostAct(),
                 sut.Expectation(),
             )
 
@@ -109,7 +109,7 @@ class TestSymbolUsages(TestCaseBase):
                     assert_phase_instruction_that(
                         symbol_usages=do_return(symbol_usages_of_instruction))),
                 utils.single_line_source(),
-                sut.arrangement(),
+                sut.ArrangementPostAct(),
                 sut.Expectation(
                     symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
             )
@@ -139,7 +139,8 @@ class TestSymbolUsages(TestCaseBase):
                     main_initial_action=assertion_for_main,
                 )),
             utils.single_line_source(),
-            sut.arrangement(symbols=symbol_table_of_arrangement),
+            sut.ArrangementPostAct(
+                symbols=symbol_table_of_arrangement),
             sut.Expectation(),
         )
 
@@ -149,23 +150,25 @@ class TestMiscCases(TestCaseBase):
         self._check(
             utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
             utils.single_line_source(),
-            arrangement(),
+            sut.ArrangementPostAct(),
             is_pass())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(utils.TestError):
             self._check(utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                         utils.single_line_source(),
-                        arrangement(),
-                        Expectation(validation_pre_sds=svh_assertions.is_hard_error()),
+                        sut.ArrangementPostAct(),
+                        Expectation(
+                            validation_pre_sds=svh_assertions.is_hard_error()),
                         )
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
         with self.assertRaises(utils.TestError):
             self._check(utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                         utils.single_line_source(),
-                        arrangement(),
-                        Expectation(validation_post_sds=svh_assertions.is_hard_error()),
+                        sut.ArrangementPostAct(),
+                        Expectation(
+                            validation_post_sds=svh_assertions.is_hard_error()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):
@@ -173,8 +176,9 @@ class TestMiscCases(TestCaseBase):
             self._check(
                 utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                 utils.single_line_source(),
-                arrangement(),
-                Expectation(main_result=pfh_check.is_fail()),
+                sut.ArrangementPostAct(),
+                Expectation(
+                    main_result=pfh_check.is_fail()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
@@ -182,16 +186,17 @@ class TestMiscCases(TestCaseBase):
             self._check(
                 utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                 utils.single_line_source(),
-                arrangement(),
-                Expectation(main_side_effects_on_files=act_dir_contains_exactly(
-                    DirContents([empty_file('non-existing-file.txt')]))),
+                sut.ArrangementPostAct(),
+                Expectation(
+                    main_side_effects_on_files=act_dir_contains_exactly(
+                        DirContents([empty_file('non-existing-file.txt')]))),
             )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         self._check(
             utils.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
             utils.single_line_source(),
-            arrangement(),
+            sut.ArrangementPostAct(),
             is_pass())
 
     def test_fail_due_to_side_effects_check(self):
@@ -199,10 +204,11 @@ class TestMiscCases(TestCaseBase):
             self._check(
                 utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                 utils.single_line_source(),
-                arrangement(),
-                Expectation(side_effects_check=sds_2_home_and_sds_assertion(
-                    act_dir_contains_exactly(
-                        DirContents([empty_file('non-existing-file.txt')])))),
+                sut.ArrangementPostAct(),
+                Expectation(
+                    side_effects_check=sds_2_home_and_sds_assertion(
+                        act_dir_contains_exactly(
+                            DirContents([empty_file('non-existing-file.txt')])))),
             )
 
 

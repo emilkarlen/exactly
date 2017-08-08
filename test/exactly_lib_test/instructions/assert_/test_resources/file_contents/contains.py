@@ -12,8 +12,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     TestWithConfigurationAndNegationArgumentBase, suite_for__conf__not_argument, args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActResultProducer, \
-    Expectation
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducer
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

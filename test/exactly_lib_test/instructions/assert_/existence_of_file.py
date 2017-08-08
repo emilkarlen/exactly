@@ -10,7 +10,7 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
-    arrangement, Expectation, is_pass
+    Expectation, is_pass
 from exactly_lib_test.instructions.multi_phase_instructions.change_dir import ChangeDirTo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
@@ -87,14 +87,16 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
         for file_type, dir_contents in cases:
             with self.subTest(msg=file_type):
                 self._run(file_name,
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT, dir_contents)),
+                          ArrangementPostAct(
+                              sds_contents=contents_in(RelSdsOptionType.REL_ACT, dir_contents)),
                           is_pass(),
                           )
 
     def test_fail_when_file_does_not_exist(self):
         self._run('non-existing-file',
-                  arrangement(),
-                  Expectation(main_result=pfh_check.is_fail()),
+                  ArrangementPostAct(),
+                  Expectation(
+                      main_result=pfh_check.is_fail()),
                   )
 
 
@@ -116,8 +118,9 @@ class TestOfCurrentDirectoryIsNotActDir(TestCaseBaseForParser):
         for file_type, dir_contents in cases:
             with self.subTest(msg=file_type):
                 self._run(file_name,
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_TMP, dir_contents),
-                                      pre_contents_population_action=change_dir_to_tmp_usr_dir),
+                          ArrangementPostAct(
+                              sds_contents=contents_in(RelSdsOptionType.REL_TMP, dir_contents),
+                              pre_contents_population_action=change_dir_to_tmp_usr_dir),
                           is_pass(),
                           )
 
@@ -140,8 +143,9 @@ class TestCheckForDirectory(TestCaseBaseForParser):
             with self.subTest(msg=case_name):
                 self._run(args_for(file_name=file_name,
                                    file_type=sut.TYPE_NAME_DIRECTORY),
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
-                                                                           actual_dir_contents)),
+                          ArrangementPostAct(
+                              sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                                       actual_dir_contents)),
                           is_pass(),
                           )
 
@@ -162,9 +166,11 @@ class TestCheckForDirectory(TestCaseBaseForParser):
             with self.subTest(msg=case_name):
                 self._run(args_for(file_name=file_name,
                                    file_type=sut.TYPE_NAME_DIRECTORY),
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
-                                                                           actual_dir_contents)),
-                          Expectation(main_result=pfh_check.is_fail()),
+                          ArrangementPostAct(
+                              sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                                       actual_dir_contents)),
+                          Expectation(
+                              main_result=pfh_check.is_fail()),
                           )
 
 
@@ -186,8 +192,8 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
             with self.subTest(msg=case_name):
                 self._run(args_for(file_name=file_name,
                                    file_type=sut.TYPE_NAME_REGULAR),
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
-                                                                           actual_dir_contents)),
+                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                                                      actual_dir_contents)),
                           is_pass(),
                           )
 
@@ -208,8 +214,8 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
             with self.subTest(msg=case_name):
                 self._run(args_for(file_name=file_name,
                                    file_type=sut.TYPE_NAME_REGULAR),
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
-                                                                           actual_dir_contents)),
+                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                                                      actual_dir_contents)),
                           Expectation(main_result=pfh_check.is_fail()),
                           )
 
@@ -237,8 +243,8 @@ class TestCheckForSymLink(TestCaseBaseForParser):
             with self.subTest(msg=case_name):
                 self._run(args_for(file_name=file_name,
                                    file_type=sut.TYPE_NAME_SYMLINK),
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
-                                                                           actual_dir_contents)),
+                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                                                      actual_dir_contents)),
                           is_pass(),
                           )
 
@@ -258,8 +264,8 @@ class TestCheckForSymLink(TestCaseBaseForParser):
             with self.subTest(msg=case_name):
                 self._run(args_for(file_name=file_name,
                                    file_type=sut.TYPE_NAME_SYMLINK),
-                          arrangement(sds_contents_before_main=contents_in(RelSdsOptionType.REL_ACT,
-                                                                           actual_dir_contents)),
+                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                                                      actual_dir_contents)),
                           Expectation(main_result=pfh_check.is_fail()),
                           )
 
