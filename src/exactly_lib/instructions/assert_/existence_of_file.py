@@ -5,6 +5,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.names_and_cross_references import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
+from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
@@ -37,7 +38,7 @@ TYPE_NAME_SYMLINK = 'symlink'
 TYPE_NAME_REGULAR = 'file'
 TYPE_NAME_DIRECTORY = 'dir'
 
-NEGATION_OPERATOR = '!'
+NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
 FILE_TYPE_OPTIONS = [
     (file_properties.FileType.SYMLINK, a.OptionName(long_name=TYPE_NAME_SYMLINK)),
@@ -88,7 +89,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         type_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.type_argument)]
-        negation_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.negation_argument)]
+        negation_arguments = [negation_of_assertion.optional_negation_argument_usage()]
         path_arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
             _REL_OPTION_CONFIG.options.is_rel_symbol_option_accepted,
@@ -102,8 +103,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         negation_elements = [
-            SyntaxElementDescription(self.negation_argument.name,
-                                     self._negation_element_description(), []),
+            negation_of_assertion.syntax_element_description()
         ]
         type_elements = [
             SyntaxElementDescription(self.type_argument.name,
@@ -124,9 +124,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _type_element_description(self):
         return self._paragraphs(_TYPE_ELEMENT_DESCRIPTION_INTRO) + [self._file_type_list()]
-
-    def _negation_element_description(self):
-        return self._paragraphs(_NEGATION_ELEMENT_DESCRIPTION)
 
     def _file_type_list(self) -> core.ParagraphItem:
         def type_description(file_type: file_properties.FileType) -> list:
@@ -197,10 +194,6 @@ class _Instruction(AssertPhaseInstruction):
             environment.path_resolving_environment_pre_or_post_sds)
         return pfh.new_pfh_fail_if_has_failure_message(failure_message)
 
-
-_NEGATION_ELEMENT_DESCRIPTION = """\
-Negates the assertion.
-"""
 
 _TYPE_ELEMENT_DESCRIPTION_INTRO = """\
 Includes the file type in the assertion.

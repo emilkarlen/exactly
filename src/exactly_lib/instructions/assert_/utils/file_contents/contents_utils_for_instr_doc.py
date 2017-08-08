@@ -6,8 +6,9 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names.formatting import InstructionName
+from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import with_replaced_env_vars_help, \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -15,7 +16,6 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
-NOT_ARGUMENT_CONSTANT = a.Constant(NOT_ARGUMENT)
 
 
 class FileContentsHelpParts:
@@ -32,7 +32,7 @@ class FileContentsHelpParts:
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,
             'expected_file_arg': self.expected_file_arg.name,
-            'not_option': NOT_ARGUMENT,
+            'not_option': negation_of_assertion.NEGATION_ARGUMENT_STR,
         }
         self._parser = TextParser(format_map)
 
@@ -43,8 +43,8 @@ class FileContentsHelpParts:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 
-        optional_not_arg = a.Single(a.Multiplicity.OPTIONAL,
-                                    NOT_ARGUMENT_CONSTANT)
+        optional_not_arg = negation_of_assertion.optional_negation_argument_usage()
+
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(
                                   instruction_options.EQUALS_ARGUMENT))
@@ -82,7 +82,10 @@ class FileContentsHelpParts:
                               self._paragraphs(_DESCRIPTION_OF_CONTAINS)),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions_at_top(self) -> list:
+        return [negation_of_assertion.syntax_element_description()]
+
+    def syntax_element_descriptions_at_bottom(self) -> list:
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                               path_syntax.PATH_ARGUMENT)
 
@@ -135,22 +138,18 @@ class FileContentsHelpParts:
         return self._parser.fnap(s, extra)
 
 
-_DESCRIPTION_TAL_FOR_NEGATION = """\
-
-If {not_option} is given, the assertion is negated."""
-
 _DESCRIPTION_OF_EMPTY = """\
 Asserts that {checked_file} is empty.
-""" + _DESCRIPTION_TAL_FOR_NEGATION
+"""
 
 _DESCRIPTION_OF_EQUALS_HERE_DOC = """\
 Asserts that the contents of file {checked_file} is equal to the contents of a "here document".
-""" + _DESCRIPTION_TAL_FOR_NEGATION
+"""
 
 _DESCRIPTION_OF_EQUALS_FILE = """\
 Asserts that the contents of file {checked_file} is equal to the contents of file {expected_file_arg}.
-""" + _DESCRIPTION_TAL_FOR_NEGATION
+"""
 
 _DESCRIPTION_OF_CONTAINS = """\
 Asserts that the contents of file {checked_file} contains a line matching a regular expression.
-""" + _DESCRIPTION_TAL_FOR_NEGATION
+"""
