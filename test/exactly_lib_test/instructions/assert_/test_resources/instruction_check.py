@@ -4,48 +4,19 @@ from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
-    ActEnvironment, ActResultProducerFromActResult
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction, \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-
-
-def arrangement(pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
-                hds_contents: home_populators.HomePopulator = home_populators.empty(),
-                sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                non_home_contents_before_main: non_home_populator.NonHomePopulator = non_home_populator.empty(),
-                home_or_sds_contents_before_main: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
-                act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
-                os_services: OsServices = new_default(),
-                process_execution_settings=with_no_timeout(),
-                symbols: SymbolTable = None,
-                ) -> ArrangementPostAct:
-    return ArrangementPostAct(pre_contents_population_action=pre_contents_population_action,
-                              hds_contents=hds_contents,
-                              sds_contents=sds_contents_before_main,
-                              non_home_contents=non_home_contents_before_main,
-                              act_result_producer=act_result_producer,
-                              os_services=os_services,
-                              process_execution_settings=process_execution_settings,
-                              home_or_sds_contents=home_or_sds_contents_before_main,
-                              symbols=symbols)
 
 
 class Expectation:

@@ -5,7 +5,7 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, contains
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult
+from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult, ActResultProducer
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import ActResult
@@ -52,6 +52,6 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def act_result(self, contents_of_tested_file: str) -> ActResult:
         raise NotImplementedError()
 
-    def _act_result_producer(self, contents_of_tested_file: str) -> instruction_check.ActResultProducer:
+    def _act_result_producer(self, contents_of_tested_file: str) -> ActResultProducer:
         act_result = self.act_result(contents_of_tested_file)
         return ActResultProducerFromActResult(act_result)
