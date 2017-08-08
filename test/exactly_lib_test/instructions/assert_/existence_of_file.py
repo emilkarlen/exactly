@@ -307,15 +307,6 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
                 Expectation(symbol_usages=asrt.is_empty_list),
             ),
             (
-                'exists in tmp/usr dir',
-                sut.TYPE_NAME_DIRECTORY,
-                file_ref_texts.REL_TMP_OPTION,
-                ArrangementPostAct(
-                    sds_contents=contents_in(RelSdsOptionType.REL_TMP,
-                                             DirContents([empty_dir(file_name)]))),
-                Expectation(symbol_usages=asrt.is_empty_list),
-            ),
-            (
                 'exists relative symbol',
                 sut.TYPE_NAME_DIRECTORY,
                 rel_symbol_arg_str('SYMBOL_NAME'),
