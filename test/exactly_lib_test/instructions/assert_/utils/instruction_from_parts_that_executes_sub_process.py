@@ -15,6 +15,10 @@ from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def suite() -> unittest.TestSuite:
+    return test_impl.suite_for(ConfigurationForTheAssertPhase())
+
+
 class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configuration):
     def phase(self) -> phase_identifier.Phase:
         return phase_identifier.ASSERT
@@ -39,13 +43,5 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
         return Expectation(main_result=pfh_check.is_hard_error())
 
 
-def suite() -> unittest.TestSuite:
-    return test_impl.suite_for(ConfigurationForTheAssertPhase())
-
-
-def run_suite():
-    unittest.TextTestRunner().run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())
