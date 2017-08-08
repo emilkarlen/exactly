@@ -15,6 +15,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
     ret_val.addTest(unittest.makeSuite(TestMultipleParagraphs))
     ret_val.addTest(unittest.makeSuite(TestLiteral))
+    ret_val.addTest(unittest.makeSuite(TestItemizedList))
 
     ret_val.addTest(unittest.makeSuite(TestNormalize))
 
