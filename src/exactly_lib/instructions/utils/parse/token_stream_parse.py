@@ -11,7 +11,7 @@ from exactly_lib.util.cli_syntax.option_parsing import matches
 
 class TokenParser:
     """
-    Utility for implementing parsers backed by a `TokenStream2`.
+    Utility for implementing parsers backed by a :class:`TokenStream`.
     
     Encapsulates parsing/syntax of command-line-options and strings.
     """
@@ -51,15 +51,28 @@ class TokenParser:
         self.token_stream.consume()
         return ret_val
 
+    def consume_and_return_true_if_first_argument_is_unquoted_and_equals(self, expected: str) -> bool:
+        if self.token_stream.is_null:
+            return False
+        head = self.token_stream.head
+        if head.is_plain and head.string == expected:
+            self.token_stream.consume()
+            return True
+        return False
+
     def consume_and_handle_first_matching_option(self,
                                                  return_value_if_no_match,
                                                  key_handler: types.FunctionType,
                                                  key_and_option_name_list: list,
                                                  ):
         """
-        Returns a value, either a default (if next token does not match any of the given
-        `OptionName`:s), of a default value otherwise.
-        :param key_and_option_name_list: [(key, `OptionName`)] 
+        Looks at the current argument and checks if it is any of a given set of options,
+        and and returns a value that corresponds to that option.
+
+        A default value is returned if the the current argument is not any of the given options,
+        or if there are no arguments.
+
+        :param key_and_option_name_list: [(key, `OptionName`)]
         :param return_value_if_no_match: Value to return if next token does not match any of the given 
          `OptionName`:s.
          :param key_handler: Gives the return value from a key corresponding to
