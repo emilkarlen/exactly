@@ -1,4 +1,5 @@
 import unittest
+from enum import Enum
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_ import existence_of_file as sut
@@ -43,27 +44,26 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+class CheckType(Enum):
+    POSITIVE = 0
+    NEGATIVE = 1
+
+
 class TestParseInvalidSyntax(TestCaseBase):
-    def test_raise_exception_when_syntax_is_invalid(self):
-        test_cases = [
-            '',
-            '{type_option} file-name unexpected-argument'.format(
-                type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
-            '{type_option}'.format(
-                type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
-            '{invalid_option} file-name'.format(
-                invalid_option=long_option_syntax('invalidOption')),
-            'file-name unexpected-argument',
-        ]
+    test_cases = [
+        '',
+        '{type_option} file-name unexpected-argument'.format(
+            type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+        '{type_option}'.format(
+            type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+        '{invalid_option} file-name'.format(
+            invalid_option=long_option_syntax('invalidOption')),
+        'file-name unexpected-argument',
+    ]
 
-        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(test_cases)
+    def test_raise_exception_WHEN_syntax_is_invalid(self):
 
-        test_cases_with_initial_negation_operator = [
-            sut.NEGATION_OPERATOR + ' ' + arg_without_neg_operator
-            for arg_without_neg_operator in test_cases]
-
-        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(
-            test_cases_with_initial_negation_operator)
+        self._assert_each_case_raises_SingleInstructionInvalidArgumentException(self.test_cases)
 
     def _assert_each_case_raises_SingleInstructionInvalidArgumentException(self, test_cases: list):
         parser = sut.Parser()
@@ -83,30 +83,46 @@ class TestCaseBaseForParser(TestCaseBase):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._check(parser, source, arrangement, expectation)
 
-
-class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
-    def test_pass_when_file_exists(self):
-        file_name = 'existing-file'
-        cases = [
-            ('dir',
-             DirContents([empty_dir(file_name)])),
-            ('regular file',
-             DirContents([empty_file(file_name)])),
-            ('sym-link',
-             DirContents(
-                 [empty_dir('directory'),
-                  Link(file_name, 'directory')])
-             ),
-        ]
-        for file_type, dir_contents in cases:
-            with self.subTest(msg=file_type):
-                self._run(file_name,
+    def _run_test_cases_with_act_dir_contents(self,
+                                              test_cases_with_name_and_dir_contents: list,
+                                              instruction_arguments: str,
+                                              main_result: asrt.ValueAssertion):
+        for case_name, actual_dir_contents in test_cases_with_name_and_dir_contents:
+            with self.subTest(case_name=case_name,
+                              arguments=instruction_arguments):
+                self._run(instruction_arguments,
                           ArrangementPostAct(
-                              sds_contents=contents_in(RelSdsOptionType.REL_ACT, dir_contents)),
-                          is_pass(),
+                              sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                                       actual_dir_contents)),
+                          Expectation(
+                              main_result=main_result),
                           )
 
-    def test_fail_when_file_does_not_exist(self):
+
+class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
+    file_name = 'existing-file'
+
+    cases_with_existing_file_of_different_types = [
+        ('dir',
+         DirContents([empty_dir(file_name)])),
+        ('regular file',
+         DirContents([empty_file(file_name)])),
+        ('sym-link',
+         DirContents(
+             [empty_dir('directory'),
+              Link(file_name, 'directory')])
+         ),
+    ]
+
+    def test_pass_WHEN_file_exists(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_file_of_different_types,
+            main_result=pfh_check.is_pass(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           check_type=CheckType.POSITIVE),
+        )
+
+    def test_fail_WHEN_file_does_not_exist(self):
         self._run('non-existing-file',
                   ArrangementPostAct(),
                   Expectation(
@@ -115,7 +131,7 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
 
 
 class TestOfCurrentDirectoryIsNotActDir(TestCaseBaseForParser):
-    def test_pass_when_file_exists(self):
+    def test_pass_WHEN_file_exists(self):
         file_name = 'existing-file'
         cases = [
             ('dir',
@@ -140,196 +156,186 @@ class TestOfCurrentDirectoryIsNotActDir(TestCaseBaseForParser):
 
 
 class TestCheckForDirectory(TestCaseBaseForParser):
-    def test_pass(self):
-        file_name = 'name-of-checked-file'
-        cases = [
-            (
-                'exists as directory',
-                DirContents([empty_dir(file_name)])
-            ),
-            (
-                'exists as sym-link to existing directory',
-                DirContents([empty_dir('directory'),
-                             Link(file_name, 'directory')]),
-            ),
-        ]
-        for case_name, actual_dir_contents in cases:
-            with self.subTest(msg=case_name):
-                self._run(args_for(file_name=file_name,
-                                   file_type=sut.TYPE_NAME_DIRECTORY),
-                          ArrangementPostAct(
-                              sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                                       actual_dir_contents)),
-                          is_pass(),
-                          )
+    file_name = 'name-of-checked-file'
 
-    def test_fail(self):
-        file_name = 'the-name-of-checked-file'
-        cases = [
-            (
-                'exists as regular file',
-                DirContents([empty_file(file_name)])
-            ),
-            (
-                'exists as sym-link to existing regular file',
-                DirContents([empty_file('existing-file'),
-                             Link(file_name, 'directory')]),
-            ),
-        ]
-        for case_name, actual_dir_contents in cases:
-            with self.subTest(msg=case_name):
-                self._run(args_for(file_name=file_name,
-                                   file_type=sut.TYPE_NAME_DIRECTORY),
-                          ArrangementPostAct(
-                              sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                                       actual_dir_contents)),
-                          Expectation(
-                              main_result=pfh_check.is_fail()),
-                          )
+    cases_with_existing_directory = [
+        (
+            'exists as directory',
+            DirContents([empty_dir(file_name)])
+        ),
+        (
+            'exists as sym-link to existing directory',
+            DirContents([empty_dir('directory'),
+                         Link(file_name, 'directory')]),
+        ),
+    ]
+
+    cases_with_existing_files_that_are_not_directories = [
+        (
+            'exists as regular file',
+            DirContents([empty_file(file_name)])
+        ),
+        (
+            'exists as sym-link to existing regular file',
+            DirContents([empty_file('existing-file'),
+                         Link(file_name, 'directory')]),
+        ),
+    ]
+
+    def test_pass_WHEN_file_is_an_existing_directory(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_directory,
+            main_result=pfh_check.is_pass(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_DIRECTORY),
+        )
+
+    def test_fail_WHEN_file_exists_but_is_not_a_directory(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_not_directories,
+            main_result=pfh_check.is_fail(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_DIRECTORY),
+        )
 
 
 class TestCheckForRegularFile(TestCaseBaseForParser):
-    def test_pass(self):
-        file_name = 'name-of-checked-file'
-        cases = [
-            (
-                'exists as regular file',
-                DirContents([empty_file(file_name)])
-            ),
-            (
-                'exists as sym-link to existing regular file',
-                DirContents([empty_file('existing-file'),
-                             Link(file_name, 'existing-file')]),
-            ),
-        ]
-        for case_name, actual_dir_contents in cases:
-            with self.subTest(msg=case_name):
-                self._run(args_for(file_name=file_name,
-                                   file_type=sut.TYPE_NAME_REGULAR),
-                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                                                      actual_dir_contents)),
-                          is_pass(),
-                          )
+    file_name = 'name-of-checked-file'
+    cases_with_existing_files_that_are_regular_files = [
+        (
+            'exists as regular file',
+            DirContents([empty_file(file_name)])
+        ),
+        (
+            'exists as sym-link to existing regular file',
+            DirContents([empty_file('existing-file'),
+                         Link(file_name, 'existing-file')]),
+        ),
+    ]
+
+    cases_with_existing_files_that_are_not_regular_files = [
+        (
+            'exists as directory',
+            DirContents([empty_dir(file_name)])
+        ),
+        (
+            'exists as sym-link to existing directory',
+            DirContents([empty_dir('directory'),
+                         Link(file_name, 'directory')]),
+        ),
+    ]
+
+    def test_pass_WHEN_file_exists_and_is_a_regular_file(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_regular_files,
+            main_result=pfh_check.is_pass(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_REGULAR),
+        )
 
     def test_fail(self):
-        file_name = 'the-name-of-checked-file'
-        cases = [
-            (
-                'exists as directory',
-                DirContents([empty_dir(file_name)])
-            ),
-            (
-                'exists as sym-link to existing directory',
-                DirContents([empty_dir('directory'),
-                             Link(file_name, 'directory')]),
-            ),
-        ]
-        for case_name, actual_dir_contents in cases:
-            with self.subTest(msg=case_name):
-                self._run(args_for(file_name=file_name,
-                                   file_type=sut.TYPE_NAME_REGULAR),
-                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                                                      actual_dir_contents)),
-                          Expectation(main_result=pfh_check.is_fail()),
-                          )
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_not_regular_files,
+            main_result=pfh_check.is_fail(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_REGULAR),
+        )
 
 
 class TestCheckForSymLink(TestCaseBaseForParser):
-    def test_pass(self):
-        file_name = 'name-of-checked-file'
-        cases = [
-            (
-                'exists as sym-link to directory',
-                DirContents([empty_dir('dir'),
-                             Link(file_name, 'dir')])
-            ),
-            (
-                'exists as sym-link to existing regular file',
-                DirContents([empty_file('file'),
-                             Link(file_name, 'file')]),
-            ),
-            (
-                'exists as sym-link to non-existing file',
-                DirContents([Link(file_name, 'non-existing-file')]),
-            ),
-        ]
-        for case_name, actual_dir_contents in cases:
-            with self.subTest(msg=case_name):
-                self._run(args_for(file_name=file_name,
-                                   file_type=sut.TYPE_NAME_SYMLINK),
-                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                                                      actual_dir_contents)),
-                          is_pass(),
-                          )
+    file_name = 'the-name-of-checked-file'
+    cases_with_existing_files_that_are_symbolic_links = [
+        (
+            'exists as sym-link to directory',
+            DirContents([empty_dir('dir'),
+                         Link(file_name, 'dir')])
+        ),
+        (
+            'exists as sym-link to existing regular file',
+            DirContents([empty_file('file'),
+                         Link(file_name, 'file')]),
+        ),
+        (
+            'exists as sym-link to non-existing file',
+            DirContents([Link(file_name, 'non-existing-file')]),
+        ),
+    ]
+
+    cases_with_existing_files_that_are_not_symbolic_links = [
+        (
+            'exists as directory',
+            DirContents([empty_file(file_name)])
+        ),
+        (
+            'exists as regular file',
+            DirContents([empty_dir(file_name)]),
+        ),
+    ]
+
+    def test_pass_WHEN_file_exists_and_is_a_regular_file(self):
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_symbolic_links,
+            main_result=pfh_check.is_pass(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_SYMLINK),
+        )
 
     def test_fail(self):
-        file_name = 'the-name-of-checked-file'
-        cases = [
-            (
-                'exists as directory',
-                DirContents([empty_file(file_name)])
-            ),
-            (
-                'exists as regular file',
-                DirContents([empty_dir(file_name)]),
-            ),
-        ]
-        for case_name, actual_dir_contents in cases:
-            with self.subTest(msg=case_name):
-                self._run(args_for(file_name=file_name,
-                                   file_type=sut.TYPE_NAME_SYMLINK),
-                          ArrangementPostAct(sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                                                      actual_dir_contents)),
-                          Expectation(main_result=pfh_check.is_fail()),
-                          )
+        self._run_test_cases_with_act_dir_contents(
+            self.cases_with_existing_files_that_are_not_symbolic_links,
+            main_result=pfh_check.is_fail(),
+            instruction_arguments=args_for(file_name=self.file_name,
+                                           file_type=sut.TYPE_NAME_SYMLINK),
+        )
 
 
 class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
+    file_name = 'name-of-checked-file'
+    cases = [
+        (
+            'exists in act dir',
+            sut.TYPE_NAME_REGULAR,
+            file_ref_texts.REL_ACT_OPTION,
+            ArrangementPostAct(
+                sds_contents=contents_in(RelSdsOptionType.REL_ACT,
+                                         DirContents([empty_file(file_name)]))),
+            Expectation(symbol_usages=asrt.is_empty_list),
+        ),
+        (
+            'exists in tmp/usr dir',
+            sut.TYPE_NAME_DIRECTORY,
+            file_ref_texts.REL_TMP_OPTION,
+            ArrangementPostAct(
+                sds_contents=contents_in(RelSdsOptionType.REL_TMP,
+                                         DirContents([empty_dir(file_name)]))),
+            Expectation(symbol_usages=asrt.is_empty_list),
+        ),
+        (
+            'exists relative symbol',
+            sut.TYPE_NAME_DIRECTORY,
+            rel_symbol_arg_str('SYMBOL_NAME'),
+            ArrangementPostAct(
+                symbols=symbol_table_with_single_file_ref_value(
+                    'SYMBOL_NAME',
+                    file_refs.of_rel_option(RelOptionType.REL_TMP,
+                                            PathPartAsNothing())),
+                sds_contents=contents_in(RelSdsOptionType.REL_TMP,
+                                         DirContents([empty_dir(file_name)]))),
+            Expectation(symbol_usages=asrt.matches_sequence([
+                equals_symbol_reference_with_restriction_on_direct_target(
+                    'SYMBOL_NAME',
+                    equals_file_ref_relativity_restriction(
+                        FileRefRelativityRestriction(
+                            sut._REL_OPTION_CONFIG.options.accepted_relativity_variants)
+                    ))
+            ])),
+        ),
+    ]
+
     def test_pass(self):
-        file_name = 'name-of-checked-file'
-        cases = [
-            (
-                'exists in act dir',
-                sut.TYPE_NAME_REGULAR,
-                file_ref_texts.REL_ACT_OPTION,
-                ArrangementPostAct(
-                    sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                             DirContents([empty_file(file_name)]))),
-                Expectation(symbol_usages=asrt.is_empty_list),
-            ),
-            (
-                'exists in tmp/usr dir',
-                sut.TYPE_NAME_DIRECTORY,
-                file_ref_texts.REL_TMP_OPTION,
-                ArrangementPostAct(
-                    sds_contents=contents_in(RelSdsOptionType.REL_TMP,
-                                             DirContents([empty_dir(file_name)]))),
-                Expectation(symbol_usages=asrt.is_empty_list),
-            ),
-            (
-                'exists relative symbol',
-                sut.TYPE_NAME_DIRECTORY,
-                rel_symbol_arg_str('SYMBOL_NAME'),
-                ArrangementPostAct(
-                    symbols=symbol_table_with_single_file_ref_value(
-                        'SYMBOL_NAME',
-                        file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                                PathPartAsNothing())),
-                    sds_contents=contents_in(RelSdsOptionType.REL_TMP,
-                                             DirContents([empty_dir(file_name)]))),
-                Expectation(symbol_usages=asrt.matches_sequence([
-                    equals_symbol_reference_with_restriction_on_direct_target(
-                        'SYMBOL_NAME',
-                        equals_file_ref_relativity_restriction(
-                            FileRefRelativityRestriction(
-                                sut._REL_OPTION_CONFIG.options.accepted_relativity_variants)
-                        ))
-                ])),
-            ),
-        ]
-        for case_name, expected_file_type, relativity_option, arrangement, expectation in cases:
+        for case_name, expected_file_type, relativity_option, arrangement, expectation in self.cases:
             with self.subTest(msg=case_name):
-                self._run(args_for(file_name=file_name,
+                self._run(args_for(file_name=self.file_name,
                                    relativity_option=relativity_option,
                                    file_type=expected_file_type),
                           arrangement,
@@ -338,9 +344,12 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
 
 
 def args_for(file_name: str,
-             file_type: str,
+             file_type: str = None,
+             check_type: CheckType = CheckType.POSITIVE,
              relativity_option: str = '') -> str:
-    return long_option_syntax(file_type) + ' ' + relativity_option + ' ' + file_name
+    negation_prefix = '' if check_type is CheckType.POSITIVE else sut.NEGATION_OPERATOR
+    file_type_option = '' if file_type is None else long_option_syntax(file_type)
+    return negation_prefix + ' ' + file_type_option + ' ' + relativity_option + ' ' + file_name
 
 
 if __name__ == '__main__':
