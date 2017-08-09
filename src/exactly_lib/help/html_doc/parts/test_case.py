@@ -9,7 +9,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentationRenderer
+from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationRenderer
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId

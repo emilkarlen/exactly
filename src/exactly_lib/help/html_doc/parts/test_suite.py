@@ -7,7 +7,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentationRenderer
+from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationRenderer
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
