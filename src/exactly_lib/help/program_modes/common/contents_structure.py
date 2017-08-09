@@ -32,15 +32,8 @@ class SectionDocumentation:
     Documentation about a section in a "section document".
     """
 
-    def __init__(self,
-                 name: str,
-                 section_concept_name: str):
+    def __init__(self, name: str):
         self._name_formats = formatting.SectionName(name)
-        self._section_concept_name = section_concept_name
-
-    @property
-    def section_concept_name(self) -> str:
-        return self._section_concept_name
 
     @property
     def name(self) -> formatting.SectionName:

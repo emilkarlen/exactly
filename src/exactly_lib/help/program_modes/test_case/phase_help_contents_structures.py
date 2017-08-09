@@ -79,7 +79,7 @@ class ExecutionEnvironmentInfo(tuple):
 
 class TestCasePhaseDocumentationBase(SectionDocumentation):
     def __init__(self, name: str):
-        super().__init__(name, SECTION_CONCEPT_NAME)
+        super().__init__(name)
 
     def sequence_info(self) -> PhaseSequenceInfo:
         raise NotImplementedError()
@@ -142,7 +142,7 @@ class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumen
 
 class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
     def __init__(self, tcp_doc: TestCasePhaseDocumentationBase):
-        super().__init__(tcp_doc)
+        super().__init__(tcp_doc, SECTION_CONCEPT_NAME)
         self.doc = tcp_doc
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:

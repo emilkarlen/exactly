@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.utils import transform_list_to_table
 
 class TestSuiteSectionDocumentationBase(SectionDocumentation):
     def __init__(self, name: str):
-        super().__init__(name, SECTION_CONCEPT_NAME)
+        super().__init__(name)
         self._section_name = SectionName(name)
 
     def contents_description(self) -> list:
@@ -75,7 +75,7 @@ class TestSuiteSectionDocumentationBaseForSectionWithoutInstructions(TestSuiteSe
 
 class TestSuiteSectionDocumentationRenderer(SectionDocumentationRendererBase):
     def __init__(self, tss_doc: TestSuiteSectionDocumentationBase):
-        super().__init__(tss_doc)
+        super().__init__(tss_doc, SECTION_CONCEPT_NAME)
         self._doc = tss_doc
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
