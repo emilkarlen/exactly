@@ -1,0 +1,16 @@
+[setup]
+
+
+file existing-regular-file
+
+
+[assert]
+
+
+exists ! --file existing-regular-file
+
+
+[act]
+
+
+$ exit 0

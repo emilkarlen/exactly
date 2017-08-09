@@ -1,0 +1,10 @@
+[assert]
+
+
+exists non-existing-file
+
+
+[act]
+
+
+$ exit 0
