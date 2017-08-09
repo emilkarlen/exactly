@@ -9,7 +9,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
@@ -76,6 +76,9 @@ class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumenta
         return Description(text('Single line purpose for phase ' + self.name.syntax),
                            [para('Rest of purpose for phase ' + self.name.syntax)])
 
+    def renderer(self) -> SectionContentsRenderer:
+        return _SectionDocumentationRenderer(self.name)
+
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
                                    [])
@@ -100,6 +103,9 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
         return Description(text('Single line purpose for phase ' + self.name.syntax),
                            [para('Rest of purpose for phase ' + self.name.syntax)])
 
+    def renderer(self) -> SectionContentsRenderer:
+        return _SectionDocumentationRenderer(self.name)
+
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
                                    [])
@@ -111,6 +117,15 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
     @property
     def instruction_set(self) -> SectionInstructionSet:
         return self._instruction_set
+
+
+class _SectionDocumentationRenderer(SectionContentsRenderer):
+    def __init__(self, name):
+        self.name = name
+
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
+                                   [])
 
 
 class CrossReferenceTextConstructorTestImpl(CrossReferenceTextConstructor):
