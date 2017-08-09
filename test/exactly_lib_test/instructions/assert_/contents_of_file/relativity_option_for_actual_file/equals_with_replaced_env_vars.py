@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file.test_resources import \
+from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.arrangement_utils import \
     populator_for_relativity_option_root_for_contents_from_fun

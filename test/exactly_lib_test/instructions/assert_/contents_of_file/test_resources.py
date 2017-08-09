@@ -1,4 +1,4 @@
-from exactly_lib.instructions.assert_ import contents as sut
+from exactly_lib.instructions.assert_ import contents_of_file as sut
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.symbol_table import SymbolTable
