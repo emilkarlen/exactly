@@ -1,6 +1,6 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc, structures as docs
@@ -39,6 +39,10 @@ class SectionDocumentation:
                  section_concept_name: str):
         self._name_formats = formatting.SectionName(name)
         self._section_concept_name = section_concept_name
+
+    @property
+    def section_concept_name(self) -> str:
+        return self._section_concept_name
 
     @property
     def name(self) -> formatting.SectionName:
@@ -88,6 +92,23 @@ class SectionDocumentation:
         mandatory_or_optional = 'mandatory' if self.is_mandatory() else 'optional'
         return docs.para('The {} {} is {}.'.format(self.name,
                                                    self._section_concept_name,
+                                                   mandatory_or_optional))
+
+
+class SectionDocumentationRendererBase(SectionContentsRenderer):
+    def __init__(self, section_documentation: SectionDocumentation):
+        self.__section_documentation = section_documentation
+
+    def _default_section_info(self, default_section_name: str) -> list:
+        ret_val = []
+        if self.__section_documentation.name.plain == default_section_name:
+            ret_val.append(default_section_para(self.__section_documentation.section_concept_name))
+        return ret_val
+
+    def _mandatory_info_para(self):
+        mandatory_or_optional = 'mandatory' if self.__section_documentation.is_mandatory() else 'optional'
+        return docs.para('The {} {} is {}.'.format(self.__section_documentation.name,
+                                                   self.__section_documentation.section_concept_name,
                                                    mandatory_or_optional))
 
 
