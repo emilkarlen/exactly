@@ -8,7 +8,7 @@ from exactly_lib.help.program_modes.main_program.contents_structure import MainP
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
-from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
+from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.description import Description
