@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help.concepts import contents_structure as sut
-from exactly_lib.help.utils.name_and_cross_ref import Name
+from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.util.description import DescriptionWithSubSections, \
     single_line_description_with_sub_sections
 

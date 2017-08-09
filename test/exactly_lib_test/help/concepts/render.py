@@ -4,8 +4,8 @@ from exactly_lib.help.concepts import render as sut
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.names_and_cross_references import name_and_ref_target
-from exactly_lib.help.utils.name_and_cross_ref import Name
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import text, para

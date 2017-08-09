@@ -1,4 +1,3 @@
-from exactly_lib.common.help.cross_reference_id import CrossReferenceId
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.concepts.contents_structure import concepts_help
@@ -11,6 +10,7 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import Text

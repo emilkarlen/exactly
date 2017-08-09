@@ -1,5 +1,13 @@
-from exactly_lib.common.help.cross_reference_id import CrossReferenceId
-from exactly_lib.util.textformat.structure.core import Text, StringText
+from exactly_lib.util.textformat.structure.core import Text, StringText, CrossReferenceTarget
+
+
+class CrossReferenceId(CrossReferenceTarget):
+    """
+    A part of the help text that can be referred to.
+
+    The base class for all cross references used by Exactly.
+    """
+    pass
 
 
 class Name(tuple):

@@ -1,8 +1,7 @@
-from exactly_lib.common.help.cross_reference_id import CrossReferenceId
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
-from exactly_lib.help.utils.name_and_cross_ref import Name, SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME
+from exactly_lib.help_texts.name_and_cross_ref import Name, SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 from exactly_lib.util.textformat.structure.structures import para
