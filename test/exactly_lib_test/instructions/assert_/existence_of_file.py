@@ -69,7 +69,7 @@ class TestParseInvalidSyntax(TestCaseBase):
     def test_raise_exception_WHEN_syntax_is_invalid_WITH_not_operator(self):
 
         test_cases_with_negation_operator = [
-            sut.NEGATION_OPERATOR + ' ' + case_with_no_negation_operator
+            with_negation_argument(case_with_no_negation_operator)
             for case_with_no_negation_operator in self.test_cases_with_no_negation_operator
         ]
 
@@ -170,6 +170,7 @@ class TestOfCurrentDirectoryIsNotActDir(TestCaseBaseForParser):
     ]
 
     def test_pass_WHEN_file_exists(self):
+
         change_dir_to_tmp_usr_dir = HomeAndSdsActionFromSdsAction(ChangeDirTo(lambda sds: sds.tmp.user_dir))
         for case_name, dir_contents in self.cases_with_existing_file_of_different_type:
             with self.subTest(case_name=case_name):
@@ -183,6 +184,7 @@ class TestOfCurrentDirectoryIsNotActDir(TestCaseBaseForParser):
                           )
 
     def test_fail_WHEN_file_exists_AND_assertion_is_negated(self):
+
         change_dir_to_tmp_usr_dir = HomeAndSdsActionFromSdsAction(ChangeDirTo(lambda sds: sds.tmp.user_dir))
         for case_name, dir_contents in self.cases_with_existing_file_of_different_type:
             with self.subTest(case_name=case_name):
@@ -428,6 +430,7 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
     ]
 
     def test_pass(self):
+
         for case_name, expected_file_type, relativity_option, arrangement, expected_symbol_usages in self.cases:
             with self.subTest(case_name=case_name):
                 self._run(args_for(file_name=self.file_name,
@@ -441,6 +444,7 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
                           )
 
     def test_fail_WHEN_assertion_is_negated(self):
+
         for case_name, expected_file_type, relativity_option, arrangement, expected_symbol_usages in self.cases:
             with self.subTest(case_name=case_name):
                 self._run(args_for(file_name=self.file_name,
