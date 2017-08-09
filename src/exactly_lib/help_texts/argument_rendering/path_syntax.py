@@ -17,7 +17,6 @@ def path_or_symbol_reference(multiplicity: a.Multiplicity, path_argument: a.Name
 
 
 def mandatory_path_with_optional_relativity(path_argument: a.Named,
-                                            may_use_symbols: bool = False,
                                             path_suffix_is_required: bool = True) -> list:
     multiplicity = a.Multiplicity.MANDATORY if path_suffix_is_required else a.Multiplicity.OPTIONAL
     path_part = a.Single(multiplicity, path_argument)

@@ -92,7 +92,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         negation_arguments = [negation_of_assertion.optional_negation_argument_usage()]
         path_arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
-            _REL_OPTION_CONFIG.options.is_rel_symbol_option_accepted,
             _REL_OPTION_CONFIG.path_suffix_is_required)
         arguments = negation_arguments + type_arguments + path_arguments
 

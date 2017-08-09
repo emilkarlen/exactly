@@ -96,7 +96,6 @@ def definition_of_type_path() -> str:
     arguments.extend(
         path_syntax.mandatory_path_with_optional_relativity(
             path_syntax.PATH_ARGUMENT,
-            True,
             PATH_SUFFIX_IS_REQUIRED))
     return cl_syntax.cl_syntax_for_args(arguments)
 
