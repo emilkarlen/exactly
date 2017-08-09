@@ -133,7 +133,7 @@ def relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfigurati
         accepted.append(RelOptionType.REL_RESULT)
     variants = PathRelativityVariants(set(accepted), True)
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(variants,
-                                                                  True,
+                                                                  True,  # TODO is-rel-sym-accepted
                                                                   RelOptionType.REL_CWD),
                                           _DIR_ARGUMENT.name,
                                           False)

@@ -17,7 +17,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
+from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream, std_error_message_text_for_token_syntax_error
 from exactly_lib.util.textformat.structure.structures import paras
 
 
@@ -115,7 +115,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
             else:
                 raise SingleInstructionInvalidArgumentException('Invalid syntax')
         except TokenSyntaxError as ex:
-            raise SingleInstructionInvalidArgumentException('Invalid syntax: ' + str(ex))
+            raise SingleInstructionInvalidArgumentException(std_error_message_text_for_token_syntax_error(ex))
 
     def _parse_unset(self, variable_name: str, remaining_tokens: TokenStream) -> TheInstructionEmbryo:
         if not remaining_tokens.is_null:

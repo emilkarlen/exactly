@@ -104,4 +104,4 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 
 _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
 
-RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name, True)
+RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)

@@ -1,3 +1,4 @@
+from exactly_lib.help_texts.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -7,9 +8,11 @@ from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativity
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.misc_utils import is_option_argument
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax import option_parsing
+from exactly_lib.util.parse.token import Token
 
 
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,
@@ -31,6 +34,21 @@ def parse_explicit_relativity_info(options: RelOptionsConfiguration,
     return _parse_rel_option_type(options, source)
 
 
+def _raise_invalid_argument_exception_if_symbol_does_not_have_valid_syntax(symbol_name_token: Token,
+                                                                           option_str: str):
+    symbol_name = symbol_name_token.source_string
+    if symbol_name_token.is_quoted:
+        msg = 'Symbol name argument for {} must not be quoted: {}'.format(option_str,
+                                                                          symbol_name)
+        raise SingleInstructionInvalidArgumentException(msg)
+    if not symbol_syntax.is_symbol_name(symbol_name_token.source_string):
+        msg = 'Invalid name of {symbol_concept}: {invalid_value}'.format(
+            symbol_concept=SYMBOL_CONCEPT_INFO.name.singular,
+            invalid_value=symbol_name_token.source_string,
+        )
+        raise SingleInstructionInvalidArgumentException(msg)
+
+
 def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
                                  source: TokenStream) -> SymbolReference:
     option_str = source.head.string
@@ -42,12 +60,8 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
     if source.is_null:
         msg = 'Missing symbol name argument for {} option'.format(option_str)
         raise SingleInstructionInvalidArgumentException(msg)
-    symbol_name = source.head.source_string
-    if source.head.is_quoted:
-        msg = 'Symbol name argument for {} must not be quoted: {}'.format(option_str,
-                                                                          symbol_name)
-        raise SingleInstructionInvalidArgumentException(msg)
-    source.consume()
+    _raise_invalid_argument_exception_if_symbol_does_not_have_valid_syntax(source.head, option_str)
+    symbol_name = source.consume().string
     return SymbolReference(symbol_name,
                            ReferenceRestrictionsOnDirectAndIndirect(
                                FileRefRelativityRestriction(options.accepted_relativity_variants)))
