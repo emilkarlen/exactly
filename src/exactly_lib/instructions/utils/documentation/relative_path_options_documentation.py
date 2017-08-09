@@ -14,6 +14,7 @@ from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse.parse_relativity import SYMBOL_SYNTAX_ELEMENT_NAME
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
@@ -51,9 +52,8 @@ def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
         for concept in concepts_for_type:
             if concept not in ret_val:
                 ret_val.append(concept)
-    if rel_options_conf.is_rel_symbol_option_accepted:
-        if ci.SYMBOL_CONCEPT_INFO not in ret_val:
-            ret_val.append(ci.SYMBOL_CONCEPT_INFO)
+    if ci.SYMBOL_CONCEPT_INFO not in ret_val:
+        ret_val.append(ci.SYMBOL_CONCEPT_INFO)
     return ret_val
 
 
@@ -133,7 +133,7 @@ class RelOptionRenderer:
             'DIR_TMP': sds.PATH__TMP_USER,
             'DIR_ACT': sds.SUB_DIRECTORY__ACT,
             'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
-            'SYMBOL_NAME': _SYMBOL_NAME,
+            'SYMBOL_NAME': SYMBOL_SYNTAX_ELEMENT_NAME,
             'PATH_SYMBOL_TYPE': PATH_TYPE,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_case_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
@@ -157,8 +157,7 @@ class RelOptionRenderer:
         for rel_option_type in _DISPLAY_ORDER:
             if rel_option_type in rel_options_conf.accepted_relativity_variants.rel_option_types:
                 items.append(self.item_for(self.option_info_for(rel_option_type)))
-        if rel_options_conf.is_rel_symbol_option_accepted:
-            items.append(self._rel_symbol_item())
+        items.append(self._rel_symbol_item())
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
@@ -248,9 +247,7 @@ _DEFAULT_RELATIVITY = """\
 By default, {path} is relative the {default_relativity_location}.
 """
 
-_SYMBOL_NAME = 'SYMBOL'
-
-_REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME, _SYMBOL_NAME)
+_REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME, SYMBOL_SYNTAX_ELEMENT_NAME)
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
 A reference to a symbol {symbol_name} using the syntax

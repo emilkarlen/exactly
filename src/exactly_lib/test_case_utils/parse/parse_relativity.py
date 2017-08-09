@@ -14,6 +14,8 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.parse.token import Token
 
+SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
+
 
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,
                                    source: TokenStream):
@@ -54,8 +56,6 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
     option_str = source.head.string
     if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
-    if not options.is_rel_symbol_option_accepted:
-        return _raise_invalid_option(option_str, options)
     source.consume()
     if source.is_null:
         msg = 'Missing symbol name argument for {} option'.format(option_str)
@@ -97,9 +97,9 @@ def _resolve_relativity_option_type(option_argument: str) -> RelOptionType:
 
 def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
     ret_val = []
-    if options.is_rel_symbol_option_accepted:
-        ret_val.append('  {} SYMBOL-NAME'.format(
-            option_parsing.long_option_syntax(REL_SYMBOL_OPTION_NAME.long)))
+    ret_val.append('  {rel_symbol_option} {symbol_syntax_element_name}'.format(
+        rel_symbol_option=option_parsing.long_option_syntax(REL_SYMBOL_OPTION_NAME.long),
+        symbol_syntax_element_name=SYMBOL_SYNTAX_ELEMENT_NAME))
     for option_type in options.accepted_options:
         option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
         option_str = option_parsing.long_option_syntax(option_name.long)
