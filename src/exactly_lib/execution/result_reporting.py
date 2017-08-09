@@ -60,6 +60,8 @@ def output_location(printer: FilePrinter,
         printer.write_line('In ' + SectionName(section_name).syntax)
         has_output_header = True
     if line:
+        if has_output_header:
+            printer.write_empty_line()
         printer.write_line(error_message_format.source_line(line))
         has_output_header = True
     if description:
@@ -67,7 +69,7 @@ def output_location(printer: FilePrinter,
         has_output_header = True
 
     if has_output_header:
-        printer.write_line('')
+        printer.write_empty_line()
 
 
 class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):

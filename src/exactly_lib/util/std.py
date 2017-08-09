@@ -27,7 +27,7 @@ def new_std_output_files_dev_null() -> StdOutputFiles:
 class StdFiles:
     def __init__(self,
                  stdin_file=sys.stdin,
-                 output_files: StdOutputFiles=StdOutputFiles()):
+                 output_files: StdOutputFiles = StdOutputFiles()):
         self._stdin_file = stdin_file
         self._output_files = output_files
 
@@ -54,6 +54,9 @@ class FilePrinter:
 
     def write_line(self, line: str):
         self.file.write(line)
+        self.file.write(os.linesep)
+
+    def write_empty_line(self):
         self.file.write(os.linesep)
 
     def write_line_if_present(self, line: str):
