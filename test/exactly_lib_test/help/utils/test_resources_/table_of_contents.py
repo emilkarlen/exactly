@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.common.help.cross_reference_id import TargetInfoNode, TargetInfo, CrossReferenceId
+from exactly_lib.help_texts.cross_reference_id import TargetInfoNode, TargetInfo, CrossReferenceId
 from exactly_lib.util.textformat.structure import core
-from exactly_lib_test.common.help.test_resources import cross_reference_id_va as cross_ref_va
+from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 is_target_info = asrt.And([

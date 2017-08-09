@@ -1,9 +1,9 @@
-from exactly_lib.common.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.see_also_section import see_also_sections
+from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.names.formatting import SectionName
 from exactly_lib.help_texts.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.util.textformat.structure import document as doc

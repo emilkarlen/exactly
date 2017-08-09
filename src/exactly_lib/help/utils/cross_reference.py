@@ -1,5 +1,4 @@
-from exactly_lib.common.help import cross_reference_id
-from exactly_lib.common.help.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts import cross_reference_id
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, phase_name_dict_key_for
 from exactly_lib.help_texts.test_suite.formatted_section_names import suite_section_name_dictionary, \
@@ -42,7 +41,7 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
             i=self.any_instruction[x.instruction_name],
             p=self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].syntax)
 
-    def visit_entity(self, x: EntityCrossReferenceId):
+    def visit_entity(self, x: cross_reference_id.EntityCrossReferenceId):
         return x.entity_type_name.capitalize() + ' "' + x.entity_name + '"'
 
 
