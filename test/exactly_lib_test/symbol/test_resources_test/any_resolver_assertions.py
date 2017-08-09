@@ -7,7 +7,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstan
 from exactly_lib_test.symbol.test_resources import any_resolver_assertions as sut
 from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
-from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:

@@ -9,7 +9,7 @@ from exactly_lib.test_case_file_structure.path_relativity import ResolvingDepend
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dependent_value as sut
 from exactly_lib_test.test_resources.actions import do_raise, do_return
-from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:

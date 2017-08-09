@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.type_system_values import concrete_string_values as csv
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.type_system_values.test_resources import string_value as sut
 
 
