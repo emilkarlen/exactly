@@ -9,10 +9,10 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.cli.util import argument_value_lookup
 from exactly_lib.help.contents_structure import ApplicationHelp
-from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
-    SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
+from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
+    SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.test_case import phase_identifier
 
 

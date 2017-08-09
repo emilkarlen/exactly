@@ -57,7 +57,7 @@ def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp
     from exactly_lib.cli.program_modes.help.actors import actor_help_request_renderer_resolver
     from exactly_lib.cli.program_modes.help.concepts import concept_help_request_renderer_resolver
     from exactly_lib.cli.program_modes.help.suite_reporters import suite_reporter_help_request_renderer_resolver
-    from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME, CONCEPT_ENTITY_TYPE_NAME, \
+    from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME, CONCEPT_ENTITY_TYPE_NAME, \
         SUITE_REPORTER_ENTITY_TYPE_NAME
     resolvers = {
         ACTOR_ENTITY_TYPE_NAME: actor_help_request_renderer_resolver,
