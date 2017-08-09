@@ -1,3 +1,5 @@
+import types
+
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
@@ -10,8 +12,11 @@ from exactly_lib.util.textformat.structure import document as doc
 
 
 class HtmlDocGeneratorForSectionDocumentBase:
-    def __init__(self, sections: list):
+    def __init__(self,
+                 sections: list,
+                 get_section_contents_renderer_for_section_document: types.FunctionType):
         self.sections = sections
+        self.get_section_contents_renderer_for_section_document = get_section_contents_renderer_for_section_document
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
@@ -44,15 +49,17 @@ class HtmlDocGeneratorForSectionDocumentBase:
                                 targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
         root_target_info = targets_factory.root(header)
         sub_section_nodes = []
-        for phase in self.sections:
-            assert isinstance(phase, SectionDocumentation)
-            phase_presentation_str = phase.name.syntax
-            cross_reference_target = self._section_cross_ref_target(phase)
+        for section in self.sections:
+            assert isinstance(section, SectionDocumentation)
+            phase_presentation_str = section.name.syntax
+            cross_reference_target = self._section_cross_ref_target(section)
             section_target_info = cross_ref.TargetInfo(phase_presentation_str,
                                                        cross_reference_target)
-            section_node = LeafSectionRendererNode(section_target_info,
-                                                   SectionContentsRendererForSectionDocumentSection(phase))
+            section_node = LeafSectionRendererNode(
+                section_target_info,
+                self.get_section_contents_renderer_for_section_document(section))
             sub_section_nodes.append(section_node)
+
         return SectionRendererNodeWithSubSections(root_target_info,
                                                   [],
                                                   sub_section_nodes)

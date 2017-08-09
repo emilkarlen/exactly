@@ -9,14 +9,6 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-class SectionDocumentationRenderer(SectionContentsRenderer):
-    def __init__(self, section_documentation: SectionDocumentation):
-        self.section_documentation = section_documentation
-
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return self.section_documentation.render(environment)
-
-
 class SectionInstructionSetRenderer(SectionContentsRenderer):
     def __init__(self, instruction_set: SectionInstructionSet):
         self.instruction_set = instruction_set

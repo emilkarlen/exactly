@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help import texts
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
-    HtmlDocGeneratorForSectionDocumentBase
+    HtmlDocGeneratorForSectionDocumentBase, SectionContentsRendererForSectionDocumentSection
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationGenerator
@@ -45,7 +45,8 @@ def generator(header: str,
 
 class _HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
     def __init__(self, test_suite_help: TestSuiteHelp):
-        super().__init__(test_suite_help.section_helps)
+        super().__init__(test_suite_help.section_helps,
+                         SectionContentsRendererForSectionDocumentSection)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionCrossReference(section.name.plain)
