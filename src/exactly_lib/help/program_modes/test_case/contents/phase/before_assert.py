@@ -1,4 +1,3 @@
-from exactly_lib.common.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.execution.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
@@ -11,6 +10,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_is_same_as_at_end_of_the
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
+from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ACT_PHASE_NAME, ASSERT_PHASE_NAME, \
     SETUP_PHASE_NAME

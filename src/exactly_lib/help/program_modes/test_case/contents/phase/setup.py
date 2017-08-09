@@ -1,4 +1,3 @@
-from exactly_lib.common.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.execution.environment_variables import EXISTS_AT_SETUP_MAIN
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -8,6 +7,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__not_executed_if_execution_mode_is_skip
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
+from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ACT_PHASE_NAME, CONFIGURATION_PHASE_NAME
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse

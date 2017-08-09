@@ -1,4 +1,3 @@
-from exactly_lib.common.help.cross_reference_id import root_factory, TargetInfoNode
 from exactly_lib.help.concepts.render import IndividualConceptRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
@@ -11,6 +10,7 @@ from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, parent, SectionRendererNode
 from exactly_lib.help.utils.table_of_contents import toc_list
+from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNode
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer

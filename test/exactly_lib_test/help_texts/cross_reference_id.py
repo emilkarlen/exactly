@@ -1,14 +1,10 @@
 import unittest
 
-from exactly_lib.common.help import cross_reference_id as sut
+from exactly_lib.help_texts import cross_reference_id as sut
 
 
 def suite() -> unittest.TestSuite:
     return unittest.makeSuite(CrossReferenceIdVisitorTest)
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
 
 
 class CrossReferenceIdVisitorTest(unittest.TestCase):
@@ -130,3 +126,7 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
 
 class UnknownCrossReferenceId(sut.CrossReferenceId):
     pass
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

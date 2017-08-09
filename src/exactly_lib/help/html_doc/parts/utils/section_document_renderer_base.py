@@ -1,12 +1,12 @@
-from exactly_lib.common.help import cross_reference_id as cross_ref
-from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId, TargetInfo
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
     SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionGenerator
-from exactly_lib.util.textformat.structure import document  as doc
+from exactly_lib.help_texts import cross_reference_id as cross_ref
+from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
+from exactly_lib.util.textformat.structure import document as doc
 
 
 class HtmlDocGeneratorForSectionDocumentBase:
@@ -25,7 +25,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
         super_self = self
 
         class _Generator(SectionGenerator):
-            def section_renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionRendererNode:
+            def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
                 return super_self._sections_renderer_node(header, target_factory)
 
         return _Generator()
@@ -34,14 +34,14 @@ class HtmlDocGeneratorForSectionDocumentBase:
         super_self = self
 
         class _Generator(SectionGenerator):
-            def section_renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionRendererNode:
+            def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
                 return super_self._instructions_per_section_node(header, target_factory)
 
         return _Generator()
 
     def _sections_renderer_node(self,
                                 header: str,
-                                targets_factory: CustomTargetInfoFactory) -> SectionRendererNode:
+                                targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
         root_target_info = targets_factory.root(header)
         sub_section_nodes = []
         for phase in self.sections:
@@ -59,7 +59,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
 
     def _instructions_per_section_node(self,
                                        header: str,
-                                       targets_factory: CustomTargetInfoFactory) -> SectionRendererNode:
+                                       targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
         root_target_info = targets_factory.root(header)
         section_nodes = []
         for section in self.sections:
@@ -75,7 +75,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
                                                   section_nodes)
 
     def _section_instructions_node(self,
-                                   section_target_info: TargetInfo,
+                                   section_target_info: cross_ref.TargetInfo,
                                    section: SectionDocumentation) -> SectionRendererNode:
         instruction_nodes = [
             self._instruction_node(instruction, section)
@@ -89,8 +89,8 @@ class HtmlDocGeneratorForSectionDocumentBase:
                           instruction: InstructionDocumentation,
                           section: SectionDocumentation) -> SectionRendererNode:
         cross_ref_target = self._instruction_cross_ref_target(instruction, section)
-        target_info = TargetInfo(instruction.instruction_name(),
-                                 cross_ref_target)
+        target_info = cross_ref.TargetInfo(instruction.instruction_name(),
+                                           cross_ref_target)
         return LeafSectionRendererNode(target_info,
                                        InstructionManPageRenderer(instruction))
 

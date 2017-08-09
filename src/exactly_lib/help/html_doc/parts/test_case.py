@@ -1,5 +1,3 @@
-from exactly_lib.common.help import cross_reference_id as cross_ref
-from exactly_lib.common.help.cross_reference_id import CrossReferenceId
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import texts
 from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
@@ -12,6 +10,8 @@ from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
+from exactly_lib.help_texts import cross_reference_id as cross_ref
+from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
 
 
 def generator(header: str,

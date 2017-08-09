@@ -1,15 +1,15 @@
 import unittest
 
-from exactly_lib.common.help.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfo, \
-    TargetInfoNode
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as sut
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfo, \
+    TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import AnchorText
-from exactly_lib_test.common.help.test_resources import cross_reference_id_va as cross_ref_id_asrt
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import equals_target_info_node
+from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_id_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.textformat.test_resources.structure import is_anchor_text, is_string_text_that_equals
 
