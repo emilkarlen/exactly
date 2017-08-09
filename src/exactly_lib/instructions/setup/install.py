@@ -47,7 +47,6 @@ REL_OPTION_ARG_CONF_FOR_SOURCE = rel_opts_configuration.RelOptionArgumentConfigu
         path_relativity.PathRelativityVariants({RelOptionType.REL_HOME_CASE,
                                                 RelOptionType.REL_HOME_ACT},
                                                True),
-        True,
         RelOptionType.REL_HOME_CASE),
     OPTION_ARGUMENT_FOR_SOURCE.name,
     path_suffix_is_required=True)
@@ -58,7 +57,6 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
                                                 RelOptionType.REL_ACT,
                                                 RelOptionType.REL_TMP},
                                                True),
-        True,
         RelOptionType.REL_CWD),
     OPTION_ARGUMENT_FOR_DESTINATION.name,
     path_suffix_is_required=False)

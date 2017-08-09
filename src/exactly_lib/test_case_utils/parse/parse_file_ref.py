@@ -55,7 +55,6 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativity
 def all_rel_options_config(argument_syntax_name: str,
                            path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
-                                                                  True,  # TODO is-rel-sym-accepted
                                                                   RelOptionType.REL_HOME_CASE),
                                           argument_syntax_name,
                                           path_suffix_is_required)
@@ -68,7 +67,6 @@ STANDARD_NON_HOME_RELATIVITY_VARIANTS = PathRelativityVariants(
     True)
 
 STANDARD_NON_HOME_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HOME_RELATIVITY_VARIANTS,
-                                                    True,
                                                     RelOptionType.REL_CWD)
 
 

@@ -117,7 +117,6 @@ class RelOptionArgumentConfigurationWoSuffixRequirement(tuple):
 ARBITRARY_REL_OPT_ARG_CONF = RelOptionArgumentConfigurationWoSuffixRequirement(
     RelOptionsConfiguration(
         PathRelativityVariants({RelOptionType.REL_ACT}, True),
-        True,
         RelOptionType.REL_ACT),
     'argument_syntax_name')
 
@@ -234,7 +233,6 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             arg_config = RelOptionArgumentConfigurationWoSuffixRequirement(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
-                    True,  # TODO is-rel-sym-accepted
                     default_option),
                 'argument_syntax_name')
             source_and_token_stream_assertion_variants = [
@@ -405,7 +403,6 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
                 arg_config = RelOptionArgumentConfiguration(
                     RelOptionsConfiguration(
                         PathRelativityVariants(accepted_options, True),
-                        True,  # TODO is-rel-sym-accepted
                         default_option),
                     'argument_syntax_name',
                     path_suffix_is_required)
@@ -1001,7 +998,6 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
-                    True,  # TODO is-rel-sym-accepted
                     default_option),
                 'argument_syntax_name',
                 path_suffix_is_required)
@@ -1032,7 +1028,6 @@ class TestParseWithoutRequiredPathSuffix(TestParsesBase):
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
-                    True,
                     default_option),
                 'argument_syntax_name',
                 False)
@@ -1122,7 +1117,6 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
     def test_default_relativity_is_different_than_that_of_default_configuration(self):
         custom_configuration = RelOptionArgumentConfigurationWoSuffixRequirement(
             RelOptionsConfiguration(PathRelativityVariants({RelOptionType.REL_ACT}, True),
-                                    True,
                                     RelOptionType.REL_ACT),
             'FILE')
         for path_suffix_is_required in [False, True]:
@@ -1137,7 +1131,6 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
     def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
         custom_configuration = RelOptionArgumentConfigurationWoSuffixRequirement(
             RelOptionsConfiguration(PathRelativityVariants({RelOptionType.REL_ACT}, True),
-                                    True,
                                     RelOptionType.REL_ACT),
             'FILE')
         for path_suffix_is_required in [False, True]:
@@ -1154,7 +1147,6 @@ def _remaining_source(ts: TokenStream) -> str:
 _ARG_CONFIG_FOR_ALL_RELATIVITIES = RelOptionArgumentConfigurationWoSuffixRequirement(
     RelOptionsConfiguration(
         PathRelativityVariants(RelOptionType, True),
-        True,  # TODO is-rel-sym-accepted
         RelOptionType.REL_HOME_CASE),
     'argument_syntax_name')
 
@@ -1163,7 +1155,6 @@ def _arg_config_with_all_accepted_and_default(default: RelOptionType
                                               ) -> RelOptionArgumentConfigurationWoSuffixRequirement:
     return RelOptionArgumentConfigurationWoSuffixRequirement(
         RelOptionsConfiguration(PathRelativityVariants(RelOptionType, True),
-                                True,
                                 default),
         'argument_syntax_name')
 
@@ -1174,10 +1165,8 @@ def _arg_config_for_rel_symbol_config(relativity_variants: PathRelativityVariant
     if default is None:
         default = list(relativity_variants.rel_option_types)[0]
     return RelOptionArgumentConfigurationWoSuffixRequirement(
-        RelOptionsConfiguration(
-            relativity_variants,
-            True,
-            default),
+        RelOptionsConfiguration(relativity_variants,
+                                default),
         'argument_syntax_name')
 
 

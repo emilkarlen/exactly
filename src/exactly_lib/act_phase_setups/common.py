@@ -11,7 +11,6 @@ def relativity_configuration_of_action_to_check(argument_syntax_name: str) -> Re
         RelOptionsConfiguration(
             PathRelativityVariants({RelOptionType.REL_HOME_ACT},
                                    absolute=True),
-            is_rel_symbol_option_accepted=False,  # TODO is-rel-sym-accepted
             default_option=RelOptionType.REL_HOME_ACT),
         argument_syntax_name=argument_syntax_name,
         path_suffix_is_required=True

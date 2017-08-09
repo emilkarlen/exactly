@@ -59,7 +59,6 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
              RelOptionType.REL_TMP,
              RelOptionType.REL_CWD},
             True),
-        True,
         RelOptionType.REL_CWD),
     _PATH_ARGUMENT.name,
     True)
