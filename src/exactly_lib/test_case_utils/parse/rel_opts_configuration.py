@@ -68,10 +68,9 @@ REL_OPTIONS_FOR_FILE_CREATION = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_
                                                         RelOptionType.REL_CWD)
 
 
-def argument_configuration_for_file_creation(argument_syntax_element_name: str,
-                                             may_use_symbols: bool) -> RelOptionArgumentConfiguration:
+def argument_configuration_for_file_creation(argument_syntax_element_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION,
-                                                                  may_use_symbols,
+                                                                  True,  # TODO is-rel-sym-accepted
                                                                   RelOptionType.REL_CWD),
                                           argument_syntax_element_name,
                                           True)

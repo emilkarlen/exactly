@@ -25,6 +25,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
+from exactly_lib.test_case_utils.parse.misc_utils import std_error_message_text_for_token_syntax_error
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.process_execution.os_process_execution import Command
 
@@ -105,7 +106,7 @@ class _Parser(Parser):
             else:
                 return self._executable_file(source_file_resolver, source)
         except TokenSyntaxError as ex:
-            raise ParseException(svh.new_svh_validation_error(str(ex)))
+            raise ParseException(svh.new_svh_validation_error(std_error_message_text_for_token_syntax_error(ex)))
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))
 

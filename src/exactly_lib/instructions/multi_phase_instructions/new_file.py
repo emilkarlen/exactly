@@ -143,5 +143,4 @@ _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
 
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION
 
-REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_PATH_ARGUMENT.name,
-                                                            True)
+REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)

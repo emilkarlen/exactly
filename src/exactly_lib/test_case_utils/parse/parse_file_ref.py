@@ -7,7 +7,7 @@ from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
@@ -23,7 +23,8 @@ from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResol
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
-from exactly_lib.test_case_utils.parse.misc_utils import ensure_is_not_option_argument, new_token_stream
+from exactly_lib.test_case_utils.parse.misc_utils import ensure_is_not_option_argument, new_token_stream, \
+    std_error_message_text_for_token_syntax_error
 from exactly_lib.test_case_utils.parse.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver_from_token, \
     parse_fragments_from_token, string_resolver_from_fragments
@@ -54,7 +55,7 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativity
 def all_rel_options_config(argument_syntax_name: str,
                            path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS, True),
-                                                                  True,
+                                                                  True,  # TODO is-rel-sym-accepted
                                                                   RelOptionType.REL_HOME_CASE),
                                           argument_syntax_name,
                                           path_suffix_is_required)
@@ -101,16 +102,20 @@ def parse_file_ref(tokens: TokenStream,
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
 
-    def result_from_no_arguments() -> FileRefResolver:
-        return FileRefConstant(file_refs.of_rel_option(conf.options.default_option,
-                                                       PathPartAsNothing()))
-
     if tokens.is_null:
         if conf.path_suffix_is_required:
             _raise_missing_arguments_exception(conf)
         else:
-            return result_from_no_arguments()
+            return _result_from_no_arguments(conf)
 
+    try:
+        return _parse_with_non_empty_token_stream(tokens, conf)
+    except TokenSyntaxError as ex:
+        raise SingleInstructionInvalidArgumentException(std_error_message_text_for_token_syntax_error(ex))
+
+
+def _parse_with_non_empty_token_stream(tokens: TokenStream,
+                                       conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     initial_argument_string = tokens.remaining_part_of_current_line
     relativity_info = parse_explicit_relativity_info(conf.options, tokens)
     if tokens.is_null:
@@ -120,7 +125,7 @@ def parse_file_ref(tokens: TokenStream,
                                                  initial_argument_string))
         else:
             if relativity_info is None:
-                return result_from_no_arguments()
+                return _result_from_no_arguments(conf)
             else:
                 path_part_resolver2_file_ref_resolver = _file_ref_constructor(relativity_info)
                 return path_part_resolver2_file_ref_resolver(PathPartResolverAsNothing())
@@ -182,6 +187,11 @@ def _just_argument_with_symbol_references(string_fragments: list,
         path_suffix = _path_suffix_resolver_from_fragments(string_fragments)
         return _FileRefResolverOfRelativityOptionAndSuffixResolver(conf.options.default_option,
                                                                    path_suffix)
+
+
+def _result_from_no_arguments(conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+    return FileRefConstant(file_refs.of_rel_option(conf.options.default_option,
+                                                   PathPartAsNothing()))
 
 
 def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):

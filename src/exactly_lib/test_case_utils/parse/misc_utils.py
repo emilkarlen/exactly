@@ -15,7 +15,11 @@ def new_token_stream(source: str) -> TokenStream:
     try:
         return TokenStream(source)
     except TokenSyntaxError as ex:
-        raise SingleInstructionInvalidArgumentException('Invalid quoting of arguments: ' + str(ex))
+        raise SingleInstructionInvalidArgumentException(std_error_message_text_for_token_syntax_error(ex))
+
+
+def std_error_message_text_for_token_syntax_error(ex: TokenSyntaxError) -> str:
+    return 'Invalid quoting of arguments: ' + str(ex)
 
 
 def split_arguments_list_string(arguments: str) -> list:
