@@ -1,9 +1,9 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.structure import document as doc, structures as docs
+from exactly_lib.util.textformat.structure import structures as docs
 
 
 class SectionInstructionSet(tuple):
@@ -52,14 +52,6 @@ class SectionDocumentation:
         raise NotImplementedError()
 
     def is_mandatory(self) -> bool:
-        raise NotImplementedError()
-
-    def renderer(self) -> SectionContentsRenderer:
-        #  TODO refact helper method that should be removed when rendering is removed
-        # from this class
-        raise NotImplementedError()
-
-    def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         raise NotImplementedError()
 
     @property
