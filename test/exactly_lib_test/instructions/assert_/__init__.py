@@ -3,6 +3,7 @@ import unittest
 from exactly_lib_test.instructions.assert_ import \
     change_dir, \
     contents_of_file, \
+    contents_of_dir, \
     run, \
     exitcode, \
     new_dir, \
@@ -20,6 +21,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(utils.suite())
     ret_val.addTest(exitcode.suite())
     ret_val.addTest(contents_of_file.suite())
+    ret_val.addTest(contents_of_dir.suite())
     ret_val.addTest(stdout.suite())
     ret_val.addTest(stderr.suite())
     ret_val.addTest(existence_of_file.suite())
