@@ -2,7 +2,7 @@ from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, C
     PlainConceptDocumentation, ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.utils import see_also_section as render_utils
-from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
+from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
