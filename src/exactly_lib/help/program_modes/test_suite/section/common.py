@@ -1,6 +1,7 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
-    SectionDocumentation, SectionDocumentationRendererBase
+    SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
+from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationRendererBase
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
