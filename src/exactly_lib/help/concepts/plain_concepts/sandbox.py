@@ -1,9 +1,8 @@
 from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
+from exactly_lib.help_texts import concepts
 from exactly_lib.help_texts import file_ref as file_ref_texts
-from exactly_lib.help_texts.concepts import SANDBOX_CONCEPT_INFO, ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary, InstructionName
@@ -20,7 +19,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents, Sect
 
 class _SandboxConcept(PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(SANDBOX_CONCEPT_INFO)
+        super().__init__(concepts.SANDBOX_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
         phase = phase_name_dictionary()
@@ -37,7 +36,7 @@ class _SandboxConcept(PlainConceptDocumentation):
         return [
             TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME.plain,
                                                    CHANGE_DIR_INSTRUCTION_NAME),
-            ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
         ]
 
 
@@ -73,10 +72,11 @@ def sandbox_directories_info_sections(phase_name_dictionary: dict,
 def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, phase: dict) -> list:
     ret_val = []
     ret_val.extend(normalize_and_parse(
-        _ACT_DIR_DESCRIPTION.format(phase=phase,
-                                    instruction=instruction,
-                                    cwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT_NAME.singular),
-                                    cd_instruction=InstructionName(CHANGE_DIR_INSTRUCTION_NAME))))
+        _ACT_DIR_DESCRIPTION.format(
+            phase=phase,
+            instruction=instruction,
+            cwd=formatting.concept(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.name.singular),
+            cd_instruction=InstructionName(CHANGE_DIR_INSTRUCTION_NAME))))
     ret_val.extend(_dir_env_variables_and_rel_options(env_var_name=environment_variables.ENV_VAR_ACT,
                                                       rel_option=file_ref_texts.REL_ACT_OPTION))
     return ret_val
