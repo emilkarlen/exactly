@@ -1,6 +1,6 @@
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationRendererBase
-from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentationBase
+from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
@@ -12,7 +12,7 @@ from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 class TestSuiteSectionDocumentationRenderer(SectionDocumentationRendererBase):
-    def __init__(self, tss_doc: TestSuiteSectionDocumentationBase):
+    def __init__(self, tss_doc: TestSuiteSectionDocumentation):
         super().__init__(tss_doc, SECTION_CONCEPT_NAME)
         self._doc = tss_doc
 

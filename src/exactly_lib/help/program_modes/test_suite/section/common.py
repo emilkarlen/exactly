@@ -4,7 +4,7 @@ from exactly_lib.help_texts.names.formatting import SectionName
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class TestSuiteSectionDocumentationBase(SectionDocumentation):
+class TestSuiteSectionDocumentation(SectionDocumentation):
     def __init__(self, name: str):
         super().__init__(name)
         self._section_name = SectionName(name)
@@ -16,7 +16,7 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
         raise NotImplementedError()
 
 
-class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentationBase):
+class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentation):
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet):
@@ -44,7 +44,7 @@ class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDo
         raise NotImplementedError()
 
 
-class TestSuiteSectionDocumentationBaseForSectionWithoutInstructions(TestSuiteSectionDocumentationBase):
+class TestSuiteSectionDocumentationBaseForSectionWithoutInstructions(TestSuiteSectionDocumentation):
     def __init__(self,
                  name: str):
         super().__init__(name)

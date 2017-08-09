@@ -5,7 +5,7 @@ from exactly_lib.help.program_modes.common import render_instruction
 from exactly_lib.help.program_modes.test_suite.contents import specification
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentationBase
+from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationRenderer
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
@@ -24,7 +24,7 @@ class TestSuiteHelpRendererResolver:
         if item is TestSuiteHelpItem.SPECIFICATION:
             return specification.specification_renderer(self._contents)
         if item is TestSuiteHelpItem.SECTION:
-            assert isinstance(request.data, TestSuiteSectionDocumentationBase), 'Must be a TestSuiteSectionDoc'
+            assert isinstance(request.data, TestSuiteSectionDocumentation), 'Must be a TestSuiteSectionDoc'
             return TestSuiteSectionDocumentationRenderer(request.data)
 
         if item is TestSuiteHelpItem.INSTRUCTION:

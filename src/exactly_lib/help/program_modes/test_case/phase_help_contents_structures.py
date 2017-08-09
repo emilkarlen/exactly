@@ -68,7 +68,7 @@ class ExecutionEnvironmentInfo(tuple):
         return self[2]
 
 
-class TestCasePhaseDocumentationBase(SectionDocumentation):
+class TestCasePhaseDocumentation(SectionDocumentation):
     def __init__(self, name: str):
         super().__init__(name)
 
@@ -88,7 +88,7 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
         return TestCasePhaseDocumentationRenderer(self)
 
 
-class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentationBase):
+class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet):
@@ -117,7 +117,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         raise NotImplementedError()
 
 
-class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumentationBase):
+class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str):
         super().__init__(name)

@@ -1,6 +1,6 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentationBase, \
+from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentation, \
     PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.test_case import phase_identifier
@@ -24,14 +24,14 @@ def test_case_help_with_production_phases() -> TestCaseHelp:
 
 def _phase_doc(phase_name: str,
                instruction_names: list,
-               is_mandatory: bool = False) -> TestCasePhaseDocumentationBase:
+               is_mandatory: bool = False) -> TestCasePhaseDocumentation:
     instruction_set = section_instruction_set(phase_name, instruction_names)
     return _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(phase_name,
                                                                          instruction_set,
                                                                          is_mandatory)
 
 
-class _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(TestCasePhaseDocumentationBase):
+class _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet,
