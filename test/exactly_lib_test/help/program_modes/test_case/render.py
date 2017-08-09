@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.help.program_modes.test_case import phase_help_contents_structures as sut
 from exactly_lib.help.program_modes.test_case.contents.phase import act
 from exactly_lib.help.program_modes.test_case.contents.phase import \
     assert_, configuration, before_assert, cleanup, setup
+from exactly_lib.help.program_modes.test_case.render import phase_documentation as sut
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib_test.help.test_resources import section_instruction_set, \
     CrossReferenceTextConstructorTestImpl
