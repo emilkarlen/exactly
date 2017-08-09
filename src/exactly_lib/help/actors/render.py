@@ -1,6 +1,6 @@
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
+from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.see_also_section import see_also_sections
 from exactly_lib.help.utils.textformat_parser import TextParser

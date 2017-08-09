@@ -5,7 +5,8 @@ Makes it possible to reuse some code for generating documentation.
 """
 import types
 
-from exactly_lib.help.utils.entity_documentation import sorted_entity_list, EntityDocumentation
+from exactly_lib.help.utils.entity_documentation import EntityDocumentation
+from exactly_lib.help.utils.rendering.entity_documentation_rendering import sorted_entity_list
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, \
     LeafSectionRendererNode, SectionRendererNodeWithSubSections
 from exactly_lib.help_texts import cross_reference_id as cross_ref
