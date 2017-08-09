@@ -1,4 +1,4 @@
-from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
+from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.structure import document as doc
 
 
