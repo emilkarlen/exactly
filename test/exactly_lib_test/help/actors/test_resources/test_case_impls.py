@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
+from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib_test.common.help.test_resources import cross_reference_id_va as xref_va
 from exactly_lib_test.common.help.test_resources import see_also_va
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \

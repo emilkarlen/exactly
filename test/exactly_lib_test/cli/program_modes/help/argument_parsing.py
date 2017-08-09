@@ -13,13 +13,13 @@ from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
     concepts_help
 from exactly_lib.help.contents_structure import ApplicationHelp
-from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, SUITE_REPORTER_ENTITY_TYPE_NAME, \
-    ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
+from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, SUITE_REPORTER_ENTITY_TYPE_NAME, \
+    ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.names import formatting
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
 from exactly_lib_test.help.actors.test_resources import documentation as actor_doc

@@ -1,4 +1,4 @@
-from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
+from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
     SUITE_REPORTER_ENTITY_TYPE_NAME
 
 HELP = 'help'
