@@ -1,0 +1,16 @@
+[setup]
+
+
+file existing-file
+
+
+[assert]
+
+
+exists ! existing-file
+
+
+[act]
+
+
+$ exit 0
