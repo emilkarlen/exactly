@@ -7,7 +7,7 @@ from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstan
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
-from exactly_lib_test.instructions.assert_.contents.relativity_option_for_actual_file.test_resources import \
+from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
