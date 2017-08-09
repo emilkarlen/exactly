@@ -2,11 +2,12 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help import texts
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
-    HtmlDocGeneratorForSectionDocumentBase, SectionContentsRendererForSectionDocumentSection
+    HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentationRenderer
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
@@ -46,7 +47,7 @@ def generator(header: str,
 class _HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
     def __init__(self, test_suite_help: TestSuiteHelp):
         super().__init__(test_suite_help.section_helps,
-                         SectionContentsRendererForSectionDocumentSection)
+                         TestSuiteSectionDocumentationRenderer)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         return cross_ref.TestSuiteSectionCrossReference(section.name.plain)

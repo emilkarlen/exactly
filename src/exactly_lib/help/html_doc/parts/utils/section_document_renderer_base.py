@@ -3,12 +3,10 @@ import types
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
     SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionGenerator
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
-from exactly_lib.util.textformat.structure import document as doc
 
 
 class HtmlDocGeneratorForSectionDocumentBase:
@@ -100,11 +98,3 @@ class HtmlDocGeneratorForSectionDocumentBase:
                                            cross_ref_target)
         return LeafSectionRendererNode(target_info,
                                        InstructionManPageRenderer(instruction))
-
-
-class SectionContentsRendererForSectionDocumentSection(SectionContentsRenderer):
-    def __init__(self, section_documentation: SectionDocumentation):
-        self.section_documentation = section_documentation
-
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return self.section_documentation.render(environment)
