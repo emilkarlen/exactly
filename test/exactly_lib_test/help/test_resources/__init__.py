@@ -72,18 +72,11 @@ def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp
 
 class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumentation):
     def __init__(self, name: str):
-        super().__init__(name, 'section-concept-name')
+        super().__init__(name)
 
     def purpose(self) -> Description:
         return Description(text('Single line purpose for phase ' + self.name.syntax),
                            [para('Rest of purpose for phase ' + self.name.syntax)])
-
-    def renderer(self) -> SectionContentsRenderer:
-        return _SectionDocumentationRenderer(self.name)
-
-    def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
-                                   [])
 
     @property
     def has_instructions(self) -> bool:
@@ -99,7 +92,7 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
                  name: str,
                  instruction_set: SectionInstructionSet,
                  is_mandatory: bool = False):
-        super().__init__(name, 'section-concept-name')
+        super().__init__(name)
         self._instruction_set = instruction_set
         self._is_mandatory = is_mandatory
 
@@ -109,13 +102,6 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
     def purpose(self) -> Description:
         return Description(text('Single line purpose for phase ' + self.name.syntax),
                            [para('Rest of purpose for phase ' + self.name.syntax)])
-
-    def renderer(self) -> SectionContentsRenderer:
-        return _SectionDocumentationRenderer(self.name)
-
-    def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
-                                   [])
 
     @property
     def has_instructions(self) -> bool:
