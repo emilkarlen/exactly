@@ -4,13 +4,11 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 class RelOptionsConfiguration(tuple):
     def __new__(cls,
                 accepted_relativity_variants: PathRelativityVariants,
-                is_rel_symbol_option_accepted: bool,
                 default_option: RelOptionType):
         """
         :type accepted_options: Iterable of `RelOptionType`
         """
         return tuple.__new__(cls, (accepted_relativity_variants,
-                                   is_rel_symbol_option_accepted,
                                    default_option))
 
     @property
@@ -25,15 +23,8 @@ class RelOptionsConfiguration(tuple):
         return self.accepted_relativity_variants.rel_option_types
 
     @property
-    def is_rel_symbol_option_accepted(self) -> bool:
-        """
-        Tells if the option for relativity of a symbol definition is accepted.
-        """
-        return self[1]
-
-    @property
     def default_option(self) -> RelOptionType:
-        return self[2]
+        return self[1]
 
 
 class RelOptionArgumentConfiguration(tuple):
@@ -64,13 +55,11 @@ RELATIVITY_VARIANTS_FOR_FILE_CREATION = PathRelativityVariants({RelOptionType.RE
                                                                False)
 
 REL_OPTIONS_FOR_FILE_CREATION = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION,
-                                                        True,
                                                         RelOptionType.REL_CWD)
 
 
 def argument_configuration_for_file_creation(argument_syntax_element_name: str) -> RelOptionArgumentConfiguration:
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION,
-                                                                  True,  # TODO is-rel-sym-accepted
                                                                   RelOptionType.REL_CWD),
                                           argument_syntax_element_name,
                                           True)

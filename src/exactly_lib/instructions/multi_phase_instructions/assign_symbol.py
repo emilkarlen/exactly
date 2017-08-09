@@ -106,7 +106,6 @@ _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
 
 REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
     PathRelativityVariants(frozenset(RelOptionType), True),
-    True,
     RelOptionType.REL_CWD)
 
 REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
