@@ -2,7 +2,7 @@ from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDoc
 from exactly_lib.help.suite_reporters.names_and_cross_references import DEFAULT_REPORTER
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
-from exactly_lib.help.utils.see_also_section import see_also_sections
+from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
