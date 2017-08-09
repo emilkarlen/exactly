@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib_test.symbol.restrictions.test_resources import concrete_restriction_assertion as sut
-from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:

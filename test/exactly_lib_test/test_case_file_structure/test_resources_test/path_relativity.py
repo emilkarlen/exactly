@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     SPECIFIC_ABSOLUTE_RELATIVITY, specific_relative_relativity
 from exactly_lib_test.test_case_file_structure.test_resources import path_relativity as sut
-from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:

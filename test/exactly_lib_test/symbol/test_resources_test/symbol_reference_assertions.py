@@ -4,8 +4,8 @@ from exactly_lib.symbol.restrictions import reference_restrictions as r
 from exactly_lib.symbol.restrictions import value_restrictions as vr
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as sut
+from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.assert_that_assertion_fails import assert_that_assertion_fails
 
 
 def suite() -> unittest.TestSuite:
