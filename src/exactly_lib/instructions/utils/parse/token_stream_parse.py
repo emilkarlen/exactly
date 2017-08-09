@@ -5,6 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.util.cli_syntax.option_parsing import matches
 
@@ -60,6 +61,23 @@ class TokenParser:
             return True
         return False
 
+    def consume_mandatory_constant_string_that_must_be_unquoted_and_equal(self, expected: str):
+        if self.token_stream.is_null:
+            raise SingleInstructionInvalidArgumentException('Expecting "{}"'.format(expected))
+        head = self.token_stream.head
+        if head.is_quoted:
+            err_msg = 'Expecting unquoted "{}".\nFound: `{}\''.format(
+                expected,
+                head.source_string)
+            raise SingleInstructionInvalidArgumentException(err_msg)
+        plain_head = head.string
+        if plain_head != expected:
+            err_msg = 'Expecting "{}".\nFound: `{}\''.format(
+                expected,
+                head.source_string)
+            raise SingleInstructionInvalidArgumentException(err_msg)
+        self.token_stream.consume()
+
     def consume_and_handle_first_matching_option(self,
                                                  return_value_if_no_match,
                                                  key_handler: types.FunctionType,
@@ -96,3 +114,17 @@ class TokenParser:
 
     def consume_file_ref(self, conf: RelOptionArgumentConfiguration) -> FileRefResolver:
         return parse_file_ref.parse_file_ref(self._token_stream, conf)
+
+
+def new_token_parser(source: str,
+                     error_message_format_map: dict = None) -> TokenParser:
+    """
+    Constructs a :class:`TokenParser`
+    :argument error_message_format_map: strings that are replaced in error messages
+    via :func:`str#format`
+    :type error_message_format_map: dict str -> str
+    :rtype: :class:`TokenParser`
+    :raises :class:`SingleInstructionInvalidArgumentException` Source has invalid syntax
+    """
+    return TokenParser(new_token_stream(source),
+                       error_message_format_map)
