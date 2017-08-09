@@ -2,11 +2,11 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request im
     TestSuiteHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
 from exactly_lib.help.program_modes.common import render_instruction
-from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.common.renderers import SectionDocumentationRenderer
 from exactly_lib.help.program_modes.test_suite.contents import specification
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentationRenderer, \
+    TestSuiteSectionDocumentationBase
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
@@ -24,8 +24,9 @@ class TestSuiteHelpRendererResolver:
         if item is TestSuiteHelpItem.SPECIFICATION:
             return specification.specification_renderer(self._contents)
         if item is TestSuiteHelpItem.SECTION:
-            assert isinstance(request.data, SectionDocumentation)
-            return SectionDocumentationRenderer(request.data)
+            assert isinstance(request.data, TestSuiteSectionDocumentationBase)
+            return TestSuiteSectionDocumentationRenderer(request.data)
+
         if item is TestSuiteHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,

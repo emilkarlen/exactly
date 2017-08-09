@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.program_modes.common import renderers as sut
+from exactly_lib.help.program_modes.test_case import phase_help_contents_structures as sut
 from exactly_lib.help.program_modes.test_case.contents.phase import act
 from exactly_lib.help.program_modes.test_case.contents.phase import \
     assert_, configuration, before_assert, cleanup, setup
@@ -14,10 +14,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestCase)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestCase(unittest.TestCase):
     def test_configuration(self):
         # ARRANGE #
@@ -25,9 +21,9 @@ class TestCase(unittest.TestCase):
             'phase name',
             section_instruction_set('phase name',
                                     ['instr 1',
-                                             'instr 2']))
+                                     'instr 2']))
         # ACT #
-        actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -37,9 +33,9 @@ class TestCase(unittest.TestCase):
             'phase name',
             section_instruction_set('phase name',
                                     ['instr 1',
-                                             'instr 2']))
+                                     'instr 2']))
         # ACT #
-        actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -47,7 +43,7 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = act.ActPhaseDocumentation('phase name')
         # ACT #
-        actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -57,9 +53,9 @@ class TestCase(unittest.TestCase):
             'phase name',
             section_instruction_set('phase name',
                                     ['instr 1',
-                                             'instr 2']))
+                                     'instr 2']))
         # ACT #
-        actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -69,9 +65,9 @@ class TestCase(unittest.TestCase):
             'phase name',
             section_instruction_set('phase name',
                                     ['instr 1',
-                                             'instr 2']))
+                                     'instr 2']))
         # ACT #
-        actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -81,11 +77,14 @@ class TestCase(unittest.TestCase):
             'phase name',
             section_instruction_set('phase name',
                                     ['instr 1',
-                                             'instr 2']))
+                                     'instr 2']))
         # ACT #
-        actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
