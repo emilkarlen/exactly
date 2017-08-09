@@ -1,9 +1,9 @@
 from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.concepts.names_and_cross_references import SANDBOX_CONCEPT_INFO, ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts.concepts import SANDBOX_CONCEPT_INFO, ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary, InstructionName

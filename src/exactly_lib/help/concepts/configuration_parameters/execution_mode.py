@@ -1,6 +1,6 @@
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help.concepts.names_and_cross_references import EXECUTION_MODE_CONCEPT_INFO
+from exactly_lib.help_texts.concepts import EXECUTION_MODE_CONCEPT_INFO
 from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.test_case import execution_mode
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description

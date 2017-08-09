@@ -1,8 +1,8 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help.concepts.names_and_cross_references import ACTOR_CONCEPT_INFO
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.names import formatting
