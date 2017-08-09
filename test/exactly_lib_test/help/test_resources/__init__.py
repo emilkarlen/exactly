@@ -33,10 +33,12 @@ def single_line_description_that_identifies_instruction_and_section(phase_name: 
 
 
 def section_documentation(phase_name: str,
-                          instruction_names: list) -> SectionDocumentation:
+                          instruction_names: list,
+                          is_mandatory: bool = False) -> SectionDocumentation:
     instruction_set = section_instruction_set(phase_name, instruction_names)
     return SectionDocumentationForSectionWithInstructionsTestImpl(phase_name,
-                                                                  instruction_set)
+                                                                  instruction_set,
+                                                                  is_mandatory)
 
 
 def section_instruction_set(section_name: str,
@@ -95,9 +97,14 @@ class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumenta
 class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentation):
     def __init__(self,
                  name: str,
-                 instruction_set: SectionInstructionSet):
+                 instruction_set: SectionInstructionSet,
+                 is_mandatory: bool = False):
         super().__init__(name, 'section-concept-name')
         self._instruction_set = instruction_set
+        self._is_mandatory = is_mandatory
+
+    def is_mandatory(self) -> bool:
+        return self._is_mandatory
 
     def purpose(self) -> Description:
         return Description(text('Single line purpose for phase ' + self.name.syntax),

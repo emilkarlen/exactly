@@ -46,6 +46,7 @@ class ExecutionEnvironmentInfo(tuple):
         """
         :param cwd_at_start_of_phase: [ParagraphItem]
         :param environment_variables: [str]
+        :param prologue: [`ParagraphItem`]
         """
         return tuple.__new__(cls, (cwd_at_start_of_phase,
                                    environment_variables,
