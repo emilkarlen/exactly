@@ -1,13 +1,7 @@
+from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, UrlCrossReferenceTarget
 from exactly_lib.util.textformat.structure.structures import text, anchor_text
-
-
-class CrossReferenceId(CrossReferenceTarget):
-    """
-    A part of the help text that can be referred to.
-    """
-    pass
 
 
 class CustomCrossReferenceId(CrossReferenceId):

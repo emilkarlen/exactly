@@ -90,7 +90,7 @@ url_is_valid = _is_str('url', UrlCrossReferenceTarget.url.fget)
 
 def _assertion_on_properties_of(x, properties_assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return asrt.with_transformed_message(asrt.append_to_message(':' + str(type(x)) + ':'),
-                                       properties_assertion)
+                                         properties_assertion)
 
 
 def equals(expected: CrossReferenceId) -> asrt.ValueAssertion:

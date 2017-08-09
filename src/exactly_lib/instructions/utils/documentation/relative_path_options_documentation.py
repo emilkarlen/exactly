@@ -6,11 +6,11 @@ from exactly_lib.help.concepts.configuration_parameters.home_act_directory impor
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.utils.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.argument_rendering.path_syntax import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
+from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
