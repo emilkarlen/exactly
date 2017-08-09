@@ -1,7 +1,7 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation, SectionDocumentationRendererBase
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
@@ -88,11 +88,11 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         raise NotImplementedError()
 
-    # def renderer(self) -> SectionContentsRenderer:
-    #     raise NotImplementedError()
-
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return TestCasePhaseDocumentationRenderer(self).apply(environment)
+        return self.renderer().apply(environment)
+
+    def renderer(self) -> SectionContentsRenderer:
+        return TestCasePhaseDocumentationRenderer(self)
 
 
 class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentationBase):

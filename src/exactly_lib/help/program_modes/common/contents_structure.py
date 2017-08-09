@@ -54,6 +54,11 @@ class SectionDocumentation:
     def is_mandatory(self) -> bool:
         raise NotImplementedError()
 
+    def renderer(self) -> SectionContentsRenderer:
+        #  TODO refact helper method that should be removed when rendering is removed
+        # from this class
+        raise NotImplementedError()
+
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         raise NotImplementedError()
 

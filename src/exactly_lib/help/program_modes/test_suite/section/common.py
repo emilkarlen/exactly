@@ -1,7 +1,7 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation, SectionDocumentationRendererBase
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.names.formatting import SectionName
@@ -24,7 +24,10 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
         raise NotImplementedError()
 
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return TestSuiteSectionDocumentationRenderer(self).apply(environment)
+        return self.renderer().apply(environment)
+
+    def renderer(self) -> SectionContentsRenderer:
+        return TestSuiteSectionDocumentationRenderer(self)
 
 
 class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentationBase):
