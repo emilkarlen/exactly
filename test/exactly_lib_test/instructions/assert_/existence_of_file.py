@@ -1,5 +1,4 @@
 import unittest
-from enum import Enum
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_ import existence_of_file as sut
@@ -12,6 +11,8 @@ from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
     Expectation
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import CheckType, \
+    with_negation_argument
 from exactly_lib_test.instructions.multi_phase_instructions.change_dir import ChangeDirTo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
@@ -42,11 +43,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFileRefVariantsOfCheckedFile),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
-
-
-class CheckType(Enum):
-    POSITIVE = 0
-    NEGATIVE = 1
 
 
 class TestParseInvalidSyntax(TestCaseBase):
@@ -457,10 +453,6 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
                               symbol_usages=expected_symbol_usages,
                           ),
                           )
-
-
-def with_negation_argument(instruction_arguments: str) -> str:
-    return sut.NEGATION_OPERATOR + ' ' + instruction_arguments
 
 
 def args_for(file_name: str,
