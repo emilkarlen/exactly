@@ -11,7 +11,7 @@ from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
     Expectation
-from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import CheckType, \
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import ExpectationType, \
     with_negation_argument
 from exactly_lib_test.instructions.multi_phase_instructions.change_dir import ChangeDirTo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
@@ -140,7 +140,7 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
             self.cases_with_existing_file_of_different_types,
             main_result=pfh_check.is_fail(),
             instruction_arguments=args_for(file_name=self.file_name,
-                                           check_type=CheckType.NEGATIVE),
+                                           check_type=ExpectationType.NEGATIVE),
         )
 
     def test_pass_WHEN_file_does_not_exist_AND_assertion_is_negated(self):
@@ -243,7 +243,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
             main_result=pfh_check.is_fail(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_DIRECTORY,
-                                           check_type=CheckType.NEGATIVE),
+                                           check_type=ExpectationType.NEGATIVE),
         )
 
     def test_pass_WHEN_file_exists_but_is_not_a_directory_AND_assertion_is_negated(self):
@@ -252,7 +252,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
             main_result=pfh_check.is_pass(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_DIRECTORY,
-                                           check_type=CheckType.NEGATIVE),
+                                           check_type=ExpectationType.NEGATIVE),
         )
 
 
@@ -304,7 +304,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
             main_result=pfh_check.is_fail(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_REGULAR,
-                                           check_type=CheckType.NEGATIVE),
+                                           check_type=ExpectationType.NEGATIVE),
         )
 
     def test_pass_WHE_file_exists_but_is_not_a_regular_file_AND_assertion_is_negated(self):
@@ -313,7 +313,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
             main_result=pfh_check.is_pass(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_REGULAR,
-                                           check_type=CheckType.NEGATIVE),
+                                           check_type=ExpectationType.NEGATIVE),
         )
 
 
@@ -369,7 +369,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
             main_result=pfh_check.is_fail(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_SYMLINK,
-                                           check_type=CheckType.NEGATIVE),
+                                           check_type=ExpectationType.NEGATIVE),
         )
 
     def test_pass_file_exists_but_is_not_a_regular_file_AND_assertion_is_negated(self):
@@ -378,7 +378,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
             main_result=pfh_check.is_pass(),
             instruction_arguments=args_for(file_name=self.file_name,
                                            file_type=sut.TYPE_NAME_SYMLINK,
-                                           check_type=CheckType.NEGATIVE),
+                                           check_type=ExpectationType.NEGATIVE),
         )
 
 
@@ -446,7 +446,7 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
                 self._run(args_for(file_name=self.file_name,
                                    relativity_option=relativity_option,
                                    file_type=expected_file_type,
-                                   check_type=CheckType.NEGATIVE),
+                                   check_type=ExpectationType.NEGATIVE),
                           arrangement,
                           Expectation(
                               main_result=pfh_check.is_fail(),
@@ -457,11 +457,11 @@ class TestFileRefVariantsOfCheckedFile(TestCaseBaseForParser):
 
 def args_for(file_name: str,
              file_type: str = None,
-             check_type: CheckType = CheckType.POSITIVE,
+             check_type: ExpectationType = ExpectationType.POSITIVE,
              relativity_option: str = '') -> str:
     file_type_option = '' if file_type is None else long_option_syntax(file_type)
     arguments = file_type_option + ' ' + relativity_option + ' ' + file_name
-    if check_type is CheckType.NEGATIVE:
+    if check_type is ExpectationType.NEGATIVE:
         arguments = with_negation_argument(arguments)
     return arguments
 

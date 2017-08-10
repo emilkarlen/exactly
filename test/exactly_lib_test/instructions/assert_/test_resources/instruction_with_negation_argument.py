@@ -5,7 +5,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-class CheckType(Enum):
+class ExpectationType(Enum):
     POSITIVE = 0
     NEGATIVE = 1
 
