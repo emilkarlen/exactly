@@ -31,7 +31,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {contains} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -45,7 +45,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual-dir {maybe_not} {contains} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('actual-dir')])),
@@ -61,7 +61,7 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {contains} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'no match')])),
@@ -69,7 +69,7 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                main_result=self.not_opt.fail__if_positive__pass_if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -80,7 +80,7 @@ class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOption
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {contains} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('actual.txt', 'REG-matching-EX')])),
@@ -88,7 +88,7 @@ class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOption
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                main_result=self.not_opt.pass__if_positive__fail__if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )

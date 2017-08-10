@@ -43,7 +43,7 @@ class _ParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumentBas
             self.configuration.new_parser().parse(
                 self.configuration.source_for(
                     args('{maybe_not} {contains}',
-                         maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
+                         maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)))
 
 
 class _ParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase):
@@ -52,7 +52,7 @@ class _ParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase
             self.configuration.new_parser().parse(
                 self.configuration.source_for(
                     args('{maybe_not} {contains} abc superfluous',
-                         maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
+                         maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)))
 
 
 class _ParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
@@ -61,7 +61,7 @@ class _ParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
             self.configuration.new_parser().parse(
                 self.configuration.source_for(
                     args('{maybe_not} {contains} **',
-                         maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)))
+                         maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)))
 
 
 class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
@@ -74,11 +74,11 @@ class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
             self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
+            Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative),
         )
 
 
@@ -92,11 +92,11 @@ class _ALineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
             self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
         )
 
 
@@ -110,11 +110,11 @@ class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
             self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
                 actual_contents,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
         )
 
 
@@ -129,11 +129,11 @@ class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArg
             self.configuration.first_line_argument(
                 args("{replace_env_vars_option} {maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
         )
 
 
@@ -148,11 +148,11 @@ class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegat
             self.configuration.first_line_argument(
                 args("{maybe_not} {contains} '{reg_ex}'",
                      reg_ex=reg_ex,
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents_from_fun(
                 home_dir_path_name,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
+            Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative),
         )
 
 

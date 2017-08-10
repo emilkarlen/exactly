@@ -89,7 +89,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} non-existing-file.txt',
-                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
+                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
@@ -104,7 +104,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} dir',
-                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
+                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
@@ -121,7 +121,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
+                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
                 'actual',
@@ -131,7 +131,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                main_result=self.not_opt.fail__if_positive__pass_if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -142,7 +142,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
+                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
                 'expected',
@@ -152,7 +152,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                main_result=self.not_opt.pass__if_positive__fail__if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -165,7 +165,7 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
+                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 contents_generator.contents_before_replacement,
@@ -178,7 +178,7 @@ class _WhenReplaceEnvVarsOptionIsGivenThenEnVarsShouldBeReplaced(
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                main_result=self.not_opt.pass__if_positive__fail__if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -192,7 +192,7 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{replace_env_vars_option} {maybe_not} {equals} {relativity_option} expected.txt',
-                     maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
+                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 contents_generator.contents_before_replacement,
@@ -205,7 +205,7 @@ class _WhenReplaceEnvVarsOptionIsNotGivenThenEnVarsShouldNotBeReplaced(
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                main_result=self.not_opt.fail__if_positive__pass_if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -216,13 +216,13 @@ class _ContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase)
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} <<EOF',
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 ['expected content line',
                  'EOF']),
             self.configuration.arrangement_for_contents(
                 lines_content(['expected content line']),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail,
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                         source=source_is_at_end),
         )
 
@@ -238,7 +238,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithConfigurationAndN
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} <<EOF',
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 [expected_content(symbol_reference_syntax_for_name(symbol.name)),
                  'EOF',
                  'following line']),
@@ -248,7 +248,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithConfigurationAndN
                 symbols=SymbolTable({
                     symbol.name: symbol_utils.string_value_constant_container(symbol.value),
                 })),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail,
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                         symbol_usages=equals_symbol_references([
                             SymbolReference(symbol.name, no_restrictions())
                         ]),
@@ -261,13 +261,13 @@ class _ContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentB
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} <<EOF',
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 ['expected content line',
                  'EOF',
                  'the following line']),
             self.configuration.arrangement_for_contents(
                 lines_content(['actual contents that is not equal to expected contents']),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass,
+            Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative,
                         source=is_at_beginning_of_line(4)),
         )

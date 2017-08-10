@@ -5,7 +5,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptio
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
-from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import NotOperatorInfo
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
+    ExpectationType, ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \
     OptionStringConfigurationForRelativityOptionRelNonHome
@@ -28,16 +29,16 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
     def __init__(self,
                  instruction_configuration: InstructionTestConfiguration,
                  option_configuration: RelativityOptionConfiguration,
-                 is_negated: bool):
+                 expectation_type: ExpectationType):
         super().__init__(instruction_configuration)
         self.rel_opt = option_configuration
-        self.not_opt = NotOperatorInfo(is_negated)
+        self.not_opt = ExpectationTypeConfig(expectation_type)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
                 str(type(self.configuration)) + ' /\n' +
                 str(type(self.rel_opt)) + ' /\n' +
-                'is_negated=' + str(self.not_opt.is_negated)
+                str(self.not_opt)
                 )
 
 
@@ -45,9 +46,9 @@ def suite_for__conf__rel_opts__negations(instruction_configuration: InstructionT
                                          relativity_options: list,
                                          test_cases: list) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
-        not_negated = [tc(instruction_configuration, option_configuration, False)
+        not_negated = [tc(instruction_configuration, option_configuration, ExpectationType.POSITIVE)
                        for tc in test_cases]
-        negated = [tc(instruction_configuration, option_configuration, True)
+        negated = [tc(instruction_configuration, option_configuration, ExpectationType.POSITIVE)
                    for tc in test_cases]
         return unittest.TestSuite(not_negated + negated)
 
