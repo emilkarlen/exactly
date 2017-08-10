@@ -326,7 +326,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     {RelOptionType.REL_CWD,
-     # RelOptionType.REL_HOME_ACT,
+     RelOptionType.REL_HOME_ACT,
      RelOptionType.REL_ACT,
      RelOptionType.REL_TMP},
     True)

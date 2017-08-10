@@ -55,9 +55,11 @@ _DEFAULT_FILE_PROPERTIES_CHECK = file_properties.must_exist(follow_symlinks=Fals
 _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
     RelOptionsConfiguration(
         PathRelativityVariants(
-            {RelOptionType.REL_ACT,
+            {RelOptionType.REL_CWD,
+             RelOptionType.REL_HOME_ACT,
+             RelOptionType.REL_ACT,
              RelOptionType.REL_TMP,
-             RelOptionType.REL_CWD},
+             },
             True),
         RelOptionType.REL_CWD),
     _PATH_ARGUMENT.name,
