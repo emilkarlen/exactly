@@ -33,12 +33,21 @@ def relativity_syntax_element_descriptions(
         path_that_may_be_relative: a.Named,
         rel_options_conf: RelOptionsConfiguration,
         relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> list:
-    renderer = RelOptionRenderer(path_that_may_be_relative.name)
-    ret_val = [
-        SyntaxElementDescription(relativity_argument.name,
-                                 [renderer.list_for(rel_options_conf)]),
+    return [
+        relativity_syntax_element_description(path_that_may_be_relative,
+                                              rel_options_conf,
+                                              relativity_argument)
     ]
-    return ret_val
+
+
+def relativity_syntax_element_description(
+        path_that_may_be_relative: a.Named,
+        rel_options_conf: RelOptionsConfiguration,
+        relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+
+    renderer = RelOptionRenderer(path_that_may_be_relative.name)
+    return SyntaxElementDescription(relativity_argument.name,
+                                    [renderer.list_for(rel_options_conf)])
 
 
 def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
