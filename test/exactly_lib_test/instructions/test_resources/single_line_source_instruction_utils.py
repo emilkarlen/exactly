@@ -15,7 +15,7 @@ def equivalent_source_variants__with_source_check(put: unittest.TestCase,
     Assumes that the body of the loop parses using the given source.
     """
     for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
-        with put.subTest(msg='following lines=' + repr(following_lines)):
+        with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
             yield source
             source_assertion.apply_with_message(put, source, 'source after parse')
@@ -27,7 +27,7 @@ def equivalent_source_variants(put: unittest.TestCase,
     Yields a ParseSource
     """
     for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
-        with put.subTest(msg='following lines=' + repr(following_lines)):
+        with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
             yield source
 
@@ -38,7 +38,7 @@ def equivalent_source_variants_with_assertion(put: unittest.TestCase,
     Yields a ParseSource, ValueAssertion
     """
     for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
-        with put.subTest(msg='following lines=' + repr(following_lines)):
+        with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
             yield source, source_assertion
 
