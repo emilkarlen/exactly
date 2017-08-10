@@ -17,10 +17,12 @@ from exactly_lib_test.instructions.test_resources.relativity_options import Rela
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link, \
+    empty_dir_contents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -39,6 +41,26 @@ class TestCaseBaseForParser(TestCaseBase):
         parser = sut.Parser()
         for source in equivalent_source_variants(self, instruction_argument):
             self._check(parser, source, arrangement, expectation)
+
+    def _check_with_rel_opt_config(self,
+                                   instruction_argument_str: str,
+                                   rel_opt_config: RelativityOptionConfiguration,
+                                   main_result: asrt.ValueAssertion,
+                                   contents_of_relativity_option_root: DirContents = empty_dir_contents(),
+                                   ):
+        self._run(
+            instruction_argument_str,
+            ArrangementPostAct(
+                pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
+                home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
+                    contents_of_relativity_option_root
+                ),
+                symbols=rel_opt_config.symbols.in_arrangement(),
+            ),
+            Expectation(
+                main_result=main_result,
+                symbol_usages=rel_opt_config.symbols.usages_expectation(),
+            ))
 
 
 class TestParseInvalidSyntax(TestCaseBase):
@@ -95,102 +117,71 @@ class TestEmpty(TestCaseBaseForParser):
         for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
             instruction_argument_str = instruction_arguments_for_emptiness_check(rel_opt_config,
                                                                                  name_of_non_existing_file)
-            self._run(
-                instruction_argument_str,
-                ArrangementPostAct(
-                    symbols=rel_opt_config.symbols.in_arrangement(),
-                ),
-                Expectation(
-                    main_result=asrt_pfh.is_fail(),
-                    symbol_usages=rel_opt_config.symbols.usages_expectation(),
-                ))
+            self._check_with_rel_opt_config(instruction_argument_str,
+                                            rel_opt_config,
+                                            main_result=asrt_pfh.is_fail())
 
     def test_fail_WHEN_file_does_exist_but_is_not_a_directory(self):
 
         name_of_regular_file = 'name-of-existing-regular-file'
         for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument_str = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                                 name_of_regular_file)
-            self._run(
-                instruction_argument_str,
-                ArrangementPostAct(
-                    pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                    home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
-                        DirContents([empty_file(name_of_regular_file)])
-                    ),
-                    symbols=rel_opt_config.symbols.in_arrangement(),
-                ),
-                Expectation(
-                    main_result=asrt_pfh.is_fail(),
-                    symbol_usages=rel_opt_config.symbols.usages_expectation(),
-                ))
+            instruction_argument = instruction_arguments_for_emptiness_check(rel_opt_config,
+                                                                             name_of_regular_file)
+            self._check_with_rel_opt_config(
+                instruction_argument,
+                rel_opt_config,
+                contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]),
+                main_result=asrt_pfh.is_fail())
 
     def test_fail_WHEN_file_is_an_directory_BUT_is_not_empty(self):
 
         name_of_directory = 'name-of-empty_directory'
+
+        contents_of_relativity_option_root = DirContents([Dir(name_of_directory, [
+            empty_file('existing-file-in-checked-dir')
+        ])])
+
         for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
             instruction_argument_str = instruction_arguments_for_emptiness_check(rel_opt_config,
                                                                                  name_of_directory)
-            self._run(
+            self._check_with_rel_opt_config(
                 instruction_argument_str,
-                ArrangementPostAct(
-                    pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                    home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
-                        DirContents([Dir(name_of_directory, [
-                            empty_file('existing-file-in-checked-dir')
-                        ])])
-                    ),
-                    symbols=rel_opt_config.symbols.in_arrangement(),
-                ),
-                Expectation(
-                    main_result=asrt_pfh.is_fail(),
-                    symbol_usages=rel_opt_config.symbols.usages_expectation(),
-                ))
+                rel_opt_config,
+                contents_of_relativity_option_root=contents_of_relativity_option_root,
+                main_result=asrt_pfh.is_fail())
 
     def test_pass_WHEN_file_is_an_empty_directory(self):
 
         name_of_empty_directory = 'name-of-empty_directory'
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument_str = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                                 name_of_empty_directory)
-            self._run(
-                instruction_argument_str,
-                ArrangementPostAct(
-                    pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                    home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
-                        DirContents([empty_dir(name_of_empty_directory)])
-                    ),
-                    symbols=rel_opt_config.symbols.in_arrangement(),
 
-                ),
-                Expectation(
-                    main_result=asrt_pfh.is_pass(),
-                    symbol_usages=rel_opt_config.symbols.usages_expectation(),
-                ))
+        contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory)])
+
+        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
+            instruction_argument = instruction_arguments_for_emptiness_check(rel_opt_config,
+                                                                             name_of_empty_directory)
+            self._check_with_rel_opt_config(
+                instruction_argument,
+                rel_opt_config,
+                contents_of_relativity_option_root=contents_of_relativity_option_root,
+                main_result=asrt_pfh.is_pass())
 
     def test_pass_WHEN_file_is_a_symbolic_link_to_an_empty_directory(self):
 
         name_of_empty_directory = 'name-of-empty_directory'
         name_of_symbolic_link = 'link-to-empty_directory'
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument_str = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                                 name_of_symbolic_link)
-            self._run(
-                instruction_argument_str,
-                ArrangementPostAct(
-                    pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                    home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
-                        DirContents([empty_dir(name_of_empty_directory),
-                                     sym_link(name_of_symbolic_link,
-                                              name_of_empty_directory)])
-                    ),
-                    symbols=rel_opt_config.symbols.in_arrangement(),
 
-                ),
-                Expectation(
-                    main_result=asrt_pfh.is_pass(),
-                    symbol_usages=rel_opt_config.symbols.usages_expectation(),
-                ))
+        contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory),
+                                                          sym_link(name_of_symbolic_link,
+                                                                   name_of_empty_directory)])
+
+        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
+            instruction_argument = instruction_arguments_for_emptiness_check(rel_opt_config,
+                                                                             name_of_symbolic_link)
+            self._check_with_rel_opt_config(
+                instruction_argument,
+                rel_opt_config,
+                contents_of_relativity_option_root=contents_of_relativity_option_root,
+                main_result=asrt_pfh.is_pass())
 
 
 def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfiguration,
