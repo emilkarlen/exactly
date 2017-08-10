@@ -1,12 +1,12 @@
+from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import ExpectationType, \
-    PassOrFail
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
     ExpectationTypeConfig
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import PassOrFail
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
