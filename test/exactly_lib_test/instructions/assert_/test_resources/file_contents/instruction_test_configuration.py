@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
+from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -9,7 +10,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
-    ExpectationType, ExpectationTypeConfig
+    ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check

@@ -1,12 +1,13 @@
 import pathlib
 import unittest
 
+from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationBase, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
-    ExpectationType, ExpectationTypeConfig
+    ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \
     OptionStringConfigurationForRelativityOptionRelNonHome
