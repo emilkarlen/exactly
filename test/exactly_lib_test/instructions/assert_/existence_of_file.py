@@ -1,26 +1,26 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import existence_of_file as sut
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHomeOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
-    Expectation
-from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import ExpectationType, \
+from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with_not_and_rel_opts import \
+    InstructionArgumentsVariantConstructor, TestCaseBaseWithParser
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
     with_negation_argument, PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check, equivalent_source_variants
+    equivalent_source_variants
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link, empty_dir_contents
-from exactly_lib_test.test_resources.parse import remaining_source
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 
@@ -44,7 +44,7 @@ def file_type_option(file_type: FileType) -> str:
     return '' if file_type is None else long_option_syntax(FILE_TYPE_OPTIONS_DICT[file_type].long)
 
 
-class TestParseInvalidSyntax(TestCaseBase):
+class TestParseInvalidSyntax(instruction_check.TestCaseBase):
     test_cases_with_no_negation_operator = [
         '',
         '{type_option} file-name unexpected-argument'.format(
@@ -80,14 +80,11 @@ class TestParseInvalidSyntax(TestCaseBase):
                         parser.parse(source)
 
 
-class InstructionArgumentsVariantConstructor:
+class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConstructor):
     """
     Constructs the instruction argument for a given negation-option config
     and rel-opt config.
     """
-
-    def __init__(self, instruction_argument_template: str):
-        self.instruction_argument_template = instruction_argument_template
 
     def apply(self,
               etc: ExpectationTypeConfig,
@@ -98,113 +95,20 @@ class InstructionArgumentsVariantConstructor:
         return ret_val
 
 
-class TestCaseBaseForParser(TestCaseBase):
+class TestCaseBase(TestCaseBaseWithParser):
     parser = sut.Parser()
 
-    def _check_(
-            self,
-            instruction_source: ParseSource,
-            etc: ExpectationTypeConfig,
-            main_result_for_positive_expectation: PassOrFail,
-            rel_opt_config: RelativityOptionConfiguration,
-            contents_of_relativity_option_root: DirContents = empty_dir_contents(),
-            test_case_name: str = ''):
+    def _parser(self) -> InstructionParser:
+        return self.parser
 
-        with self.subTest(case_name=test_case_name,
-                          expectation_type=str(etc.expectation_type),
-                          arguments=instruction_source.source_string):
-            self._check(self.parser,
-                        instruction_source,
-                        ArrangementPostAct(
-                            pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                            home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
-                                contents_of_relativity_option_root
-                            ),
-                            symbols=rel_opt_config.symbols.in_arrangement(),
-                        ),
-                        Expectation(
-                            main_result=etc.main_result(main_result_for_positive_expectation),
-                            symbol_usages=rel_opt_config.symbols.usages_expectation(),
-                        ))
-
-    def _check_parsing_with_different_source_variants(
-            self,
-            make_instruction_arguments: InstructionArgumentsVariantConstructor,
-            default_relativity: RelOptionType,
-            non_default_relativity: RelOptionType,
-            main_result_for_positive_expectation: PassOrFail,
-            contents_of_relativity_option_root: DirContents = empty_dir_contents()):
-
-        rel_opt_configs = [
-            rel_opt_conf.default_conf_rel_any(default_relativity),
-            rel_opt_conf.conf_rel_any(non_default_relativity),
-        ]
-
-        for rel_opt_config in rel_opt_configs:
-            for expectation_type_of_test_case in ExpectationType:
-                etc = ExpectationTypeConfig(expectation_type_of_test_case)
-                instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
-
-                for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
-                    self._check_(
-                        source,
-                        etc,
-                        main_result_for_positive_expectation,
-                        rel_opt_config,
-                        contents_of_relativity_option_root)
-
-    def _check_with_expectation_type_variants(
-            self,
-            make_instruction_arguments: InstructionArgumentsVariantConstructor,
-            main_result_for_positive_expectation: PassOrFail,
-            rel_opt_config: RelativityOptionConfiguration,
-            contents_of_relativity_option_root: DirContents = empty_dir_contents(),
-            test_case_name: str = ''):
-
-        for expectation_type_of_test_case in ExpectationType:
-            etc = ExpectationTypeConfig(expectation_type_of_test_case)
-            instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
-            self._check_(
-                remaining_source(instruction_arguments),
-                etc,
-                main_result_for_positive_expectation,
-                rel_opt_config,
-                contents_of_relativity_option_root,
-                test_case_name)
-
-    def _check_with_rel_opt_variants_and_expectation_type_variants(
-            self,
-            make_instruction_arguments: InstructionArgumentsVariantConstructor,
-            main_result_for_positive_expectation: PassOrFail,
-            contents_of_relativity_option_root: DirContents = empty_dir_contents(),
-            test_case_name: str = ''):
-
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            self._check_with_expectation_type_variants(
-                make_instruction_arguments,
-                main_result_for_positive_expectation,
-                rel_opt_config,
-                contents_of_relativity_option_root,
-                test_case_name)
-
-    def _run_test_cases_with_act_dir_contents_and_expectation_type_variants(
-            self,
-            test_cases_with_name_and_dir_contents: list,
-            make_instruction_arguments: InstructionArgumentsVariantConstructor,
-            main_result_for_positive_expectation: PassOrFail):
-
-        for case_name, actual_dir_contents in test_cases_with_name_and_dir_contents:
-            self._check_with_rel_opt_variants_and_expectation_type_variants(
-                make_instruction_arguments,
-                main_result_for_positive_expectation,
-                contents_of_relativity_option_root=actual_dir_contents,
-                test_case_name=case_name)
+    def _accepted_rel_opt_configurations(self) -> list:
+        return ACCEPTED_REL_OPT_CONFIGURATIONS
 
 
-class TestCheckDifferentSourceVariants(TestCaseBaseForParser):
+class TestCheckDifferentSourceVariants(TestCaseBase):
     def test_without_file_type(self):
         file_name = 'existing-file'
-        instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
             '<rel_opt> {file_name}'.format(file_name=file_name)
         )
         self._check_parsing_with_different_source_variants(
@@ -218,7 +122,7 @@ class TestCheckDifferentSourceVariants(TestCaseBaseForParser):
 
     def test_with_file_type(self):
         file_name = 'existing-file'
-        instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
             '{file_type_opt} <rel_opt> {file_name}'.format(
                 file_type_opt=file_type_option(FileType.REGULAR),
                 file_name=file_name)
@@ -233,33 +137,36 @@ class TestCheckDifferentSourceVariants(TestCaseBaseForParser):
         )
 
 
-class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
+class TestCheckForAnyTypeOfFile(TestCaseBase):
     def test_file_exists(self):
         file_name = 'existing-file'
-        instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
             '<rel_opt> {file_name}'.format(file_name=file_name)
         )
 
         cases_with_existing_file_of_different_types = [
-            ('dir',
-             DirContents([empty_dir(file_name)])),
-            ('regular file',
-             DirContents([empty_file(file_name)])),
-            ('sym-link',
-             DirContents(
-                 [empty_dir('directory'),
-                  Link(file_name, 'directory')])
-             ),
+            NameAndValue(
+                'dir',
+                DirContents([empty_dir(file_name)])),
+            NameAndValue(
+                'regular file',
+                DirContents([empty_file(file_name)])),
+            NameAndValue(
+                'sym-link',
+                DirContents(
+                    [empty_dir('directory'),
+                     Link(file_name, 'directory')])
+            ),
         ]
 
-        self._run_test_cases_with_act_dir_contents_and_expectation_type_variants(
+        self._run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             cases_with_existing_file_of_different_types,
             instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.PASS,
         )
 
     def test_file_does_not_exist(self):
-        instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+        instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
             '<rel_opt> non-existing-file'
         )
         self._check_with_rel_opt_variants_and_expectation_type_variants(
@@ -267,20 +174,20 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
             main_result_for_positive_expectation=PassOrFail.FAIL)
 
 
-class TestCheckForDirectory(TestCaseBaseForParser):
+class TestCheckForDirectory(TestCaseBase):
     file_name = 'name-of-checked-file'
-    instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+    instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
         '{file_type_opt} <rel_opt> {file_name}'.format(
             file_type_opt=file_type_option(FileType.DIRECTORY),
             file_name=file_name),
     )
 
     cases_with_existing_directory = [
-        (
+        NameAndValue(
             'exists as directory',
             DirContents([empty_dir(file_name)])
         ),
-        (
+        NameAndValue(
             'exists as sym-link to existing directory',
             DirContents([empty_dir('directory'),
                          Link(file_name, 'directory')]),
@@ -288,11 +195,11 @@ class TestCheckForDirectory(TestCaseBaseForParser):
     ]
 
     cases_with_existing_files_that_are_not_directories = [
-        (
+        NameAndValue(
             'exists as regular file',
             DirContents([empty_file(file_name)])
         ),
-        (
+        NameAndValue(
             'exists as sym-link to existing regular file',
             DirContents([empty_file('existing-file'),
                          Link(file_name, 'directory')]),
@@ -300,34 +207,34 @@ class TestCheckForDirectory(TestCaseBaseForParser):
     ]
 
     def test_file_is_an_existing_directory(self):
-        self._run_test_cases_with_act_dir_contents_and_expectation_type_variants(
+        self._run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             self.cases_with_existing_directory,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.PASS,
         )
 
     def test_file_exists_but_is_not_a_directory(self):
-        self._run_test_cases_with_act_dir_contents_and_expectation_type_variants(
+        self._run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_not_directories,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL,
         )
 
 
-class TestCheckForRegularFile(TestCaseBaseForParser):
+class TestCheckForRegularFile(TestCaseBase):
     file_name = 'name-of-checked-file'
-    instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+    instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
         '{file_type_opt} <rel_opt> {file_name}'.format(
             file_type_opt=file_type_option(FileType.REGULAR),
             file_name=file_name),
     )
 
     cases_with_existing_files_that_are_regular_files = [
-        (
+        NameAndValue(
             'exists as regular file',
             DirContents([empty_file(file_name)])
         ),
-        (
+        NameAndValue(
             'exists as sym-link to existing regular file',
             DirContents([empty_file('existing-file'),
                          Link(file_name, 'existing-file')]),
@@ -335,11 +242,11 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
     ]
 
     cases_with_existing_files_that_are_not_regular_files = [
-        (
+        NameAndValue(
             'exists as directory',
             DirContents([empty_dir(file_name)])
         ),
-        (
+        NameAndValue(
             'exists as sym-link to existing directory',
             DirContents([empty_dir('directory'),
                          Link(file_name, 'directory')]),
@@ -347,64 +254,64 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
     ]
 
     def test_file_exists_and_is_a_regular_file(self):
-        self._run_test_cases_with_act_dir_contents_and_expectation_type_variants(
+        self._run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_regular_files,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.PASS,
         )
 
     def test_file_exists_but_is_not_a_regular_file(self):
-        self._run_test_cases_with_act_dir_contents_and_expectation_type_variants(
+        self._run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_not_regular_files,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL,
         )
 
 
-class TestCheckForSymLink(TestCaseBaseForParser):
+class TestCheckForSymLink(TestCaseBase):
     file_name = 'the-name-of-checked-file'
-    instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+    instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
         '{file_type_opt} <rel_opt> {file_name}'.format(
             file_type_opt=file_type_option(FileType.SYMLINK),
             file_name=file_name),
     )
     cases_with_existing_files_that_are_symbolic_links = [
-        (
+        NameAndValue(
             'exists as sym-link to directory',
             DirContents([empty_dir('dir'),
                          Link(file_name, 'dir')])
         ),
-        (
+        NameAndValue(
             'exists as sym-link to existing regular file',
             DirContents([empty_file('file'),
                          Link(file_name, 'file')]),
         ),
-        (
+        NameAndValue(
             'exists as sym-link to non-existing file',
             DirContents([Link(file_name, 'non-existing-file')]),
         ),
     ]
 
     cases_with_existing_files_that_are_not_symbolic_links = [
-        (
+        NameAndValue(
             'exists as directory',
             DirContents([empty_file(file_name)])
         ),
-        (
+        NameAndValue(
             'exists as regular file',
             DirContents([empty_dir(file_name)]),
         ),
     ]
 
     def test_file_exists_and_is_a_regular_file(self):
-        self._run_test_cases_with_act_dir_contents_and_expectation_type_variants(
+        self._run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_symbolic_links,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.PASS,
         )
 
     def test_file_exists_but_is_not_a_regular_file(self):
-        self._run_test_cases_with_act_dir_contents_and_expectation_type_variants(
+        self._run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             self.cases_with_existing_files_that_are_not_symbolic_links,
             self.instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL,
