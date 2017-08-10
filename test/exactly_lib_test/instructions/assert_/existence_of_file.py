@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import existence_of_file as sut
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
@@ -19,6 +20,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants__with_source_check, equivalent_source_variants
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link, empty_dir_contents
+from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 
@@ -30,6 +32,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
         unittest.makeSuite(TestCheckForAnyTypeOfFile),
+        unittest.makeSuite(TestCheckDifferentSourceVariants),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -96,15 +99,80 @@ class InstructionArgumentsVariantConstructor:
 
 
 class TestCaseBaseForParser(TestCaseBase):
-    def _run(self,
-             instruction_argument: str,
-             arrangement: ArrangementPostAct,
-             expectation: Expectation):
-        parser = sut.Parser()
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            self._check(parser, source, arrangement, expectation)
+    parser = sut.Parser()
+
+    def _check_(
+            self,
+            instruction_source: ParseSource,
+            etc: ExpectationTypeConfig,
+            main_result_for_positive_expectation: PassOrFail,
+            rel_opt_config: RelativityOptionConfiguration,
+            contents_of_relativity_option_root: DirContents = empty_dir_contents(),
+            test_case_name: str = ''):
+
+        with self.subTest(case_name=test_case_name,
+                          expectation_type=str(etc.expectation_type),
+                          arguments=instruction_source.source_string):
+            self._check(self.parser,
+                        instruction_source,
+                        ArrangementPostAct(
+                            pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
+                            home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
+                                contents_of_relativity_option_root
+                            ),
+                            symbols=rel_opt_config.symbols.in_arrangement(),
+                        ),
+                        Expectation(
+                            main_result=etc.main_result(main_result_for_positive_expectation),
+                            symbol_usages=rel_opt_config.symbols.usages_expectation(),
+                        ))
+
+    def _check_parsing_with_different_source_variants(
+            self,
+            make_instruction_arguments: InstructionArgumentsVariantConstructor,
+            default_relativity: RelOptionType,
+            non_default_relativity: RelOptionType,
+            main_result_for_positive_expectation: PassOrFail,
+            contents_of_relativity_option_root: DirContents = empty_dir_contents()):
+
+        rel_opt_configs = [
+            rel_opt_conf.default_conf_rel_any(default_relativity),
+            rel_opt_conf.conf_rel_any(non_default_relativity),
+        ]
+
+        for rel_opt_config in rel_opt_configs:
+            for expectation_type_of_test_case in ExpectationType:
+                etc = ExpectationTypeConfig(expectation_type_of_test_case)
+                instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
+
+                for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+                    self._check_(
+                        source,
+                        etc,
+                        main_result_for_positive_expectation,
+                        rel_opt_config,
+                        contents_of_relativity_option_root)
 
     def _check_with_expectation_type_variants(
+            self,
+            make_instruction_arguments: InstructionArgumentsVariantConstructor,
+            main_result_for_positive_expectation: PassOrFail,
+            rel_opt_config: RelativityOptionConfiguration,
+            contents_of_relativity_option_root: DirContents = empty_dir_contents(),
+            test_case_name: str = ''):
+
+        for expectation_type_of_test_case in ExpectationType:
+            etc = ExpectationTypeConfig(expectation_type_of_test_case)
+            instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
+            self._check_(
+                remaining_source(instruction_arguments),
+                etc,
+                main_result_for_positive_expectation,
+                rel_opt_config,
+                contents_of_relativity_option_root,
+                test_case_name)
+
+    def _check_with_rel_opt_variants_and_expectation_type_variants(
             self,
             make_instruction_arguments: InstructionArgumentsVariantConstructor,
             main_result_for_positive_expectation: PassOrFail,
@@ -112,25 +180,12 @@ class TestCaseBaseForParser(TestCaseBase):
             test_case_name: str = ''):
 
         for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-
-            for expectation_type_of_test_case in ExpectationType:
-                etc = ExpectationTypeConfig(expectation_type_of_test_case)
-                instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
-                with self.subTest(case_name=test_case_name,
-                                  expectation_type=str(expectation_type_of_test_case),
-                                  arguments=instruction_arguments):
-                    self._run(instruction_arguments,
-                              ArrangementPostAct(
-                                  pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                                  home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
-                                      contents_of_relativity_option_root
-                                  ),
-                                  symbols=rel_opt_config.symbols.in_arrangement(),
-                              ),
-                              Expectation(
-                                  main_result=etc.main_result(main_result_for_positive_expectation),
-                                  symbol_usages=rel_opt_config.symbols.usages_expectation(),
-                              ))
+            self._check_with_expectation_type_variants(
+                make_instruction_arguments,
+                main_result_for_positive_expectation,
+                rel_opt_config,
+                contents_of_relativity_option_root,
+                test_case_name)
 
     def _run_test_cases_with_act_dir_contents_and_expectation_type_variants(
             self,
@@ -139,11 +194,43 @@ class TestCaseBaseForParser(TestCaseBase):
             main_result_for_positive_expectation: PassOrFail):
 
         for case_name, actual_dir_contents in test_cases_with_name_and_dir_contents:
-            self._check_with_expectation_type_variants(
+            self._check_with_rel_opt_variants_and_expectation_type_variants(
                 make_instruction_arguments,
                 main_result_for_positive_expectation,
                 contents_of_relativity_option_root=actual_dir_contents,
                 test_case_name=case_name)
+
+
+class TestCheckDifferentSourceVariants(TestCaseBaseForParser):
+    def test_without_file_type(self):
+        file_name = 'existing-file'
+        instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+            '<rel_opt> {file_name}'.format(file_name=file_name)
+        )
+        self._check_parsing_with_different_source_variants(
+            instruction_argument_constructor,
+            default_relativity=RelOptionType.REL_CWD,
+            non_default_relativity=RelOptionType.REL_TMP,
+            main_result_for_positive_expectation=PassOrFail.PASS,
+            contents_of_relativity_option_root=DirContents([empty_file(file_name)]),
+
+        )
+
+    def test_with_file_type(self):
+        file_name = 'existing-file'
+        instruction_argument_constructor = InstructionArgumentsVariantConstructor(
+            '{file_type_opt} <rel_opt> {file_name}'.format(
+                file_type_opt=file_type_option(FileType.REGULAR),
+                file_name=file_name)
+        )
+        self._check_parsing_with_different_source_variants(
+            instruction_argument_constructor,
+            default_relativity=RelOptionType.REL_CWD,
+            non_default_relativity=RelOptionType.REL_TMP,
+            main_result_for_positive_expectation=PassOrFail.PASS,
+            contents_of_relativity_option_root=DirContents([empty_file(file_name)]),
+
+        )
 
 
 class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
@@ -175,7 +262,7 @@ class TestCheckForAnyTypeOfFile(TestCaseBaseForParser):
         instruction_argument_constructor = InstructionArgumentsVariantConstructor(
             '<rel_opt> non-existing-file'
         )
-        self._check_with_expectation_type_variants(
+        self._check_with_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             main_result_for_positive_expectation=PassOrFail.FAIL)
 
