@@ -16,13 +16,11 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in, \
-    SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -41,21 +39,6 @@ class TestCaseBaseForParser(TestCaseBase):
         parser = sut.Parser()
         for source in equivalent_source_variants(self, instruction_argument):
             self._check(parser, source, arrangement, expectation)
-
-    def _run_test_cases_with_act_dir_contents(self,
-                                              test_cases_with_name_and_dir_contents: list,
-                                              instruction_arguments: str,
-                                              main_result: asrt.ValueAssertion):
-        for case_name, actual_dir_contents in test_cases_with_name_and_dir_contents:
-            with self.subTest(case_name=case_name,
-                              arguments=instruction_arguments):
-                self._run(instruction_arguments,
-                          ArrangementPostAct(
-                              sds_contents=contents_in(RelSdsOptionType.REL_ACT,
-                                                       actual_dir_contents)),
-                          Expectation(
-                              main_result=main_result),
-                          )
 
 
 class TestParseInvalidSyntax(TestCaseBase):
