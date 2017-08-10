@@ -25,7 +25,7 @@ class ParseShouldFailWhenThereAreSuperfluousArguments(TestWithConfigurationAndNe
         parser = self.configuration.new_parser()
         source = self.configuration.source_for(
             args('{maybe_not} {empty} superfluous-argument',
-                 maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option))
+                 maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative))
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             parser.parse(source)
 
@@ -36,7 +36,7 @@ class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
         parser = self.configuration.new_parser()
         source = self.configuration.source_for(
             args('{maybe_not} {empty} <<MARKER',
-                 maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
             ['single line',
              'MARKER'])
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -48,11 +48,11 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{maybe_not} {empty}',
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
                 '',
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.pass__if_un_negated_else__fail),
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
         )
 
 
@@ -61,9 +61,9 @@ class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
                 args('{maybe_not} {empty}',
-                     maybe_not=self.maybe_not.nothing__if_un_negated_else__not_option)),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
                 'contents that makes the file non-empty',
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.fail__if_un_negated_else__pass),
+            Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative),
         )

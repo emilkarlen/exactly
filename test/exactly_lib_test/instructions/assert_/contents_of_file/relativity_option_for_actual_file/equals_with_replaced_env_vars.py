@@ -45,14 +45,14 @@ class _ContentsEqualsWhenRelHomeCaseIsSubDirOfRelHomeAct(TestWithConfigurationAn
             args('{relativity_option} actual.txt {replace_env_vars_option} '
                  '{maybe_not} {equals} {rel_tmp_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_populator,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                main_result=self.not_opt.pass__if_positive__fail__if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -75,14 +75,14 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
             args('{relativity_option} actual.txt {replace_env_vars_option} '
                  '{maybe_not} {equals} {rel_tmp_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_populator,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                main_result=self.not_opt.pass__if_positive__fail__if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -105,14 +105,14 @@ class _ContentsNotEquals(TestWithConfigurationAndRelativityOptionAndNegationBase
             args('{relativity_option} actual.txt {replace_env_vars_option} '
                  '{maybe_not} {equals} {rel_tmp_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_populator,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                main_result=self.not_opt.fail__if_positive__pass_if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )

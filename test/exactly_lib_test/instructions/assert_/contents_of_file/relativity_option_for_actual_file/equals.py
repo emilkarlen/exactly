@@ -49,7 +49,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([empty_file('expected.txt')])),
@@ -65,7 +65,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual-dir {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
@@ -83,7 +83,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
@@ -93,7 +93,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.fail__if_un_negated_else__pass,
+                main_result=self.not_opt.fail__if_positive__pass_if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -104,7 +104,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option),
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
@@ -114,7 +114,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
             Expectation(
-                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                main_result=self.not_opt.pass__if_positive__fail__if_negative,
                 symbol_usages=self.rel_opt.symbols.usages_expectation(),
             ),
         )
@@ -158,7 +158,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             args('{relativity_option} actual.txt {maybe_not} {equals} '
                  '{rel_symbol_option} {rel_symbol_name} expected.txt',
                  relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_un_negated_else__not_option,
+                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                  rel_symbol_name=expected_file_relativity_symbol),
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_contents_arrangement,
@@ -166,7 +166,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
                 symbols=symbols_in_arrangement,
             ),
             Expectation(
-                main_result=self.not_opt.pass__if_un_negated_else__fail,
+                main_result=self.not_opt.pass__if_positive__fail__if_negative,
                 symbol_usages=expected_symbol_usages,
             ),
         )

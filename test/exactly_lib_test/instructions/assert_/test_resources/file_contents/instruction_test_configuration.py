@@ -8,7 +8,8 @@ from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import NotOperatorInfo
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
+    ExpectationType, ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
@@ -72,21 +73,22 @@ class TestWithConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAn
 class TestWithConfigurationAndNegationArgumentBase(TestWithConfigurationBase):
     def __init__(self,
                  configuration: InstructionTestConfiguration,
-                 is_negated: bool):
+                 expectation_type: ExpectationType):
         super().__init__(configuration)
-        self.maybe_not = NotOperatorInfo(is_negated)
+        self.maybe_not = ExpectationTypeConfig(expectation_type)
 
     def shortDescription(self):
         return (str(type(self)) + ' /\n' +
                 str(type(self.configuration)) + ' /\n' +
-                'is_negated=' + str(self.maybe_not.is_negated)
+                str(self.maybe_not)
                 )
 
 
 def suite_for__conf__not_argument(configuration: InstructionTestConfiguration,
                                   test_cases: list) -> unittest.TestSuite:
-    return unittest.TestSuite([tc(configuration, False) for tc in test_cases] +
-                              [tc(configuration, True) for tc in test_cases])
+    return unittest.TestSuite(
+        [tc(configuration, ExpectationType.POSITIVE) for tc in test_cases] +
+        [tc(configuration, ExpectationType.NEGATIVE) for tc in test_cases])
 
 
 def args(arg_str: str, **kwargs) -> str:
