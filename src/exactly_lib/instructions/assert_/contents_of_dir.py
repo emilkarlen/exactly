@@ -150,7 +150,29 @@ class _EmptinessChecker:
         files_in_dir = list(path_to_check.iterdir())
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir != 0:
-            raise pfh_ex_method.PfhFailException('Number of files in dir: ' + str(num_files_in_dir))
+            raise pfh_ex_method.PfhFailException(self._error_message(num_files_in_dir, files_in_dir))
+
+    def _error_message(self, num_files_in_dir: int, actual_files_in_dir: list) -> str:
+        first_line = 'Directory is not empty. It contains {} files.'.format(str(num_files_in_dir))
+        dir_contents_lines = self._dir_contents_err_msg_lines(actual_files_in_dir)
+        ret_val = '\n'.join([first_line,
+                             '',
+                             'Actual contents:'] +
+                            dir_contents_lines)
+        return ret_val
+
+    @staticmethod
+    def _dir_contents_err_msg_lines(actual_files_in_dir: list) -> list:
+        if len(actual_files_in_dir) < 50:
+            actual_files_in_dir.sort()
+        num_files_to_display = 5
+        ret_val = [
+            actual_file.name
+            for actual_file in actual_files_in_dir[:num_files_to_display]
+        ]
+        if len(actual_files_in_dir) > num_files_to_display:
+            ret_val.append('...')
+        return ret_val
 
 
 _PATH_ARGUMENT = a.Named('PATH')
