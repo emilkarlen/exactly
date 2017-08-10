@@ -5,15 +5,13 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
-    ActComparisonActualFileForFileRef
-from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
-from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
+from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
+    EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.path_resolver import FileRefResolver
@@ -24,7 +22,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils import file_ref_check
-from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
+from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -35,62 +33,63 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
-        self.actual_file_arg = a.Named('ACTUAL-PATH')
         super().__init__(name, {
-            'checked_file': self.actual_file_arg.name,
+            'checked_file': _PATH_ARGUMENT.name,
         })
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
-                                    self.actual_file_arg)
-        self._help_parts = FileContentsHelpParts(name,
-                                                 self.actual_file_arg.name,
-                                                 [self.actual_file])
-        self.with_replaced_env_vars_option = a.Option(
-            instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+                                    _PATH_ARGUMENT)
+        self.relativity_of_actual_arg = a.Named('RELATIVITY')
         self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
-                                               a.Named('ACTUAL-REL'))
+                                               self.relativity_of_actual_arg)
 
     def single_line_description(self) -> str:
-        return 'Tests the contents of a directory'
+        return _SINGLE_LINE_DESCRIPTION
 
     def main_description_rest(self) -> list:
-        return self._paragraphs("""\
-        FAILs if {checked_file} is not an existing directory.
-        """)
+        return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
-        return self._help_parts.invokation_variants()
+        mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
+                                       EMPTY_ARGUMENT_CONSTANT)
+
+        # negation_arguments = [negation_of_assertion.optional_negation_argument_usage()]
+        arguments = [self.actual_file, mandatory_empty_arg]
+
+        return [
+            InvokationVariant(self._cl_syntax_for_args(arguments),
+                              self._paragraphs(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)),
+        ]
 
     def syntax_element_descriptions(self) -> list:
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      path_syntax.PATH_ARGUMENT)
-        relativity_of_actual_arg = a.Named('RELATIVITY-OF-ACTUAL-PATH')
-        optional_relativity_of_actual = a.Single(a.Multiplicity.OPTIONAL,
-                                                 relativity_of_actual_arg)
         actual_file_arg_sed = SyntaxElementDescription(
-            self.actual_file_arg.name,
+            _PATH_ARGUMENT.name,
             self._paragraphs(
-                "The file who's contents is checked."),
+                _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT),
             [InvokationVariant(
                 self._cl_syntax_for_args(
-                    [optional_relativity_of_actual,
-                     mandatory_actual_path]),
+                    [self.actual_file_relativity,
+                     mandatory_actual_path]
+                ),
                 rel_opts.default_relativity_for_rel_opt_type(
                     path_syntax.PATH_ARGUMENT.name,
                     ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
         )
 
-        relativity_of_actual_file_seds = rel_opts.relativity_syntax_element_descriptions(
+        relativity_of_actual_file_sed = rel_opts.relativity_syntax_element_description(
             path_syntax.PATH_ARGUMENT,
             ACTUAL_RELATIVITY_CONFIGURATION.options,
-            relativity_of_actual_arg)
+            self.relativity_of_actual_arg)
 
-        return (self._help_parts.syntax_element_descriptions_at_top() +
-                [actual_file_arg_sed] +
-                relativity_of_actual_file_seds +
-                self._help_parts.syntax_element_descriptions_at_bottom())
+        return [actual_file_arg_sed,
+                relativity_of_actual_file_sed]
 
-    def see_also_items(self) -> list:
-        return self._help_parts.see_also_items()
+    def _see_also_cross_refs(self) -> list:
+        concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
+        refs = rel_path_doc.cross_refs_for_concepts(concepts)
+        refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
+        return refs
 
     def _cls(self, additional_argument_usages: list) -> str:
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
@@ -116,7 +115,7 @@ class _Instruction(AssertPhaseInstruction):
         self._path_to_check = path_to_check
 
     def symbol_usages(self) -> list:
-        return []  # TODO this is wrong, fix by adding tests!
+        return self._path_to_check.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -159,18 +158,27 @@ _PATH_ARGUMENT = a.Named('PATH')
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
         rel_opts_configuration.PathRelativityVariants({
-            RelOptionType.REL_TMP,
-            RelOptionType.REL_ACT,
             RelOptionType.REL_CWD,
             RelOptionType.REL_HOME_ACT,
+            RelOptionType.REL_TMP,
+            RelOptionType.REL_ACT,
         },
             True),
         RelOptionType.REL_CWD),
     _PATH_ARGUMENT.name,
     True)
 
+_SINGLE_LINE_DESCRIPTION = 'Tests the contents of a directory'
 
-def parse_actual_file_argument(source: ParseSource) -> ComparisonActualFile:
-    file_ref = parse_file_ref.parse_file_ref_from_parse_source(source,
-                                                               ACTUAL_RELATIVITY_CONFIGURATION)
-    return ActComparisonActualFileForFileRef(file_ref)
+_MAIN_DESCRIPTION_REST = """\
+FAIL if {checked_file} is not an existing directory.
+
+
+Symbolic links are followed.
+"""
+
+_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\
+Tests that {checked_file} is an empty directory.
+"""
+
+_PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The file who's contents is checked."
