@@ -7,8 +7,8 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.not_operator import NotOperatorInfo
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import NotOperatorInfo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
