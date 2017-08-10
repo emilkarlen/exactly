@@ -4,14 +4,18 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
     Expectation
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with_not_and_rel_opts import \
+    TestCaseBaseWithParser, InstructionArgumentsVariantConstructor
+from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
+    ExpectationTypeConfig, PassOrFail
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
@@ -33,7 +37,30 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestCaseBaseForParser(TestCaseBase):
+class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConstructor):
+    """
+    Constructs the instruction argument for a given negation-option config
+    and rel-opt config.
+    """
+
+    def apply(self,
+              etc: ExpectationTypeConfig,
+              rel_opt_config: RelativityOptionConfiguration,
+              ) -> str:
+        ret_val = self.instruction_argument_template.replace('<rel_opt>', rel_opt_config.option_string)
+        ret_val = etc.instruction_arguments(ret_val)
+        return ret_val
+
+
+class TestCaseBaseForParser(TestCaseBaseWithParser):
+    parser = sut.Parser()
+
+    def _parser(self) -> InstructionParser:
+        return self.parser
+
+    def _accepted_rel_opt_configurations(self) -> list:
+        return ACCEPTED_REL_OPT_CONFIGURATIONS
+
     def _run(self,
              instruction_argument: str,
              arrangement: ArrangementPostAct,
@@ -111,77 +138,61 @@ class TestParseInvalidSyntax(TestCaseBase):
 
 
 class TestEmpty(TestCaseBaseForParser):
-    def test_fail_WHEN_file_does_not_exist(self):
-
+    def test_file_does_not_exist(self):
         name_of_non_existing_file = 'name-of-non-existing-file'
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument_str = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                                 name_of_non_existing_file)
-            self._check_with_rel_opt_config(instruction_argument_str,
-                                            rel_opt_config,
-                                            main_result=asrt_pfh.is_fail())
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_non_existing_file)
 
-    def test_fail_WHEN_file_does_exist_but_is_not_a_directory(self):
+        self._check_with_rel_opt_variants(
+            instruction_argument_constructor,
+            PassOrFail.FAIL)
 
+    def test_file_does_exist_but_is_not_a_directory(self):
         name_of_regular_file = 'name-of-existing-regular-file'
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                             name_of_regular_file)
-            self._check_with_rel_opt_config(
-                instruction_argument,
-                rel_opt_config,
-                contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]),
-                main_result=asrt_pfh.is_fail())
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_regular_file)
 
-    def test_fail_WHEN_file_is_an_directory_BUT_is_not_empty(self):
+        self._check_with_rel_opt_variants(
+            instruction_argument_constructor,
+            PassOrFail.FAIL,
+            contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]))
 
+    def test_file_is_an_directory_BUT_is_not_empty(self):
         name_of_directory = 'name-of-empty_directory'
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_directory)
 
         contents_of_relativity_option_root = DirContents([Dir(name_of_directory, [
             empty_file('existing-file-in-checked-dir')
         ])])
 
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument_str = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                                 name_of_directory)
-            self._check_with_rel_opt_config(
-                instruction_argument_str,
-                rel_opt_config,
-                contents_of_relativity_option_root=contents_of_relativity_option_root,
-                main_result=asrt_pfh.is_fail())
+        self._check_with_rel_opt_variants(
+            instruction_argument_constructor,
+            PassOrFail.FAIL,
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
 
-    def test_pass_WHEN_file_is_an_empty_directory(self):
-
+    def test_file_is_an_empty_directory(self):
         name_of_empty_directory = 'name-of-empty_directory'
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_empty_directory)
 
         contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory)])
 
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                             name_of_empty_directory)
-            self._check_with_rel_opt_config(
-                instruction_argument,
-                rel_opt_config,
-                contents_of_relativity_option_root=contents_of_relativity_option_root,
-                main_result=asrt_pfh.is_pass())
+        self._check_with_rel_opt_variants(
+            instruction_argument_constructor,
+            PassOrFail.PASS,
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
 
-    def test_pass_WHEN_file_is_a_symbolic_link_to_an_empty_directory(self):
-
+    def test_file_is_a_symbolic_link_to_an_empty_directory(self):
         name_of_empty_directory = 'name-of-empty_directory'
         name_of_symbolic_link = 'link-to-empty_directory'
+
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_symbolic_link)
 
         contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory),
                                                           sym_link(name_of_symbolic_link,
                                                                    name_of_empty_directory)])
 
-        for rel_opt_config in ACCEPTED_REL_OPT_CONFIGURATIONS:
-            instruction_argument = instruction_arguments_for_emptiness_check(rel_opt_config,
-                                                                             name_of_symbolic_link)
-            self._check_with_rel_opt_config(
-                instruction_argument,
-                rel_opt_config,
-                contents_of_relativity_option_root=contents_of_relativity_option_root,
-                main_result=asrt_pfh.is_pass())
+        self._check_with_rel_opt_variants(
+            instruction_argument_constructor,
+            PassOrFail.PASS,
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
 
 
 def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfiguration,
@@ -192,15 +203,13 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
         emptiness_assertion_argument=EMPTINESS_CHECK_ARGUMENT)
 
 
-# def args_for_COPIED_MAYBE_NOT_USED(file_name: str,
-#                                    file_type: str = None,
-#                                    check_type: CheckType = CheckType.POSITIVE,
-#                                    relativity_option: str = '') -> str:
-#     file_type_option = '' if file_type is None else long_option_syntax(file_type)
-#     arguments = file_type_option + ' ' + relativity_option + ' ' + file_name
-#     if check_type is CheckType.NEGATIVE:
-#         arguments = with_negation_argument(arguments)
-#     return arguments
+def argument_constructor_for_emptiness_check(file_name: str) -> TheInstructionArgumentsVariantConstructor:
+    return TheInstructionArgumentsVariantConstructor(
+        '<rel_opt> {file_name} {empty}'.format(
+            file_name=file_name,
+            empty=EMPTINESS_CHECK_ARGUMENT,
+        )
+    )
 
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(

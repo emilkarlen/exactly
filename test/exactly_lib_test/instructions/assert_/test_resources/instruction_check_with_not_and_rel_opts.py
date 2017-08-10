@@ -128,6 +128,24 @@ class TestCaseBaseWithParser(instruction_check.TestCaseBase):
                 contents_of_relativity_option_root,
                 test_case_name)
 
+    def _check_with_rel_opt_variants(
+            self,
+            make_instruction_arguments: InstructionArgumentsVariantConstructor,
+            main_result_for_positive_expectation: PassOrFail,
+            contents_of_relativity_option_root: DirContents = empty_dir_contents(),
+            test_case_name: str = ''):
+
+        for rel_opt_config in self._accepted_rel_opt_configurations():
+            etc = ExpectationTypeConfig(ExpectationType.POSITIVE)
+            instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
+            self._check_(
+                remaining_source(instruction_arguments),
+                etc,
+                main_result_for_positive_expectation,
+                rel_opt_config,
+                contents_of_relativity_option_root,
+                test_case_name)
+
     def _run_test_cases_with_rel_opt_root_dir_contents_and_expectation_type_variants(
             self,
             test_cases_with_name_and_dir_contents: list,
