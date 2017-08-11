@@ -4,30 +4,25 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, \
-    Expectation
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with_not_and_rel_opts import \
-    TestCaseBaseWithParser, InstructionArgumentsVariantConstructor
+    InstructionChecker, InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
     ExpectationTypeConfig, PassOrFail
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link, \
-    empty_dir_contents
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -53,42 +48,14 @@ class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConst
         return ret_val
 
 
-class TestCaseBaseForParser(TestCaseBaseWithParser):
-    parser = sut.Parser()
-
-    def _parser(self) -> InstructionParser:
-        return self.parser
-
-    def _accepted_rel_opt_configurations(self) -> list:
-        return ACCEPTED_REL_OPT_CONFIGURATIONS
-
-    def _run(self,
-             instruction_argument: str,
-             arrangement: ArrangementPostAct,
-             expectation: Expectation):
-        parser = sut.Parser()
-        for source in equivalent_source_variants(self, instruction_argument):
-            self._check(parser, source, arrangement, expectation)
-
-    def _check_with_rel_opt_config(self,
-                                   instruction_argument_str: str,
-                                   rel_opt_config: RelativityOptionConfiguration,
-                                   main_result: asrt.ValueAssertion,
-                                   contents_of_relativity_option_root: DirContents = empty_dir_contents(),
-                                   ):
-        self._run(
-            instruction_argument_str,
-            ArrangementPostAct(
-                pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
-                home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
-                    contents_of_relativity_option_root
-                ),
-                symbols=rel_opt_config.symbols.in_arrangement(),
-            ),
-            Expectation(
-                main_result=main_result,
-                symbol_usages=rel_opt_config.symbols.usages_expectation(),
-            ))
+class TestCaseBaseForParser(unittest.TestCase):
+    def __init__(self, method_name):
+        super().__init__(method_name)
+        self.checker = InstructionChecker(
+            self,
+            sut.Parser(),
+            ACCEPTED_REL_OPT_CONFIGURATIONS,
+        )
 
 
 class TestParseInvalidSyntax(TestCaseBase):
@@ -142,7 +109,7 @@ class TestEmpty(TestCaseBaseForParser):
     def test_fail_WHEN_file_does_not_exist(self):
         instruction_argument_constructor = argument_constructor_for_emptiness_check('name-of-non-existing-file')
 
-        self._check_with_rel_opt_variants_and_same_result_for_all_expectation_types(
+        self.checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
             asrt_pfh.is_fail())
 
@@ -150,7 +117,7 @@ class TestEmpty(TestCaseBaseForParser):
         name_of_regular_file = 'name-of-existing-regular-file'
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_regular_file)
 
-        self._check_with_rel_opt_variants_and_same_result_for_all_expectation_types(
+        self.checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
             asrt_pfh.is_fail(),
             contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]))
@@ -160,7 +127,7 @@ class TestEmpty(TestCaseBaseForParser):
         instruction_argument_constructor = argument_constructor_for_emptiness_check(broken_sym_link.name)
         contents_of_relativity_option_root = DirContents([broken_sym_link])
 
-        self._check_with_rel_opt_variants_and_same_result_for_all_expectation_types(
+        self.checker.check_rel_opt_variants_with_same_result_for_every_expectation_type(
             instruction_argument_constructor,
             asrt_pfh.is_fail(),
             contents_of_relativity_option_root=contents_of_relativity_option_root)
@@ -173,7 +140,7 @@ class TestEmpty(TestCaseBaseForParser):
             empty_file('existing-file-in-checked-dir')
         ])])
 
-        self._check_with_rel_opt_variants_and_expectation_type_variants(
+        self.checker.check_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             PassOrFail.FAIL,
             contents_of_relativity_option_root=contents_of_relativity_option_root)
@@ -184,7 +151,7 @@ class TestEmpty(TestCaseBaseForParser):
 
         contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory)])
 
-        self._check_with_rel_opt_variants_and_expectation_type_variants(
+        self.checker.check_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root)
@@ -199,7 +166,7 @@ class TestEmpty(TestCaseBaseForParser):
                                                           sym_link(name_of_symbolic_link,
                                                                    name_of_empty_directory)])
 
-        self._check_with_rel_opt_variants_and_expectation_type_variants(
+        self.checker.check_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root)
