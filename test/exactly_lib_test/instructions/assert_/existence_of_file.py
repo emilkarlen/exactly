@@ -31,7 +31,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
         unittest.makeSuite(TestCheckForAnyTypeOfFile),
-        unittest.makeSuite(TestCheckDifferentSourceVariants),
+        unittest.makeSuite(TestDifferentSourceVariants),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -104,7 +104,7 @@ class TestCaseBase(unittest.TestCase):
         )
 
 
-class TestCheckDifferentSourceVariants(TestCaseBase):
+class TestDifferentSourceVariants(TestCaseBase):
     def test_without_file_type(self):
         file_name = 'existing-file'
         instruction_argument_constructor = TheInstructionArgumentsVariantConstructor(
