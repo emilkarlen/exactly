@@ -16,6 +16,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negat
     ExpectationTypeConfig, PassOrFail
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
@@ -138,22 +139,31 @@ class TestParseInvalidSyntax(TestCaseBase):
 
 
 class TestEmpty(TestCaseBaseForParser):
-    def test_file_does_not_exist(self):
-        name_of_non_existing_file = 'name-of-non-existing-file'
-        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_non_existing_file)
+    def test_fail_WHEN_file_does_not_exist(self):
+        instruction_argument_constructor = argument_constructor_for_emptiness_check('name-of-non-existing-file')
 
-        self._check_with_rel_opt_variants(
+        self._check_with_rel_opt_variants_and_same_result_for_all_expectation_types(
             instruction_argument_constructor,
-            PassOrFail.FAIL)
+            asrt_pfh.is_fail())
 
-    def test_file_does_exist_but_is_not_a_directory(self):
+    def test_fail_WHEN_file_does_exist_but_is_not_a_directory(self):
         name_of_regular_file = 'name-of-existing-regular-file'
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_regular_file)
 
-        self._check_with_rel_opt_variants(
+        self._check_with_rel_opt_variants_and_same_result_for_all_expectation_types(
             instruction_argument_constructor,
-            PassOrFail.FAIL,
+            asrt_pfh.is_fail(),
             contents_of_relativity_option_root=DirContents([empty_file(name_of_regular_file)]))
+
+    def test_fail_WHEN_file_is_a_sym_link_to_a_non_existing_file(self):
+        broken_sym_link = sym_link('broken-sym-link', 'non-existing-file')
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(broken_sym_link.name)
+        contents_of_relativity_option_root = DirContents([broken_sym_link])
+
+        self._check_with_rel_opt_variants_and_same_result_for_all_expectation_types(
+            instruction_argument_constructor,
+            asrt_pfh.is_fail(),
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
 
     def test_file_is_an_directory_BUT_is_not_empty(self):
         name_of_directory = 'name-of-empty_directory'
@@ -163,7 +173,7 @@ class TestEmpty(TestCaseBaseForParser):
             empty_file('existing-file-in-checked-dir')
         ])])
 
-        self._check_with_rel_opt_variants(
+        self._check_with_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             PassOrFail.FAIL,
             contents_of_relativity_option_root=contents_of_relativity_option_root)
@@ -174,7 +184,7 @@ class TestEmpty(TestCaseBaseForParser):
 
         contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory)])
 
-        self._check_with_rel_opt_variants(
+        self._check_with_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root)
@@ -189,7 +199,7 @@ class TestEmpty(TestCaseBaseForParser):
                                                           sym_link(name_of_symbolic_link,
                                                                    name_of_empty_directory)])
 
-        self._check_with_rel_opt_variants(
+        self._check_with_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root)

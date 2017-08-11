@@ -6,11 +6,13 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
+from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
     EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
@@ -29,6 +31,9 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(Parser(),
                                   TheInstructionDocumentation(instruction_name))
+
+
+NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -52,8 +57,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 
-        # negation_arguments = [negation_of_assertion.optional_negation_argument_usage()]
-        arguments = [self.actual_file, mandatory_empty_arg]
+        negation_argument = negation_of_assertion.optional_negation_argument_usage()
+        arguments = [negation_argument, self.actual_file, mandatory_empty_arg]
 
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
@@ -61,6 +66,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
+        negation = negation_of_assertion.syntax_element_description()
+
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      path_syntax.PATH_ARGUMENT)
         actual_file_arg_sed = SyntaxElementDescription(
@@ -82,8 +89,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             ACTUAL_RELATIVITY_CONFIGURATION.options,
             self.relativity_of_actual_arg)
 
-        return [actual_file_arg_sed,
-                relativity_of_actual_file_sed]
+        return [negation,
+                actual_file_arg_sed,
+                relativity_of_actual_file_sed,
+                ]
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
@@ -104,30 +113,35 @@ class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         tokens = new_token_parser(rest_of_line,
                                   self.format_map)
+        expectation_type = tokens.consume_optional_negation_operator()
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
         tokens.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(EMPTINESS_CHECK_ARGUMENT)
         tokens.report_superfluous_arguments_if_not_at_eol()
-        return _Instruction(path_to_check)
+        return _Instruction(expectation_type, path_to_check)
 
 
 class _Instruction(AssertPhaseInstruction):
-    def __init__(self, path_to_check: FileRefResolver):
-        self._path_to_check = path_to_check
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 path_to_check: FileRefResolver):
+        self._checker = _EmptinessChecker(expectation_type, path_to_check)
 
     def symbol_usages(self) -> list:
-        return self._path_to_check.references
+        return self._checker.path_to_check.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        emptiness_checker = _EmptinessChecker(self._path_to_check)
-        return pfh_ex_method.translate_pfh_exception_to_pfh(emptiness_checker.main,
+        return pfh_ex_method.translate_pfh_exception_to_pfh(self._checker.main,
                                                             environment)
 
 
 class _EmptinessChecker:
-    def __init__(self, path_to_check: FileRefResolver):
-        self._path_to_check = path_to_check
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 path_to_check: FileRefResolver):
+        self.expectation_type = expectation_type
+        self.path_to_check = path_to_check
 
     def main(self, environment: InstructionEnvironmentForPostSdsStep):
         self._fail_if_path_does_not_exist_as_a_dir(environment)
@@ -137,7 +151,7 @@ class _EmptinessChecker:
         expect_existing_dir = file_properties.must_exist_as(file_properties.FileType.DIRECTORY,
                                                             True)
         failure_message = file_ref_check.pre_or_post_sds_failure_message_or_none(
-            file_ref_check.FileRefCheck(self._path_to_check,
+            file_ref_check.FileRefCheck(self.path_to_check,
                                         expect_existing_dir),
             environment.path_resolving_environment_pre_or_post_sds)
         if failure_message is not None:
@@ -145,12 +159,16 @@ class _EmptinessChecker:
 
     def _fail_if_path_dir_is_not_empty(self, environment: InstructionEnvironmentForPostSdsStep):
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        path_to_check = self._path_to_check.resolve_value_of_any_dependency(path_resolving_env)
+        path_to_check = self.path_to_check.resolve_value_of_any_dependency(path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
         files_in_dir = list(path_to_check.iterdir())
         num_files_in_dir = len(files_in_dir)
-        if num_files_in_dir != 0:
-            raise pfh_ex_method.PfhFailException(self._error_message(num_files_in_dir, files_in_dir))
+        if self.expectation_type is ExpectationType.POSITIVE:
+            if num_files_in_dir != 0:
+                raise pfh_ex_method.PfhFailException(self._error_message(num_files_in_dir, files_in_dir))
+        else:
+            if num_files_in_dir == 0:
+                raise pfh_ex_method.PfhFailException('The directory is empty')
 
     def _error_message(self, num_files_in_dir: int, actual_files_in_dir: list) -> str:
         first_line = 'Directory is not empty. It contains {} files.'.format(str(num_files_in_dir))
@@ -193,7 +211,8 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
 _SINGLE_LINE_DESCRIPTION = 'Tests the contents of a directory'
 
 _MAIN_DESCRIPTION_REST = """\
-FAIL if {checked_file} is not an existing directory.
+FAIL if {checked_file} is not an existing directory
+(even when the assertion is negated).
 
 
 Symbolic links are followed.
@@ -203,4 +222,4 @@ _CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\
 Tests that {checked_file} is an empty directory.
 """
 
-_PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The file who's contents is checked."
+_PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The directory who's contents is checked."

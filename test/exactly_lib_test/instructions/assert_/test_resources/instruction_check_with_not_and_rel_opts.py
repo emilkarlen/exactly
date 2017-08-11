@@ -17,6 +17,7 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_di
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class InstructionArgumentsVariantConstructor:
@@ -127,6 +128,35 @@ class TestCaseBaseWithParser(instruction_check.TestCaseBase):
                 rel_opt_config,
                 contents_of_relativity_option_root,
                 test_case_name)
+
+    def _check_with_rel_opt_variants_and_same_result_for_all_expectation_types(
+            self,
+            make_instruction_arguments: InstructionArgumentsVariantConstructor,
+            main_result: asrt.ValueAssertion,
+            contents_of_relativity_option_root: DirContents = empty_dir_contents()):
+
+        for rel_opt_config in self._accepted_rel_opt_configurations():
+
+            for expectation_type_of_test_case in ExpectationType:
+                etc = ExpectationTypeConfig(expectation_type_of_test_case)
+                instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
+                instruction_source = remaining_source(instruction_arguments)
+
+                with self.subTest(expectation_type=str(etc.expectation_type),
+                                  arguments=instruction_arguments):
+                    self._check(self._parser(),
+                                instruction_source,
+                                ArrangementPostAct(
+                                    pre_contents_population_action=MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR,
+                                    home_or_sds_contents=rel_opt_config.populator_for_relativity_option_root(
+                                        contents_of_relativity_option_root
+                                    ),
+                                    symbols=rel_opt_config.symbols.in_arrangement(),
+                                ),
+                                Expectation(
+                                    main_result=main_result,
+                                    symbol_usages=rel_opt_config.symbols.usages_expectation(),
+                                ))
 
     def _check_with_rel_opt_variants(
             self,
