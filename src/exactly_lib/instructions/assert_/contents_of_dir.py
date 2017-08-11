@@ -124,51 +124,65 @@ class _Instruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
                  path_to_check: FileRefResolver):
-        self._checker = _EmptinessChecker(expectation_type, path_to_check)
+        self.expectation_type = expectation_type
+        self.path_to_check = path_to_check
 
     def symbol_usages(self) -> list:
-        return self._checker.path_to_check.references
+        return self.path_to_check.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return pfh_ex_method.translate_pfh_exception_to_pfh(self._checker.main,
-                                                            environment)
+        checker = _EmptinessChecker(environment,
+                                    self.expectation_type,
+                                    self.path_to_check)
+        return pfh_ex_method.translate_pfh_exception_to_pfh(checker.main)
 
 
 class _EmptinessChecker:
     def __init__(self,
+                 environment: InstructionEnvironmentForPostSdsStep,
                  expectation_type: ExpectationType,
                  path_to_check: FileRefResolver):
+        self.path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         self.expectation_type = expectation_type
         self.path_to_check = path_to_check
 
-    def main(self, environment: InstructionEnvironmentForPostSdsStep):
-        self._fail_if_path_does_not_exist_as_a_dir(environment)
-        self._fail_if_path_dir_is_not_empty(environment)
+    def main(self):
+        self._fail_if_path_does_not_exist_as_a_dir()
 
-    def _fail_if_path_does_not_exist_as_a_dir(self, environment: InstructionEnvironmentForPostSdsStep):
+        files_in_dir = self._files_in_dir_to_check()
+
+        if self.expectation_type is ExpectationType.POSITIVE:
+            self._fail_if_path_dir_is_not_empty(files_in_dir)
+        else:
+            self._fail_if_path_dir_is_empty(files_in_dir)
+
+    def _fail_if_path_does_not_exist_as_a_dir(self):
         expect_existing_dir = file_properties.must_exist_as(file_properties.FileType.DIRECTORY,
                                                             True)
         failure_message = file_ref_check.pre_or_post_sds_failure_message_or_none(
             file_ref_check.FileRefCheck(self.path_to_check,
                                         expect_existing_dir),
-            environment.path_resolving_environment_pre_or_post_sds)
+            self.path_resolving_env)
         if failure_message is not None:
             raise pfh_ex_method.PfhFailException(failure_message)
 
-    def _fail_if_path_dir_is_not_empty(self, environment: InstructionEnvironmentForPostSdsStep):
-        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        path_to_check = self.path_to_check.resolve_value_of_any_dependency(path_resolving_env)
+    def _fail_if_path_dir_is_not_empty(self, files_in_dir: list):
+        num_files_in_dir = len(files_in_dir)
+        if num_files_in_dir != 0:
+            raise pfh_ex_method.PfhFailException(self._error_message(num_files_in_dir, files_in_dir))
+
+    def _files_in_dir_to_check(self):
+        path_to_check = self.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
         files_in_dir = list(path_to_check.iterdir())
+        return files_in_dir
+
+    def _fail_if_path_dir_is_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
-        if self.expectation_type is ExpectationType.POSITIVE:
-            if num_files_in_dir != 0:
-                raise pfh_ex_method.PfhFailException(self._error_message(num_files_in_dir, files_in_dir))
-        else:
-            if num_files_in_dir == 0:
-                raise pfh_ex_method.PfhFailException('The directory is empty')
+        if num_files_in_dir == 0:
+            raise pfh_ex_method.PfhFailException('The directory is empty')
 
     def _error_message(self, num_files_in_dir: int, actual_files_in_dir: list) -> str:
         first_line = 'Directory is not empty. It contains {} files.'.format(str(num_files_in_dir))
