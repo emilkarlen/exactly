@@ -29,6 +29,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
         unittest.makeSuite(TestEmpty),
+        unittest.makeSuite(TestDifferentSourceVariantsForEmpty),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('the-instruction-name')),
     ])
 
@@ -105,6 +106,38 @@ class TestParseInvalidSyntax(TestCaseBase):
                         parser.parse(source)
 
 
+class TestDifferentSourceVariantsForEmpty(TestCaseBaseForParser):
+    def test_file_is_directory_that_is_empty(self):
+        empty_directory = empty_dir('name-of-empty-dir')
+
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(empty_directory.name)
+
+        contents_of_relativity_option_root = DirContents([empty_directory])
+
+        self.checker.check_parsing_with_different_source_variants(
+            instruction_argument_constructor,
+            default_relativity=RelOptionType.REL_CWD,
+            non_default_relativity=RelOptionType.REL_TMP,
+            main_result_for_positive_expectation=PassOrFail.PASS,
+            contents_of_relativity_option_root=contents_of_relativity_option_root,
+        )
+
+    def test_file_is_a_directory_that_is_not_empty(self):
+        non_empty_directory = Dir('name-of-non-empty-dir', [empty_file('file-in-dir')])
+
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(non_empty_directory.name)
+
+        contents_of_relativity_option_root = DirContents([non_empty_directory])
+
+        self.checker.check_parsing_with_different_source_variants(
+            instruction_argument_constructor,
+            default_relativity=RelOptionType.REL_CWD,
+            non_default_relativity=RelOptionType.REL_TMP,
+            main_result_for_positive_expectation=PassOrFail.FAIL,
+            contents_of_relativity_option_root=contents_of_relativity_option_root,
+        )
+
+
 class TestEmpty(TestCaseBaseForParser):
     def test_fail_WHEN_file_does_not_exist(self):
         instruction_argument_constructor = argument_constructor_for_emptiness_check('name-of-non-existing-file')
@@ -132,7 +165,18 @@ class TestEmpty(TestCaseBaseForParser):
             asrt_pfh.is_fail(),
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
-    def test_file_is_an_directory_BUT_is_not_empty(self):
+    def test_file_is_directory_that_is_empty(self):
+        name_of_empty_directory = 'name-of-empty_directory'
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_empty_directory)
+
+        contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory)])
+
+        self.checker.check_rel_opt_variants_and_expectation_type_variants(
+            instruction_argument_constructor,
+            PassOrFail.PASS,
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
+
+    def test_file_is_a_directory_that_is_not_empty(self):
         name_of_directory = 'name-of-empty_directory'
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_directory)
 
@@ -143,17 +187,6 @@ class TestEmpty(TestCaseBaseForParser):
         self.checker.check_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
             PassOrFail.FAIL,
-            contents_of_relativity_option_root=contents_of_relativity_option_root)
-
-    def test_file_is_an_empty_directory(self):
-        name_of_empty_directory = 'name-of-empty_directory'
-        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_empty_directory)
-
-        contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory)])
-
-        self.checker.check_rel_opt_variants_and_expectation_type_variants(
-            instruction_argument_constructor,
-            PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
     def test_file_is_a_symbolic_link_to_an_empty_directory(self):
