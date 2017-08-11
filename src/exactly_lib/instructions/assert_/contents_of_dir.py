@@ -66,7 +66,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        negation = negation_of_assertion.syntax_element_description()
+        negation = negation_of_assertion.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
 
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      path_syntax.PATH_ARGUMENT)
@@ -237,3 +237,5 @@ Tests that {checked_file} is an empty directory.
 """
 
 _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The directory who's contents is checked."
+
+_ADDITIONAL_TEXT_OF_NEGATION_SED = ' (Except for the test of the existence of the checked directory.)'
