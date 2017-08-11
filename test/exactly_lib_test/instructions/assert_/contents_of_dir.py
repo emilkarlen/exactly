@@ -30,6 +30,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseInvalidSyntax),
         unittest.makeSuite(TestEmpty),
         unittest.makeSuite(TestDifferentSourceVariantsForEmpty),
+        unittest.makeSuite(TestEmptyWithFileSelector),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('the-instruction-name')),
     ])
 
@@ -77,6 +78,11 @@ class TestParseInvalidSyntax(TestCaseBase):
             'invalid option before file argument',
             '{invalid_option} file-name'.format(
                 invalid_option=long_option_syntax('invalidOption'))
+        ),
+        NameAndValue(
+            'missing argument for option ' + sut.NAME_SELECTOR_OPTION.name.long,
+            'file-name {name_option}'.format(
+                name_option=long_option_syntax(sut.NAME_SELECTOR_OPTION.name.long))
         ),
     ]
 
@@ -134,6 +140,24 @@ class TestDifferentSourceVariantsForEmpty(TestCaseBaseForParser):
             default_relativity=RelOptionType.REL_CWD,
             non_default_relativity=RelOptionType.REL_TMP,
             main_result_for_positive_expectation=PassOrFail.FAIL,
+            contents_of_relativity_option_root=contents_of_relativity_option_root,
+        )
+
+    def test_file_is_directory_with_files_but_none_that_matches_name_pattern(self):
+        name_of_directory = 'name-of-directory'
+        pattern = 'a*'
+        existing_file = empty_file('b')
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_directory,
+                                                                                    name_option_pattern=pattern)
+
+        contents_of_relativity_option_root = DirContents([Dir(name_of_directory,
+                                                              [existing_file])])
+
+        self.checker.check_parsing_with_different_source_variants(
+            instruction_argument_constructor,
+            default_relativity=RelOptionType.REL_CWD,
+            non_default_relativity=RelOptionType.REL_TMP,
+            main_result_for_positive_expectation=PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root,
         )
 
@@ -205,6 +229,41 @@ class TestEmpty(TestCaseBaseForParser):
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
 
+class TestEmptyWithFileSelector(TestCaseBaseForParser):
+    def test_file_is_directory_that_contain_files_but_non_matching_given_name_pattern(self):
+        name_of_directory = 'name-of-directory'
+        pattern = 'a*'
+        existing_file = empty_file('b')
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_directory,
+                                                                                    name_option_pattern=pattern)
+
+        contents_of_relativity_option_root = DirContents([Dir(name_of_directory,
+                                                              [existing_file])])
+
+        self.checker.check_rel_opt_variants_and_expectation_type_variants(
+            instruction_argument_constructor,
+            PassOrFail.PASS,
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
+
+    def test_file_is_directory_that_contain_files_with_names_that_matches_given_name_pattern(self):
+        name_of_directory = 'name-of-directory'
+        pattern = 'a*'
+        existing_file_1 = empty_file('a1')
+        existing_file_2 = empty_file('a2')
+
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_directory,
+                                                                                    name_option_pattern=pattern)
+
+        contents_of_relativity_option_root = DirContents([Dir(name_of_directory,
+                                                              [existing_file_1,
+                                                               existing_file_2])])
+
+        self.checker.check_rel_opt_variants_and_expectation_type_variants(
+            instruction_argument_constructor,
+            PassOrFail.FAIL,
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
+
+
 def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfiguration,
                                               file_name: str) -> str:
     return '{relativity_option} {file_name} {emptiness_assertion_argument}'.format(
@@ -213,11 +272,16 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
         emptiness_assertion_argument=EMPTINESS_CHECK_ARGUMENT)
 
 
-def argument_constructor_for_emptiness_check(file_name: str) -> TheInstructionArgumentsVariantConstructor:
+def argument_constructor_for_emptiness_check(file_name: str,
+                                             name_option_pattern: str = '') -> TheInstructionArgumentsVariantConstructor:
+    name_option_str = ''
+    if name_option_pattern:
+        name_option_str = long_option_syntax(sut.NAME_SELECTOR_OPTION.name.long) + ' ' + name_option_pattern
     return TheInstructionArgumentsVariantConstructor(
-        '<rel_opt> {file_name} {empty}'.format(
+        '<rel_opt> {file_name} {name_option} {empty}'.format(
             file_name=file_name,
             empty=EMPTINESS_CHECK_ARGUMENT,
+            name_option=name_option_str
         )
     )
 

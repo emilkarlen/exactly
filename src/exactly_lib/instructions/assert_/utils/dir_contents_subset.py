@@ -1,7 +1,11 @@
 """Functionality for accessing a subset of the files in a directory."""
 import pathlib
 
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
+from exactly_lib.util.cli_syntax.elements import argument as a
+
+NAME_SELECTOR_OPTION = a.option(long_name='name',
+                                argument='PATTERN')
 
 
 class DirContentsSubset:
@@ -31,5 +35,20 @@ class EveryFileInDir(DirContentsSubset):
         return []
 
 
-def parse(token_stream: TokenStream) -> DirContentsSubset:
+class NameMatches(DirContentsSubset):
+    def __init__(self, glob_pattern: str):
+        self.glob_pattern = glob_pattern
+
+    def files(self, directory: pathlib.Path) -> iter:
+        return directory.glob(self.glob_pattern)
+
+    @property
+    def restriction_descriptions(self) -> list:
+        return ['name matches glob pattern ' + self.glob_pattern]
+
+
+def parse(parser: TokenParser) -> DirContentsSubset:
+    glob_pattern = parser.consume_optional_option_with_mandatory_argument(NAME_SELECTOR_OPTION)
+    if glob_pattern is not None:
+        return NameMatches(glob_pattern.string)
     return EveryFileInDir()
