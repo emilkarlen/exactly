@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
+from exactly_lib.instructions.assert_.utils import dir_contents_subset
 from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
@@ -115,45 +116,55 @@ class Parser(InstructionParserThatConsumesCurrentLine):
                                   self.format_map)
         expectation_type = tokens.consume_optional_negation_operator()
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
+        file_selection = dir_contents_subset.parse(tokens.token_stream)
         tokens.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(EMPTINESS_CHECK_ARGUMENT)
         tokens.report_superfluous_arguments_if_not_at_eol()
-        return _Instruction(expectation_type, path_to_check)
+        settings = _Settings(expectation_type,
+                             path_to_check,
+                             file_selection)
+        return _Instruction(settings)
+
+
+class _Settings:
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 path_to_check: FileRefResolver,
+                 file_selection: dir_contents_subset.DirContentsSubset):
+        self.expectation_type = expectation_type
+        self.path_to_check = path_to_check
+        self.file_selection = file_selection
 
 
 class _Instruction(AssertPhaseInstruction):
     def __init__(self,
-                 expectation_type: ExpectationType,
-                 path_to_check: FileRefResolver):
-        self.expectation_type = expectation_type
-        self.path_to_check = path_to_check
+
+                 settings: _Settings):
+        self.settings = settings
 
     def symbol_usages(self) -> list:
-        return self.path_to_check.references
+        return self.settings.path_to_check.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         checker = _EmptinessChecker(environment,
-                                    self.expectation_type,
-                                    self.path_to_check)
+                                    self.settings)
         return pfh_ex_method.translate_pfh_exception_to_pfh(checker.main)
 
 
 class _EmptinessChecker:
     def __init__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 expectation_type: ExpectationType,
-                 path_to_check: FileRefResolver):
+                 settings: _Settings):
         self.path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        self.expectation_type = expectation_type
-        self.path_to_check = path_to_check
+        self.settings = settings
 
     def main(self):
         self._fail_if_path_does_not_exist_as_a_dir()
 
         files_in_dir = self._files_in_dir_to_check()
 
-        if self.expectation_type is ExpectationType.POSITIVE:
+        if self.settings.expectation_type is ExpectationType.POSITIVE:
             self._fail_if_path_dir_is_not_empty(files_in_dir)
         else:
             self._fail_if_path_dir_is_empty(files_in_dir)
@@ -162,7 +173,7 @@ class _EmptinessChecker:
         expect_existing_dir = file_properties.must_exist_as(file_properties.FileType.DIRECTORY,
                                                             True)
         failure_message = file_ref_check.pre_or_post_sds_failure_message_or_none(
-            file_ref_check.FileRefCheck(self.path_to_check,
+            file_ref_check.FileRefCheck(self.settings.path_to_check,
                                         expect_existing_dir),
             self.path_resolving_env)
         if failure_message is not None:
@@ -173,11 +184,10 @@ class _EmptinessChecker:
         if num_files_in_dir != 0:
             raise pfh_ex_method.PfhFailException(self._error_message(num_files_in_dir, files_in_dir))
 
-    def _files_in_dir_to_check(self):
-        path_to_check = self.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
+    def _files_in_dir_to_check(self) -> list:
+        path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        files_in_dir = list(path_to_check.iterdir())
-        return files_in_dir
+        return list(self.settings.file_selection.files(path_to_check))
 
     def _fail_if_path_dir_is_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
