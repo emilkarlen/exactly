@@ -9,7 +9,9 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
+from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option
 from exactly_lib.util.cli_syntax.option_parsing import matches
+from exactly_lib.util.parse.token import Token
 
 
 class TokenParser:
@@ -47,12 +49,14 @@ class TokenParser:
         if len(remaining) != 0:
             self._error('Superfluous arguments: `{}`'.format(remaining))
 
-    def consume_mandatory_string_argument(self, error_message_format_string: str) -> str:
+    def consume_mandatory_token(self, error_message_format_string: str) -> Token:
         if self._token_stream.is_null:
             self._error(error_message_format_string)
-        ret_val = self.token_stream.head.string
-        self.token_stream.consume()
-        return ret_val
+        return self.token_stream.consume()
+
+    def consume_mandatory_string_argument(self, error_message_format_string: str) -> str:
+        token = self.consume_mandatory_token(error_message_format_string)
+        return token.string
 
     def consume_optional_negation_operator(self) -> ExpectationType:
         is_negated = self.consume_and_return_true_if_first_argument_is_unquoted_and_equals(NEGATION_ARGUMENT_STR)
@@ -109,6 +113,24 @@ class TokenParser:
                 self.token_stream.consume()
                 return key_handler(key)
         return return_value_if_no_match
+
+    def head_matches(self, option_name: OptionName) -> bool:
+        if self.token_stream.is_null:
+            return False
+        return matches(option_name, self.token_stream.head.source_string)
+
+    def consume_optional_option_with_mandatory_argument(self, option_with_arg: Option) -> Token:
+        """
+
+        :param option_with_arg: An option that has an argument
+        :return: None if head does not match the option. Otherwise the option argument
+        """
+        if not self.head_matches(option_with_arg.name):
+            return None
+        actual_option_name = self.token_stream.consume()
+        return self.consume_mandatory_token('Missing {arg} argument for {option}'.format(
+            arg=option_with_arg.argument,
+            option=actual_option_name.string))
 
     @property
     def token_stream(self) -> TokenStream:

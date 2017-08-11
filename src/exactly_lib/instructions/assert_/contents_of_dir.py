@@ -4,7 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.argument_rendering import path_syntax, cl_syntax
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.assert_.utils import dir_contents_subset
 from exactly_lib.instructions.assert_.utils import negation_of_assertion
@@ -36,6 +36,8 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
+NAME_SELECTOR_OPTION = dir_contents_subset.NAME_SELECTOR_OPTION
+
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
@@ -55,11 +57,16 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
+        negation_argument = negation_of_assertion.optional_negation_argument_usage()
+        name_selection_arg = a.Single(a.Multiplicity.OPTIONAL,
+                                      NAME_SELECTOR_OPTION)
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 
-        negation_argument = negation_of_assertion.optional_negation_argument_usage()
-        arguments = [negation_argument, self.actual_file, mandatory_empty_arg]
+        arguments = [negation_argument,
+                     self.actual_file,
+                     name_selection_arg,
+                     mandatory_empty_arg]
 
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
@@ -69,6 +76,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         negation = negation_of_assertion.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
 
+        name_selector = cl_syntax.cli_argument_syntax_element_description(
+            NAME_SELECTOR_OPTION,
+            self._paragraphs(NAME_SELECTOR_SED_DESCRIPTION))
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      path_syntax.PATH_ARGUMENT)
         actual_file_arg_sed = SyntaxElementDescription(
@@ -91,6 +101,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             self.relativity_of_actual_arg)
 
         return [negation,
+                name_selector,
                 actual_file_arg_sed,
                 relativity_of_actual_file_sed,
                 ]
@@ -116,7 +127,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
                                   self.format_map)
         expectation_type = tokens.consume_optional_negation_operator()
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
-        file_selection = dir_contents_subset.parse(tokens.token_stream)
+        file_selection = dir_contents_subset.parse(tokens)
         tokens.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(EMPTINESS_CHECK_ARGUMENT)
         tokens.report_superfluous_arguments_if_not_at_eol()
         settings = _Settings(expectation_type,
@@ -249,3 +260,7 @@ Tests that {checked_file} is an empty directory.
 _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The directory who's contents is checked."
 
 _ADDITIONAL_TEXT_OF_NEGATION_SED = ' (Except for the test of the existence of the checked directory.)'
+
+NAME_SELECTOR_SED_DESCRIPTION = """\
+Test only files matching the given Unix shell glob pattern (instead of all files).
+"""
