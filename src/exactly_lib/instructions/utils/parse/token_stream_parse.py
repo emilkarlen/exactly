@@ -1,4 +1,7 @@
+from contextlib import contextmanager
+
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref
@@ -37,3 +40,27 @@ def new_token_parser(source: str,
     """
     return TokenParser(new_token_stream(source),
                        error_message_format_map)
+
+
+@contextmanager
+def from_parse_source(parse_source: ParseSource):
+    """
+    Gives a :class:`TokenParser` backed by the given :class:`ParseSource`.
+
+    The source of the :class:`TokenParser` is the remaining sources of the :class:`ParseSource`
+    """
+    tp = new_token_parser(parse_source.remaining_source)
+    yield tp
+    parse_source.consume(tp.token_stream.position)
+
+
+@contextmanager
+def from_remaining_part_of_current_line_of_parse_source(parse_source: ParseSource):
+    """
+    Gives a :class:`TokenParser` backed by the given :class:`ParseSource`.
+
+    The source of the :class:`TokenParser` is the remaining part of the current line of the :class:`ParseSource`
+    """
+    tp = new_token_parser(parse_source.remaining_part_of_current_line)
+    yield tp
+    parse_source.consume(tp.token_stream.position)
