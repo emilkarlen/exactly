@@ -120,13 +120,17 @@ def sym_link(file_name: str,
 class DirContents:
     def __init__(self,
                  file_system_element_contents: list):
-        self.file_system_element_contents = file_system_element_contents
+        self._file_system_element_contents = file_system_element_contents
 
     def write_to(self,
                  dir_path: pathlib.Path):
-        for file_element in self.file_system_element_contents:
+        for file_element in self._file_system_element_contents:
             assert isinstance(file_element, FileSystemElement)
             file_element.write_to(dir_path)
+
+    @property
+    def file_system_elements(self) -> list:
+        return self._file_system_element_contents
 
 
 def empty_dir_contents() -> DirContents:

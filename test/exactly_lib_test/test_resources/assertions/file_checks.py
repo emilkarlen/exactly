@@ -66,7 +66,7 @@ class FileChecker:
     def assert_dir_contents_matches_exactly(self,
                                             dir_path: pathlib.Path,
                                             expected: file_structure.DirContents):
-        return self.assert_dir_matches_exactly(dir_path, expected.file_system_element_contents)
+        return self.assert_dir_matches_exactly(dir_path, expected.file_system_elements)
 
     def assert_dir_matches_exactly(self,
                                    dir_path: pathlib.Path,

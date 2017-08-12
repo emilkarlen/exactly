@@ -94,4 +94,4 @@ class _DirContainsAtLeast(PathAssertionBase):
                message_builder: asrt.MessageBuilder):
         checker = self._checker_for_path(put, dir_path, message_builder)
         checker.assert_dir_contains_at_least(dir_path,
-                                             self.expected_contents.file_system_element_contents)
+                                             self.expected_contents.file_system_elements)
