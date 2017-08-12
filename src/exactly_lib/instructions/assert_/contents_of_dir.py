@@ -6,7 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax, cl_syntax
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
-from exactly_lib.instructions.assert_.utils import dir_contents_subset
+from exactly_lib.instructions.assert_.utils import dir_contents_selector
 from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
@@ -36,7 +36,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
-NAME_SELECTOR_OPTION = dir_contents_subset.NAME_SELECTOR_OPTION
+NAME_SELECTOR_OPTION = dir_contents_selector.NAME_SELECTOR_OPTION
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -127,7 +127,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
                                   self.format_map)
         expectation_type = tokens.consume_optional_negation_operator()
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
-        file_selection = dir_contents_subset.parse(tokens)
+        file_selection = dir_contents_selector.parse(tokens)
         tokens.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(EMPTINESS_CHECK_ARGUMENT)
         tokens.report_superfluous_arguments_if_not_at_eol()
         settings = _Settings(expectation_type,
@@ -140,7 +140,7 @@ class _Settings:
     def __init__(self,
                  expectation_type: ExpectationType,
                  path_to_check: FileRefResolver,
-                 file_selection: dir_contents_subset.DirContentsSubset):
+                 file_selection: dir_contents_selector.DirContentsSelector):
         self.expectation_type = expectation_type
         self.path_to_check = path_to_check
         self.file_selection = file_selection
