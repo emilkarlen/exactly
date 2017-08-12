@@ -8,7 +8,7 @@ NAME_SELECTOR_OPTION = a.option(long_name='name',
                                 argument='PATTERN')
 
 
-class DirContentsSubset:
+class DirContentsSelector:
     def files(self, directory: pathlib.Path) -> iter:
         """
         :param directory: A path that is an existing directory
@@ -26,7 +26,7 @@ class DirContentsSubset:
         raise NotImplementedError('abstract method')
 
 
-class EveryFileInDir(DirContentsSubset):
+class EveryFileInDir(DirContentsSelector):
     def files(self, directory: pathlib.Path) -> iter:
         return directory.iterdir()
 
@@ -35,7 +35,7 @@ class EveryFileInDir(DirContentsSubset):
         return []
 
 
-class NameMatches(DirContentsSubset):
+class NameMatches(DirContentsSelector):
     def __init__(self, glob_pattern: str):
         self.glob_pattern = glob_pattern
 
@@ -47,7 +47,7 @@ class NameMatches(DirContentsSubset):
         return ['name matches glob pattern ' + self.glob_pattern]
 
 
-def parse(parser: TokenParser) -> DirContentsSubset:
+def parse(parser: TokenParser) -> DirContentsSelector:
     glob_pattern = parser.consume_optional_option_with_mandatory_argument(NAME_SELECTOR_OPTION)
     if glob_pattern is not None:
         return NameMatches(glob_pattern.string)
