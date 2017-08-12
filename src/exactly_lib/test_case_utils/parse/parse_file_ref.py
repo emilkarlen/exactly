@@ -7,6 +7,8 @@ from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.parser_combinations import \
+    token_stream_from_remaining_part_of_current_line_of_parse_source
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
@@ -23,7 +25,7 @@ from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResol
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
-from exactly_lib.test_case_utils.parse.misc_utils import ensure_is_not_option_argument, new_token_stream, \
+from exactly_lib.test_case_utils.parse.misc_utils import ensure_is_not_option_argument, \
     std_error_message_text_for_token_syntax_error
 from exactly_lib.test_case_utils.parse.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver_from_token, \
@@ -86,11 +88,8 @@ def parse_file_ref_from_parse_source(source: ParseSource,
     :param source: Has a current line
     :raises SingleInstructionInvalidArgumentException: If cannot parse a FileRef
     """
-
-    ts = new_token_stream(source.remaining_part_of_current_line)
-    ret_val = parse_file_ref(ts, conf)
-    source.consume(ts.position)
-    return ret_val
+    with token_stream_from_remaining_part_of_current_line_of_parse_source(source) as ts:
+        return parse_file_ref(ts, conf)
 
 
 def parse_file_ref(tokens: TokenStream,
