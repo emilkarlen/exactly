@@ -73,7 +73,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {
             'PATH': _PATH_ARGUMENT.name,
             'TYPE': _TYPE_ARGUMENT_STR,
-            'SYM_LNK': file_properties.type_name[file_properties.FileType.SYMLINK],
+            'SYM_LNK': file_properties.TYPE_INFO[file_properties.FileType.SYMLINK],
             'NEGATION_OPERATOR': NEGATION_OPERATOR,
         })
 
@@ -131,12 +131,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             if file_type is file_properties.FileType.SYMLINK:
                 text = 'Tests if {PATH} is a {SYM_LNK} (link target may or may not exist).'
             extra = {
-                'file_type': file_properties.type_name[file_type],
+                'file_type': file_properties.TYPE_INFO[file_type],
             }
             return self._paragraphs(text, extra)
 
         sort_value__list_items = [
-            (file_properties.type_name[file_type],
+            (file_properties.TYPE_INFO[file_type],
              lists.HeaderContentListItem(self._text(render_argument(a.Option(option_name))),
                                          type_description(file_type)))
             for file_type, option_name in FILE_TYPE_OPTIONS]
