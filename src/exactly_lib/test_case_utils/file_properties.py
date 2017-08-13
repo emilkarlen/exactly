@@ -2,6 +2,7 @@ import enum
 import os
 import pathlib
 import stat
+import types
 
 
 class FileType(enum.Enum):
@@ -10,22 +11,35 @@ class FileType(enum.Enum):
     DIRECTORY = 2
 
 
-type_name = {
-    FileType.REGULAR: 'regular file',
-    FileType.DIRECTORY: 'directory',
-    FileType.SYMLINK: 'symbolic link',
+class FileTypeInfo:
+    def __init__(self,
+                 description: str,
+                 stat_mode_predicate: types.FunctionType,
+                 pathlib_path_predicate: types.FunctionType):
+        self.pathlib_path_predicate = pathlib_path_predicate
+        self.stat_mode_predicate = stat_mode_predicate
+        self.description = description
+
+
+TYPE_INFO = {
+    FileType.REGULAR: FileTypeInfo('regular file', stat.S_ISREG, pathlib.Path.is_file),
+    FileType.DIRECTORY: FileTypeInfo('directory', stat.S_ISDIR, pathlib.Path.is_dir),
+    FileType.SYMLINK: FileTypeInfo('symbolic link', stat.S_ISLNK, pathlib.Path.is_symlink),
+}
+
+SYNTAX_TOKEN_2_FILE_TYPE = {
+    'file': FileType.REGULAR,
+    'dir': FileType.DIRECTORY,
+    'symlink': FileType.SYMLINK,
 }
 
 
 def stat_results_is_of(file_type: FileType,
                        stat_result) -> bool:
-    if file_type is FileType.REGULAR:
-        return stat.S_ISREG(stat_result.st_mode)
-    elif file_type is FileType.DIRECTORY:
-        return stat.S_ISDIR(stat_result.st_mode)
-    elif file_type is FileType.SYMLINK:
-        return stat.S_ISLNK(stat_result.st_mode)
-    raise ValueError('Unknown {}: {}'.format(FileType, file_type))
+    try:
+        return TYPE_INFO[file_type].stat_mode_predicate(stat_result.st_mode)
+    except KeyError:
+        raise ValueError('Unknown {}: {}'.format(FileType, file_type))
 
 
 class Properties(tuple):
@@ -141,7 +155,7 @@ def render_failure(properties_with_neg: PropertiesWithNegation.properties,
     else:
         return os.linesep.join(['File is {negation}a {file_type} ({sym_links}):'.format(
             negation=negation,
-            file_type=type_name[properties.type_of_existing_file],
+            file_type=TYPE_INFO[properties.type_of_existing_file],
             sym_links=sym_links),
             str(file_path)])
 
