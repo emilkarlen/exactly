@@ -1,0 +1,12 @@
+[setup]
+
+def string s = not-an-integer
+
+[assert]
+
+exitcode = @[s]@
+
+
+[act]
+
+$ exit 0
