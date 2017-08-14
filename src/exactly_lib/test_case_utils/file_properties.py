@@ -13,25 +13,23 @@ class FileType(enum.Enum):
 
 class FileTypeInfo:
     def __init__(self,
+                 type_argument: str,
                  description: str,
                  stat_mode_predicate: types.FunctionType,
                  pathlib_path_predicate: types.FunctionType):
+        self.type_argument = type_argument
         self.pathlib_path_predicate = pathlib_path_predicate
         self.stat_mode_predicate = stat_mode_predicate
         self.description = description
 
 
 TYPE_INFO = {
-    FileType.REGULAR: FileTypeInfo('regular file', stat.S_ISREG, pathlib.Path.is_file),
-    FileType.DIRECTORY: FileTypeInfo('directory', stat.S_ISDIR, pathlib.Path.is_dir),
-    FileType.SYMLINK: FileTypeInfo('symbolic link', stat.S_ISLNK, pathlib.Path.is_symlink),
+    FileType.REGULAR: FileTypeInfo('file', 'regular file', stat.S_ISREG, pathlib.Path.is_file),
+    FileType.DIRECTORY: FileTypeInfo('dir', 'directory', stat.S_ISDIR, pathlib.Path.is_dir),
+    FileType.SYMLINK: FileTypeInfo('symlink', 'symbolic link', stat.S_ISLNK, pathlib.Path.is_symlink),
 }
 
-SYNTAX_TOKEN_2_FILE_TYPE = {
-    'file': FileType.REGULAR,
-    'dir': FileType.DIRECTORY,
-    'symlink': FileType.SYMLINK,
-}
+SYNTAX_TOKEN_2_FILE_TYPE = dict([(info.type_argument, ft) for ft, info in TYPE_INFO.items()])
 
 
 def stat_results_is_of(file_type: FileType,

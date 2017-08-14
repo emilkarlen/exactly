@@ -1,3 +1,6 @@
+from exactly_lib.util.cli_syntax.elements.argument import OptionName
+
+
 def short_option_syntax(character: str) -> str:
     """
     Syntax for a short option.
@@ -12,3 +15,15 @@ def long_option_syntax(name: str) -> str:
     :param name: The option name without any "option" syntax prefix ("--).
     """
     return '--' + name
+
+
+def option_syntax(option_name: OptionName) -> str:
+    """
+    Renders an :class:`OptionName`
+
+    The long name is used if it exists.
+    """
+    if option_name.long:
+        return long_option_syntax(option_name.long)
+    else:
+        return short_option_syntax(option_name.short)
