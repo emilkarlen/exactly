@@ -20,6 +20,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 def default_relativity_for_rel_opt_type(path_arg_name: str,
@@ -44,10 +45,9 @@ def relativity_syntax_element_description(
         path_that_may_be_relative: a.Named,
         rel_options_conf: RelOptionsConfiguration,
         relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
-
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     return SyntaxElementDescription(relativity_argument.name,
-                                    [renderer.list_for(rel_options_conf)])
+                                    [transform_list_to_table(renderer.list_for(rel_options_conf))])
 
 
 def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
