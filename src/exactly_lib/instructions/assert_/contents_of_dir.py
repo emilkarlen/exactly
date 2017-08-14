@@ -4,10 +4,10 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts.argument_rendering import path_syntax, cl_syntax
+from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
-from exactly_lib.instructions.assert_.utils import dir_contents_selector
 from exactly_lib.instructions.assert_.utils import negation_of_assertion
+from exactly_lib.instructions.assert_.utils import parse_dir_contents_selector
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
     EMPTY_ARGUMENT_CONSTANT
@@ -26,6 +26,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
+from exactly_lib.util import dir_contents_selection
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -36,7 +37,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
-NAME_SELECTOR_OPTION = dir_contents_selector.NAME_SELECTOR_OPTION
+SELECTION_OPTION = parse_dir_contents_selector.SELECTION_OPTION
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -59,13 +60,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def invokation_variants(self) -> list:
         negation_argument = negation_of_assertion.optional_negation_argument_usage()
         name_selection_arg = a.Single(a.Multiplicity.OPTIONAL,
-                                      NAME_SELECTOR_OPTION)
+                                      parse_dir_contents_selector.SELECTION)
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 
-        arguments = [negation_argument,
-                     self.actual_file,
+        arguments = [self.actual_file,
                      name_selection_arg,
+                     negation_argument,
                      mandatory_empty_arg]
 
         return [
@@ -76,9 +77,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         negation = negation_of_assertion.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
 
-        name_selector = cl_syntax.cli_argument_syntax_element_description(
-            NAME_SELECTOR_OPTION,
-            self._paragraphs(NAME_SELECTOR_SED_DESCRIPTION))
+        selection = parse_dir_contents_selector.selection_syntax_element_description()
+
+        selector = parse_dir_contents_selector.selector_syntax_element_description()
+
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      path_syntax.PATH_ARGUMENT)
         actual_file_arg_sed = SyntaxElementDescription(
@@ -101,7 +103,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             self.relativity_of_actual_arg)
 
         return [negation,
-                name_selector,
+                selection,
+                selector,
                 actual_file_arg_sed,
                 relativity_of_actual_file_sed,
                 ]
@@ -127,8 +130,8 @@ class Parser(InstructionParserThatConsumesCurrentLine):
                                   self.format_map)
         expectation_type = tokens.consume_optional_negation_operator()
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
-        file_selection = dir_contents_selector.parse(tokens)
-        tokens.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(EMPTINESS_CHECK_ARGUMENT)
+        file_selection = parse_dir_contents_selector.parse_optional_selection_option(tokens)
+        tokens.consume_mandatory_constant_string_that_must_be_unquoted_and_equal([EMPTINESS_CHECK_ARGUMENT])
         tokens.report_superfluous_arguments_if_not_at_eol()
         settings = _Settings(expectation_type,
                              path_to_check,
@@ -140,10 +143,10 @@ class _Settings:
     def __init__(self,
                  expectation_type: ExpectationType,
                  path_to_check: FileRefResolver,
-                 file_selection: dir_contents_selector.DirContentsSelector):
+                 file_selector: dir_contents_selection.Selectors):
         self.expectation_type = expectation_type
         self.path_to_check = path_to_check
-        self.file_selection = file_selection
+        self.file_selector = file_selector
 
 
 class _Instruction(AssertPhaseInstruction):
@@ -198,7 +201,8 @@ class _EmptinessChecker:
     def _files_in_dir_to_check(self) -> list:
         path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        return list(self.settings.file_selection.files(path_to_check))
+        return list(dir_contents_selection.get_selection(path_to_check,
+                                                         self.settings.file_selector))
 
     def _fail_if_path_dir_is_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
@@ -219,10 +223,7 @@ class _EmptinessChecker:
         if len(actual_files_in_dir) < 50:
             actual_files_in_dir.sort()
         num_files_to_display = 5
-        ret_val = [
-            actual_file.name
-            for actual_file in actual_files_in_dir[:num_files_to_display]
-        ]
+        ret_val = actual_files_in_dir[:num_files_to_display]
         if len(actual_files_in_dir) > num_files_to_display:
             ret_val.append('...')
         return ret_val
@@ -254,13 +255,9 @@ Symbolic links are followed.
 """
 
 _CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\
-Tests that {checked_file} is an empty directory.
+Tests that {checked_file} is an empty directory, or that the set of selected files is empty.
 """
 
 _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The directory who's contents is checked."
 
 _ADDITIONAL_TEXT_OF_NEGATION_SED = ' (Except for the test of the existence of the checked directory.)'
-
-NAME_SELECTOR_SED_DESCRIPTION = """\
-Test only files matching the given Unix shell glob pattern (instead of all files).
-"""

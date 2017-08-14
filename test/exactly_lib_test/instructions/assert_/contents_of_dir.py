@@ -1,17 +1,21 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
+from exactly_lib.instructions.assert_.utils import parse_dir_contents_selector
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with_not_and_rel_opts import \
     InstructionChecker, InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
     ExpectationTypeConfig, PassOrFail
+from exactly_lib_test.instructions.assert_.utils import parse_dir_contents_selector as parse_test
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
@@ -80,9 +84,11 @@ class TestParseInvalidSyntax(TestCaseBase):
                 invalid_option=long_option_syntax('invalidOption'))
         ),
         NameAndValue(
-            'missing argument for option ' + sut.NAME_SELECTOR_OPTION.name.long,
-            'file-name {name_option}'.format(
-                name_option=long_option_syntax(sut.NAME_SELECTOR_OPTION.name.long))
+            'missing argument for selector option ' + sut.SELECTION_OPTION.name.long,
+            'file-name {selection_option} {empty}'.format(
+                selection_option=option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name),
+                empty=sut.EMPTINESS_CHECK_ARGUMENT
+            )
         ),
     ]
 
@@ -245,6 +251,24 @@ class TestEmptyWithFileSelector(TestCaseBaseForParser):
             PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
+    def test_file_is_directory_that_contain_files_but_non_matching_given_type_pattern(self):
+        type_selector = FileType.DIRECTORY
+
+        existing_file = empty_file('a-regular-file')
+
+        name_of_directory = 'name-of-directory'
+
+        instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_directory,
+                                                                                    type_selection=type_selector)
+
+        contents_of_relativity_option_root = DirContents([Dir(name_of_directory,
+                                                              [existing_file])])
+
+        self.checker.check_rel_opt_variants_and_expectation_type_variants(
+            instruction_argument_constructor,
+            PassOrFail.PASS,
+            contents_of_relativity_option_root=contents_of_relativity_option_root)
+
     def test_file_is_directory_that_contain_files_with_names_that_matches_given_name_pattern(self):
         name_of_directory = 'name-of-directory'
         pattern = 'a*'
@@ -273,15 +297,24 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
 
 
 def argument_constructor_for_emptiness_check(file_name: str,
-                                             name_option_pattern: str = '') -> TheInstructionArgumentsVariantConstructor:
-    name_option_str = ''
-    if name_option_pattern:
-        name_option_str = long_option_syntax(sut.NAME_SELECTOR_OPTION.name.long) + ' ' + name_option_pattern
+                                             name_option_pattern: str = '',
+                                             type_selection: FileType = None) -> TheInstructionArgumentsVariantConstructor:
+    selection = ''
+
+    if name_option_pattern or type_selection:
+        selection = option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name)
+        if name_option_pattern:
+            selection = selection + ' ' + parse_test.name_selector_of(name_option_pattern)
+        if type_selection:
+            if name_option_pattern:
+                selection = selection + ' ' + parse_dir_contents_selector.AND_OPERATOR
+            selection = selection + ' ' + parse_test.type_selector_of(type_selection)
+
     return TheInstructionArgumentsVariantConstructor(
-        '<rel_opt> {file_name} {name_option} {empty}'.format(
+        '<rel_opt> {file_name} {selection} {empty}'.format(
             file_name=file_name,
             empty=EMPTINESS_CHECK_ARGUMENT,
-            name_option=name_option_str
+            selection=selection
         )
     )
 
