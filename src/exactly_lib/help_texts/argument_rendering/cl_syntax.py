@@ -21,6 +21,8 @@ def arg_syntax(arg: a.Argument) -> str:
 
 
 def cli_argument_syntax_element_description(argument: a.Argument,
-                                            description_rest: list) -> SyntaxElementDescription:
+                                            description_rest: list,
+                                            invokation_variants: list = None) -> SyntaxElementDescription:
     return SyntaxElementDescription(arg_syntax(argument),
-                                    description_rest)
+                                    description_rest,
+                                    invokation_variants)

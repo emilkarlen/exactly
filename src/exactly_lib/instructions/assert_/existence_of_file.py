@@ -140,7 +140,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
              lists.HeaderContentListItem(self._text(render_argument(a.Option(option_name))),
                                          type_description(file_type)))
             for file_type, option_name in FILE_TYPE_OPTIONS]
-        sort_value__list_items.sort(key=lambda type_name__list_item: type_name__list_item[0])
+        sort_value__list_items.sort(key=lambda type_name__list_item: type_name__list_item[0].type_argument)
         list_items = [type_name__list_item[1]
                       for type_name__list_item in sort_value__list_items]
         return lists.HeaderContentList(list_items,

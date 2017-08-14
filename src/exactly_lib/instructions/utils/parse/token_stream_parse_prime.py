@@ -162,6 +162,31 @@ class TokenParserPrime:
                 return key_handler(key)
         return return_value_if_no_match
 
+    def consume_and_handle_optional_option(self,
+                                           return_value_if_no_match,
+                                           argument_parser: types.FunctionType,
+                                           option_name: OptionName,
+                                           ):
+        """
+        Looks at the current argument and checks if it is the given option,
+        and, if the option is given, and returns a value given by the given parser.
+
+        A default value is returned if the the current argument is not the given options,
+        or if there are no arguments.
+
+        :param key_and_option_name_list: [(key, `OptionName`)]
+        :param return_value_if_no_match: Value to return if next token does not match any of the given
+         `OptionName`:s.
+         :param key_handler: Gives the return value from a key corresponding to
+         the `OptionType` that matches the next token.
+        """
+        if self.token_stream.is_null:
+            return return_value_if_no_match
+        if matches(option_name, self.token_stream.head.source_string):
+            self.token_stream.consume()
+            return argument_parser(self)
+        return return_value_if_no_match
+
     def head_matches(self, option_name: OptionName) -> bool:
         if self.token_stream.is_null:
             return False
