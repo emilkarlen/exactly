@@ -3,8 +3,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
-from exactly_lib.instructions.assert_.utils.expression.comprison_structures import IntegerComparisonExecutor, \
-    IntegerComparisonOperatorAndRhs
+from exactly_lib.instructions.assert_.utils.expression import comprison_structures
+from exactly_lib.instructions.assert_.utils.expression import instruction
 from exactly_lib.instructions.assert_.utils.expression.integer_comparators import NAME_2_OPERATOR
 from exactly_lib.instructions.assert_.utils.expression.parse import parse_integer_comparison_operator_and_rhs
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import new_token_parser
@@ -13,8 +13,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parsers imp
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.result import pfh, svh
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -73,66 +71,40 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         parser = new_token_parser(rest_of_line)
-        comparison_setup = parse_integer_comparison_operator_and_rhs(parser,
-                                                                     must_be_within_byte_range)
+        cmp_op_and_rhs = parse_integer_comparison_operator_and_rhs(parser,
+                                                                   must_be_within_byte_range)
         parser.report_superfluous_arguments_if_not_at_eol()
-        return Instruction(comparison_setup)
+        cmp_setup = comprison_structures.IntegerComparisonSetup(ExitCodeResolver(),
+                                                                cmp_op_and_rhs.operator,
+                                                                cmp_op_and_rhs.integer_resolver)
+        return instruction.Instruction(cmp_setup)
 
 
-class Instruction(AssertPhaseInstruction):
-    def __init__(self,
-                 comparison_setup: IntegerComparisonOperatorAndRhs):
-        self.comparison_setup = comparison_setup
+class ExitCodeResolver(comprison_structures.ActualValueResolver):
+    def __init__(self):
+        super().__init__('exitcode')
 
-    def symbol_usages(self) -> list:
-        return self.comparison_setup.references
-
-    def validate_pre_sds(self,
-                         environment: i.InstructionEnvironmentForPostSdsStep
-                         ) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.comparison_setup.validate_pre_sds(environment)
-
-    def main(self,
-             environment: i.InstructionEnvironmentForPostSdsStep,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return return_pfh_via_exceptions.translate_pfh_exception_to_pfh(
-            self._main_that_raises_pfh_exceptions,
-            environment,
-            os_services)
-
-    def _main_that_raises_pfh_exceptions(self,
-                                         environment: i.InstructionEnvironmentForPostSdsStep,
-                                         os_services: OsServices):
-        lhs = read_exitcode(environment.sds)
-        rhs = self.comparison_setup.integer_resolver.resolve(environment)
-        executor = IntegerComparisonExecutor(
-            'exitcode',
-            lhs,
-            rhs,
-            self.comparison_setup.operator)
-        executor.execute_and_return_pfh_via_exceptions()
-
-
-def read_exitcode(sds: SandboxDirectoryStructure) -> int:
-    try:
-        f = sds.result.exitcode_file.open()
-    except IOError:
-        rel_path = sds.relative_to_sds_root(sds.result.exitcode_file)
-        raise return_pfh_via_exceptions.PfhHardErrorException(
-            'Cannot read exit code from file ' + str(rel_path))
-    try:
-        contents = f.read()
-        return int(contents)
-    except IOError:
-        raise return_pfh_via_exceptions.PfhHardErrorException(
-            'Failed to read contents from %s' % str(sds.result.exitcode_file))
-    except ValueError:
-        msg = 'The contents of the file for Exit Code ("{}") is not an integer: "{}"'.format(
-            str(sds.result.exitcode_file),
-            contents)
-        raise return_pfh_via_exceptions.PfhHardErrorException(msg)
-    finally:
-        f.close()
+    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep, os_services: OsServices):
+        sds = environment.sds
+        try:
+            f = sds.result.exitcode_file.open()
+        except IOError:
+            rel_path = sds.relative_to_sds_root(sds.result.exitcode_file)
+            raise return_pfh_via_exceptions.PfhHardErrorException(
+                'Cannot read exit code from file ' + str(rel_path))
+        try:
+            contents = f.read()
+            return int(contents)
+        except IOError:
+            raise return_pfh_via_exceptions.PfhHardErrorException(
+                'Failed to read contents from %s' % str(sds.result.exitcode_file))
+        except ValueError:
+            msg = 'The contents of the file for Exit Code ("{}") is not an integer: "{}"'.format(
+                str(sds.result.exitcode_file),
+                contents)
+            raise return_pfh_via_exceptions.PfhHardErrorException(msg)
+        finally:
+            f.close()
 
 
 def must_be_within_byte_range(actual: int) -> str:

@@ -1,0 +1,44 @@
+from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
+from exactly_lib.instructions.assert_.utils.expression.comprison_structures import IntegerComparisonExecutor, \
+    IntegerComparisonSetup
+from exactly_lib.instructions.utils import return_svh_via_exceptions
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.result import pfh, svh
+
+
+class Instruction(AssertPhaseInstruction):
+    def __init__(self,
+                 comparison_setup: IntegerComparisonSetup):
+        self.comparison_setup = comparison_setup
+
+    def symbol_usages(self) -> list:
+        return self.comparison_setup.references
+
+    def validate_pre_sds(self,
+                         environment: i.InstructionEnvironmentForPostSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
+        return return_svh_via_exceptions.translate_svh_exception_to_svh(
+            self.comparison_setup.validate_pre_sds,
+            environment)
+
+    def main(self,
+             environment: i.InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        return return_pfh_via_exceptions.translate_pfh_exception_to_pfh(
+            self._main_that_raises_pfh_exceptions,
+            environment,
+            os_services)
+
+    def _main_that_raises_pfh_exceptions(self,
+                                         environment: i.InstructionEnvironmentForPostSdsStep,
+                                         os_services: OsServices):
+        lhs = self.comparison_setup.actual_value_lhs.resolve(environment, os_services)
+        rhs = self.comparison_setup.integer_resolver.resolve(environment)
+        executor = IntegerComparisonExecutor(
+            self.comparison_setup.actual_value_lhs.property_name,
+            lhs,
+            rhs,
+            self.comparison_setup.operator)
+        executor.execute_and_return_pfh_via_exceptions()

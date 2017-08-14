@@ -5,9 +5,33 @@ from exactly_lib.instructions.assert_.utils.expression import integer_comparator
 from exactly_lib.instructions.assert_.utils.expression.integer_comparators import ComparisonOperator
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.string import line_separated
+
+
+class ActualValueResolver:
+    def __init__(self, property_name: str):
+        self.property_name = property_name
+
+    @property
+    def references(self) -> list:
+        return []
+
+    def validate_pre_sds(self,
+                         environment: i.InstructionEnvironmentForPostSdsStep):
+        """
+        Validates by raising exceptions from `return_svh_via_exceptions`
+        """
+        pass
+
+    def resolve(self,
+                environment: i.InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices):
+        """
+        Reports errors by raising exceptions from `return_pfh_via_exceptions`
+        """
+        raise NotImplementedError('abstract method')
 
 
 class IntegerResolver:
@@ -21,12 +45,12 @@ class IntegerResolver:
     def references(self) -> list:
         return self.value_resolver.references
 
-    def validate_pre_sds(self,
-                         environment: i.InstructionEnvironmentForPostSdsStep
-                         ) -> svh.SuccessOrValidationErrorOrHardError:
-        return return_svh_via_exceptions.translate_svh_exception_to_svh(
-            self._validate_and_raise_exception_in_case_of_error,
-            environment)
+    def validate_pre_sds(self, environment: i.InstructionEnvironmentForPostSdsStep):
+        """
+        Validates by raising exceptions from `return_svh_via_exceptions`
+        """
+        resolved_value = self.resolve(environment)
+        self._validate_custom(resolved_value)
 
     def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> int:
         value_string = self.value_resolver.resolve(environment.symbols).value_when_no_dir_dependencies()
@@ -35,11 +59,6 @@ class IntegerResolver:
         except ValueError:
             msg = 'Argument must be an integer: `{}\''.format(value_string)
             raise return_svh_via_exceptions.SvhValidationException(msg)
-
-    def _validate_and_raise_exception_in_case_of_error(self,
-                                                       environment: i.InstructionEnvironmentForPostSdsStep):
-        resolved_value = self.resolve(environment)
-        self._validate_custom(resolved_value)
 
     def _validate_custom(self, resolved_value: int):
         if self.custom_integer_restriction:
@@ -55,14 +74,26 @@ class IntegerComparisonOperatorAndRhs:
         self.integer_resolver = integer_resolver
         self.operator = operator
 
+
+class IntegerComparisonSetup:
+    def __init__(self,
+                 actual_value_lhs: ActualValueResolver,
+                 operator: integer_comparators.ComparisonOperator,
+                 integer_resolver_rhs: IntegerResolver):
+        self.actual_value_lhs = actual_value_lhs
+        self.integer_resolver = integer_resolver_rhs
+        self.operator = operator
+
     @property
     def references(self) -> list:
-        return self.integer_resolver.references
+        return self.actual_value_lhs.references + self.integer_resolver.references
 
-    def validate_pre_sds(self,
-                         environment: i.InstructionEnvironmentForPostSdsStep
-                         ) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.integer_resolver.validate_pre_sds(environment)
+    def validate_pre_sds(self, environment: i.InstructionEnvironmentForPostSdsStep):
+        """
+        Validates by raising exceptions from `return_svh_via_exceptions`
+        """
+        self.actual_value_lhs.validate_pre_sds(environment)
+        self.integer_resolver.validate_pre_sds(environment)
 
 
 class IntegerComparisonExecutor:
