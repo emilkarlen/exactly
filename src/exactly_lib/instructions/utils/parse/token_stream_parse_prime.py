@@ -33,7 +33,7 @@ class TokenParserPrime:
 
     def if_null_then_invalid_arguments(self, error_message_format_string: str):
         if self._token_stream.is_null:
-            self._error(error_message_format_string)
+            self.error(error_message_format_string)
 
     @property
     def is_at_eol(self) -> bool:
@@ -41,16 +41,20 @@ class TokenParserPrime:
 
     def require_is_at_eol(self, error_message_format_string: str):
         if not self.is_at_eol:
-            self._error(error_message_format_string)
+            self.error(error_message_format_string)
+
+    def require_is_not_at_eol(self, error_message_format_string: str):
+        if self.is_at_eol:
+            self.error(error_message_format_string)
 
     def report_superfluous_arguments_if_not_at_eol(self):
         remaining = self.token_stream.remaining_part_of_current_line.strip()
         if len(remaining) != 0:
-            self._error('Superfluous arguments: `{}`'.format(remaining))
+            self.error('Superfluous arguments: `{}`'.format(remaining))
 
     def consume_mandatory_token(self, error_message_format_string: str) -> Token:
         if self._token_stream.is_null:
-            self._error(error_message_format_string)
+            self.error(error_message_format_string)
         return self.token_stream.consume()
 
     def consume_mandatory_string_argument(self, error_message_format_string: str) -> str:
@@ -70,22 +74,67 @@ class TokenParserPrime:
             return True
         return False
 
-    def consume_mandatory_constant_string_that_must_be_unquoted_and_equal(self, expected: str):
+    def consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
+            self,
+            expected_constants,
+            constant_2_ret_val: types.FunctionType = None,
+            error_message_header_template: str = ''):
+        """
+        Consumes the first token if it is an unquoted string that is equal to the expected string.
+
+        :param expected_constants: collection of names=strings. Must support the Python 'in' operator
+
+        :param constant_2_ret_val: Transforms the constant string to the return value.
+        If None, the string constant is returned.
+
+        :return: The constant that matched
+
+        :raises :class:`SingleInstructionInvalidArgumentException' None of the constants were found,
+        or there is no remaining arguments on the current line.
+        """
+
+        def constants_list() -> str:
+            return ' or '.join(['"' + constant + '"' for constant in expected_constants])
+
         if self.token_stream.is_null:
-            raise SingleInstructionInvalidArgumentException('Expecting "{}"'.format(expected))
+            return self.error(error_message_header_template + ': Missing {__CONSTANTS__}',
+                              __CONSTANTS__=constants_list())
+
         head = self.token_stream.head
         if head.is_quoted:
-            err_msg = 'Expecting unquoted "{}".\nFound: `{}\''.format(
-                expected,
+            err_msg = 'Expecting unquoted {}.\nFound: `{}\''.format(
+                constants_list(),
                 head.source_string)
             raise SingleInstructionInvalidArgumentException(err_msg)
+
         plain_head = head.string
-        if plain_head != expected:
-            err_msg = 'Expecting "{}".\nFound: `{}\''.format(
-                expected,
-                head.source_string)
-            raise SingleInstructionInvalidArgumentException(err_msg)
+        if plain_head not in expected_constants:
+            err_msg_tmpl = error_message_header_template + ': Expecting {__CONSTS__}.\nFound: `{__ACTUAL__}\''
+            return self.error(err_msg_tmpl,
+                              __CONSTS__=constants_list(),
+                              __ACTUAL__=plain_head)
         self.token_stream.consume()
+
+        if constant_2_ret_val is not None:
+            return constant_2_ret_val(plain_head)
+
+        return plain_head
+
+    def consume_optional_constant_string_that_must_be_unquoted_and_equal(self, expected_constants) -> str:
+        """
+        Consumes the first token if it is an unquoted string that is equal to the expected string.
+        :param expected_constants: collection of names=strings. Must support the Python 'in' operator
+        :return: None iff no match, else the constant that matched
+        """
+        if self.token_stream.is_null or self.is_at_eol:
+            return None
+        head = self.token_stream.head
+        if head.is_quoted:
+            return None
+        if head.string in expected_constants:
+            self.token_stream.consume()
+            return head.string
+        return None
 
     def consume_and_handle_first_matching_option(self,
                                                  return_value_if_no_match,
@@ -118,6 +167,40 @@ class TokenParserPrime:
             return False
         return matches(option_name, self.token_stream.head.source_string)
 
+    def parse_optional_command(self, command_name_2_parser: dict):
+        """
+        Checks if the first token is one of a given set of commands.  If the token
+        matches a command, then invokes the parser that belongs to the command.
+
+        Each command is a plain string.
+
+        If the token is quoted, then it does not match any command, even if the
+        string inside the quotes is equal to one of the commands.
+
+        :param command_name_2_parser: string -> method that takes this parse as argument. Must not return None
+
+        :return: None if (parser is at end of line, or no choice matches). Else
+        result from the parser for the command (which must not be None).
+        """
+
+        command = self.consume_optional_constant_string_that_must_be_unquoted_and_equal(command_name_2_parser)
+        if command is None:
+            return None
+        return command_name_2_parser[command](self)
+
+    def parse_mandatory_command(self,
+                                command_name_2_parser: dict,
+                                error_message_format_string: str):
+        """
+        A variant of parse_optional_command ,where the command is mandatory.
+
+        :raises `SingleInstructionInvalidArgumentException': The command is not found
+        """
+        command = self.parse_optional_command(command_name_2_parser)
+        if command is None:
+            raise SingleInstructionInvalidArgumentException(self.error(error_message_format_string))
+        return command
+
     def consume_optional_option_with_mandatory_argument(self, option_with_arg: Option) -> Token:
         """
 
@@ -135,8 +218,14 @@ class TokenParserPrime:
     def token_stream(self) -> TokenStream:
         return self._token_stream
 
-    def _error(self, error_message_format_string: str):
-        err_msg = error_message_format_string.format_map(self.error_message_format_map)
+    def error(self, error_message_format_string: str, **kwargs):
+
+        format_map = self.error_message_format_map
+        if kwargs:
+            format_map = dict(list(self.error_message_format_map.items()) + list(kwargs.items()))
+
+        err_msg = error_message_format_string.format_map(format_map)
+
         raise SingleInstructionInvalidArgumentException(err_msg)
 
 
@@ -152,6 +241,16 @@ def new_token_parser(source: str,
     """
     return TokenParserPrime(new_token_stream(source),
                             error_message_format_map)
+
+
+def token_parser_with_additional_error_message_format_map(parser: TokenParserPrime,
+                                                          additional_error_message_format_map: dict
+                                                          ) -> TokenParserPrime:
+    combined_error_message_format_map = dict(list(parser.error_message_format_map.items()) +
+                                             list(additional_error_message_format_map.items()))
+
+    return TokenParserPrime(parser.token_stream,
+                            combined_error_message_format_map)
 
 
 @contextmanager
