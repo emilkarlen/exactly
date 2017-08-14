@@ -38,6 +38,7 @@ class Instruction(AssertPhaseInstruction):
         rhs = self.comparison_setup.integer_resolver.resolve(environment)
         executor = IntegerComparisonExecutor(
             self.comparison_setup.actual_value_lhs.property_name,
+            self.comparison_setup.expectation_type,
             lhs,
             rhs,
             self.comparison_setup.operator)

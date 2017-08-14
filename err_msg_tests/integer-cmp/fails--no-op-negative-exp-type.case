@@ -1,0 +1,7 @@
+[act]
+
+$ exit 10
+
+[assert]
+
+exitcode ! 10

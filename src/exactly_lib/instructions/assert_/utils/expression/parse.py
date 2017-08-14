@@ -1,6 +1,8 @@
 import types
 
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils.expression import comprison_structures
 from exactly_lib.instructions.assert_.utils.expression import integer_comparators
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
@@ -12,9 +14,33 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse.token import Token
+from exactly_lib.util.textformat.structure import structures as docs
 
 INTEGER_ARGUMENT = a.Named('INTEGER')
 OPERATOR_ARGUMENT = a.Named('OPERATOR')
+
+MANDATORY_OPERATOR_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
+                                       OPERATOR_ARGUMENT)
+
+MANDATORY_INTEGER_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
+                                      INTEGER_ARGUMENT)
+
+
+def syntax_element_descriptions(
+        integer_text: str = 'An integer') -> list:
+    operators_list = ' '.join(sorted(integer_comparators.NAME_2_OPERATOR.keys()))
+    operator_text = 'One of ' + operators_list
+    return [
+        SyntaxElementDescription(INTEGER_ARGUMENT.name,
+                                 docs.paras(integer_text)),
+        SyntaxElementDescription(OPERATOR_ARGUMENT.name,
+                                 docs.paras(operator_text))
+    ]
+
+
+def syntax_element_descriptions_with_negation_operator(
+        integer_text: str = 'An integer') -> list:
+    return [negation_of_assertion.syntax_element_description()] + syntax_element_descriptions(integer_text)
 
 
 def parse_integer_comparison_operator_and_rhs(

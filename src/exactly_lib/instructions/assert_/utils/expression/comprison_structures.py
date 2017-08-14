@@ -3,7 +3,9 @@ import types
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import integer_comparators
 from exactly_lib.instructions.assert_.utils.expression.integer_comparators import ComparisonOperator
+from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
 from exactly_lib.instructions.utils import return_svh_via_exceptions
+from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -77,9 +79,11 @@ class IntegerComparisonOperatorAndRhs:
 
 class IntegerComparisonSetup:
     def __init__(self,
+                 expectation_type: ExpectationType,
                  actual_value_lhs: ActualValueResolver,
                  operator: integer_comparators.ComparisonOperator,
                  integer_resolver_rhs: IntegerResolver):
+        self.expectation_type = expectation_type
         self.actual_value_lhs = actual_value_lhs
         self.integer_resolver = integer_resolver_rhs
         self.operator = operator
@@ -99,28 +103,40 @@ class IntegerComparisonSetup:
 class IntegerComparisonExecutor:
     def __init__(self,
                  property_name: str,
+                 expectation_type: ExpectationType,
                  lhs_actual_property_value: int,
                  rhs: int,
                  operator: ComparisonOperator):
         self.property_name = property_name
+        self.expectation_type = expectation_type
         self.lhs_actual_property_value = lhs_actual_property_value
         self.rhs = rhs
         self.operator = operator
 
     def execute_and_return_pfh_via_exceptions(self):
         comparison_fun = self.operator.operator_fun
-        if not comparison_fun(self.lhs_actual_property_value, self.rhs):
-            err_msg = self._unexpected_value_message()
-            raise return_pfh_via_exceptions.PfhFailException(err_msg)
+        condition_is_satisfied = bool(comparison_fun(self.lhs_actual_property_value,
+                                                     self.rhs))
+        if condition_is_satisfied:
+            if self.expectation_type is ExpectationType.NEGATIVE:
+                self._raise_fail_exception()
+        else:
+            if self.expectation_type is ExpectationType.POSITIVE:
+                self._raise_fail_exception()
+
+    def _raise_fail_exception(self):
+        err_msg = self._unexpected_value_message()
+        raise return_pfh_via_exceptions.PfhFailException(err_msg)
 
     def _unexpected_value_message(self):
+        negation_str = self._negation_str()
         expected_str = self.operator.name + ' ' + str(self.rhs)
         return line_separated(['Unexpected {}'.format(self.property_name),
-                               'Expected : {}'.format(expected_str),
+                               'Expected : {}{}'.format(negation_str, expected_str),
                                'Actual   : {}'.format(self.lhs_actual_property_value)])
 
-
-def _unexpected_value_message(property_name: str, expected, actual_value):
-    return line_separated(['Unexpected {}.'.format(property_name),
-                           'Expected : {}'.format(expected),
-                           'Actual   : {}'.format(actual_value)])
+    def _negation_str(self) -> str:
+        if self.expectation_type is ExpectationType.POSITIVE:
+            return ''
+        else:
+            return NEGATION_ARGUMENT_STR + ' '

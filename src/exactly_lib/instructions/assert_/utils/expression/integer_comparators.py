@@ -17,7 +17,6 @@ class ComparisonOperator(tuple):
         return self[1]
 
 
-NOT = ComparisonOperator('!', py_operator_fun.ne)
 NE = ComparisonOperator('!=', py_operator_fun.ne)
 LT = ComparisonOperator('<', py_operator_fun.lt)
 LTE = ComparisonOperator('<=', py_operator_fun.le)
@@ -26,7 +25,6 @@ GTE = ComparisonOperator('>=', py_operator_fun.ge)
 GT = ComparisonOperator('>', py_operator_fun.gt)
 
 ALL_OPERATORS = {
-    NOT,
     NE,
     LT,
     LTE,
