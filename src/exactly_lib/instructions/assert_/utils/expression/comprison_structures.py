@@ -1,0 +1,95 @@
+import types
+
+from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
+from exactly_lib.instructions.assert_.utils.expression import integer_comparators
+from exactly_lib.instructions.assert_.utils.expression.integer_comparators import ComparisonOperator
+from exactly_lib.instructions.utils import return_svh_via_exceptions
+from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.result import svh
+from exactly_lib.util.string import line_separated
+
+
+class IntegerResolver:
+    def __init__(self,
+                 value_resolver: StringResolver,
+                 custom_integer_restriction: types.FunctionType = None):
+        self.value_resolver = value_resolver
+        self.custom_integer_restriction = custom_integer_restriction
+
+    @property
+    def references(self) -> list:
+        return self.value_resolver.references
+
+    def validate_pre_sds(self,
+                         environment: i.InstructionEnvironmentForPostSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
+        return return_svh_via_exceptions.translate_svh_exception_to_svh(
+            self._validate_and_raise_exception_in_case_of_error,
+            environment)
+
+    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> int:
+        value_string = self.value_resolver.resolve(environment.symbols).value_when_no_dir_dependencies()
+        try:
+            return int(value_string)
+        except ValueError:
+            msg = 'Argument must be an integer: `{}\''.format(value_string)
+            raise return_svh_via_exceptions.SvhValidationException(msg)
+
+    def _validate_and_raise_exception_in_case_of_error(self,
+                                                       environment: i.InstructionEnvironmentForPostSdsStep):
+        resolved_value = self.resolve(environment)
+        self._validate_custom(resolved_value)
+
+    def _validate_custom(self, resolved_value: int):
+        if self.custom_integer_restriction:
+            err_msg = self.custom_integer_restriction(resolved_value)
+            if err_msg:
+                raise return_svh_via_exceptions.SvhValidationException(err_msg)
+
+
+class IntegerComparisonOperatorAndRhs:
+    def __init__(self,
+                 operator: integer_comparators.ComparisonOperator,
+                 integer_resolver: IntegerResolver):
+        self.integer_resolver = integer_resolver
+        self.operator = operator
+
+    @property
+    def references(self) -> list:
+        return self.integer_resolver.references
+
+    def validate_pre_sds(self,
+                         environment: i.InstructionEnvironmentForPostSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self.integer_resolver.validate_pre_sds(environment)
+
+
+class IntegerComparisonExecutor:
+    def __init__(self,
+                 property_name: str,
+                 lhs_actual_property_value: int,
+                 rhs: int,
+                 operator: ComparisonOperator):
+        self.property_name = property_name
+        self.lhs_actual_property_value = lhs_actual_property_value
+        self.rhs = rhs
+        self.operator = operator
+
+    def execute_and_return_pfh_via_exceptions(self):
+        comparison_fun = self.operator.operator_fun
+        if not comparison_fun(self.lhs_actual_property_value, self.rhs):
+            err_msg = self._unexpected_value_message()
+            raise return_pfh_via_exceptions.PfhFailException(err_msg)
+
+    def _unexpected_value_message(self):
+        expected_str = self.operator.name + ' ' + str(self.rhs)
+        return line_separated(['Unexpected {}'.format(self.property_name),
+                               'Expected : {}'.format(expected_str),
+                               'Actual   : {}'.format(self.lhs_actual_property_value)])
+
+
+def _unexpected_value_message(property_name: str, expected, actual_value):
+    return line_separated(['Unexpected {}.'.format(property_name),
+                           'Expected : {}'.format(expected),
+                           'Actual   : {}'.format(actual_value)])
