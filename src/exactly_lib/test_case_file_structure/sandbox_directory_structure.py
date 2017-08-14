@@ -1,3 +1,4 @@
+import pathlib
 import tempfile
 from pathlib import Path
 
@@ -114,6 +115,7 @@ class SandboxDirectoryStructure(DirWithRoot):
     """
     The temporary directory structure in which (parts of) a test case is executed
     """
+
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
         self.__test_case_dir = self.root_dir / 'testcase'
@@ -141,6 +143,9 @@ class SandboxDirectoryStructure(DirWithRoot):
     @property
     def log_dir(self) -> Path:
         return self.__log_dir
+
+    def relative_to_sds_root(self, file_in_sub_dir: pathlib.PurePath) -> pathlib.PurePath:
+        return file_in_sub_dir.relative_to(self.root_dir)
 
 
 def construct_at(execution_directory_root: str) -> SandboxDirectoryStructure:
