@@ -1,5 +1,6 @@
 from exactly_lib.instructions.assert_.utils.expression.comparison_structures import OperandResolver
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.test_resources import actions
 
 
@@ -32,7 +33,7 @@ class _OperandResolverThat(OperandResolver):
     def references(self) -> list:
         return self._symbol_usages
 
-    def validate_pre_sds(self, environment: InstructionEnvironmentForPostSdsStep):
+    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
         self._validate_pre_sds(environment)
 
     def resolve(self, environment: InstructionEnvironmentForPostSdsStep):
