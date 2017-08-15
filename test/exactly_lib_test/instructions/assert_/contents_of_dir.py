@@ -18,13 +18,14 @@ from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syn
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import expression
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, Expectation
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with_not_and_rel_opts import \
     InstructionChecker, InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
     ExpectationTypeConfig, PassOrFail
 from exactly_lib_test.instructions.assert_.utils import parse_dir_contents_selector as parse_test
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
@@ -32,6 +33,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -51,6 +53,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestTestCommonFailureConditionsForNumFiles),
         unittest.makeSuite(TestDifferentSourceVariantsForNumFiles),
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles),
+        unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidationForNumFiles),
 
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('the-instruction-name')),
     ])
@@ -367,6 +370,29 @@ class TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles(expressi
     def _conf(self) -> expression.Configuration:
         return expression.Configuration(sut.Parser(),
                                         TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck())
+
+
+class TestFailingValidationPreSdsCausedByCustomValidationForNumFiles(TestCaseBase):
+    def test_fail_WHEN_integer_operand_is_negative(self):
+        cases = [
+            -1,
+            -2,
+        ]
+        for invalid_value in cases:
+            arguments = 'ignored-file-name {num_files} {invalid_condition}'.format(
+                num_files=sut.NUM_FILES_CHECK_ARGUMENT,
+                invalid_condition=_int_condition(comparators.EQ, invalid_value))
+
+            with self.subTest(invalid_value=invalid_value):
+                self._check(
+                    sut.Parser(),
+                    remaining_source(arguments,
+                                     ['following line']),
+                    ArrangementPostAct(),
+                    Expectation(
+                        validation_pre_sds=svh_assertions.is_validation_error(),
+                    ),
+                )
 
 
 class TestSymbolReferencesForNumFiles(unittest.TestCase):
