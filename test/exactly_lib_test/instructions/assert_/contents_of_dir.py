@@ -14,6 +14,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
     PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_relativity
+from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import expression
@@ -375,7 +376,7 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
         path_sym_ref = SymbolReference(
             'path_symbol_name',
             parse_relativity.reference_restrictions_for_path_symbol(
-                sut.ACTUAL_RELATIVITY_CONFIGURATION))
+                sut.ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants))
 
         operand_sym_ref = SymbolReference('operand_symbol_name',
                                           string_made_up_by_just_strings())
@@ -385,7 +386,7 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
             path_sym=path_sym_ref.name,
             num_files=sut.NUM_FILES_CHECK_ARGUMENT,
             cmp_op=comparators.EQ.name,
-            operand_sym_ref=operand_sym_ref.name)
+            operand_sym_ref=symbol_reference_syntax_for_name(operand_sym_ref.name))
 
         source = remaining_source(argument)
 
