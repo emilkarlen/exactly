@@ -69,14 +69,6 @@ class IntegerResolver:
                 raise return_svh_via_exceptions.SvhValidationException(err_msg)
 
 
-class IntegerComparisonOperatorAndRhs:
-    def __init__(self,
-                 operator: integer_comparators.ComparisonOperator,
-                 integer_resolver: IntegerResolver):
-        self.integer_resolver = integer_resolver
-        self.operator = operator
-
-
 class IntegerComparisonSetup:
     def __init__(self,
                  expectation_type: ExpectationType,
