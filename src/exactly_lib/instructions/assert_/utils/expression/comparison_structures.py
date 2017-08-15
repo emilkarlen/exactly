@@ -32,7 +32,7 @@ class OperandResolver:
         raise NotImplementedError('abstract method')
 
 
-class ComparisonSetup:
+class ComparisonHandler:
     """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
 
     def __init__(self,
@@ -56,8 +56,22 @@ class ComparisonSetup:
         self.actual_value_lhs.validate_pre_sds(environment)
         self.integer_resolver.validate_pre_sds(environment)
 
+    def execute(self, environment: InstructionEnvironmentForPostSdsStep):
+        """
+        Reports failure by raising exceptions from `return_efh_via_exceptions`
+        """
+        lhs = self.actual_value_lhs.resolve(environment)
+        rhs = self.integer_resolver.resolve(environment)
+        executor = _ComparisonExecutor(
+            self.actual_value_lhs.property_name,
+            self.expectation_type,
+            lhs,
+            rhs,
+            self.operator)
+        executor.execute_and_return_pfh_via_exceptions()
 
-class ComparisonExecutor:
+
+class _ComparisonExecutor:
     def __init__(self,
                  property_name: str,
                  expectation_type: ExpectationType,
