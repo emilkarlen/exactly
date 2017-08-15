@@ -3,7 +3,8 @@ from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
 from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.string import line_separated
 
 
@@ -17,7 +18,7 @@ class OperandResolver:
     def references(self) -> list:
         return []
 
-    def validate_pre_sds(self, environment: InstructionEnvironmentForPostSdsStep):
+    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
