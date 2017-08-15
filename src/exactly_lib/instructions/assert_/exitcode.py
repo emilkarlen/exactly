@@ -40,21 +40,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 negation_of_assertion.optional_negation_argument_usage(),
                 parse.MANDATORY_INTEGER_ARGUMENT,
             ]),
-                self._paragraphs(
-                    """\
-                    PASS if, and only if, the {EXIT_CODE} is exactly {INTEGER}.
-                    """)),
+                self._paragraphs(_DESCRIPTION_OF_IMPLICIT_EQUALS)),
+
             InvokationVariant(self._cl_syntax_for_args([
                 negation_of_assertion.optional_negation_argument_usage(),
                 parse.MANDATORY_OPERATOR_ARGUMENT,
                 parse.MANDATORY_INTEGER_ARGUMENT,
             ]),
-                self._paragraphs(
-                    """\
-                    PASS if, and only if, the given expression evaluates to True.
-
-                    The actual {EXIT_CODE} is the left operand.
-                    """))
+                self._paragraphs(_DESCRIPTION_OF_COMPARISON_WITH_OPERATOR))
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -111,3 +104,14 @@ def must_be_within_byte_range(actual: int) -> str:
     if actual < 0 or actual > 255:
         return 'Argument must be an integer in the interval [0, 255]\n\nFound : ' + str(actual)
     return None
+
+
+_DESCRIPTION_OF_IMPLICIT_EQUALS = """\
+PASS if, and only if, the {EXIT_CODE} is exactly {INTEGER}.
+"""
+
+_DESCRIPTION_OF_COMPARISON_WITH_OPERATOR = """\
+PASS if, and only if, the given expression evaluates to True.
+
+The actual {EXIT_CODE} is the left operand.
+"""
