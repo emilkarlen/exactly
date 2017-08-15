@@ -7,9 +7,9 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax, symbol_reference_syntax_for_name
+from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources import instruction_check, expression
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation, is_pass
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
@@ -19,19 +19,19 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.section_document.test_resources.parse_source import is_at_beginning_of_line
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions as svh_asrt
 from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParse),
+
         unittest.makeSuite(TestFailingValidationPreSds),
         unittest.makeSuite(TestConstantArguments),
         unittest.makeSuite(TestArgumentWithSymbolReferences),
+
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -65,61 +65,21 @@ class TestBase(instruction_check.TestCaseBase):
         self._check(sut.Parser(), source, arrangement, expectation)
 
 
-class TestFailingValidationPreSds(TestBase):
-    def test_invalid_arguments_without_symbol_references(self):
-        test_cases = [
-            ' = a',
-            'a',
-            '-1',
-            '256',
-        ]
-        for instr_arg in test_cases:
-            with self.subTest(msg=instr_arg):
-                for source in equivalent_source_variants__with_source_check(self, instr_arg):
-                    self._run(
-                        source,
-                        ArrangementPostAct(),
-                        Expectation(
-                            validation_pre_sds=svh_asrt.is_validation_error(),
-                            symbol_usages=asrt.is_empty_list,
-                        ),
-                    )
+class TheInstructionArgumentsVariantConstructor(expression.InstructionArgumentsVariantConstructor):
+    """
+    Constructs the instruction argument for a given comparision condition string.
+    """
 
-    def test_invalid_arguments_with_symbol_references(self):
-        symbol = SymbolWithReferenceSyntax('symbol_name')
-        arguments = [
-            ' = {}'.format(symbol),
-            '{}'.format(symbol),
-        ]
-        invalid_symbol_values = [
-            'not_a_number',
-            '-1',
-            '256',
-            '72 87',
-            '72+87',
-        ]
-        for invalid_symbol_value in invalid_symbol_values:
-            for argument in arguments:
-                with self.subTest(argument=argument,
-                                  invalid_symbol_value=invalid_symbol_value):
-                    for source in equivalent_source_variants__with_source_check(self, argument):
-                        self._run(
-                            source,
-                            ArrangementPostAct(
-                                symbols=SymbolTable({
-                                    symbol.name: symbol_utils.string_value_constant_container(
-                                        invalid_symbol_value
-                                    )
-                                })
-                            ),
-                            Expectation(
-                                validation_pre_sds=svh_asrt.is_validation_error(),
-                                symbol_usages=equals_symbol_references([
-                                    SymbolReference(symbol.name,
-                                                    string_made_up_by_just_strings())
-                                ]),
-                            ),
-                        )
+    def apply(self,
+              condition_str: str,
+              ) -> str:
+        return condition_str
+
+
+class TestFailingValidationPreSds(expression.TestFailingValidationPreSdsAbstract):
+    def _conf(self) -> expression.Configuration:
+        return expression.Configuration(sut.Parser(),
+                                        TheInstructionArgumentsVariantConstructor())
 
 
 class TestArgumentWithSymbolReferences(TestBase):
