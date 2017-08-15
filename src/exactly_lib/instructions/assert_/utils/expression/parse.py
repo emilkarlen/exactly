@@ -3,9 +3,9 @@ import types
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.instructions.assert_.utils import negation_of_assertion
-from exactly_lib.instructions.assert_.utils.expression import comprison_structures
-from exactly_lib.instructions.assert_.utils.expression import integer_comparators
-from exactly_lib.instructions.assert_.utils.expression.comprison_structures import IntegerResolver
+from exactly_lib.instructions.assert_.utils.expression import comparators
+from exactly_lib.instructions.assert_.utils.expression import comparison_structures
+from exactly_lib.instructions.assert_.utils.expression.comparison_structures import IntegerResolver
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.string_resolver import StringResolver
@@ -27,7 +27,7 @@ MANDATORY_INTEGER_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
 
 def syntax_element_descriptions(
         integer_text: str = 'An integer') -> list:
-    operators_list = ' '.join(sorted(integer_comparators.NAME_2_OPERATOR.keys()))
+    operators_list = ' '.join(sorted(comparators.NAME_2_OPERATOR.keys()))
     operator_text = 'One of ' + operators_list
     return [
         SyntaxElementDescription(INTEGER_ARGUMENT.name,
@@ -44,7 +44,7 @@ def syntax_element_descriptions_with_negation_operator(
 
 class IntegerComparisonOperatorAndRhs:
     def __init__(self,
-                 operator: integer_comparators.ComparisonOperator,
+                 operator: comparators.ComparisonOperator,
                  integer_resolver: IntegerResolver):
         self.integer_resolver = integer_resolver
         self.operator = operator
@@ -55,7 +55,7 @@ def parse_integer_comparison_operator_and_rhs(
         custom_integer_restriction: types.FunctionType = None
 ) -> IntegerComparisonOperatorAndRhs:
     def parse_integer_token_and_return(
-            comparison_operator: integer_comparators.ComparisonOperator,
+            comparison_operator: comparators.ComparisonOperator,
             integer_token: Token) -> IntegerComparisonOperatorAndRhs:
 
         integer_resolver = integer_resolver_of(integer_token, custom_integer_restriction)
@@ -64,22 +64,22 @@ def parse_integer_comparison_operator_and_rhs(
 
     token = parser.consume_mandatory_token('Missing comparison expression')
 
-    if not token.is_quoted and token.string in integer_comparators.NAME_2_OPERATOR:
-        operator = integer_comparators.NAME_2_OPERATOR[token.string]
+    if not token.is_quoted and token.string in comparators.NAME_2_OPERATOR:
+        operator = comparators.NAME_2_OPERATOR[token.string]
         rhs_token = parser.consume_mandatory_token(
             'Missing {INTEGER} expression'.format(INTEGER=INTEGER_ARGUMENT.name)
         )
         return parse_integer_token_and_return(operator, rhs_token)
     else:
-        return parse_integer_token_and_return(integer_comparators.EQ,
+        return parse_integer_token_and_return(comparators.EQ,
                                               token)
 
 
 def integer_resolver_of(value_token: Token,
-                        custom_integer_restriction: types.FunctionType = None) -> comprison_structures.IntegerResolver:
+                        custom_integer_restriction: types.FunctionType = None) -> comparison_structures.IntegerResolver:
     string_resolver = _string_resolver_of(value_token)
-    return comprison_structures.IntegerResolver(string_resolver,
-                                                custom_integer_restriction)
+    return comparison_structures.IntegerResolver(string_resolver,
+                                                 custom_integer_restriction)
 
 
 def _string_resolver_of(value_token: Token) -> StringResolver:

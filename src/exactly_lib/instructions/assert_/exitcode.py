@@ -3,7 +3,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions, negation_of_assertion
-from exactly_lib.instructions.assert_.utils.expression import comprison_structures
+from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import instruction
 from exactly_lib.instructions.assert_.utils.expression import parse
 from exactly_lib.instructions.assert_.utils.expression.parse import parse_integer_comparison_operator_and_rhs
@@ -70,7 +70,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         cmp_op_and_rhs = parse_integer_comparison_operator_and_rhs(parser,
                                                                    must_be_within_byte_range)
         parser.report_superfluous_arguments_if_not_at_eol()
-        cmp_setup = comprison_structures.IntegerComparisonSetup(
+        cmp_setup = comparison_structures.ComparisonSetup(
             expectation_type,
             ExitCodeResolver(),
             cmp_op_and_rhs.operator,
@@ -78,7 +78,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         return instruction.Instruction(cmp_setup)
 
 
-class ExitCodeResolver(comprison_structures.ActualValueResolver):
+class ExitCodeResolver(comparison_structures.ActualValueResolver):
     def __init__(self):
         super().__init__(_PROPERTY_NAME)
 

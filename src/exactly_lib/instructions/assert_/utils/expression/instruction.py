@@ -1,6 +1,6 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
-from exactly_lib.instructions.assert_.utils.expression.comprison_structures import IntegerComparisonExecutor, \
-    IntegerComparisonSetup
+from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonExecutor, \
+    ComparisonSetup
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -10,7 +10,7 @@ from exactly_lib.test_case.phases.result import pfh, svh
 
 class Instruction(AssertPhaseInstruction):
     def __init__(self,
-                 comparison_setup: IntegerComparisonSetup):
+                 comparison_setup: ComparisonSetup):
         self.comparison_setup = comparison_setup
 
     def symbol_usages(self) -> list:
@@ -36,7 +36,7 @@ class Instruction(AssertPhaseInstruction):
                                          os_services: OsServices):
         lhs = self.comparison_setup.actual_value_lhs.resolve(environment, os_services)
         rhs = self.comparison_setup.integer_resolver.resolve(environment)
-        executor = IntegerComparisonExecutor(
+        executor = ComparisonExecutor(
             self.comparison_setup.actual_value_lhs.property_name,
             self.comparison_setup.expectation_type,
             lhs,

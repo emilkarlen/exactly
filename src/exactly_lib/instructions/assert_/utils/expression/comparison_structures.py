@@ -1,8 +1,8 @@
 import types
 
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
-from exactly_lib.instructions.assert_.utils.expression import integer_comparators
-from exactly_lib.instructions.assert_.utils.expression.integer_comparators import ComparisonOperator
+from exactly_lib.instructions.assert_.utils.expression import comparators
+from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
 from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
@@ -69,11 +69,12 @@ class IntegerResolver:
                 raise return_svh_via_exceptions.SvhValidationException(err_msg)
 
 
-class IntegerComparisonSetup:
+class ComparisonSetup:
+    """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
     def __init__(self,
                  expectation_type: ExpectationType,
                  actual_value_lhs: ActualValueResolver,
-                 operator: integer_comparators.ComparisonOperator,
+                 operator: comparators.ComparisonOperator,
                  integer_resolver_rhs: IntegerResolver):
         self.expectation_type = expectation_type
         self.actual_value_lhs = actual_value_lhs
@@ -92,7 +93,7 @@ class IntegerComparisonSetup:
         self.integer_resolver.validate_pre_sds(environment)
 
 
-class IntegerComparisonExecutor:
+class ComparisonExecutor:
     def __init__(self,
                  property_name: str,
                  expectation_type: ExpectationType,

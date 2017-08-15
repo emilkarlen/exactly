@@ -14,6 +14,7 @@ class ComparisonOperator(tuple):
 
     @property
     def operator_fun(self) -> types.FunctionType:
+        """A function that takes two arguments and returns an integer à la cmp§"""
         return self[1]
 
 
