@@ -23,6 +23,11 @@ MANDATORY_OPERATOR_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
 MANDATORY_INTEGER_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
                                       INTEGER_ARGUMENT)
 
+ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR = [
+    a.Single(a.Multiplicity.OPTIONAL, OPERATOR_ARGUMENT),
+    MANDATORY_INTEGER_ARGUMENT,
+]
+
 
 def syntax_element_descriptions(
         integer_text: str = 'An integer') -> list:

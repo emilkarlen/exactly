@@ -11,7 +11,8 @@ from exactly_lib.instructions.assert_.utils import parse_dir_contents_selector
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
-from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand
+from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand, \
+    ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
     EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.instructions.utils import return_svh_via_exceptions
@@ -49,6 +50,8 @@ SELECTION_OPTION = parse_dir_contents_selector.SELECTION_OPTION
 
 NUM_FILES_CHECK_ARGUMENT = 'num-files'
 
+NUM_FILES_ARGUMENT_CONSTANT = a.Constant(NUM_FILES_CHECK_ARGUMENT)
+
 _CHECKERS = [
     NUM_FILES_CHECK_ARGUMENT,
     EMPTINESS_CHECK_ARGUMENT,
@@ -59,6 +62,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str):
         super().__init__(name, {
             'checked_file': _PATH_ARGUMENT.name,
+            'selection': parse_dir_contents_selector.SELECTION.name,
         })
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     _PATH_ARGUMENT)
@@ -74,19 +78,31 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         negation_argument = negation_of_assertion.optional_negation_argument_usage()
-        name_selection_arg = a.Single(a.Multiplicity.OPTIONAL,
-                                      parse_dir_contents_selector.SELECTION)
+        selection_arg = a.Single(a.Multiplicity.OPTIONAL,
+                                 parse_dir_contents_selector.SELECTION)
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 
-        arguments = [self.actual_file,
-                     name_selection_arg,
-                     negation_argument,
-                     mandatory_empty_arg]
+        mandatory_num_files_arg = a.Single(a.Multiplicity.MANDATORY,
+                                           NUM_FILES_ARGUMENT_CONSTANT)
+
+        arguments_for_empty_check = [self.actual_file,
+                                     selection_arg,
+                                     negation_argument,
+                                     mandatory_empty_arg]
+
+        arguments_for_num_files_check = [self.actual_file,
+                                         selection_arg,
+                                         negation_argument,
+                                         mandatory_num_files_arg,
+                                         ] + ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
 
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments),
+            InvokationVariant(self._cl_syntax_for_args(arguments_for_empty_check),
                               self._paragraphs(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)),
+
+            InvokationVariant(self._cl_syntax_for_args(arguments_for_num_files_check),
+                              self._paragraphs(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -117,12 +133,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             ACTUAL_RELATIVITY_CONFIGURATION.options,
             self.relativity_of_actual_arg)
 
-        return [negation,
-                selection,
-                selector,
-                actual_file_arg_sed,
-                relativity_of_actual_file_sed,
-                ]
+        return ([negation,
+                 selection,
+                 selector] +
+                expression_parse.syntax_element_descriptions() +
+                [actual_file_arg_sed,
+                 relativity_of_actual_file_sed,
+                 ])
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
@@ -349,11 +366,18 @@ FAIL if {checked_file} is not an existing directory
 (even when the assertion is negated).
 
 
+If {selection} is given, then the test applies to the selected files from the directory.
+
+
 Symbolic links are followed.
 """
 
 _CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\
 Tests that {checked_file} is an empty directory, or that the set of selected files is empty.
+"""
+
+_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES = """\
+Tests that {checked_file} is a directory that contains the specified number of files.
 """
 
 _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The directory who's contents is checked."
