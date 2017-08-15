@@ -10,9 +10,8 @@ from exactly_lib.instructions.assert_.utils.expression.parse import parse_intege
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import new_token_parser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -74,15 +73,15 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             expectation_type,
             ExitCodeResolver(),
             cmp_op_and_rhs.operator,
-            cmp_op_and_rhs.integer_resolver)
+            cmp_op_and_rhs.rhs_resolver)
         return instruction.Instruction(cmp_setup)
 
 
-class ExitCodeResolver(comparison_structures.ActualValueResolver):
+class ExitCodeResolver(comparison_structures.OperandResolver):
     def __init__(self):
         super().__init__(_PROPERTY_NAME)
 
-    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep, os_services: OsServices):
+    def resolve(self, environment: InstructionEnvironmentForPostSdsStep):
         sds = environment.sds
         try:
             f = sds.result.exitcode_file.open()

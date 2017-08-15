@@ -1,18 +1,15 @@
-import types
-
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
 from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
-from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
-from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.string import line_separated
 
 
-class ActualValueResolver:
+class OperandResolver:
+    """Resolves an operand used in a comparision"""
+
     def __init__(self, property_name: str):
         self.property_name = property_name
 
@@ -20,72 +17,39 @@ class ActualValueResolver:
     def references(self) -> list:
         return []
 
-    def validate_pre_sds(self,
-                         environment: i.InstructionEnvironmentForPostSdsStep):
+    def validate_pre_sds(self, environment: InstructionEnvironmentForPostSdsStep):
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
         pass
 
-    def resolve(self,
-                environment: i.InstructionEnvironmentForPostSdsStep,
-                os_services: OsServices):
+    def resolve(self, environment: InstructionEnvironmentForPostSdsStep):
         """
         Reports errors by raising exceptions from `return_pfh_via_exceptions`
+        
+        :returns The value that can be used as one of the operands in a comparision.
         """
         raise NotImplementedError('abstract method')
 
 
-class IntegerResolver:
-    def __init__(self,
-                 value_resolver: StringResolver,
-                 custom_integer_restriction: types.FunctionType = None):
-        self.value_resolver = value_resolver
-        self.custom_integer_restriction = custom_integer_restriction
-
-    @property
-    def references(self) -> list:
-        return self.value_resolver.references
-
-    def validate_pre_sds(self, environment: i.InstructionEnvironmentForPostSdsStep):
-        """
-        Validates by raising exceptions from `return_svh_via_exceptions`
-        """
-        resolved_value = self.resolve(environment)
-        self._validate_custom(resolved_value)
-
-    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> int:
-        value_string = self.value_resolver.resolve(environment.symbols).value_when_no_dir_dependencies()
-        try:
-            return int(value_string)
-        except ValueError:
-            msg = 'Argument must be an integer: `{}\''.format(value_string)
-            raise return_svh_via_exceptions.SvhValidationException(msg)
-
-    def _validate_custom(self, resolved_value: int):
-        if self.custom_integer_restriction:
-            err_msg = self.custom_integer_restriction(resolved_value)
-            if err_msg:
-                raise return_svh_via_exceptions.SvhValidationException(err_msg)
-
-
 class ComparisonSetup:
     """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
+
     def __init__(self,
                  expectation_type: ExpectationType,
-                 actual_value_lhs: ActualValueResolver,
+                 actual_value_lhs: OperandResolver,
                  operator: comparators.ComparisonOperator,
-                 integer_resolver_rhs: IntegerResolver):
+                 expected_value_rhs: OperandResolver):
         self.expectation_type = expectation_type
         self.actual_value_lhs = actual_value_lhs
-        self.integer_resolver = integer_resolver_rhs
+        self.integer_resolver = expected_value_rhs
         self.operator = operator
 
     @property
     def references(self) -> list:
         return self.actual_value_lhs.references + self.integer_resolver.references
 
-    def validate_pre_sds(self, environment: i.InstructionEnvironmentForPostSdsStep):
+    def validate_pre_sds(self, environment: InstructionEnvironmentForPostSdsStep):
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
