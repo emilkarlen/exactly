@@ -41,25 +41,31 @@ def syntax_element_descriptions_with_negation_operator(
     return [negation_of_assertion.syntax_element_description()] + syntax_element_descriptions(integer_text)
 
 
-class IntegerComparisonOperatorAndRhs:
+def validator_for_non_negative(actual: int) -> str:
+    if actual < 0:
+        return 'Argument must not be negative\n\nFound : ' + str(actual)
+    return None
+
+
+class IntegerComparisonOperatorAndRightOperand:
     def __init__(self,
                  operator: comparators.ComparisonOperator,
                  rhs_resolver: IntegerResolver):
-        self.rhs_resolver = rhs_resolver
+        self.right_operand = rhs_resolver
         self.operator = operator
 
 
 def parse_integer_comparison_operator_and_rhs(
         parser: TokenParserPrime,
         custom_integer_restriction: types.FunctionType = None
-) -> IntegerComparisonOperatorAndRhs:
+) -> IntegerComparisonOperatorAndRightOperand:
     def parse_integer_token_and_return(
             comparison_operator: comparators.ComparisonOperator,
-            integer_token: Token) -> IntegerComparisonOperatorAndRhs:
+            integer_token: Token) -> IntegerComparisonOperatorAndRightOperand:
 
         resolver = integer_resolver_of('expected value', integer_token, custom_integer_restriction)
-        return IntegerComparisonOperatorAndRhs(comparison_operator,
-                                               resolver)
+        return IntegerComparisonOperatorAndRightOperand(comparison_operator,
+                                                        resolver)
 
     token = parser.consume_mandatory_token('Missing comparison expression')
 
