@@ -15,6 +15,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
+from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.path_resolver import FileRefResolver
@@ -38,6 +39,8 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
 SELECTION_OPTION = parse_dir_contents_selector.SELECTION_OPTION
+
+NUM_FILES_CHECK_ARGUMENT = 'num-files'
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -124,6 +127,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         self.format_map = {
             'PATH': _PATH_ARGUMENT.name,
         }
+        self.missing_check_description = 'Missing check'
 
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         tokens = new_token_parser(rest_of_line,
@@ -131,12 +135,18 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         expectation_type = tokens.consume_optional_negation_operator()
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
         file_selection = parse_dir_contents_selector.parse_optional_selection_option(tokens)
-        tokens.consume_mandatory_constant_string_that_must_be_unquoted_and_equal([EMPTINESS_CHECK_ARGUMENT])
+        instructions_parser = _ParseInstruction(_Settings(expectation_type,
+                                                          path_to_check,
+                                                          file_selection))
+
+        command_parsers = {
+            NUM_FILES_CHECK_ARGUMENT: instructions_parser.parse_num_files_check,
+            EMPTINESS_CHECK_ARGUMENT: instructions_parser.parse_empty_check,
+        }
+        instruction = tokens.parse_mandatory_command(command_parsers,
+                                                     self.missing_check_description)
         tokens.report_superfluous_arguments_if_not_at_eol()
-        settings = _Settings(expectation_type,
-                             path_to_check,
-                             file_selection)
-        return _Instruction(settings)
+        return instruction
 
 
 class _Settings:
@@ -149,7 +159,18 @@ class _Settings:
         self.file_selector = file_selector
 
 
-class _Instruction(AssertPhaseInstruction):
+class _ParseInstruction:
+    def __init__(self, settings: _Settings):
+        self.settings = settings
+
+    def parse_empty_check(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+        return _InstructionForEmptiness(self.settings)
+
+    def parse_num_files_check(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+        raise NotImplementedError('todo')
+
+
+class _InstructionForEmptiness(AssertPhaseInstruction):
     def __init__(self,
 
                  settings: _Settings):
