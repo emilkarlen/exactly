@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression import instruction as sut
-from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonSetup, OperandResolver
+from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
@@ -42,8 +42,8 @@ class TestSymbolReferences(unittest.TestCase):
                                                     symbol_2_reffed_by_r_op])
 
         instruction = sut.Instruction(
-            ComparisonSetup(ExpectationType.POSITIVE,
-                            l_op, comparators.EQ, r_op))
+            ComparisonHandler(ExpectationType.POSITIVE,
+                              l_op, comparators.EQ, r_op))
 
         # ACT #
 
@@ -198,11 +198,11 @@ class TestMain(unittest.TestCase):
         for name, result_assertion, expectation_type, l_op, op, r_op in cases:
             # ARRANGE #
             instruction_to_check = sut.Instruction(
-                ComparisonSetup(expectation_type,
-                                operand_resolver_that(
+                ComparisonHandler(expectation_type,
+                                  operand_resolver_that(
                                     resolve_return_value_action=do_return(l_op)),
-                                op,
-                                operand_resolver_that(
+                                  op,
+                                  operand_resolver_that(
                                     resolve_return_value_action=do_return(r_op))))
             with self.subTest(name=name):
                 # ACT #
@@ -219,8 +219,8 @@ ASSERT_ERROR_MESSAGE_IS_A_STRING = asrt.is_instance(str)
 
 
 def cmp_setup(l_op: OperandResolver,
-              r_op: OperandResolver) -> ComparisonSetup:
-    return ComparisonSetup(ExpectationType.POSITIVE,
-                           l_op,
-                           comparators.EQ,
-                           r_op)
+              r_op: OperandResolver) -> ComparisonHandler:
+    return ComparisonHandler(ExpectationType.POSITIVE,
+                             l_op,
+                             comparators.EQ,
+                             r_op)

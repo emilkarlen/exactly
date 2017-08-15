@@ -69,7 +69,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         cmp_op_and_rhs = parse_integer_comparison_operator_and_rhs(parser,
                                                                    must_be_within_byte_range)
         parser.report_superfluous_arguments_if_not_at_eol()
-        cmp_setup = comparison_structures.ComparisonSetup(
+        cmp_setup = comparison_structures.ComparisonHandler(
             expectation_type,
             ExitCodeResolver(),
             cmp_op_and_rhs.operator,
