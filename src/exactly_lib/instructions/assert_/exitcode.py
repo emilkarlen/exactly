@@ -73,7 +73,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             expectation_type,
             ExitCodeResolver(),
             cmp_op_and_rhs.operator,
-            cmp_op_and_rhs.rhs_resolver)
+            cmp_op_and_rhs.right_operand)
         return instruction.Instruction(cmp_setup)
 
 

@@ -55,11 +55,11 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
         test_cases = [
             ' = a',
             'a',
-            '-1',
-            '256',
+            '1.5',
         ]
-        for instr_arg in test_cases:
-            with self.subTest(msg=instr_arg):
+        for condition_str in test_cases:
+            with self.subTest(msg=condition_str):
+                instr_arg = self._conf().arguments_constructor.apply(condition_str)
                 for source in equivalent_source_variants__with_source_check(self, instr_arg):
                     self._check(
                         source,
@@ -72,22 +72,22 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
 
     def test_invalid_arguments_with_symbol_references(self):
         symbol = SymbolWithReferenceSyntax('symbol_name')
-        arguments = [
+        operand_arg_with_symbol_ref_list = [
             ' = {}'.format(symbol),
             '{}'.format(symbol),
         ]
         invalid_symbol_values = [
             'not_a_number',
-            '-1',
-            '256',
+            '1.5',
             '72 87',
             '72+87',
         ]
         for invalid_symbol_value in invalid_symbol_values:
-            for argument in arguments:
-                with self.subTest(argument=argument,
+            for operand_arg_with_symbol_ref in operand_arg_with_symbol_ref_list:
+                arguments = self._conf().arguments_constructor.apply(operand_arg_with_symbol_ref)
+                with self.subTest(argument=arguments,
                                   invalid_symbol_value=invalid_symbol_value):
-                    for source in equivalent_source_variants__with_source_check(self, argument):
+                    for source in equivalent_source_variants__with_source_check(self, arguments):
                         self._check(
                             source,
                             ArrangementPostAct(

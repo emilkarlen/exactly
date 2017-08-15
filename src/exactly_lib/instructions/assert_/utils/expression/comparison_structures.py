@@ -50,7 +50,7 @@ class ComparisonHandler:
     def references(self) -> list:
         return self.actual_value_lhs.references + self.integer_resolver.references
 
-    def validate_pre_sds(self, environment: InstructionEnvironmentForPostSdsStep):
+    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
