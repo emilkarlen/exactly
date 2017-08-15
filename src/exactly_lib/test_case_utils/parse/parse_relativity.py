@@ -3,11 +3,12 @@ from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.misc_utils import is_option_argument
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
@@ -15,6 +16,12 @@ from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.parse.token import Token
 
 SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
+
+
+def reference_restrictions_for_path_symbol(accepted_relativity_variants: PathRelativityVariants
+                                           ) -> ReferenceRestrictions:
+    return ReferenceRestrictionsOnDirectAndIndirect(
+        FileRefRelativityRestriction(accepted_relativity_variants))
 
 
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,
@@ -63,8 +70,7 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
     _raise_invalid_argument_exception_if_symbol_does_not_have_valid_syntax(source.head, option_str)
     symbol_name = source.consume().string
     return SymbolReference(symbol_name,
-                           ReferenceRestrictionsOnDirectAndIndirect(
-                               FileRefRelativityRestriction(options.accepted_relativity_variants)))
+                           reference_restrictions_for_path_symbol(options.accepted_relativity_variants))
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,
