@@ -17,7 +17,7 @@ class Instruction(AssertPhaseInstruction):
         return self.comparison_setup.references
 
     def validate_pre_sds(self,
-                         environment: i.InstructionEnvironmentForPostSdsStep
+                         environment: i.InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         return return_svh_via_exceptions.translate_svh_exception_to_svh(
             self.comparison_setup.validate_pre_sds,
