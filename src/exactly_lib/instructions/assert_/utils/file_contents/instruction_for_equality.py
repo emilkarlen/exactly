@@ -135,8 +135,8 @@ class _FileChecker:
     def _failure_info(self,
                       environment: i.InstructionEnvironmentForPostSdsStep,
                       actual: diff_msg.ActualInfo,
-                      ) -> diff_msg.ExpectedAndActualFailure:
-        return diff_msg.ExpectedAndActualFailure(
+                      ) -> diff_msg.DiffFailureInfo:
+        return diff_msg.DiffFailureInfo(
             self._property_descriptor.description(environment),
             self._expectation_type,
             _EQUALITY_CHECK_EXPECTED_VALUE,

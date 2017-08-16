@@ -40,7 +40,7 @@ def actual_info_with_just_description_lines(description_lines: list) -> ActualIn
     return ActualInfo(None, list(description_lines))
 
 
-class ExpectedAndActualFailure:
+class DiffFailureInfo:
     def __init__(self,
                  property_description: PropertyDescription,
                  expectation_type: ExpectationType,

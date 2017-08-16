@@ -328,8 +328,8 @@ class _EmptinessChecker:
 
     def _failure(self,
                  actual: diff_msg.ActualInfo,
-                 ) -> diff_msg.ExpectedAndActualFailure:
-        return diff_msg.ExpectedAndActualFailure(
+                 ) -> diff_msg.DiffFailureInfo:
+        return diff_msg.DiffFailureInfo(
             self.property_descriptor.description(self.environment),
             self.settings.expectation_type,
             EMPTINESS_CHECK_EXPECTED_VALUE,

@@ -47,8 +47,8 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
     def _failure_info(self,
                       environment: i.InstructionEnvironmentForPostSdsStep,
                       actual_single_line_value: str,
-                      ) -> diff_msg.ExpectedAndActualFailure:
-        return diff_msg.ExpectedAndActualFailure(
+                      ) -> diff_msg.DiffFailureInfo:
+        return diff_msg.DiffFailureInfo(
             self.actual_file.property_descriptor().description(environment),
             self.expectation_type,
             EMPTINESS_CHECK_EXPECTED_VALUE,
