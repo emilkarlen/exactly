@@ -45,6 +45,6 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
                      environment: i.InstructionEnvironmentForPostSdsStep,
                      actual: str,
                      ) -> pfh.PassOrFailOrHardError:
-        return self.failure_info_resolver.resolve_pfh_fail(
+        return self.failure_info_resolver.resolve(
             environment,
-            diff_msg.actual_with_single_line_value(actual))
+            diff_msg.actual_with_single_line_value(actual)).as_pfh_fail()

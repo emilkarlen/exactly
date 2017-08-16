@@ -33,9 +33,9 @@ class FileCheckerForPositiveMatch(FileChecker):
             for line in f:
                 if self._expected_reg_ex.search(line.rstrip('\n')):
                     return pfh.new_pfh_pass()
-        return self._failure_info_resolver.resolve_pfh_fail(
+        return self._failure_info_resolver.resolve(
             environment,
-            diff_msg.actual_with_single_line_value('no line matches'))
+            diff_msg.actual_with_single_line_value('no line matches')).as_pfh_fail()
 
 
 class FileCheckerForNegativeMatch(FileChecker):
@@ -49,11 +49,11 @@ class FileCheckerForNegativeMatch(FileChecker):
                 plain_line = line.rstrip('\n')
                 if self._expected_reg_ex.search(plain_line):
                     single_line_actual_value = 'line {} matches'.format(line_num)
-                    return self._failure_info_resolver.resolve_pfh_fail(
+                    return self._failure_info_resolver.resolve(
                         environment,
                         diff_msg.actual_with_single_line_value(single_line_actual_value,
                                                                [plain_line])
-                    )
+                    ).as_pfh_fail()
                 line_num += 1
         return pfh.new_pfh_pass()
 
