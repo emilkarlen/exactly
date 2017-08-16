@@ -1,7 +1,7 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
-from exactly_lib.instructions.utils.err_msg.diff_msg import ExpectedAndActualFailure
+from exactly_lib.instructions.utils.err_msg import diff_msg
 from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -113,14 +113,13 @@ class _FailureReporter:
     def unexpected_value_message(self) -> str:
         return self.failure_info().render()
 
-    def failure_info(self) -> ExpectedAndActualFailure:
+    def failure_info(self) -> diff_msg.ExpectedAndActualFailure:
         expected_str = self.operator.name + ' ' + str(self.rhs)
-        return ExpectedAndActualFailure(
+        return diff_msg.ExpectedAndActualFailure(
             self.property_descriptor.description(self.environment),
             self.expectation_type,
             expected_str,
-            str(self.lhs_actual_property_value),
-            [],
+            diff_msg.actual_with_single_line_value(str(self.lhs_actual_property_value))
         )
 
 

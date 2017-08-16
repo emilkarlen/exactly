@@ -15,18 +15,41 @@ class EmptyErrorMessage(ErrorMessageConstructor):
         return []
 
 
+class ActualInfo:
+    def __init__(self,
+                 single_line_value: str,
+                 description_lines: list):
+        self.single_line_value = single_line_value
+        self.description_lines = description_lines
+
+    def has_single_line_value_str(self) -> bool:
+        return self.single_line_value is not None
+
+    def single_line_value_str(self) -> str:
+        if self.single_line_value is None:
+            return ''
+        return self.single_line_value
+
+
+def actual_with_single_line_value(single_line_value: str,
+                                  description_lines: list = ()) -> ActualInfo:
+    return ActualInfo(single_line_value, list(description_lines))
+
+
+def actual_info_with_just_description_lines(description_lines: list) -> ActualInfo:
+    return ActualInfo(None, list(description_lines))
+
+
 class ExpectedAndActualFailure:
     def __init__(self,
                  property_description: PropertyDescription,
                  expectation_type: ExpectationType,
                  expected: str,
-                 actual: str,
-                 description_of_actual: list):
+                 actual: ActualInfo):
         self.expectation_type = expectation_type
         self.property_description = property_description
         self.expected = expected
         self.actual = actual
-        self.description_of_actual = description_of_actual
 
     def render(self) -> str:
         lines = []
@@ -38,20 +61,29 @@ class ExpectedAndActualFailure:
         lines.append('')
         lines.extend(self._err_msg_expected_and_actual_lines())
 
-        if self.description_of_actual:
+        if self.actual.description_lines:
             lines.append('')
-            lines.extend(self.description_of_actual)
+            lines.extend(self.actual.description_lines)
 
         return line_separated(lines)
 
     def _err_msg_expected_and_actual_lines(self) -> list:
         negation_str = self._negation_str()
         expected_str = negation_str + self.expected
-        return ['Expected : ' + expected_str,
-                'Actual   : ' + self.actual]
+
+        ret_val = [_EXPECTED_HEADER + expected_str]
+
+        if self.actual.has_single_line_value_str():
+            ret_val.append(_ACTUAL_HEADER + self.actual.single_line_value)
+
+        return ret_val
 
     def _negation_str(self) -> str:
         if self.expectation_type is ExpectationType.POSITIVE:
             return ''
         else:
             return NEGATION_ARGUMENT_STR + ' '
+
+
+_EXPECTED_HEADER = 'Expected : '
+_ACTUAL_HEADER = 'Actual   : '
