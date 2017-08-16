@@ -1,6 +1,7 @@
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils.err_msg import diff_msg
+from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.instructions.utils.expectation_type import from_is_negated
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -14,7 +15,11 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
                  actual_file: ComparisonActualFile):
         self.actual_file = actual_file
         self.expect_empty = expect_empty
-        self.expectation_type = from_is_negated(not expect_empty)
+        self.failure_info_resolver = DiffFailureInfoResolver(
+            actual_file.property_descriptor(),
+            from_is_negated(not expect_empty),
+            EMPTINESS_CHECK_EXPECTED_VALUE,
+        )
 
     def symbol_usages(self) -> list:
         return self.actual_file.references
@@ -40,16 +45,6 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
                      environment: i.InstructionEnvironmentForPostSdsStep,
                      actual: str,
                      ) -> pfh.PassOrFailOrHardError:
-        failure_info = self._failure_info(environment, actual)
-        msg = failure_info.render()
-        return pfh.new_pfh_fail(msg)
-
-    def _failure_info(self,
-                      environment: i.InstructionEnvironmentForPostSdsStep,
-                      actual_single_line_value: str,
-                      ) -> diff_msg.DiffFailureInfo:
-        return diff_msg.DiffFailureInfo(
-            self.actual_file.property_descriptor().description(environment),
-            self.expectation_type,
-            EMPTINESS_CHECK_EXPECTED_VALUE,
-            diff_msg.actual_with_single_line_value(actual_single_line_value))
+        return self.failure_info_resolver.resolve_pfh_fail(
+            environment,
+            diff_msg.actual_with_single_line_value(actual))

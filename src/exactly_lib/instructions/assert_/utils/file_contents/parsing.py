@@ -5,6 +5,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
     NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
+from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.instructions.utils.expectation_type import from_is_negated
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -14,7 +16,13 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.parse.token import TokenType
 
+_OPERATION = 'OPERATION'
+
 EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
+
+_COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
+
+_REG_EX = 'REG EX'
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
@@ -49,18 +57,26 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
     def _parse_contains(negated: bool,
                         actual_file_transformer: ActualFileTransformer,
                         actual: ComparisonActualFile) -> AssertPhaseInstruction:
-        reg_ex_arg = token_parse.parse_token_on_current_line(source, 'REG EX')
+        reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
         _ensure_no_more_arguments(source)
         source.consume_current_line()
         try:
             reg_ex = re.compile(reg_ex_arg.string)
         except Exception as ex:
-            raise _parse_exception("Invalid reg ex: '{}'".format(str(ex)))
+            raise _parse_exception("Invalid {}: '{}'".format(_REG_EX, str(ex)))
+
+        expectation_type = from_is_negated(negated)
+        failure_resolver = DiffFailureInfoResolver(
+            actual.property_descriptor(),
+            expectation_type,
+            'any line matches {} {}'.format(_REG_EX, reg_ex_arg.source_string)
+        )
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
+
         if negated:
-            file_checker = instruction_for_contains.FileCheckerForNegativeMatch(reg_ex)
+            file_checker = instruction_for_contains.FileCheckerForNegativeMatch(failure_resolver, reg_ex)
         else:
-            file_checker = instruction_for_contains.FileCheckerForPositiveMatch(reg_ex)
+            file_checker = instruction_for_contains.FileCheckerForPositiveMatch(failure_resolver, reg_ex)
         return instruction_for_contains.ContainsAssertionInstruction(file_checker, actual, actual_file_transformer)
 
     def _parse_contents(actual: ComparisonActualFile) -> AssertPhaseInstruction:
@@ -82,19 +98,19 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             negated = True
             if source.is_at_eol__except_for_space:
                 return _missing_operator([EQUALS_ARGUMENT, CONTAINS_ARGUMENT])
-            next_arg_str = token_parse.parse_plain_token_on_current_line(source, 'OPERATION').string
+            next_arg_str = token_parse.parse_plain_token_on_current_line(source, _OPERATION).string
         if next_arg_str == CONTAINS_ARGUMENT:
             return _parse_contains(negated, actual_file_transformer, actual)
         if next_arg_str == EQUALS_ARGUMENT:
             return _parse_equals(negated, actual_file_transformer, actual)
-        raise _parse_exception('Unknown operator: {}'.format(next_arg_str))
+        raise _parse_exception('Unknown {}: {}'.format(_OPERATION, next_arg_str))
 
     peek_source = source.copy
-    first_argument = token_parse.parse_plain_token_on_current_line(peek_source, 'COMPARISON OPERATOR').string
+    first_argument = token_parse.parse_plain_token_on_current_line(peek_source, _COMPARISON_OPERATOR).string
     if first_argument == EMPTY_ARGUMENT:
         source.catch_up_with(peek_source)
         return _parse_empty(False, actual_file)
-    second_argument = token_parse.parse_token_on_current_line(peek_source, 'COMPARISON OPERATOR')
+    second_argument = token_parse.parse_token_on_current_line(peek_source, _COMPARISON_OPERATOR)
     if second_argument.is_plain and [first_argument, second_argument.string] == [NOT_ARGUMENT, EMPTY_ARGUMENT]:
         source.catch_up_with(peek_source)
         return _parse_empty(True, actual_file)
@@ -102,8 +118,8 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         return _parse_contents(actual_file)
 
 
-def _missing_operator(operators: list) -> AssertPhaseInstruction:
-    msg = 'Missing operator: {}'.format('|'.join(operators))
+def _missing_operator(operators: list):
+    msg = 'Missing {}: {}'.format(_OPERATION, '|'.join(operators))
     raise SingleInstructionInvalidArgumentException(msg)
 
 

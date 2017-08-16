@@ -36,7 +36,7 @@ def actual_with_single_line_value(single_line_value: str,
     return ActualInfo(single_line_value, list(description_lines))
 
 
-def actual_info_with_just_description_lines(description_lines: list) -> ActualInfo:
+def actual_with_just_description_lines(description_lines: list) -> ActualInfo:
     return ActualInfo(None, list(description_lines))
 
 
