@@ -4,6 +4,8 @@ from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression import instruction as sut
 from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
+from exactly_lib.instructions.utils.err_msg.property_description import \
+    property_descriptor_with_just_a_constant_name
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
 from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction
@@ -27,6 +29,9 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+THE_PROPERTY_DESCRIPTOR = property_descriptor_with_just_a_constant_name('name of property')
+
+
 class TestSymbolReferences(unittest.TestCase):
     def test_symbols_from_both_operands_SHOULD_be_reported(self):
         # ARRANGE #
@@ -42,7 +47,8 @@ class TestSymbolReferences(unittest.TestCase):
                                                     symbol_2_reffed_by_r_op])
 
         instruction = sut.Instruction(
-            ComparisonHandler(ExpectationType.POSITIVE,
+            ComparisonHandler(THE_PROPERTY_DESCRIPTOR,
+                              ExpectationType.POSITIVE,
                               l_op, comparators.EQ, r_op))
 
         # ACT #
@@ -198,12 +204,13 @@ class TestMain(unittest.TestCase):
         for name, result_assertion, expectation_type, l_op, op, r_op in cases:
             # ARRANGE #
             instruction_to_check = sut.Instruction(
-                ComparisonHandler(expectation_type,
+                ComparisonHandler(THE_PROPERTY_DESCRIPTOR,
+                                  expectation_type,
                                   operand_resolver_that(
-                                    resolve_return_value_action=do_return(l_op)),
+                                      resolve_return_value_action=do_return(l_op)),
                                   op,
                                   operand_resolver_that(
-                                    resolve_return_value_action=do_return(r_op))))
+                                      resolve_return_value_action=do_return(r_op))))
             with self.subTest(name=name):
                 # ACT #
 
@@ -220,7 +227,8 @@ ASSERT_ERROR_MESSAGE_IS_A_STRING = asrt.is_instance(str)
 
 def cmp_setup(l_op: OperandResolver,
               r_op: OperandResolver) -> ComparisonHandler:
-    return ComparisonHandler(ExpectationType.POSITIVE,
+    return ComparisonHandler(THE_PROPERTY_DESCRIPTOR,
+                             ExpectationType.POSITIVE,
                              l_op,
                              comparators.EQ,
                              r_op)

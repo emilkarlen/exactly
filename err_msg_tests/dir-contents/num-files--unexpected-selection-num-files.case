@@ -1,0 +1,20 @@
+[setup]
+
+
+dir checked-dir
+cd checked-dir
+file file.good
+dir  dir.good
+
+cd ..
+
+[assert]
+
+
+dir-contents checked-dir --selection name '*.good' & type file num-files = 2
+
+
+[act]
+
+
+$ exit 0
