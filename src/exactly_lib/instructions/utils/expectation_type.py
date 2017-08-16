@@ -8,3 +8,7 @@ class ExpectationType(Enum):
     """
     POSITIVE = 0
     NEGATIVE = 1
+
+
+def from_is_negated(is_negated: bool) -> ExpectationType:
+    return ExpectationType.NEGATIVE if is_negated else ExpectationType.POSITIVE

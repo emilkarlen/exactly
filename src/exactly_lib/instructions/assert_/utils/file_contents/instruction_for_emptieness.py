@@ -1,7 +1,7 @@
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.expectation_type import ExpectationType
+from exactly_lib.instructions.utils.expectation_type import from_is_negated
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -14,7 +14,7 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
                  actual_file: ComparisonActualFile):
         self.actual_file = actual_file
         self.expect_empty = expect_empty
-        self.expectation_type = ExpectationType.POSITIVE if expect_empty else ExpectationType.NEGATIVE
+        self.expectation_type = from_is_negated(not expect_empty)
 
     def symbol_usages(self) -> list:
         return self.actual_file.references
