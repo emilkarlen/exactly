@@ -80,7 +80,6 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
             'not_a_number',
             '1.5',
             '72 87',
-            '72+87',
         ]
         for invalid_symbol_value in invalid_symbol_values:
             for operand_arg_with_symbol_ref in operand_arg_with_symbol_ref_list:
