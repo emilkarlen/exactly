@@ -55,7 +55,7 @@ class ContainsAssertionInstruction(AssertPhaseInstruction):
         self._actual_file_transformer = actual_file_transformer
 
     def symbol_usages(self) -> list:
-        return self._actual_value.symbol_usages
+        return self._actual_value.references
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,

@@ -19,7 +19,7 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
         self.expectation_type = ExpectationType.POSITIVE if expect_empty else ExpectationType.NEGATIVE
 
     def symbol_usages(self) -> list:
-        return self.actual_file.symbol_usages
+        return self.actual_file.references
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
