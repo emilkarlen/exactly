@@ -18,8 +18,9 @@ from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTI
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.err_msg.property_description import \
-    property_descriptor_with_just_a_constant_name
+from exactly_lib.instructions.utils.err_msg import diff_msg
+from exactly_lib.instructions.utils.err_msg.path_description import path_value_description
+from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
@@ -45,6 +46,8 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 _NUM_FILES_PROPERTY_NAME = 'number of files in dir'
+
+_EMPTINESS_PROPERTY_NAME = 'contents of dir'
 
 NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
@@ -217,6 +220,10 @@ class _InstructionBase(AssertPhaseInstruction):
         return pfh_ex_method.translate_pfh_exception_to_pfh(self.__main_that_reports_result_via_exceptions,
                                                             environment)
 
+    def _property_descriptor(self, property_name: str) -> PropertyDescriptor:
+        return path_value_description(property_name,
+                                      self.path_to_check)
+
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
         raise NotImplementedError('abstract method')
 
@@ -243,7 +250,7 @@ class _InstructionForNumFiles(_InstructionBase):
                  operator_and_r_operand: IntegerComparisonOperatorAndRightOperand):
         super().__init__(settings.path_to_check)
         self.comparison_handler = comparison_structures.ComparisonHandler(
-            property_descriptor_with_just_a_constant_name(_NUM_FILES_PROPERTY_NAME),
+            self._property_descriptor(_NUM_FILES_PROPERTY_NAME),
             settings.expectation_type,
             NumFilesResolver(settings.path_to_check,
                              settings.file_selector),
@@ -271,15 +278,19 @@ class _InstructionForEmptiness(_InstructionBase):
         return self.settings.path_to_check.references
 
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
-        checker = _EmptinessChecker(environment,
+        checker = _EmptinessChecker(self._property_descriptor(_EMPTINESS_PROPERTY_NAME),
+                                    environment,
                                     self.settings)
         checker.main()
 
 
 class _EmptinessChecker:
     def __init__(self,
+                 property_descriptor: PropertyDescriptor,
                  environment: InstructionEnvironmentForPostSdsStep,
                  settings: _Settings):
+        self.property_descriptor = property_descriptor
+        self.environment = environment
         self.path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         self.settings = settings
 
@@ -300,21 +311,33 @@ class _EmptinessChecker:
     def _fail_if_path_dir_is_not_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir != 0:
-            raise pfh_ex_method.PfhFailException(self._error_message(num_files_in_dir, files_in_dir))
+            self._fail_with_err_msg(str(num_files_in_dir) + ' files',
+                                    self._get_description_of_actual(files_in_dir))
 
     def _fail_if_path_dir_is_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir == 0:
-            raise pfh_ex_method.PfhFailException('The directory is empty')
+            self._fail_with_err_msg('empty', [])
 
-    def _error_message(self, num_files_in_dir: int, actual_files_in_dir: list) -> str:
-        first_line = 'Directory is not empty. It contains {} files.'.format(str(num_files_in_dir))
-        dir_contents_lines = self._dir_contents_err_msg_lines(actual_files_in_dir)
-        ret_val = '\n'.join([first_line,
-                             '',
-                             'Actual contents:'] +
-                            dir_contents_lines)
-        return ret_val
+    def _fail_with_err_msg(self,
+                           actual: str,
+                           description_of_actual: list):
+        msg = self._failure(actual, description_of_actual).render()
+        raise pfh_ex_method.PfhFailException(msg)
+
+    def _failure(self,
+                 actual: str,
+                 description_of_actual: list,
+                 ) -> diff_msg.ExpectedAndActualFailure:
+        return diff_msg.ExpectedAndActualFailure(
+            self.property_descriptor.description(self.environment),
+            self.settings.expectation_type,
+            'empty',
+            actual,
+            description_of_actual)
+
+    def _get_description_of_actual(self, actual_files_in_dir: list) -> list:
+        return ['Actual contents:'] + self._dir_contents_err_msg_lines(actual_files_in_dir)
 
     @staticmethod
     def _dir_contents_err_msg_lines(actual_files_in_dir: list) -> list:

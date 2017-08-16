@@ -1,7 +1,7 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
-from exactly_lib.instructions.utils.err_msg.expected_and_actual import ExpectedAndActualFailure
+from exactly_lib.instructions.utils.err_msg.diff_msg import ExpectedAndActualFailure
 from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \

@@ -19,16 +19,16 @@ class NoLinesConstructor(LinesConstructor):
 class PropertyDescription:
     def __init__(self,
                  name: str,
-                 details_lines: list):
+                 object_description_lines: list):
         self._name = name
-        self._details_lines = details_lines
+        self._details_lines = object_description_lines
 
     @property
     def name(self) -> str:
         return self._name
 
     @property
-    def details_lines(self) -> list:
+    def object_description_lines(self) -> list:
         return self._details_lines
 
 
@@ -41,14 +41,14 @@ class PropertyDescriptor:
 class PropertyDescriptorWithConstantPropertyName(PropertyDescriptor):
     def __init__(self,
                  name: str,
-                 details_descriptor: LinesConstructor):
+                 object_descriptor: LinesConstructor):
         self._name = name
-        self._details_descriptor = details_descriptor
+        self._object_descriptor = object_descriptor
 
     def description(self, environment: InstructionEnvironmentForPostSdsStep
                     ) -> PropertyDescription:
         return PropertyDescription(self._name,
-                                   self._details_descriptor.lines(environment))
+                                   self._object_descriptor.lines(environment))
 
 
 def property_descriptor_with_just_a_constant_name(name: str) -> PropertyDescriptor:
