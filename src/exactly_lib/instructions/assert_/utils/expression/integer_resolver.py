@@ -59,10 +59,17 @@ class IntegerResolver(OperandResolver):
     def _resolve(self, environment: InstructionEnvironmentForPreSdsStep) -> int:
         value_string = self.value_resolver.resolve(environment.symbols).value_when_no_dir_dependencies()
         try:
-            return int(value_string)
+            val = eval(value_string)
+            if isinstance(val, int):
+                return val
+            else:
+                raise NotAnIntegerException(value_string)
+        except SyntaxError:
+            raise NotAnIntegerException(value_string)
         except ValueError:
-            msg = 'Argument must be an integer: `{}\''.format(value_string)
-            raise return_svh_via_exceptions.SvhValidationException(msg)
+            raise NotAnIntegerException(value_string)
+        except NameError:
+            raise NotAnIntegerException(value_string)
 
     def _validate_custom(self, resolved_value: int):
         if self.custom_integer_validator:
