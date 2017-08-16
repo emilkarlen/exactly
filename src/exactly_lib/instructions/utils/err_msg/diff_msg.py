@@ -31,9 +31,9 @@ class ExpectedAndActualFailure:
     def render(self) -> str:
         lines = []
         lines.append('Unexpected ' + self.property_description.name)
-        if self.property_description.details_lines:
+        if self.property_description.object_description_lines:
             lines.append('')
-            lines.extend(self.property_description.details_lines)
+            lines.extend(self.property_description.object_description_lines)
 
         lines.append('')
         lines.extend(self._err_msg_expected_and_actual_lines())
