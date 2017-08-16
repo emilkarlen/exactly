@@ -1,0 +1,19 @@
+[setup]
+
+
+file checked-file <<EOF
+actual contents
+EOF
+
+
+[assert]
+
+
+contents checked-file contains 'expected line'
+
+
+
+[act]
+
+
+$ exit 0

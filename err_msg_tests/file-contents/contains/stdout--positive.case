@@ -1,0 +1,10 @@
+[act]
+
+
+$ echo 'actual line'
+
+
+[assert]
+
+
+stdout contains 'expected line'

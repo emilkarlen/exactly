@@ -5,7 +5,7 @@ import pathlib
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
+from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.instructions.utils.expectation_type import ExpectationType, from_is_negated
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
@@ -33,8 +33,13 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
         self._expected_contents = expected_contents
         self._actual_file_transformer = actual_file_transformer
         expectation_type = from_is_negated(negated)
+        failure_resolver = DiffFailureInfoResolver(
+            actual_contents.property_descriptor(),
+            expectation_type,
+            _EQUALITY_CHECK_EXPECTED_VALUE,
+        )
         self._file_checker = _FileChecker(expectation_type,
-                                          actual_contents.property_descriptor())
+                                          failure_resolver)
         self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
             FileRefCheckValidator(self._file_ref_check_for_expected())
 
@@ -100,9 +105,9 @@ def _file_diff_description(actual_file_path: pathlib.Path,
 class _FileChecker:
     def __init__(self,
                  expectation_type: ExpectationType,
-                 property_descriptor: PropertyDescriptor):
+                 failure_resolver: DiffFailureInfoResolver):
         self._expectation_type = expectation_type
-        self._property_descriptor = property_descriptor
+        self._failure_resolver = failure_resolver
 
     def apply(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
@@ -116,28 +121,14 @@ class _FileChecker:
             if not files_are_equal:
                 diff_description = _file_diff_description(processed_actual_file_path,
                                                           expected_file_path)
-                return self._new_failure(environment,
-                                         diff_msg.actual_info_with_just_description_lines(diff_description))
+                return self._failure_resolver.resolve_pfh_fail(
+                    environment,
+                    diff_msg.actual_with_just_description_lines(
+                        diff_description))
         else:
             if files_are_equal:
-                return self._new_failure(environment,
-                                         diff_msg.actual_with_single_line_value(_EQUALITY_CHECK_EXPECTED_VALUE))
+                return self._failure_resolver.resolve_pfh_fail(
+                    environment,
+                    diff_msg.actual_with_single_line_value(
+                        _EQUALITY_CHECK_EXPECTED_VALUE))
         return pfh.new_pfh_pass()
-
-    def _new_failure(self,
-                     environment: i.InstructionEnvironmentForPostSdsStep,
-                     actual: diff_msg.ActualInfo,
-                     ) -> pfh.PassOrFailOrHardError:
-        failure_info = self._failure_info(environment, actual)
-        msg = failure_info.render()
-        return pfh.new_pfh_fail(msg)
-
-    def _failure_info(self,
-                      environment: i.InstructionEnvironmentForPostSdsStep,
-                      actual: diff_msg.ActualInfo,
-                      ) -> diff_msg.DiffFailureInfo:
-        return diff_msg.DiffFailureInfo(
-            self._property_descriptor.description(environment),
-            self._expectation_type,
-            _EQUALITY_CHECK_EXPECTED_VALUE,
-            actual)
