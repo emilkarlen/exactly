@@ -1,0 +1,10 @@
+[act]
+
+
+$ echo 'contents of stdout'
+
+
+[assert]
+
+
+stdout empty

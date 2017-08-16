@@ -14,7 +14,7 @@ from exactly_lib.instructions.assert_.utils.expression import parse as expressio
 from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand, \
     ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
-    EMPTY_ARGUMENT_CONSTANT
+    EMPTY_ARGUMENT_CONSTANT, EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -317,7 +317,7 @@ class _EmptinessChecker:
     def _fail_if_path_dir_is_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir == 0:
-            self._fail_with_err_msg('empty', [])
+            self._fail_with_err_msg(EMPTINESS_CHECK_EXPECTED_VALUE, [])
 
     def _fail_with_err_msg(self,
                            actual: str,
@@ -332,7 +332,7 @@ class _EmptinessChecker:
         return diff_msg.ExpectedAndActualFailure(
             self.property_descriptor.description(self.environment),
             self.settings.expectation_type,
-            'empty',
+            EMPTINESS_CHECK_EXPECTED_VALUE,
             actual,
             description_of_actual)
 
