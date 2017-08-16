@@ -2,7 +2,7 @@ import types
 from contextlib import contextmanager
 
 from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
-from exactly_lib.instructions.utils.expectation_type import ExpectationType
+from exactly_lib.instructions.utils import expectation_type
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -61,9 +61,9 @@ class TokenParserPrime:
         token = self.consume_mandatory_token(error_message_format_string)
         return token.string
 
-    def consume_optional_negation_operator(self) -> ExpectationType:
+    def consume_optional_negation_operator(self) -> expectation_type.ExpectationType:
         is_negated = self.consume_and_return_true_if_first_argument_is_unquoted_and_equals(NEGATION_ARGUMENT_STR)
-        return ExpectationType.NEGATIVE if is_negated else ExpectationType.POSITIVE
+        return expectation_type.from_is_negated(is_negated)
 
     def consume_and_return_true_if_first_argument_is_unquoted_and_equals(self, expected: str) -> bool:
         if self.token_stream.is_null:

@@ -1,7 +1,7 @@
 from enum import Enum
 
 from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
-from exactly_lib.instructions.utils.expectation_type import ExpectationType
+from exactly_lib.instructions.utils.expectation_type import ExpectationType, from_is_negated
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -63,7 +63,7 @@ class ExpectationTypeConfig:
 
 
 def expectation_type_conf_from_is_negated(is_negated: bool) -> ExpectationTypeConfig:
-    expectation_type = ExpectationType.NEGATIVE if is_negated else ExpectationType.POSITIVE
+    expectation_type = from_is_negated(is_negated)
     return ExpectationTypeConfig(expectation_type)
 
 

@@ -6,7 +6,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.err_msg import diff_msg
 from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
-from exactly_lib.instructions.utils.expectation_type import ExpectationType
+from exactly_lib.instructions.utils.expectation_type import ExpectationType, from_is_negated
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -32,7 +32,7 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
         self._actual_file_transformer = actual_file_transformer
-        expectation_type = ExpectationType.NEGATIVE if negated else ExpectationType.POSITIVE
+        expectation_type = from_is_negated(negated)
         self._file_checker = _FileChecker(expectation_type,
                                           actual_contents.property_descriptor())
         self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
