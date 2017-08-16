@@ -7,7 +7,7 @@ dir checked-dir
 [assert]
 
 
-dir-contents --rel-act checked-dir num-files = 1
+dir-contents checked-dir num-files = 1
 
 
 [act]
