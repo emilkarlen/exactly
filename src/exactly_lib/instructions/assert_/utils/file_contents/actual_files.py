@@ -33,7 +33,7 @@ class ComparisonActualFile:
         raise NotImplementedError('abstract method')
 
     @property
-    def symbol_usages(self) -> list:
+    def references(self) -> list:
         return []
 
 
@@ -46,7 +46,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
         return 'file'
 
     @property
-    def symbol_usages(self) -> list:
+    def references(self) -> list:
         return self._file_ref_resolver.references
 
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
