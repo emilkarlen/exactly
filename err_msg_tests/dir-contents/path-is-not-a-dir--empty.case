@@ -1,0 +1,16 @@
+[setup]
+
+
+file checked-dir
+
+
+[assert]
+
+
+dir-contents --rel-act checked-dir empty
+
+
+[act]
+
+
+$ exit 0

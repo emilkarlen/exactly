@@ -1,11 +1,11 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
-from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
+from exactly_lib.instructions.utils.err_msg.expected_and_actual import ExpectedAndActualFailure
+from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
-from exactly_lib.util.string import line_separated
 
 
 class OperandResolver:
@@ -33,18 +33,32 @@ class OperandResolver:
         raise NotImplementedError('abstract method')
 
 
+class ErrorMessageConstructor:
+    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+        raise NotImplementedError('abstract method')
+
+
+class EmptyErrorMessage(ErrorMessageConstructor):
+    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+        return []
+
+
 class ComparisonHandler:
     """A comparison operator, resolvers for left and right operands, and an `ExpectationType`"""
 
     def __init__(self,
+                 property_descriptor: PropertyDescriptor,
                  expectation_type: ExpectationType,
                  actual_value_lhs: OperandResolver,
                  operator: comparators.ComparisonOperator,
-                 expected_value_rhs: OperandResolver):
+                 expected_value_rhs: OperandResolver,
+                 description_of_actual: ErrorMessageConstructor = EmptyErrorMessage()):
+        self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
         self.actual_value_lhs = actual_value_lhs
         self.integer_resolver = expected_value_rhs
         self.operator = operator
+        self.description_of_actual = description_of_actual
 
     @property
     def references(self) -> list:
@@ -64,26 +78,64 @@ class ComparisonHandler:
         lhs = self.actual_value_lhs.resolve(environment)
         rhs = self.integer_resolver.resolve(environment)
         executor = _ComparisonExecutor(
-            self.actual_value_lhs.property_name,
             self.expectation_type,
             lhs,
             rhs,
-            self.operator)
+            self.operator,
+            _FailureReporter(self.property_descriptor,
+                             self.expectation_type,
+                             lhs,
+                             rhs,
+                             self.operator,
+                             environment,
+                             self.description_of_actual)
+        )
         executor.execute_and_return_pfh_via_exceptions()
 
 
-class _ComparisonExecutor:
+class _FailureReporter:
     def __init__(self,
-                 property_name: str,
+                 property_descriptor: PropertyDescriptor,
                  expectation_type: ExpectationType,
                  lhs_actual_property_value: int,
                  rhs: int,
-                 operator: ComparisonOperator):
-        self.property_name = property_name
+                 operator: ComparisonOperator,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 description_of_actual: ErrorMessageConstructor):
+        self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
         self.lhs_actual_property_value = lhs_actual_property_value
         self.rhs = rhs
         self.operator = operator
+        self.environment = environment
+        self.description_of_actual = description_of_actual
+
+    def unexpected_value_message(self) -> str:
+        return self.failure_info().render()
+
+    def failure_info(self) -> ExpectedAndActualFailure:
+        expected_str = self.operator.name + ' ' + str(self.rhs)
+        return ExpectedAndActualFailure(
+            self.property_descriptor.description(self.environment),
+            self.expectation_type,
+            expected_str,
+            str(self.lhs_actual_property_value),
+            [],
+        )
+
+
+class _ComparisonExecutor:
+    def __init__(self,
+                 expectation_type: ExpectationType,
+                 lhs_actual_property_value: int,
+                 rhs: int,
+                 operator: ComparisonOperator,
+                 failure_reporter: _FailureReporter):
+        self.expectation_type = expectation_type
+        self.lhs_actual_property_value = lhs_actual_property_value
+        self.rhs = rhs
+        self.operator = operator
+        self.failure_reporter = failure_reporter
 
     def execute_and_return_pfh_via_exceptions(self):
         comparison_fun = self.operator.operator_fun
@@ -97,18 +149,5 @@ class _ComparisonExecutor:
                 self._raise_fail_exception()
 
     def _raise_fail_exception(self):
-        err_msg = self._unexpected_value_message()
+        err_msg = self.failure_reporter.unexpected_value_message()
         raise return_pfh_via_exceptions.PfhFailException(err_msg)
-
-    def _unexpected_value_message(self):
-        negation_str = self._negation_str()
-        expected_str = self.operator.name + ' ' + str(self.rhs)
-        return line_separated(['Unexpected {}'.format(self.property_name),
-                               'Expected : {}{}'.format(negation_str, expected_str),
-                               'Actual   : {}'.format(self.lhs_actual_property_value)])
-
-    def _negation_str(self) -> str:
-        if self.expectation_type is ExpectationType.POSITIVE:
-            return ''
-        else:
-            return NEGATION_ARGUMENT_STR + ' '

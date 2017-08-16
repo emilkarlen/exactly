@@ -18,6 +18,8 @@ from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTI
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.err_msg.property_description import \
+    property_descriptor_with_just_a_constant_name
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
@@ -241,6 +243,7 @@ class _InstructionForNumFiles(_InstructionBase):
                  operator_and_r_operand: IntegerComparisonOperatorAndRightOperand):
         super().__init__(settings.path_to_check)
         self.comparison_handler = comparison_structures.ComparisonHandler(
+            property_descriptor_with_just_a_constant_name(_NUM_FILES_PROPERTY_NAME),
             settings.expectation_type,
             NumFilesResolver(settings.path_to_check,
                              settings.file_selector),

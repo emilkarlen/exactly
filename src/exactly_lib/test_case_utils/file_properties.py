@@ -153,7 +153,7 @@ def render_failure(properties_with_neg: PropertiesWithNegation.properties,
     else:
         return os.linesep.join(['File is {negation}a {file_type} ({sym_links}):'.format(
             negation=negation,
-            file_type=TYPE_INFO[properties.type_of_existing_file],
+            file_type=TYPE_INFO[properties.type_of_existing_file].description,
             sym_links=sym_links),
             str(file_path)])
 

@@ -7,6 +7,8 @@ from exactly_lib.instructions.assert_.utils.expression import comparison_structu
 from exactly_lib.instructions.assert_.utils.expression import instruction
 from exactly_lib.instructions.assert_.utils.expression import parse
 from exactly_lib.instructions.assert_.utils.expression.parse import parse_integer_comparison_operator_and_rhs
+from exactly_lib.instructions.utils.err_msg.property_description import \
+    property_descriptor_with_just_a_constant_name
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import new_token_parser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
@@ -63,6 +65,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
                                                                    must_be_within_byte_range)
         parser.report_superfluous_arguments_if_not_at_eol()
         cmp_setup = comparison_structures.ComparisonHandler(
+            property_descriptor_with_just_a_constant_name(_PROPERTY_NAME),
             expectation_type,
             ExitCodeResolver(),
             cmp_op_and_rhs.operator,
