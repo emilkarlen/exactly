@@ -1,0 +1,16 @@
+[setup]
+
+
+file checked-file
+
+
+[assert]
+
+
+contents checked-file ! empty
+
+
+[act]
+
+
+$ exit 0

@@ -1,0 +1,18 @@
+[setup]
+
+
+file checked-file <<EOF
+file contents
+EOF
+
+
+[assert]
+
+
+contents checked-file empty
+
+
+[act]
+
+
+$ exit 0

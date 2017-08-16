@@ -1,0 +1,10 @@
+[act]
+
+
+$ exit 0
+
+
+[assert]
+
+
+stdout ! empty
