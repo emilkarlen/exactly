@@ -1,8 +1,6 @@
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.err_msg.path_description import path_value_description
-from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -48,15 +46,10 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
 
     def _failure_info(self,
                       environment: i.InstructionEnvironmentForPostSdsStep,
-                      actual: str,
+                      actual_single_line_value: str,
                       ) -> diff_msg.ExpectedAndActualFailure:
         return diff_msg.ExpectedAndActualFailure(
-            self._property_descriptor().description(environment),
+            self.actual_file.property_descriptor().description(environment),
             self.expectation_type,
             EMPTINESS_CHECK_EXPECTED_VALUE,
-            actual,
-            [])
-
-    def _property_descriptor(self) -> PropertyDescriptor:
-        return path_value_description(self.actual_file.property_name(),
-                                      self.actual_file.file_ref_resolver())
+            diff_msg.actual_with_single_line_value(actual_single_line_value))

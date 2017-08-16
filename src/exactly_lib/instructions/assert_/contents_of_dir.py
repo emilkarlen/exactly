@@ -311,30 +311,29 @@ class _EmptinessChecker:
     def _fail_if_path_dir_is_not_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir != 0:
-            self._fail_with_err_msg(str(num_files_in_dir) + ' files',
-                                    self._get_description_of_actual(files_in_dir))
+            self._fail_with_err_msg(
+                diff_msg.actual_with_single_line_value(str(num_files_in_dir) + ' files',
+                                                       self._get_description_of_actual(
+                                                           files_in_dir)))
 
     def _fail_if_path_dir_is_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir == 0:
-            self._fail_with_err_msg(EMPTINESS_CHECK_EXPECTED_VALUE, [])
+            self._fail_with_err_msg(diff_msg.actual_with_single_line_value(EMPTINESS_CHECK_EXPECTED_VALUE))
 
     def _fail_with_err_msg(self,
-                           actual: str,
-                           description_of_actual: list):
-        msg = self._failure(actual, description_of_actual).render()
+                           actual: diff_msg.ActualInfo):
+        msg = self._failure(actual).render()
         raise pfh_ex_method.PfhFailException(msg)
 
     def _failure(self,
-                 actual: str,
-                 description_of_actual: list,
+                 actual: diff_msg.ActualInfo,
                  ) -> diff_msg.ExpectedAndActualFailure:
         return diff_msg.ExpectedAndActualFailure(
             self.property_descriptor.description(self.environment),
             self.settings.expectation_type,
             EMPTINESS_CHECK_EXPECTED_VALUE,
-            actual,
-            description_of_actual)
+            actual)
 
     def _get_description_of_actual(self, actual_files_in_dir: list) -> list:
         return ['Actual contents:'] + self._dir_contents_err_msg_lines(actual_files_in_dir)

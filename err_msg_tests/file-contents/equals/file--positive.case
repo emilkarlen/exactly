@@ -1,0 +1,21 @@
+[setup]
+
+
+file checked-file <<EOF
+actual contents
+EOF
+
+
+[assert]
+
+
+contents checked-file equals <<EOF
+expected contents
+EOF
+
+
+
+[act]
+
+
+$ exit 0

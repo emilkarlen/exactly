@@ -1,0 +1,13 @@
+[act]
+
+
+$ echo 'actual contents'
+
+
+[assert]
+
+
+stdout equals <<EOF
+expected contents
+EOF
+
