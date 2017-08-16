@@ -2,6 +2,7 @@ from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATIO
 from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescription
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.util.string import line_separated
 
 
@@ -66,6 +67,9 @@ class DiffFailureInfo:
             lines.extend(self.actual.description_lines)
 
         return line_separated(lines)
+
+    def as_pfh_fail(self) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_fail(self.render())
 
     def _err_msg_expected_and_actual_lines(self) -> list:
         negation_str = self._negation_str()

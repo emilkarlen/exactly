@@ -121,14 +121,14 @@ class _FileChecker:
             if not files_are_equal:
                 diff_description = _file_diff_description(processed_actual_file_path,
                                                           expected_file_path)
-                return self._failure_resolver.resolve_pfh_fail(
+                return self._failure_resolver.resolve(
                     environment,
                     diff_msg.actual_with_just_description_lines(
-                        diff_description))
+                        diff_description)).as_pfh_fail()
         else:
             if files_are_equal:
-                return self._failure_resolver.resolve_pfh_fail(
+                return self._failure_resolver.resolve(
                     environment,
                     diff_msg.actual_with_single_line_value(
-                        _EQUALITY_CHECK_EXPECTED_VALUE))
+                        _EQUALITY_CHECK_EXPECTED_VALUE)).as_pfh_fail()
         return pfh.new_pfh_pass()

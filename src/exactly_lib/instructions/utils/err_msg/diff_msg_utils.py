@@ -2,7 +2,6 @@ from exactly_lib.instructions.utils.err_msg import diff_msg
 from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
 
 
 class DiffFailureInfoResolver:
@@ -31,13 +30,3 @@ class DiffFailureInfoResolver:
             self.expectation_type,
             self.expected,
             actual)
-
-    def resolve_str(self,
-                    environment: InstructionEnvironmentForPostSdsStep,
-                    actual: diff_msg.ActualInfo) -> str:
-        return self.resolve(environment, actual).render()
-
-    def resolve_pfh_fail(self,
-                         environment: InstructionEnvironmentForPostSdsStep,
-                         actual: diff_msg.ActualInfo) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_fail(self.resolve_str(environment, actual))
