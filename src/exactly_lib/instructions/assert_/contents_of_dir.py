@@ -163,9 +163,9 @@ class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         tokens = new_token_parser(rest_of_line,
                                   self.format_map)
-        expectation_type = tokens.consume_optional_negation_operator()
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
         file_selection = parse_dir_contents_selector.parse_optional_selection_option(tokens)
+        expectation_type = tokens.consume_optional_negation_operator()
         instructions_parser = _CheckInstructionParser(_Settings(expectation_type,
                                                                 path_to_check,
                                                                 file_selection))

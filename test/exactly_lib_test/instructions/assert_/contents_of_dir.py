@@ -5,6 +5,7 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils import parse_dir_contents_selector
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
+from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
@@ -70,8 +71,12 @@ class TheInstructionArgumentsVariantConstructorForNotAndRelOpt(InstructionArgume
               rel_opt_config: RelativityOptionConfiguration,
               ) -> str:
         ret_val = self.instruction_argument_template.replace('<rel_opt>', rel_opt_config.option_string)
-        ret_val = etc.instruction_arguments(ret_val)
+        ret_val = replace_not_op(etc, ret_val)
         return ret_val
+
+
+def replace_not_op(etc: ExpectationTypeConfig, s: str) -> str:
+    return s.replace('<not_opt>', etc.nothing__if_positive__not_option__if_negative)
 
 
 class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(
@@ -99,41 +104,42 @@ class TestCaseBaseForParser(unittest.TestCase):
 
 
 class TestParseInvalidSyntax(TestCaseBase):
-    test_cases_with_no_negation_operator = [
+    test_cases_with_negation_operator_place_holder = [
         NameAndValue(
             'no arguments',
             '',
         ),
         NameAndValue(
             'valid file argument, but no operator',
-            'file-name',
+            'file-name <not_opt>',
         ),
         NameAndValue(
-            'valid file argument, invalid operator',
-            'file-name invalid-operator',
+            'valid file argument, invalid check',
+            'file-name <not_opt> invalid-check',
         ),
         NameAndValue(
             'invalid option before file argument',
-            '{invalid_option} file-name'.format(
-                invalid_option=long_option_syntax('invalidOption'))
+            '{invalid_option} file-name <not_opt> {empty}'.format(
+                invalid_option=long_option_syntax('invalidOption'),
+                empty=sut.EMPTINESS_CHECK_ARGUMENT)
         ),
         NameAndValue(
             'missing argument for selector option ' + sut.SELECTION_OPTION.name.long,
-            'file-name {selection_option} {empty}'.format(
+            'file-name {selection_option} <not_opt> {empty}'.format(
                 selection_option=option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name),
                 empty=sut.EMPTINESS_CHECK_ARGUMENT
             )
         ),
         NameAndValue(
             'missing argument for num-files option ' + sut.SELECTION_OPTION.name.long,
-            'file-name {num_files}'.format(
+            'file-name <not_opt> {num_files}'.format(
                 selection_option=option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name),
                 num_files=sut.NUM_FILES_CHECK_ARGUMENT
             )
         ),
         NameAndValue(
             'superfluous argument for num-files option ' + sut.SELECTION_OPTION.name.long,
-            'file-name {num_files} {eq} 10 superfluous'.format(
+            'file-name <not_opt> {num_files} {eq} 10 superfluous'.format(
                 selection_option=option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name),
                 num_files=sut.NUM_FILES_CHECK_ARGUMENT,
                 eq=comparators.EQ.name,
@@ -144,7 +150,7 @@ class TestParseInvalidSyntax(TestCaseBase):
     def test_raise_exception_WHEN_syntax_is_invalid(self):
 
         self._assert_each_case_raises_SingleInstructionInvalidArgumentException(
-            self.test_cases_with_no_negation_operator)
+            self.test_cases_with_negation_operator_place_holder)
 
     def test_raise_exception_WHEN_relativity_is_unaccepted(self):
 
@@ -160,11 +166,15 @@ class TestParseInvalidSyntax(TestCaseBase):
 
     def _assert_each_case_raises_SingleInstructionInvalidArgumentException(self, test_cases: list):
         parser = sut.Parser()
-        for name_and_instruction_argument_str in test_cases:
-            with self.subTest(case_name=name_and_instruction_argument_str.name):
-                for source in equivalent_source_variants(self, name_and_instruction_argument_str.value):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
+        for expectation_type in ExpectationType:
+            etc = ExpectationTypeConfig(expectation_type)
+            for name_and_instruction_argument_str in test_cases:
+                with self.subTest(case_name=name_and_instruction_argument_str.name,
+                                  expectation_type=str(expectation_type)):
+                    first_line_arguments = replace_not_op(etc, name_and_instruction_argument_str.value)
+                    for source in equivalent_source_variants(self, first_line_arguments):
+                        with self.assertRaises(SingleInstructionInvalidArgumentException):
+                            parser.parse(source)
 
 
 class TestDifferentSourceVariantsForEmpty(TestCaseBaseForParser):
@@ -523,7 +533,7 @@ def argument_constructor_for_emptiness_check(file_name: str,
                                      type_selection)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
-        '<rel_opt> {file_name} {selection} {empty}'.format(
+        '<rel_opt> {file_name} {selection} <not_opt> {empty}'.format(
             file_name=file_name,
             empty=EMPTINESS_CHECK_ARGUMENT,
             selection=selection
@@ -540,7 +550,7 @@ def argument_constructor_for_num_files_check(file_name: str,
                                      type_selection)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
-        '<rel_opt> {file_name} {selection} {num_files} {num_files_condition}'.format(
+        '<rel_opt> {file_name} {selection} <not_opt> {num_files} {num_files_condition}'.format(
             file_name=file_name,
             selection=selection,
             num_files=sut.NUM_FILES_CHECK_ARGUMENT,
