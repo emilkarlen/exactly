@@ -1,0 +1,23 @@
+[setup]
+
+
+
+dir sub-dir-of-act
+
+cd sub-dir-of-act
+
+def path CHECKED_FILE = the/file
+
+file @[CHECKED_FILE]@
+
+
+[assert]
+
+
+contents @[CHECKED_FILE]@ ! empty
+
+
+[act]
+
+
+$ exit 0

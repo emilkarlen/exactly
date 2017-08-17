@@ -85,6 +85,26 @@ def rel_any_from_rel_home(rel_home: RelHomeOptionType) -> RelOptionType:
     return RelOptionType(rel_home.value)
 
 
+def rel_home_from_rel_any(rel_any: RelOptionType) -> RelHomeOptionType:
+    """
+    :return: None iff rel_any is not relative one of the home directories
+    """
+    try:
+        return RelHomeOptionType(rel_any.value)
+    except ValueError:
+        return None
+
+
+def rel_sds_from_rel_any(rel_any: RelOptionType) -> RelSdsOptionType:
+    """
+    :return: None iff rel_any is not relative one of the sandbox directories
+    """
+    try:
+        return RelSdsOptionType(rel_any.value)
+    except ValueError:
+        return None
+
+
 class SpecificPathRelativity:
     """
     The relativity, or non-relativity, of a path.
