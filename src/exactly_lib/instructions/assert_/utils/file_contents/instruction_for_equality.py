@@ -4,8 +4,10 @@ import pathlib
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.utils.err_msg import diff_msg
+from exactly_lib.instructions.utils.documentation import documentation_text
+from exactly_lib.instructions.utils.err_msg import diff_msg, diff_msg_utils
 from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.instructions.utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.instructions.utils.expectation_type import ExpectationType, from_is_negated
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
@@ -20,7 +22,7 @@ from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessVa
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing
 
-_EQUALITY_CHECK_EXPECTED_VALUE = 'equal'
+_EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 
 
 class EqualsAssertionInstruction(AssertPhaseInstruction):
@@ -36,7 +38,7 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
         failure_resolver = DiffFailureInfoResolver(
             actual_contents.property_descriptor(),
             expectation_type,
-            _EQUALITY_CHECK_EXPECTED_VALUE,
+            ExpectedValueResolver(expected_contents),
         )
         self._file_checker = _FileChecker(expectation_type,
                                           failure_resolver)
@@ -132,3 +134,22 @@ class _FileChecker:
                     diff_msg.actual_with_single_line_value(
                         _EQUALITY_CHECK_EXPECTED_VALUE)).as_pfh_fail()
         return pfh.new_pfh_pass()
+
+
+class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
+    def __init__(self, expected_contents: HereDocOrFileRef):
+        self.expected_contents = expected_contents
+
+    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+        return _EQUALITY_CHECK_EXPECTED_VALUE + ' ' + self._expected_obj_description(environment)
+
+    def _expected_obj_description(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+        if self.expected_contents.here_document:
+            return documentation_text.HERE_DOCUMENT.name
+        if self.expected_contents.is_file_ref:
+            resolving_env = environment.path_resolving_environment_pre_or_post_sds
+            path_value = self.expected_contents.file_reference_resolver.resolve(resolving_env.symbols)
+            path_description = path_value_with_relativity_name_prefix(path_value,
+                                                                      resolving_env.home_and_sds,
+                                                                      pathlib.Path.cwd())
+            return 'file ' + path_description

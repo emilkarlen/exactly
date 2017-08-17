@@ -26,6 +26,23 @@ class ExplanationFailureInfoResolver:
                                                self.object_descriptor.lines(environment))
 
 
+class ExpectedValueResolver:
+    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> str:
+        raise NotImplementedError('abstract method')
+
+
+class ConstantExpectedValueResolver(ExpectedValueResolver):
+    def __init__(self, value: str):
+        self.value = value
+
+    def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> str:
+        return self.value
+
+
+def expected_constant(value: str) -> ExpectedValueResolver:
+    return ConstantExpectedValueResolver(value)
+
+
 class DiffFailureInfoResolver:
     """
     Helper for constructing a :class:`diff_msg.DiffFailureInfo`.
@@ -38,7 +55,7 @@ class DiffFailureInfoResolver:
     def __init__(self,
                  property_descriptor: PropertyDescriptor,
                  expectation_type: ExpectationType,
-                 expected: str,
+                 expected: ExpectedValueResolver,
                  ):
         """
         :param property_descriptor:  Describes the property that the failure relates to.
@@ -55,5 +72,5 @@ class DiffFailureInfoResolver:
         return diff_msg.DiffFailureInfo(
             self.property_descriptor.description(environment),
             self.expectation_type,
-            self.expected,
+            self.expected.resolve(environment),
             actual)
