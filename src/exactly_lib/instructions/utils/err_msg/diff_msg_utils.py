@@ -1,7 +1,29 @@
 from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
+from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor, ErrorMessagePartConstructor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+
+
+class ExplanationFailureInfoResolver:
+    """
+    Helper for constructing a :class:`diff_msg.ExplanationFailureInfo`.
+
+    Sets some properties that are usually known early,
+    and then resolves the value given properties that
+    are usually only known later.
+    """
+
+    def __init__(self, object_descriptor: ErrorMessagePartConstructor):
+        """
+        :param object_descriptor: Describes the object that the failure relates to.
+        """
+        self.object_descriptor = object_descriptor
+
+    def resolve(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                explanation: str) -> diff_msg.ExplanationFailureInfo:
+        return diff_msg.ExplanationFailureInfo(explanation,
+                                               self.object_descriptor.lines(environment))
 
 
 class DiffFailureInfoResolver:
@@ -18,6 +40,11 @@ class DiffFailureInfoResolver:
                  expectation_type: ExpectationType,
                  expected: str,
                  ):
+        """
+        :param property_descriptor:  Describes the property that the failure relates to.
+        :param expectation_type: if the check is positive or negative
+        :param expected: single line description of the expected value (for positive ExpectationType)
+        """
         self.property_descriptor = property_descriptor
         self.expectation_type = expectation_type
         self.expected = expected

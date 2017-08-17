@@ -1,19 +1,8 @@
 from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
 from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescription
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.util.string import line_separated
-
-
-class ErrorMessageConstructor:
-    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
-        raise NotImplementedError('abstract method')
-
-
-class EmptyErrorMessage(ErrorMessageConstructor):
-    def error_message_lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
-        return []
 
 
 class ActualInfo:
@@ -41,12 +30,47 @@ def actual_with_just_description_lines(description_lines: list) -> ActualInfo:
     return ActualInfo(None, list(description_lines))
 
 
-class DiffFailureInfo:
+class FailureInfo:
+    def render(self) -> str:
+        raise NotImplementedError('abstract method')
+
+    def as_pfh_fail(self) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_fail(self.render())
+
+
+class ExplanationFailureInfo(FailureInfo):
+    def __init__(self,
+                 explanation: str,
+                 object_description_lines: list):
+        """
+        :param object_description_lines: Describes the object that the failure relates to.
+        :param explanation: A single line explanation of the cause of the failure.
+        """
+        self.explanation = explanation
+        self.object_description_lines = object_description_lines
+
+    def render(self) -> str:
+        lines = []
+        lines.append(self.explanation)
+        if self.object_description_lines:
+            lines.append('')
+            lines.extend(self.object_description_lines)
+
+        return line_separated(lines)
+
+
+class DiffFailureInfo(FailureInfo):
     def __init__(self,
                  property_description: PropertyDescription,
                  expectation_type: ExpectationType,
                  expected: str,
                  actual: ActualInfo):
+        """
+        :param property_description:  Describes the property that the failure relates to.
+        :param expectation_type: if the check is positive or negative
+        :param expected: single line description of the expected value (for positive ExpectationType)
+        :param actual: The actual value that caused the failure.
+        """
         self.expectation_type = expectation_type
         self.property_description = property_description
         self.expected = expected
@@ -67,9 +91,6 @@ class DiffFailureInfo:
             lines.extend(self.actual.description_lines)
 
         return line_separated(lines)
-
-    def as_pfh_fail(self) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_fail(self.render())
 
     def _err_msg_expected_and_actual_lines(self) -> list:
         negation_str = self._negation_str()

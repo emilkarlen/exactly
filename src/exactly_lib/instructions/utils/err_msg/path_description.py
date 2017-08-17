@@ -3,7 +3,7 @@ from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
 
-class PathValueDescriptor(property_description.LinesConstructor):
+class PathValueDescriptor(property_description.ErrorMessagePartConstructor):
     def __init__(self, path_resolver: FileRefResolver):
         self.path_resolver = path_resolver
 
