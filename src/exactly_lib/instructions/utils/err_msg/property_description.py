@@ -1,5 +1,7 @@
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
+OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES = ['']
+
 
 class ErrorMessagePartConstructor:
     """Constructs lines that are a part of an error message."""
@@ -14,6 +16,31 @@ class ErrorMessagePartConstructor:
 class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
         return []
+
+
+class MultipleErrorMessagePartConstructor(ErrorMessagePartConstructor):
+    def __init__(self,
+                 separator_lines: list,
+                 constructors: list):
+        self.separator_lines = tuple(separator_lines)
+        self.constructors = tuple(constructors)
+
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+
+        ret_val = []
+
+        for constructor in self.constructors:
+            lines = constructor.lines(environment)
+            if lines:
+                if ret_val:
+                    ret_val.extend(self.separator_lines)
+                ret_val.extend(lines)
+
+        return ret_val
+
+
+def multiple_object_descriptors(part_constructors: list) -> ErrorMessagePartConstructor:
+    return MultipleErrorMessagePartConstructor(OBJECT_DESCRIPTOR_PARTS_SEPARATOR_LINES, part_constructors)
 
 
 class PropertyDescription:
