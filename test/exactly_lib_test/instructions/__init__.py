@@ -9,7 +9,7 @@ from exactly_lib_test.instructions import setup
 from exactly_lib_test.instructions import utils
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         utils.suite(),
         configuration.suite(),
@@ -21,10 +21,5 @@ def suite():
     ])
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

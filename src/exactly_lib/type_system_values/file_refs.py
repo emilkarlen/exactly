@@ -78,6 +78,12 @@ def rel_cwd(path_suffix: PathPart) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_cwd, path_suffix)
 
 
+def rel_sandbox(rel_option: relativity_root.RelSdsOptionType,
+                path_suffix: PathPart) -> FileRef:
+    return of_rel_root(relative_path_options.REL_SDS_OPTIONS_MAP[rel_option].root_resolver,
+                       path_suffix)
+
+
 def rel_act(path_suffix: PathPart) -> FileRef:
     return of_rel_root(relativity_root.resolver_for_act, path_suffix)
 

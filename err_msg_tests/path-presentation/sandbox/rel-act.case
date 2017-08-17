@@ -1,0 +1,18 @@
+[setup]
+
+
+def path CHECKED_FILE = --rel-act the/file
+
+file @[CHECKED_FILE]@
+
+
+[assert]
+
+
+contents @[CHECKED_FILE]@ ! empty
+
+
+[act]
+
+
+$ exit 0
