@@ -19,8 +19,8 @@ from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.err_msg.path_description import path_value_description
-from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
+from exactly_lib.instructions.utils.err_msg import property_description
+from exactly_lib.instructions.utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
@@ -211,8 +211,8 @@ class _CheckInstructionParser:
 
 
 class _InstructionBase(AssertPhaseInstruction):
-    def __init__(self, path_to_check: FileRefResolver):
-        self.path_to_check = path_to_check
+    def __init__(self, settings: _Settings):
+        self.settings = settings
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -220,9 +220,14 @@ class _InstructionBase(AssertPhaseInstruction):
         return pfh_ex_method.translate_pfh_exception_to_pfh(self.__main_that_reports_result_via_exceptions,
                                                             environment)
 
-    def _property_descriptor(self, property_name: str) -> PropertyDescriptor:
-        return path_value_description(property_name,
-                                      self.path_to_check)
+    def _property_descriptor(self, property_name: str) -> property_description.PropertyDescriptor:
+        return property_description.PropertyDescriptorWithConstantPropertyName(
+            property_name,
+            property_description.multiple_object_descriptors([
+                PathValueDescriptor(self.settings.path_to_check),
+                parse_dir_contents_selector.SelectorsDescriptor(self.settings.file_selector),
+            ])
+        )
 
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
         raise NotImplementedError('abstract method')
@@ -237,7 +242,7 @@ class _InstructionBase(AssertPhaseInstruction):
 
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         failure_message = file_ref_check.pre_or_post_sds_failure_message_or_none(
-            file_ref_check.FileRefCheck(self.path_to_check,
+            file_ref_check.FileRefCheck(self.settings.path_to_check,
                                         expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
@@ -248,7 +253,7 @@ class _InstructionForNumFiles(_InstructionBase):
     def __init__(self,
                  settings: _Settings,
                  operator_and_r_operand: IntegerComparisonOperatorAndRightOperand):
-        super().__init__(settings.path_to_check)
+        super().__init__(settings)
         self.comparison_handler = comparison_structures.ComparisonHandler(
             self._property_descriptor(_NUM_FILES_PROPERTY_NAME),
             settings.expectation_type,
@@ -270,10 +275,6 @@ class _InstructionForNumFiles(_InstructionBase):
 
 
 class _InstructionForEmptiness(_InstructionBase):
-    def __init__(self, settings: _Settings):
-        super().__init__(settings.path_to_check)
-        self.settings = settings
-
     def symbol_usages(self) -> list:
         return self.settings.path_to_check.references
 
@@ -286,7 +287,7 @@ class _InstructionForEmptiness(_InstructionBase):
 
 class _EmptinessChecker:
     def __init__(self,
-                 property_descriptor: PropertyDescriptor,
+                 property_descriptor: property_description.PropertyDescriptor,
                  environment: InstructionEnvironmentForPostSdsStep,
                  settings: _Settings):
         self.property_descriptor = property_descriptor

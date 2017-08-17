@@ -55,12 +55,12 @@ class Selectors(tuple):
         that must be met by a file to be included in the set.
         """
         name_selector_descriptions = [
-            "name matches `{}'".format(pattern)
+            "name matches glob pattern `{}'".format(pattern)
             for pattern in self.name_patterns
         ]
 
         file_type_selector_descriptions = [
-            "file types is {}".format(file_properties.TYPE_INFO[file_type])
+            "types is {}".format(file_properties.TYPE_INFO[file_type].type_argument)
             for file_type in self.file_types
         ]
 
