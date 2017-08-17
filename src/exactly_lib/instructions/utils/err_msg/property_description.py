@@ -1,8 +1,8 @@
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
 
-class LinesConstructor:
-    """Constructs lines that are part of an error message."""
+class ErrorMessagePartConstructor:
+    """Constructs lines that are a part of an error message."""
 
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
         """
@@ -11,7 +11,7 @@ class LinesConstructor:
         raise NotImplementedError('abstract method')
 
 
-class NoLinesConstructor(LinesConstructor):
+class NoErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
         return []
 
@@ -41,7 +41,7 @@ class PropertyDescriptor:
 class PropertyDescriptorWithConstantPropertyName(PropertyDescriptor):
     def __init__(self,
                  name: str,
-                 object_descriptor: LinesConstructor):
+                 object_descriptor: ErrorMessagePartConstructor):
         self._name = name
         self._object_descriptor = object_descriptor
 
@@ -54,5 +54,5 @@ class PropertyDescriptorWithConstantPropertyName(PropertyDescriptor):
 def property_descriptor_with_just_a_constant_name(name: str) -> PropertyDescriptor:
     return PropertyDescriptorWithConstantPropertyName(
         name,
-        NoLinesConstructor(),
+        NoErrorMessagePartConstructor(),
     )
