@@ -9,6 +9,12 @@ RELATIVITY_DESCRIPTION_ACT = 'act directory'
 RELATIVITY_DESCRIPTION_TMP = 'tmp directory'
 RELATIVITY_DESCRIPTION_RESULT = 'result directory'
 
+EXACTLY_DIR__REL_HOME_CASE = 'EXACTLY_HOME'
+EXACTLY_DIR__REL_HOME_ACT = 'EXACTLY_ACT_HOME'
+EXACTLY_DIR__REL_ACT = 'EXACTLY_ACT'
+EXACTLY_DIR__REL_TMP = 'EXACTLY_TMP'
+EXACTLY_DIR__REL_RESULT = 'EXACTLY_RESULT'
+
 REL_TMP_OPTION_NAME = argument.OptionName(long_name='rel-tmp')
 REL_ACT_OPTION_NAME = argument.OptionName(long_name='rel-act')
 REL_RESULT_OPTION_NAME = argument.OptionName(long_name='rel-result')
