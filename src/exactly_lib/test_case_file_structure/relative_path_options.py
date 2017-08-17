@@ -29,42 +29,33 @@ class RelOptionInfo(tuple):
 
 class RelHomeOptionInfo(tuple):
     def __new__(cls,
+                directory_name: str,
                 option_name: argument.OptionName,
                 root_resolver: RelHomeRootResolver,
                 description: str):
-        return tuple.__new__(cls, (option_name, root_resolver, description))
+        return tuple.__new__(cls, (directory_name, option_name, root_resolver, description))
+
+    @property
+    def directory_name(self) -> str:
+        return self[0]
 
     @property
     def option_name(self) -> argument.OptionName:
-        return self[0]
+        return self[1]
 
     @property
     def root_resolver(self) -> RelHomeRootResolver:
-        return self[1]
+        return self[2]
 
     @property
     def description(self) -> str:
-        return self[2]
-
-
-class RelSdsOptionInfo(tuple):
-    def __new__(cls,
-                option_name: argument.OptionName,
-                root_resolver: RelSdsRootResolver,
-                description: str):
-        return tuple.__new__(cls, (option_name, root_resolver, description))
+        return self[3]
 
     @property
-    def option_name(self) -> argument.OptionName:
-        return self[0]
-
-    @property
-    def root_resolver(self) -> RelSdsRootResolver:
-        return self[1]
-
-    @property
-    def description(self) -> str:
-        return self[2]
+    def as_rel_any(self) -> RelOptionInfo:
+        return RelOptionInfo(self.option_name,
+                             self.root_resolver,
+                             self.description)
 
 
 class RelNonHomeOptionInfo(tuple):
@@ -86,26 +77,74 @@ class RelNonHomeOptionInfo(tuple):
     def description(self) -> str:
         return self[2]
 
+    @property
+    def as_rel_any(self) -> RelOptionInfo:
+        return RelOptionInfo(self.option_name,
+                             self.root_resolver,
+                             self.description)
+
+
+class RelSdsOptionInfo(tuple):
+    def __new__(cls,
+                directory_name: str,
+                option_name: argument.OptionName,
+                root_resolver: RelSdsRootResolver,
+                description: str):
+        return tuple.__new__(cls, (directory_name, option_name, root_resolver, description))
+
+    @property
+    def directory_name(self) -> str:
+        return self[0]
+
+    @property
+    def option_name(self) -> argument.OptionName:
+        return self[1]
+
+    @property
+    def root_resolver(self) -> RelSdsRootResolver:
+        return self[2]
+
+    @property
+    def description(self) -> str:
+        return self[3]
+
+    @property
+    def as_rel_non_home(self) -> RelNonHomeOptionInfo:
+        return RelNonHomeOptionInfo(self.option_name,
+                                    self.root_resolver,
+                                    self.description)
+
+    @property
+    def as_rel_any(self) -> RelOptionInfo:
+        return RelOptionInfo(self.option_name,
+                             self.root_resolver,
+                             self.description)
+
 
 REL_HOME_OPTIONS_MAP = {
-    RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
+    RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
+                                                       file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                        relativity_root.resolver_for_home_case,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE),
-    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
+    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_ACT,
+                                                      file_ref_texts.REL_HOME_ACT_OPTION_NAME,
                                                       relativity_root.resolver_for_home_act,
                                                       file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT),
 }
 
 REL_SDS_OPTIONS_MAP = {
-    RelSdsOptionType.REL_ACT: RelSdsOptionInfo(file_ref_texts.REL_ACT_OPTION_NAME,
+    RelSdsOptionType.REL_ACT: RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_ACT,
+                                               file_ref_texts.REL_ACT_OPTION_NAME,
                                                relativity_root.resolver_for_act,
                                                file_ref_texts.RELATIVITY_DESCRIPTION_ACT),
 
-    RelSdsOptionType.REL_TMP: RelSdsOptionInfo(file_ref_texts.REL_TMP_OPTION_NAME,
+    RelSdsOptionType.REL_TMP: RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_TMP,
+                                               file_ref_texts.REL_TMP_OPTION_NAME,
                                                relativity_root.resolver_for_tmp_user,
                                                file_ref_texts.RELATIVITY_DESCRIPTION_TMP),
 
-    RelSdsOptionType.REL_RESULT: RelSdsOptionInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
+    RelSdsOptionType.REL_RESULT: RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_RESULT,
+                                                  file_ref_texts.REL_RESULT_OPTION_NAME,
                                                   relativity_root.resolver_for_result,
                                                   file_ref_texts.RELATIVITY_DESCRIPTION_RESULT),
 }
@@ -115,43 +154,25 @@ REL_NON_HOME_OPTIONS_MAP = {
                                                        relativity_root.resolver_for_cwd,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_CWD),
 
-    RelNonHomeOptionType.REL_ACT: RelNonHomeOptionInfo(file_ref_texts.REL_ACT_OPTION_NAME,
-                                                       relativity_root.resolver_for_act,
-                                                       file_ref_texts.RELATIVITY_DESCRIPTION_ACT),
+    RelNonHomeOptionType.REL_ACT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT].as_rel_non_home,
 
-    RelNonHomeOptionType.REL_TMP: RelNonHomeOptionInfo(file_ref_texts.REL_TMP_OPTION_NAME,
-                                                       relativity_root.resolver_for_tmp_user,
-                                                       file_ref_texts.RELATIVITY_DESCRIPTION_TMP),
+    RelNonHomeOptionType.REL_TMP: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP].as_rel_non_home,
 
-    RelNonHomeOptionType.REL_RESULT: RelNonHomeOptionInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
-                                                          relativity_root.resolver_for_result,
-                                                          file_ref_texts.RELATIVITY_DESCRIPTION_RESULT),
+    RelNonHomeOptionType.REL_RESULT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT].as_rel_non_home,
 }
 
 REL_OPTIONS_MAP = {
-    RelOptionType.REL_HOME_CASE: RelOptionInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
-                                               relativity_root.resolver_for_home_case,
-                                               file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE),
+    RelOptionType.REL_HOME_CASE: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE].as_rel_any,
 
-    RelOptionType.REL_HOME_ACT: RelOptionInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
-                                              relativity_root.resolver_for_home_act,
-                                              file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT),
+    RelOptionType.REL_HOME_ACT: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_ACT].as_rel_any,
 
-    RelOptionType.REL_CWD: RelOptionInfo(file_ref_texts.REL_CWD_OPTION_NAME,
-                                         relativity_root.resolver_for_cwd,
-                                         file_ref_texts.RELATIVITY_DESCRIPTION_CWD),
+    RelOptionType.REL_CWD: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_CWD].as_rel_any,
 
-    RelOptionType.REL_ACT: RelOptionInfo(file_ref_texts.REL_ACT_OPTION_NAME,
-                                         relativity_root.resolver_for_act,
-                                         file_ref_texts.RELATIVITY_DESCRIPTION_ACT),
+    RelOptionType.REL_ACT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_ACT].as_rel_any,
 
-    RelOptionType.REL_TMP: RelOptionInfo(file_ref_texts.REL_TMP_OPTION_NAME,
-                                         relativity_root.resolver_for_tmp_user,
-                                         file_ref_texts.RELATIVITY_DESCRIPTION_TMP),
+    RelOptionType.REL_TMP: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_TMP].as_rel_any,
 
-    RelOptionType.REL_RESULT: RelOptionInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
-                                            relativity_root.resolver_for_result,
-                                            file_ref_texts.RELATIVITY_DESCRIPTION_RESULT),
+    RelOptionType.REL_RESULT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_RESULT].as_rel_any,
 }
 
 
