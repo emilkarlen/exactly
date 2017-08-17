@@ -1,0 +1,10 @@
+[assert]
+
+
+stdout ! equals expected-contents.txt
+
+
+[act]
+
+
+$ echo 'expected contents'

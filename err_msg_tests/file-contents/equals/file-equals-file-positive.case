@@ -1,0 +1,18 @@
+[setup]
+
+
+file checked-file <<EOF
+actual contents
+EOF
+
+
+[assert]
+
+
+contents checked-file equals expected-contents.txt
+
+
+[act]
+
+
+$ exit 0

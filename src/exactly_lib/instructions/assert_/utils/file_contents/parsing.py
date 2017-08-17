@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transforme
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
     NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
-from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.instructions.utils.err_msg import diff_msg_utils
 from exactly_lib.instructions.utils.expectation_type import from_is_negated
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
@@ -66,10 +66,10 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             raise _parse_exception("Invalid {}: '{}'".format(_REG_EX, str(ex)))
 
         expectation_type = from_is_negated(negated)
-        failure_resolver = DiffFailureInfoResolver(
+        failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
             actual.property_descriptor(),
             expectation_type,
-            'any line matches {} {}'.format(_REG_EX, reg_ex_arg.source_string)
+            diff_msg_utils.expected_constant('any line matches {} {}'.format(_REG_EX, reg_ex_arg.source_string))
         )
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
 
