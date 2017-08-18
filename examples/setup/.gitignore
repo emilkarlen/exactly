@@ -1,0 +1,5 @@
+copy-stdin-to-stdout
+copy-stdin-to-stdout
+list-files-under-current-directory
+remove-all-files-in-the-current-directory
+print-environment-variables

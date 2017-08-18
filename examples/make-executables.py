@@ -128,9 +128,10 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
 
 src_base_dir = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
+sandbox_dir = pathlib.Path('sandbox')
+home_dir = pathlib.Path('home')
 cleanup_dir = pathlib.Path('cleanup')
 external_programs_dir = pathlib.Path('external-programs')
-paths_and_symbols_dir = pathlib.Path('paths-and-symbols')
 setup_dir = pathlib.Path('setup')
 
 
@@ -156,26 +157,35 @@ files = itertools.chain.from_iterable([
     sts(first_step_dir,
         ['hello-world',
          'filter-lines',
+         ]),
+
+    sts(sandbox_dir,
+        ['hello-world',
          'classify-files',
-         'remove-all-files-in-the-current-directory']),
+         'remove-all-files-in-the-current-directory',
+         ]),
 
     do_nothing_list(cleanup_dir,
                     ['manipulate-database-contents',
-                     'my-helper-program']),
+                     'my-helper-program',
+                     ]),
 
     do_nothing_list(external_programs_dir,
                     ['my-assert-helper-program',
                      'my-setup-helper-program',
-                     'system-under-test']),
+                     'system-under-test',
+                     ]),
 
-    do_nothing_list(paths_and_symbols_dir / 'bin',
-                    ['do-something-good-with']),
+    do_nothing_list(home_dir / 'bin',
+                    ['do-something-good-with',
+                     ]),
 
     sts(setup_dir,
         ['copy-stdin-to-stdout',
          'remove-all-files-in-the-current-directory',
          'print-environment-variables',
-         'list-files-under-current-directory']),
+         'list-files-under-current-directory',
+         ]),
 ])
 
 if __name__ == '__main__':
