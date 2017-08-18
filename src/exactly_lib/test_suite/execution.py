@@ -53,7 +53,7 @@ class Executor:
                             ex.suite_file,
                             ex.maybe_section_name,
                             ex.line,
-                            'section',
+                            None,
                             SECTION_CONCEPT_NAME)
             file_printer.write_lines(ex.error_message_lines())
             exit_identifier_output_file = FilePrinter(self._std.out)
