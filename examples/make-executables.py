@@ -130,7 +130,7 @@ src_base_dir = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
 cleanup_dir = pathlib.Path('cleanup')
 external_programs_dir = pathlib.Path('external-programs')
-organize_dir = pathlib.Path('organize')
+paths_and_symbols_dir = pathlib.Path('paths-and-symbols')
 setup_dir = pathlib.Path('setup')
 
 
@@ -168,7 +168,7 @@ files = itertools.chain.from_iterable([
                      'my-setup-helper-program',
                      'system-under-test']),
 
-    do_nothing_list(organize_dir / 'bin',
+    do_nothing_list(paths_and_symbols_dir / 'bin',
                     ['do-something-good-with']),
 
     sts(setup_dir,
