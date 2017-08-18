@@ -32,7 +32,7 @@ cleanup/package.suite
 external-programs/package.suite
 
 #
-# Organizing a test package in sub-directories
+# Organization of files using paths and symbols
 #
 
-organize/package.suite
+paths-and-symbols/package.suite

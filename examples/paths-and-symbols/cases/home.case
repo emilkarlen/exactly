@@ -1,7 +1,14 @@
 #
-# Some instructions reference files relative to a "home" directory.
+# Exactly has a concept of a "home directory structure".
+#
+# This is directories that exist before the test case is executed,
+# and who's contents should not be modified.
+#
+# The system under test (SUT) is (probably) located here, as well as
+# resources used by the test case.
 #
 # There are two home directories:
+#
 #   "act home"  : This is where the [act] phase looks for the program to run
 #                 The "act-home" instruction sets this directory.
 #
