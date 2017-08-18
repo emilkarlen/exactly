@@ -1,0 +1,34 @@
+[setup]
+
+
+def list   LIST_W_2_ELEMS = first second
+
+def string A_STRING       = "a string"
+
+def path   A_PATH         = --rel-act my-file-in-act-dir
+
+def list   LIST_W_3_ELEMS = @[A_STRING]@ @[A_PATH]@ 'third element'
+
+def list   LIST_W_6_ELEMS = first @[LIST_W_2_ELEMS]@ @[LIST_W_3_ELEMS]@
+
+# The lists above (on rhs) are concatenated. Lists cannot be nested.
+
+
+[act]
+
+
+print-number-of-arguments @[LIST_W_6_ELEMS]@ 'seventh element'
+
+
+[assert]
+
+
+stdout equals <<EOF
+7
+EOF
+
+
+[conf]
+
+
+act-home bin
