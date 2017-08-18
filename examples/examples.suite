@@ -10,7 +10,7 @@ first-step/package.suite
 # Examples that utilize the "sandbox directory structure"
 #
 
-sandbox/package.suite
+sandbox-directories/package.suite
 
 #
 # Examples that utilize the "home directory structure"
