@@ -156,6 +156,7 @@ files = itertools.chain.from_iterable([
     sts(first_step_dir,
         ['hello-world',
          'filter-lines',
+         'classify-files',
          'remove-all-files-in-the-current-directory']),
 
     do_nothing_list(cleanup_dir,
