@@ -4,6 +4,8 @@ output-to-file.case
 
 modifications-of-files.case
 
+modifications-of-files--explicit-relativities.case
+
 modifications-of-files--with-symbols.case
 
 remove-files.case
