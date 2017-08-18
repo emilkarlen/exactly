@@ -9,3 +9,5 @@ exitcode 0
 stdout equals <<EOF
 Hello, World!
 EOF
+
+stderr empty
