@@ -4,14 +4,8 @@ stdin-stdout-stderr-exitcode.case
 
 output-contains-line-matching-regex.case
 
-modifications-of-files.case
-
 invalid-usage.case
 
 expected-content-in-file.case
-
-output-to-file.case
-
-remove-files.case
 
 descriptions.case

@@ -7,6 +7,18 @@
 first-step/package.suite
 
 #
+# Examples that utilize the "sandbox directory structure"
+#
+
+sandbox/package.suite
+
+#
+# Examples that utilize the "home directory structure"
+#
+
+home/package.suite
+
+#
 # Shell examples.
 #
 
@@ -30,9 +42,3 @@ cleanup/package.suite
 #
 
 external-programs/package.suite
-
-#
-# Organization of files using paths and symbols
-#
-
-paths-and-symbols/package.suite
