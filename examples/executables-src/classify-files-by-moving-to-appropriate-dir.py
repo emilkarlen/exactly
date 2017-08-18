@@ -2,13 +2,14 @@ import os
 import pathlib
 import sys
 
-if len(sys.argv) != 2:
-    sys.stderr.write('Invalid usage.\nSyntax: ROOT-DIR' + os.linesep)
+if len(sys.argv) != 3:
+    sys.stderr.write('Invalid usage.\nSyntax: GOOD-TOKEN ROOT-DIR' + os.linesep)
     sys.exit(1)
 
-root_dir = pathlib.Path(sys.argv[1])
+good_token = sys.argv[1]
 
-good_token = 'GOOD'
+root_dir = pathlib.Path(sys.argv[2])
+
 
 input_dir = root_dir / 'input-files'
 output_dir = root_dir / 'output-files'
