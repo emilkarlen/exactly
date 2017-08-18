@@ -129,7 +129,7 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
 src_base_dir = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
 sandbox_dir = pathlib.Path('sandbox')
-home_dir = pathlib.Path('home')
+home_dir = pathlib.Path('home-directories')
 cleanup_dir = pathlib.Path('cleanup')
 external_programs_dir = pathlib.Path('external-programs')
 setup_dir = pathlib.Path('setup')

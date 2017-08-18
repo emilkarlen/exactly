@@ -16,7 +16,7 @@ sandbox/package.suite
 # Examples that utilize the "home directory structure"
 #
 
-home/package.suite
+home-directories/package.suite
 
 #
 # Shell examples.
