@@ -1,0 +1,91 @@
+[setup]
+
+
+def path   INPUT_DIR         = --rel-act input-files
+
+def path   OUTPUT_DIR        = --rel-act output-files
+
+def path   OUTPUT_GOOD_DIR   = @[OUTPUT_DIR]@/good
+
+def path   OUTPUT_BAD_DIR    = --rel OUTPUT_DIR bad
+
+# The above is a variant of how a path that is relative to a symbol
+# can be defined.
+# It can be used by all instructions that take a path as argument
+
+def string NAME_OF_GOOD_FILE = a-good-file.txt
+
+def string NAME_OF_BAD_FILE  = a-bad-file.txt
+
+def string GOOD_TOKEN        = "this is a GOOD file"
+
+def path ROOT_DIRECTORY      = @[EXACTLY_ACT]@
+
+# EXACTLY_ACT is a predefined symbol
+
+def list   ARGUMENTS_TO_SUT  = @[GOOD_TOKEN]@ @[ROOT_DIRECTORY]@
+
+
+dir @[INPUT_DIR]@
+dir @[OUTPUT_GOOD_DIR]@
+dir @[OUTPUT_BAD_DIR]@
+
+file @[INPUT_DIR]@/@[NAME_OF_GOOD_FILE]@ <<EOF
+@[GOOD_TOKEN]@ contents
+EOF
+
+file --rel INPUT_DIR @[NAME_OF_BAD_FILE]@ <<EOF
+bad contents
+EOF
+
+# "file" above uses the "--rel SYMBOL" form,
+# which is equivalent to how the path i given to the first "file"
+# instruction
+
+[act]
+
+
+classify-files-by-moving-to-appropriate-dir @[ARGUMENTS_TO_SUT]@
+
+
+[assert]
+
+
+exitcode 0
+
+
+'All files should have been processed'
+
+dir-contents @[INPUT_DIR]@ empty
+
+
+
+# Check good files
+
+
+'Correct classification of good file'
+
+exists --file @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@
+
+'The dir for good files should contain only the file found to be good'
+
+dir-contents @[OUTPUT_GOOD_DIR]@ num-files = 1
+
+
+
+# Check bad files
+
+
+'Correct classification of bad file'
+
+exists --file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
+
+'The dir for bad files should contain only the file found to be bad'
+
+dir-contents @[OUTPUT_BAD_DIR]@ num-files = 1
+
+
+[conf]
+
+
+act-home bin

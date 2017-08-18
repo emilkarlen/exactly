@@ -169,6 +169,7 @@ files = itertools.chain.from_iterable([
     sts(symbols_dir / 'bin',
         ['print-number-of-arguments',
          'print-one-argument-per-line',
+         'classify-files-by-moving-to-appropriate-dir',
          ]),
 
     do_nothing_list(cleanup_dir,
