@@ -1,5 +1,4 @@
 #
-#
 # Instructions that refer to files have a number of options for specifying the
 # location of the file.
 #
@@ -26,8 +25,6 @@ home     ..
 [setup]
 
 
-# The "install" instruction looks for referenced files in the "case home" directory.
-
 install --rel-home testdata/test-file.txt
 
 
@@ -41,7 +38,5 @@ do-something-good-with test-file.txt
 
 [assert]
 
-
-# The "contents" instruction looks for referenced files in the "case home" directory.
 
 contents test-file.txt equals --rel-home expectation/expected.txt
