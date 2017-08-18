@@ -1,0 +1,51 @@
+#
+# Exactly has a concept of "symbol" that is a kind of variables, or named constants.
+#
+# A symbol is defined once by the "def" instruction, and may be referenced after this.
+#
+# There are three types of symbols:
+#
+#  - string
+#  - path
+#  - list
+#
+
+
+[conf]
+
+
+act-home ../bin
+
+home     ..
+
+
+[setup]
+
+
+def string TEST_FILE                   = test-file.txt
+
+def path   TEST_DATA_DIR               = --rel-home testdata
+
+def path   FILE_WITH_EXPECTED_CONTENTS = --rel-home expectation/expected.txt
+
+
+install @[TEST_DATA_DIR]@/@[TEST_FILE]@
+
+#
+# The line above could also be written
+#
+# install --rel TEST_DATA_DIR @[TEST_FILE]@
+#
+
+
+[act]
+
+
+do-something-good-with @[TEST_FILE]@
+
+
+[assert]
+
+
+contents @[TEST_FILE]@ equals @[FILE_WITH_EXPECTED_CONTENTS]@
+
