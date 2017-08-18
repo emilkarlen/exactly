@@ -1,8 +1,18 @@
 [conf]
 
+# This test case must be SKIPed, since it doesn't make sense.
+# It just displays some instructions and how they might could be used.
 
 mode SKIP
-# This will case the test case to not be executed.
+
+
+act-home ../..
+# "act home" is one of the directories in the home directory structure
+# it tells where the program run by [act] is located.
+
+home ..
+# "case home" is one of the directories in the home directory structure
+# it is the default location for predefined resources referenced from a test
 
 
 [setup]
@@ -21,8 +31,11 @@ dir root-dir-for-act-phase
 cd root-dir-for-act-phase
 # This will be current directory for the [act] phase.
 
+def string THIS_MUST_BE_PART_OF_STDIN = 'some important data'
+
 stdin <<EOF
 this will be stdin for the program in the "act" phase
+@[THIS_MUST_BE_PART_OF_STDIN]@
 EOF
 # (It is also possible to have stdin redirected to an existing file.)
 
@@ -33,10 +46,17 @@ env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
 run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
 
 
+def string A_SUT_ARGUMENT = 'an argument'
+
+def list   MORE_SUT_ARGUMENT = first 'second argument'
+
+def list   ALL_SUT_ARGUMENTS = @[A_SUT_ARGUMENT]@ @[MORE_SUT_ARGUMENT]@
+
+
 [act]
 
 
-the-system-under-test
+the-system-under-test @[ALL_SUT_ARGUMENTS]@ 'and finally one more argument'
 
 
 [before-assert]
@@ -45,7 +65,7 @@ the-system-under-test
 cd ..
 # Moves back to the original current directory.
 
-shell sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
+$ sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
 
 
 [assert]
@@ -53,7 +73,7 @@ shell sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
 
 exitcode != 0
 
-stdout <<EOF
+stdout equals <<EOF
 This is the expected output from the-system-under-test
 EOF
 
@@ -63,7 +83,7 @@ contents a-file.txt empty
 
 contents a-second-file.txt ! empty
 
-contents another-file.txt --with-replaced-env-vars expected-content.txt
+contents another-file.txt --with-replaced-env-vars equals expected-content.txt
 
 exists --dir actual-file
 
@@ -75,6 +95,6 @@ run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
 [cleanup]
 
 
-shell umount my-test-mount-point
+$ umount my-test-mount-point
 
 run my-prog-that-removes-database 'my test database'
