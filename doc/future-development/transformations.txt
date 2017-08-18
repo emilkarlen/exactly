@@ -1,0 +1,66 @@
+-*- org -*-
+
+<2017-08-18 Fri>
+
+Functionallity for transforming the contents of a file,
+inspired by sed.
+
+Usefull for instructions that checks the contents of a file:
+
+contents PATH	[TRANSFORMATION] ...
+
+stdout		[TRANSFORMATION] ...
+
+stderr		[TRANSFORMATION] ...
+
+* Example
+
+** Replace first string of each line that is a auto-gen db id:
+
+stdout --transformation replace ^[0-9]+ ID ...
+
+** Checking just some interesting lines
+
+stdout --transformation select ^interesting ...
+
+or
+
+stdout --transformation delete ^uninteresting ...
+
+* Syntax
+
+TRANFORMATION ::= --transformation TRANSFORMER
+
+TRANSFORMATION ::= replace [--selection LINES_SELECTOR] REGEX STRING
+                 = replace-test-case-dirs
+                 = select LINES_SELECTOR
+                 = delete LINES_SELECTOR
+                 = replace-exactly-dirs
+                 = sort
+                 = NAMED-TRANSFORMATION
+                 = TRANSFORMATION | TRANSFORMATION (sequence à la shell pipe)
+                 = ...
+
+LINES_SELECTOR ::= REGEX
+                 = FROM:TO        (à la python slices)
+                 = FROM:+INTEGER  (à la python slices)
+                 = FROM:          (à la python slices)
+                 = :TO            (à la python slices)
+                 = ( LINES_SELECTOR )
+                 = ! LINES_SELECTOR
+                 = LINES_SELECTOR && LINES_SELECTOR
+                 = LINES_SELECTOR || LINES_SELECTOR
+
+FROM ::= LINE_NUM
+TO   ::= LINE_NUM
+ 
+LINE_NUM ::= INTEGER
+           = -INTEGER (à la python slices)
+
+* defining transformations
+
+def transformer MY_TRANSFORMER = TRANSFORMER
+
+ev
+
+def lines-selector MY_LINES_SEL = LINES_SELECTOR
