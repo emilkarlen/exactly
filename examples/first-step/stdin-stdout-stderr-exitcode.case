@@ -1,0 +1,38 @@
+#
+# Shows handling of stdin, stdout, stderr and exitcode.
+#
+
+[setup]
+
+
+stdin <<EOF
+first line
+first good line
+a bad line
+second good line
+EOF
+
+# stdin can also be directed to a file using: stdin PATH
+
+[act]
+
+
+filter-lines "good"
+
+
+[assert]
+
+
+exitcode 0
+
+stdout equals <<EOF
+first good line
+second good line
+EOF
+
+#
+# The expected content can also be located in a file, using:
+# stdout equals PATH
+#
+
+stderr empty

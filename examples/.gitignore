@@ -5,6 +5,7 @@ external-programs/my-setup-helper-program
 external-programs/system-under-test
 first-step/hello-world
 first-step/remove-all-files-in-the-current-directory
+first-step/filter-lines
 organize/bin/do-something-good-with
 setup/copy-stdin-to-stdout
 setup/list-files-under-current-directory

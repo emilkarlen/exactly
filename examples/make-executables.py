@@ -155,6 +155,7 @@ def do_nothing_list(target_base: pathlib.Path, target_file_names: list) -> list:
 files = itertools.chain.from_iterable([
     sts(first_step_dir,
         ['hello-world',
+         'filter-lines',
          'remove-all-files-in-the-current-directory']),
 
     do_nothing_list(cleanup_dir,

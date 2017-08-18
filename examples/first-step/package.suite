@@ -1,6 +1,6 @@
 [cases]
 
-exitcode-and-output.case
+stdin-stdout-stderr-exitcode.case
 
 output-contains-line-matching-regex.case
 
