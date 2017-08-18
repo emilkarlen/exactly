@@ -161,7 +161,7 @@ files = itertools.chain.from_iterable([
 
     sts(sandbox_dir,
         ['hello-world',
-         'classify-files',
+         'classify-files-by-moving-to-appropriate-dir',
          'remove-all-files-in-the-current-directory',
          ]),
 

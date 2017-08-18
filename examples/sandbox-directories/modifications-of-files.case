@@ -1,11 +1,10 @@
 #
-# A test case is executed in a temporary sandbox directory,
-# which is removed after the test.
-# The current directory is inside this sandbox.
+# Since each test is executed in a temporary sandbox directory structure,
+# [setup] may create files and directories in it.
 #
-# So it is ok to make, modify and delete files and directories.
-#
-
+# The "act" directory is the current directory when [setup] starts,
+# (and remains the current directory until it is changed with
+# the "cd" instruction).
 #
 # This case tests a program that classifies files as either good or bad,
 # and moves them to a corresponding directory.
@@ -23,30 +22,39 @@ GOOD contents
 EOF
 
 file input-files/a-bad-file.txt <<EOF
-BAD contents
+bad contents
 EOF
 
 
 [act]
 
 
-classify-files .
+# The SUT is given the current directory as argument ("."),
+# which is the "act" directory inside the sandbox:
+
+classify-files-by-moving-to-appropriate-dir GOOD .
 
 
 [assert]
 
+
 exitcode 0
 
 
-
-# Check that all files have been processed
+'All files should have been processed'
 
 dir-contents input-files empty
 
 
+
 # Check good files
 
+
+'Correct detection of good file'
+
 exists --file output-files/good/a-good-file.txt
+
+'The dir for good files should contain only the file found to be good'
 
 dir-contents output-files/good num-files = 1
 
@@ -54,7 +62,12 @@ dir-contents output-files/good num-files = 1
 
 # Check bad files
 
+
+'Correct detection of bad file'
+
 exists --file output-files/bad/a-bad-file.txt
+
+'The dir for bad files should contain only the file found to be bad'
 
 dir-contents output-files/bad num-files = 1
 

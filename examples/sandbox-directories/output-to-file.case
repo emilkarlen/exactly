@@ -1,6 +1,10 @@
 #
-# The tested program is executed in a temporary directory.
+# The tested program is executed in a temporary sandbox directory structure.
 # So it can create files without polluting a source code directory.
+#
+# The sandbox directory structure is created once for each test,
+# and is removed automatically when it finished (unless
+# Exactly is run with the --keep command line option).
 #
 
 [act]

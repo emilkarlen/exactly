@@ -1,7 +1,7 @@
 [cases]
 
-modifications-of-files.case
-
 output-to-file.case
+
+modifications-of-files.case
 
 remove-files.case
