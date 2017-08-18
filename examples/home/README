@@ -1,0 +1,53 @@
+Examples of how the "home directory structure" concept can be used
+
+Exactly has a concept of a "home directory structure".
+
+This is directories that exist before the test case is executed,
+and who's contents should not be modified.
+
+The system under test (SUT) is (probably) located here, as well as
+resources used by the test case.
+
+There are two home directories:
+
+"act home"  : This is where the [act] phase looks for the program to run
+              The "act-home" instruction sets this directory.
+
+"case home" : This is where many instructions looks for files that are used
+              by the current test case
+              The "home" instruction sets this directory.
+
+By default, both these directories are set to
+the directory that contains the test case file.
+
+
+They can be set by instruction in the "conf" phase:
+
+[conf]
+
+act-home DIR
+
+home     DIR
+
+
+Instructions can specify paths to be relative one of these using
+explicit "relativity":
+
+--rel-act-home PATH
+
+--rel-home     PATH
+
+
+Predefined symbols and environment variables refer to these directories:
+The environment variable and corresponding symbol have the same name:
+
+EXACTLY_ACT_HOME
+
+EXACTLY_HOME
+
+
+The symbols are of type "path", and may be referenced using either
+the --rel option
+as in                         --rel EXACTLY_HOME my-file.txt
+or the @[symbol_name]@ syntax
+as in                         @[EXACTLY_HOME]@/my-file.txt
