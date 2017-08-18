@@ -1,0 +1,58 @@
+Examples of how the "sandbox directory structure" concept can be used
+
+The "sandbox directory structure" is a set of temporary directories
+that are crated for each test case, and deleted after the case has finished.
+
+The purpose of the sandbox is to let the tested program pollute files and
+directories, without polluting source files.
+
+One of the sandbox directories, the "act" directory, is the
+current directory when the [setup] starts.
+
+
+There are three sandbox directories that can be used by a test:
+
+"act"  : This is the current directory when [setup] starts
+         It remains the current directory for following phases,
+         unless it is changed by the "cd" instruction.
+
+"result" : This is where Exactly stores stdout, stderr, exitcode from
+           the SUT run by the [act] phase.
+
+"tmp"    : The test can use this directory for temporary files
+           used by the test. Exactly itself does not put files here,
+           so it is guarantied to be empty when [setup] starts
+
+The sandbox also contains directories that are reserved for Exactly.
+
+The "--keep" command line option makes Exactly to not delete the sandbox,
+but instead print the sandbox root directory instead of the result of the test.
+It can be used as a tool for debugging, by inspecting files created by
+either the [act], or by any of the other phase.
+
+
+Instructions can specify paths to be relative one of these using
+explicit "relativity":
+
+--rel-act    PATH
+
+--rel-result PATH
+
+--rel-tmp    PATH
+
+
+Predefined symbols and environment variables refer to these directories:
+The environment variable and corresponding symbol have the same name:
+
+EXACTLY_ACT
+
+EXACTLY_RESULT
+
+EXACTLY_TMP
+
+
+The symbols are of type "path", and may be referenced using either
+the --rel option
+as in                         --rel EXACTLY_TMP my-file.txt
+or the @[symbol_name]@ syntax
+as in                         @[EXACTLY_TMP]@/my-file.txt
