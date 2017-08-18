@@ -1,0 +1,47 @@
+#
+#
+# Instructions that refer to files have a number of options for specifying the
+# location of the file.
+#
+# This test case tests the same thing as "home-directories.case",
+# but uses options to explicitly tell where files are located.
+#
+#
+# Options for home directories:
+#
+#   "act home"  : "--rel-home-act" denotes this directory (but not used in this test)
+#
+#   "case home" : "--rel-home" denotes this directory
+#
+
+
+[conf]
+
+
+act-home ../bin
+
+home     ..
+
+
+[setup]
+
+
+# The "install" instruction looks for referenced files in the "case home" directory.
+
+install --rel-home testdata/test-file.txt
+
+
+[act]
+
+
+# The "act" phase looks for referenced files in the "act home" directory.
+
+do-something-good-with test-file.txt
+
+
+[assert]
+
+
+# The "contents" instruction looks for referenced files in the "case home" directory.
+
+contents test-file.txt equals --rel-home expectation/expected.txt
