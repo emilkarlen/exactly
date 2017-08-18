@@ -129,6 +129,7 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
 src_base_dir = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
 sandbox_dir = pathlib.Path('sandbox-directories')
+symbols_dir = pathlib.Path('symbols')
 home_dir = pathlib.Path('home-directories')
 cleanup_dir = pathlib.Path('cleanup')
 external_programs_dir = pathlib.Path('external-programs')
@@ -163,6 +164,10 @@ files = itertools.chain.from_iterable([
         ['hello-world',
          'classify-files-by-moving-to-appropriate-dir',
          'remove-all-files-in-the-current-directory',
+         ]),
+
+    sts(symbols_dir / 'bin',
+        ['print-number-of-arguments',
          ]),
 
     do_nothing_list(cleanup_dir,

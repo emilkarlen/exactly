@@ -19,6 +19,12 @@ sandbox-directories/package.suite
 home-directories/package.suite
 
 #
+# Examples with "symbols"
+#
+
+symbols/package.suite
+
+#
 # Shell examples.
 #
 
