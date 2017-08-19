@@ -1,0 +1,20 @@
+-*- org -*-
+
+* Documentaion of instructions
+
+Style: presens
+
+DOES the JOB
+
+Declarative style:
+
+ - "Sets the ..."
+ - "Creates a directory"
+
+Possibly with relevant environment info
+
+ - "Creates a directory in the current directory"
+
+** Single line descriptions
+
+Shall not end with a dot.
