@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glossary version="5.0" xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:xi="http://www.w3.org/2001/XInclude"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:m="http://www.w3.org/1998/Math/MathML"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:db="http://docbook.org/ns/docbook">
+  <glossdiv>
+    <title/>
+
+    <glossentry>
+      <glossterm>phase</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>declaration (of phase in test case file)</glossterm>
+
+      <glossdef>
+        <para>[NAME]</para>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>instruction (in phase)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>test case</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>test case file</glossterm>
+
+      <glossdef>
+        <para>List of phases and their contents. A phase may appear several
+        times (or not at all, if it is optional). </para>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>action to check</glossterm>
+
+      <glossdef>
+        <para/>
+
+        <itemizedlist>
+          <listitem>
+            <para>program (to test/check)</para>
+          </listitem>
+
+          <listitem>
+            <para>action (to test/check)</para>
+          </listitem>
+
+          <listitem>
+            <para>system under test</para>
+          </listitem>
+        </itemizedlist>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>processing (of test case file)</glossterm>
+
+      <glossdef>
+        <para>preprocessing (of test case file)</para>
+
+        <orderedlist>
+          <listitem>
+            <para>preprocessing (of test case file)</para>
+          </listitem>
+
+          <listitem>
+            <para>syntax checking (of test case file)</para>
+          </listitem>
+
+          <listitem>
+            <para>validation (of test case)</para>
+          </listitem>
+
+          <listitem>
+            <para>execution (of test case)</para>
+          </listitem>
+        </orderedlist>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>preprocessing (of test case file)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>processing step (of test case file)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>preprocessing (of test case file)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>syntax checking (of test case file)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>validation (of test case)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>execution (of test case)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>execution (of phase)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>execution (of instruction)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>outcome (of test case)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>outcome (of [assert])</glossterm>
+
+      <glossdef>
+        <para>Either PASS or FAIL</para>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>effect (of executing an instruction)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>Either side effect, or "outcome"??</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>reporting (of outcome of execution of test case)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>reporting (of outcome of execution of test suite)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>environment (that phase/test case is executed in)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+  </glossdiv>
+
+  <glossdiv>
+    <title>Paths</title>
+
+    <glossentry>
+      <glossterm>path</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>relativity (of path)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>relativity root (for path)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>current directory</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+  </glossdiv>
+</glossary>
