@@ -1,9 +1,1 @@
-__pycache__
-.idea/workspace.xml
-.idea/shelf/
-test/exactly_lib_test/tmp/
-tmp/
-# Used by setuptools
-build/
-dist/
-src/exactly.egg-info/
+*~
