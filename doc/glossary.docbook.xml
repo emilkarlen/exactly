@@ -46,7 +46,7 @@
 
       <glossdef>
         <para>List of phases and their contents. A phase may appear several
-        times (or not at all, if it is optional). </para>
+        times (or not at all, if it is optional).</para>
       </glossdef>
     </glossentry>
 
@@ -215,6 +215,15 @@
 
       <glossdef>
         <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>implementation (of test case)</glossterm>
+
+      <glossdef>
+        <para>The test case itself - the instructions used by the test case
+        writer to perform the test.</para>
       </glossdef>
     </glossentry>
   </glossdiv>
