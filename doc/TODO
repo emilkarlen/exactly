@@ -1,13 +1,60 @@
 -*- org -*-
 
-* type instruction should use standard parse_file_ref
+* remove / replace --rel-cd relativity?
+<2017-08-19 Sat>
+It doesn't fit together with the other roots that has a RelOptionType,
+since it does not produce an absolute path.  This causes some problems
+in the implementation, althoug quite small.
+
+Today, there is special treatment of hard coded absolute paths:
+these does not have a RelOptionType, and information about them
+is represented in a special way only used for these abs paths:
+
+----------------------------------------
+class PathRelativityVariants:
+
+    @property
+    def rel_option_types(self) -> set:
+
+    @property
+    def absolute(self) -> bool:
+----------------------------------------
+
+Maybe it would make the code more consistent to move
+info about --rel-cd to the bucket for abs relativity. I.e.
+these two relativities would be treated with equal special handling,
+that would indicate that they are not any of the relativity roots.
+
+With that approach. RelNonHomeOptionType could be discarded.
+
+What makes --rel-cd fit in RelOptionType is probably the fact that
+it has a command line option "--rel-cd".  So RelOptionType represent
+all "roots" with a relativity option.
+
+Maybe --rel-cd should be removed.  But there must be some way to
+specify paths relative the cd. So if it were removed, it would
+mean that no PATH argument could have a default relativity other than
+--rel-cd.
+
+Another option is to split RelOptionType into two: one set
+that is identical to todays, and one with only real-relativities.
+
+Another option is to change how accepted options are given to
+parse_file_ref.
+** Change RelOptionType to just be the set of relativity-options?
+<2017-08-20 Sun>
+
+I.e., change it to be what the name says!
+Introduce other enums for relativity roots, e.g.
+RelativityRoot
+* DONE type instruction should use standard parse_file_ref
 Currently it only supports paths relative CD.
 * install instruction
 ** should parse file name using parse_file_ref
 ** should check parsed file using FileRefCheck
 As done by InstructionWithFileRefsBase
 * symbols
-** def of string should be able to reference symbols in the value
+** DONE def of string should be able to reference symbols in the value
 A la
 --------------------------------
 str §[sym1]§ more text and finally §[sym2]§
