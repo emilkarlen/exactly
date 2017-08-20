@@ -3,3 +3,5 @@ string.case
 path.case
 
 list.case
+
+strings-as-relative-paths.case

@@ -1,0 +1,29 @@
+[setup]
+
+
+def string MY_FILE = my-dir/my-file.txt
+
+file --rel-act @[MY_FILE]@ <<EOF
+This is
+my file!
+EOF
+
+
+[act]
+
+
+print-number-of-lines-in-file @[MY_FILE]@
+
+
+[assert]
+
+
+stdout equals <<EOF
+2
+EOF
+
+
+[conf]
+
+
+act-home bin
