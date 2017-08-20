@@ -1,0 +1,36 @@
+#
+# Types of all values can be converted to string.
+#
+# When a list is converted, the result is concatenation of all elements separated by a single space.
+#
+
+[setup]
+
+
+def path MY_PATH = --rel-act my-file.txt
+
+def list LIST_W_2_ELEMS = first second
+
+def string MY_PATH_AS_A_STRING = @[MY_PATH]@
+
+def string MY_LIST_AS_A_STRING = @[LIST_W_2_ELEMS]@
+
+
+[act]
+
+
+print-number-of-arguments @[MY_PATH_AS_A_STRING]@ @[MY_LIST_AS_A_STRING]@
+
+
+[assert]
+
+
+stdout equals <<EOF
+2
+EOF
+
+
+[conf]
+
+
+act-home bin

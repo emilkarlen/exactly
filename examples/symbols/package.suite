@@ -5,3 +5,5 @@ path.case
 list.case
 
 strings-as-relative-paths.case
+
+convert-to-string.case
