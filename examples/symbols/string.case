@@ -1,29 +1,30 @@
 [setup]
 
 
-def string SINGLE_WORD      = word
+def string GOOD = 'very good'
 
-def string QUOTED           = "a quoted string"
+def string MY_FILE = my-file.txt
 
-def string CONCAT           = "@[SINGLE_WORD]@ and @[QUOTED]@"
-
-def string USED_IN_HERE_DOC = 'you can reference symbols in here docs!'
+file @[MY_FILE]@ <<EOF
+a @[GOOD]@ 1st line
+a bad 2nd line
+a @[GOOD]@ 3d line
+a line we don't want
+EOF
 
 
 [act]
 
 
-print-one-argument-per-line @[SINGLE_WORD]@  @[QUOTED]@  @[CONCAT]@  @[USED_IN_HERE_DOC]@
+filter-lines @[MY_FILE]@ @[GOOD]@
 
 
 [assert]
 
 
-stdout equals <<EOF
-word
-a quoted string
-word and a quoted string
-@[USED_IN_HERE_DOC]@
+contents @[MY_FILE]@ equals <<EOF
+a @[GOOD]@ 1st line
+a @[GOOD]@ 3d line
 EOF
 
 
