@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHomeOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with_not_and_rel_opts import \
     InstructionArgumentsVariantConstructor, InstructionChecker
@@ -47,9 +47,9 @@ class TestParseInvalidSyntax(instruction_check.TestCaseBase):
     test_cases_with_no_negation_operator = [
         '',
         '{type_option} file-name unexpected-argument'.format(
-            type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+            type_option=option_syntax(FILE_TYPE_OPTIONS_DICT[FileType.DIRECTORY])),
         '{type_option}'.format(
-            type_option=long_option_syntax(sut.TYPE_NAME_DIRECTORY)),
+            type_option=option_syntax(FILE_TYPE_OPTIONS_DICT[FileType.DIRECTORY])),
         '{invalid_option} file-name'.format(
             invalid_option=long_option_syntax('invalidOption')),
         'file-name unexpected-argument',

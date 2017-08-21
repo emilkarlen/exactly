@@ -34,16 +34,11 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-TYPE_NAME_SYMLINK = 'symlink'
-TYPE_NAME_REGULAR = 'file'
-TYPE_NAME_DIRECTORY = 'dir'
-
 NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
 
 FILE_TYPE_OPTIONS = [
-    (file_properties.FileType.SYMLINK, a.OptionName(long_name=TYPE_NAME_SYMLINK)),
-    (file_properties.FileType.REGULAR, a.OptionName(long_name=TYPE_NAME_REGULAR)),
-    (file_properties.FileType.DIRECTORY, a.OptionName(long_name=TYPE_NAME_DIRECTORY)),
+    (file_type, a.OptionName(long_name=file_info.type_argument))
+    for file_type, file_info in file_properties.TYPE_INFO.items()
 ]
 
 _TYPE_ARGUMENT_STR = 'TYPE'
