@@ -171,6 +171,7 @@ files = itertools.chain.from_iterable([
          'print-one-argument-per-line',
          'classify-files-by-moving-to-appropriate-dir',
          'print-number-of-lines-in-file',
+         'filter-lines',
          ]),
 
     do_nothing_list(cleanup_dir,

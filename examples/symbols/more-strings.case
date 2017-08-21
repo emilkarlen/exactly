@@ -1,0 +1,33 @@
+[setup]
+
+
+def string SINGLE_WORD      = word
+
+def string QUOTED           = "a quoted string"
+
+def string CONCAT           = "@[SINGLE_WORD]@ and @[QUOTED]@"
+
+def string USED_IN_HERE_DOC = 'you can reference symbols in here docs!'
+
+
+[act]
+
+
+print-one-argument-per-line @[SINGLE_WORD]@  @[QUOTED]@  @[CONCAT]@  @[USED_IN_HERE_DOC]@
+
+
+[assert]
+
+
+stdout equals <<EOF
+word
+a quoted string
+word and a quoted string
+@[USED_IN_HERE_DOC]@
+EOF
+
+
+[conf]
+
+
+act-home bin
