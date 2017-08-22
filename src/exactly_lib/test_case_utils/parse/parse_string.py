@@ -2,6 +2,7 @@ from exactly_lib.help_texts.test_case.instructions.assign_symbol import STRING_T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
@@ -9,7 +10,6 @@ from exactly_lib.symbol.string_resolver import StringResolver, ConstantStringFra
     SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import symbol_syntax
-from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.util.parse.token import Token
 
 

@@ -2,10 +2,10 @@ from contextlib import contextmanager
 
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref
-from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 
 

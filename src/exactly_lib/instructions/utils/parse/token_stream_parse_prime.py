@@ -5,8 +5,8 @@ from exactly_lib.named_element.negation_of_predicate import NEGATION_ARGUMENT_ST
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.util import expectation_type
 from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option
 from exactly_lib.util.cli_syntax.option_parsing import matches

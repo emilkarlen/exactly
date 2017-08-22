@@ -17,6 +17,7 @@ from exactly_lib.instructions.utils.parse.parse_executable_file import PARSE_FIL
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.path_resolver import FileRefResolver
@@ -27,7 +28,6 @@ from exactly_lib.test_case_utils.cmd_and_args_resolvers import CmdAndArgsResolve
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
-from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
 from exactly_lib.test_case_utils.parse.parse_list import parse_list, \
     parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
