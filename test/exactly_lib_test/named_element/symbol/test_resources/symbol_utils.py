@@ -1,13 +1,13 @@
 from exactly_lib.named_element import resolver_structure
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition, NamedElementReference
 from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
-from exactly_lib.named_element.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_ref as _file_ref
 from exactly_lib.type_system_values.list_value import ListValue

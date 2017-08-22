@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.execution.symbols_handling import restriction_failure_renderer as sut
-from exactly_lib.named_element.restriction import ValueRestrictionFailure
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.named_element.symbol.string_resolver import string_constant
+from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_table_from_names

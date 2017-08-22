@@ -4,9 +4,9 @@ from collections import Counter
 
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver, NamedValueContainer
-from exactly_lib.named_element.restriction import ReferenceRestrictions, ValueRestrictionFailure
-from exactly_lib.named_element.restriction import ValueRestriction
+from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as sut
+from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
@@ -123,7 +123,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
 
     def _check_direct_with_satisfied_variants_for_restriction_on_every_node(
             self,
-            restriction_on_direct_node: sut.ValueRestriction,
+            restriction_on_direct_node: vr.ValueRestriction,
             expected_result: asrt.ValueAssertion):
         symbol_to_check = symbol_utils.entry('symbol_name')
         cases = [
@@ -476,15 +476,15 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         return symbol_table, referencing_symbol.key, referencing_symbol.value,
 
 
-def unconditionally_satisfied_value_restriction() -> sut.ValueRestriction:
+def unconditionally_satisfied_value_restriction() -> vr.ValueRestriction:
     return RestrictionWithConstantResult(None)
 
 
-def restriction_with_constant_failure(error_message: str) -> sut.ValueRestriction:
+def restriction_with_constant_failure(error_message: str) -> vr.ValueRestriction:
     return RestrictionWithConstantResult(ValueRestrictionFailure(error_message))
 
 
-class RestrictionWithConstantResult(sut.ValueRestriction):
+class RestrictionWithConstantResult(vr.ValueRestriction):
     def __init__(self, result):
         self.result = result
 
@@ -495,7 +495,7 @@ class RestrictionWithConstantResult(sut.ValueRestriction):
         return self.result
 
 
-class ValueRestrictionThatRaisesErrorIfApplied(sut.ValueRestriction):
+class ValueRestrictionThatRaisesErrorIfApplied(vr.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
@@ -503,7 +503,7 @@ class ValueRestrictionThatRaisesErrorIfApplied(sut.ValueRestriction):
         raise NotImplementedError('It is an error if this method is called')
 
 
-class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
+class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
     def __init__(self, resolver_container_2_result__fun: types.FunctionType):
         self.resolver_container_2_result__fun = resolver_container_2_result__fun
         self.visited = Counter()

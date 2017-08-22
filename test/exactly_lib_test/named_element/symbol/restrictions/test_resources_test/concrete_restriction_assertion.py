@@ -1,11 +1,12 @@
 import unittest
 
-from exactly_lib.named_element.restriction import ValueRestrictionFailure, ReferenceRestrictions, \
+from exactly_lib.named_element.restriction import ReferenceRestrictions, \
     FileSelectorReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as r
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfIndirectReference
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
     FileRefRelativityRestriction
+from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib_test.named_element.symbol.restrictions.test_resources import concrete_restriction_assertion as sut

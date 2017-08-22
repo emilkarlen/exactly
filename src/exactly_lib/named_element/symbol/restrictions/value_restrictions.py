@@ -1,8 +1,8 @@
 from exactly_lib.named_element.resolver_structure import NamedValueContainer
-from exactly_lib.named_element.restriction import ValueRestriction, ValueRestrictionFailure
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions import error_messages
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
+from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
 from exactly_lib.type_system_values.value_type import ValueType

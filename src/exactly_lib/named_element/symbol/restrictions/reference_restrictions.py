@@ -2,9 +2,10 @@ import types
 
 from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
-from exactly_lib.named_element.restriction import ValueRestriction, FailureInfo, \
-    ValueRestrictionFailure, SymbolReferenceRestrictions
+from exactly_lib.named_element.restriction import FailureInfo, \
+    SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
+from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
