@@ -8,7 +8,6 @@ from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.instructions.utils.err_msg import diff_msg, diff_msg_utils
 from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.instructions.utils.err_msg.path_description import path_value_with_relativity_name_prefix
-from exactly_lib.instructions.utils.expectation_type import ExpectationType, from_is_negated
 from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -20,6 +19,7 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDoc
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util import file_utils
+from exactly_lib.util.expectation_type import ExpectationType, from_is_negated
 from exactly_lib.util.file_utils import tmp_text_file_containing
 
 _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
