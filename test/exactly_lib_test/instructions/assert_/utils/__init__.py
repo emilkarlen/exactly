@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_.utils import parse_dir_contents_selector, \
-    instruction_from_parts_that_executes_sub_process, instruction_from_parts, return_pfh_via_exceptions, \
+from exactly_lib_test.instructions.assert_.utils import instruction_from_parts_that_executes_sub_process, \
+    instruction_from_parts, return_pfh_via_exceptions, \
     expression
 from exactly_lib_test.instructions.assert_.utils.file_contents import env_vars_replacement
 
@@ -9,7 +9,6 @@ from exactly_lib_test.instructions.assert_.utils.file_contents import env_vars_r
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         return_pfh_via_exceptions.suite(),
-        parse_dir_contents_selector.suite(),
         instruction_from_parts.suite(),
         instruction_from_parts_that_executes_sub_process.suite(),
         expression.suite(),

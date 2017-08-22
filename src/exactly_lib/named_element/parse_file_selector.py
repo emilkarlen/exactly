@@ -3,7 +3,6 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.instructions.utils.err_msg import property_description
-from exactly_lib.instructions.utils.parse import token_stream_parse
 from exactly_lib.instructions.utils.parse import token_stream_parse_prime
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.section_document.parse_source import ParseSource
@@ -107,12 +106,12 @@ def every_file_in_dir() -> Selectors:
 
 def parse_from_parse_source(source: ParseSource,
                             selector_is_mandatory: bool) -> Selectors:
-    with token_stream_parse.from_parse_source(source) as tp:
+    with token_stream_parse_prime.from_parse_source(source) as tp:
         return parse(tp, selector_is_mandatory)
 
 
 def parse_optional_selection_option_from_parse_source(source: ParseSource) -> Selectors:
-    with token_stream_parse.from_parse_source(source) as tp:
+    with token_stream_parse_prime.from_parse_source(source) as tp:
         return parse_optional_selection_option(tp)
 
 
