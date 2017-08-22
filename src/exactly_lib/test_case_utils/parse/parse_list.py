@@ -1,7 +1,7 @@
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse as tp
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
@@ -71,6 +71,6 @@ def _symbol_reference_element(s: str) -> lr.Element:
     return lr.SymbolReferenceElement(_symbol_reference(s))
 
 
-def _symbol_reference(symbol_name: str) -> SymbolReference:
-    return SymbolReference(symbol_name,
-                           no_restrictions())
+def _symbol_reference(symbol_name: str) -> NamedElementReference:
+    return NamedElementReference(symbol_name,
+                                 no_restrictions())

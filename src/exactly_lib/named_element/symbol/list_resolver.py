@@ -1,6 +1,6 @@
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, string_constant
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.type_system_values import concrete_string_values as csv
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.type_system_values.list_value import ListValue
@@ -15,7 +15,7 @@ class Element:
     """
 
     @property
-    def symbol_reference_if_is_symbol_reference(self) -> SymbolReference:
+    def symbol_reference_if_is_symbol_reference(self) -> NamedElementReference:
         """
         :returns: None if this element is not a single-symbol-reference element ,
         else the reference.
@@ -40,7 +40,7 @@ def string_element(string_resolver: StringResolver) -> Element:
     return StringResolverElement(string_resolver)
 
 
-def symbol_element(symbol_reference: SymbolReference) -> Element:
+def symbol_element(symbol_reference: NamedElementReference) -> Element:
     return SymbolReferenceElement(symbol_reference)
 
 
@@ -51,7 +51,7 @@ class StringResolverElement(Element):
         self._string_resolver = string_resolver
 
     @property
-    def symbol_reference_if_is_symbol_reference(self) -> SymbolReference:
+    def symbol_reference_if_is_symbol_reference(self) -> NamedElementReference:
         """
         :returns: None if this element is not a single-symbol-reference element ,
         else the reference.
@@ -69,11 +69,11 @@ class StringResolverElement(Element):
 class SymbolReferenceElement(Element):
     """ An element that is a reference to a symbol. """
 
-    def __init__(self, symbol_reference: SymbolReference):
+    def __init__(self, symbol_reference: NamedElementReference):
         self._symbol_reference = symbol_reference
 
     @property
-    def symbol_reference_if_is_symbol_reference(self) -> SymbolReference:
+    def symbol_reference_if_is_symbol_reference(self) -> NamedElementReference:
         return self._symbol_reference
 
     @property

@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -257,7 +257,7 @@ class TestSymbolReferences(TestCaseBase):
         symbol = NameAndValue('symbol_name',
                               file_refs.of_rel_option(relativity,
                                                       PathPartAsFixedPath(sub_dir_name)))
-        expected_symbol_reference = SymbolReference(
+        expected_symbol_reference = NamedElementReference(
             symbol.name,
             parse_file_ref.path_or_string_reference_restrictions(
                 ACCEPTED_RELATIVITY_VARIANTS
@@ -297,11 +297,11 @@ class TestSymbolReferences(TestCaseBase):
         here_doc_symbol = NameAndValue('here_doc_symbol_name',
                                        'here doc symbol value')
 
-        expected_file_symbol_reference = SymbolReference(
+        expected_file_symbol_reference = NamedElementReference(
             file_symbol.name,
             parse_file_ref.path_or_string_reference_restrictions(
                 ACCEPTED_RELATIVITY_VARIANTS))
-        expected_here_doc_symbol_reference = SymbolReference(
+        expected_here_doc_symbol_reference = NamedElementReference(
             here_doc_symbol.name,
             no_restrictions())
 

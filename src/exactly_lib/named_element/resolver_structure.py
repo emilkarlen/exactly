@@ -1,34 +1,65 @@
+from enum import Enum
+
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
 
 
-class SymbolValueResolver:
-    """
-    Base class for values in the symbol table used by Exactly.
-    """
+class ElementType(Enum):
+    SYMBOL = 1
+    FILE_SELECTOR = 2
+
+
+class NamedElementResolver:
+    """ Base class for values in the symbol table used by Exactly. """
 
     @property
-    def value_type(self) -> ValueType:
-        raise NotImplementedError()
+    def element_type(self) -> ElementType:
+        raise NotImplementedError('abstract method')
 
     @property
     def references(self) -> list:
         """
-        All :class:`SymbolReference` directly referenced by this object.
+        All :class:`NamedElementReference` directly referenced by this object.
 
         :type: [`SymbolReference`]
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
+
+
+class FileSelectorResolver(NamedElementResolver):
+    """ Base class for values in the symbol table used by Exactly. """
+
+    @property
+    def element_type(self) -> ElementType:
+        raise NotImplementedError('test of this method is needed')
+        return ElementType.FILE_SELECTOR
+
+    def resolve(self, named_elements: SymbolTable) -> FileSelector:
+        raise NotImplementedError('todo, maybe abstract method')
+
+
+class SymbolValueResolver(NamedElementResolver):
+    """ Base class for symbol values in the symbol table used by Exactly. """
+
+    @property
+    def element_type(self) -> ElementType:
+        raise NotImplementedError('test of this method is needed')
+        return ElementType.SYMBOL
+
+    @property
+    def value_type(self) -> ValueType:
+        raise NotImplementedError('abstract method')
 
     def resolve(self, symbols: SymbolTable) -> DirDependentValue:
         """
         Resolves the value given a symbol table.
         :rtype: Depends on the concrete value.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds):
         """
@@ -37,14 +68,16 @@ class SymbolValueResolver:
         return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
 
 
-class ResolverContainer(SymbolTableValue):
+class NamedValueContainer(SymbolTableValue):
     """
-    The info about a resolver that is stored in a symbol table.
+    The info about a named element resolver that is stored in a symbol table.
 
     A value together with meta info
     """
 
-    def __init__(self, value_resolver: SymbolValueResolver, source: Line):
+    def __init__(self,
+                 value_resolver: NamedElementResolver,
+                 source: Line):
         self._source = source
         self._resolver = value_resolver
         self._source = source
@@ -59,9 +92,9 @@ class ResolverContainer(SymbolTableValue):
         return self._source
 
     @property
-    def resolver(self) -> SymbolValueResolver:
+    def resolver(self) -> NamedElementResolver:
         return self._resolver
 
 
-def container_of_builtin(value_resolver: SymbolValueResolver) -> ResolverContainer:
-    return ResolverContainer(value_resolver, None)
+def container_of_builtin(value_resolver: SymbolValueResolver) -> NamedValueContainer:
+    return NamedValueContainer(value_resolver, None)

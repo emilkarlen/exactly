@@ -1,9 +1,9 @@
 import types
 
 from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
-from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
-from exactly_lib.named_element.symbol.restriction import ValueRestriction, ReferenceRestrictions, FailureInfo, \
-    ValueRestrictionFailure
+from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.restriction import ValueRestriction, FailureInfo, \
+    ValueRestrictionFailure, SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -52,7 +52,7 @@ class FailureOfIndirectReference(FailureInfo):
         return self._meaning_of_failure
 
 
-class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
+class ReferenceRestrictionsOnDirectAndIndirect(SymbolReferenceRestrictions):
     """
     Restriction with one `ValueRestriction` that is applied on the
     directly referenced symbol; and another that (if it is not None) is applied on every indirectly
@@ -70,7 +70,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> FailureInfo:
+                        container: NamedValueContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -144,7 +144,7 @@ class OrRestrictionPart(tuple):
         return self[1]
 
 
-class OrReferenceRestrictions(ReferenceRestrictions):
+class OrReferenceRestrictions(SymbolReferenceRestrictions):
     def __init__(self,
                  or_restriction_parts: list,
                  resolver_container_2_error_message_if_no_matching_part: types.FunctionType = None):
@@ -158,7 +158,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> FailureInfo:
+                        container: NamedValueContainer) -> FailureInfo:
         resolver = container.resolver
         assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
         for part in self._parts:
@@ -170,7 +170,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
                                   resolver: SymbolValueResolver,
-                                  value: ResolverContainer) -> FailureOfDirectReference:
+                                  value: NamedValueContainer) -> FailureOfDirectReference:
         if self._container_2_error_message_if_no_matching_part is not None:
             msg = self._container_2_error_message_if_no_matching_part(value)
         else:
@@ -179,7 +179,7 @@ class OrReferenceRestrictions(ReferenceRestrictions):
 
     def _default_error_message(self,
                                symbol_name: str,
-                               container: ResolverContainer,
+                               container: NamedValueContainer,
                                resolver: SymbolValueResolver) -> str:
         from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
         accepted_value_types = ', '.join([help_texts.TYPE_INFO_DICT[part.selector].type_name
@@ -196,13 +196,13 @@ class OrReferenceRestrictions(ReferenceRestrictions):
         return '\n'.join(lines)
 
 
-class ReferenceRestrictionsVisitor:
-    def visit(self, x: ReferenceRestrictions):
+class SymbolReferenceRestrictionsVisitor:
+    def visit(self, x: SymbolReferenceRestrictions):
         if isinstance(x, ReferenceRestrictionsOnDirectAndIndirect):
             return self.visit_direct_and_indirect(x)
         if isinstance(x, OrReferenceRestrictions):
             return self.visit_or(x)
-        raise TypeError('%s is not an instance of %s' % (str(x), str(ReferenceRestrictions)))
+        raise TypeError('%s is not an instance of %s' % (str(x), str(SymbolReferenceRestrictions)))
 
     def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect):
         raise NotImplementedError()
@@ -211,7 +211,7 @@ class ReferenceRestrictionsVisitor:
         raise NotImplementedError()
 
 
-def no_restrictions() -> ReferenceRestrictions:
+def no_restrictions() -> SymbolReferenceRestrictions:
     """
     :return: A restriction that is unconditionally satisfied
     """

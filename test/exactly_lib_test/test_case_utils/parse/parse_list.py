@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.restrictions import reference_restrictions
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -178,8 +178,8 @@ class TestSingleElementList(unittest.TestCase):
                          lr.string_element(sr.resolver_from_fragments([
                              sr.ConstantStringFragmentResolver(single_token_value),
                              sr.SymbolStringFragmentResolver(
-                                 SymbolReference(string_symbol.name,
-                                                 reference_restrictions.no_restrictions())
+                                 NamedElementReference(string_symbol.name,
+                                                       reference_restrictions.no_restrictions())
                              ),
                          ]))],
                      source=
@@ -330,8 +330,8 @@ class TestMultipleElementList(unittest.TestCase):
                  Expectation(elements=
                  [
                      lr.string_element(sr.resolver_from_fragments([
-                         sr.SymbolStringFragmentResolver(SymbolReference(symbol_name,
-                                                                         reference_restrictions.no_restrictions())),
+                         sr.SymbolStringFragmentResolver(NamedElementReference(symbol_name,
+                                                                               reference_restrictions.no_restrictions())),
                          sr.ConstantStringFragmentResolver(single_token_value),
                      ])),
                      lr.string_element(sr.string_constant(single_token_value_1)),

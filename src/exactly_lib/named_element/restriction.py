@@ -1,4 +1,4 @@
-from exactly_lib.named_element.resolver_structure import ResolverContainer
+from exactly_lib.named_element.resolver_structure import NamedValueContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -24,7 +24,7 @@ class ValueRestrictionFailure(tuple):
 
 class ValueRestriction:
     """
-    A restriction on a resolved value in the symbol table.
+    A restriction on a resolved symbol value in the symbol table.
 
     Since sometimes, the restriction on the resolved value can be checked
     just by looking at the resolver - the checking method is given the resolver
@@ -34,7 +34,7 @@ class ValueRestriction:
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> ValueRestrictionFailure:
+                        container: NamedValueContainer) -> ValueRestrictionFailure:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -51,13 +51,54 @@ class FailureInfo:
 
 class ReferenceRestrictions:
     """
+    Restrictions on a referenced named element
+    """
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        container: NamedValueContainer) -> FailureInfo:
+        """
+        :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
+        :param symbol_name: The name of the symbol that the restriction applies to
+        :param container: The container of the value that the restriction applies to
+        :return: None if satisfied, otherwise an error message
+        """
+        raise NotImplementedError('abstract method')
+
+
+class InvalidElementTypeFailure(FailureInfo):
+    pass
+
+
+class FileSelectorReferenceRestrictions(ReferenceRestrictions):
+    """
+    Restrictions on a reference file selector
+    """
+
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        container: NamedValueContainer) -> FailureInfo:
+        """
+        :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
+        :param symbol_name: The name of the symbol that the restriction applies to
+        :param container: The container of the value that the restriction applies to
+        :return: None if satisfied, otherwise an error message
+        """
+        container.resolver
+        raise NotImplementedError('abstract method')
+
+
+class SymbolReferenceRestrictions(ReferenceRestrictions):
+    """
     Restrictions on a referenced symbol
     """
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> FailureInfo:
+                        container: NamedValueContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to

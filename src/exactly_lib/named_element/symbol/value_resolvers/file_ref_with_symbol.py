@@ -1,9 +1,9 @@
 import pathlib
 
-from exactly_lib.named_element.resolver_structure import ResolverContainer
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.resolver_structure import NamedValueContainer
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -13,14 +13,14 @@ from exactly_lib.type_system_values.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def rel_symbol(symbol_reference2: SymbolReference, path_suffix: PathPartResolver) -> FileRefResolver:
+def rel_symbol(symbol_reference2: NamedElementReference, path_suffix: PathPartResolver) -> FileRefResolver:
     return _FileRefResolverRelSymbol(path_suffix, symbol_reference2)
 
 
 class _FileRefResolverRelSymbol(FileRefResolver):
     def __init__(self,
                  path_suffix: PathPartResolver,
-                 symbol_reference_of_path: SymbolReference):
+                 symbol_reference_of_path: NamedElementReference):
         self.path_suffix = path_suffix
         self.symbol_reference_of_path = symbol_reference_of_path
 
@@ -78,7 +78,7 @@ def _combine(first: PathPart, second: PathPart) -> PathPart:
 
 def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:
     container = symbols.lookup(name)
-    assert isinstance(container, ResolverContainer), 'Value in SymTbl must be ResolverContainer'
+    assert isinstance(container, NamedValueContainer), 'Value in SymTbl must be ResolverContainer'
     resolver = container.resolver
     assert isinstance(resolver, FileRefResolver), 'Referenced symbol must be FileRefResolver'
     return resolver.resolve(symbols)

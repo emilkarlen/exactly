@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -10,7 +11,6 @@ from exactly_lib.named_element.symbol.value_resolvers import file_ref_with_symbo
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringResolver
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
@@ -48,8 +48,8 @@ class TestRelSymbol(unittest.TestCase):
                 symbol_name_of_rel_path,
                 restrictions.equals_file_ref_relativity_restriction(expected_restriction))
         ]
-        symbol_ref_of_path = SymbolReference(symbol_name_of_rel_path,
-                                             ReferenceRestrictionsOnDirectAndIndirect(expected_restriction))
+        symbol_ref_of_path = NamedElementReference(symbol_name_of_rel_path,
+                                                   ReferenceRestrictionsOnDirectAndIndirect(expected_restriction))
         path_suffix_test_cases = [
             (PathPartResolverAsFixedPath('file.txt'),
              [],
@@ -173,9 +173,9 @@ class TestRelSymbol(unittest.TestCase):
 
 
 def _symbol_reference_of_path_with_accepted(value_name: str,
-                                            accepted: RelOptionType) -> SymbolReference:
-    return SymbolReference(value_name,
-                           ReferenceRestrictionsOnDirectAndIndirect(
+                                            accepted: RelOptionType) -> NamedElementReference:
+    return NamedElementReference(value_name,
+                                 ReferenceRestrictionsOnDirectAndIndirect(
                                FileRefRelativityRestriction(_path_relativity_variants_with(accepted))))
 
 

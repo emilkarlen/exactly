@@ -1,7 +1,7 @@
-from exactly_lib.named_element import symbol_usage as su
-from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
+from exactly_lib.named_element import named_element_usage as su
+from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -18,7 +18,7 @@ def symbol_table_with_values_matching_references(references: list) -> SymbolTabl
     value_constructor = _ValueCorrespondingToValueRestriction()
     elements = {}
     for ref in references:
-        assert isinstance(ref, su.SymbolReference), "Informs IDE of type"
+        assert isinstance(ref, su.NamedElementReference), "Informs IDE of type"
         restrictions = ref.restrictions
         assert isinstance(restrictions,
                           ReferenceRestrictionsOnDirectAndIndirect), 'Only handled/needed case for the moment'
@@ -46,5 +46,5 @@ class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):
         return file_ref_resolver_test_impl(x.accepted)
 
 
-def _resolver_container(value: FileRefResolver) -> ResolverContainer:
-    return ResolverContainer(value, Line(1, 'source line'))
+def _resolver_container(value: FileRefResolver) -> NamedValueContainer:
+    return NamedValueContainer(value, Line(1, 'source line'))

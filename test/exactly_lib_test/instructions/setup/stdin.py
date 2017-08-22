@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.instructions.setup import stdin as sut
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, string_constant
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -173,8 +173,8 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         symbol_name = 'symbol_name'
         symbol = NameAndValue('symbol_name', 'the symbol value')
         expected_symbol_references = [
-            SymbolReference(symbol.name,
-                            no_restrictions())
+            NamedElementReference(symbol.name,
+                                  no_restrictions())
         ]
         cases = [
             ('string value container',

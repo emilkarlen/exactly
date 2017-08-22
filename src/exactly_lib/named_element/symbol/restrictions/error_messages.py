@@ -1,7 +1,7 @@
 from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.help_texts import message_rendering
-from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
-from exactly_lib.named_element.symbol.restriction import ValueRestrictionFailure
+from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
 from exactly_lib.type_system_values.value_type import ValueType
@@ -9,7 +9,7 @@ from exactly_lib.type_system_values.value_type import ValueType
 
 def invalid_type_msg(expected: ValueType,
                      symbol_name: str,
-                     container_of_actual: ResolverContainer) -> ValueRestrictionFailure:
+                     container_of_actual: NamedValueContainer) -> ValueRestrictionFailure:
     actual = container_of_actual.resolver
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
@@ -27,7 +27,7 @@ def invalid_type_msg(expected: ValueType,
 
 
 def unsatisfied_path_relativity(symbol_name: str,
-                                container: ResolverContainer,
+                                container: NamedValueContainer,
                                 accepted: PathRelativityVariants,
                                 actual_relativity: SpecificPathRelativity) -> str:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
@@ -79,7 +79,7 @@ def unsatisfied_path_relativity(symbol_name: str,
 def invalid_type_header_lines(expected: ValueType,
                               actual: ValueType,
                               symbol_name: str,
-                              container: ResolverContainer) -> list:
+                              container: NamedValueContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
     ret_val = ([
                    'Illegal type, of symbol "{}"'.format(symbol_name)

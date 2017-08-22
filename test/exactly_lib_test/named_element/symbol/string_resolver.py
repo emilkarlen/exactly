@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sut
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import OrReferenceRestrictions
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.type_system_values import concrete_string_values as csv, file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
@@ -223,7 +223,7 @@ class StringResolverTest(unittest.TestCase):
     def test_references(self):
         string_constant_1 = 'string constant 1'
         reference_1 = su.symbol_reference('symbol_1_name')
-        reference_2 = SymbolReference('symbol_2_name', OrReferenceRestrictions([]))
+        reference_2 = NamedElementReference('symbol_2_name', OrReferenceRestrictions([]))
         cases = [
             (
                 'no fragments',

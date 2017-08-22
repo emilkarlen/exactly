@@ -1,17 +1,17 @@
-from exactly_lib.named_element.symbol_usage import SymbolDefinition
+from exactly_lib.named_element.named_element_usage import NamedElementDefinition
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
-def setup_phase_instruction_that_defines_symbol(symbol_definition: SymbolDefinition) -> SetupPhaseInstruction:
+def setup_phase_instruction_that_defines_symbol(symbol_definition: NamedElementDefinition) -> SetupPhaseInstruction:
     return _SetupPhaseInstructionThatSetsSymbol(symbol_definition)
 
 
 class _SetupPhaseInstructionThatSetsSymbol(SetupPhaseInstruction):
     def __init__(self,
-                 symbol_definition: SymbolDefinition):
+                 symbol_definition: NamedElementDefinition):
         self.symbol_definition = symbol_definition
 
     def main(self,

@@ -2,11 +2,11 @@ import types
 import unittest
 from collections import Counter
 
-from exactly_lib.named_element.resolver_structure import SymbolValueResolver, ResolverContainer
-from exactly_lib.named_element.symbol.restriction import ReferenceRestrictions, ValueRestrictionFailure
-from exactly_lib.named_element.symbol.restriction import ValueRestriction
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.resolver_structure import SymbolValueResolver, NamedValueContainer
+from exactly_lib.named_element.restriction import ReferenceRestrictions, ValueRestrictionFailure
+from exactly_lib.named_element.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as sut
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
@@ -65,7 +65,7 @@ class TestReferenceRestrictionVisitor(unittest.TestCase):
             visitor.visit(invalid_value)
 
 
-class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.ReferenceRestrictionsVisitor):
+class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.SymbolReferenceRestrictionsVisitor):
     def __init__(self, return_value):
         self.visited_classes = []
         self.return_value = return_value
@@ -142,7 +142,7 @@ class TestUsageOfDirectRestriction(unittest.TestCase):
             with self.subTest(msg=case_name):
                 restrictions = sut.ReferenceRestrictionsOnDirectAndIndirect(direct=restriction_on_direct_node,
                                                                             indirect=restriction_on_every)
-                assert isinstance(symbol_to_check.value, sut.ResolverContainer)
+                assert isinstance(symbol_to_check.value, sut.NamedValueContainer)
                 actual_result = restrictions.is_satisfied_by(symbol_table,
                                                              symbol_to_check.key,
                                                              symbol_to_check.value)
@@ -173,7 +173,9 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
             indirect=restriction_that_registers_processed_symbols,
             direct=unconditionally_satisfied_value_restriction())
         # ACT #
-        actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
+        container = level_0_symbol.value
+        assert isinstance(container, NamedValueContainer), 'Expects a NamedValueContainer'
+        actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, container)
         # ASSERT #
         result_that_indicates_success = None
         self.assertEqual(result_that_indicates_success,
@@ -377,7 +379,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
 
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
-        def value_type_error_message_function(container: ResolverContainer) -> str:
+        def value_type_error_message_function(container: NamedValueContainer) -> str:
             v = container.resolver
             assert isinstance(v, SymbolValueResolver)  # Type info for IDE
             return 'Value type of tested symbol is ' + str(v.value_type)
@@ -489,7 +491,7 @@ class RestrictionWithConstantResult(sut.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.ResolverContainer) -> str:
+                        value: sut.NamedValueContainer) -> str:
         return self.result
 
 
@@ -497,7 +499,7 @@ class ValueRestrictionThatRaisesErrorIfApplied(sut.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.ResolverContainer) -> str:
+                        value: sut.NamedValueContainer) -> str:
         raise NotImplementedError('It is an error if this method is called')
 
 
@@ -509,7 +511,7 @@ class RestrictionThatRegistersProcessedSymbols(sut.ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        value: sut.ResolverContainer) -> ValueRestrictionFailure:
+                        value: sut.NamedValueContainer) -> ValueRestrictionFailure:
         self.visited.update([symbol_name])
         error_message = self.resolver_container_2_result__fun(value)
         return ValueRestrictionFailure(error_message) if error_message else None
@@ -542,24 +544,26 @@ def symbol_table_entry(symbol_name: str,
                                                                    value_type=value_type)))
 
 
-def reference_to(entry: Entry, restrictions: ReferenceRestrictions) -> SymbolReference:
-    return SymbolReference(entry.key, restrictions)
+def reference_to(entry: Entry, restrictions: ReferenceRestrictions) -> NamedElementReference:
+    return NamedElementReference(entry.key, restrictions)
 
 
-def unconditional_satisfaction(value: sut.ResolverContainer) -> str:
+def unconditional_satisfaction(value: sut.NamedValueContainer) -> str:
     return None
 
 
 def unconditional_dissatisfaction(result: str) -> types.FunctionType:
-    def ret_val(value: sut.ResolverContainer) -> str:
+    def ret_val(value: sut.NamedValueContainer) -> str:
         return result
 
     return ret_val
 
 
 def dissatisfaction_if_value_type_is(value_type: ValueType) -> types.FunctionType:
-    def ret_val(container: sut.ResolverContainer) -> str:
-        if container.resolver.value_type is value_type:
+    def ret_val(container: sut.NamedValueContainer) -> str:
+        resolver = container.resolver
+        assert isinstance(resolver, SymbolValueResolver), 'Expects a SymbolValueResolver'
+        if resolver.value_type is value_type:
             return 'fail due to value type is ' + str(value_type)
         return None
 

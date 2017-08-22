@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.string import lines_content
@@ -250,7 +250,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithConfigurationAndN
                 })),
             Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                         symbol_usages=equals_symbol_references([
-                            SymbolReference(symbol.name, no_restrictions())
+                            NamedElementReference(symbol.name, no_restrictions())
                         ]),
                         source=is_at_beginning_of_line(4)),
         )

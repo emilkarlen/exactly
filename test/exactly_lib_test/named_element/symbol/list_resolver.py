@@ -187,7 +187,7 @@ class ListResolverTest(unittest.TestCase):
 
     def test_references(self):
         reference_1 = su.symbol_reference('symbol_1_name')
-        reference_2 = su.SymbolReference('symbol_2_name', OrReferenceRestrictions([]))
+        reference_2 = su.NamedElementReference('symbol_2_name', OrReferenceRestrictions([]))
         cases = [
             (
                 'no elements',

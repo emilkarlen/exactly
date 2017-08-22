@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import assign_symbol as sut
-from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
+from exactly_lib.named_element.named_element_usage import NamedElementDefinition, NamedElementReference
+from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -12,7 +13,6 @@ from exactly_lib.named_element.symbol.restrictions.value_restrictions import Fil
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.named_element.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -121,7 +121,7 @@ class TestPathFailingParseDueToInvalidSyntax(unittest.TestCase):
 class TestStringSuccessfulParse(TestCaseBaseForParser):
     def test_assignment_of_single_constant_word(self):
         source = _single_line_source('{string_type} name1 = v1')
-        expected_definition = SymbolDefinition('name1', string_value_constant_container('v1'))
+        expected_definition = NamedElementDefinition('name1', string_value_constant_container('v1'))
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
@@ -142,8 +142,8 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
                                      symbol_reference=referred_symbol)
         expected_resolver = string_resolver_from_fragments([symbol(referred_symbol.name)])
         container_of_expected_resolver = container(expected_resolver)
-        expected_definition = SymbolDefinition(name_of_defined_symbol,
-                                               container_of_expected_resolver)
+        expected_definition = NamedElementDefinition(name_of_defined_symbol,
+                                                     container_of_expected_resolver)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
@@ -166,8 +166,8 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
                                      symbol_reference=referred_symbol)
         expected_resolver = string_resolver_from_fragments([constant(str(referred_symbol))])
         container_of_expected_resolver = container(expected_resolver)
-        expected_definition = SymbolDefinition(name_of_defined_symbol,
-                                               container_of_expected_resolver)
+        expected_definition = NamedElementDefinition(name_of_defined_symbol,
+                                                     container_of_expected_resolver)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
@@ -196,8 +196,8 @@ class TestStringSuccessfulParse(TestCaseBaseForParser):
             symbol(referred_symbol2.name),
         ])
         container_of_expected_resolver = container(expected_resolver)
-        expected_definition = SymbolDefinition(name_of_defined_symbol,
-                                               container_of_expected_resolver)
+        expected_definition = NamedElementDefinition(name_of_defined_symbol,
+                                                     container_of_expected_resolver)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
@@ -220,7 +220,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         expected_resolver_container = symbol_utils.container(expected_resolver)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                vs_asrt.equals_symbol(NamedElementDefinition(symbol_name, expected_resolver_container),
                                       ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
@@ -248,7 +248,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                vs_asrt.equals_symbol(NamedElementDefinition(symbol_name, expected_resolver_container),
                                       ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
@@ -270,14 +270,14 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         ),
             ['following line'],
         )
-        expected_symbol_reference = SymbolReference(referred_symbol.name, no_restrictions())
+        expected_symbol_reference = NamedElementReference(referred_symbol.name, no_restrictions())
         expected_resolver = lr.ListResolver([lr.SymbolReferenceElement(expected_symbol_reference)])
 
         expected_resolver_container = symbol_utils.container(expected_resolver)
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_resolver_container),
+                vs_asrt.equals_symbol(NamedElementDefinition(symbol_name, expected_resolver_container),
                                       ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
@@ -313,7 +313,7 @@ class TestPathAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                       Expectation(
                           symbol_usages=assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
-                                  SymbolDefinition('name', expected_container))),
+                                  NamedElementDefinition('name', expected_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_container(expected_container))
@@ -334,7 +334,7 @@ class TestPathAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                       Expectation(
                           symbol_usages=assert_symbol_usages_is_singleton_list(
                               vs_asrt.equals_symbol(
-                                  SymbolDefinition('name', expected_container))),
+                                  NamedElementDefinition('name', expected_container))),
                           symbols_after_main=assert_symbol_table_is_singleton(
                               'name',
                               equals_container(expected_container)))
@@ -346,8 +346,8 @@ class TestPathAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
         instruction_argument = _src('{path_type} ASSIGNED_NAME = --rel REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = rel_symbol(
-                SymbolReference('REFERENCED_SYMBOL',
-                                ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(
+                NamedElementReference('REFERENCED_SYMBOL',
+                                      ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(
                                     REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 PathPartResolverAsFixedPath('component'))
             expected_container = _resolver_container(expected_file_ref_resolver)
@@ -356,8 +356,8 @@ class TestPathAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                       Expectation(
                           symbol_usages=asrt.matches_sequence([
                               vs_asrt.equals_symbol(
-                                  SymbolDefinition('ASSIGNED_NAME',
-                                                   expected_container),
+                                  NamedElementDefinition('ASSIGNED_NAME',
+                                                         expected_container),
                                   ignore_source_line=True)
                           ]),
                           symbols_after_main=assert_symbol_table_is_singleton(
@@ -396,5 +396,5 @@ def _multi_line_source(first_line: str,
                             [_src(line, **kwargs) for line in following_lines])
 
 
-def _resolver_container(value_resolver: SymbolValueResolver) -> ResolverContainer:
-    return ResolverContainer(value_resolver, Line(1, 'source line'))
+def _resolver_container(value_resolver: SymbolValueResolver) -> NamedValueContainer:
+    return NamedValueContainer(value_resolver, Line(1, 'source line'))
