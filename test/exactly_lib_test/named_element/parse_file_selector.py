@@ -1,7 +1,7 @@
 import shlex
 import unittest
 
-from exactly_lib.instructions.assert_.utils import parse_dir_contents_selector as sut
+from exactly_lib.named_element import parse_file_selector as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

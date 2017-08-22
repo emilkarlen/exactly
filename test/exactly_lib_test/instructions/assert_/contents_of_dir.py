@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.instructions.assert_.utils import parse_dir_contents_selector
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.instructions.utils.expectation_type import ExpectationType
+from exactly_lib.named_element import parse_file_selector
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
@@ -24,7 +24,6 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with
     InstructionChecker, InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
     ExpectationTypeConfig, PassOrFail
-from exactly_lib_test.instructions.assert_.utils import parse_dir_contents_selector as parse_test
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
@@ -32,6 +31,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
+from exactly_lib_test.named_element import parse_file_selector as parse_test
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
@@ -126,21 +126,21 @@ class TestParseInvalidSyntax(TestCaseBase):
         NameAndValue(
             'missing argument for selector option ' + sut.SELECTION_OPTION.name.long,
             'file-name {selection_option} <not_opt> {empty}'.format(
-                selection_option=option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name),
+                selection_option=option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name),
                 empty=sut.EMPTINESS_CHECK_ARGUMENT
             )
         ),
         NameAndValue(
             'missing argument for num-files option ' + sut.SELECTION_OPTION.name.long,
             'file-name <not_opt> {num_files}'.format(
-                selection_option=option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name),
+                selection_option=option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name),
                 num_files=sut.NUM_FILES_CHECK_ARGUMENT
             )
         ),
         NameAndValue(
             'superfluous argument for num-files option ' + sut.SELECTION_OPTION.name.long,
             'file-name <not_opt> {num_files} {eq} 10 superfluous'.format(
-                selection_option=option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name),
+                selection_option=option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name),
                 num_files=sut.NUM_FILES_CHECK_ARGUMENT,
                 eq=comparators.EQ.name,
             )
@@ -565,12 +565,12 @@ def _selection_arguments(name_option_pattern: str = '',
     ret_val = ''
 
     if name_option_pattern or type_selection:
-        ret_val = option_syntax.option_syntax(parse_dir_contents_selector.SELECTION_OPTION.name)
+        ret_val = option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name)
         if name_option_pattern:
             ret_val = ret_val + ' ' + parse_test.name_selector_of(name_option_pattern)
         if type_selection:
             if name_option_pattern:
-                ret_val = ret_val + ' ' + parse_dir_contents_selector.AND_OPERATOR
+                ret_val = ret_val + ' ' + parse_file_selector.AND_OPERATOR
             ret_val = ret_val + ' ' + parse_test.type_selector_of(type_selection)
 
     return ret_val
