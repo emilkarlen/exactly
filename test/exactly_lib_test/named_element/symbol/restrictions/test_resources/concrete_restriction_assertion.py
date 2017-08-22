@@ -1,13 +1,13 @@
 import unittest
 
 from exactly_lib.named_element.resolver_structure import NamedValueContainer
-from exactly_lib.named_element.restriction import ValueRestriction, ReferenceRestrictions, \
-    ValueRestrictionFailure
+from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import SymbolReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
     FileRefRelativityRestriction, ValueRestrictionVisitor
+from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

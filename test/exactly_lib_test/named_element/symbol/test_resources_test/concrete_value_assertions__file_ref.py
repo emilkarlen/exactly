@@ -1,12 +1,12 @@
 import unittest
 
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
