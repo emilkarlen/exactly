@@ -9,6 +9,8 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     MainStepResultTranslatorForUnconditionalSuccess
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream, \
+    std_error_message_text_for_token_syntax_error
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
 from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.symbol.string_resolver import StringResolver
@@ -17,7 +19,6 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream, std_error_message_text_for_token_syntax_error
 from exactly_lib.util.textformat.structure.structures import paras
 
 

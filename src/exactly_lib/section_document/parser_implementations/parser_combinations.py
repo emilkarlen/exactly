@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
+from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 
 
 @contextmanager
