@@ -5,6 +5,9 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
+from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
+    MainStepResultTranslatorForErrorMessageStringResult
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
@@ -15,6 +18,8 @@ from exactly_lib.symbol.list_resolver import ListResolver
 from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.misc_utils import new_token_stream
@@ -23,6 +28,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.symbol_syntax import is_symbol_name
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -68,7 +74,37 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return [concept.cross_reference_target for concept in concepts]
 
 
-def parse(source: ParseSource) -> SymbolDefinition:
+class TheInstructionEmbryo(embryo.InstructionEmbryo):
+    def __init__(self, symbol: SymbolDefinition):
+        self.symbol = symbol
+
+    @property
+    def symbol_usages(self) -> list:
+        return [self.symbol]
+
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             logging_paths: PhaseLoggingPaths,
+             os_services: OsServices):
+        self.custom_main(environment.symbols)
+        return None
+
+    def custom_main(self, named_elems: SymbolTable):
+        named_elems.put(self.symbol.name,
+                        self.symbol.resolver_container)
+
+
+class EmbryoParser(embryo.InstructionEmbryoParser):
+    def parse(self, source: ParseSource) -> TheInstructionEmbryo:
+        definition = _parse(source)
+        return TheInstructionEmbryo(definition)
+
+
+PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
+                                           MainStepResultTranslatorForErrorMessageStringResult())
+
+
+def _parse(source: ParseSource) -> SymbolDefinition:
     source_line = source.current_line
     token_stream = new_token_stream(source.remaining_part_of_current_line)
     source.consume_current_line()
