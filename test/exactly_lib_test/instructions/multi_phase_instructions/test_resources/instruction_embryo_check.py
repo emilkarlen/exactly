@@ -26,6 +26,7 @@ class Expectation:
                  validation_post_sds: asrt.ValueAssertion = asrt.is_none,
                  main_result: asrt.ValueAssertion = asrt.anything_goes(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
+                 symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_home: asrt.ValueAssertion = asrt.anything_goes(),
@@ -40,6 +41,7 @@ class Expectation:
         self.side_effects_on_home = side_effects_on_home
         self.source = source
         self.symbol_usages = symbol_usages
+        self.symbols_after_main = symbols_after_main
         self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
 
 
@@ -128,6 +130,10 @@ class Executor:
                 self.put,
                 environment.environ,
                 'main side effects on environment variables')
+            self.expectation.symbols_after_main.apply_with_message(
+                self.put,
+                environment.symbols,
+                'symbols_after_main')
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages,
                                                               'symbol-usages after ' +

@@ -12,6 +12,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.process_execution import os_process_execution
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     do_return
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import instruction_embryo_check as sut
@@ -99,6 +100,14 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             sut.Expectation(main_side_effect_on_environment_variables=asrt.equals({})),
         )
 
+    def test_symbols_after_main(self):
+        self._check(
+            PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(symbols_after_main=asrt.is_instance(SymbolTable)),
+        )
+
 
 class TestSymbols(TestCaseBase):
     def test_that_default_expectation_assumes_no_symbol_usages(self):
@@ -154,6 +163,26 @@ class TestSymbols(TestCaseBase):
             single_line_source(),
             ArrangementWithSds(symbols=symbol_table_of_arrangement),
             sut.Expectation(),
+        )
+
+    def test_symbols_populated_by_main_SHOULD_appear_in_symbol_table_given_to_symbols_after_main(self):
+        symbol_name = 'symbol_name'
+
+        def add_symbol_to_symbol_table(environment: InstructionEnvironmentForPostSdsStep,
+                                       *args, **kwargs):
+            environment.symbols.put(symbol_name,
+                                    symbol_utils.string_value_constant_container('const string'))
+
+        self._check(
+            ParserThatGives(
+                instruction_embryo_that(
+                    main_initial_action=add_symbol_to_symbol_table)),
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(
+                symbols_after_main=asrt.sub_component('names_set',
+                                                      SymbolTable.names_set.fget,
+                                                      asrt.equals({symbol_name}))),
         )
 
 
