@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.named_element.resolver_structure import ResolverContainer
-from exactly_lib.named_element.symbol.restriction import ValueRestriction, ReferenceRestrictions, \
+from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.restriction import ValueRestriction, ReferenceRestrictions, \
     ValueRestrictionFailure
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import ReferenceRestrictionsVisitor, \
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import SymbolReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
@@ -164,7 +164,7 @@ def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRest
     )
 
 
-class _EqualsReferenceRestrictionsVisitor(ReferenceRestrictionsVisitor):
+class _EqualsSymbolReferenceRestrictionsVisitor(SymbolReferenceRestrictionsVisitor):
     def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> asrt.ValueAssertion:
         return _equals_reference_restriction_on_direct_and_indirect(x)
 
@@ -172,7 +172,7 @@ class _EqualsReferenceRestrictionsVisitor(ReferenceRestrictionsVisitor):
         return equals_or_reference_restrictions(x)
 
 
-_EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsReferenceRestrictionsVisitor()
+_EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsSymbolReferenceRestrictionsVisitor()
 
 
 def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:
@@ -190,5 +190,5 @@ class ValueRestrictionWithConstantResult(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> ValueRestrictionFailure:
+                        container: NamedValueContainer) -> ValueRestrictionFailure:
         return self.result

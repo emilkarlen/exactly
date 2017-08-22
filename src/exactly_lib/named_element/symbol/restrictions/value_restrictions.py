@@ -1,6 +1,6 @@
-from exactly_lib.named_element.resolver_structure import ResolverContainer
+from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.restriction import ValueRestriction, ValueRestrictionFailure
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.restriction import ValueRestriction, ValueRestrictionFailure
 from exactly_lib.named_element.symbol.restrictions import error_messages
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
@@ -17,7 +17,7 @@ class NoRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> str:
+                        container: NamedValueContainer) -> str:
         return None
 
 
@@ -29,7 +29,7 @@ class StringRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> ValueRestrictionFailure:
+                        container: NamedValueContainer) -> ValueRestrictionFailure:
         if not isinstance(container.resolver, StringResolver):
             return error_messages.invalid_type_msg(ValueType.STRING, symbol_name, container)
         return None
@@ -46,7 +46,7 @@ class FileRefRelativityRestriction(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: ResolverContainer) -> ValueRestrictionFailure:
+                        container: NamedValueContainer) -> ValueRestrictionFailure:
         resolver = container.resolver
         if not isinstance(resolver, FileRefResolver):
             return error_messages.invalid_type_msg(ValueType.PATH, symbol_name, container)

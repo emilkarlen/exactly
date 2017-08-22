@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
+from exactly_lib.named_element.named_element_usage import NamedElementReference, NamedElementDefinition
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, SymbolStringFragmentResolver
-from exactly_lib.named_element.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
@@ -82,7 +82,7 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
         conf = self.configuration
         defined_symbol = symbol_utils.string_symbol_definition('symbol_name')
         error_message_for_failed_restriction = 'error message'
-        reference_with_restriction_failure = SymbolReference(
+        reference_with_restriction_failure = NamedElementReference(
             defined_symbol.name,
             ReferenceRestrictionsOnDirectAndIndirect(
                 direct=value_restriction_that_is_unconditionally_unsatisfied(error_message_for_failed_restriction)))
@@ -123,20 +123,20 @@ class TestImplementationError(TestCaseBase):
                         sandbox_directory_structure_should_exist=False))
 
 
-def symbol_definition(symbol_name: str) -> SymbolDefinition:
-    return SymbolDefinition()
+def symbol_definition(symbol_name: str) -> NamedElementDefinition:
+    return NamedElementDefinition()
 
 
-def _reference_to_undefined_symbol() -> SymbolReference:
-    return SymbolReference('undefined symbol', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
+def _reference_to_undefined_symbol() -> NamedElementReference:
+    return NamedElementReference('undefined symbol', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
 
 
 def definition_with_reference(name_of_defined: str,
-                              name_of_referenced) -> SymbolDefinition:
-    symbol_reference = SymbolReference(name_of_referenced,
-                                       ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
+                              name_of_referenced) -> NamedElementDefinition:
+    symbol_reference = NamedElementReference(name_of_referenced,
+                                             ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
                                                                                 indirect=NoRestriction()))
-    return SymbolDefinition(name_of_defined,
-                            symbol_utils.container(
+    return NamedElementDefinition(name_of_defined,
+                                  symbol_utils.container(
                                 StringResolver((SymbolStringFragmentResolver(symbol_reference),))
                             ))

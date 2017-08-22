@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib.named_element.symbol.restriction import ReferenceRestrictions
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.named_element.symbol.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
     ConstantStringFragmentResolver, StringResolver
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -267,8 +267,8 @@ def fragment_resolver_from_fragment(fragment: Fragment) -> StringFragmentResolve
     if fragment.is_constant:
         return ConstantStringFragmentResolver(fragment.value)
     else:
-        sr = SymbolReference(fragment.value,
-                             ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
+        sr = NamedElementReference(fragment.value,
+                                   ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
                                                                       indirect=None))
         return SymbolStringFragmentResolver(sr)
 
@@ -277,8 +277,8 @@ def single_symbol_reference(symbol_name: str,
                             reference_restrictions: ReferenceRestrictions = None) -> sut.StringResolver:
     if reference_restrictions is None:
         reference_restrictions = no_restrictions()
-    fragments = (SymbolStringFragmentResolver(SymbolReference(symbol_name,
-                                                              reference_restrictions)),)
+    fragments = (SymbolStringFragmentResolver(NamedElementReference(symbol_name,
+                                                                    reference_restrictions)),)
     return sut.StringResolver(fragments)
 
 

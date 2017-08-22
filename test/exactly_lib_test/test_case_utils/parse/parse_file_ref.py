@@ -2,9 +2,10 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION
-from exactly_lib.named_element.resolver_structure import ResolverContainer
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
@@ -14,7 +15,6 @@ from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
@@ -181,9 +181,9 @@ class TestParsesBase(unittest.TestCase):
                                                actual: FileRefResolver,
                                                symbols: SymbolTable):
         for idx, reference in enumerate(actual.references):
-            assert isinstance(reference, SymbolReference)  # Type info for IDE
+            assert isinstance(reference, NamedElementReference)  # Type info for IDE
             container = symbols.lookup(reference.name)
-            assert isinstance(container, ResolverContainer)
+            assert isinstance(container, NamedValueContainer)
             result = reference.restrictions.is_satisfied_by(symbols,
                                                             reference.name,
                                                             container)
@@ -510,11 +510,11 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(defined_path_symbol.name,
-                                         file_ref_reference_restrictions(accepted_relativities))),
+                         NamedElementReference(defined_path_symbol.name,
+                                               file_ref_reference_restrictions(accepted_relativities))),
                      equals_symbol_reference(
-                         SymbolReference(suffix_symbol.name,
-                                         path_part_string_reference_restrictions())),
+                         NamedElementReference(suffix_symbol.name,
+                                               path_part_string_reference_restrictions())),
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
@@ -548,11 +548,11 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(defined_path_symbol.name,
-                                         file_ref_reference_restrictions(accepted_relativities))),
+                         NamedElementReference(defined_path_symbol.name,
+                                               file_ref_reference_restrictions(accepted_relativities))),
                      equals_symbol_reference(
-                         SymbolReference(suffix_symbol.name,
-                                         path_part_string_reference_restrictions())),
+                         NamedElementReference(suffix_symbol.name,
+                                               path_part_string_reference_restrictions())),
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
@@ -603,8 +603,8 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                 PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE}, False),
             ]
             for accepted_relativities in accepted_relativities_variants:
-                expected_symbol_reference = SymbolReference(symbol_name,
-                                                            ReferenceRestrictionsOnDirectAndIndirect(
+                expected_symbol_reference = NamedElementReference(symbol_name,
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
                                                                 FileRefRelativityRestriction(accepted_relativities)))
                 expected_file_ref_resolver = rel_symbol(expected_symbol_reference,
                                                         PathPartResolverAsFixedPath(file_name_argument))
@@ -647,8 +647,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol.name,
-                                         path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol.name,
+                                               path_part_string_reference_restrictions())),
                  ]),
                  symbol_table=
                  symbol_table_with_single_string_value(symbol.name,
@@ -675,9 +675,9 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol_1.name, path_part_string_reference_restrictions())),
                      equals_symbol_reference(
-                         SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol_2.name, path_part_string_reference_restrictions())),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([symbol_1, symbol_2]),
@@ -704,9 +704,9 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol_1.name, path_part_string_reference_restrictions())),
                      equals_symbol_reference(
-                         SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol_2.name, path_part_string_reference_restrictions())),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([symbol_1, symbol_2]),
@@ -771,8 +771,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol.name,
-                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                         NamedElementReference(symbol.name,
+                                               file_ref_or_string_reference_restrictions(accepted_relativities))
                      )
                  ]),
                  symbol_table=
@@ -798,8 +798,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol.name,
-                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                         NamedElementReference(symbol.name,
+                                               file_ref_or_string_reference_restrictions(accepted_relativities))
                      ),
                  ]),
                  symbol_table=
@@ -825,8 +825,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol.name,
-                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                         NamedElementReference(symbol.name,
+                                               file_ref_or_string_reference_restrictions(accepted_relativities))
                      )
                      ,
                  ]),
@@ -857,11 +857,11 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol_1.name,
-                                         file_ref_or_string_reference_restrictions(accepted_relativities))),
+                         NamedElementReference(symbol_1.name,
+                                               file_ref_or_string_reference_restrictions(accepted_relativities))),
                      equals_symbol_reference(
-                         SymbolReference(symbol_2.name,
-                                         path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol_2.name,
+                                               path_part_string_reference_restrictions())),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([(symbol_1.name, '/absolute/path'),
@@ -892,14 +892,14 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol.name,
-                                         file_ref_or_string_reference_restrictions(accepted_relativities))),
+                         NamedElementReference(symbol.name,
+                                               file_ref_or_string_reference_restrictions(accepted_relativities))),
                      equals_symbol_reference(
-                         SymbolReference(symbol_1.name,
-                                         path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol_1.name,
+                                               path_part_string_reference_restrictions())),
                      equals_symbol_reference(
-                         SymbolReference(symbol_2.name,
-                                         path_part_string_reference_restrictions())),
+                         NamedElementReference(symbol_2.name,
+                                               path_part_string_reference_restrictions())),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([(symbol.name, 'non-abs-str'),
@@ -926,8 +926,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol.name,
-                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                         NamedElementReference(symbol.name,
+                                               file_ref_or_string_reference_restrictions(accepted_relativities))
                      )
                      ,
                  ]),
@@ -958,12 +958,12 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
-                         SymbolReference(symbol_1.name,
-                                         file_ref_or_string_reference_restrictions(accepted_relativities))
+                         NamedElementReference(symbol_1.name,
+                                               file_ref_or_string_reference_restrictions(accepted_relativities))
                      ),
                      equals_symbol_reference(
-                         SymbolReference(symbol_2.name,
-                                         path_part_string_reference_restrictions())
+                         NamedElementReference(symbol_2.name,
+                                               path_part_string_reference_restrictions())
                      ),
                  ]),
                  symbol_table=

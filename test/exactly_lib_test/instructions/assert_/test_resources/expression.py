@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax
@@ -99,8 +99,8 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                             Expectation(
                                 validation_pre_sds=svh_asrt.is_validation_error(),
                                 symbol_usages=equals_symbol_references([
-                                    SymbolReference(symbol.name,
-                                                    string_made_up_by_just_strings())
+                                    NamedElementReference(symbol.name,
+                                                          string_made_up_by_just_strings())
                                 ]),
                             ),
                         )

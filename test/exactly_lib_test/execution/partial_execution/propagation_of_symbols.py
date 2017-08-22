@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
-from exactly_lib.named_element.symbol_usage import SymbolDefinition
+from exactly_lib.named_element.named_element_usage import NamedElementDefinition
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.symbol_table import SymbolTable
@@ -277,7 +277,7 @@ def get_symbols_name_set_from_instruction_environment(environment: InstructionEn
 
 
 class _ActionThatSetsSymbolInSymbolTable:
-    def __init__(self, symbol: SymbolDefinition):
+    def __init__(self, symbol: NamedElementDefinition):
         self.symbol = symbol
 
     def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):

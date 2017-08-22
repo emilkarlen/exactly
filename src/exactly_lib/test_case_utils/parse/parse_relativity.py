@@ -1,10 +1,10 @@
 from exactly_lib.help_texts.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
-from exactly_lib.named_element.symbol.restriction import ReferenceRestrictions
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import is_option_argument
@@ -30,7 +30,7 @@ def parse_explicit_relativity_info(options: RelOptionsConfiguration,
     """
     :return None if relativity is not given explicitly
     
-    :rtype: None|`RelOptionType`|`SymbolReference`
+    :rtype: None|`RelOptionType`|`NamedElementReference`
     """
     if source.is_null:
         return None
@@ -60,7 +60,7 @@ def _raise_invalid_argument_exception_if_symbol_does_not_have_valid_syntax(symbo
 
 
 def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
-                                 source: TokenStream) -> SymbolReference:
+                                 source: TokenStream) -> NamedElementReference:
     option_str = source.head.string
     if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
@@ -70,8 +70,8 @@ def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
         raise SingleInstructionInvalidArgumentException(msg)
     _raise_invalid_argument_exception_if_symbol_does_not_have_valid_syntax(source.head, option_str)
     symbol_name = source.consume().string
-    return SymbolReference(symbol_name,
-                           reference_restrictions_for_path_symbol(options.accepted_relativity_variants))
+    return NamedElementReference(symbol_name,
+                                 reference_restrictions_for_path_symbol(options.accepted_relativity_variants))
 
 
 def _parse_rel_option_type(options: RelOptionsConfiguration,

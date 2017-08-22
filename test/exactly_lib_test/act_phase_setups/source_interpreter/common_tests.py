@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -73,8 +73,8 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
             ),
             Expectation(
                 symbol_usages=equals_symbol_references([
-                    SymbolReference(symbol.name,
-                                    no_restrictions()),
+                    NamedElementReference(symbol.name,
+                                          no_restrictions()),
                 ]),
                 sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                       'program output')),
@@ -104,8 +104,8 @@ class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseBase):
             ),
             Expectation(
                 symbol_usages=equals_symbol_references([
-                    SymbolReference(symbol.name,
-                                    no_restrictions()),
+                    NamedElementReference(symbol.name,
+                                          no_restrictions()),
                 ]),
                 sub_process_result_from_execute=pr.stdout(str_asrt.contains(path_suffix)),
             ))

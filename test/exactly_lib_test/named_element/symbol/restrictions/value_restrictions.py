@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.named_element.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant

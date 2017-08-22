@@ -10,10 +10,10 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     MainStepResultTranslatorForErrorMessageStringResult
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
+from exactly_lib.named_element.named_element_usage import NamedElementDefinition
+from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
-from exactly_lib.named_element.symbol_usage import SymbolDefinition
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -75,7 +75,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
-    def __init__(self, symbol: SymbolDefinition):
+    def __init__(self, symbol: NamedElementDefinition):
         self.symbol = symbol
 
     @property
@@ -104,7 +104,7 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForErrorMessageStringResult())
 
 
-def _parse(source: ParseSource) -> SymbolDefinition:
+def _parse(source: ParseSource) -> NamedElementDefinition:
     source_line = source.current_line
     token_stream = new_token_stream(source.remaining_part_of_current_line)
     source.consume_current_line()
@@ -135,7 +135,7 @@ def _parse(source: ParseSource) -> SymbolDefinition:
     if not token_stream.is_null:
         msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return SymbolDefinition(name_str, ResolverContainer(value_resolver, source_line))
+    return NamedElementDefinition(name_str, NamedValueContainer(value_resolver, source_line))
 
 
 _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT

@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import exitcode as sut
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -245,8 +245,8 @@ def symbol_table_with_string_constant_symbols(symbol_name_and_value_list: list) 
 
 def string_symbol_references_of(symbol_name_and_value_list: list) -> list:
     return [
-        SymbolReference(symbol.name,
-                        string_made_up_by_just_strings())
+        NamedElementReference(symbol.name,
+                              string_made_up_by_just_strings())
         for symbol in symbol_name_and_value_list
     ]
 

@@ -1,11 +1,11 @@
 import unittest
 
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import OrReferenceRestrictions, \
     ReferenceRestrictionsOnDirectAndIndirect, no_restrictions
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su, list_assertions as sut
@@ -167,12 +167,12 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListValue([string_value_of_single_string(string_symbol.value)]),
                         expected_references=
-                        equals_symbol_references([SymbolReference(string_symbol.name,
-                                                                  no_restrictions())]),
+                        equals_symbol_references([NamedElementReference(string_symbol.name,
+                                                                        no_restrictions())]),
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
-                            SymbolReference(string_symbol.name,
-                                            no_restrictions()),
+                            NamedElementReference(string_symbol.name,
+                                                  no_restrictions()),
                         ))]),
                         symbols=
                         singleton_symbol_table(su.Entry(string_symbol.name,
@@ -207,13 +207,13 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListValue([string_value_of_single_string(string_symbol.value)]),
                         expected_references=
-                        equals_symbol_references([SymbolReference(string_symbol.name,
-                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                        equals_symbol_references([NamedElementReference(string_symbol.name,
+                                                                        ReferenceRestrictionsOnDirectAndIndirect(
                                                                       NoRestriction()))]),
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
-                            SymbolReference(string_symbol.name,
-                                            OrReferenceRestrictions([])),
+                            NamedElementReference(string_symbol.name,
+                                                  OrReferenceRestrictions([])),
                         ))]),
                         symbols=
                         singleton_symbol_table(su.Entry(string_symbol.name,

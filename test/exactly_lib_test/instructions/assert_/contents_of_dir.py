@@ -5,8 +5,8 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.named_element import parse_file_selector
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -409,13 +409,13 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
     def test_both_symbols_from_path_and_comparison_SHOULD_be_reported(self):
         # ARRANGE #
 
-        path_sym_ref = SymbolReference(
+        path_sym_ref = NamedElementReference(
             'path_symbol_name',
             parse_relativity.reference_restrictions_for_path_symbol(
                 sut.ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants))
 
-        operand_sym_ref = SymbolReference('operand_symbol_name',
-                                          string_made_up_by_just_strings())
+        operand_sym_ref = NamedElementReference('operand_symbol_name',
+                                                string_made_up_by_just_strings())
 
         argument = '{rel_sym_opt} {path_sym} file-name {num_files} {cmp_op} {operand_sym_ref}'.format(
             rel_sym_opt=REL_symbol_OPTION,

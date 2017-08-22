@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.utils.parse import parse_executable_file as sut
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     no_restrictions
@@ -12,7 +13,6 @@ from exactly_lib.named_element.symbol.restrictions.value_restrictions import Str
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
@@ -284,24 +284,24 @@ class TestParseWithSymbols(unittest.TestCase):
         string_symbol = NameAndValue('string_symbol',
                                      'string symbol value')
         a_string_constant = 'a_string_constant'
-        reference_of_relativity_symbol = SymbolReference(
+        reference_of_relativity_symbol = NamedElementReference(
             file_symbol.name,
             path_relativity_restriction(
                 sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
             ))
-        reference_of_path_symbol = SymbolReference(
+        reference_of_path_symbol = NamedElementReference(
             file_symbol.name,
             path_or_string_reference_restrictions(
                 sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
             ))
-        reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
-                                                                            ReferenceRestrictionsOnDirectAndIndirect(
+        reference_of_path_string_symbol_as_path_component = NamedElementReference(string_symbol.name,
+                                                                                  ReferenceRestrictionsOnDirectAndIndirect(
                                                                                 direct=StringRestriction(),
                                                                                 indirect=StringRestriction()),
-                                                                            )
-        reference_of_string_symbol_as_argument = SymbolReference(string_symbol.name,
-                                                                 no_restrictions(),
-                                                                 )
+                                                                                  )
+        reference_of_string_symbol_as_argument = NamedElementReference(string_symbol.name,
+                                                                       no_restrictions(),
+                                                                       )
         symbols = SymbolTable({
             file_symbol.name: su.container(FileRefConstant(file_symbol.value)),
             string_symbol.name: su.container(string_constant(string_symbol.value)),

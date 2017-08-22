@@ -1,4 +1,4 @@
-from exactly_lib.named_element import resolver_structure as struct, symbol_usage as su
+from exactly_lib.named_element import resolver_structure as struct, named_element_usage as su
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.type_system_values import string_value as sv, concrete_string_values as csv
 from exactly_lib.type_system_values.file_ref import FileRef
@@ -74,7 +74,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
     A fragment that represents a reference to a symbol.
     """
 
-    def __init__(self, symbol_reference: su.SymbolReference):
+    def __init__(self, symbol_reference: su.NamedElementReference):
         self._symbol_reference = symbol_reference
 
     @property
@@ -91,7 +91,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
         container = symbols.lookup(self._symbol_reference.name)
-        assert isinstance(container, struct.ResolverContainer), 'Value in SymTbl must be ResolverContainer'
+        assert isinstance(container, struct.NamedValueContainer), 'Value in SymTbl must be NamedValueContainer'
         value_resolver = container.resolver
         assert isinstance(value_resolver, SymbolValueResolver), 'Value must be a SymbolValueResolver'
         value = value_resolver.resolve(symbols)
@@ -170,7 +170,7 @@ def string_constant(string: str) -> StringResolver:
     return StringResolver((ConstantStringFragmentResolver(string),))
 
 
-def symbol_reference(symbol_ref: su.SymbolReference) -> StringResolver:
+def symbol_reference(symbol_ref: su.NamedElementReference) -> StringResolver:
     return StringResolver((SymbolStringFragmentResolver(symbol_ref),))
 
 

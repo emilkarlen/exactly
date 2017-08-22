@@ -4,7 +4,8 @@ import types
 
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
-from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -16,7 +17,6 @@ from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol impor
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -204,7 +204,7 @@ def _file_ref_constructor(relativity_info) -> types.FunctionType:
     if isinstance(relativity_info, RelOptionType):
         return lambda path_suffix_resolver: _FileRefResolverOfRelativityOptionAndSuffixResolver(relativity_info,
                                                                                                 path_suffix_resolver)
-    elif isinstance(relativity_info, SymbolReference):
+    elif isinstance(relativity_info, NamedElementReference):
         return functools.partial(rel_symbol, relativity_info)
     else:
         raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))
@@ -212,8 +212,8 @@ def _file_ref_constructor(relativity_info) -> types.FunctionType:
 
 def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
                                                        conf: RelOptionArgumentConfiguration
-                                                       ) -> (SymbolReference, PathPartResolver):
-    file_ref_or_string_symbol = SymbolReference(
+                                                       ) -> (NamedElementReference, PathPartResolver):
+    file_ref_or_string_symbol = NamedElementReference(
         string_fragments[0].value,
         path_or_string_reference_restrictions(conf.options.accepted_relativity_variants),
     )
@@ -286,7 +286,7 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     ))
 
 
-def _type_must_be_either_path_or_string__err_msg_generator(value: ResolverContainer) -> str:
+def _type_must_be_either_path_or_string__err_msg_generator(value: NamedValueContainer) -> str:
     v = value.resolver
     assert isinstance(v, SymbolValueResolver)  # Type info for IDE
     return 'Expecting either a {path_type} or a {string_type}.\nFound: {actual_type}'.format(

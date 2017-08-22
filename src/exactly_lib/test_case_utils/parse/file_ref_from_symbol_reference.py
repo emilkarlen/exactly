@@ -1,12 +1,12 @@
 import pathlib
 
-from exactly_lib.named_element.resolver_structure import ResolverContainer
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
@@ -22,7 +22,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
     """
 
     def __init__(self,
-                 file_ref_or_string_symbol: SymbolReference,
+                 file_ref_or_string_symbol: NamedElementReference,
                  suffix_resolver: PathPartResolver,
                  default_relativity: RelOptionType):
         self._file_ref_or_string_symbol = file_ref_or_string_symbol
@@ -34,8 +34,10 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
                                                                             self.default_relativity,
                                                                             symbols)
         container = symbols.lookup(self._file_ref_or_string_symbol.name)
-        assert isinstance(container, ResolverContainer), 'Implementation consistency/ResolverContainer'
-        return symbol_value_2_file_ref.visit(container.resolver)
+        assert isinstance(container, NamedValueContainer), 'Implementation consistency/NamedValueContainer'
+        resolver = container.resolver
+        assert isinstance(resolver, SymbolValueResolver), 'Implementation consistency/SymbolValueResolver'
+        return symbol_value_2_file_ref.visit(resolver)
 
     @property
     def references(self) -> list:

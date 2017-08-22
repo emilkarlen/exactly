@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.named_element import symbol_usage as sut
+from exactly_lib.named_element import named_element_usage as sut
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
@@ -16,10 +16,10 @@ class TestSymbolUsageVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
-        ret_val = visitor.visit(sut.SymbolDefinition('name', file_ref_constant_container()))
+        ret_val = visitor.visit(sut.NamedElementDefinition('name', file_ref_constant_container()))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
-                             [sut.SymbolReference],
+                             [sut.NamedElementReference],
                              'visited classes')
         self.assertEqual('name', ret_val,
                          'Visitor is expected to return return value of visit-method')
@@ -29,10 +29,10 @@ class TestSymbolUsageVisitor(unittest.TestCase):
         visitor = _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
         ret_val = visitor.visit(
-            sut.SymbolReference('name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
+            sut.NamedElementReference('name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
-                             [sut.SymbolReference],
+                             [sut.NamedElementReference],
                              'visited classes')
         self.assertEqual('name', ret_val,
                          'Visitor is expected to return return value of visit-method')
@@ -45,14 +45,14 @@ class TestSymbolUsageVisitor(unittest.TestCase):
             visitor.visit('a string is not a SymbolReference')
 
 
-class _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects(sut.SymbolUsageVisitor):
+class _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects(sut.NamedElementUsageVisitor):
     def __init__(self):
         self.visited_classes = []
 
-    def _visit_reference(self, symbol_usage: sut.SymbolReference):
-        self.visited_classes.append(sut.SymbolReference)
-        return symbol_usage.name
+    def _visit_reference(self, usage: sut.NamedElementReference):
+        self.visited_classes.append(sut.NamedElementReference)
+        return usage.name
 
-    def _visit_definition(self, symbol_usage: sut.SymbolDefinition):
-        self.visited_classes.append(sut.SymbolReference)
-        return symbol_usage.name
+    def _visit_definition(self, usage: sut.NamedElementDefinition):
+        self.visited_classes.append(sut.NamedElementReference)
+        return usage.name

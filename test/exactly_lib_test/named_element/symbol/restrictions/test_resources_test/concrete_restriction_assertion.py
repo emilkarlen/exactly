@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.named_element.symbol.restriction import ValueRestrictionFailure
+from exactly_lib.named_element.restriction import ValueRestrictionFailure, ReferenceRestrictions, \
+    FileSelectorReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as r
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfIndirectReference
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
@@ -305,7 +306,7 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
         self._assert_fails(expected, actual)
 
     @staticmethod
-    def _assert_fails(expected: r.OrReferenceRestrictions, actual: r.ReferenceRestrictions):
+    def _assert_fails(expected: r.OrReferenceRestrictions, actual: ReferenceRestrictions):
         assertion = sut.equals_or_reference_restrictions(expected)
         assert_that_assertion_fails(assertion, actual)
 
@@ -382,6 +383,21 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         ])
         self._fail(expected, actual)
 
-    def _fail(self, expected: r.ReferenceRestrictions, actual: r.ReferenceRestrictions):
+    def test_fail__direct_and_indirect__non_symbol_restriction(self):
+        expected = r.ReferenceRestrictionsOnDirectAndIndirect(
+            vr.StringRestriction())
+        actual = FileSelectorReferenceRestrictions()
+        self._fail(expected, actual)
+
+    def test_fail__or__non_symbol_restriction(self):
+        expected = r.OrReferenceRestrictions([
+            r.OrRestrictionPart(ValueType.STRING,
+                                r.ReferenceRestrictionsOnDirectAndIndirect(
+                                    vr.StringRestriction()))
+        ])
+        actual = FileSelectorReferenceRestrictions()
+        self._fail(expected, actual)
+
+    def _fail(self, expected: r.SymbolReferenceRestrictions, actual: ReferenceRestrictions):
         assertion = sut.equals_reference_restrictions(expected)
         assert_that_assertion_fails(assertion, actual)

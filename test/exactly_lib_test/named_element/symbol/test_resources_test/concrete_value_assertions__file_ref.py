@@ -1,12 +1,12 @@
 import unittest
 
+from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.restriction import ValueRestriction
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
@@ -42,8 +42,8 @@ _RELATIVITY_VARIANTS = [
 
 _SYMBOL_REFERENCES = [
     [],
-    [SymbolReference('symbol_name',
-                     ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
+    [NamedElementReference('symbol_name',
+                           ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
 ]
 
 
@@ -107,13 +107,13 @@ class Test1NotEquals(unittest.TestCase):
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(
             file_ref,
-            [SymbolReference('reffed-name',
-                             ReferenceRestrictionsOnDirectAndIndirect(
+            [NamedElementReference('reffed-name',
+                                   ReferenceRestrictionsOnDirectAndIndirect(
                                  restriction_with_relativity(RelOptionType.REL_ACT)))])
         actual = resolver_from_constants(
             file_ref,
-            [SymbolReference('reffed-name',
-                             ReferenceRestrictionsOnDirectAndIndirect(
+            [NamedElementReference('reffed-name',
+                                   ReferenceRestrictionsOnDirectAndIndirect(
                                  restriction_with_relativity(RelOptionType.REL_HOME_CASE)))])
         assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
@@ -123,11 +123,13 @@ class Test1NotEquals(unittest.TestCase):
         # ARRANGE #
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
-                                           [SymbolReference('expected_symbol_name',
-                                                            ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+                                           [NamedElementReference('expected_symbol_name',
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                                                                      NoRestriction()))])
         actual = resolver_from_constants(file_ref,
-                                         [SymbolReference('actual_symbol_name',
-                                                          ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+                                         [NamedElementReference('actual_symbol_name',
+                                                                ReferenceRestrictionsOnDirectAndIndirect(
+                                                                    NoRestriction()))])
         assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -136,8 +138,9 @@ class Test1NotEquals(unittest.TestCase):
         # ARRANGE #
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
-                                           [SymbolReference('reffed-name',
-                                                            ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+                                           [NamedElementReference('reffed-name',
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                                                                      NoRestriction()))])
         actual = resolver_from_constants(file_ref, [])
         # ACT & ASSERT #
         assertion = sut.equals_file_ref_resolver(expected)
@@ -148,8 +151,9 @@ class Test1NotEquals(unittest.TestCase):
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref, [])
         actual = resolver_from_constants(file_ref,
-                                         [SymbolReference('reffed-name',
-                                                          ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+                                         [NamedElementReference('reffed-name',
+                                                                ReferenceRestrictionsOnDirectAndIndirect(
+                                                                    NoRestriction()))])
         assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -158,14 +162,15 @@ class Test1NotEquals(unittest.TestCase):
         # ARRANGE #
         file_ref = arbitrary_file_ref()
         expected = resolver_from_constants(file_ref,
-                                           [SymbolReference('reffed-name',
-                                                            ReferenceRestrictionsOnDirectAndIndirect(
+                                           [NamedElementReference('reffed-name',
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
                                                                 _relativity_restriction(
                                                                     {RelOptionType.REL_ACT},
                                                                     False)))])
         actual = resolver_from_constants(file_ref,
-                                         [SymbolReference('reffed-name',
-                                                          ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+                                         [NamedElementReference('reffed-name',
+                                                                ReferenceRestrictionsOnDirectAndIndirect(
+                                                                    NoRestriction()))])
         assertion = sut.equals_file_ref_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -201,7 +206,7 @@ class Test2NotEquals(unittest.TestCase):
         file_ref = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
         actual = _FileRefResolverWithConstantFileRefAndSymbolReferences(
             file_ref,
-            [SymbolReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
+            [NamedElementReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))])
         assertion = sut.matches_file_ref_resolver(file_ref,
                                                   asrt.matches_sequence([]),
                                                   empty_symbol_table())
