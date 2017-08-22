@@ -2,8 +2,8 @@ from exactly_lib.execution import error_message_format
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.execution.symbols_handling import restriction_failure_renderer
-from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.resolver_structure import ResolverContainer
+from exactly_lib.named_element import symbol_usage as su
+from exactly_lib.named_element.resolver_structure import ResolverContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 

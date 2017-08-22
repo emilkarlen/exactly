@@ -21,9 +21,9 @@ from exactly_lib.instructions.utils.err_msg import property_description
 from exactly_lib.instructions.utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.named_element import parse_file_selector
+from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \

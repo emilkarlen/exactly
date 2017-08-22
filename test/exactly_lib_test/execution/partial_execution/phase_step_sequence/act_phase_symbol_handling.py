@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
@@ -13,8 +13,8 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import SYMBOL_VALIDATION_STEPS__ONCE, \
     PRE_SDS_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.test_actions import action_that_returns, action_that_raises
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_reference
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_reference
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForPhaseFailure, \
     ExpectedFailureForNoFailure
 

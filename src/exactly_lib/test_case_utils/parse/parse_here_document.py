@@ -1,9 +1,9 @@
 import re
 
+from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.string import lines_content
 

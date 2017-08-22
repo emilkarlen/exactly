@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import exitcode as sut
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
@@ -16,9 +16,9 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.section_document.test_resources.parse_source import is_at_beginning_of_line
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

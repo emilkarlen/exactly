@@ -1,7 +1,8 @@
 from exactly_lib.execution import error_message_format
-from exactly_lib.symbol.resolver_structure import ResolverContainer
-from exactly_lib.symbol.restriction import FailureInfo, ValueRestrictionFailure
-from exactly_lib.symbol.restrictions.reference_restrictions import FailureOfDirectReference, FailureOfIndirectReference
+from exactly_lib.named_element.resolver_structure import ResolverContainer
+from exactly_lib.named_element.symbol.restriction import FailureInfo, ValueRestrictionFailure
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfDirectReference, \
+    FailureOfIndirectReference
 from exactly_lib.util.symbol_table import SymbolTable
 
 

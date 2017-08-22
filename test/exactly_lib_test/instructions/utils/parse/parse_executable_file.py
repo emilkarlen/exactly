@@ -5,16 +5,17 @@ import unittest
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.utils.parse import parse_executable_file as sut
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect, \
+    no_restrictions
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
+from exactly_lib.named_element.symbol.string_resolver import string_constant
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
-    no_restrictions
-from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction
-from exactly_lib.symbol.string_resolver import string_constant
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
@@ -28,9 +29,9 @@ from exactly_lib_test.instructions.test_resources import executable_file_test_ut
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
     ExpectationOnExeFile
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
-from exactly_lib_test.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop

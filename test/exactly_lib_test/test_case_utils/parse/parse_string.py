@@ -1,24 +1,25 @@
 import unittest
 
+from exactly_lib.named_element.symbol.restriction import ReferenceRestrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
+    ConstantStringFragmentResolver, StringResolver
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
-from exactly_lib.symbol.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
-    ConstantStringFragmentResolver, StringResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_string as sut
 from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
+from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_string_resolver
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_string_resolver
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

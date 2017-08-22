@@ -5,9 +5,9 @@ from time import strftime, localtime
 
 from exactly_lib import program_info
 from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common

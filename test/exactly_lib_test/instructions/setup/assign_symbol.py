@@ -3,19 +3,19 @@ import unittest
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import assign_symbol as sut
+from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
+from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect, \
+    no_restrictions
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
+from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.named_element.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol import list_resolver as lr
-from exactly_lib.symbol import string_resolver as sr
-from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
-    no_restrictions
-from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
-from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.type_system_values import file_refs
@@ -27,13 +27,13 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import equals_container
-from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import assert_symbol_usages_is_singleton_list
-from exactly_lib_test.symbol.test_resources.symbol_utils import string_value_constant_container, \
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils, resolver_structure_assertions as vs_asrt
+from exactly_lib_test.named_element.symbol.test_resources.resolver_structure_assertions import equals_container
+from exactly_lib_test.named_element.symbol.test_resources.symbol_usage_assertions import \
+    assert_symbol_usages_is_singleton_list
+from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import string_value_constant_container, \
     container
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_utils.parse.parse_string import string_resolver_from_fragments
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

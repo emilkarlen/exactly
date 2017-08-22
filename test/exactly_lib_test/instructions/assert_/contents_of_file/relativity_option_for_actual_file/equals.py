@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
-from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
@@ -18,10 +18,10 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents

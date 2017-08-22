@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import env as sut
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.named_element.symbol import string_resolver as sr
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol import string_resolver as sr
-from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable
@@ -13,11 +13,11 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources impor
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_reference_restrictions
-from exactly_lib_test.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source

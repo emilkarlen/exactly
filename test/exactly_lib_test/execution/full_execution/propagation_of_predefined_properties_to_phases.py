@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources import full_result_assertions
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     act_phase_handling_that_records_property_of_env_for_each_step, \
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_keys_equals
 

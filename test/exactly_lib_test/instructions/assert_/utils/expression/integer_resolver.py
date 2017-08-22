@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.expression import integer_resolver as sut
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException
-from exactly_lib.symbol import string_resolver
+from exactly_lib.named_element.symbol import string_resolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds
 from exactly_lib_test.test_resources.actions import do_return

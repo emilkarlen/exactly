@@ -8,7 +8,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.instructions.utils.err_msg import diff_msg, diff_msg_utils
 from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.instructions.utils.err_msg.path_description import path_value_with_relativity_name_prefix
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

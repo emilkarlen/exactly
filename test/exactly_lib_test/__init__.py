@@ -8,9 +8,9 @@ from exactly_lib_test import help
 from exactly_lib_test import help_texts
 from exactly_lib_test import instructions
 from exactly_lib_test import named_element
+from exactly_lib_test import named_element
 from exactly_lib_test import processing
 from exactly_lib_test import section_document
-from exactly_lib_test import symbol
 from exactly_lib_test import test_case
 from exactly_lib_test import test_case_file_structure
 from exactly_lib_test import test_case_utils
@@ -31,7 +31,6 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(common.suite())
     ret_val.addTest(test_case_file_structure.suite())
     ret_val.addTest(type_system_values.suite())
-    ret_val.addTest(symbol.suite())
     ret_val.addTest(named_element.suite())
     ret_val.addTest(test_case.suite())
     ret_val.addTest(execution.suite())
