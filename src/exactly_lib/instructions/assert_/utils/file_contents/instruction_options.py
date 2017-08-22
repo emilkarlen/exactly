@@ -1,5 +1,5 @@
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
-from exactly_lib.named_element.negation_of_predicate import NEGATION_ARGUMENT_STR
+from exactly_lib.test_case_utils.negation_of_predicate import NEGATION_ARGUMENT_STR
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
