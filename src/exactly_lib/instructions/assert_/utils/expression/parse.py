@@ -3,10 +3,10 @@ import types
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
-from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils.expression import comparators, integer_resolver
 from exactly_lib.instructions.assert_.utils.expression.integer_resolver import IntegerResolver
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.named_element import negation_of_predicate
 from exactly_lib.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_utils.parse import parse_string
@@ -53,7 +53,7 @@ def syntax_element_descriptions(
 
 def syntax_element_descriptions_with_negation_operator(
         integer_text: str = 'An integer') -> list:
-    return [negation_of_assertion.syntax_element_description()] + syntax_element_descriptions(integer_text)
+    return [negation_of_predicate.syntax_element_description()] + syntax_element_descriptions(integer_text)
 
 
 def validator_for_non_negative(actual: int) -> str:

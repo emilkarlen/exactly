@@ -6,7 +6,6 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
-from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
@@ -22,7 +21,7 @@ from exactly_lib.instructions.utils.err_msg import property_description
 from exactly_lib.instructions.utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.named_element import parse_file_selector
+from exactly_lib.named_element import parse_file_selector, negation_of_predicate
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.path_resolver import FileRefResolver
@@ -49,7 +48,7 @@ _NUM_FILES_PROPERTY_NAME = 'number of files in dir'
 
 _EMPTINESS_PROPERTY_NAME = 'contents of dir'
 
-NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
+NEGATION_OPERATOR = negation_of_predicate.NEGATION_ARGUMENT_STR
 
 SELECTION_OPTION = parse_file_selector.SELECTION_OPTION
 
@@ -82,7 +81,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
-        negation_argument = negation_of_assertion.optional_negation_argument_usage()
+        negation_argument = negation_of_predicate.optional_negation_argument_usage()
         selection_arg = a.Single(a.Multiplicity.OPTIONAL,
                                  parse_file_selector.SELECTION)
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -111,7 +110,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        negation = negation_of_assertion.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
+        negation = negation_of_predicate.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
 
         selection = parse_file_selector.selection_syntax_element_description()
 

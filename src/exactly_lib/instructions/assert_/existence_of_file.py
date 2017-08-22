@@ -5,10 +5,10 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
-from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
+from exactly_lib.named_element import negation_of_predicate
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.path_resolver import FileRefResolver
@@ -34,7 +34,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-NEGATION_OPERATOR = negation_of_assertion.NEGATION_ARGUMENT_STR
+NEGATION_OPERATOR = negation_of_predicate.NEGATION_ARGUMENT_STR
 
 FILE_TYPE_OPTIONS = [
     (file_type, a.OptionName(long_name=file_info.type_argument))
@@ -85,7 +85,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         type_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.type_argument)]
-        negation_arguments = [negation_of_assertion.optional_negation_argument_usage()]
+        negation_arguments = [negation_of_predicate.optional_negation_argument_usage()]
         path_arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
             _REL_OPTION_CONFIG.path_suffix_is_required)
@@ -98,7 +98,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         negation_elements = [
-            negation_of_assertion.syntax_element_description()
+            negation_of_predicate.syntax_element_description()
         ]
         type_elements = [
             SyntaxElementDescription(self.type_argument.name,

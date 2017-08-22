@@ -8,13 +8,13 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names.formatting import InstructionName
-from exactly_lib.instructions.assert_.utils import negation_of_assertion
 from exactly_lib.instructions.assert_.utils.file_contents import env_vars_replacement
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.named_element import negation_of_predicate
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -35,7 +35,7 @@ class FileContentsHelpParts:
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,
             'expected_file_arg': self.expected_file_arg.name,
-            'not_option': negation_of_assertion.NEGATION_ARGUMENT_STR,
+            'not_option': negation_of_predicate.NEGATION_ARGUMENT_STR,
             'program_name': program_info.PROGRAM_NAME,
             'home_act_env_var': environment_variables.ENV_VAR_HOME_ACT,
             'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,
@@ -50,7 +50,7 @@ class FileContentsHelpParts:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 
-        optional_not_arg = negation_of_assertion.optional_negation_argument_usage()
+        optional_not_arg = negation_of_predicate.optional_negation_argument_usage()
 
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(
@@ -90,7 +90,7 @@ class FileContentsHelpParts:
         ]
 
     def syntax_element_descriptions_at_top(self) -> list:
-        return [negation_of_assertion.syntax_element_description()]
+        return [negation_of_predicate.syntax_element_description()]
 
     def syntax_element_descriptions_at_bottom(self) -> list:
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,

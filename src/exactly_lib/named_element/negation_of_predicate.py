@@ -7,7 +7,7 @@ NEGATION_ARGUMENT_STR = '!'
 
 def syntax_element_description(additional_text: str = '') -> SyntaxElementDescription:
     return SyntaxElementDescription(NEGATION_ARGUMENT_STR,
-                                    normalize_and_parse(_NEGATION_ELEMENT_DESCRIPTION + additional_text))
+                                    normalize_and_parse(_ASSERTION_NEGATION_ELEMENT_DESCRIPTION + additional_text))
 
 
 def optional_negation_argument_usage() -> a.ArgumentUsage:
@@ -15,6 +15,6 @@ def optional_negation_argument_usage() -> a.ArgumentUsage:
                     a.Constant(NEGATION_ARGUMENT_STR))
 
 
-_NEGATION_ELEMENT_DESCRIPTION = """\
+_ASSERTION_NEGATION_ELEMENT_DESCRIPTION = """\
 Negates the assertion.
 """
