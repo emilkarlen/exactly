@@ -3,11 +3,10 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.instructions.utils.err_msg import property_description
-from exactly_lib.instructions.utils.parse import token_stream_parse_prime
-from exactly_lib.instructions.utils.parse.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
+from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util import dir_contents_selection
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.dir_contents_selection import Selectors
