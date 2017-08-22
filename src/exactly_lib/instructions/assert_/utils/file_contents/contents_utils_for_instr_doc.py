@@ -14,7 +14,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.instruction_options im
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
-from exactly_lib.named_element import negation_of_predicate
+from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 

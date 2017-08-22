@@ -10,11 +10,11 @@ from exactly_lib.instructions.assert_.utils.expression.parse import parse_intege
 from exactly_lib.instructions.utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import new_token_parser
-from exactly_lib.named_element import negation_of_predicate
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_utils import negation_of_predicate
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
