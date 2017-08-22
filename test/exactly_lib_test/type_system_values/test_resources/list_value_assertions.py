@@ -6,7 +6,7 @@ from exactly_lib.type_system_values.list_value import ListValue
 from exactly_lib.type_system_values.string_value import StringValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources import string_value
+from exactly_lib_test.type_system_values.test_resources import string_value_assertions as asrt_sv
 
 
 def equals_list_value(expected: ListValue) -> asrt.ValueAssertion:
@@ -20,7 +20,7 @@ class _AssertListValueHasSpecifiedProperties(MultiDirDependentValueAssertion):
         self._sequence_of_element_assertions = []
         for idx, element in enumerate(expected.string_value_elements):
             assert isinstance(element, StringValue), 'Element must be a StringValue #' + str(idx)
-            self._sequence_of_element_assertions.append(string_value.equals_string_value(element))
+            self._sequence_of_element_assertions.append(asrt_sv.equals_string_value(element))
 
     def _check_custom_multi(self,
                             put: unittest.TestCase,

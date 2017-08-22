@@ -22,7 +22,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_u
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part_string
+from exactly_lib_test.type_system_values.test_resources.path_part_assertions import equals_path_part_string
 
 
 def suite() -> unittest.TestSuite:

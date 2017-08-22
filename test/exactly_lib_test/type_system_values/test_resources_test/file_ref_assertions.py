@@ -9,7 +9,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
     FileRefTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
-from exactly_lib_test.type_system_values.test_resources import file_ref as sut
+from exactly_lib_test.type_system_values.test_resources import file_ref_assertions as sut
 
 
 def suite() -> unittest.TestSuite:

@@ -12,8 +12,8 @@ from exactly_lib_test.symbol.test_resources.concrete_value_assertions import _Eq
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references, \
     equals_symbol_reference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.list_value import equals_list_value
-from exactly_lib_test.type_system_values.test_resources.string_value import equals_string_value
+from exactly_lib_test.type_system_values.test_resources.list_value_assertions import equals_list_value
+from exactly_lib_test.type_system_values.test_resources.string_value_assertions import equals_string_value
 
 
 def equals_list_resolver_element(expected: list_resolver.Element,

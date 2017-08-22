@@ -14,7 +14,7 @@ from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import e
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.list_value import equals_list_value
+from exactly_lib_test.type_system_values.test_resources.list_value_assertions import equals_list_value
 
 
 def suite() -> unittest.TestSuite:

@@ -44,7 +44,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import \
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.concrete_path_part import equals_path_part_string
+from exactly_lib_test.type_system_values.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 
 

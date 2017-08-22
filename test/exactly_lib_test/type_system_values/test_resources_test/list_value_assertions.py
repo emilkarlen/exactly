@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.type_system_values import concrete_string_values as csv
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
-from exactly_lib_test.type_system_values.test_resources import list_value as sut
+from exactly_lib_test.type_system_values.test_resources import list_value_assertions as sut
 
 
 def suite() -> unittest.TestSuite:
