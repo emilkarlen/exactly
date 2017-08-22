@@ -2,11 +2,11 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils.err_msg import diff_msg
 from exactly_lib.instructions.utils.err_msg import diff_msg_utils
-from exactly_lib.instructions.utils.expectation_type import from_is_negated
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.util.expectation_type import from_is_negated
 
 
 class EmptinessAssertionInstruction(AssertPhaseInstruction):

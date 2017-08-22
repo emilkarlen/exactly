@@ -1,7 +1,7 @@
 from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
 from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescription
-from exactly_lib.instructions.utils.expectation_type import ExpectationType
 from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.string import line_separated
 
 
