@@ -1,7 +1,7 @@
 import types
 from contextlib import contextmanager
 
-from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
+from exactly_lib.named_element.negation_of_predicate import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

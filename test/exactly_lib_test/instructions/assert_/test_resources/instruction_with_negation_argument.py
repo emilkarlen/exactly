@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exactly_lib.instructions.assert_.utils.negation_of_assertion import NEGATION_ARGUMENT_STR
+from exactly_lib.named_element.negation_of_predicate import NEGATION_ARGUMENT_STR
 from exactly_lib.util.expectation_type import ExpectationType, from_is_negated
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

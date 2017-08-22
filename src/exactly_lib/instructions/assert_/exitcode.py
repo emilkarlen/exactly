@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions, negation_of_assertion
+from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import instruction
 from exactly_lib.instructions.assert_.utils.expression import parse
@@ -10,6 +10,7 @@ from exactly_lib.instructions.assert_.utils.expression.parse import parse_intege
 from exactly_lib.instructions.utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.instructions.utils.parse.token_stream_parse_prime import new_token_parser
+from exactly_lib.named_element import negation_of_predicate
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -39,13 +40,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                negation_of_assertion.optional_negation_argument_usage(),
+                negation_of_predicate.optional_negation_argument_usage(),
                 parse.MANDATORY_INTEGER_ARGUMENT,
             ]),
                 self._paragraphs(_DESCRIPTION_OF_IMPLICIT_EQUALS)),
 
             InvokationVariant(self._cl_syntax_for_args([
-                negation_of_assertion.optional_negation_argument_usage(),
+                negation_of_predicate.optional_negation_argument_usage(),
                 parse.MANDATORY_OPERATOR_ARGUMENT,
                 parse.MANDATORY_INTEGER_ARGUMENT,
             ]),
