@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.named_element.symbol_usage import SymbolDefinition
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.symbol_table import SymbolTable
@@ -10,7 +10,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.basic import Ar
 from exactly_lib_test.execution.test_resources.execution_recording import phase_step_recordings as psr
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

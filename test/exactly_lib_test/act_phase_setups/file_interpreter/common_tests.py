@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
-from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
@@ -16,8 +16,8 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
-from exactly_lib_test.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions

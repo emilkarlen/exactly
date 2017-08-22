@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.instructions.utils.err_msg import property_description
-from exactly_lib.symbol.path_resolver import FileRefResolver
+from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure import path_relativity as pr
 from exactly_lib.test_case_file_structure import relative_path_options as rpo

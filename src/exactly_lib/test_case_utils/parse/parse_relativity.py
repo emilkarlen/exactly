@@ -1,13 +1,14 @@
 from exactly_lib.help_texts.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
+from exactly_lib.named_element.symbol.restriction import ReferenceRestrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import is_option_argument
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse import symbol_syntax

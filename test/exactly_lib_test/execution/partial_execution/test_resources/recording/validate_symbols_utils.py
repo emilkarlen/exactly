@@ -2,10 +2,11 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.restrictions.value_restrictions import NoRestriction
-from exactly_lib.symbol.string_resolver import StringResolver, SymbolStringFragmentResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.string_resolver import StringResolver, SymbolStringFragmentResolver
+from exactly_lib.named_element.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
@@ -14,9 +15,9 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_unsatisfied
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -4,22 +4,23 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh, sh
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.instructions.test_resources.pre_or_post_sds_validator import ValidatorThat
-from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
-from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_string_restriction
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

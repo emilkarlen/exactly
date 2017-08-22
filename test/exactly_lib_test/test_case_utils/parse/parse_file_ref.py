@@ -2,20 +2,22 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION
+from exactly_lib.named_element.resolver_structure import ResolverContainer
+from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
+from exactly_lib.named_element.symbol.restriction import ReferenceRestrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect, \
+    OrReferenceRestrictions, OrRestrictionPart
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction, \
+    FileRefRelativityRestriction
+from exactly_lib.named_element.symbol.string_resolver import string_constant
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
+from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.path_resolver import FileRefResolver
-from exactly_lib.symbol.resolver_structure import ResolverContainer
-from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
-    OrReferenceRestrictions, OrRestrictionPart
-from exactly_lib.symbol.restrictions.value_restrictions import StringRestriction, FileRefRelativityRestriction
-from exactly_lib.symbol.string_resolver import string_constant
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
-from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_file_ref as sut
@@ -30,17 +32,17 @@ from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
+    matches_file_ref_resolver
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
+    equals_symbol_reference
+from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
+    symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
+    entry
 from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
-    matches_file_ref_resolver
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.symbol_utils import \
-    symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
-    entry
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

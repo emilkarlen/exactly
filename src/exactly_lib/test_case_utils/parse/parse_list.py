@@ -1,11 +1,10 @@
+from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
+from exactly_lib.named_element.symbol.list_resolver import ListResolver
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse as tp
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol import list_resolver as lr
-from exactly_lib.symbol import string_resolver as sr
-from exactly_lib.symbol.list_resolver import ListResolver
-from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import symbol_syntax, parse_string
 from exactly_lib.util.parse.token import Token
 

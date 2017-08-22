@@ -9,12 +9,13 @@ from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
+from exactly_lib_test.named_element.symbol.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
+    symbol_table_with_string_values_from_name_and_value
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source, is_at_beginning_of_line, \
     source_is_at_end
-from exactly_lib_test.symbol.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_with_string_values_from_name_and_value
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

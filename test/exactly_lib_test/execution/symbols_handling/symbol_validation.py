@@ -2,20 +2,20 @@ import unittest
 
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.execution.symbols_handling import symbol_validation as sut
-from exactly_lib.symbol import resolver_structure as vs
-from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.restriction import ValueRestriction
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.string_resolver import string_constant
-from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
-from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.named_element import resolver_structure as vs, symbol_usage as su
+from exactly_lib.named_element.symbol.restriction import ValueRestriction
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.named_element.symbol.string_resolver import string_constant
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
+from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
-from exactly_lib_test.symbol.restrictions.test_resources.concrete_restrictions import \
+from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
-from exactly_lib_test.symbol.test_resources.symbol_utils import file_ref_constant_container, \
+from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import file_ref_constant_container, \
     file_ref_resolver_container
 
 

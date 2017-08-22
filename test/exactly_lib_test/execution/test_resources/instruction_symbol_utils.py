@@ -1,4 +1,4 @@
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.named_element.symbol_usage import SymbolDefinition
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.result import sh

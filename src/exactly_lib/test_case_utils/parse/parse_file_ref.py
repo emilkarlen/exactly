@@ -4,6 +4,19 @@ import types
 
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+from exactly_lib.named_element.resolver_structure import ResolverContainer, SymbolValueResolver
+from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect, \
+    OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.named_element.symbol.string_resolver import StringResolver
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
+from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
+from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
+    PathPartResolverAsNothing, PathPartResolverAsStringResolver
+from exactly_lib.named_element.symbol_usage import SymbolReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -12,18 +25,6 @@ from exactly_lib.section_document.parser_implementations.misc_utils import ensur
 from exactly_lib.section_document.parser_implementations.parser_combinations import \
     token_stream_from_remaining_part_of_current_line_of_parse_source
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
-from exactly_lib.symbol.path_resolver import FileRefResolver
-from exactly_lib.symbol.resolver_structure import ResolverContainer, SymbolValueResolver
-from exactly_lib.symbol.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
-    OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings
-from exactly_lib.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
-from exactly_lib.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
-    PathPartResolverAsNothing, PathPartResolverAsStringResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix

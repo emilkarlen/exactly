@@ -3,10 +3,10 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
+from exactly_lib.named_element.symbol import string_resolver as sr
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol import string_resolver as sr
-from exactly_lib.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
@@ -20,11 +20,11 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source
-from exactly_lib_test.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_reference_restrictions
-from exactly_lib_test.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
+from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
+from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents

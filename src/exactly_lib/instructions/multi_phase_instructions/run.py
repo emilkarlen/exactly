@@ -14,15 +14,15 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.parse import parse_executable_file
 from exactly_lib.instructions.utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.named_element.symbol.list_resolver import ListResolver
+from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
+from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.list_resolver import ListResolver
-from exactly_lib.symbol.path_resolver import FileRefResolver
-from exactly_lib.symbol.string_resolver import StringResolver
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.test_case_utils.executable_file import ExecutableFile

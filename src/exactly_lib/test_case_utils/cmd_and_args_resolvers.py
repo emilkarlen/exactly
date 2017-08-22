@@ -1,5 +1,5 @@
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.sub_process_execution import CmdAndArgsResolver
 

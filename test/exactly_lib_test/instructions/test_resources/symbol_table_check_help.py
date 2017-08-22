@@ -1,10 +1,10 @@
 import types
 import unittest
 
-from exactly_lib.symbol.value_resolvers.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import equals_symbol_table
+from exactly_lib_test.named_element.symbol.test_resources.resolver_structure_assertions import equals_symbol_table
 
 
 def get_symbol_table_from_instruction_environment_that_is_first_arg(environment: InstructionEnvironmentForPostSdsStep,

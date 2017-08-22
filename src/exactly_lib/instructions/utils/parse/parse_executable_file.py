@@ -1,12 +1,12 @@
 import sys
 
+from exactly_lib.named_element.symbol.concrete_resolvers import list_constant
+from exactly_lib.named_element.symbol.list_resolver import ListResolver
+from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
+from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.symbol.concrete_resolvers import list_constant
-from exactly_lib.symbol.list_resolver import ListResolver
-from exactly_lib.symbol.path_resolver import FileRefResolver
-from exactly_lib.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.type_system_values import file_refs

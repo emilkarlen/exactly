@@ -2,7 +2,7 @@ import types
 
 from exactly_lib.instructions.assert_.utils.expression.comparison_structures import OperandResolver
 from exactly_lib.instructions.utils import return_svh_via_exceptions
-from exactly_lib.symbol.string_resolver import StringResolver
+from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 
