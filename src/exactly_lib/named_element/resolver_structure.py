@@ -31,15 +31,14 @@ class NamedElementResolver:
 
 
 class FileSelectorResolver(NamedElementResolver):
-    """ Base class for values in the symbol table used by Exactly. """
+    """ Base class for resolvers of :class:`FileSelector`. """
 
     @property
     def element_type(self) -> ElementType:
-        raise NotImplementedError('test of this method is needed')
         return ElementType.FILE_SELECTOR
 
     def resolve(self, named_elements: SymbolTable) -> FileSelector:
-        raise NotImplementedError('todo, maybe abstract method')
+        raise NotImplementedError('abstract method')
 
 
 class SymbolValueResolver(NamedElementResolver):
