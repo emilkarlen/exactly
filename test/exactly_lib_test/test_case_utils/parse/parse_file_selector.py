@@ -34,10 +34,6 @@ class ExpectedSelectors:
         self.name_patterns = name_patterns
 
 
-x = ExpectedSelectors(name_patterns=[],
-                      file_types=[])
-
-
 def selector_equals(expected: ExpectedSelectors) -> asrt.ValueAssertion:
     return asrt.is_instance_with(Selectors,
                                  asrt.and_([
