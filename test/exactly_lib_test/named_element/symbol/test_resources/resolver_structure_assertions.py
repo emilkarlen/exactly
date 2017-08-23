@@ -7,19 +7,19 @@ from exactly_lib_test.section_document.test_resources.assertions import equals_l
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def equals_container(expected: rs.NamedValueContainer,
+def equals_container(expected: rs.NamedElementContainer,
                      ignore_source_line: bool = True) -> asrt.ValueAssertion:
     component_assertions = []
     if not ignore_source_line:
         component_assertions.append(asrt.sub_component('source',
-                                                       rs.NamedValueContainer.definition_source.fget,
+                                                       rs.NamedElementContainer.definition_source.fget,
                                                        equals_line(expected.definition_source)))
     expected_resolver = expected.resolver
     assert isinstance(expected_resolver, SymbolValueResolver), 'All actual values must be SymbolValue'
     component_assertions.append(asrt.sub_component('value',
-                                                   rs.NamedValueContainer.resolver.fget,
+                                                   rs.NamedElementContainer.resolver.fget,
                                                    equals_resolver(expected_resolver)))
-    return asrt.is_instance_with(rs.NamedValueContainer,
+    return asrt.is_instance_with(rs.NamedElementContainer,
                                  asrt.and_(component_assertions))
 
 

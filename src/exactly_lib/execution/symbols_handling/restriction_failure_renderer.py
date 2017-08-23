@@ -1,5 +1,5 @@
 from exactly_lib.execution import error_message_format
-from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.restriction import FailureInfo
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
@@ -43,7 +43,7 @@ def _of_indirect(failing_symbol: str, symbols: SymbolTable, failure: FailureOfIn
 def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, symbols: SymbolTable) -> list:
     def line_ref_of_symbol(symbol_name: str) -> str:
         container = symbols.lookup(symbol_name)
-        assert isinstance(container, NamedValueContainer), 'Only known type of SymbolTableValue'
+        assert isinstance(container, NamedElementContainer), 'Only known type of SymbolTableValue'
         return error_message_format.source_line_of_symbol(container.definition_source)
 
     ret_val = []

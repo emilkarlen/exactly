@@ -3,7 +3,7 @@ from pathlib import Path
 
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
@@ -183,7 +183,7 @@ class TestParsesBase(unittest.TestCase):
         for idx, reference in enumerate(actual.references):
             assert isinstance(reference, NamedElementReference)  # Type info for IDE
             container = symbols.lookup(reference.name)
-            assert isinstance(container, NamedValueContainer)
+            assert isinstance(container, NamedElementContainer)
             result = reference.restrictions.is_satisfied_by(symbols,
                                                             reference.name,
                                                             container)

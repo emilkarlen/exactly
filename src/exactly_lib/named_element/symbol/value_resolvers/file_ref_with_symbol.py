@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -78,7 +78,7 @@ def _combine(first: PathPart, second: PathPart) -> PathPart:
 
 def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:
     container = symbols.lookup(name)
-    assert isinstance(container, NamedValueContainer), 'Value in SymTbl must be ResolverContainer'
+    assert isinstance(container, NamedElementContainer), 'Value in SymTbl must be NamedValueContainer'
     resolver = container.resolver
     assert isinstance(resolver, FileRefResolver), 'Referenced symbol must be FileRefResolver'
     return resolver.resolve(symbols)

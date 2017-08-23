@@ -1,6 +1,6 @@
 from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.help_texts import message_rendering
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
@@ -9,7 +9,7 @@ from exactly_lib.type_system_values.value_type import ValueType
 
 def invalid_type_msg(expected: ValueType,
                      symbol_name: str,
-                     container_of_actual: NamedValueContainer) -> ValueRestrictionFailure:
+                     container_of_actual: NamedElementContainer) -> ValueRestrictionFailure:
     actual = container_of_actual.resolver
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
@@ -27,11 +27,9 @@ def invalid_type_msg(expected: ValueType,
 
 
 def unsatisfied_path_relativity(symbol_name: str,
-                                container: NamedValueContainer,
+                                container: NamedElementContainer,
                                 accepted: PathRelativityVariants,
                                 actual_relativity: SpecificPathRelativity) -> str:
-    from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
-    from exactly_lib.help_texts import file_ref as file_ref_texts
     from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
     from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
@@ -79,8 +77,7 @@ def unsatisfied_path_relativity(symbol_name: str,
 def invalid_type_header_lines(expected: ValueType,
                               actual: ValueType,
                               symbol_name: str,
-                              container: NamedValueContainer) -> list:
-    from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+                              container: NamedElementContainer) -> list:
     ret_val = ([
                    'Illegal type, of symbol "{}"'.format(symbol_name)
                ] +
@@ -94,7 +91,6 @@ def invalid_type_header_lines(expected: ValueType,
 
 
 def invalid_type_how_to_fix_lines(expected: ValueType) -> list:
-    from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     from exactly_lib.help_texts.names.formatting import InstructionName
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis

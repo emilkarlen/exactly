@@ -91,7 +91,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
         container = symbols.lookup(self._symbol_reference.name)
-        assert isinstance(container, struct.NamedValueContainer), 'Value in SymTbl must be NamedValueContainer'
+        assert isinstance(container, struct.NamedElementContainer), 'Value in SymTbl must be NamedValueContainer'
         value_resolver = container.resolver
         assert isinstance(value_resolver, SymbolValueResolver), 'Value must be a SymbolValueResolver'
         value = value_resolver.resolve(symbols)

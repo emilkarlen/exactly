@@ -1,4 +1,4 @@
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, NamedElementResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, NamedElementResolver
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.util.symbol_table import Entry
 
@@ -19,12 +19,12 @@ class NamedElementDefinition(NamedElementUsage):
 
     def __init__(self,
                  name: str,
-                 container: NamedValueContainer):
+                 container: NamedElementContainer):
         super().__init__(name)
         self._container = container
 
     @property
-    def resolver_container(self) -> NamedValueContainer:
+    def resolver_container(self) -> NamedElementContainer:
         return self._container
 
     @property

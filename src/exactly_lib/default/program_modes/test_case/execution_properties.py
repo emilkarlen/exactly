@@ -7,7 +7,7 @@ from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import symbol_table_with_entries
 
 
-def __resolver_of(rel_option_type: RelOptionType) -> resolver_structure.NamedValueContainer:
+def __resolver_of(rel_option_type: RelOptionType) -> resolver_structure.NamedElementContainer:
     return resolver_structure.container_of_builtin(
         file_ref_resolvers.resolver_of_rel_option(rel_option_type))
 
