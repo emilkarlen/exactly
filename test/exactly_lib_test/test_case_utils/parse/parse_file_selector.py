@@ -1,12 +1,12 @@
 import shlex
 import unittest
 
-from exactly_lib.named_element import parse_file_selector as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.parse import parse_file_selector as sut
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_resources.parse import remaining_source
