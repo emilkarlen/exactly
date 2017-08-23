@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
@@ -34,7 +34,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
                                                                             self.default_relativity,
                                                                             symbols)
         container = symbols.lookup(self._file_ref_or_string_symbol.name)
-        assert isinstance(container, NamedValueContainer), 'Implementation consistency/NamedValueContainer'
+        assert isinstance(container, NamedElementContainer), 'Implementation consistency/NamedValueContainer'
         resolver = container.resolver
         assert isinstance(resolver, SymbolValueResolver), 'Implementation consistency/SymbolValueResolver'
         return symbol_value_2_file_ref.visit(resolver)

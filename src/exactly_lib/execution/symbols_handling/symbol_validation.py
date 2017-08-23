@@ -3,7 +3,7 @@ from exactly_lib.execution.instruction_execution.single_instruction_executor imp
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.execution.symbols_handling import restriction_failure_renderer
 from exactly_lib.named_element import named_element_usage as su
-from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -32,7 +32,7 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
                                 ) -> PartialInstructionControlledFailureInfo:
     if symbol_table.contains(definition.name):
         already_defined_resolver_container = symbol_table.lookup(definition.name)
-        assert isinstance(already_defined_resolver_container, NamedValueContainer), \
+        assert isinstance(already_defined_resolver_container, NamedElementContainer), \
             'Value in SymTbl must be ResolverContainer'
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION,
@@ -80,7 +80,7 @@ def _undefined_symbol_error_message(reference: su.NamedElementReference) -> str:
 def _validate_reference(symbol_reference: su.NamedElementReference,
                         symbols: SymbolTable) -> str:
     referenced_resolver_container = symbols.lookup(symbol_reference.name)
-    assert isinstance(referenced_resolver_container, NamedValueContainer), \
+    assert isinstance(referenced_resolver_container, NamedElementContainer), \
         'Values in SymbolTable must be ResolverContainer'
     result = symbol_reference.restrictions.is_satisfied_by(symbols, symbol_reference.name,
                                                            referenced_resolver_container)

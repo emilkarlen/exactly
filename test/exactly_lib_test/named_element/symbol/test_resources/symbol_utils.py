@@ -1,6 +1,6 @@
 from exactly_lib.named_element import resolver_structure
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition, NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -22,27 +22,27 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 
 def container(value_resolver: SymbolValueResolver,
               line_num: int = 1,
-              source_line: str = 'value def line') -> NamedValueContainer:
-    return NamedValueContainer(value_resolver, Line(line_num, source_line))
+              source_line: str = 'value def line') -> NamedElementContainer:
+    return NamedElementContainer(value_resolver, Line(line_num, source_line))
 
 
-def container_of_builtin(value_resolver: SymbolValueResolver) -> NamedValueContainer:
+def container_of_builtin(value_resolver: SymbolValueResolver) -> NamedElementContainer:
     return resolver_structure.container_of_builtin(value_resolver)
 
 
 def string_value_constant_container(constant_str: str,
                                     line_num: int = 1,
-                                    source_line: str = 'value def line') -> NamedValueContainer:
-    return NamedValueContainer(string_constant(constant_str),
-                               Line(line_num, source_line))
+                                    source_line: str = 'value def line') -> NamedElementContainer:
+    return NamedElementContainer(string_constant(constant_str),
+                                 Line(line_num, source_line))
 
 
 def string_value_constant_container2(string_value: StringValue,
                                      line_num: int = 1,
-                                     source_line: str = 'value def line') -> NamedValueContainer:
-    return NamedValueContainer(ConstantValueResolver(ValueType.STRING,
-                                                     string_value),
-                               Line(line_num, source_line))
+                                     source_line: str = 'value def line') -> NamedElementContainer:
+    return NamedElementContainer(ConstantValueResolver(ValueType.STRING,
+                                                       string_value),
+                                 Line(line_num, source_line))
 
 
 def string_symbol_definition(name: str, constant_str: str = 'string value') -> NamedElementDefinition:
@@ -77,9 +77,9 @@ def symbol_table_with_string_values_from_name_and_value(name_and_value_list: ite
 
 def list_value_constant_container(list_value: ListValue,
                                   line_num: int = 1,
-                                  source_line: str = 'value def line') -> NamedValueContainer:
-    return NamedValueContainer(ListResolverTestImplForConstantListValue(list_value),
-                               Line(line_num, source_line))
+                                  source_line: str = 'value def line') -> NamedElementContainer:
+    return NamedElementContainer(ListResolverTestImplForConstantListValue(list_value),
+                                 Line(line_num, source_line))
 
 
 def list_symbol_definition(name: str, resolved_value: ListValue) -> NamedElementDefinition:
@@ -94,16 +94,16 @@ def file_ref_constant_container(
         file_ref_value: _file_ref.FileRef = file_ref_test_impl('file-name-rel-cd',
                                                                relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
-        source_line: str = 'value def line') -> NamedValueContainer:
-    return NamedValueContainer(FileRefConstant(file_ref_value),
-                               Line(line_num, source_line))
+        source_line: str = 'value def line') -> NamedElementContainer:
+    return NamedElementContainer(FileRefConstant(file_ref_value),
+                                 Line(line_num, source_line))
 
 
 def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
                                 line_num: int = 1,
-                                source_line: str = 'value def line') -> NamedValueContainer:
-    return NamedValueContainer(file_ref_resolver,
-                               Line(line_num, source_line))
+                                source_line: str = 'value def line') -> NamedElementContainer:
+    return NamedElementContainer(file_ref_resolver,
+                                 Line(line_num, source_line))
 
 
 def file_ref_symbol_definition(
@@ -135,8 +135,8 @@ def entry(name: str,
           value_resolver: SymbolValueResolver = string_constant('string value'),
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
-    return Entry(name, NamedValueContainer(value_resolver,
-                                           Line(line_num, source_line)))
+    return Entry(name, NamedElementContainer(value_resolver,
+                                             Line(line_num, source_line)))
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:

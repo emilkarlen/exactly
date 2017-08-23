@@ -4,7 +4,7 @@ from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_
 from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import assign_symbol as sut
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition, NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -396,5 +396,5 @@ def _multi_line_source(first_line: str,
                             [_src(line, **kwargs) for line in following_lines])
 
 
-def _resolver_container(value_resolver: SymbolValueResolver) -> NamedValueContainer:
-    return NamedValueContainer(value_resolver, Line(1, 'source line'))
+def _resolver_container(value_resolver: SymbolValueResolver) -> NamedElementContainer:
+    return NamedElementContainer(value_resolver, Line(1, 'source line'))

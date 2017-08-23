@@ -5,7 +5,7 @@ import types
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -286,7 +286,7 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     ))
 
 
-def _type_must_be_either_path_or_string__err_msg_generator(value: NamedValueContainer) -> str:
+def _type_must_be_either_path_or_string__err_msg_generator(value: NamedElementContainer) -> str:
     v = value.resolver
     assert isinstance(v, SymbolValueResolver)  # Type info for IDE
     return 'Expecting either a {path_type} or a {string_type}.\nFound: {actual_type}'.format(

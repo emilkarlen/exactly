@@ -176,8 +176,8 @@ class TestValidationOfList(unittest.TestCase):
 
 def symbol_of(name: str) -> su.NamedElementDefinition:
     return su.NamedElementDefinition(name,
-                                     vs.NamedValueContainer(string_constant('string value'),
-                                                      Line(1, 'source code')))
+                                     vs.NamedElementContainer(string_constant('string value'),
+                                                              Line(1, 'source code')))
 
 
 def file_ref_entry(name: str, file_ref_value: FileRef) -> Entry:
@@ -186,8 +186,8 @@ def file_ref_entry(name: str, file_ref_value: FileRef) -> Entry:
 
 def string_entry(name: str, constant: str = 'string value') -> Entry:
     return Entry(name,
-                 vs.NamedValueContainer(string_constant(constant),
-                                        Line(1, 'source code')))
+                 vs.NamedElementContainer(string_constant(constant),
+                                          Line(1, 'source code')))
 
 
 def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRelativityVariants:
@@ -198,7 +198,7 @@ class RestrictionThatIsAlwaysSatisfied(ValueRestriction):
     def is_satisfied_by(self,
                         symbol_table: vs.SymbolTable,
                         symbol_name: str,
-                        container: vs.NamedValueContainer) -> str:
+                        container: vs.NamedElementContainer) -> str:
         return None
 
 

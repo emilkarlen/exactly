@@ -11,7 +11,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -135,7 +135,7 @@ def _parse(source: ParseSource) -> NamedElementDefinition:
     if not token_stream.is_null:
         msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return NamedElementDefinition(name_str, NamedValueContainer(value_resolver, source_line))
+    return NamedElementDefinition(name_str, NamedElementContainer(value_resolver, source_line))
 
 
 _PATH_ARGUMENT = path_syntax.PATH_ARGUMENT

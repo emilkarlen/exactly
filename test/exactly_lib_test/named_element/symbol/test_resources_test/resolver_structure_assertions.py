@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition
-from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.util.line_source import Line
@@ -27,7 +27,7 @@ class TestEqualsValueContainer(unittest.TestCase):
             for ignore_source_line in [False, True]:
                 with self.subTest():
                     # ARRANGE #
-                    container = NamedValueContainer(value, Line(1, 'source code'))
+                    container = NamedElementContainer(value, Line(1, 'source code'))
                     assertion = sut.equals_container(container, ignore_source_line=ignore_source_line)
                     # ACT #
                     assertion.apply_without_message(self, container)
@@ -35,16 +35,16 @@ class TestEqualsValueContainer(unittest.TestCase):
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
         common_value = string_constant('common string value')
-        expected = NamedValueContainer(common_value, Line(4, 'source code 4'))
-        actual = NamedValueContainer(common_value, Line(5, 'source code 5'))
+        expected = NamedElementContainer(common_value, Line(4, 'source code 4'))
+        actual = NamedElementContainer(common_value, Line(5, 'source code 5'))
         assertion = sut.equals_container(expected, ignore_source_line=True)
         assertion.apply_without_message(self, actual)
 
     def test_fail__different_source_line_and_source_line_check_is_not_ignored(self):
         # ARRANGE #
         common_value = FileRefConstant(file_ref_test_impl('common file-name'))
-        expected = NamedValueContainer(common_value, Line(1, 'source code 1'))
-        actual = NamedValueContainer(common_value, Line(2, 'source code 2'))
+        expected = NamedElementContainer(common_value, Line(1, 'source code 1'))
+        actual = NamedElementContainer(common_value, Line(2, 'source code 2'))
         assertion = sut.equals_container(expected, ignore_source_line=False)
         assert_that_assertion_fails(assertion, actual)
 
@@ -59,7 +59,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
             for ignore_source_line in [False, True]:
                 with self.subTest():
                     # ARRANGE #
-                    container = NamedValueContainer(value, Line(1, 'source code'))
+                    container = NamedElementContainer(value, Line(1, 'source code'))
                     symbol = NamedElementDefinition('value name', container)
                     # ACT #
                     assertion = sut.equals_symbol(symbol, ignore_source_line=ignore_source_line)
@@ -68,8 +68,8 @@ class TestEqualsValueDefinition(unittest.TestCase):
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
         common_value_resolver = string_constant('common string value')
-        expected_container = NamedValueContainer(common_value_resolver, Line(4, 'source code 4'))
-        actual_container = NamedValueContainer(common_value_resolver, Line(5, 'source code 5'))
+        expected_container = NamedElementContainer(common_value_resolver, Line(4, 'source code 4'))
+        actual_container = NamedElementContainer(common_value_resolver, Line(5, 'source code 5'))
         common_name = 'value name'
         expected_symbol = NamedElementDefinition(common_name, expected_container)
         actual_symbol = NamedElementDefinition(common_name, actual_container)
@@ -79,7 +79,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
 
     def test_fail__different_name(self):
         # ARRANGE #
-        common_container = NamedValueContainer(string_constant('common string value'), Line(1, 'source code'))
+        common_container = NamedElementContainer(string_constant('common string value'), Line(1, 'source code'))
         expected_symbol = NamedElementDefinition('expected value name', common_container)
         actual_symbol = NamedElementDefinition('actual value name', common_container)
         assertion = sut.equals_symbol(expected_symbol)
@@ -90,10 +90,10 @@ class TestEqualsValueDefinition(unittest.TestCase):
         common_name_source = Line(1, 'source code')
         common_name = 'value name'
         expected_symbol = NamedElementDefinition(common_name,
-                                                 NamedValueContainer(string_constant('expected string value'),
-                                                               common_name_source))
+                                                 NamedElementContainer(string_constant('expected string value'),
+                                                                       common_name_source))
         actual_symbol = NamedElementDefinition(common_name,
-                                               NamedValueContainer(string_constant('actual string value'),
-                                                             common_name_source))
+                                               NamedElementContainer(string_constant('actual string value'),
+                                                                     common_name_source))
         assertion = sut.equals_symbol(expected_symbol)
         assert_that_assertion_fails(assertion, actual_symbol)

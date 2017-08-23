@@ -68,7 +68,7 @@ class SymbolValueResolver(NamedElementResolver):
         return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
 
 
-class NamedValueContainer(SymbolTableValue):
+class NamedElementContainer(SymbolTableValue):
     """
     The info about a named element resolver that is stored in a symbol table.
 
@@ -96,5 +96,5 @@ class NamedValueContainer(SymbolTableValue):
         return self._resolver
 
 
-def container_of_builtin(value_resolver: SymbolValueResolver) -> NamedValueContainer:
-    return NamedValueContainer(value_resolver, None)
+def container_of_builtin(value_resolver: SymbolValueResolver) -> NamedElementContainer:
+    return NamedElementContainer(value_resolver, None)

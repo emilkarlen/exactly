@@ -1,4 +1,4 @@
-from exactly_lib.named_element.resolver_structure import NamedValueContainer
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -34,7 +34,7 @@ class ValueRestriction:
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: NamedValueContainer) -> ValueRestrictionFailure:
+                        container: NamedElementContainer) -> ValueRestrictionFailure:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to

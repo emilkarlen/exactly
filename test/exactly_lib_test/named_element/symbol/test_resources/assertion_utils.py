@@ -1,5 +1,5 @@
 from exactly_lib.named_element import named_element_usage as su
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
@@ -46,5 +46,5 @@ class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):
         return file_ref_resolver_test_impl(x.accepted)
 
 
-def _resolver_container(value: FileRefResolver) -> NamedValueContainer:
-    return NamedValueContainer(value, Line(1, 'source line'))
+def _resolver_container(value: FileRefResolver) -> NamedElementContainer:
+    return NamedElementContainer(value, Line(1, 'source line'))

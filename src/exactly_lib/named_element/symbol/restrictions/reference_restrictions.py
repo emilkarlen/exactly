@@ -1,7 +1,7 @@
 import types
 
 from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
-from exactly_lib.named_element.resolver_structure import NamedValueContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
 from exactly_lib.named_element.restriction import FailureInfo, \
     SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
@@ -71,7 +71,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(SymbolReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: NamedValueContainer) -> FailureInfo:
+                        container: NamedElementContainer) -> FailureInfo:
         """
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
@@ -159,7 +159,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
-                        container: NamedValueContainer) -> FailureInfo:
+                        container: NamedElementContainer) -> FailureInfo:
         resolver = container.resolver
         assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
         for part in self._parts:
@@ -171,7 +171,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
                                   resolver: SymbolValueResolver,
-                                  value: NamedValueContainer) -> FailureOfDirectReference:
+                                  value: NamedElementContainer) -> FailureOfDirectReference:
         if self._container_2_error_message_if_no_matching_part is not None:
             msg = self._container_2_error_message_if_no_matching_part(value)
         else:
@@ -180,7 +180,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
 
     def _default_error_message(self,
                                symbol_name: str,
-                               container: NamedValueContainer,
+                               container: NamedElementContainer,
                                resolver: SymbolValueResolver) -> str:
         from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
         accepted_value_types = ', '.join([help_texts.TYPE_INFO_DICT[part.selector].type_name
