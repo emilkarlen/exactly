@@ -1,9 +1,13 @@
 import unittest
 
+from exactly_lib.named_element.file_selector import FileSelectorConstant
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su, any_resolver_assertions as sut
+from exactly_lib.type_system_values.file_selector import FileSelector
+from exactly_lib.util import dir_contents_selection
+from exactly_lib_test.named_element.symbol.test_resources import any_resolver_assertions as sut
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
@@ -31,10 +35,17 @@ class TestEqualsResolver(unittest.TestCase):
         # ACT & ASSERT #
         sut.equals_resolver(value).apply_without_message(self, value)
 
-    def test_not_equals__different_types(self):
+    def test_not_equals__different_symbol_types(self):
         # ARRANGE #
         expected = FileRefConstant(file_ref_test_impl('file-name'))
         actual = string_constant('string value')
+        # ACT & ASSERT #
+        assert_that_assertion_fails(sut.equals_resolver(expected), actual)
+
+    def test_not_equals__non_symbol_type(self):
+        # ARRANGE #
+        expected = FileRefConstant(file_ref_test_impl('file-name'))
+        actual = FileSelectorConstant(FileSelector(dir_contents_selection.all_files()))
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)
 
