@@ -4,7 +4,6 @@ from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
-from exactly_lib.named_element import parse_file_selector
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -13,7 +12,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse import parse_relativity
+from exactly_lib.test_case_utils.parse import parse_relativity, parse_file_selector
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -31,9 +30,9 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
-from exactly_lib_test.named_element import parse_file_selector as parse_test
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_utils.parse import parse_file_selector as parse_test
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
