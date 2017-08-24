@@ -169,9 +169,9 @@ class TokenParserPrime:
                                            ):
         """
         Looks at the current argument and checks if it is the given option,
-        and, if the option is given, and returns a value given by the given parser.
+        and, if it is, returns the value from the given parser.
 
-        A default value is returned if the the current argument is not the given options,
+        A default value is returned if the the current argument is not the given option,
         or if there are no arguments.
 
         :param key_and_option_name_list: [(key, `OptionName`)]
@@ -182,10 +182,11 @@ class TokenParserPrime:
         """
         if self.token_stream.is_null:
             return return_value_if_no_match
-        if matches(option_name, self.token_stream.head.source_string):
+        elif matches(option_name, self.token_stream.head.source_string):
             self.token_stream.consume()
             return argument_parser(self)
-        return return_value_if_no_match
+        else:
+            return return_value_if_no_match
 
     def head_matches(self, option_name: OptionName) -> bool:
         if self.token_stream.is_null:
