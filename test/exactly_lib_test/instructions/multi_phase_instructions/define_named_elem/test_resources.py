@@ -19,7 +19,7 @@ _STD_FORMAT_MAP = {
     'path_type': help_texts.PATH_TYPE,
     'string_type': help_texts.STRING_TYPE,
     'list_type': help_texts.LIST_TYPE,
-    # 'file_sel_type': help_texts.FILE_SELECTOR_TYPE,
+    'file_sel_type': help_texts.FILE_SELECTOR_TYPE,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
 }

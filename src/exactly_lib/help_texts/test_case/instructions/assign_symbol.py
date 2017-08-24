@@ -10,6 +10,9 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 PATH_TYPE = 'path'
 STRING_TYPE = 'string'
 LIST_TYPE = 'list'
+
+FILE_SELECTOR_TYPE = 'file-selector'
+
 EQUALS_ARGUMENT = '='
 
 SYMBOL_NAME = 'NAME'
