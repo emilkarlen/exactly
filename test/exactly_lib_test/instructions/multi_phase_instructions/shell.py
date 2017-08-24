@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_reference_restrictions
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import matches_symbol_reference
+from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulatorForRelOptionType
@@ -62,10 +62,10 @@ class TestSymbolReferences(unittest.TestCase):
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
-                matches_symbol_reference(
+                matches_reference(
                     python_interpreter_symbol.name,
                     equals_reference_restrictions(no_restrictions())),
-                matches_symbol_reference(
+                matches_reference(
                     file_to_interpret_symbol.name,
                     equals_reference_restrictions(no_restrictions())),
             ]),
