@@ -7,10 +7,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestTextVisitor)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestTextVisitor(unittest.TestCase):
     def test_visit_cross_reference(self):
         # ARRANGE #
@@ -54,7 +50,7 @@ class TestTextVisitor(unittest.TestCase):
         item = 'A value of a type that is not a Text'
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             visitor.visit(item)
         # ASSERT #
         self.assertIsNot(visitor.visited_types,
@@ -76,3 +72,7 @@ class AVisitorThatRecordsVisitedMethods(sut.TextVisitor):
     def visit_string(self, text: sut.StringText):
         self.visited_types.append(sut.StringText)
         return text
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
