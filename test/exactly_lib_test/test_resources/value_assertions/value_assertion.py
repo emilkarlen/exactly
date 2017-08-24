@@ -24,6 +24,18 @@ class MessageBuilder:
                                      self,
                                      component_separator)
 
+    def with_description(self, description: str):
+        """
+        Adds a description
+        :param description: If empty on None, no description is added
+        """
+        if description:
+            return sub_component_builder(' (' + description + ') ',
+                                         self,
+                                         '')
+        else:
+            return self
+
 
 class ValueAssertion:
     def apply(self,
@@ -319,14 +331,18 @@ def is_list_of(element_assertion: ValueAssertion) -> ValueAssertion:
 class _IsInstanceWith(ValueAssertion):
     def __init__(self,
                  expected_type: type,
-                 value_assertion: ValueAssertion):
+                 value_assertion: ValueAssertion,
+                 description: str):
         self.expected_type = expected_type
         self.value_assertion = value_assertion
+        self.description = description
 
     def apply(self,
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
+        if self.description:
+            message_builder = message_builder.for_sub_component()
         put.assertIsInstance(value,
                              self.expected_type,
                              message_builder.apply(''))
@@ -369,8 +385,9 @@ class _IsNoneOrInstanceWith(ValueAssertion):
 
 
 def is_instance_with(expected_type: type,
-                     value_assertion: ValueAssertion) -> ValueAssertion:
-    return _IsInstanceWith(expected_type, value_assertion)
+                     value_assertion: ValueAssertion,
+                     description: str = '') -> ValueAssertion:
+    return _IsInstanceWith(expected_type, value_assertion, description)
 
 
 def is_not_none_and_instance_with(expected_type: type,
