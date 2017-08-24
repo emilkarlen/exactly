@@ -105,7 +105,7 @@ class TestSymbolReferences(unittest.TestCase):
             act_phase_instructions,
             Arrangement(
                 symbol_table=SymbolTable({
-                    symbol.name: symbol_utils.string_value_constant_container(symbol.value)
+                    symbol.name: symbol_utils.string_constant_container(symbol.value)
                 })
             ),
             Expectation(

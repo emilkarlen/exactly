@@ -239,7 +239,7 @@ def act_result_of(exit_code: int):
 
 
 def symbol_table_with_string_constant_symbols(symbol_name_and_value_list: list) -> SymbolTable:
-    return SymbolTable(dict([(sym.name, symbol_utils.string_value_constant_container(sym.value))
+    return SymbolTable(dict([(sym.name, symbol_utils.string_constant_container(sym.value))
                              for sym in symbol_name_and_value_list]))
 
 

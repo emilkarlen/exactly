@@ -95,5 +95,5 @@ class NamedElementContainer(SymbolTableValue):
         return self._resolver
 
 
-def container_of_builtin(value_resolver: SymbolValueResolver) -> NamedElementContainer:
+def container_of_builtin(value_resolver: NamedElementResolver) -> NamedElementContainer:
     return NamedElementContainer(value_resolver, None)

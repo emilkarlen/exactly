@@ -7,7 +7,7 @@ from exactly_lib.named_element.symbol.restrictions.reference_restrictions import
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
-from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table
+from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su, list_assertions as sut
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_reference
@@ -175,8 +175,8 @@ class TestMatchesResolver(unittest.TestCase):
                                                   no_restrictions()),
                         ))]),
                         symbols=
-                        singleton_symbol_table(su.Entry(string_symbol.name,
-                                                        su.container(string_constant(string_symbol.value)))),
+                        singleton_symbol_table_2(string_symbol.name,
+                                                 su.container(string_constant(string_symbol.value))),
                         ),
         ]
         for case in cases:
@@ -209,15 +209,15 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         equals_symbol_references([NamedElementReference(string_symbol.name,
                                                                         ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      NoRestriction()))]),
+                                                                            NoRestriction()))]),
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
                             NamedElementReference(string_symbol.name,
                                                   OrReferenceRestrictions([])),
                         ))]),
                         symbols=
-                        singleton_symbol_table(su.Entry(string_symbol.name,
-                                                        su.container(string_constant(string_symbol.value)))),
+                        singleton_symbol_table_2(string_symbol.name,
+                                                 su.container(string_constant(string_symbol.value))),
                         ),
         ]
         for case in cases:

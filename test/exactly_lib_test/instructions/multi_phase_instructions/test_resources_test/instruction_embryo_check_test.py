@@ -170,7 +170,7 @@ class TestSymbols(TestCaseBase):
         def add_symbol_to_symbol_table(environment: InstructionEnvironmentForPostSdsStep,
                                        *args, **kwargs):
             environment.symbols.put(symbol_name,
-                                    symbol_utils.string_value_constant_container('const string'))
+                                    symbol_utils.string_constant_container('const string'))
 
         self._check(
             ParserThatGives(

@@ -246,7 +246,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithConfigurationAndN
                 lines_content([expected_content(symbol.value)]),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=SymbolTable({
-                    symbol.name: symbol_utils.string_value_constant_container(symbol.value),
+                    symbol.name: symbol_utils.string_constant_container(symbol.value),
                 })),
             Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                         symbol_usages=equals_symbol_references([

@@ -91,7 +91,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                             source,
                             ArrangementPostAct(
                                 symbols=SymbolTable({
-                                    symbol.name: symbol_utils.string_value_constant_container(
+                                    symbol.name: symbol_utils.string_constant_container(
                                         invalid_symbol_value
                                     )
                                 })

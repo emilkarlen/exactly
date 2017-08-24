@@ -114,9 +114,9 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
             ])),
             symbol_table=SymbolTable({
                 symbol_for_source_file.name:
-                    su.string_value_constant_container(symbol_for_source_file.value),
+                    su.string_constant_container(symbol_for_source_file.value),
                 argument_symbol.name:
-                    su.string_value_constant_container(argument_symbol.value),
+                    su.string_constant_container(argument_symbol.value),
             })
         )
 
@@ -168,7 +168,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
                     su.file_ref_constant_container(dir_symbol.value),
 
                 source_file_name_symbol.name:
-                    su.string_value_constant_container(source_file_name_symbol.value),
+                    su.string_constant_container(source_file_name_symbol.value),
             })
         )
 

@@ -8,6 +8,7 @@ from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionF
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_table_from_names
+from exactly_lib_test.named_element.test_resources import named_elem_utils
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
@@ -51,7 +52,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
 
     def test_directly_referenced_symbol_is_builtin(self):
         referenced_symbol = NameAndValue('referenced symbol',
-                                         symbol_utils.container_of_builtin(
+                                         named_elem_utils.container_of_builtin(
                                              string_constant('referenced symbol value')))
         for how_to_fix in ['', 'how_to_fix']:
             with self.subTest(how_to_fix=how_to_fix):
@@ -62,7 +63,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
                                                      error=error)
                 # ACT #
                 checked_symbol = NameAndValue('checked symbol name',
-                                              symbol_utils.string_value_constant_container('checked symbol value'))
+                                              symbol_utils.string_constant_container('checked symbol value'))
                 symbol_table = SymbolTable({
                     checked_symbol.name: checked_symbol.value,
                     referenced_symbol.name: referenced_symbol.value,
@@ -81,7 +82,7 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
                                                      error=error)
                 # ACT #
                 checked_symbol = NameAndValue('checked_symbol',
-                                              symbol_utils.container_of_builtin(
+                                              named_elem_utils.container_of_builtin(
                                                   string_constant('checked symbol value')))
                 symbol_table = SymbolTable({
                     checked_symbol.name: checked_symbol.value

@@ -30,9 +30,9 @@ def container_of_builtin(value_resolver: SymbolValueResolver) -> NamedElementCon
     return resolver_structure.container_of_builtin(value_resolver)
 
 
-def string_value_constant_container(constant_str: str,
-                                    line_num: int = 1,
-                                    source_line: str = 'value def line') -> NamedElementContainer:
+def string_constant_container(constant_str: str,
+                              line_num: int = 1,
+                              source_line: str = 'value def line') -> NamedElementContainer:
     return NamedElementContainer(string_constant(constant_str),
                                  Line(line_num, source_line))
 
@@ -47,7 +47,7 @@ def string_value_constant_container2(string_value: StringValue,
 
 def string_symbol_definition(name: str, constant_str: str = 'string value') -> NamedElementDefinition:
     return NamedElementDefinition(name,
-                                  string_value_constant_container(constant_str))
+                                  string_constant_container(constant_str))
 
 
 def string_value_symbol_definition(name: str, string_value: StringValue) -> NamedElementDefinition:
@@ -70,7 +70,7 @@ def symbol_table_with_string_values_from_name_and_value(name_and_value_list: ite
     :type name_and_value_list: iter of NameAndValue
     """
     elements = [(name_and_value.name,
-                 string_value_constant_container(name_and_value.value))
+                 string_constant_container(name_and_value.value))
                 for name_and_value in name_and_value_list]
     return SymbolTable(dict(elements))
 
@@ -140,8 +140,8 @@ def entry(name: str,
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:
-    elements = [(name, string_value_constant_container(name,
-                                                       source_line='source line for {}'.format(name)))
+    elements = [(name, string_constant_container(name,
+                                                 source_line='source line for {}'.format(name)))
                 for name in names]
     return SymbolTable(dict(elements))
 

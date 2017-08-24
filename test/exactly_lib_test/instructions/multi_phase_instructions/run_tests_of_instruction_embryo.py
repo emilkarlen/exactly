@@ -3,7 +3,6 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
-from exactly_lib.named_element.symbol import string_resolver as sr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -114,10 +113,10 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
 
         arrangement = ArrangementWithSds(
             symbols=SymbolTable({
-                python_interpreter_symbol.name: su.container(sr.string_constant(python_interpreter_symbol.value)),
-                execute_program_option_symbol.name: su.container(
-                    sr.string_constant(execute_program_option_symbol.value)),
-                exit_code_symbol.name: su.container(sr.string_constant(str(exit_code_symbol.value))),
+                python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
+                execute_program_option_symbol.name: su.string_constant_container(
+                    execute_program_option_symbol.value),
+                exit_code_symbol.name: su.string_constant_container(str(exit_code_symbol.value)),
             }),
         )
 
@@ -257,10 +256,9 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                 parse_file_ref.ALL_REL_OPTIONS_CONFIG.options.default_option,
                 fs.DirContents([file_to_interpret])),
             symbols=SymbolTable({
-                python_interpreter_symbol.name: su.container(sr.string_constant(python_interpreter_symbol.value)),
-                file_to_interpret_symbol.name: su.container(
-                    sr.string_constant(file_to_interpret_symbol.value)),
-                exit_code_symbol.name: su.container(sr.string_constant(str(exit_code_symbol.value))),
+                python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
+                file_to_interpret_symbol.name: su.string_constant_container(file_to_interpret_symbol.value),
+                exit_code_symbol.name: su.string_constant_container(str(exit_code_symbol.value)),
             }),
         )
 
@@ -346,10 +344,10 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
 
         arrangement = ArrangementWithSds(
             symbols=SymbolTable({
-                python_interpreter_symbol.name: su.container(sr.string_constant(python_interpreter_symbol.value)),
-                execute_program_option_symbol.name: su.container(
-                    sr.string_constant(execute_program_option_symbol.value)),
-                exit_code_symbol.name: su.container(sr.string_constant(str(exit_code_symbol.value))),
+                python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
+                execute_program_option_symbol.name: su.string_constant_container(
+                    execute_program_option_symbol.value),
+                exit_code_symbol.name: su.string_constant_container(str(exit_code_symbol.value)),
             }),
         )
 

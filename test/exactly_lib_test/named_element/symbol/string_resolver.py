@@ -203,7 +203,7 @@ class StringResolverTest(unittest.TestCase):
                     sut.SymbolStringFragmentResolver(su.symbol_reference(list_symbol.name)),
                 )),
                 symbol_tables.symbol_table_from_entries([
-                    Entry(string_symbol.name, su.string_value_constant_container(string_symbol.value)),
+                    Entry(string_symbol.name, su.string_constant_container(string_symbol.value)),
                     Entry(path_symbol.name, su.file_ref_constant_container(path_symbol.value)),
                     Entry(list_symbol.name, su.list_value_constant_container(list_symbol.value)),
                 ]),
