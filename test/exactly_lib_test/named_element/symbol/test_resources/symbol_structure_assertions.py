@@ -15,8 +15,8 @@ def equals_container(expected: rs.NamedElementContainer,
                                                        rs.NamedElementContainer.definition_source.fget,
                                                        equals_line(expected.definition_source)))
     expected_resolver = expected.resolver
-    assert isinstance(expected_resolver, SymbolValueResolver), 'All actual values must be SymbolValue'
-    component_assertions.append(asrt.sub_component('value',
+    assert isinstance(expected_resolver, SymbolValueResolver), 'All actual values must be SymbolValueResolver'
+    component_assertions.append(asrt.sub_component('resolver',
                                                    rs.NamedElementContainer.resolver.fget,
                                                    equals_resolver(expected_resolver)))
     return asrt.is_instance_with(rs.NamedElementContainer,
