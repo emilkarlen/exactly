@@ -14,6 +14,9 @@ class QuoteType(enum.Enum):
 SOFT_QUOTE_CHAR = '"'
 HARD_QUOTE_CHAR = '\''
 
+QUOTE_CHARS = frozenset([SOFT_QUOTE_CHAR,
+                         HARD_QUOTE_CHAR])
+
 
 class Token(tuple):
     def __new__(cls,

@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_file_selector as sut
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -44,16 +45,6 @@ def selector_equals(expected: ExpectedSelectors) -> asrt.ValueAssertion:
                                                         Selectors.file_types.fget,
                                                         asrt.equals(frozenset(expected.file_types))),
                                  ]))
-
-
-def name_selector_of(pattern: str) -> str:
-    return sut.COMMAND_NAME__NAME_SELECTOR + ' ' + pattern
-
-
-def type_selector_of(file_type: file_properties.FileType) -> str:
-    return sut.COMMAND_NAME__TYPE_SELECTOR + \
-           ' ' + \
-           file_properties.TYPE_INFO[file_type].type_argument
 
 
 class SourceCase:
