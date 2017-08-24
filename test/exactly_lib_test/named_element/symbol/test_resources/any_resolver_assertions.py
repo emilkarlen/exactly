@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.named_element.resolver_structure import SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import SymbolValueResolver, ElementType
 from exactly_lib.named_element.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def equals_resolver(expected: SymbolValueResolver) -> asrt.ValueAssertion:
-    return _EqualsValue(expected)
+    return _EqualsResolver(expected)
 
 
 class MatchesPrimitiveValueResolvedOfAnyDependency(asrt.ValueAssertion):
@@ -63,7 +63,7 @@ class _EqualsSymbolValueResolverVisitor(SymbolValueResolverVisitor):
         return equals_list_resolver(expected).apply(self.put, self.actual, self.message_builder)
 
 
-class _EqualsValue(asrt.ValueAssertion):
+class _EqualsResolver(asrt.ValueAssertion):
     def __init__(self, expected: SymbolValueResolver):
         self.expected = expected
 
@@ -71,4 +71,15 @@ class _EqualsValue(asrt.ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        put.assertIsInstance(value, SymbolValueResolver)
+        put.assertEqual(ElementType.SYMBOL,
+                        value.element_type,
+                        _ELEMENT_TYPE_ERROR_MESSAGE)
         _EqualsSymbolValueResolverVisitor(value, put, message_builder).visit(self.expected)
+
+
+_ELEMENT_TYPE_ERROR_MESSAGE = 'the {} of a {} must be {}'.format(
+    ElementType,
+    SymbolValueResolver,
+    ElementType.SYMBOL,
+)

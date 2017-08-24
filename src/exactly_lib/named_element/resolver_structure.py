@@ -46,7 +46,6 @@ class SymbolValueResolver(NamedElementResolver):
 
     @property
     def element_type(self) -> ElementType:
-        raise NotImplementedError('test of this method is needed')
         return ElementType.SYMBOL
 
     @property
