@@ -37,6 +37,19 @@ def equals_line(expected: Line) -> asrt.ValueAssertion:
                                  ]))
 
 
+def is_line(description: str = '') -> asrt.ValueAssertion:
+    return asrt.is_instance_with(Line,
+                                 asrt.And([
+                                     asrt.sub_component('line_number',
+                                                        Line.line_number.fget,
+                                                        asrt.is_instance(int)),
+                                     asrt.sub_component('text',
+                                                        Line.text.fget,
+                                                        asrt.is_instance(str))
+                                 ]),
+                                 description)
+
+
 def assert_equals_line_sequence(test_case: unittest.TestCase,
                                 expected: LineSequence,
                                 actual: LineSequence,
