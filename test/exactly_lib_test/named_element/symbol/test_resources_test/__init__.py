@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.named_element.symbol.test_resources_test import concrete_value_assertions__file_ref, \
     concrete_value_assertions__string, any_resolver_assertions, \
-    resolver_structure_assertions, symbol_reference_assertions, \
+    symbol_structure_assertions, symbol_reference_assertions, \
     file_ref_relativity, list_assertions
 from exactly_lib_test.named_element.symbol.test_resources_test import path_relativity
 
@@ -14,7 +14,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(concrete_value_assertions__string.suite())
     ret_val.addTest(concrete_value_assertions__file_ref.suite())
     ret_val.addTest(any_resolver_assertions.suite())
-    ret_val.addTest(resolver_structure_assertions.suite())
+    ret_val.addTest(symbol_structure_assertions.suite())
     ret_val.addTest(symbol_reference_assertions.suite())
     ret_val.addTest(list_assertions.suite())
     return ret_val

@@ -24,6 +24,7 @@ from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import string_constant_container
 from exactly_lib_test.named_element.symbol.test_resources.value_resolvers import \
     string_resolver_of_single_symbol_reference
+from exactly_lib_test.named_element.test_resources import resolver_structure_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -57,7 +58,7 @@ class TestRelSymbol(unittest.TestCase):
             (PathPartResolverAsStringResolver(
                 string_resolver_of_single_symbol_reference(symbol_name_of_path_suffix,
                                                            restrictions_on_path_suffix_symbol)),
-             [vr_tr.matches_symbol_reference(
+             [resolver_structure_assertions.matches_reference(
                  symbol_name_of_path_suffix,
                  vr_tr.matches_restrictions_on_direct_and_indirect())],
             ),

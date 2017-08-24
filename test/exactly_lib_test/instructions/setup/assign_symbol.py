@@ -23,8 +23,8 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.test_resources import resolver_structure_assertions as vs_asrt
-from exactly_lib_test.named_element.symbol.test_resources.resolver_structure_assertions import equals_container
+from exactly_lib_test.named_element.symbol.test_resources import symbol_structure_assertions as vs_asrt
+from exactly_lib_test.named_element.symbol.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.named_element.symbol.test_resources.symbol_usage_assertions import \
     assert_symbol_usages_is_singleton_list
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import string_constant_container, \

@@ -9,48 +9,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestMatchesSymbolReference),
         unittest.makeSuite(TestEqualsSymbolReference),
     ])
-
-
-class TestMatchesSymbolReference(unittest.TestCase):
-    def test_pass(self):
-        # ARRANGE #
-        symbol_name = 'symbol name'
-        symbol_reference = NamedElementReference(symbol_name,
-                                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
-        assertion = sut.matches_symbol_reference(symbol_name,
-                                                 asrt.is_instance(r.ReferenceRestrictionsOnDirectAndIndirect))
-        # ACT & ASSERT #
-        assertion.apply_without_message(self, symbol_reference)
-
-    def test_pass_with_default_assertion_on_restrictions(self):
-        # ARRANGE #
-        symbol_name = 'symbol name'
-        symbol_reference = NamedElementReference(symbol_name,
-                                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
-        assertion = sut.matches_symbol_reference(symbol_name)
-        # ACT & ASSERT #
-        assertion.apply_without_message(self, symbol_reference)
-
-    def test_fail__different_name(self):
-        # ARRANGE #
-        actual = NamedElementReference('actual value name',
-                                       r.ReferenceRestrictionsOnDirectAndIndirect(
-                                     vr.NoRestriction()))
-        assertion = sut.matches_symbol_reference('expected value name',
-                                                 asrt.anything_goes())
-        assert_that_assertion_fails(assertion, actual)
-
-    def test_fail__failing_assertion_on_value_restriction(self):
-        # ARRANGE #
-        actual_symbol_name = 'actual value name'
-        actual = NamedElementReference(actual_symbol_name,
-                                       r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
-        assertion = sut.matches_symbol_reference(actual_symbol_name,
-                                                 asrt.is_instance(r.OrReferenceRestrictions))
-        assert_that_assertion_fails(assertion, actual)
 
 
 class TestEqualsSymbolReference(unittest.TestCase):

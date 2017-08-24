@@ -5,7 +5,7 @@ from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.named_element.symbol.test_resources import resolver_structure_assertions as sut
+from exactly_lib_test.named_element.symbol.test_resources import symbol_structure_assertions as sut
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 

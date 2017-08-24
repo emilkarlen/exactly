@@ -6,10 +6,9 @@ from exactly_lib.named_element.symbol.restrictions.reference_restrictions import
 from exactly_lib.named_element.symbol.value_resolvers import path_part_resolvers as sut
 from exactly_lib.type_system_values.path_part import PathPart
 from exactly_lib.util import symbol_table as st
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
-    matches_symbol_reference
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_string_values_from_name_and_value
+from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -60,8 +59,8 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
         actual = path_part.references
         # ASSERT #
         assertion = asrt.matches_sequence([
-            matches_symbol_reference(symbol1.name),
-            matches_symbol_reference(symbol2.name),
+            matches_reference(symbol1.name),
+            matches_reference(symbol2.name),
         ])
         assertion.apply_with_message(self, actual, 'symbol references')
 
