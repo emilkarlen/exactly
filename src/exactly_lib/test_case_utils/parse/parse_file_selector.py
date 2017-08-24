@@ -3,11 +3,13 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.instructions.utils.err_msg import property_description
+from exactly_lib.named_element.file_selector import FileSelectorConstant
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.dir_contents_selection import Selectors
@@ -124,11 +126,20 @@ def parse_optional_selection_option(parser: TokenParserPrime) -> Selectors:
 
 def parse_resolver(parser: TokenParserPrime,
                    selector_is_mandatory: bool = True) -> FileSelectorResolver:
-    raise NotImplementedError('todo')
+    """
+    :param selector_is_mandatory: Tells if the source must begin with a selector
+    :return: None iff selector is not mandatory and there were no arguments in the source.
+    """
+    selectors = parse(parser, selector_is_mandatory)
+    return FileSelectorConstant(FileSelector(selectors))
 
 
 def parse(parser: TokenParserPrime,
           selector_is_mandatory: bool = True) -> Selectors:
+    """
+    :return: If selector is not mandatory, and source is not a selector: a selector of all files
+    :raises `SingleInstructionInvalidArgumentException`: selector is mandatory but source is not a selector
+    """
     parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)

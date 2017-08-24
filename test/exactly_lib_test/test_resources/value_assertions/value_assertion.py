@@ -342,7 +342,7 @@ class _IsInstanceWith(ValueAssertion):
               value,
               message_builder: MessageBuilder = MessageBuilder()):
         if self.description:
-            message_builder = message_builder.for_sub_component()
+            message_builder = message_builder.with_description(self.description)
         put.assertIsInstance(value,
                              self.expected_type,
                              message_builder.apply(''))
