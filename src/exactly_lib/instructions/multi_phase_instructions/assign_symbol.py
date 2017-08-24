@@ -11,7 +11,8 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition
-from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver, \
+    FileSelectorResolver
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -22,11 +23,12 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
+from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list, parse_file_selector
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.parse.symbol_syntax import is_symbol_name
+from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -172,10 +174,16 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
     return parse_list.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
 
 
+def _parse_file_selector(token_stream: TokenStream) -> FileSelectorResolver:
+    return parse_file_selector.parse_resolver(TokenParserPrime(token_stream),
+                                              selector_is_mandatory=False)
+
+
 _TYPE_SETUPS = {
     syntax_elements.PATH_TYPE: _parse_path,
     syntax_elements.STRING_TYPE: _parse_string,
     syntax_elements.LIST_TYPE: _parse_list,
+    syntax_elements.FILE_SELECTOR_TYPE: _parse_file_selector,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
