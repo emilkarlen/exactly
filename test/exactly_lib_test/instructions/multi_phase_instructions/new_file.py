@@ -25,7 +25,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import source
     is_at_beginning_of_line
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
-from exactly_lib_test.test_case_utils.parse.test_resources import args_with_rel_ops
+from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import single_line_source, remaining_source

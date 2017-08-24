@@ -32,7 +32,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
-from exactly_lib_test.test_case_utils.parse import parse_file_selector as parse_test
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -528,8 +528,8 @@ def argument_constructor_for_emptiness_check(file_name: str,
                                              name_option_pattern: str = '',
                                              type_selection: FileType = None
                                              ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
-    selection = _selection_arguments(name_option_pattern,
-                                     type_selection)
+    selection = selection_arguments(name_option_pattern,
+                                    type_selection)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
         '<rel_opt> {file_name} {selection} <not_opt> {empty}'.format(
@@ -545,8 +545,8 @@ def argument_constructor_for_num_files_check(file_name: str,
                                              name_option_pattern: str = '',
                                              type_selection: FileType = None
                                              ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
-    selection = _selection_arguments(name_option_pattern,
-                                     type_selection)
+    selection = selection_arguments(name_option_pattern,
+                                    type_selection)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
         '<rel_opt> {file_name} {selection} <not_opt> {num_files} {num_files_condition}'.format(
@@ -557,22 +557,6 @@ def argument_constructor_for_num_files_check(file_name: str,
 
         )
     )
-
-
-def _selection_arguments(name_option_pattern: str = '',
-                         type_selection: FileType = None) -> str:
-    ret_val = ''
-
-    if name_option_pattern or type_selection:
-        ret_val = option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name)
-        if name_option_pattern:
-            ret_val = ret_val + ' ' + parse_test.name_selector_of(name_option_pattern)
-        if type_selection:
-            if name_option_pattern:
-                ret_val = ret_val + ' ' + parse_file_selector.AND_OPERATOR
-            ret_val = ret_val + ' ' + parse_test.type_selector_of(type_selection)
-
-    return ret_val
 
 
 def _int_condition(operator: comparators.ComparisonOperator,
