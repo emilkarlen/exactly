@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib_test.named_element import test_resources_test, symbol, file_selector
+from exactly_lib_test.named_element import file_selector
+from exactly_lib_test.named_element import test_resources_test, symbol
 
 
 def suite() -> unittest.TestSuite:
