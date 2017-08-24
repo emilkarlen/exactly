@@ -82,5 +82,9 @@ def singleton_symbol_table(entry: Entry) -> SymbolTable:
     return SymbolTable({entry.key: entry.value})
 
 
+def singleton_symbol_table_2(name: str, value: SymbolTableValue) -> SymbolTable:
+    return SymbolTable({name: value})
+
+
 def symbol_table_from_none_or_value(symbol_table_or_none: SymbolTable) -> SymbolTable:
     return SymbolTable() if symbol_table_or_none is None else symbol_table_or_none

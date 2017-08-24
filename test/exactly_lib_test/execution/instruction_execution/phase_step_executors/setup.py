@@ -8,7 +8,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as sd_tr
+from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as sym_tr
+from exactly_lib_test.named_element.test_resources import named_elem_utils as ne_tr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -41,28 +42,28 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
     def runTest(self):
         test_cases = [
             ('WHEN referenced value not in symbol table THEN error',
-             Arrangement(symbol_usages=[sd_tr.symbol_reference('undefined')],
+             Arrangement(symbol_usages=[ne_tr.element_reference('undefined')],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_is_empty())
              ),
             ('WHEN referenced value is in symbol table THEN None',
-             Arrangement(symbol_usages=[sd_tr.symbol_reference('defined')],
+             Arrangement(symbol_usages=[ne_tr.element_reference('defined')],
                          environment=env_with_singleton_symbol_table(symbol_of('defined'))),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'defined'}))
              ),
             ('WHEN referenced valueS is in symbol table THEN None',
-             Arrangement(symbol_usages=[sd_tr.symbol_reference('defined1'),
-                                        sd_tr.symbol_reference('defined2')],
+             Arrangement(symbol_usages=[ne_tr.element_reference('defined1'),
+                                        ne_tr.element_reference('defined2')],
                          environment=env_with_symbol_table([symbol_of('defined1'),
                                                             symbol_of('defined2')])),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'defined1', 'defined2'}))
              ),
             ('WHEN at least one referenced value is not in symbol table THEN error',
-             Arrangement(symbol_usages=[sd_tr.symbol_reference('defined'),
-                                        sd_tr.symbol_reference('undefined')],
+             Arrangement(symbol_usages=[ne_tr.element_reference('defined'),
+                                        ne_tr.element_reference('undefined')],
                          environment=env_with_symbol_table([symbol_of('defined')])),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_contains_exactly_names({'defined'}))
@@ -81,27 +82,27 @@ class TestValueDefinition(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
     def runTest(self):
         test_cases = [
             ('WHEN value to defined is in symbol table THEN validation error',
-             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('already-defined')],
+             Arrangement(symbol_usages=[sym_tr.string_symbol_definition('already-defined')],
                          environment=env_with_singleton_symbol_table(symbol_of('already-defined'))),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_contains_exactly_names({'already-defined'}))
              ),
             ('WHEN defined value not in symbol table THEN None and added to symbol table',
-             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('undefined')],
+             Arrangement(symbol_usages=[sym_tr.string_symbol_definition('undefined')],
                          environment=env_with_singleton_symbol_table(symbol_of('other'))),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'undefined', 'other'}))
              ),
             ('WHEN defined valueS not in symbol table THEN None and added to symbol table',
-             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('undefined1'),
-                                        sd_tr.string_symbol_definition('undefined2')],
+             Arrangement(symbol_usages=[sym_tr.string_symbol_definition('undefined1'),
+                                        sym_tr.string_symbol_definition('undefined2')],
                          environment=env_with_singleton_symbol_table(symbol_of('other'))),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'undefined1', 'undefined2', 'other'}))
              ),
             ('WHEN at least one value to define is in symbol table THEN validation error',
-             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('undefined'),
-                                        sd_tr.string_symbol_definition('already-defined')],
+             Arrangement(symbol_usages=[sym_tr.string_symbol_definition('undefined'),
+                                        sym_tr.string_symbol_definition('already-defined')],
                          environment=env_with_singleton_symbol_table(symbol_of('already-defined'))),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_contains_exactly_names({'undefined', 'already-defined'}))
@@ -120,15 +121,15 @@ class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOf
     def runTest(self):
         test_cases = [
             ('WHEN value to define is before reference to it (in list of value usages) THEN ok',
-             Arrangement(symbol_usages=[sd_tr.string_symbol_definition('define'),
-                                        sd_tr.symbol_reference('define')],
+             Arrangement(symbol_usages=[sym_tr.string_symbol_definition('define'),
+                                        ne_tr.element_reference('define')],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'define'}))
              ),
             ('WHEN value to define is after reference to it (in list of value usages) THEN error',
-             Arrangement(symbol_usages=[sd_tr.symbol_reference('define'),
-                                        sd_tr.string_symbol_definition('define')],
+             Arrangement(symbol_usages=[ne_tr.element_reference('define'),
+                                        sym_tr.string_symbol_definition('define')],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
                          environment=symbol_table_is_empty())
@@ -162,7 +163,7 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
 
 
 def env_with_singleton_symbol_table(definition: su.NamedElementDefinition) -> InstructionEnvironmentForPreSdsStep:
-    table = sd_tr.symbol_table_from_symbol_definitions([definition])
+    table = ne_tr.symbol_table_from_symbol_definitions([definition])
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
@@ -170,7 +171,7 @@ def env_with_singleton_symbol_table(definition: su.NamedElementDefinition) -> In
 
 
 def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
-    symbols = sd_tr.symbol_table_from_symbol_definitions(symbols)
+    symbols = ne_tr.symbol_table_from_symbol_definitions(symbols)
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
@@ -178,7 +179,7 @@ def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
 
 
 def symbol_of(name: str) -> su.NamedElementDefinition:
-    return sd_tr.string_symbol_definition(name)
+    return sym_tr.string_symbol_definition(name)
 
 
 def error_with_status(expected: PartialControlledFailureEnum) -> asrt.ValueAssertion:

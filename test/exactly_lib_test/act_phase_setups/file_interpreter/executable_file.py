@@ -165,7 +165,7 @@ class TestSymbolUsages(unittest.TestCase):
             ])),
             symbol_table=SymbolTable({
                 symbol.name:
-                    su.string_value_constant_container(symbol.value),
+                    su.string_constant_container(symbol.value),
             })
         )
 

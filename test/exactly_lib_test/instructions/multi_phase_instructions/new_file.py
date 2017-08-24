@@ -316,7 +316,7 @@ class TestSymbolReferences(TestCaseBase):
 
         symbol_table = symbol_utils.SymbolTable({
             file_symbol.name: symbol_utils.file_ref_constant_container(file_symbol.value),
-            here_doc_symbol.name: symbol_utils.string_value_constant_container(here_doc_symbol.value),
+            here_doc_symbol.name: symbol_utils.string_constant_container(here_doc_symbol.value),
         })
 
         self._check(

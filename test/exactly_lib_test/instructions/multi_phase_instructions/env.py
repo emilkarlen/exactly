@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import env as sut
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.named_element.symbol import string_resolver as sr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -136,8 +135,8 @@ class TestSetWithSymbolReferences(unittest.TestCase):
 
         arrangement = ArrangementWithSds(
             symbols=SymbolTable({
-                my_symbol.name: su.container(sr.string_constant(my_symbol.value)),
-                your_symbol.name: su.container(sr.string_constant(your_symbol.value)),
+                my_symbol.name: su.string_constant_container(my_symbol.value),
+                your_symbol.name: su.string_constant_container(your_symbol.value),
             }),
         )
 

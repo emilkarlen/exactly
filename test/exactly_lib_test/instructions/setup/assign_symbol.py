@@ -23,11 +23,11 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils, resolver_structure_assertions as vs_asrt
+from exactly_lib_test.named_element.symbol.test_resources import resolver_structure_assertions as vs_asrt
 from exactly_lib_test.named_element.symbol.test_resources.resolver_structure_assertions import equals_container
 from exactly_lib_test.named_element.symbol.test_resources.symbol_usage_assertions import \
     assert_symbol_usages_is_singleton_list
-from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import string_value_constant_container, \
+from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import string_constant_container, \
     container
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_utils.parse.parse_string import string_resolver_from_fragments
@@ -117,14 +117,14 @@ class TestPathFailingParseDueToInvalidSyntax(unittest.TestCase):
 class TestStringSuccessfulParse(TestCaseBaseForParser):
     def test_assignment_of_single_constant_word(self):
         source = single_line_source('{string_type} name1 = v1')
-        expected_definition = NamedElementDefinition('name1', string_value_constant_container('v1'))
+        expected_definition = NamedElementDefinition('name1', string_constant_container('v1'))
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 'name1',
-                equals_container(string_value_constant_container('v1')),
+                equals_container(string_constant_container('v1')),
             )
         )
         self._run(source, Arrangement(), expectation)
@@ -213,7 +213,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         source = single_line_source('{list_type} {symbol_name} = ',
                                     symbol_name=symbol_name)
         expected_resolver = lr.ListResolver([])
-        expected_resolver_container = symbol_utils.container(expected_resolver)
+        expected_resolver_container = container(expected_resolver)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
                 vs_asrt.equals_symbol(NamedElementDefinition(symbol_name, expected_resolver_container),
@@ -240,7 +240,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         )
         expected_resolver = lr.ListResolver([lr.StringResolverElement(sr.string_constant(value_without_space)),
                                              lr.StringResolverElement(sr.string_constant(value_with_space))])
-        expected_resolver_container = symbol_utils.container(expected_resolver)
+        expected_resolver_container = container(expected_resolver)
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
@@ -269,7 +269,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         expected_symbol_reference = NamedElementReference(referred_symbol.name, no_restrictions())
         expected_resolver = lr.ListResolver([lr.SymbolReferenceElement(expected_symbol_reference)])
 
-        expected_resolver_container = symbol_utils.container(expected_resolver)
+        expected_resolver_container = container(expected_resolver)
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([

@@ -110,7 +110,7 @@ class TestValidateAndResolve(unittest.TestCase):
 
     def _symbol_table_with_string_values(self, all_symbols):
         return SymbolTable(
-            dict([(sym.name, symbol_utils.string_value_constant_container(sym.value_str))
+            dict([(sym.name, symbol_utils.string_constant_container(sym.value_str))
                   for sym in all_symbols]))
 
 

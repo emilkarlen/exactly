@@ -178,7 +178,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         ]
         cases = [
             ('string value container',
-             symbol_utils.string_value_constant_container('string symbol value')),
+             symbol_utils.string_constant_container('string symbol value')),
             ('file ref value container',
              symbol_utils.file_ref_constant_container(file_refs.rel_act(PathPartAsFixedPath('file-name.txt')))),
         ]

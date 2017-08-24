@@ -3,6 +3,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.instructions.utils.err_msg import property_description
+from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
@@ -119,6 +120,11 @@ def parse_optional_selection_option(parser: TokenParserPrime) -> Selectors:
         dir_contents_selection.all_files(),
         parse,
         SELECTION_OPTION.name)
+
+
+def parse_resolver(parser: TokenParserPrime,
+                   selector_is_mandatory: bool = True) -> FileSelectorResolver:
+    raise NotImplementedError('todo')
 
 
 def parse(parser: TokenParserPrime,

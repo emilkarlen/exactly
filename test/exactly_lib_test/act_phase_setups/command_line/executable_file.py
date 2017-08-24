@@ -256,7 +256,7 @@ class TestSymbolUsages(unittest.TestCase):
             ])),
             symbol_table=SymbolTable({
                 symbol_for_executable.name:
-                    su.string_value_constant_container(symbol_for_executable.value),
+                    su.string_constant_container(symbol_for_executable.value),
             })
         )
 
@@ -296,9 +296,9 @@ class TestSymbolUsages(unittest.TestCase):
             ])),
             symbol_table=SymbolTable({
                 symbol_for_executable.name:
-                    su.string_value_constant_container(symbol_for_executable.value),
+                    su.string_constant_container(symbol_for_executable.value),
                 argument_symbol.name:
-                    su.string_value_constant_container(argument_symbol.value),
+                    su.string_constant_container(argument_symbol.value),
             })
         )
 
@@ -349,7 +349,7 @@ class TestSymbolUsages(unittest.TestCase):
                     su.file_ref_constant_container(dir_symbol.value),
 
                 executable_file_name_symbol.name:
-                    su.string_value_constant_container(executable_file_name_symbol.value),
+                    su.string_constant_container(executable_file_name_symbol.value),
             })
         )
 
@@ -391,7 +391,7 @@ class TestSymbolUsages(unittest.TestCase):
             ])),
             symbol_table=SymbolTable({
                 symbol.name:
-                    su.string_value_constant_container(symbol.value),
+                    su.string_constant_container(symbol.value),
             })
         )
 

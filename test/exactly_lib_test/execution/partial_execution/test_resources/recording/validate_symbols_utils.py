@@ -18,6 +18,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_unsatisfied
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.test_resources.named_elem_utils import element_reference
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -63,7 +64,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
         conf = self.configuration
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
-                 conf.instruction_that_returns([_reference_to_undefined_symbol()]))
+                 conf.instruction_that_returns([element_reference('undefined symbol')]))
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
@@ -110,7 +111,7 @@ class TestImplementationError(TestCaseBase):
         conf = self.configuration
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
-                 conf.instruction_that_raises(test.ImplementationErrorTestException))
+                 conf.instruction_that_raises(test.ImplementationErrorTestException()))
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
@@ -123,20 +124,16 @@ class TestImplementationError(TestCaseBase):
                         sandbox_directory_structure_should_exist=False))
 
 
-def symbol_definition(symbol_name: str) -> NamedElementDefinition:
-    return NamedElementDefinition()
-
-
 def _reference_to_undefined_symbol() -> NamedElementReference:
     return NamedElementReference('undefined symbol', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
 
 
 def definition_with_reference(name_of_defined: str,
-                              name_of_referenced) -> NamedElementDefinition:
+                              name_of_referenced: str) -> NamedElementDefinition:
     symbol_reference = NamedElementReference(name_of_referenced,
                                              ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
-                                                                                indirect=NoRestriction()))
+                                                                                      indirect=NoRestriction()))
     return NamedElementDefinition(name_of_defined,
                                   symbol_utils.container(
-                                StringResolver((SymbolStringFragmentResolver(symbol_reference),))
-                            ))
+                                      StringResolver((SymbolStringFragmentResolver(symbol_reference),))
+                                  ))
