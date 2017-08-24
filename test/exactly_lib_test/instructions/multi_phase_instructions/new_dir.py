@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents
-from exactly_lib_test.test_case_utils.parse.test_resources import args_with_rel_ops
+from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
