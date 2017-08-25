@@ -261,7 +261,7 @@ class _InstructionForNumFiles(_InstructionBase):
             operator_and_r_operand.right_operand)
 
     def symbol_usages(self) -> list:
-        return self.comparison_handler.references
+        return self.comparison_handler.references + self.settings.file_selector.references
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -274,7 +274,7 @@ class _InstructionForNumFiles(_InstructionBase):
 
 class _InstructionForEmptiness(_InstructionBase):
     def symbol_usages(self) -> list:
-        return self.settings.path_to_check.references
+        return self.settings.path_to_check.references + self.settings.file_selector.references
 
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
         checker = _EmptinessChecker(self._property_descriptor(_EMPTINESS_PROPERTY_NAME),

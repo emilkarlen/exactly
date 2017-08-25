@@ -30,6 +30,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
+from exactly_lib_test.named_element.file_selector.test_resources.restrictions import is_file_selector_reference_to
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
@@ -39,6 +40,7 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -323,6 +325,24 @@ class TestEmpty(TestCaseBaseForParser):
 
 
 class TestEmptyWithFileSelector(TestCaseBaseForParser):
+    def test_file_selector_reference_is_reported(self):
+        name_of_file_selector = 'a_file_selector'
+
+        arguments = 'dir-name {selection} {empty}'.format(
+            selection=selection_arguments(named_selector=name_of_file_selector),
+            empty=sut.EMPTINESS_CHECK_ARGUMENT)
+
+        source = remaining_source(arguments)
+        # ACT #
+        instruction = sut.Parser().parse(source)
+        assert isinstance(instruction, AssertPhaseInstruction)
+        actual = instruction.symbol_usages()
+        # ASSERT #
+        expected_references = asrt.matches_sequence([
+            is_file_selector_reference_to(name_of_file_selector)
+        ])
+        expected_references.apply_without_message(self, actual)
+
     def test_file_is_directory_that_contain_files_but_non_matching_given_name_pattern(self):
         name_of_directory = 'name-of-directory'
         pattern = 'a*'
@@ -405,6 +425,25 @@ class TestFailingValidationPreSdsCausedByCustomValidationForNumFiles(TestCaseBas
 
 
 class TestSymbolReferencesForNumFiles(unittest.TestCase):
+    def test_file_selector_reference_is_reported(self):
+        name_of_file_selector = 'a_file_selector'
+
+        arguments = 'dir-name {selection} {num_files} {cmp_op} 0'.format(
+            selection=selection_arguments(named_selector=name_of_file_selector),
+            num_files=sut.NUM_FILES_CHECK_ARGUMENT,
+            cmp_op=comparators.EQ.name)
+
+        source = remaining_source(arguments)
+        # ACT #
+        instruction = sut.Parser().parse(source)
+        assert isinstance(instruction, AssertPhaseInstruction)
+        actual = instruction.symbol_usages()
+        # ASSERT #
+        expected_references = asrt.matches_sequence([
+            is_file_selector_reference_to(name_of_file_selector)
+        ])
+        expected_references.apply_without_message(self, actual)
+
     def test_both_symbols_from_path_and_comparison_SHOULD_be_reported(self):
         # ARRANGE #
 
@@ -526,10 +565,12 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
 
 def argument_constructor_for_emptiness_check(file_name: str,
                                              name_option_pattern: str = '',
-                                             type_selection: FileType = None
+                                             type_selection: FileType = None,
+                                             named_selector: str = '',
                                              ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
     selection = selection_arguments(name_option_pattern,
-                                    type_selection)
+                                    type_selection,
+                                    named_selector)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
         '<rel_opt> {file_name} {selection} <not_opt> {empty}'.format(
@@ -543,10 +584,12 @@ def argument_constructor_for_emptiness_check(file_name: str,
 def argument_constructor_for_num_files_check(file_name: str,
                                              int_condition: str,
                                              name_option_pattern: str = '',
-                                             type_selection: FileType = None
+                                             type_selection: FileType = None,
+                                             named_selector: str = '',
                                              ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
     selection = selection_arguments(name_option_pattern,
-                                    type_selection)
+                                    type_selection,
+                                    named_selector)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
         '<rel_opt> {file_name} {selection} <not_opt> {num_files} {num_files_condition}'.format(
