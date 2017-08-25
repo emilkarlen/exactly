@@ -38,7 +38,7 @@ def matches_definition(assertion_on_name: asrt.ValueAssertion,
     )
 
 
-def matches_reference(expected_name: str,
+def matches_reference(assertion_on_name: asrt.ValueAssertion = asrt.anything_goes(),
                       assertion_on_restrictions: asrt.ValueAssertion = asrt.anything_goes()
                       ) -> asrt.ValueAssertion:
     return asrt.is_instance_with(
@@ -46,9 +46,16 @@ def matches_reference(expected_name: str,
         asrt.and_([
             asrt.sub_component('name',
                                su.NamedElementReference.name.fget,
-                               asrt.equals(expected_name)),
+                               assertion_on_name),
             asrt.sub_component('restrictions',
                                su.NamedElementReference.restrictions.fget,
                                assertion_on_restrictions)
 
         ]))
+
+
+def matches_reference_2(expected_name: str,
+                        assertion_on_restrictions: asrt.ValueAssertion = asrt.anything_goes()
+                        ) -> asrt.ValueAssertion:
+    return matches_reference(asrt.equals(expected_name),
+                             assertion_on_restrictions)

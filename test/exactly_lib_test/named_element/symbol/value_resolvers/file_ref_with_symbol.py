@@ -58,7 +58,7 @@ class TestRelSymbol(unittest.TestCase):
             (PathPartResolverAsStringResolver(
                 string_resolver_of_single_symbol_reference(symbol_name_of_path_suffix,
                                                            restrictions_on_path_suffix_symbol)),
-             [resolver_structure_assertions.matches_reference(
+             [resolver_structure_assertions.matches_reference_2(
                  symbol_name_of_path_suffix,
                  vr_tr.matches_restrictions_on_direct_and_indirect())],
             ),
