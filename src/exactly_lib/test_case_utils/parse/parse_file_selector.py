@@ -16,6 +16,8 @@ from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
+_SELECTION_OF_ALL_FILES = FileSelectorConstant(FileSelector(dir_contents_selection.all_files()))
+
 CONCEPT_NAME = Name('selector', 'selectors')
 
 COMMAND_NAME__NAME_SELECTOR = 'name'
@@ -89,15 +91,16 @@ def selector_syntax_element_description() -> SyntaxElementDescription:
 
 
 class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
-    def __init__(self, selectors: Selectors):
-        self.selectors = selectors
+    def __init__(self, resolver: FileSelectorResolver):
+        self.resolver = resolver
 
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
-        descriptions = self.selectors.selection_descriptions
+        selectors = self.resolver.resolve(environment.symbols).selectors
+        descriptions = selectors.selection_descriptions
         if not descriptions:
             return []
         separator = ' ' + AND_OPERATOR + ' '
-        description = separator.join(self.selectors.selection_descriptions)
+        description = separator.join(selectors.selection_descriptions)
         line = SELECTION.name.capitalize() + ' : ' + description
         return [line]
 
@@ -112,6 +115,12 @@ def parse_from_parse_source(source: ParseSource,
         return parse(tp, selector_is_mandatory)
 
 
+def parse_resolver_from_parse_source(source: ParseSource,
+                                     selector_is_mandatory: bool) -> FileSelectorResolver:
+    with token_stream_parse_prime.from_parse_source(source) as tp:
+        return parse_resolver(tp, selector_is_mandatory)
+
+
 def parse_optional_selection_option_from_parse_source(source: ParseSource) -> Selectors:
     with token_stream_parse_prime.from_parse_source(source) as tp:
         return parse_optional_selection_option(tp)
@@ -121,6 +130,13 @@ def parse_optional_selection_option(parser: TokenParserPrime) -> Selectors:
     return parser.consume_and_handle_optional_option(
         dir_contents_selection.all_files(),
         parse,
+        SELECTION_OPTION.name)
+
+
+def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
+    return parser.consume_and_handle_optional_option(
+        _SELECTION_OF_ALL_FILES,
+        parse_resolver,
         SELECTION_OPTION.name)
 
 

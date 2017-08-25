@@ -20,6 +20,7 @@ from exactly_lib.instructions.utils.err_msg import diff_msg
 from exactly_lib.instructions.utils.err_msg import property_description
 from exactly_lib.instructions.utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
+from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
@@ -33,7 +34,6 @@ from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_selector
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.util import dir_contents_selection
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.expectation_type import ExpectationType
 
@@ -167,7 +167,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         tokens = new_token_parser(rest_of_line,
                                   self.format_map)
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
-        file_selection = parse_file_selector.parse_optional_selection_option(tokens)
+        file_selection = parse_file_selector.parse_optional_selection_resolver(tokens)
         expectation_type = tokens.consume_optional_negation_operator()
         instructions_parser = _CheckInstructionParser(_Settings(expectation_type,
                                                                 path_to_check,
@@ -187,7 +187,7 @@ class _Settings:
     def __init__(self,
                  expectation_type: ExpectationType,
                  path_to_check: FileRefResolver,
-                 file_selector: dir_contents_selection.Selectors):
+                 file_selector: FileSelectorResolver):
         self.expectation_type = expectation_type
         self.path_to_check = path_to_check
         self.file_selector = file_selector
@@ -304,8 +304,8 @@ class _EmptinessChecker:
     def _files_in_dir_to_check(self) -> list:
         path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        return list(dir_contents_selection.get_selection(path_to_check,
-                                                         self.settings.file_selector))
+        file_selector = self.settings.file_selector.resolve(self.path_resolving_env.symbols)
+        return list(file_selector.select_from(path_to_check))
 
     def _fail_if_path_dir_is_not_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
@@ -351,7 +351,7 @@ class _EmptinessChecker:
 class NumFilesResolver(comparison_structures.OperandResolver):
     def __init__(self,
                  path_to_check: FileRefResolver,
-                 file_selector: dir_contents_selection.Selectors):
+                 file_selector: FileSelectorResolver):
         super().__init__(_NUM_FILES_PROPERTY_NAME)
         self.path_to_check = path_to_check
         self.file_selector = file_selector
@@ -364,7 +364,8 @@ class NumFilesResolver(comparison_structures.OperandResolver):
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         path_to_check = self.path_to_check.resolve_value_of_any_dependency(path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        selected_files = dir_contents_selection.get_selection(path_to_check, self.file_selector)
+        file_selector = self.file_selector.resolve(environment.symbols)
+        selected_files = file_selector.select_from(path_to_check)
         return len(list(selected_files))
 
 
