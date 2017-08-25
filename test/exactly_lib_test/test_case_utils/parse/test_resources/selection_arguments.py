@@ -6,7 +6,8 @@ from exactly_lib.util.parse import token
 
 
 def selection_arguments(name_option_pattern: str = '',
-                        type_selection: FileType = None) -> str:
+                        type_selection: FileType = None,
+                        named_selector: str = '') -> str:
     """
     Gives the CLI argument and options for selection of given
     selectors
@@ -15,7 +16,8 @@ def selection_arguments(name_option_pattern: str = '',
     :returns str: Empty string iff no selector is given.
     """
     the_selectors_arguments = selectors_arguments(name_option_pattern,
-                                                  type_selection)
+                                                  type_selection,
+                                                  named_selector)
     if the_selectors_arguments:
         selector_option = option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name)
         return selector_option + ' ' + the_selectors_arguments
@@ -24,24 +26,28 @@ def selection_arguments(name_option_pattern: str = '',
 
 
 def selectors_arguments(name_pattern: str = '',
-                        type_selection: FileType = None) -> str:
+                        type_selection: FileType = None,
+                        named_selector: str = '',
+                        ) -> str:
     """
     Gives the CLI argument and options for the given selectors
 
+    :param named_selector: A named (reference to a) selector
     :param name_pattern: Name selector, or nothing, if empty string.
     :param type_selection: Type selector, or nothing, if None
     :returns str: Empty string iff no selector is given.
     """
-    ret_val = ''
+    selectors = []
 
     if name_pattern:
-        ret_val = name_selector_of(name_pattern)
+        selectors.append(name_selector_of(name_pattern))
     if type_selection:
-        if name_pattern:
-            ret_val = ret_val + ' ' + parse_file_selector.AND_OPERATOR
-        ret_val = ret_val + ' ' + type_selector_of(type_selection)
+        selectors.append(type_selector_of(type_selection))
+    if named_selector:
+        selectors.append(named_selector)
 
-    return ret_val
+    and_combinator = ' ' + parse_file_selector.AND_OPERATOR + ' '
+    return and_combinator.join(selectors)
 
 
 def name_selector_of(pattern: str) -> str:
