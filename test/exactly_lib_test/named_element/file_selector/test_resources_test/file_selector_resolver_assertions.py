@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.named_element.file_selector import FileSelectorConstant
+from exactly_lib.named_element.file_selectors import FileSelectorConstant
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors
