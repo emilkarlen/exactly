@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.named_element import file_selector as sut
+from exactly_lib.named_element import file_selectors as sut
 from exactly_lib.named_element.resolver_structure import ElementType
 from exactly_lib.util import dir_contents_selection
 from exactly_lib.util.symbol_table import empty_symbol_table

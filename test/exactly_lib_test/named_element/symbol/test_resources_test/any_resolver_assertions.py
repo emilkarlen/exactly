@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.named_element.file_selector import FileSelectorConstant
+from exactly_lib.named_element.file_selectors import FileSelectorConstant
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant

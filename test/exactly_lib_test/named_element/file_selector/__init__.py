@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib_test.named_element.file_selector import \
     test_resources_test, \
-    file_selector_constant
+    file_selectors
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         test_resources_test.suite(),
-        file_selector_constant.suite(),
+        file_selectors.suite(),
     ])
 
 
