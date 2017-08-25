@@ -1,5 +1,6 @@
 """Functionality for accessing a subset of the files in a directory."""
 import fnmatch
+import functools
 import os
 import pathlib
 import types
@@ -65,6 +66,10 @@ def and_also(x: Selectors, y: Selectors) -> Selectors:
         name_patterns=x.name_patterns.union(y.name_patterns),
         file_types=x.file_types.union(y.file_types)
     )
+
+
+def and_all(selectors: iter) -> Selectors:
+    return functools.reduce(and_also, selectors, all_files())
 
 
 def get_selection(directory: pathlib.Path,
