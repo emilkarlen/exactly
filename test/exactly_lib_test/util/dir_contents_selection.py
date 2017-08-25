@@ -16,6 +16,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestNamePattern),
         unittest.makeSuite(TestFileType),
         unittest.makeSuite(TestAnd),
+        unittest.makeSuite(TestAndAll),
     ])
 
 
@@ -168,30 +169,36 @@ class TestFileType(TestCaseBase):
                     )
 
 
+class Setup:
+    def __init__(self):
+        self.sym_link_name_pattern = '*sym-link*'
+        self.directory_name_pattern = '*dir*'
+
+        self.regular_file = empty_file('a file')
+        self.directory = empty_dir('a dir')
+        self.sym_link_to_regular_file = sym_link('a sym-link to a file', self.regular_file.name)
+        self.sym_link_to_directory = sym_link('a sym-link to a dir', self.directory.name)
+        self.sym_link_with_non_existing_target = sym_link('broken sym-link', 'non-existing-file')
+
+    def regular_files(self) -> list:
+        return [
+            self.regular_file,
+            self.sym_link_to_regular_file,
+        ]
+
+    def full_dir_contents(self) -> DirContents:
+        return DirContents([
+            self.regular_file,
+            self.directory,
+            self.sym_link_to_regular_file,
+            self.sym_link_to_directory,
+            self.sym_link_with_non_existing_target,
+        ])
+
+
 class TestAnd(TestCaseBase):
-    sym_link_name_pattern = '*sym-link*'
-    directory_name_pattern = '*dir*'
-
-    regular_file = empty_file('a file')
-    directory = empty_dir('a dir')
-    sym_link_to_regular_file = sym_link('a sym-link to a file', regular_file.name)
-    sym_link_to_directory = sym_link('a sym-link to a dir', directory.name)
-    sym_link_with_non_existing_target = sym_link('broken sym-link', 'non-existing-file')
-
-    regular_files = [
-        regular_file,
-        sym_link_to_regular_file,
-
-    ]
-    full_dir_contents = DirContents([
-        regular_file,
-        directory,
-        sym_link_to_regular_file,
-        sym_link_to_directory,
-        sym_link_with_non_existing_target,
-    ])
-
     def test_WHEN_file_types_are_disjoint_THEN_selection_SHOULD_be_empty(self):
+        setup = Setup()
         cases = [
             NameAndValue('no other selection',
                          sut.all_files(),
@@ -211,7 +218,7 @@ class TestAnd(TestCaseBase):
             sut.file_type_is(file_properties.FileType.REGULAR),
             sut.file_type_is(file_properties.FileType.DIRECTORY),
         )
-        with tmp_dir(self.full_dir_contents) as dir_to_select_from:
+        with tmp_dir(setup.full_dir_contents()) as dir_to_select_from:
             for case in cases:
                 selector = sut.and_also(disjoint_file_type_selector,
                                         case.value)
@@ -226,40 +233,43 @@ class TestAnd(TestCaseBase):
                     )
 
     def test_many_name_patterns(self):
+        setup = Setup()
         selector = sut.and_also(
-            sut.name_matches_pattern(self.sym_link_name_pattern),
-            sut.name_matches_pattern(self.directory_name_pattern),
+            sut.name_matches_pattern(setup.sym_link_name_pattern),
+            sut.name_matches_pattern(setup.directory_name_pattern),
         )
-        with tmp_dir(self.full_dir_contents) as dir_to_select_from:
+        with tmp_dir(setup.full_dir_contents()) as dir_to_select_from:
             self._check_selector(
                 selector,
                 dir_to_select_from,
                 Expectation(
-                    file_system_elements=[self.sym_link_to_directory],
+                    file_system_elements=[setup.sym_link_to_directory],
                     description=number_of_descriptions(2),
                 )
             )
 
     def test_many_name_selectors_AND_single_type_selectors(self):
+        setup = Setup()
         name_selectors = sut.and_also(
-            sut.name_matches_pattern(self.sym_link_name_pattern),
-            sut.name_matches_pattern(self.directory_name_pattern),
+            sut.name_matches_pattern(setup.sym_link_name_pattern),
+            sut.name_matches_pattern(setup.directory_name_pattern),
         )
         type_selector = sut.file_type_is(FileType.DIRECTORY)
 
         selector = sut.and_also(name_selectors,
                                 type_selector)
-        with tmp_dir(self.full_dir_contents) as dir_to_select_from:
+        with tmp_dir(setup.full_dir_contents()) as dir_to_select_from:
             self._check_selector(
                 selector,
                 dir_to_select_from,
                 Expectation(
-                    file_system_elements=[self.sym_link_to_directory],
+                    file_system_elements=[setup.sym_link_to_directory],
                     description=number_of_descriptions(3),
                 )
             )
 
     def test_type_selectors_that_are_not_disjoint(self):
+        setup = Setup()
         cases = [
             NameAndValue('no other selection',
                          sut.all_files(),
@@ -272,7 +282,7 @@ class TestAnd(TestCaseBase):
             sut.file_type_is(file_properties.FileType.DIRECTORY),
             sut.file_type_is(file_properties.FileType.SYMLINK),
         )
-        with tmp_dir(self.full_dir_contents) as dir_to_select_from:
+        with tmp_dir(setup.full_dir_contents()) as dir_to_select_from:
             for case in cases:
                 selector = sut.and_also(file_types_selector,
                                         case.value)
@@ -281,7 +291,65 @@ class TestAnd(TestCaseBase):
                         selector,
                         dir_to_select_from,
                         Expectation(
-                            file_system_elements=[self.sym_link_to_directory],
+                            file_system_elements=[setup.sym_link_to_directory],
                             description=asrt.anything_goes(),
                         )
                     )
+
+
+class TestAndAll(TestCaseBase):
+    def test_WHEN_file_types_are_disjoint_THEN_selection_SHOULD_be_empty(self):
+        setup = Setup()
+        cases = [
+            NameAndValue('no other selection',
+                         sut.all_files(),
+                         ),
+            NameAndValue('one other selection that is a name pattern',
+                         sut.name_matches_pattern('*'),
+                         ),
+            NameAndValue('one other selection that is a type restriction',
+                         sut.file_type_is(FileType.SYMLINK),
+                         ),
+            NameAndValue('an additional selector for every type',
+                         sut.and_also(sut.file_type_is(FileType.SYMLINK),
+                                      sut.name_matches_pattern('*')),
+                         ),
+        ]
+        disjoint_file_type_selector = sut.and_all([
+            sut.file_type_is(file_properties.FileType.REGULAR),
+            sut.file_type_is(file_properties.FileType.DIRECTORY),
+        ]
+        )
+        with tmp_dir(setup.full_dir_contents()) as dir_to_select_from:
+            for case in cases:
+                selector = sut.and_all([disjoint_file_type_selector,
+                                        case.value])
+                with self.subTest(case_name=case.name):
+                    self._check_selector(
+                        selector,
+                        dir_to_select_from,
+                        Expectation(
+                            file_system_elements=[],
+                            description=asrt.anything_goes(),
+                        )
+                    )
+
+    def test_many_name_selectors_AND_single_type_selectors(self):
+        setup = Setup()
+        name_selectors = sut.and_all([
+            sut.name_matches_pattern(setup.sym_link_name_pattern),
+            sut.name_matches_pattern(setup.directory_name_pattern),
+        ])
+        type_selector = sut.file_type_is(FileType.DIRECTORY)
+
+        selector = sut.and_all([name_selectors,
+                                type_selector])
+        with tmp_dir(setup.full_dir_contents()) as dir_to_select_from:
+            self._check_selector(
+                selector,
+                dir_to_select_from,
+                Expectation(
+                    file_system_elements=[setup.sym_link_to_directory],
+                    description=number_of_descriptions(3),
+                )
+            )
