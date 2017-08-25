@@ -1,0 +1,21 @@
+[setup]
+
+
+dir my-dir
+
+file my-dir/file-A.txt
+file my-dir/file-B.txt
+
+def file-selector MY_SELECTION = type file && name '*A.txt'
+
+
+[act]
+
+
+bin/do-something-with-dir my-dir
+
+
+[assert]
+
+
+dir-contents my-dir --selection MY_SELECTION num-files = 1
