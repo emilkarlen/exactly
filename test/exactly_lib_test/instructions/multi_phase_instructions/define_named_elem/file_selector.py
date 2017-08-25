@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import assign_symbol as sut
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system_values.file_selector import FileSelector
-from exactly_lib.util.dir_contents_selection import Selectors
+from exactly_lib.util.dir_contents_selection import Selectors, all_files
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
@@ -41,7 +41,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         cases = [
             ('empty RHS SHOULD give selection of all files',
              '',
-             Selectors(name_patterns=frozenset()),
+             all_files(),
              ),
             ('name pattern in RHS SHOULD give selection of name pattern',
              selectors_arguments(name_pattern=name_pattern),

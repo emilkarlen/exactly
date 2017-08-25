@@ -16,7 +16,7 @@ from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
-_SELECTION_OF_ALL_FILES = FileSelectorConstant(FileSelector(dir_contents_selection.all_files()))
+SELECTION_OF_ALL_FILES = FileSelectorConstant(FileSelector(dir_contents_selection.all_files()))
 
 CONCEPT_NAME = Name('selector', 'selectors')
 
@@ -109,16 +109,14 @@ def every_file_in_dir() -> Selectors:
     return dir_contents_selection.all_files()
 
 
-def parse_from_parse_source(source: ParseSource,
-                            selector_is_mandatory: bool) -> Selectors:
+def parse_from_parse_source(source: ParseSource) -> Selectors:
     with token_stream_parse_prime.from_parse_source(source) as tp:
-        return parse(tp, selector_is_mandatory)
+        return parse(tp)
 
 
-def parse_resolver_from_parse_source(source: ParseSource,
-                                     selector_is_mandatory: bool) -> FileSelectorResolver:
+def parse_resolver_from_parse_source(source: ParseSource) -> FileSelectorResolver:
     with token_stream_parse_prime.from_parse_source(source) as tp:
-        return parse_resolver(tp, selector_is_mandatory)
+        return parse_resolver(tp)
 
 
 def parse_optional_selection_option_from_parse_source(source: ParseSource) -> Selectors:
@@ -135,23 +133,20 @@ def parse_optional_selection_option(parser: TokenParserPrime) -> Selectors:
 
 def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
     return parser.consume_and_handle_optional_option(
-        _SELECTION_OF_ALL_FILES,
+        SELECTION_OF_ALL_FILES,
         parse_resolver,
         SELECTION_OPTION.name)
 
 
-def parse_resolver(parser: TokenParserPrime,
-                   selector_is_mandatory: bool = True) -> FileSelectorResolver:
+def parse_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
     """
-    :param selector_is_mandatory: Tells if the source must begin with a selector
     :return: None iff selector is not mandatory and there were no arguments in the source.
     """
-    selectors = parse(parser, selector_is_mandatory)
+    selectors = parse(parser)
     return FileSelectorConstant(FileSelector(selectors))
 
 
-def parse(parser: TokenParserPrime,
-          selector_is_mandatory: bool = True) -> Selectors:
+def parse(parser: TokenParserPrime) -> Selectors:
     """
     :return: If selector is not mandatory, and source is not a selector: a selector of all files
     :raises `SingleInstructionInvalidArgumentException`: selector is mandatory but source is not a selector
@@ -160,19 +155,14 @@ def parse(parser: TokenParserPrime,
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
-    selector = parser.parse_optional_command(_SELECTOR_PARSERS)
+    def parse_mandatory_simple() -> Selectors:
+        return parser.parse_mandatory_command(_SELECTOR_PARSERS,
+                                              'Missing {_SELECTOR_} argument.')
 
-    if selector is None:
-        if selector_is_mandatory:
-            return parser.error('Missing {_SELECTOR_} argument.')
-        else:
-            return dir_contents_selection.all_files()
-
-    ret_val = selector
+    ret_val = parse_mandatory_simple()
 
     while parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(AND_OPERATOR):
-        next_selector = parser.parse_mandatory_command(_SELECTOR_PARSERS,
-                                                       'Missing {_SELECTOR_} argument.')
+        next_selector = parse_mandatory_simple()
         ret_val = dir_contents_selection.and_also(ret_val, next_selector)
 
     return ret_val
