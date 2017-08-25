@@ -4,17 +4,25 @@ from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def constant(selectors: Selectors = Selectors()) -> FileSelectorResolver:
-    return _FileSelectorResolverConstantTestImpl(FileSelector(selectors))
+class FileSelectorResolverConstantTestImpl(FileSelectorResolver):
+    def __init__(self, resolved_value: FileSelector,
+                 references: list):
+        self._references = references
+        self._resolved_value = resolved_value
 
-
-class _FileSelectorResolverConstantTestImpl(FileSelectorResolver):
-    def __init__(self, resolved_value: FileSelector):
-        self.resolved_value = resolved_value
+    @property
+    def resolved_value(self) -> FileSelector:
+        return self._resolved_value
 
     @property
     def references(self) -> list:
-        return []
+        return self._references
 
     def resolve(self, named_elements: SymbolTable) -> FileSelector:
-        return self.resolved_value
+        return self._resolved_value
+
+
+def fake(selectors: Selectors = Selectors(),
+         references: list = None) -> FileSelectorResolverConstantTestImpl:
+    return FileSelectorResolverConstantTestImpl(FileSelector(selectors),
+                                                references if references else [])
