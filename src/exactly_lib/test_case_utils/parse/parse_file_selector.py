@@ -38,7 +38,7 @@ COMMANDS = {
     COMMAND_NAME__TYPE_SELECTOR: CommandSetup('TYPE'),
 }
 
-AND_OPERATOR = '&'
+AND_OPERATOR = '&&'
 
 SELECTOR_ARGUMENT = a.Named('SELECTOR')
 
@@ -155,7 +155,8 @@ def parse(parser: TokenParserPrime) -> FileSelectorResolver:
 
     selectors = [parse_mandatory_simple()]
 
-    while parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(AND_OPERATOR):
+    and_operator_tokens = [AND_OPERATOR]
+    while parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(and_operator_tokens):
         next_selector = parse_mandatory_simple()
         selectors.append(next_selector)
 
