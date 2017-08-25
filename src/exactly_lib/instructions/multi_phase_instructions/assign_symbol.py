@@ -175,8 +175,10 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
 
 
 def _parse_file_selector(token_stream: TokenStream) -> FileSelectorResolver:
-    return parse_file_selector.parse_resolver(TokenParserPrime(token_stream),
-                                              selector_is_mandatory=False)
+    if token_stream.is_null or token_stream.remaining_part_of_current_line.isspace():
+        return parse_file_selector.SELECTION_OF_ALL_FILES
+    else:
+        return parse_file_selector.parse_resolver(TokenParserPrime(token_stream))
 
 
 _TYPE_SETUPS = {
