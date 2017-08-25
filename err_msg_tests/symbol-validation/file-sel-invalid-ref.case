@@ -1,0 +1,11 @@
+[setup]
+
+def string my_fs = 'not a file selector'
+
+[assert]
+
+dir-contents my-dir --selection my_fs empty
+
+[act]
+
+$ exit 0

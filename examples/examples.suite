@@ -25,6 +25,12 @@ home-directories/package.suite
 symbols/package.suite
 
 #
+# Checking the contents of a directory
+#
+
+dir-contents/package.suite
+
+#
 # Shell examples.
 #
 

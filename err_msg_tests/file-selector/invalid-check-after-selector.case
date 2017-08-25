@@ -1,0 +1,19 @@
+[setup]
+
+dir my-dir
+
+file my-dir/file-A.txt
+file my-dir/file-B.txt
+
+
+[act]
+
+bin/do-something-with-dir my-dir
+
+[assert]
+
+# Name of AND operator is misspelled.
+# The error message should tell what was expected and what was found:
+# (now only expected is displayed)
+
+dir-contents my-dir --selection type file & name '*A.txt' num-files = 1

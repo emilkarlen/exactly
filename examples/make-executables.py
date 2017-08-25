@@ -132,6 +132,7 @@ sandbox_dir = pathlib.Path('sandbox-directories')
 symbols_dir = pathlib.Path('symbols')
 home_dir = pathlib.Path('home-directories')
 cleanup_dir = pathlib.Path('cleanup')
+dir_contents_dir = pathlib.Path('dir-contents')
 external_programs_dir = pathlib.Path('external-programs')
 setup_dir = pathlib.Path('setup')
 
@@ -177,6 +178,10 @@ files = itertools.chain.from_iterable([
     do_nothing_list(cleanup_dir,
                     ['manipulate-database-contents',
                      'my-helper-program',
+                     ]),
+
+    do_nothing_list(dir_contents_dir / 'bin',
+                    ['do-something-with-dir',
                      ]),
 
     do_nothing_list(external_programs_dir,

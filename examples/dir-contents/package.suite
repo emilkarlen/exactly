@@ -1,0 +1,7 @@
+[cases]
+
+dir-is-empty.case
+
+file-selection.case
+
+file-selection--with-defined-selector.case
