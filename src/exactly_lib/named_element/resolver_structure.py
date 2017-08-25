@@ -30,6 +30,14 @@ class NamedElementResolver:
         raise NotImplementedError('abstract method')
 
 
+def get_references(resolver: NamedElementResolver) -> list:
+    return resolver.references
+
+
+def get_element_type(resolver: NamedElementResolver) -> ElementType:
+    return resolver.element_type
+
+
 class FileSelectorResolver(NamedElementResolver):
     """ Base class for resolvers of :class:`FileSelector`. """
 
