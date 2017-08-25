@@ -182,8 +182,8 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
                                symbol_name: str,
                                container: NamedElementContainer,
                                resolver: SymbolValueResolver) -> str:
-        from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
-        accepted_value_types = ', '.join([help_texts.TYPE_INFO_DICT[part.selector].type_name
+        from exactly_lib.help_texts.test_case.instructions import assign_symbol
+        accepted_value_types = ', '.join([assign_symbol.TYPE_INFO_DICT[part.selector].type_name
                                           for part in self._parts])
         lines = ([
                      'Invalid type, of symbol "{}"'.format(symbol_name)
@@ -192,7 +192,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
                  [
                      '',
                      'Accepted : ' + accepted_value_types,
-                     'Found    : ' + help_texts.TYPE_INFO_DICT[resolver.value_type].type_name,
+                     'Found    : ' + assign_symbol.TYPE_INFO_DICT[resolver.value_type].type_name,
                  ])
         return '\n'.join(lines)
 

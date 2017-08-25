@@ -1,6 +1,7 @@
 from exactly_lib.execution import error_message_format
+from exactly_lib.help_texts import element_types
 from exactly_lib.named_element.resolver_structure import NamedElementContainer
-from exactly_lib.named_element.restriction import FailureInfo
+from exactly_lib.named_element.restriction import FailureInfo, InvalidElementTypeFailure
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
@@ -15,10 +16,22 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
         blank_line_separated_parts = _of_direct(failure.error)
     elif isinstance(failure, FailureOfIndirectReference):
         blank_line_separated_parts = _of_indirect(failing_symbol, symbols, failure)
+    elif isinstance(failure, InvalidElementTypeFailure):
+        blank_line_separated_parts = _of_invalid_element_type(failing_symbol, symbols, failure)
     else:
         raise TypeError('Unknown type of {}: {}'.format(str(FailureInfo),
                                                         str(failure)))
     return _concat_parts(blank_line_separated_parts)
+
+
+def _of_invalid_element_type(failing_symbol: str, symbols: SymbolTable, failure: InvalidElementTypeFailure) -> list:
+    msg = '{name}: Expected a {expected_type}. Found a {actual_type}'.format(
+        name=failing_symbol,
+        expected_type=element_types.ELEMENT_TYPE_NAME[failure.expected],
+        actual_type=element_types.ELEMENT_TYPE_NAME[failure.actual],
+    )
+    blank_line_separated_parts = [msg]
+    return blank_line_separated_parts
 
 
 def _of_direct(error: ValueRestrictionFailure) -> list:

@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.named_element.restriction import ReferenceRestrictions, \
-    FileSelectorReferenceRestrictions
+from exactly_lib.named_element.resolver_structure import ElementType
+from exactly_lib.named_element.restriction import ReferenceRestrictions, ElementTypeRestriction
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as r
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfIndirectReference
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
@@ -387,7 +387,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
     def test_fail__direct_and_indirect__non_symbol_restriction(self):
         expected = r.ReferenceRestrictionsOnDirectAndIndirect(
             vr.StringRestriction())
-        actual = FileSelectorReferenceRestrictions()
+        actual = ElementTypeRestriction(ElementType.FILE_SELECTOR)
         self._fail(expected, actual)
 
     def test_fail__or__non_symbol_restriction(self):
@@ -396,7 +396,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))
         ])
-        actual = FileSelectorReferenceRestrictions()
+        actual = ElementTypeRestriction(ElementType.FILE_SELECTOR)
         self._fail(expected, actual)
 
     def _fail(self, expected: r.SymbolReferenceRestrictions, actual: ReferenceRestrictions):

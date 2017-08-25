@@ -1,4 +1,4 @@
-from exactly_lib.named_element.resolver_structure import NamedElementContainer
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, ElementType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -25,13 +25,16 @@ class ReferenceRestrictions:
 
 
 class InvalidElementTypeFailure(FailureInfo):
-    pass
+    def __init__(self,
+                 expected: ElementType,
+                 actual: ElementType):
+        self.actual = actual
+        self.expected = expected
 
 
-class FileSelectorReferenceRestrictions(ReferenceRestrictions):
-    """
-    Restrictions on a reference file selector
-    """
+class ElementTypeRestriction(ReferenceRestrictions):
+    def __init__(self, element_type: ElementType):
+        self._element_type = element_type
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
@@ -43,8 +46,11 @@ class FileSelectorReferenceRestrictions(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        container.resolver
-        raise NotImplementedError('abstract method')
+        if container.resolver.element_type is self._element_type:
+            return None
+        else:
+            return InvalidElementTypeFailure(self._element_type,
+                                             container.resolver.element_type)
 
 
 class SymbolReferenceRestrictions(ReferenceRestrictions):
@@ -62,4 +68,4 @@ class SymbolReferenceRestrictions(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
