@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     equals_reference_restrictions
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference
+from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -143,10 +143,10 @@ class TestSetWithSymbolReferences(unittest.TestCase):
         expectation = embryo_check.Expectation(
             main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
             symbol_usages=asrt.matches_sequence([
-                matches_reference(
+                matches_reference_2(
                     my_symbol.name,
                     equals_reference_restrictions(no_restrictions())),
-                matches_reference(
+                matches_reference_2(
                     your_symbol.name,
                     equals_reference_restrictions(no_restrictions())),
             ]),
