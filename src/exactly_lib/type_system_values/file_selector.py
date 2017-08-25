@@ -22,6 +22,9 @@ class FileSelector:
                                                     self._selectors)
 
 
+SELECT_ALL_FILES = FileSelector(dir_contents_selection.Selectors())
+
+
 class FileSelectorStructureVisitor:
     """
     Visits all variants of :class:`FileSelector`.
