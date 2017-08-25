@@ -7,7 +7,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_file_selector as sut
+from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors
+from exactly_lib_test.named_element.file_selector.test_resources.file_selector_resolver_assertions import \
+    resolved_value_equals_file_selector
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_resources.parse import remaining_source
@@ -27,24 +30,10 @@ def suite() -> unittest.TestSuite:
 NON_SELECTOR_ARGUMENTS = 'not_a_selector argument'
 
 
-class ExpectedSelectors:
-    def __init__(self,
-                 name_patterns: list,
-                 file_types: list):
-        self.file_types = file_types
-        self.name_patterns = name_patterns
-
-
-def selector_equals(expected: ExpectedSelectors) -> asrt.ValueAssertion:
-    return asrt.is_instance_with(Selectors,
-                                 asrt.and_([
-                                     asrt.sub_component('name_patterns',
-                                                        Selectors.name_patterns.fget,
-                                                        asrt.equals(frozenset(expected.name_patterns))),
-                                     asrt.sub_component('file_types',
-                                                        Selectors.file_types.fget,
-                                                        asrt.equals(frozenset(expected.file_types))),
-                                 ]))
+def expected_selector(name_patterns: list,
+                      file_types: list) -> FileSelector:
+    return FileSelector(Selectors(name_patterns=frozenset(name_patterns),
+                                  file_types=frozenset(file_types)))
 
 
 class SourceCase:
@@ -95,9 +84,12 @@ DESCRIPTION_IS_SINGLE_STR = asrt.matches_sequence([asrt.is_instance(str)])
 
 class Expectation:
     def __init__(self,
-                 selectors: ExpectedSelectors,
-                 source: asrt.ValueAssertion):
-        self.selectors = selectors
+                 selector: FileSelector,
+                 source: asrt.ValueAssertion,
+                 references: asrt.ValueAssertion = asrt.is_empty_list,
+                 ):
+        self.selector = selector
+        self.references = references
         self.source = source
 
 
@@ -120,10 +112,13 @@ class TestCaseBase(unittest.TestCase):
                      source: ParseSource,
                      arrangement: Arrangement,
                      expectation: Expectation):
-        parsed_selector = sut.parse_from_parse_source(source,
-                                                      selector_is_mandatory=arrangement.selector_is_mandatory)
-        assertion_on_selectors = selector_equals(expectation.selectors)
-        assertion_on_selectors.apply_with_message(self, parsed_selector, 'parsed selector')
+        parsed_selector_resolver = sut.parse_resolver_from_parse_source(
+            source,
+            selector_is_mandatory=arrangement.selector_is_mandatory)
+
+        assertion_on_selector = resolved_value_equals_file_selector(expectation.selector,
+                                                                    expected_references=expectation.references)
+        assertion_on_selector.apply_with_message(self, parsed_selector_resolver, 'parsed selector')
 
         expectation.source.apply_with_message(self, source, 'source after parse')
 
@@ -138,7 +133,7 @@ class TestFullSelection(TestCaseBase):
                         selector_is_mandatory=False,
                     ),
                     Expectation(
-                        ExpectedSelectors(name_patterns=[],
+                        expected_selector(name_patterns=[],
                                           file_types=[]),
                         source=case.source_assertion
                     ),
@@ -177,7 +172,7 @@ class TestNamePattern(TestCaseBase):
                             selector_is_mandatory=selector_is_mandatory,
                         ),
                         Expectation(
-                            ExpectedSelectors(name_patterns=[pattern],
+                            expected_selector(name_patterns=[pattern],
                                               file_types=[],
                                               ),
                             source=case.source_assertion,
@@ -223,7 +218,7 @@ class TestFileType(TestCaseBase):
                                 selector_is_mandatory=selector_is_mandatory,
                             ),
                             Expectation(
-                                ExpectedSelectors(name_patterns=[],
+                                expected_selector(name_patterns=[],
                                                   file_types=[file_type])
                                 ,
                                 source=source_case.source_assertion,
@@ -286,7 +281,7 @@ class TestAnd(TestCaseBase):
                     selector_is_mandatory=selector_is_mandatory
                 ),
                 Expectation(
-                    ExpectedSelectors(name_patterns=[name_pattern],
+                    expected_selector(name_patterns=[name_pattern],
                                       file_types=[file_type]),
                     source=assert_source(
                         current_line_number=asrt.equals(1),
@@ -320,7 +315,7 @@ class TestAnd(TestCaseBase):
                     selector_is_mandatory=selector_is_mandatory
                 ),
                 Expectation(
-                    ExpectedSelectors(name_patterns=[name_pattern_1, name_pattern_2],
+                    expected_selector(name_patterns=[name_pattern_1, name_pattern_2],
                                       file_types=[file_type_1, file_type_2]),
                     source=assert_source(
                         current_line_number=asrt.equals(1),

@@ -18,8 +18,8 @@ class FileSelector:
         :param directory: An existing directory
         :return: Name of files in the given directory
         """
-        dir_contents_selection.get_selection(directory,
-                                             self._selectors)
+        return dir_contents_selection.get_selection(directory,
+                                                    self._selectors)
 
 
 class FileSelectorStructureVisitor:
