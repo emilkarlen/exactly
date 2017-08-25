@@ -1,6 +1,8 @@
 import shlex
 import unittest
 
+from exactly_lib.named_element.file_selectors import FileSelectorConstant
+from exactly_lib.named_element.resolver_structure import ElementType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -9,10 +11,15 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_file_selector as sut
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors
+from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.file_selector.test_resources.file_selector_resolver_assertions import \
     resolved_value_equals_file_selector
+from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_ne
+from exactly_lib_test.named_element.test_resources.named_elem_utils import container
+from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_element_type_restriction
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -24,6 +31,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestNamePattern),
         unittest.makeSuite(TestFileType),
         unittest.makeSuite(TestAnd),
+        unittest.makeSuite(TestReference),
     ])
 
 
@@ -80,10 +88,16 @@ CASES_WITH_NO_SELECTOR = [
                              remaining_part_of_current_line=asrt.equals(SPACE)),
                ),
     SourceCase('argument is non-selector',
-               remaining_source(NON_SELECTOR_ARGUMENTS,
+               remaining_source('invalid-element-name',
                                 ['non-empty following line']),
                assert_source(current_line_number=asrt.equals(1),
-                             remaining_part_of_current_line=asrt.equals(NON_SELECTOR_ARGUMENTS)),
+                             remaining_part_of_current_line=asrt.equals('invalid-element-name')),
+               ),
+    SourceCase('argument is non-selector',
+               remaining_source(str(surrounded_by_hard_quotes('name_must_not_be_quoted')),
+                                ['non-empty following line']),
+               assert_source(current_line_number=asrt.equals(1),
+                             remaining_part_of_current_line=asrt.equals('name_must_not_be_quoted')),
                ),
 ]
 
@@ -290,3 +304,95 @@ class TestAnd(TestCaseBase):
                     remaining_part_of_current_line=asrt.equals(remaining_part_of_line[1:]))
             )
         )
+
+
+class TestReference(TestCaseBase):
+    def test_WHEN_legal_syntax_and_legal_name_THEN_parse_SHOULD_succeed(self):
+        reffed_selector = NameAndValue(
+            'name_of_selector',
+            file_selector_of(name_patterns=['pattern'])
+        )
+        expected_references = asrt.matches_sequence([
+            asrt_ne.matches_reference(asrt.equals(reffed_selector.name),
+                                      is_element_type_restriction(ElementType.FILE_SELECTOR))
+        ])
+        named_elements = singleton_symbol_table_2(reffed_selector.name,
+                                                  container(FileSelectorConstant(reffed_selector.value)))
+        space = '   '
+        cases = [
+            SourceCase('single name argument followed by space, and following lines',
+                       remaining_source(reffed_selector.name + space,
+                                        ['following line']),
+                       assert_source(current_line_number=asrt.equals(1),
+                                     remaining_part_of_current_line=asrt.equals(space[1:])),
+                       ),
+        ]
+        for case in cases:
+            with self.subTest(case=case.name):
+                self._check_parse(
+                    case.source,
+                    Expectation(
+                        selector=resolved_value_equals_file_selector(reffed_selector.value,
+                                                                     expected_references,
+                                                                     named_elements),
+                        source=case.source_assertion,
+                    )
+                )
+
+    def test_and_operator_with_references(self):
+        name_pattern = 'name-pattern'
+        file_type = FileType.SYMLINK
+        reffed_selector = NameAndValue(
+            'name_of_selector',
+            file_selector_of(file_types=[file_type])
+        )
+
+        expected_resolved_selector = file_selector_of(name_patterns=[name_pattern],
+                                                      file_types=[file_type])
+        expected_references = asrt.matches_sequence([
+            asrt_ne.matches_reference(asrt.equals(reffed_selector.name),
+                                      is_element_type_restriction(ElementType.FILE_SELECTOR))
+        ])
+        named_elements = singleton_symbol_table_2(reffed_selector.name,
+                                                  container(FileSelectorConstant(reffed_selector.value)))
+        space = '   '
+        instruction_arguments = '{concrete_selector} {and_} {selector_reference}'.format(
+            and_=sut.AND_OPERATOR,
+            concrete_selector=name_selector_of(shlex.quote(name_pattern)),
+            selector_reference=reffed_selector.name,
+        )
+        source_cases = [
+            SourceCase('single name argument followed by space, and following lines',
+                       remaining_source(instruction_arguments + space,
+                                        ['following line']),
+                       assert_source(current_line_number=asrt.equals(1),
+                                     remaining_part_of_current_line=asrt.equals(space[1:])),
+                       ),
+            SourceCase('single name argument followed by space, and AND operator on following line',
+                       remaining_source(instruction_arguments + space,
+                                        [sut.AND_OPERATOR]),
+                       assert_source(current_line_number=asrt.equals(1),
+                                     remaining_part_of_current_line=asrt.equals(space[1:])),
+                       ),
+        ]
+        for case in source_cases:
+            with self.subTest(case=case.name):
+                self._check_parse(
+                    case.source,
+                    Expectation(
+                        selector=resolved_value_equals_file_selector(expected_resolved_selector,
+                                                                     expected_references,
+                                                                     named_elements),
+                        source=case.source_assertion,
+                    )
+                )
+
+    def test_WHEN_name_has_illegal_syntax_THEN_parse_SHOULD_fail(self):
+        cases = [
+            str(surrounded_by_hard_quotes(sut.COMMAND_NAME__TYPE_SELECTOR)),
+            'illegal-name'
+        ]
+        for argument_string in cases:
+            source = remaining_source(argument_string)
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                sut.parse_resolver_from_parse_source(source)

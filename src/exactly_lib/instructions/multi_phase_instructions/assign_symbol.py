@@ -24,10 +24,10 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list, parse_file_selector
+from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.test_case_utils.parse.symbol_syntax import is_symbol_name
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.symbol_table import SymbolTable
@@ -126,8 +126,8 @@ def _parse(source: ParseSource) -> NamedElementDefinition:
     if name_token.is_quoted:
         raise SingleInstructionInvalidArgumentException('Name cannot be quoted: ' + name_token.source_string)
     name_str = name_token.string
-    if not is_symbol_name(name_str):
-        err_msg = 'Invalid symbol name: {}.\nA symbol name must only contain alphanum and _'.format(name_str)
+    if not symbol_syntax.is_symbol_name(name_str):
+        err_msg = symbol_syntax.invalid_symbol_name_error(name_str)
         raise SingleInstructionInvalidArgumentException(err_msg)
     token_stream.consume()
     if token_stream.is_null or token_stream.head.source_string != syntax_elements.EQUALS_ARGUMENT:

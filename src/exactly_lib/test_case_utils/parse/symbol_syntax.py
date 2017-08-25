@@ -138,3 +138,7 @@ def is_symbol_name(s: str) -> bool:
             continue
         return False
     return True
+
+
+def invalid_symbol_name_error(invalid_name: str) -> str:
+    return 'Invalid symbol name: {}.\nA symbol name must only contain alphanum and _'.format(invalid_name)

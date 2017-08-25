@@ -120,6 +120,35 @@ class TokenParserPrime:
 
         return plain_head
 
+    def consume_mandatory_unquoted_string(self,
+                                          syntax_element_name: str,
+                                          must_be_on_current_line: bool,
+                                          ) -> str:
+        """
+        Consumes the first token if it is an unquoted string.
+
+        :type must_be_on_current_line: Tells if the string must be found on the current line.
+        :return: The unquoted string
+
+        :raises :class:`SingleInstructionInvalidArgumentException' The parser is at end of file,
+        or if the must_be_on_current_line is True but the current line is empty.
+        """
+
+        if self.token_stream.is_null:
+            return self.error('Missing argument for ' + syntax_element_name)
+        if self.is_at_eol and must_be_on_current_line:
+            return self.error('Missing argument for ' + syntax_element_name)
+
+        head = self.token_stream.head
+        if head.is_quoted:
+            err_msg = 'Expecting unquoted {}.\nFound: `{}\''.format(
+                syntax_element_name,
+                head.source_string)
+            raise SingleInstructionInvalidArgumentException(err_msg)
+
+        self.token_stream.consume()
+        return head.string
+
     def consume_optional_constant_string_that_must_be_unquoted_and_equal(self, expected_constants) -> str:
         """
         Consumes the first token if it is an unquoted string that is equal to the expected string.
@@ -135,6 +164,20 @@ class TokenParserPrime:
             self.token_stream.consume()
             return head.string
         return None
+
+    def parse_mandatory_string_that_must_be_unquoted(self,
+                                                     syntax_element_name: str,
+                                                     string_handler: types.FunctionType,
+                                                     must_be_on_current_line: bool):
+        """
+        Consumes the first token if it is an unquoted string.
+        :param must_be_on_current_line: If True, the string must appear on the current line.
+        :param syntax_element_name: Syntax name of mandatory string
+        :param string_handler: A function that is given the parsed unquoted string
+        :return: Return value from string_handler
+        """
+        string = self.consume_mandatory_unquoted_string(syntax_element_name, must_be_on_current_line)
+        return string_handler(string)
 
     def consume_and_handle_first_matching_option(self,
                                                  return_value_if_no_match,

@@ -3,11 +3,14 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.instructions.utils.err_msg import property_description
-from exactly_lib.named_element.file_selectors import FileSelectorConstant, FileSelectorAnd
+from exactly_lib.named_element.file_selectors import FileSelectorConstant, FileSelectorAnd, FileSelectorReference
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
+from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection as dcs
@@ -136,9 +139,19 @@ def parse(parser: TokenParserPrime) -> FileSelectorResolver:
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
+    def parse_simple(selector_name: str) -> FileSelectorResolver:
+        if selector_name in _SELECTOR_PARSERS:
+            return _SELECTOR_PARSERS[selector_name](parser)
+        elif not symbol_syntax.is_symbol_name(selector_name):
+            err_msg = symbol_syntax.invalid_symbol_name_error(selector_name)
+            raise SingleInstructionInvalidArgumentException(err_msg)
+        else:
+            return FileSelectorReference(selector_name)
+
     def parse_mandatory_simple() -> FileSelectorResolver:
-        return parser.parse_mandatory_command(_SELECTOR_PARSERS,
-                                              'Missing {_SELECTOR_} argument.')
+        return parser.parse_mandatory_string_that_must_be_unquoted(CONCEPT_NAME.singular,
+                                                                   parse_simple,
+                                                                   must_be_on_current_line=True)
 
     selectors = [parse_mandatory_simple()]
 
