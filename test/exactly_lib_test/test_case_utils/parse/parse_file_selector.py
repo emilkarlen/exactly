@@ -15,6 +15,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import assert
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 
 
 def suite() -> unittest.TestSuite:
@@ -29,13 +30,18 @@ def suite() -> unittest.TestSuite:
 NON_SELECTOR_ARGUMENTS = 'not_a_selector argument'
 
 
-def expected_selector(name_patterns: list,
-                      file_types: list,
+def expected_selector(name_patterns: list = (),
+                      file_types: list = (),
                       references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
-    expected = FileSelector(Selectors(name_patterns=frozenset(name_patterns),
-                                      file_types=frozenset(file_types)))
+    expected = file_selector_of(name_patterns, file_types)
     return resolved_value_equals_file_selector(expected,
                                                expected_references=references)
+
+
+def file_selector_of(name_patterns: list = (),
+                     file_types: list = ()) -> sut.FileSelector:
+    return FileSelector(Selectors(name_patterns=frozenset(name_patterns),
+                                  file_types=frozenset(file_types)))
 
 
 class SourceCase:
@@ -98,7 +104,7 @@ class TestGenericParseProperties(unittest.TestCase):
         for case in CASES_WITH_NO_SELECTOR:
             with self.subTest(case=case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_from_parse_source(case.source)
+                    sut.parse_resolver_from_parse_source(case.source)
 
 
 class TestCaseBase(unittest.TestCase):
@@ -209,9 +215,18 @@ class TestAnd(TestCaseBase):
                     ['following line'])
             ),
             (
+                'and operator is followed by non-selector (quoted) on the same line',
+
+                remaining_source('{selector} {and_}  {command_name_in_quotes}'.format(
+                    selector=name_selector_of('pattern'),
+                    and_=sut.AND_OPERATOR,
+                    command_name_in_quotes=surrounded_by_hard_quotes(sut.COMMAND_NAME__NAME_SELECTOR)),
+                    ['following line'])
+            ),
+            (
                 'and operator is the last argument on the line, with a selector on the next line',
 
-                remaining_source('{selector} {and_}  not-a-selector'.format(
+                remaining_source('{selector} {and_}  '.format(
                     selector=name_selector_of('pattern'),
                     and_=sut.AND_OPERATOR),
                     [name_selector_of('pattern-of-selector-on-following-line')])
@@ -220,7 +235,7 @@ class TestAnd(TestCaseBase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_from_parse_source(source)
+                    sut.parse_resolver_from_parse_source(source)
 
     def test_parse_one_selector_of_each_type(self):
         name_pattern = 'name pattern'

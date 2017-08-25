@@ -3,20 +3,20 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.instructions.utils.err_msg import property_description
-from exactly_lib.named_element.file_selectors import FileSelectorConstant
+from exactly_lib.named_element.file_selectors import FileSelectorConstant, FileSelectorAnd
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.type_system_values.file_selector import FileSelector
-from exactly_lib.util import dir_contents_selection
+from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
-SELECTION_OF_ALL_FILES = FileSelectorConstant(FileSelector(dir_contents_selection.all_files()))
+SELECTION_OF_ALL_FILES = FileSelectorConstant(FileSelector(dcs.all_files()))
 
 CONCEPT_NAME = Name('selector', 'selectors')
 
@@ -106,29 +106,12 @@ class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
 
 
 def every_file_in_dir() -> Selectors:
-    return dir_contents_selection.all_files()
-
-
-def parse_from_parse_source(source: ParseSource) -> Selectors:
-    with token_stream_parse_prime.from_parse_source(source) as tp:
-        return parse(tp)
+    return dcs.all_files()
 
 
 def parse_resolver_from_parse_source(source: ParseSource) -> FileSelectorResolver:
     with token_stream_parse_prime.from_parse_source(source) as tp:
         return parse_resolver(tp)
-
-
-def parse_optional_selection_option_from_parse_source(source: ParseSource) -> Selectors:
-    with token_stream_parse_prime.from_parse_source(source) as tp:
-        return parse_optional_selection_option(tp)
-
-
-def parse_optional_selection_option(parser: TokenParserPrime) -> Selectors:
-    return parser.consume_and_handle_optional_option(
-        dir_contents_selection.all_files(),
-        parse,
-        SELECTION_OPTION.name)
 
 
 def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
@@ -140,50 +123,52 @@ def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorR
 
 def parse_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
     """
-    :return: None iff selector is not mandatory and there were no arguments in the source.
+    :raises `SingleInstructionInvalidArgumentException`: source is not a selector
     """
-    selectors = parse(parser)
-    return FileSelectorConstant(FileSelector(selectors))
+    return parse(parser)
 
 
-def parse(parser: TokenParserPrime) -> Selectors:
+def parse(parser: TokenParserPrime) -> FileSelectorResolver:
     """
-    :return: If selector is not mandatory, and source is not a selector: a selector of all files
-    :raises `SingleInstructionInvalidArgumentException`: selector is mandatory but source is not a selector
+    :raises `SingleInstructionInvalidArgumentException`: source is not a selector
     """
     parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
-    def parse_mandatory_simple() -> Selectors:
+    def parse_mandatory_simple() -> FileSelectorResolver:
         return parser.parse_mandatory_command(_SELECTOR_PARSERS,
                                               'Missing {_SELECTOR_} argument.')
 
-    ret_val = parse_mandatory_simple()
+    selectors = [parse_mandatory_simple()]
 
     while parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(AND_OPERATOR):
         next_selector = parse_mandatory_simple()
-        ret_val = dir_contents_selection.and_also(ret_val, next_selector)
+        selectors.append(next_selector)
 
-    return ret_val
+    return FileSelectorAnd(selectors) if len(selectors) > 1 else selectors[0]
 
 
 def _error_message(template: str) -> str:
     return template.format_map(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
 
-def _parse_name_selector(parser: TokenParserPrime) -> Selectors:
+def _parse_name_selector(parser: TokenParserPrime) -> FileSelectorResolver:
     pattern = parser.consume_mandatory_string_argument(
         _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME)
-    return dir_contents_selection.name_matches_pattern(pattern)
+    return _constant(dcs.name_matches_pattern(pattern))
 
 
-def _parse_type_selector(parser: TokenParserPrime) -> Selectors:
+def _parse_type_selector(parser: TokenParserPrime) -> FileSelectorResolver:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
         '{_TYPE_}')
-    return dir_contents_selection.file_type_is(file_type)
+    return _constant(dcs.file_type_is(file_type))
+
+
+def _constant(selectors: dcs.Selectors) -> FileSelectorResolver:
+    return FileSelectorConstant(FileSelector(selectors))
 
 
 _SELECTOR_PARSERS = {
