@@ -36,6 +36,10 @@ class ElementTypeRestriction(ReferenceRestrictions):
     def __init__(self, element_type: ElementType):
         self._element_type = element_type
 
+    @property
+    def element_type(self) -> ElementType:
+        return self._element_type
+
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
                         symbol_name: str,
