@@ -11,5 +11,4 @@ def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
 
 class ParserForContentsForStderr(utils.ParserForContentsForActualValue):
     def __init__(self):
-        super().__init__(actual_files.StderrComparisonActualFile(),
-                         utils.StdXActualFileTransformerForEnvVarsReplacement())
+        super().__init__(actual_files.StderrComparisonActualFile())
