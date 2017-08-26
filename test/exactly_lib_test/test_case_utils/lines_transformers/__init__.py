@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.type_system_values.file_transformers import env_vars_replacement
+from exactly_lib_test.test_case_utils.lines_transformers import env_vars_replacement
 
 
 def suite() -> unittest.TestSuite:

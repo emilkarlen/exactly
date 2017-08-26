@@ -26,12 +26,12 @@ from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_asser
 from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, is_at_beginning_of_line
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources import \
+    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib_test.type_system_values.file_transformers.test_resources import \
-    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):

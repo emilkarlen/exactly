@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import multiple
-from exactly_lib_test.type_system_values.file_transformers.test_resources import \
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources import \
     ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 
 
