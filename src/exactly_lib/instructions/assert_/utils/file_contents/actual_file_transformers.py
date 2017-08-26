@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformer as aft
 from exactly_lib.instructions.assert_.utils.file_contents import env_vars_replacement
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -8,35 +9,15 @@ from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ActualFileTransformer:
-    def transform(self,
-                  environment: InstructionEnvironmentForPostSdsStep,
-                  os_services: OsServices,
-                  actual_file_path: pathlib.Path) -> pathlib.Path:
-        raise NotImplementedError()
-
-
-class PathResolverForEnvVarReplacement:
-    def dst_file_path(self,
-                      environment: InstructionEnvironmentForPostSdsStep,
-                      src_file_path: pathlib.Path) -> pathlib.Path:
-        raise NotImplementedError('abstract method')
-
-
-class ActualFileTransformerResolver:
-    def resolve(self, named_elements: SymbolTable) -> ActualFileTransformer:
-        raise NotImplementedError('abstract method')
-
-
-class ConstantActualFileTransformerResolver(ActualFileTransformerResolver):
-    def __init__(self, constant: ActualFileTransformer):
+class ConstantActualFileTransformerResolver(aft.ActualFileTransformerResolver):
+    def __init__(self, constant: aft.ActualFileTransformer):
         self.constant = constant
 
-    def resolve(self, named_elements: SymbolTable) -> ActualFileTransformer:
+    def resolve(self, named_elements: SymbolTable) -> aft.ActualFileTransformer:
         return self.constant
 
 
-class IdentityFileTransformer(ActualFileTransformer):
+class IdentityFileTransformer(aft.ActualFileTransformer):
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
@@ -44,9 +25,9 @@ class IdentityFileTransformer(ActualFileTransformer):
         return actual_file_path
 
 
-class ActualFileTransformerForEnvVarsReplacement(ActualFileTransformer):
+class ActualFileTransformerForEnvVarsReplacement(aft.ActualFileTransformer):
     def __init__(self,
-                 dst_path_resolver: PathResolverForEnvVarReplacement):
+                 dst_path_resolver: aft.PathResolverForEnvVarReplacement):
         self._dst_path_resolver = dst_path_resolver
 
     def transform(self,
