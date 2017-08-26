@@ -1,10 +1,13 @@
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+
+
 class FileTransformer:
-    def transform(self, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         raise NotImplementedError('abstract method')
 
 
 class IdentityFileTransformer(FileTransformer):
-    def transform(self, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         raise NotImplementedError('this method should never be called')
 
 
