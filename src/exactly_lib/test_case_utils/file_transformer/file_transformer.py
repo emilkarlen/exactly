@@ -5,7 +5,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ActualFileTransformer:
+class FileTransformer:
+    """ Transforms an existing regular file. """
+
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
@@ -13,6 +15,8 @@ class ActualFileTransformer:
         raise NotImplementedError('abstract method')
 
 
-class ActualFileTransformerResolver:
-    def resolve(self, named_elements: SymbolTable) -> ActualFileTransformer:
+class FileTransformerResolver:
+    """Resolver of a :class:`FileTransformer`"""
+
+    def resolve(self, named_elements: SymbolTable) -> FileTransformer:
         raise NotImplementedError('abstract method')

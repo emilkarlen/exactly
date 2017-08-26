@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
-from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver
+from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 
 
 class FileChecker:
@@ -62,7 +62,7 @@ class ContainsAssertionInstruction(AssertPhaseInstruction):
     def __init__(self,
                  file_checker: FileChecker,
                  actual_contents: ComparisonActualFile,
-                 actual_file_transformer_resolver: ActualFileTransformerResolver):
+                 actual_file_transformer_resolver: FileTransformerResolver):
         self._actual_value = actual_contents
         self._file_checker = file_checker
         self._actual_file_transformer_resolver = actual_file_transformer_resolver

@@ -6,7 +6,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver
+from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 from exactly_lib.util.expectation_type import ExpectationType
 
 
@@ -14,7 +14,7 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
                  actual_file: ComparisonActualFile,
-                 actual_file_transformer_resolver: ActualFileTransformerResolver):
+                 actual_file_transformer_resolver: FileTransformerResolver):
         self._actual_file_transformer_resolver = actual_file_transformer_resolver
         self.actual_file = actual_file
         self.expectation_type = expectation_type

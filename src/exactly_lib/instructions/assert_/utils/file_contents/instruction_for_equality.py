@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoRe
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver
+from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsSvhValidationErrorValidator
@@ -31,7 +31,7 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
                  expectation_type: ExpectationType,
                  expected_contents: HereDocOrFileRef,
                  actual_contents: ComparisonActualFile,
-                 actual_file_transformer_resolver: ActualFileTransformerResolver):
+                 actual_file_transformer_resolver: FileTransformerResolver):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
         self._actual_file_transformer_resolver = actual_file_transformer_resolver
