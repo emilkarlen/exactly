@@ -1,3 +1,4 @@
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformerResolver
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils.err_msg import diff_msg
@@ -12,7 +13,9 @@ from exactly_lib.util.expectation_type import ExpectationType
 class EmptinessAssertionInstruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 actual_file: ComparisonActualFile):
+                 actual_file: ComparisonActualFile,
+                 actual_file_transformer_resolver: ActualFileTransformerResolver):
+        self._actual_file_transformer_resolver = actual_file_transformer_resolver
         self.actual_file = actual_file
         self.expectation_type = expectation_type
         self.failure_info_resolver = diff_msg_utils.DiffFailureInfoResolver(
@@ -31,7 +34,13 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
         if failure_message:
             return pfh.new_pfh_fail(failure_message)
 
-        size = self.actual_file.file_path(environment).stat().st_size
+        actual_file_path = self.actual_file.file_path(environment)
+        actual_file_transformer = self._actual_file_transformer_resolver.resolve(environment.symbols)
+        processed_actual_file_path = actual_file_transformer.transform(environment,
+                                                                       os_services,
+                                                                       actual_file_path)
+
+        size = processed_actual_file_path.stat().st_size
         if self.expectation_type is ExpectationType.POSITIVE:
             if size != 0:
                 actual = str(size) + ' bytes'

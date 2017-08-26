@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformerResolver
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.err_msg import diff_msg
 from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
@@ -62,10 +62,10 @@ class ContainsAssertionInstruction(AssertPhaseInstruction):
     def __init__(self,
                  file_checker: FileChecker,
                  actual_contents: ComparisonActualFile,
-                 actual_file_transformer: ActualFileTransformer):
+                 actual_file_transformer_resolver: ActualFileTransformerResolver):
         self._actual_value = actual_contents
         self._file_checker = file_checker
-        self._actual_file_transformer = actual_file_transformer
+        self._actual_file_transformer_resolver = actual_file_transformer_resolver
 
     def symbol_usages(self) -> list:
         return self._actual_value.references
@@ -77,7 +77,8 @@ class ContainsAssertionInstruction(AssertPhaseInstruction):
         failure_message = self._actual_value.file_check_failure(environment)
         if failure_message is not None:
             return pfh.new_pfh_fail(failure_message)
-        processed_actual_file_path = self._actual_file_transformer.transform(environment,
-                                                                             os_services,
-                                                                             actual_file_path)
+        actual_file_transformer = self._actual_file_transformer_resolver.resolve(environment.symbols)
+        processed_actual_file_path = actual_file_transformer.transform(environment,
+                                                                       os_services,
+                                                                       actual_file_path)
         return self._file_checker.apply(environment, processed_actual_file_path)
