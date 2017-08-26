@@ -28,6 +28,21 @@ _REG_EX = 'REG EX'
 def parse_comparison_operation(actual_file: ComparisonActualFile,
                                actual_file_transformer_for_replace_env_vars: ActualFileTransformer,
                                source: ParseSource) -> AssertPhaseInstruction:
+    def parse_file_transformation() -> ActualFileTransformer:
+        with_replaced_env_vars = False
+        peek_source = source.copy
+        next_arg = token_parse.parse_token_or_none_on_current_line(peek_source)
+        if next_arg is not None and next_arg.type == TokenType.PLAIN and \
+                matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, next_arg.string):
+            source.catch_up_with(peek_source)
+            with_replaced_env_vars = True
+        actual_file_transformer = actual_file_transformers.IdentityFileTransformer()
+        if with_replaced_env_vars:
+            actual_file_transformer = actual_file_transformer_for_replace_env_vars
+        return actual_file_transformer
+
+    actual_file_transformer = parse_file_transformation()
+
     def _parse_empty(expectation_type: ExpectationType,
                      actual: ComparisonActualFile) -> AssertPhaseInstruction:
         _ensure_no_more_arguments(source)
@@ -37,7 +52,6 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         return EmptinessAssertionInstruction(expectation_type, actual)
 
     def _parse_equals(expectation_type: ExpectationType,
-                      actual_file_transformer: ActualFileTransformer,
                       actual: ComparisonActualFile) -> AssertPhaseInstruction:
         current_line_before = source.current_line_number
         here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(
@@ -55,7 +69,6 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                                           actual_file_transformer)
 
     def _parse_contains(expectation_type: ExpectationType,
-                        actual_file_transformer: ActualFileTransformer,
                         actual: ComparisonActualFile) -> AssertPhaseInstruction:
         reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
         _ensure_no_more_arguments(source)
@@ -78,21 +91,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             file_checker = instruction_for_contains.FileCheckerForPositiveMatch(failure_resolver, reg_ex)
         return instruction_for_contains.ContainsAssertionInstruction(file_checker, actual, actual_file_transformer)
 
-    def parse_file_transformation() -> ActualFileTransformer:
-        with_replaced_env_vars = False
-        peek_source = source.copy
-        next_arg = token_parse.parse_token_or_none_on_current_line(peek_source)
-        if next_arg is not None and next_arg.type == TokenType.PLAIN and \
-                matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, next_arg.string):
-            source.catch_up_with(peek_source)
-            with_replaced_env_vars = True
-        actual_file_transformer = actual_file_transformers.IdentityFileTransformer()
-        if with_replaced_env_vars:
-            actual_file_transformer = actual_file_transformer_for_replace_env_vars
-        return actual_file_transformer
-
     def _parse_contents(actual: ComparisonActualFile) -> AssertPhaseInstruction:
-        actual_file_transformer = parse_file_transformation()
         if source.is_at_eol__except_for_space:
             return _missing_operator([NOT_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT])
         negated = False
@@ -104,9 +103,9 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             next_arg_str = token_parse.parse_plain_token_on_current_line(source, _OPERATION).string
         expectation_type = from_is_negated(negated)
         if next_arg_str == CONTAINS_ARGUMENT:
-            return _parse_contains(expectation_type, actual_file_transformer, actual)
+            return _parse_contains(expectation_type, actual)
         if next_arg_str == EQUALS_ARGUMENT:
-            return _parse_equals(expectation_type, actual_file_transformer, actual)
+            return _parse_equals(expectation_type, actual)
         raise _parse_exception('Unknown {}: {}'.format(_OPERATION, next_arg_str))
 
     peek_source = source.copy
