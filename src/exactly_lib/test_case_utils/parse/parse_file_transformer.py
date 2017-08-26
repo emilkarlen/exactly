@@ -1,10 +1,11 @@
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
-from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver, \
-    PathResolverForEnvVarReplacement
+from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver
 from exactly_lib.test_case_utils.file_transformer.actual_file_transformers import \
-    ConstantActualFileTransformerResolver, ActualFileTransformerForEnvVarsReplacement
+    ConstantActualFileTransformerResolver
 from exactly_lib.test_case_utils.file_transformer.actual_file_transformers import IdentityFileTransformer
+from exactly_lib.test_case_utils.file_transformer.env_vars_replacement_transformer import \
+    ActualFileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches

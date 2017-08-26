@@ -12,10 +12,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import \
-    PathResolverForEnvVarReplacement
-from exactly_lib.test_case_utils.file_transformer.actual_file_transformers import \
-    ActualFileTransformerForEnvVarsReplacement
+from exactly_lib.test_case_utils.file_transformer.env_vars_replacement_transformer import \
+    ActualFileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.cli_syntax.elements import argument as a
