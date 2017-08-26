@@ -1,12 +1,11 @@
-from exactly_lib.execution import environment_variables
-from exactly_lib.execution.environment_variables import ENV_VAR_RESULT
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import SectionName
 from exactly_lib.test_case.execution_mode import NAME_SKIP
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
+from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_RESULT
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs, table
 

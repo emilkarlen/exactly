@@ -4,7 +4,6 @@ import shutil
 import subprocess
 import tempfile
 
-from exactly_lib.execution import environment_variables
 from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.phase_step_identifiers import phase_step
@@ -21,6 +20,7 @@ from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
+from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
     stdin_contents_file

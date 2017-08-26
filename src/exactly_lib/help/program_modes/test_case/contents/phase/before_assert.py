@@ -1,4 +1,3 @@
-from exactly_lib.execution.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -14,6 +13,7 @@ from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReferenc
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ACT_PHASE_NAME, ASSERT_PHASE_NAME, \
     SETUP_PHASE_NAME
+from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import text

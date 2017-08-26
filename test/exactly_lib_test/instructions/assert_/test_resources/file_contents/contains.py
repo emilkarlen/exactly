@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.execution import environment_variables
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
