@@ -2,7 +2,6 @@ import difflib
 import filecmp
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformer import ActualFileTransformerResolver
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.instructions.utils.err_msg import diff_msg, diff_msg_utils
@@ -15,6 +14,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import svh, pfh
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsSvhValidationErrorValidator

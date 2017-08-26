@@ -1,10 +1,9 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformer as aft
-from exactly_lib.instructions.assert_.utils.file_contents import env_vars_replacement
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.file_transformer import actual_file_transformer as aft, env_vars_replacement
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 from exactly_lib.util.symbol_table import SymbolTable
 

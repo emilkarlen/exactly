@@ -1,13 +1,8 @@
 import re
 
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformer import ActualFileTransformerResolver, \
-    PathResolverForEnvVarReplacement
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
-    ConstantActualFileTransformerResolver, ActualFileTransformerForEnvVarsReplacement
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import IdentityFileTransformer
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
-    NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT, \
+    EQUALS_ARGUMENT, CONTAINS_ARGUMENT
 from exactly_lib.instructions.utils.err_msg import diff_msg_utils
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
@@ -15,9 +10,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.util.cli_syntax.option_parsing import matches
+from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.expectation_type import from_is_negated, ExpectationType
-from exactly_lib.util.parse.token import TokenType
 
 _OPERATION = 'OPERATION'
 
@@ -29,23 +23,9 @@ _REG_EX = 'REG EX'
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
-                               dst_path_resolver: PathResolverForEnvVarReplacement,
+                               file_transformer_parser: FileTransformerParser,
                                source: ParseSource) -> AssertPhaseInstruction:
-    def parse_file_transformation() -> ActualFileTransformerResolver:
-        with_replaced_env_vars = False
-        peek_source = source.copy
-        next_arg = token_parse.parse_token_or_none_on_current_line(peek_source)
-        if next_arg is not None and next_arg.type == TokenType.PLAIN and \
-                matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, next_arg.string):
-            source.catch_up_with(peek_source)
-            with_replaced_env_vars = True
-        actual_file_transformer = IdentityFileTransformer()
-        if with_replaced_env_vars:
-            actual_file_transformer = ActualFileTransformerForEnvVarsReplacement(
-                dst_path_resolver)
-        return ConstantActualFileTransformerResolver(actual_file_transformer)
-
-    actual_file_transformer = parse_file_transformation()
+    actual_file_transformer = file_transformer_parser.parse_from_parse_source(source)
 
     def _parse_empty(expectation_type: ExpectationType,
                      actual: ComparisonActualFile) -> AssertPhaseInstruction:
