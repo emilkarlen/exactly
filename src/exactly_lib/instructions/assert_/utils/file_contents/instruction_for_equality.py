@@ -2,7 +2,7 @@ import difflib
 import filecmp
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformerResolver
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.instructions.utils.err_msg import diff_msg, diff_msg_utils
@@ -30,10 +30,10 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
                  expectation_type: ExpectationType,
                  expected_contents: HereDocOrFileRef,
                  actual_contents: ComparisonActualFile,
-                 actual_file_transformer: ActualFileTransformer):
+                 actual_file_transformer_resolver: ActualFileTransformerResolver):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
-        self._actual_file_transformer = actual_file_transformer
+        self._actual_file_transformer_resolver = actual_file_transformer_resolver
         failure_resolver = DiffFailureInfoResolver(
             actual_contents.property_descriptor(),
             expectation_type,
@@ -63,14 +63,15 @@ class EqualsAssertionInstruction(AssertPhaseInstruction):
         expected_file_path = self._file_path_for_file_with_expected_contents(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        actual_file_path = self._actual_value.file_path(environment)
         failure_message = self._actual_value.file_check_failure(environment)
         if failure_message is not None:
             return pfh.new_pfh_fail(failure_message)
 
-        processed_actual_file_path = self._actual_file_transformer.transform(environment,
-                                                                             os_services,
-                                                                             actual_file_path)
+        actual_file_path = self._actual_value.file_path(environment)
+        actual_file_transformer = self._actual_file_transformer_resolver.resolve(environment.symbols)
+        processed_actual_file_path = actual_file_transformer.transform(environment,
+                                                                       os_services,
+                                                                       actual_file_path)
         return self._file_checker.apply(environment,
                                         expected_file_path,
                                         processed_actual_file_path)

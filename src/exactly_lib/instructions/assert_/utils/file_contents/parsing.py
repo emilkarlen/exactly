@@ -1,7 +1,8 @@
 import re
 
 from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformers
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer, \
+    ActualFileTransformerResolver, ConstantActualFileTransformerResolver
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
     NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
@@ -28,7 +29,7 @@ _REG_EX = 'REG EX'
 def parse_comparison_operation(actual_file: ComparisonActualFile,
                                actual_file_transformer_for_replace_env_vars: ActualFileTransformer,
                                source: ParseSource) -> AssertPhaseInstruction:
-    def parse_file_transformation() -> ActualFileTransformer:
+    def parse_file_transformation() -> ActualFileTransformerResolver:
         with_replaced_env_vars = False
         peek_source = source.copy
         next_arg = token_parse.parse_token_or_none_on_current_line(peek_source)
@@ -39,7 +40,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         actual_file_transformer = actual_file_transformers.IdentityFileTransformer()
         if with_replaced_env_vars:
             actual_file_transformer = actual_file_transformer_for_replace_env_vars
-        return actual_file_transformer
+        return ConstantActualFileTransformerResolver(actual_file_transformer)
 
     actual_file_transformer = parse_file_transformation()
 
@@ -49,7 +50,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         source.consume_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_emptieness import \
             EmptinessAssertionInstruction
-        return EmptinessAssertionInstruction(expectation_type, actual)
+        return EmptinessAssertionInstruction(expectation_type, actual, actual_file_transformer)
 
     def _parse_equals(expectation_type: ExpectationType,
                       actual: ComparisonActualFile) -> AssertPhaseInstruction:

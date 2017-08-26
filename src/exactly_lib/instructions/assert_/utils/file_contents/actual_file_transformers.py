@@ -5,6 +5,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class ActualFileTransformer:
@@ -20,6 +21,19 @@ class PathResolverForEnvVarReplacement:
                       environment: InstructionEnvironmentForPostSdsStep,
                       src_file_path: pathlib.Path) -> pathlib.Path:
         raise NotImplementedError('abstract method')
+
+
+class ActualFileTransformerResolver:
+    def resolve(self, named_elements: SymbolTable) -> ActualFileTransformer:
+        raise NotImplementedError('abstract method')
+
+
+class ConstantActualFileTransformerResolver(ActualFileTransformerResolver):
+    def __init__(self, constant: ActualFileTransformer):
+        self.constant = constant
+
+    def resolve(self, named_elements: SymbolTable) -> ActualFileTransformer:
+        return self.constant
 
 
 class IdentityFileTransformer(ActualFileTransformer):
