@@ -1,3 +1,4 @@
+import exactly_lib.test_case_utils.parse.parse_file_transformer
 from exactly_lib import program_info
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -7,7 +8,6 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names.formatting import InstructionName
-from exactly_lib.instructions.assert_.utils.file_contents import env_vars_replacement
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
@@ -15,6 +15,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_utils import negation_of_predicate
+from exactly_lib.test_case_utils.file_transformer import env_vars_replacement
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -30,7 +31,7 @@ class FileContentsHelpParts:
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self.expected_file_arg = a.Named('EXPECTED-PATH')
         self.with_replaced_env_vars_option = a.Option(
-            instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+            exactly_lib.test_case_utils.parse.parse_file_transformer.WITH_REPLACED_ENV_VARS_OPTION_NAME)
         format_map = {
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,

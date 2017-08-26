@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib.test_case_utils.parse.parse_file_transformer
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.section_document.parse_source import ParseSource
@@ -105,7 +106,7 @@ _FORMAT_MAP = {
     'equals': instruction_options.EQUALS_ARGUMENT,
     'not': instruction_options.NOT_ARGUMENT,
     'replace_env_vars_option': long_option_syntax(
-        instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
+        exactly_lib.test_case_utils.parse.parse_file_transformer.WITH_REPLACED_ENV_VARS_OPTION_NAME.long),
     'rel_home_case_option': file_ref_texts.REL_HOME_CASE_OPTION,
     'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
     'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,

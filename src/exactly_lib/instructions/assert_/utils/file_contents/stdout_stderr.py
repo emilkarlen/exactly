@@ -1,14 +1,10 @@
 import pathlib
 
+import exactly_lib.test_case_utils.parse.parse_file_transformer
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformer import \
-    PathResolverForEnvVarReplacement
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
-    ActualFileTransformerForEnvVarsReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -16,7 +12,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import \
+    PathResolverForEnvVarReplacement
+from exactly_lib.test_case_utils.file_transformer.actual_file_transformers import \
+    ActualFileTransformerForEnvVarsReplacement
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -34,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
         self.checked_file = name_of_checked_file
         self.with_replaced_env_vars_option = a.Option(
-            instruction_options.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+            exactly_lib.test_case_utils.parse.parse_file_transformer.WITH_REPLACED_ENV_VARS_OPTION_NAME)
 
     def single_line_description(self) -> str:
         return self._format('Tests the contents of {checked_file}')
@@ -65,7 +66,8 @@ class ParserForContentsForActualValue(InstructionParser):
         source.consume_initial_space_on_current_line()
         first_line = source.remaining_part_of_current_line
         content_instruction = parsing.parse_comparison_operation(self.comparison_actual_value,
-                                                                 _PathResolverForEnvVarReplacement(),
+                                                                 FileTransformerParser(
+                                                                     _PathResolverForEnvVarReplacement()),
                                                                  source)
         if content_instruction is None:
             raise SingleInstructionInvalidArgumentException(first_line)

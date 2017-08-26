@@ -1,6 +1,5 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformer import ActualFileTransformerResolver
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.err_msg import diff_msg
 from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
@@ -9,6 +8,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver
 
 
 class FileChecker:
