@@ -4,11 +4,11 @@ from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression import instruction as sut
 from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
-from exactly_lib.instructions.utils.err_msg.property_description import \
-    property_descriptor_with_just_a_constant_name
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case import os_services
+from exactly_lib.test_case_utils.err_msg.property_description import \
+    property_descriptor_with_just_a_constant_name
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib_test.instructions.assert_.utils.expression.test_resources.operand_resolver import operand_resolver_that
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh

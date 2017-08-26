@@ -4,14 +4,15 @@ import pathlib
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.utils.documentation import documentation_text
-from exactly_lib.instructions.utils.err_msg import diff_msg, diff_msg_utils
-from exactly_lib.instructions.utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
-from exactly_lib.instructions.utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import svh, pfh
+from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg import diff_msg_utils
+from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
+from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.file_transformer.actual_file_transformer import ActualFileTransformerResolver

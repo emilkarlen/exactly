@@ -1,6 +1,6 @@
-from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor, ErrorMessagePartConstructor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor, ErrorMessagePartConstructor
 from exactly_lib.util.expectation_type import ExpectationType
 
 

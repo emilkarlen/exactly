@@ -16,9 +16,6 @@ from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTI
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.err_msg import property_description
-from exactly_lib.instructions.utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
@@ -32,6 +29,9 @@ from exactly_lib.test_case.phases.result import pfh, svh
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils import file_ref_check
+from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_selector
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax.elements import argument as a

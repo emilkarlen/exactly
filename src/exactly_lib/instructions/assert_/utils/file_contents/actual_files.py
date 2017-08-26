@@ -1,12 +1,12 @@
 import pathlib
 
-from exactly_lib.instructions.utils.err_msg.path_description import path_value_description
-from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import resolver_of_rel_option
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath

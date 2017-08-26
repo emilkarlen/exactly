@@ -7,13 +7,13 @@ from exactly_lib.instructions.assert_.utils.expression import comparison_structu
 from exactly_lib.instructions.assert_.utils.expression import instruction
 from exactly_lib.instructions.assert_.utils.expression import parse
 from exactly_lib.instructions.assert_.utils.expression.parse import parse_integer_comparison_operator_and_rhs
-from exactly_lib.instructions.utils.err_msg.property_description import \
-    property_descriptor_with_just_a_constant_name
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import negation_of_predicate
+from exactly_lib.test_case_utils.err_msg.property_description import \
+    property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.token_stream_parse_prime import new_token_parser
 
 
