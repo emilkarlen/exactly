@@ -79,7 +79,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             file_checker = instruction_for_contains.FileCheckerForPositiveMatch(failure_resolver, reg_ex)
         return instruction_for_contains.ContainsAssertionInstruction(file_checker, actual, actual_file_transformer)
 
-    def _parse_contents(actual: ComparisonActualFile) -> AssertPhaseInstruction:
+    def parse_file_transformation() -> ActualFileTransformer:
         with_replaced_env_vars = False
         peek_source = source.copy
         next_arg = token_parse.parse_token_or_none_on_current_line(peek_source)
@@ -90,6 +90,10 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         actual_file_transformer = actual_file_transformers.IdentityFileTransformer()
         if with_replaced_env_vars:
             actual_file_transformer = actual_file_transformer_for_replace_env_vars
+        return actual_file_transformer
+
+    def _parse_contents(actual: ComparisonActualFile) -> AssertPhaseInstruction:
+        actual_file_transformer = parse_file_transformation()
         if source.is_at_eol__except_for_space:
             return _missing_operator([NOT_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT])
         negated = False
