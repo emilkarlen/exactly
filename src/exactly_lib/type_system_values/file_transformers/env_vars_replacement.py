@@ -2,15 +2,27 @@ import pathlib
 
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system_values.file_transformer import FileTransformer
 
 HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CASE
 
 ENV_VAR_REPLACEMENT_TRANSFORMER_NAME = 'env-var-replacement'
 
 
+class EnvVarReplacementFileTransformer(FileTransformer):
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        name_and_value_list = _derive_name_and_value_list(tcds)
+        return (_replace(name_and_value_list, line) for line in lines)
+
+
 def replace(home_and_sds: HomeAndSds,
             contents: str) -> str:
     name_and_value_list = _derive_name_and_value_list(home_and_sds)
+    return _replace(name_and_value_list, contents)
+
+
+def _replace(name_and_value_list: list,
+             contents: str) -> str:
     for var_name, var_value in name_and_value_list:
         contents = contents.replace(var_value, var_name)
     return contents
