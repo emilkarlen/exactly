@@ -13,13 +13,6 @@ class ActualFileTransformer:
         raise NotImplementedError('abstract method')
 
 
-class PathResolverForEnvVarReplacement:
-    def dst_file_path(self,
-                      environment: InstructionEnvironmentForPostSdsStep,
-                      src_file_path: pathlib.Path) -> pathlib.Path:
-        raise NotImplementedError('abstract method')
-
-
 class ActualFileTransformerResolver:
     def resolve(self, named_elements: SymbolTable) -> ActualFileTransformer:
         raise NotImplementedError('abstract method')
