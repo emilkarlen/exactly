@@ -13,18 +13,18 @@ class FileSelectorConstant(FileSelectorResolver):
     A :class:`FileSelectorResolver` that is a constant :class:`FileSelector`
     """
 
-    def __init__(self, file_selector: FileSelector):
-        self._file_ref = file_selector
+    def __init__(self, value: FileSelector):
+        self._value = value
 
     def resolve(self, symbols: SymbolTable) -> FileSelector:
-        return self._file_ref
+        return self._value
 
     @property
     def references(self) -> list:
         return []
 
     def __str__(self):
-        return str(type(self)) + '\'' + str(self._file_ref) + '\''
+        return str(type(self)) + '\'' + str(self._value) + '\''
 
 
 class FileSelectorReference(FileSelectorResolver):
