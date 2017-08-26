@@ -9,9 +9,7 @@ from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 
 class DestinationFilePathResolver:
-    """
-    Resolves a destination path that is somehow related to a given source file path.
-    """
+    """Resolves a destination path from a given source path."""
 
     def dst_file_path(self,
                       environment: InstructionEnvironmentForPostSdsStep,
@@ -39,8 +37,8 @@ class FileTransformerFromLinesTransformer(FileTransformer):
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  actual_file_path: pathlib.Path) -> pathlib.Path:
-        src_file_path = actual_file_path
+                  src_file_path: pathlib.Path) -> pathlib.Path:
+        src_file_path = src_file_path
         dst_file_path = self._dst_path_resolver.dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path

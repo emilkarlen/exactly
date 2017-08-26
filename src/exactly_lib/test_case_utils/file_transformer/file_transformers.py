@@ -18,5 +18,5 @@ class IdentityFileTransformer(FileTransformer):
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  actual_file_path: pathlib.Path) -> pathlib.Path:
-        return actual_file_path
+                  src_file_path: pathlib.Path) -> pathlib.Path:
+        return src_file_path

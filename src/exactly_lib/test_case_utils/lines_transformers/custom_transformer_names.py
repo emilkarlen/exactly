@@ -1,1 +1,0 @@
-ENV_VAR_REPLACEMENT_TRANSFORMER_NAME = 'env-var-replacement'
