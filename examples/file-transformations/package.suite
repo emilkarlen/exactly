@@ -1,0 +1,7 @@
+#
+# Sometime, the contents of an actual file must be transformed before it can be checked.
+#
+# One example is to replace absolute paths.
+#
+
+replace-test-case-dirs.case

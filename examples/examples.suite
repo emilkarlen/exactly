@@ -31,6 +31,12 @@ symbols/package.suite
 dir-contents/package.suite
 
 #
+# Transforming the contents of a checked file, before comparing it.
+#
+
+file-transformations/package.suite
+
+#
 # Shell examples.
 #
 
