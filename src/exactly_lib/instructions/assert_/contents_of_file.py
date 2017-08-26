@@ -7,8 +7,10 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformer import \
+    PathResolverForEnvVarReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
-    PathResolverForEnvVarReplacement, ActualFileTransformerForEnvVarsReplacement
+    ActualFileTransformerForEnvVarsReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts

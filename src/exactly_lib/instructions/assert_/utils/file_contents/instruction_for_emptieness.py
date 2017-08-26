@@ -1,4 +1,4 @@
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformerResolver
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformer import ActualFileTransformerResolver
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils.err_msg import diff_msg

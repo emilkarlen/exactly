@@ -5,9 +5,10 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
-    ActualFileTransformerForEnvVarsReplacement, \
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformer import \
     PathResolverForEnvVarReplacement
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
+    ActualFileTransformerForEnvVarsReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
