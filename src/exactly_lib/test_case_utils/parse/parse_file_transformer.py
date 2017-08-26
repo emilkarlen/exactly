@@ -1,11 +1,13 @@
+from exactly_lib.named_element.lines_transformers import LinesTransformerConstant
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.test_case_utils.file_transformer.env_vars_replacement_transformer import \
-    FileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
+    PathResolverForEnvVarReplacement
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
-from exactly_lib.test_case_utils.file_transformer.file_transformers import \
-    ConstantFileTransformerResolver
-from exactly_lib.test_case_utils.file_transformer.file_transformers import IdentityFileTransformer
+from exactly_lib.test_case_utils.file_transformer.resolver_using_lines_transformers import \
+    ResolveFileTransformerFromLinesTransformer
+from exactly_lib.test_case_utils.lines_transformers import custom_transformer_names
+from exactly_lib.type_system_values.lines_transformer import IdentityLinesTransformer, CustomLinesTransformer
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
@@ -27,8 +29,10 @@ class FileTransformerParser:
                 matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, next_arg.string):
             source.catch_up_with(peek_source)
             with_replaced_env_vars = True
-        actual_file_transformer = IdentityFileTransformer()
+        lines_transformer = IdentityLinesTransformer()
         if with_replaced_env_vars:
-            actual_file_transformer = FileTransformerForEnvVarsReplacement(
-                self._dst_path_resolver)
-        return ConstantFileTransformerResolver(actual_file_transformer)
+            lines_transformer = CustomLinesTransformer(
+                custom_transformer_names.ENV_VAR_REPLACEMENT_TRANSFORMER_NAME)
+        transformer_resolver = LinesTransformerConstant(lines_transformer)
+        return ResolveFileTransformerFromLinesTransformer(self._dst_path_resolver,
+                                                          transformer_resolver)

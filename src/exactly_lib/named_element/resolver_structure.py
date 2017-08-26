@@ -3,6 +3,7 @@ from enum import Enum
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system_values.file_selector import FileSelector
+from exactly_lib.type_system_values.lines_transformer import LinesTransformer
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
@@ -45,7 +46,26 @@ class FileSelectorResolver(NamedElementResolver):
     def element_type(self) -> ElementType:
         return ElementType.FILE_SELECTOR
 
+    @property
+    def references(self) -> list:
+        raise NotImplementedError('abstract method')
+
     def resolve(self, named_elements: SymbolTable) -> FileSelector:
+        raise NotImplementedError('abstract method')
+
+
+class LinesTransformerResolver(NamedElementResolver):
+    """ Base class for resolvers of :class:`LinesTransformer`. """
+
+    @property
+    def element_type(self) -> ElementType:
+        raise NotImplementedError('todo')
+
+    @property
+    def references(self) -> list:
+        raise NotImplementedError('abstract method')
+
+    def resolve(self, named_elements: SymbolTable) -> LinesTransformer:
         raise NotImplementedError('abstract method')
 
 
@@ -58,6 +78,10 @@ class SymbolValueResolver(NamedElementResolver):
 
     @property
     def value_type(self) -> ValueType:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def references(self) -> list:
         raise NotImplementedError('abstract method')
 
     def resolve(self, symbols: SymbolTable) -> DirDependentValue:
