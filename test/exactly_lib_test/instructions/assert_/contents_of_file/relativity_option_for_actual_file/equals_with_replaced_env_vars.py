@@ -11,11 +11,11 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     suite_for__conf__rel_opts__negations, TestWithConfigurationAndRelativityOptionAndNegationBase, \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
-    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import multiple
+from exactly_lib_test.type_system_values.file_transformers.test_resources import \
+    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:

@@ -19,8 +19,6 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
     TestWithConfigurationAndRelativityOptionAndNegationBase, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
-    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
@@ -32,6 +30,8 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_di
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
+from exactly_lib_test.type_system_values.file_transformers.test_resources import \
+    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
