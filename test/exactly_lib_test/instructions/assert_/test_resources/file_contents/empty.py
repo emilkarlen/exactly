@@ -7,6 +7,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.transformations import \
+    REPLACE_ENV_VARS_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 
 
@@ -23,47 +25,60 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
 class ParseShouldFailWhenThereAreSuperfluousArguments(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         parser = self.configuration.new_parser()
-        source = self.configuration.source_for(
-            args('{maybe_not} {empty} superfluous-argument',
-                 maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative))
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.parse(source)
+        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+                source = self.configuration.source_for(
+                    args('{maybe_replace_env_vars_option} {maybe_not} {empty} superfluous-argument',
+                         maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                         maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
+                )
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    parser.parse(source)
 
 
 class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
     TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         parser = self.configuration.new_parser()
-        source = self.configuration.source_for(
-            args('{maybe_not} {empty} <<MARKER',
-                 maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
-            ['single line',
-             'MARKER'])
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.parse(source)
+        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+                source = self.configuration.source_for(
+                    args('{maybe_replace_env_vars_option} {maybe_not} {empty} <<MARKER',
+                         maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                         maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
+                    ['single line',
+                     'MARKER'])
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    parser.parse(source)
 
 
 class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
-                args('{maybe_not} {empty}',
-                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
-            self.configuration.arrangement_for_contents(
-                '',
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
-        )
+        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+                self._check_single_instruction_line_with_source_variants(
+                    self.configuration.first_line_argument(
+                        args('{maybe_replace_env_vars_option} {maybe_not} {empty}',
+                             maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                             maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
+                    self.configuration.arrangement_for_contents(
+                        '',
+                        post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+                    Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
+                )
 
 
 class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
-                args('{maybe_not} {empty}',
-                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
-            self.configuration.arrangement_for_contents(
-                'contents that makes the file non-empty',
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative),
-        )
+        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+                self._check_single_instruction_line_with_source_variants(
+                    self.configuration.first_line_argument(
+                        args('{maybe_replace_env_vars_option} {maybe_not} {empty}',
+                             maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                             maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
+                    self.configuration.arrangement_for_contents(
+                        'contents that makes the file non-empty',
+                        post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+                    Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative),
+                )

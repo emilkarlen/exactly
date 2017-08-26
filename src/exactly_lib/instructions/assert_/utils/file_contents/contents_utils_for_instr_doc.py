@@ -66,7 +66,8 @@ class FileContentsHelpParts:
                                                     self.with_replaced_env_vars_option)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
-            InvokationVariant(self._cls([optional_not_arg,
+            InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         optional_not_arg,
                                          mandatory_empty_arg]),
                               self._paragraphs(_DESCRIPTION_OF_EMPTY)),
             InvokationVariant(self._cls([optional_replace_env_vars_option,
