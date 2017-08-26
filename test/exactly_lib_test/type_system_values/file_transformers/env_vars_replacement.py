@@ -2,15 +2,15 @@ import pathlib
 import unittest
 
 from exactly_lib.execution import environment_variables
-from exactly_lib.instructions.assert_.utils.file_contents import env_vars_replacement as sut
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
-    ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHomeActAndCase, \
-    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
+from exactly_lib.type_system_values.file_transformers import env_vars_replacement as sut
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
+from exactly_lib_test.type_system_values.file_transformers.test_resources import \
+    ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHomeActAndCase, \
+    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 
 
 def suite() -> unittest.TestSuite:
