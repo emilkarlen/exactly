@@ -1,10 +1,10 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
-from exactly_lib.instructions.utils.err_msg import diff_msg
-from exactly_lib.instructions.utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case_utils.err_msg import diff_msg
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.util.expectation_type import ExpectationType
 
 

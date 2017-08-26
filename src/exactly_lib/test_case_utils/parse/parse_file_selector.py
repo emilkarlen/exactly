@@ -2,7 +2,6 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
-from exactly_lib.instructions.utils.err_msg import property_description
 from exactly_lib.named_element.file_selectors import FileSelectorConstant, FileSelectorAnd, FileSelectorReference
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -10,6 +9,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
+from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.type_system_values.file_selector import FileSelector
