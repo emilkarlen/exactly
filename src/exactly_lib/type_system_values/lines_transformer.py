@@ -1,17 +1,21 @@
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 
 
-class FileTransformer:
+class LinesTransformer:
+    """
+    Transforms a sequence of lines, where each line is a string.
+    """
+
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         raise NotImplementedError('abstract method')
 
 
-class IdentityFileTransformer(FileTransformer):
+class IdentityLinesTransformer(LinesTransformer):
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         raise NotImplementedError('this method should never be called')
 
 
-class CustomFileTransformer(FileTransformer):
+class CustomLinesTransformer(LinesTransformer):
     """
     Base class for built in custom transformers.
 
@@ -23,7 +27,7 @@ class CustomFileTransformer(FileTransformer):
         self.name = name
 
 
-class FileTransformerStructureVisitor:
+class LinesTransformerStructureVisitor:
     """
     Visits all variants of :class:`FileSelector`.
 
@@ -32,17 +36,17 @@ class FileTransformerStructureVisitor:
     of selectors.
     """
 
-    def visit(self, transformer: FileTransformer):
-        if isinstance(transformer, CustomFileTransformer):
+    def visit(self, transformer: LinesTransformer):
+        if isinstance(transformer, CustomLinesTransformer):
             return self.visit_custom(transformer)
-        elif isinstance(transformer, IdentityFileTransformer):
+        elif isinstance(transformer, IdentityLinesTransformer):
             return self.visit_identity(transformer)
         else:
-            raise TypeError('Unknown {}: {}'.format(FileTransformer,
+            raise TypeError('Unknown {}: {}'.format(LinesTransformer,
                                                     str(transformer)))
 
-    def visit_custom(self, transformer: CustomFileTransformer):
+    def visit_custom(self, transformer: CustomLinesTransformer):
         raise NotImplementedError('abstract method')
 
-    def visit_identity(self, transformer: IdentityFileTransformer):
+    def visit_identity(self, transformer: IdentityLinesTransformer):
         raise NotImplementedError('abstract method')
