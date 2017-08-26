@@ -11,7 +11,7 @@ class FileTransformer:
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  actual_file_path: pathlib.Path) -> pathlib.Path:
+                  src_file_path: pathlib.Path) -> pathlib.Path:
         raise NotImplementedError('abstract method')
 
 

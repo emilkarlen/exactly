@@ -21,8 +21,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
-from exactly_lib.test_case_utils.file_transformer.env_vars_replacement_transformer import \
-    FileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
+from exactly_lib.test_case_utils.file_transformer.from_lines_transformer import DestinationFilePathResolver
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -104,12 +103,12 @@ class Parser(InstructionParser):
         comparison_target = parse_actual_file_argument(source)
         source.consume_initial_space_on_current_line()
         instruction = parsing.parse_comparison_operation(comparison_target,
-                                                         FileTransformerParser(_PathResolverForEnvVarReplacement()),
+                                                         FileTransformerParser(_DestinationFile_PathResolver()),
                                                          source)
         return instruction
 
 
-class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
+class _DestinationFile_PathResolver(DestinationFilePathResolver):
     def dst_file_path(self,
                       environment: InstructionEnvironmentForPostSdsStep,
                       src_file_path: pathlib.Path) -> pathlib.Path:
@@ -133,10 +132,6 @@ class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
             # path DOES NOT reside under act_dir
             return (root_dir_path / SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR).joinpath(
                 *absolute_src_file_path.parts[1:])
-
-
-def actual_file_transformer_for_env_vars_replacement() -> FileTransformerForEnvVarsReplacement:
-    return FileTransformerForEnvVarsReplacement(_PathResolverForEnvVarReplacement())
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
