@@ -83,6 +83,6 @@ class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
         return pathlib.Path(directory / dst_base_name)
 
 
-class _StdXActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformerForEnvVarsReplacementBase):
+class StdXActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVarsReplacementBase):
     def get_path_resolver(self) -> PathResolverForEnvVarReplacement:
         return _PathResolverForEnvVarReplacement()

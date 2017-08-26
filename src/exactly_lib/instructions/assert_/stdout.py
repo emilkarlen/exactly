@@ -12,4 +12,4 @@ def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
 class ParserForContentsForStdout(utils.ParserForContentsForActualValue):
     def __init__(self):
         super().__init__(actual_files.StdoutComparisonActualFile(),
-                         utils._StdXActualFileTransformerForEnvVarsReplacementBase())
+                         utils.StdXActualFileTransformerForEnvVarsReplacement())
