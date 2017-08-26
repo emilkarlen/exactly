@@ -7,7 +7,7 @@ from exactly_lib.instructions.assert_.utils.file_contents import instruction_opt
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
     ActualFileTransformerForEnvVarsReplacementBase, \
-    ActualFileTransformer
+    ActualFileTransformer, PathResolverForEnvVarReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -73,11 +73,16 @@ class ParserForContentsForActualValue(InstructionParser):
         return content_instruction
 
 
-class _StdXActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformerForEnvVarsReplacementBase):
-    def _dst_file_path(self,
-                       environment: InstructionEnvironmentForPostSdsStep,
-                       src_file_path: pathlib.Path) -> pathlib.Path:
+class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
+    def dst_file_path(self,
+                      environment: InstructionEnvironmentForPostSdsStep,
+                      src_file_path: pathlib.Path) -> pathlib.Path:
         src_stem_name = src_file_path.stem
         directory = src_file_path.parent
         dst_base_name = src_stem_name + _WITH_REPLACED_ENV_VARS_STEM_SUFFIX
-        return directory / dst_base_name
+        return pathlib.Path(directory / dst_base_name)
+
+
+class _StdXActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformerForEnvVarsReplacementBase):
+    def get_path_resolver(self) -> PathResolverForEnvVarReplacement:
+        return _PathResolverForEnvVarReplacement()

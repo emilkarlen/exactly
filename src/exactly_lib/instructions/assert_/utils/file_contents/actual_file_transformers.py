@@ -15,6 +15,13 @@ class ActualFileTransformer:
         raise NotImplementedError()
 
 
+class PathResolverForEnvVarReplacement:
+    def dst_file_path(self,
+                      environment: InstructionEnvironmentForPostSdsStep,
+                      src_file_path: pathlib.Path) -> pathlib.Path:
+        raise NotImplementedError('abstract method')
+
+
 class IdentityFileTransformer(ActualFileTransformer):
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
@@ -29,7 +36,7 @@ class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
                   os_services: OsServices,
                   actual_file_path: pathlib.Path) -> pathlib.Path:
         src_file_path = actual_file_path
-        dst_file_path = self._dst_file_path(environment, src_file_path)
+        dst_file_path = self.get_path_resolver().dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
         self._replace_env_vars_and_write_result_to_dst(environment.home_and_sds,
@@ -37,14 +44,8 @@ class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
                                                        dst_file_path)
         return dst_file_path
 
-    def _dst_file_path(self,
-                       environment: InstructionEnvironmentForPostSdsStep,
-                       src_file_path: pathlib.Path) -> pathlib.Path:
-        """
-        :return: An absolute path that does/should store the transformed version of
-        the src file.
-        """
-        raise NotImplementedError()
+    def get_path_resolver(self) -> PathResolverForEnvVarReplacement:
+        raise NotImplementedError('abstract method')
 
     @staticmethod
     def _replace_env_vars_and_write_result_to_dst(home_and_sds: HomeAndSds,
