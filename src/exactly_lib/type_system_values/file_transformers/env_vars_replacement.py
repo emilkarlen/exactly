@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.execution import environment_variables
+from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 
 HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CASE

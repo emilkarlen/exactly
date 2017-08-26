@@ -2,7 +2,6 @@ import pathlib
 import types
 import unittest
 
-from exactly_lib.execution import environment_variables
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
@@ -10,6 +9,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources import recorder as instr_setup

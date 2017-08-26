@@ -1,5 +1,4 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_act_directory import \
     HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
@@ -12,7 +11,7 @@ from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import SYMBOL_SYNTAX_ELEMENT_NAME
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration

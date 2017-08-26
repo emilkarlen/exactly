@@ -1,5 +1,4 @@
 from exactly_lib import program_info
-from exactly_lib.execution import environment_variables
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
@@ -8,7 +7,7 @@ from exactly_lib.help_texts.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
     HOME_CASE_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists

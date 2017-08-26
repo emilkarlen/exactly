@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution import environment_variables
+from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.type_system_values.file_transformers import env_vars_replacement as sut
