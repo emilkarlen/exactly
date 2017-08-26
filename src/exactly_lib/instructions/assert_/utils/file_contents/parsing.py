@@ -1,8 +1,9 @@
 import re
 
 from exactly_lib.instructions.assert_.utils.file_contents import actual_file_transformers
-from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformer, \
-    ActualFileTransformerResolver, ConstantActualFileTransformerResolver
+from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import ActualFileTransformerResolver, \
+    ConstantActualFileTransformerResolver, PathResolverForEnvVarReplacement, \
+    ActualFileTransformerForEnvVarsReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
     NOT_ARGUMENT, EMPTY_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT
@@ -27,7 +28,7 @@ _REG_EX = 'REG EX'
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
-                               actual_file_transformer_for_replace_env_vars: ActualFileTransformer,
+                               dst_path_resolver: PathResolverForEnvVarReplacement,
                                source: ParseSource) -> AssertPhaseInstruction:
     def parse_file_transformation() -> ActualFileTransformerResolver:
         with_replaced_env_vars = False
@@ -39,7 +40,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             with_replaced_env_vars = True
         actual_file_transformer = actual_file_transformers.IdentityFileTransformer()
         if with_replaced_env_vars:
-            actual_file_transformer = actual_file_transformer_for_replace_env_vars
+            actual_file_transformer = ActualFileTransformerForEnvVarsReplacement(dst_path_resolver)
         return ConstantActualFileTransformerResolver(actual_file_transformer)
 
     actual_file_transformer = parse_file_transformation()

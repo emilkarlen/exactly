@@ -6,8 +6,8 @@ from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
-    ActualFileTransformerForEnvVarsReplacementBase, \
-    ActualFileTransformer, PathResolverForEnvVarReplacement
+    ActualFileTransformerForEnvVarsReplacement, \
+    PathResolverForEnvVarReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -57,16 +57,14 @@ _WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
 
 class ParserForContentsForActualValue(InstructionParser):
     def __init__(self,
-                 comparison_actual_value: actual_files.ComparisonActualFile,
-                 actual_value_transformer: ActualFileTransformer):
+                 comparison_actual_value: actual_files.ComparisonActualFile):
         self.comparison_actual_value = comparison_actual_value
-        self.target_transformer = actual_value_transformer
 
     def parse(self, source: ParseSource) -> AssertPhaseInstruction:
         source.consume_initial_space_on_current_line()
         first_line = source.remaining_part_of_current_line
         content_instruction = parsing.parse_comparison_operation(self.comparison_actual_value,
-                                                                 self.target_transformer,
+                                                                 _PathResolverForEnvVarReplacement(),
                                                                  source)
         if content_instruction is None:
             raise SingleInstructionInvalidArgumentException(first_line)
@@ -83,6 +81,5 @@ class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
         return pathlib.Path(directory / dst_base_name)
 
 
-class StdXActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVarsReplacementBase):
-    def get_path_resolver(self) -> PathResolverForEnvVarReplacement:
-        return _PathResolverForEnvVarReplacement()
+def actual_file_transformer_for_env_vars_replacement() -> ActualFileTransformerForEnvVarsReplacement:
+    return ActualFileTransformerForEnvVarsReplacement(_PathResolverForEnvVarReplacement())

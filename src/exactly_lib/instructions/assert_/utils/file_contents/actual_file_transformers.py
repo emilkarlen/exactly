@@ -44,22 +44,23 @@ class IdentityFileTransformer(ActualFileTransformer):
         return actual_file_path
 
 
-class ActualFileTransformerForEnvVarsReplacementBase(ActualFileTransformer):
+class ActualFileTransformerForEnvVarsReplacement(ActualFileTransformer):
+    def __init__(self,
+                 dst_path_resolver: PathResolverForEnvVarReplacement):
+        self._dst_path_resolver = dst_path_resolver
+
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
                   actual_file_path: pathlib.Path) -> pathlib.Path:
         src_file_path = actual_file_path
-        dst_file_path = self.get_path_resolver().dst_file_path(environment, src_file_path)
+        dst_file_path = self._dst_path_resolver.dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
         self._replace_env_vars_and_write_result_to_dst(environment.home_and_sds,
                                                        src_file_path,
                                                        dst_file_path)
         return dst_file_path
-
-    def get_path_resolver(self) -> PathResolverForEnvVarReplacement:
-        raise NotImplementedError('abstract method')
 
     @staticmethod
     def _replace_env_vars_and_write_result_to_dst(home_and_sds: HomeAndSds,

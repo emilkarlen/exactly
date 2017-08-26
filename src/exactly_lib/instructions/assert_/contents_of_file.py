@@ -8,7 +8,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
-    ActualFileTransformerForEnvVarsReplacementBase, PathResolverForEnvVarReplacement
+    PathResolverForEnvVarReplacement, ActualFileTransformerForEnvVarsReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
@@ -103,7 +103,7 @@ class Parser(InstructionParser):
         comparison_target = parse_actual_file_argument(source)
         source.consume_initial_space_on_current_line()
         instruction = parsing.parse_comparison_operation(comparison_target,
-                                                         _ActualFileTransformerForEnvVarsReplacement(),
+                                                         _PathResolverForEnvVarReplacement(),
                                                          source)
         return instruction
 
@@ -134,9 +134,8 @@ class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
                 *absolute_src_file_path.parts[1:])
 
 
-class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVarsReplacementBase):
-    def get_path_resolver(self) -> PathResolverForEnvVarReplacement:
-        return _PathResolverForEnvVarReplacement()
+def actual_file_transformer_for_env_vars_replacement() -> ActualFileTransformerForEnvVarsReplacement:
+    return ActualFileTransformerForEnvVarsReplacement(_PathResolverForEnvVarReplacement())
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
