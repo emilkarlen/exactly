@@ -19,7 +19,7 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDoc
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util import file_utils
-from exactly_lib.util.expectation_type import ExpectationType, from_is_negated
+from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.file_utils import tmp_text_file_containing
 
 _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
@@ -27,14 +27,13 @@ _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 
 class EqualsAssertionInstruction(AssertPhaseInstruction):
     def __init__(self,
-                 negated: bool,
+                 expectation_type: ExpectationType,
                  expected_contents: HereDocOrFileRef,
                  actual_contents: ComparisonActualFile,
                  actual_file_transformer: ActualFileTransformer):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
         self._actual_file_transformer = actual_file_transformer
-        expectation_type = from_is_negated(negated)
         failure_resolver = DiffFailureInfoResolver(
             actual_contents.property_descriptor(),
             expectation_type,

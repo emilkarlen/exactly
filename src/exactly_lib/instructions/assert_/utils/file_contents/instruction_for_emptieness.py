@@ -6,18 +6,18 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.util.expectation_type import from_is_negated
+from exactly_lib.util.expectation_type import ExpectationType
 
 
 class EmptinessAssertionInstruction(AssertPhaseInstruction):
     def __init__(self,
-                 expect_empty: bool,
+                 expectation_type: ExpectationType,
                  actual_file: ComparisonActualFile):
         self.actual_file = actual_file
-        self.expect_empty = expect_empty
+        self.expectation_type = expectation_type
         self.failure_info_resolver = diff_msg_utils.DiffFailureInfoResolver(
             actual_file.property_descriptor(),
-            from_is_negated(not expect_empty),
+            expectation_type,
             diff_msg_utils.expected_constant(EMPTINESS_CHECK_EXPECTED_VALUE),
         )
 
@@ -32,7 +32,7 @@ class EmptinessAssertionInstruction(AssertPhaseInstruction):
             return pfh.new_pfh_fail(failure_message)
 
         size = self.actual_file.file_path(environment).stat().st_size
-        if self.expect_empty:
+        if self.expectation_type is ExpectationType.POSITIVE:
             if size != 0:
                 actual = str(size) + ' bytes'
                 return self._new_failure(environment, actual)
