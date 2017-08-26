@@ -8,7 +8,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_file_transformers import \
-    ActualFileTransformerForEnvVarsReplacementBase
+    ActualFileTransformerForEnvVarsReplacementBase, PathResolverForEnvVarReplacement
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
     ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
@@ -108,10 +108,10 @@ class Parser(InstructionParser):
         return instruction
 
 
-class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVarsReplacementBase):
-    def _dst_file_path(self,
-                       environment: InstructionEnvironmentForPostSdsStep,
-                       src_file_path: pathlib.Path) -> pathlib.Path:
+class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
+    def dst_file_path(self,
+                      environment: InstructionEnvironmentForPostSdsStep,
+                      src_file_path: pathlib.Path) -> pathlib.Path:
         root_dir_path = root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(environment.sds)
         if not src_file_path.is_absolute():
             src_file_path = pathlib.Path.cwd().resolve() / src_file_path
@@ -132,6 +132,11 @@ class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVar
             # path DOES NOT reside under act_dir
             return (root_dir_path / SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR).joinpath(
                 *absolute_src_file_path.parts[1:])
+
+
+class _ActualFileTransformerForEnvVarsReplacement(ActualFileTransformerForEnvVarsReplacementBase):
+    def get_path_resolver(self) -> PathResolverForEnvVarReplacement:
+        return _PathResolverForEnvVarReplacement()
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
