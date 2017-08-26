@@ -22,7 +22,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
 from exactly_lib.test_case_utils.file_transformer.env_vars_replacement_transformer import \
-    ActualFileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
+    FileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -135,8 +135,8 @@ class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
                 *absolute_src_file_path.parts[1:])
 
 
-def actual_file_transformer_for_env_vars_replacement() -> ActualFileTransformerForEnvVarsReplacement:
-    return ActualFileTransformerForEnvVarsReplacement(_PathResolverForEnvVarReplacement())
+def actual_file_transformer_for_env_vars_replacement() -> FileTransformerForEnvVarsReplacement:
+    return FileTransformerForEnvVarsReplacement(_PathResolverForEnvVarReplacement())
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(

@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.file_transformer import actual_file_transformer as aft, env_vars_replacement
+from exactly_lib.test_case_utils.file_transformer import file_transformer as aft, env_vars_replacement
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 
@@ -14,7 +14,7 @@ class PathResolverForEnvVarReplacement:
         raise NotImplementedError('abstract method')
 
 
-class ActualFileTransformerForEnvVarsReplacement(aft.ActualFileTransformer):
+class FileTransformerForEnvVarsReplacement(aft.FileTransformer):
     def __init__(self,
                  dst_path_resolver: PathResolverForEnvVarReplacement):
         self._dst_path_resolver = dst_path_resolver

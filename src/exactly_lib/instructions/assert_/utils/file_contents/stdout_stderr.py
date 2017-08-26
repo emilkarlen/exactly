@@ -13,7 +13,7 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.file_transformer.env_vars_replacement_transformer import \
-    ActualFileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
+    FileTransformerForEnvVarsReplacement, PathResolverForEnvVarReplacement
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -82,5 +82,5 @@ class _PathResolverForEnvVarReplacement(PathResolverForEnvVarReplacement):
         return pathlib.Path(directory / dst_base_name)
 
 
-def actual_file_transformer_for_env_vars_replacement() -> ActualFileTransformerForEnvVarsReplacement:
-    return ActualFileTransformerForEnvVarsReplacement(_PathResolverForEnvVarReplacement())
+def actual_file_transformer_for_env_vars_replacement() -> FileTransformerForEnvVarsReplacement:
+    return FileTransformerForEnvVarsReplacement(_PathResolverForEnvVarReplacement())
