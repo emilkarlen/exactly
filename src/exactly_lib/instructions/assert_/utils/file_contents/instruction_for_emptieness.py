@@ -12,6 +12,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 from exactly_lib.util.expectation_type import ExpectationType
 
@@ -19,19 +20,14 @@ from exactly_lib.util.expectation_type import ExpectationType
 class EmptinessChecker(Checker):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 actual_file: ComparisonActualFile):
+                 description_of_actual_file: PropertyDescriptor):
         super().__init__()
-        self.actual_file = actual_file
         self.expectation_type = expectation_type
         self.failure_info_resolver = diff_msg_utils.DiffFailureInfoResolver(
-            actual_file.property_descriptor(),
+            description_of_actual_file,
             expectation_type,
             diff_msg_utils.expected_constant(EMPTINESS_CHECK_EXPECTED_VALUE),
         )
-
-    @property
-    def references(self) -> list:
-        return self.actual_file.references
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
@@ -66,4 +62,5 @@ def emptiness_assertion_instruction(expectation_type: ExpectationType,
     return instruction_with_exist_trans_and_checker(
         actual_file,
         actual_file_transformer_resolver,
-        EmptinessChecker(expectation_type, actual_file))
+        EmptinessChecker(expectation_type,
+                         actual_file.property_descriptor()))

@@ -17,20 +17,27 @@ class FileExistenceChecker(Checker):
     :raises PfhFailException: File does not exist.
     """
 
+    def __init__(self, actual_file: ComparisonActualFile):
+        super().__init__()
+        self._actual_file = actual_file
+
+    @property
+    def references(self) -> list:
+        return self._actual_file.references
+
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file: ComparisonActualFile
+              not_used,
               ) -> pathlib.Path:
         """
-        :param file: The file to check existence of
         :return: The resolved path
         """
-        failure_message = file.file_check_failure(environment)
+        failure_message = self._actual_file.file_check_failure(environment)
         if failure_message:
             raise PfhFailException(failure_message)
 
-        return file.file_path(environment)
+        return self._actual_file.file_path(environment)
 
 
 class FileTransformerAsChecker(Checker):

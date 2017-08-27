@@ -16,6 +16,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
@@ -39,7 +40,7 @@ def equals_assertion_instruction(expectation_type: ExpectationType,
         actual_file_transformer_resolver,
         EqualityChecker(expectation_type,
                         expected_contents,
-                        actual_contents))
+                        actual_contents.property_descriptor()))
 
 
 def _file_diff_description(actual_file_path: pathlib.Path,
@@ -57,22 +58,21 @@ class EqualityChecker(Checker):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: HereDocOrFileRef,
-                 actual_contents: ComparisonActualFile):
+                 description_of_actual_file: PropertyDescriptor):
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self.validator_of_expected = _validator_of_expected(expected_contents)
         super().__init__(SingleStepValidator(ValidationStep.PRE_SDS,
                                              self.validator_of_expected))
         self._failure_resolver = DiffFailureInfoResolver(
-            actual_contents.property_descriptor(),
+            description_of_actual_file,
             expectation_type,
             ExpectedValueResolver(expected_contents),
         )
-        self._references = expected_contents.symbol_usages + actual_contents.references
 
     @property
     def references(self) -> list:
-        return self._references
+        return self._expected_contents.symbol_usages
 
     def check(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
