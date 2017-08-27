@@ -43,6 +43,7 @@ class FileTransformerAsChecker(Checker):
     """
 
     def __init__(self, file_transformer_resolver: FileTransformerResolver):
+        super().__init__()
         self._file_transformer_resolver = file_transformer_resolver
 
     @property

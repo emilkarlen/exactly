@@ -20,6 +20,7 @@ class EmptinessChecker(Checker):
     def __init__(self,
                  expectation_type: ExpectationType,
                  actual_file: ComparisonActualFile):
+        super().__init__()
         self.actual_file = actual_file
         self.expectation_type = expectation_type
         self.failure_info_resolver = diff_msg_utils.DiffFailureInfoResolver(
