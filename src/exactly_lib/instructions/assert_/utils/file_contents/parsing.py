@@ -31,8 +31,8 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         _ensure_no_more_arguments(source)
         source.consume_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_emptieness import \
-            EmptinessAssertionInstruction
-        return EmptinessAssertionInstruction(expectation_type, actual_file, actual_file_transformer)
+            emptiness_assertion_instruction
+        return emptiness_assertion_instruction(expectation_type, actual_file, actual_file_transformer)
 
     def _parse_equals(expectation_type: ExpectationType) -> AssertPhaseInstruction:
         current_line_before = source.current_line_number
