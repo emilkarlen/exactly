@@ -1,18 +1,15 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker, ActualFileChecker
+    ActualFileChecker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
-from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 from exactly_lib.util.expectation_type import ExpectationType
 
 
@@ -52,14 +49,3 @@ class EmptinessChecker(ActualFileChecker):
         failure_info = self.failure_info_resolver.resolve(environment,
                                                           diff_msg.actual_with_single_line_value(actual))
         raise PfhFailException(failure_info.render())
-
-
-def emptiness_assertion_instruction(expectation_type: ExpectationType,
-                                    actual_file: ComparisonActualFile,
-                                    actual_file_transformer_resolver: FileTransformerResolver,
-                                    ) -> AssertPhaseInstruction:
-    return instruction_with_exist_trans_and_checker(
-        actual_file,
-        actual_file_transformer_resolver,
-        EmptinessChecker(expectation_type,
-                         actual_file.property_descriptor()))
