@@ -1,9 +1,15 @@
 import itertools
+import types
 
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.result import pfh, svh
+from exactly_lib.test_case_utils import pre_or_post_validation
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
+    PreOrPostSdsSvhValidationErrorValidator
 
 
 class Checker:
@@ -15,9 +21,16 @@ class Checker:
     :raises PfhException: The check is unsuccessful.
     """
 
+    def __init__(self, validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
+        self._validator = validator
+
     @property
     def references(self) -> list:
         return []
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._validator
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
@@ -47,6 +60,7 @@ class SequenceOfChecks(Checker):
     """
 
     def __init__(self, checkers: list):
+        super().__init__(pre_or_post_validation.AndValidator([c.validator for c in checkers]))
         self._checkers = tuple(checkers)
         self._references = list(itertools.chain.from_iterable([c.references for c in checkers]))
 
@@ -61,3 +75,40 @@ class SequenceOfChecks(Checker):
     @property
     def references(self) -> list:
         return self._references
+
+
+class AssertionInstructionFromChecker(AssertPhaseInstruction):
+    """ An :class:`AssertPhaseInstruction` in terms of a :class:`Checker`'
+    """
+
+    def __init__(self,
+                 checker: Checker,
+                 get_argument_to_checker: types.FunctionType,
+                 ):
+        """
+        :param get_argument_to_checker: Returns the argument to give to
+        the checker, given a :class:`InstructionEnvironmentForPostSdsStep`
+        """
+        self._checker = checker
+        self._get_argument_to_checker = get_argument_to_checker
+        self._validator = PreOrPostSdsSvhValidationErrorValidator(checker.validator)
+
+    def symbol_usages(self) -> list:
+        return self._checker.references
+
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
+
+    def validate_post_setup(self,
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
+
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        argument_to_checker = self._get_argument_to_checker(environment)
+        return self._checker.check_and_return_pfh(environment, os_services,
+                                                  argument_to_checker)
