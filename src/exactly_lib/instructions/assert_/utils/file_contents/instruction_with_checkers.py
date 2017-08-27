@@ -19,9 +19,9 @@ def instruction_with_exist_trans_and_checker(actual_file: ComparisonActualFile,
 
     return AssertionInstructionFromChecker(
         SequenceOfChecks([
-            FileExistenceChecker(),
+            FileExistenceChecker(actual_file),
             FileTransformerAsChecker(actual_file_transformer_resolver),
             checker_of_transformed_file_path,
         ]),
-        lambda env: actual_file
+        lambda env: 'not used'
     )

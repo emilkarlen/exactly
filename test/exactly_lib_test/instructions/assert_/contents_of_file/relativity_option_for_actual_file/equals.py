@@ -142,8 +142,8 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
                     EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.accepted_relativity_variants)))
 
         expected_symbol_usages = asrt.matches_sequence(
-            [symbol_usage_expectation_for_expected_file] +
-            self.rel_opt.symbols.usage_expectation_assertions())
+            self.rel_opt.symbols.usage_expectation_assertions() +
+            [symbol_usage_expectation_for_expected_file])
 
         populator_of_expected_files = home_and_sds_populators.HomeOrSdsPopulatorForRelOptionType(
             self.relativity_of_expected_file(),
