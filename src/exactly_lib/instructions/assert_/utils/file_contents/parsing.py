@@ -11,6 +11,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.expectation_type import ExpectationType
@@ -22,6 +23,59 @@ EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 _COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
 
 _REG_EX = 'REG EX'
+
+
+def parse_checker(description_of_actual_file: PropertyDescriptor,
+                  expectation_type: ExpectationType,
+                  source: ParseSource) -> ActualFileChecker:
+    def parse_emptiness_checker() -> ActualFileChecker:
+        _ensure_no_more_arguments(source)
+        source.consume_current_line()
+        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_emptieness
+        return instruction_for_emptieness.EmptinessChecker(expectation_type,
+                                                           description_of_actual_file)
+
+    def parse_equals_checker() -> ActualFileChecker:
+        current_line_before = source.current_line_number
+        here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(
+            source,
+            EXPECTED_FILE_REL_OPT_ARG_CONFIG)
+        if source.has_current_line and source.current_line_number == current_line_before:
+            _ensure_no_more_arguments(source)
+            source.consume_current_line()
+
+        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_equality
+        return instruction_for_equality.EqualityChecker(expectation_type,
+                                                        here_doc_or_file_ref_for_expected,
+                                                        description_of_actual_file)
+
+    def parse_contains_checker() -> ActualFileChecker:
+        reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
+        _ensure_no_more_arguments(source)
+        source.consume_current_line()
+        try:
+            reg_ex = re.compile(reg_ex_arg.string)
+        except Exception as ex:
+            raise _parse_exception("Invalid {}: '{}'".format(_REG_EX, str(ex)))
+
+        failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
+            description_of_actual_file,
+            expectation_type,
+            diff_msg_utils.expected_constant('any line matches {} {}'.format(_REG_EX, reg_ex_arg.source_string))
+        )
+        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
+        return instruction_for_contains.checker_for(expectation_type, failure_resolver, reg_ex)
+
+    parsers = {
+        EMPTY_ARGUMENT: parse_emptiness_checker,
+        EQUALS_ARGUMENT: parse_equals_checker,
+        CONTAINS_ARGUMENT: parse_contains_checker,
+    }
+    peek_source = source.copy
+    first_argument = token_parse.parse_plain_token_on_current_line(peek_source, _COMPARISON_OPERATOR).string
+    if first_argument in parsers:
+        source.catch_up_with(peek_source)
+        return parsers[first_argument]()
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
@@ -40,57 +94,9 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
 
     expectation_type = parse_expectation_type()
 
-    def parse_emptiness_checker() -> ActualFileChecker:
-        _ensure_no_more_arguments(source)
-        source.consume_current_line()
-        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_emptieness
-        return instruction_for_emptieness.EmptinessChecker(expectation_type,
-                                                           actual_file.property_descriptor())
-
-    def parse_equals_checker() -> ActualFileChecker:
-        current_line_before = source.current_line_number
-        here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(
-            source,
-            EXPECTED_FILE_REL_OPT_ARG_CONFIG)
-        if source.has_current_line and source.current_line_number == current_line_before:
-            _ensure_no_more_arguments(source)
-            source.consume_current_line()
-
-        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_equality
-        return instruction_for_equality.EqualityChecker(expectation_type,
-                                                        here_doc_or_file_ref_for_expected,
-                                                        actual_file.property_descriptor())
-
-    def parse_contains_checker() -> ActualFileChecker:
-        reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
-        _ensure_no_more_arguments(source)
-        source.consume_current_line()
-        try:
-            reg_ex = re.compile(reg_ex_arg.string)
-        except Exception as ex:
-            raise _parse_exception("Invalid {}: '{}'".format(_REG_EX, str(ex)))
-
-        failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
-            actual_file.property_descriptor(),
-            expectation_type,
-            diff_msg_utils.expected_constant('any line matches {} {}'.format(_REG_EX, reg_ex_arg.source_string))
-        )
-        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
-        return instruction_for_contains.checker_for(expectation_type, failure_resolver, reg_ex)
-
-    def parse_checker() -> ActualFileChecker:
-        parsers = {
-            EMPTY_ARGUMENT: parse_emptiness_checker,
-            EQUALS_ARGUMENT: parse_equals_checker,
-            CONTAINS_ARGUMENT: parse_contains_checker,
-        }
-        peek_source = source.copy
-        first_argument = token_parse.parse_plain_token_on_current_line(peek_source, _COMPARISON_OPERATOR).string
-        if first_argument in parsers:
-            source.catch_up_with(peek_source)
-            return parsers[first_argument]()
-
-    checker = parse_checker()
+    checker = parse_checker(actual_file.property_descriptor(),
+                            expectation_type,
+                            source)
     return instruction_with_exist_trans_and_checker(actual_file,
                                                     actual_file_transformer,
                                                     checker)
