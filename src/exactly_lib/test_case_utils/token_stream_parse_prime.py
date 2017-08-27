@@ -17,7 +17,8 @@ class TokenParserPrime:
     """
     Utility for implementing parsers backed by a :class:`TokenStream`.
 
-    Encapsulates parsing/syntax of command-line-options and strings.
+    Encapsulates parsing/syntax of command-line-options and strings,
+    and hides the representation of the source (the :class:`TokenStream`).
     """
 
     def __init__(self,
