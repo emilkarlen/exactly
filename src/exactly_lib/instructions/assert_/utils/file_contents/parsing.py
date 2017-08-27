@@ -27,16 +27,14 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                                source: ParseSource) -> AssertPhaseInstruction:
     actual_file_transformer = file_transformer_parser.parse_from_parse_source(source)
 
-    def _parse_empty(expectation_type: ExpectationType,
-                     actual: ComparisonActualFile) -> AssertPhaseInstruction:
+    def _parse_empty(expectation_type: ExpectationType) -> AssertPhaseInstruction:
         _ensure_no_more_arguments(source)
         source.consume_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_emptieness import \
             EmptinessAssertionInstruction
-        return EmptinessAssertionInstruction(expectation_type, actual, actual_file_transformer)
+        return EmptinessAssertionInstruction(expectation_type, actual_file, actual_file_transformer)
 
-    def _parse_equals(expectation_type: ExpectationType,
-                      actual: ComparisonActualFile) -> AssertPhaseInstruction:
+    def _parse_equals(expectation_type: ExpectationType) -> AssertPhaseInstruction:
         current_line_before = source.current_line_number
         here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(
             source,
@@ -49,11 +47,10 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             EqualsAssertionInstruction
         return EqualsAssertionInstruction(expectation_type,
                                           here_doc_or_file_ref_for_expected,
-                                          actual,
+                                          actual_file,
                                           actual_file_transformer)
 
-    def _parse_contains(expectation_type: ExpectationType,
-                        actual: ComparisonActualFile) -> AssertPhaseInstruction:
+    def _parse_contains(expectation_type: ExpectationType) -> AssertPhaseInstruction:
         reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
         _ensure_no_more_arguments(source)
         source.consume_current_line()
@@ -63,7 +60,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             raise _parse_exception("Invalid {}: '{}'".format(_REG_EX, str(ex)))
 
         failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
-            actual.property_descriptor(),
+            actual_file.property_descriptor(),
             expectation_type,
             diff_msg_utils.expected_constant('any line matches {} {}'.format(_REG_EX, reg_ex_arg.source_string))
         )
@@ -73,9 +70,9 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             file_checker = instruction_for_contains.FileCheckerForNegativeMatch(failure_resolver, reg_ex)
         else:
             file_checker = instruction_for_contains.FileCheckerForPositiveMatch(failure_resolver, reg_ex)
-        return instruction_for_contains.ContainsAssertionInstruction(file_checker, actual, actual_file_transformer)
+        return instruction_for_contains.ContainsAssertionInstruction(file_checker, actual_file, actual_file_transformer)
 
-    def _parse_contents(actual: ComparisonActualFile) -> AssertPhaseInstruction:
+    def _parse_contents() -> AssertPhaseInstruction:
         if source.is_at_eol__except_for_space:
             return _missing_operator([NOT_ARGUMENT, EQUALS_ARGUMENT, CONTAINS_ARGUMENT])
         negated = False
@@ -87,22 +84,22 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             next_arg_str = token_parse.parse_plain_token_on_current_line(source, _OPERATION).string
         expectation_type = from_is_negated(negated)
         if next_arg_str == CONTAINS_ARGUMENT:
-            return _parse_contains(expectation_type, actual)
+            return _parse_contains(expectation_type)
         if next_arg_str == EQUALS_ARGUMENT:
-            return _parse_equals(expectation_type, actual)
+            return _parse_equals(expectation_type)
         raise _parse_exception('Unknown {}: {}'.format(_OPERATION, next_arg_str))
 
     peek_source = source.copy
     first_argument = token_parse.parse_plain_token_on_current_line(peek_source, _COMPARISON_OPERATOR).string
     if first_argument == EMPTY_ARGUMENT:
         source.catch_up_with(peek_source)
-        return _parse_empty(ExpectationType.POSITIVE, actual_file)
+        return _parse_empty(ExpectationType.POSITIVE)
     second_argument = token_parse.parse_token_on_current_line(peek_source, _COMPARISON_OPERATOR)
     if second_argument.is_plain and [first_argument, second_argument.string] == [NOT_ARGUMENT, EMPTY_ARGUMENT]:
         source.catch_up_with(peek_source)
-        return _parse_empty(ExpectationType.NEGATIVE, actual_file)
+        return _parse_empty(ExpectationType.NEGATIVE)
     else:
-        return _parse_contents(actual_file)
+        return _parse_contents()
 
 
 def _missing_operator(operators: list):
