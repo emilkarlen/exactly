@@ -1,16 +1,21 @@
 import pathlib
 
 from exactly_lib.instructions.assert_.utils.checker import Checker
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
-from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
+from exactly_lib.util.expectation_type import ExpectationType
+
+
+def checker_for(expectation_type: ExpectationType,
+                failure_info_resolver: DiffFailureInfoResolver,
+                expected_reg_ex) -> Checker:
+    if expectation_type is ExpectationType.POSITIVE:
+        return _FileCheckerForPositiveMatch(failure_info_resolver, expected_reg_ex)
+    else:
+        return _FileCheckerForNegativeMatch(failure_info_resolver, expected_reg_ex)
 
 
 class FileChecker(Checker):
@@ -28,18 +33,7 @@ class FileChecker(Checker):
         raise NotImplementedError()
 
 
-def contains_assertion_instruction(actual_contents: ComparisonActualFile,
-                                   actual_file_transformer_resolver: FileTransformerResolver,
-                                   file_checker: FileChecker,
-                                   ) -> AssertPhaseInstruction:
-    return instruction_with_exist_trans_and_checker(
-        actual_contents,
-        actual_file_transformer_resolver,
-        file_checker,
-    )
-
-
-class FileCheckerForPositiveMatch(FileChecker):
+class _FileCheckerForPositiveMatch(FileChecker):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -54,7 +48,7 @@ class FileCheckerForPositiveMatch(FileChecker):
         raise PfhFailException(failure_info.render())
 
 
-class FileCheckerForNegativeMatch(FileChecker):
+class _FileCheckerForNegativeMatch(FileChecker):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
