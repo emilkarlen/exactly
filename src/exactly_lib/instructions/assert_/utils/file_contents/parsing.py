@@ -44,11 +44,11 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
             source.consume_current_line()
 
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_equality import \
-            EqualsAssertionInstruction
-        return EqualsAssertionInstruction(expectation_type,
-                                          here_doc_or_file_ref_for_expected,
-                                          actual_file,
-                                          actual_file_transformer)
+            equals_assertion_instruction
+        return equals_assertion_instruction(expectation_type,
+                                            here_doc_or_file_ref_for_expected,
+                                            actual_file,
+                                            actual_file_transformer)
 
     def _parse_contains(expectation_type: ExpectationType) -> AssertPhaseInstruction:
         reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
