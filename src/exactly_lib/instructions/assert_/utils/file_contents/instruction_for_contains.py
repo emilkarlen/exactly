@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.checker import Checker
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import ActualFileChecker
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -11,14 +11,14 @@ from exactly_lib.util.expectation_type import ExpectationType
 
 def checker_for(expectation_type: ExpectationType,
                 failure_info_resolver: DiffFailureInfoResolver,
-                expected_reg_ex) -> Checker:
+                expected_reg_ex) -> ActualFileChecker:
     if expectation_type is ExpectationType.POSITIVE:
         return _FileCheckerForPositiveMatch(failure_info_resolver, expected_reg_ex)
     else:
         return _FileCheckerForNegativeMatch(failure_info_resolver, expected_reg_ex)
 
 
-class FileChecker(Checker):
+class FileChecker(ActualFileChecker):
     def __init__(self,
                  failure_info_resolver: DiffFailureInfoResolver,
                  expected_reg_ex):
@@ -29,7 +29,7 @@ class FileChecker(Checker):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              actual_file_path: pathlib.Path):
+              file_to_check: pathlib.Path):
         raise NotImplementedError()
 
 
@@ -37,8 +37,8 @@ class _FileCheckerForPositiveMatch(FileChecker):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              actual_file_path: pathlib.Path):
-        actual_file_name = str(actual_file_path)
+              file_to_check: pathlib.Path):
+        actual_file_name = str(file_to_check)
         with open(actual_file_name) as f:
             for line in f:
                 if self._expected_reg_ex.search(line.rstrip('\n')):
@@ -52,8 +52,8 @@ class _FileCheckerForNegativeMatch(FileChecker):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              actual_file_path: pathlib.Path):
-        actual_file_name = str(actual_file_path)
+              file_to_check: pathlib.Path):
+        actual_file_name = str(file_to_check)
         with open(actual_file_name) as f:
             line_num = 1
             for line in f:

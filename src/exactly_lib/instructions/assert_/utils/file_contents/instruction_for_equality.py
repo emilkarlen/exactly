@@ -2,10 +2,9 @@ import difflib
 import filecmp
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.checker import Checker
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker
+    instruction_with_exist_trans_and_checker, ActualFileChecker
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -54,7 +53,7 @@ def _file_diff_description(actual_file_path: pathlib.Path,
     return list(diff)
 
 
-class EqualityChecker(Checker):
+class EqualityChecker(ActualFileChecker):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: HereDocOrFileRef,
@@ -77,19 +76,19 @@ class EqualityChecker(Checker):
     def check(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              actual_file_path: pathlib.Path):
+              file_to_check: pathlib.Path):
 
         self._do_post_setup_validation(environment)
 
         expected_file_path = self._file_path_for_file_with_expected_contents(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        files_are_equal = self._do_compare(expected_file_path, actual_file_path)
+        files_are_equal = self._do_compare(expected_file_path, file_to_check)
 
         self._do_check_comparison_result(environment,
                                          files_are_equal,
                                          expected_file_path,
-                                         actual_file_path)
+                                         file_to_check)
 
     def _do_check_comparison_result(self,
                                     environment: i.InstructionEnvironmentForPostSdsStep,

@@ -1,9 +1,8 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.checker import Checker
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker
+    instruction_with_exist_trans_and_checker, ActualFileChecker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
@@ -17,7 +16,7 @@ from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTr
 from exactly_lib.util.expectation_type import ExpectationType
 
 
-class EmptinessChecker(Checker):
+class EmptinessChecker(ActualFileChecker):
     def __init__(self,
                  expectation_type: ExpectationType,
                  description_of_actual_file: PropertyDescriptor):

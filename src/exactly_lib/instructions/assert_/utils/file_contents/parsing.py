@@ -1,11 +1,10 @@
 import re
 
-from exactly_lib.instructions.assert_.utils.checker import Checker
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT, \
     EQUALS_ARGUMENT, CONTAINS_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker
+    instruction_with_exist_trans_and_checker, ActualFileChecker
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -41,14 +40,14 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
 
     expectation_type = parse_expectation_type()
 
-    def parse_emptiness_checker() -> Checker:
+    def parse_emptiness_checker() -> ActualFileChecker:
         _ensure_no_more_arguments(source)
         source.consume_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_emptieness
         return instruction_for_emptieness.EmptinessChecker(expectation_type,
                                                            actual_file.property_descriptor())
 
-    def parse_equals_checker() -> Checker:
+    def parse_equals_checker() -> ActualFileChecker:
         current_line_before = source.current_line_number
         here_doc_or_file_ref_for_expected = parse_here_doc_or_file_ref.parse_from_parse_source(
             source,
@@ -62,7 +61,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                                                         here_doc_or_file_ref_for_expected,
                                                         actual_file.property_descriptor())
 
-    def parse_contains_checker() -> Checker:
+    def parse_contains_checker() -> ActualFileChecker:
         reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
         _ensure_no_more_arguments(source)
         source.consume_current_line()
@@ -79,7 +78,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
         return instruction_for_contains.checker_for(expectation_type, failure_resolver, reg_ex)
 
-    def parse_checker() -> Checker:
+    def parse_checker() -> ActualFileChecker:
         parsers = {
             EMPTY_ARGUMENT: parse_emptiness_checker,
             EQUALS_ARGUMENT: parse_equals_checker,
