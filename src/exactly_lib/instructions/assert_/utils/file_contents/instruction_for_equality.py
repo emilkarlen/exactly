@@ -2,13 +2,16 @@ import difflib
 import filecmp
 import pathlib
 
+from exactly_lib.instructions.assert_.utils.checker import Checker
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
+    instruction_with_exist_trans_and_checker
+from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.result import svh, pfh
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
@@ -18,7 +21,7 @@ from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, Fi
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
-    PreOrPostSdsSvhValidationErrorValidator
+    PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.util import file_utils
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.file_utils import tmp_text_file_containing
@@ -26,72 +29,17 @@ from exactly_lib.util.file_utils import tmp_text_file_containing
 _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 
 
-class EqualsAssertionInstruction(AssertPhaseInstruction):
-    def __init__(self,
-                 expectation_type: ExpectationType,
-                 expected_contents: HereDocOrFileRef,
-                 actual_contents: ComparisonActualFile,
-                 actual_file_transformer_resolver: FileTransformerResolver):
-        self._actual_value = actual_contents
-        self._expected_contents = expected_contents
-        self._actual_file_transformer_resolver = actual_file_transformer_resolver
-        failure_resolver = DiffFailureInfoResolver(
-            actual_contents.property_descriptor(),
-            expectation_type,
-            ExpectedValueResolver(expected_contents),
-        )
-        self._file_checker = _FileChecker(expectation_type,
-                                          failure_resolver)
-        self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
-            FileRefCheckValidator(self._file_ref_check_for_expected())
-
-    def symbol_usages(self) -> list:
-        return self._expected_contents.symbol_usages + self._actual_value.references
-
-    def validate_pre_sds(self,
-                         environment: i.InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        validator = PreOrPostSdsSvhValidationErrorValidator(self.validator_of_expected)
-        return validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
-
-    def main(self,
-             environment: i.InstructionEnvironmentForPostSdsStep,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        if not self._expected_contents.is_here_document:
-            failure_message = self.validator_of_expected.validate_post_sds_if_applicable(
-                environment.path_resolving_environment)
-            if failure_message:
-                return pfh.new_pfh_fail(failure_message)
-        expected_file_path = self._file_path_for_file_with_expected_contents(
-            environment.path_resolving_environment_pre_or_post_sds)
-
-        failure_message = self._actual_value.file_check_failure(environment)
-        if failure_message is not None:
-            return pfh.new_pfh_fail(failure_message)
-
-        actual_file_path = self._actual_value.file_path(environment)
-        actual_file_transformer = self._actual_file_transformer_resolver.resolve(environment.symbols)
-        processed_actual_file_path = actual_file_transformer.transform(environment,
-                                                                       os_services,
-                                                                       actual_file_path)
-        return self._file_checker.apply(environment,
-                                        expected_file_path,
-                                        processed_actual_file_path)
-
-    def _file_path_for_file_with_expected_contents(self,
-                                                   environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        expected_contents = self._expected_contents
-        if expected_contents.is_here_document:
-            contents = expected_contents.here_document.resolve_value_of_any_dependency(environment)
-            return tmp_text_file_containing(contents,
-                                            prefix='contents-',
-                                            suffix='.txt',
-                                            directory=str(environment.sds.tmp.internal_dir))
-        else:
-            return expected_contents.file_reference_resolver.resolve_value_of_any_dependency(environment)
-
-    def _file_ref_check_for_expected(self) -> FileRefCheck:
-        return FileRefCheck(self._expected_contents.file_reference_resolver,
-                            must_exist_as(FileType.REGULAR))
+def equals_assertion_instruction(expectation_type: ExpectationType,
+                                 expected_contents: HereDocOrFileRef,
+                                 actual_contents: ComparisonActualFile,
+                                 actual_file_transformer_resolver: FileTransformerResolver,
+                                 ) -> AssertPhaseInstruction:
+    return instruction_with_exist_trans_and_checker(
+        actual_contents,
+        actual_file_transformer_resolver,
+        EqualityChecker(expectation_type,
+                        expected_contents,
+                        actual_contents))
 
 
 def _file_diff_description(actual_file_path: pathlib.Path,
@@ -105,36 +53,96 @@ def _file_diff_description(actual_file_path: pathlib.Path,
     return list(diff)
 
 
-class _FileChecker:
+class EqualityChecker(Checker):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 failure_resolver: DiffFailureInfoResolver):
+                 expected_contents: HereDocOrFileRef,
+                 actual_contents: ComparisonActualFile):
         self._expectation_type = expectation_type
-        self._failure_resolver = failure_resolver
+        self._expected_contents = expected_contents
+        self.validator_of_expected = _validator_of_expected(expected_contents)
+        super().__init__(SingleStepValidator(ValidationStep.PRE_SDS,
+                                             self.validator_of_expected))
+        self._failure_resolver = DiffFailureInfoResolver(
+            actual_contents.property_descriptor(),
+            expectation_type,
+            ExpectedValueResolver(expected_contents),
+        )
+        self._references = expected_contents.symbol_usages + actual_contents.references
 
-    def apply(self,
+    @property
+    def references(self) -> list:
+        return self._references
+
+    def check(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
-              expected_file_path: pathlib.Path,
-              processed_actual_file_path: pathlib.Path) -> pfh.PassOrFailOrHardError:
+              os_services: OsServices,
+              actual_file_path: pathlib.Path):
+
+        self._do_post_setup_validation(environment)
+
+        expected_file_path = self._file_path_for_file_with_expected_contents(
+            environment.path_resolving_environment_pre_or_post_sds)
+
+        files_are_equal = self._do_compare(expected_file_path, actual_file_path)
+
+        self._do_check_comparison_result(environment,
+                                         files_are_equal,
+                                         expected_file_path,
+                                         actual_file_path)
+
+    def _do_check_comparison_result(self,
+                                    environment: i.InstructionEnvironmentForPostSdsStep,
+                                    files_are_equal: bool,
+                                    expected_file_path: pathlib.Path,
+                                    actual_file_path: pathlib.Path):
+        if self._expectation_type is ExpectationType.POSITIVE:
+            if not files_are_equal:
+                diff_description = _file_diff_description(actual_file_path,
+                                                          expected_file_path)
+                failure_info = self._failure_resolver.resolve(environment,
+                                                              diff_msg.actual_with_just_description_lines(
+                                                                  diff_description))
+                raise PfhFailException(failure_info.render())
+        else:
+            if files_are_equal:
+                failure_info = self._failure_resolver.resolve(environment,
+                                                              diff_msg.actual_with_single_line_value(
+                                                                  _EQUALITY_CHECK_EXPECTED_VALUE))
+                raise PfhFailException(failure_info.render())
+
+    @staticmethod
+    def _do_compare(expected_file_path, processed_actual_file_path):
         actual_file_name = str(processed_actual_file_path)
         expected_file_name = str(expected_file_path)
         files_are_equal = filecmp.cmp(actual_file_name, expected_file_name, shallow=False)
+        return files_are_equal
 
-        if self._expectation_type is ExpectationType.POSITIVE:
-            if not files_are_equal:
-                diff_description = _file_diff_description(processed_actual_file_path,
-                                                          expected_file_path)
-                return self._failure_resolver.resolve(
-                    environment,
-                    diff_msg.actual_with_just_description_lines(
-                        diff_description)).as_pfh_fail()
+    def _do_post_setup_validation(self, environment: i.InstructionEnvironmentForPostSdsStep):
+        failure_message = self.validator_of_expected.validate_post_sds_if_applicable(
+            environment.path_resolving_environment)
+        if failure_message:
+            raise PfhFailException(failure_message)
+
+    def _file_path_for_file_with_expected_contents(self,
+                                                   environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
+        expected_contents = self._expected_contents
+        if expected_contents.is_here_document:
+            contents = expected_contents.here_document.resolve_value_of_any_dependency(environment)
+            return tmp_text_file_containing(contents,
+                                            prefix='contents-',
+                                            suffix='.txt',
+                                            directory=str(environment.sds.tmp.internal_dir))
         else:
-            if files_are_equal:
-                return self._failure_resolver.resolve(
-                    environment,
-                    diff_msg.actual_with_single_line_value(
-                        _EQUALITY_CHECK_EXPECTED_VALUE)).as_pfh_fail()
-        return pfh.new_pfh_pass()
+            return expected_contents.file_reference_resolver.resolve_value_of_any_dependency(environment)
+
+
+def _validator_of_expected(expected_contents: HereDocOrFileRef) -> PreOrPostSdsValidator:
+    if expected_contents.is_here_document:
+        return ConstantSuccessValidator()
+    file_ref_check = FileRefCheck(expected_contents.file_reference_resolver,
+                                  must_exist_as(FileType.REGULAR))
+    return FileRefCheckValidator(file_ref_check)
 
 
 class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):

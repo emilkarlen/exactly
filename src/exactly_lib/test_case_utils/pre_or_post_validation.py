@@ -1,7 +1,14 @@
+from enum import Enum
+
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+
+
+class ValidationStep(Enum):
+    PRE_SDS = 1
+    POST_SDS = 2
 
 
 class PreOrPostSdsValidator:
@@ -42,6 +49,29 @@ class ConstantSuccessValidator(PreOrPostSdsValidator):
         return None
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+        return None
+
+
+class SingleStepValidator(PreOrPostSdsValidator):
+    """
+    Validator that just applies validation at a single step,
+    and ignores the other.
+    """
+
+    def __init__(self,
+                 step_to_apply: ValidationStep,
+                 validator: PreOrPostSdsValidator):
+        self.step_to_apply = step_to_apply
+        self.validator = validator
+
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+        if self.step_to_apply is ValidationStep.PRE_SDS:
+            return self.validator.validate_pre_sds_if_applicable(environment)
+        return None
+
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+        if self.step_to_apply is ValidationStep.POST_SDS:
+            return self.validator.validate_post_sds_if_applicable(environment)
         return None
 
 
