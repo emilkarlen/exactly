@@ -2,15 +2,13 @@ import difflib
 import filecmp
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker, ActualFileChecker
+    ActualFileChecker
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
@@ -18,7 +16,6 @@ from exactly_lib.test_case_utils.err_msg.path_description import path_value_with
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsValidator, SingleStepValidator, ValidationStep
@@ -27,19 +24,6 @@ from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.file_utils import tmp_text_file_containing
 
 _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
-
-
-def equals_assertion_instruction(expectation_type: ExpectationType,
-                                 expected_contents: HereDocOrFileRef,
-                                 actual_contents: ComparisonActualFile,
-                                 actual_file_transformer_resolver: FileTransformerResolver,
-                                 ) -> AssertPhaseInstruction:
-    return instruction_with_exist_trans_and_checker(
-        actual_contents,
-        actual_file_transformer_resolver,
-        EqualityChecker(expectation_type,
-                        expected_contents,
-                        actual_contents.property_descriptor()))
 
 
 def _file_diff_description(actual_file_path: pathlib.Path,
