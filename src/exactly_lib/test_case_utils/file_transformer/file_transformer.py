@@ -18,5 +18,12 @@ class FileTransformer:
 class FileTransformerResolver:
     """Resolver of a :class:`FileTransformer`"""
 
+    @property
+    def references(self) -> list:
+        """
+        :rtype [`NamedElementReference`]:
+        """
+        return []
+
     def resolve(self, named_elements: SymbolTable) -> FileTransformer:
         raise NotImplementedError('abstract method')
