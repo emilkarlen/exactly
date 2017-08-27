@@ -66,11 +66,13 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
         )
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
 
-        if expectation_type is ExpectationType.NEGATIVE:
-            file_checker = instruction_for_contains.FileCheckerForNegativeMatch(failure_resolver, reg_ex)
-        else:
+        if expectation_type is ExpectationType.POSITIVE:
             file_checker = instruction_for_contains.FileCheckerForPositiveMatch(failure_resolver, reg_ex)
-        return instruction_for_contains.ContainsAssertionInstruction(file_checker, actual_file, actual_file_transformer)
+        else:
+            file_checker = instruction_for_contains.FileCheckerForNegativeMatch(failure_resolver, reg_ex)
+        return instruction_for_contains.contains_assertion_instruction(actual_file,
+                                                                       actual_file_transformer,
+                                                                       file_checker)
 
     def _parse_contents() -> AssertPhaseInstruction:
         if source.is_at_eol__except_for_space:
