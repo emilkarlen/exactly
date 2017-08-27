@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.instructions.assert_.utils.checker import Checker
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    AssertionInstructionWithChecker
+    instruction_with_exist_trans_and_checker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
@@ -63,7 +63,7 @@ def emptiness_assertion_instruction(expectation_type: ExpectationType,
                                     actual_file: ComparisonActualFile,
                                     actual_file_transformer_resolver: FileTransformerResolver,
                                     ) -> AssertPhaseInstruction:
-    return AssertionInstructionWithChecker(
+    return instruction_with_exist_trans_and_checker(
         actual_file,
         actual_file_transformer_resolver,
         EmptinessChecker(expectation_type, actual_file))
