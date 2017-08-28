@@ -15,6 +15,7 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quot
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestSingleSimpleExpression),
+        unittest.makeSuite(TestComplexExpression),
     ])
 
 
@@ -49,152 +50,326 @@ class TestCaseBase(unittest.TestCase):
 
 
 class TestSingleSimpleExpression(TestCaseBase):
+    grammars = [
+        (
+            'sans complex expressions',
+            ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
+        ),
+        (
+            'with complex expressions',
+            ast.GRAMMAR_WITH_ALL_COMPONENTS,
+        ),
+    ]
+
     def test_successful_parse_of_expr_sans_argument(self):
         space_after = '           '
         token_after = str(surrounded_by_hard_quotes('not an expression'))
-        cases = [
-            SourceCase(
-                'first line is only simple expr',
-                source=
-                remaining_source('{simple_expr}'.format(
-                    simple_expr=ast.SIMPLE_SANS_ARG,
-                )),
-                source_assertion=
-                asrt_source.is_at_end_of_line(1)
-            ),
-            SourceCase(
-                'first line is simple expr with space around',
-                source=
-                remaining_source('  {simple_expr}{space_after}'.format(
-                    simple_expr=ast.SIMPLE_SANS_ARG,
-                    space_after=space_after)),
-                source_assertion=
-                asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
-                                                 remaining_part_of_current_line=asrt.equals(space_after[1:]))
-            ),
-            SourceCase(
-                'expression is followed by non-expression',
-                source=
-                remaining_source('{simple_expr} {token_after}'.format(
-                    simple_expr=ast.SIMPLE_SANS_ARG,
-                    token_after=token_after)),
-                source_assertion=
-                asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
-                                                 remaining_part_of_current_line=asrt.equals(token_after))
-            ),
-        ]
-        for case in cases:
-            with self.subTest(name=case.name):
-                self._check(
-                    Arrangement(
-                        grammar=
-                        ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                        source=
-                        case.source),
-                    Expectation(
-                        expression=
-                        ast.SimpleSansArg(),
-                        source=
-                        case.source_assertion,
-                    )
-                )
+        for grammar_description, grammar in self.grammars:
+            cases = [
+                SourceCase(
+                    'first line is only simple expr',
+                    source=
+                    remaining_source('{simple_expr}'.format(
+                        simple_expr=ast.SIMPLE_SANS_ARG,
+                    )),
+                    source_assertion=
+                    asrt_source.is_at_end_of_line(1)
+                ),
+                SourceCase(
+                    'first line is simple expr with space around',
+                    source=
+                    remaining_source('  {simple_expr}{space_after}'.format(
+                        simple_expr=ast.SIMPLE_SANS_ARG,
+                        space_after=space_after)),
+                    source_assertion=
+                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                     remaining_part_of_current_line=asrt.equals(space_after[1:]))
+                ),
+                SourceCase(
+                    'expression is followed by non-expression',
+                    source=
+                    remaining_source('{simple_expr} {token_after}'.format(
+                        simple_expr=ast.SIMPLE_SANS_ARG,
+                        token_after=token_after)),
+                    source_assertion=
+                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                     remaining_part_of_current_line=asrt.equals(token_after))
+                ),
+            ]
 
-        self._check(
-            Arrangement(
-                grammar=
-                ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                source=
-                remaining_source(ast.SIMPLE_SANS_ARG)),
-            Expectation(
-                expression=
-                ast.SimpleSansArg(),
-                source=
-                asrt_source.is_at_end_of_line(1),
-            )
-        )
+            for case in cases:
+                with self.subTest(grammar=grammar_description,
+                                  name=case.name):
+                    self._check(
+                        Arrangement(
+                            grammar=grammar,
+                            source=case.source),
+                        Expectation(
+                            expression=ast.SimpleSansArg(),
+                            source=case.source_assertion,
+                        )
+                    )
 
     def test_successful_parse_of_expr_with_argument(self):
         the_argument = 'the-argument'
         space_after = '           '
         token_after = str(surrounded_by_hard_quotes('not an expression'))
-        cases = [
-            SourceCase(
-                'first line is only simple expr',
-                source=
-                remaining_source('{simple_with_arg} {argument}'.format(
-                    simple_with_arg=ast.SIMPLE_WITH_ARG,
-                    argument=the_argument)),
-                source_assertion=
-                asrt_source.is_at_end_of_line(1)
-            ),
-            SourceCase(
-                'first line is simple expr with space around',
-                source=
-                remaining_source('  {simple_with_arg}    {argument}{space_after}'.format(
-                    simple_with_arg=ast.SIMPLE_WITH_ARG,
-                    argument=the_argument,
-                    space_after=space_after)),
-                source_assertion=
-                asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
-                                                 remaining_part_of_current_line=asrt.equals(space_after[1:]))
-            ),
-            SourceCase(
-                'expression is followed by non-expression',
-                source=
-                remaining_source('  {simple_with_arg}    {argument} {token_after}'.format(
-                    simple_with_arg=ast.SIMPLE_WITH_ARG,
-                    argument=the_argument,
-                    token_after=token_after)),
-                source_assertion=
-                asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
-                                                 remaining_part_of_current_line=asrt.equals(token_after))
-            ),
-        ]
-        for case in cases:
-            with self.subTest(name=case.name):
-                self._check(
-                    Arrangement(
-                        grammar=
-                        ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                        source=
-                        case.source),
-                    Expectation(
-                        expression=
-                        ast.SimpleWithArg(the_argument),
-                        source=
-                        case.source_assertion,
+        for grammar_description, grammar in self.grammars:
+            cases = [
+                SourceCase(
+                    'first line is only simple expr',
+                    source=
+                    remaining_source('{simple_with_arg} {argument}'.format(
+                        simple_with_arg=ast.SIMPLE_WITH_ARG,
+                        argument=the_argument)),
+                    source_assertion=
+                    asrt_source.is_at_end_of_line(1)
+                ),
+                SourceCase(
+                    'first line is simple expr with space around',
+                    source=
+                    remaining_source('  {simple_with_arg}    {argument}{space_after}'.format(
+                        simple_with_arg=ast.SIMPLE_WITH_ARG,
+                        argument=the_argument,
+                        space_after=space_after)),
+                    source_assertion=
+                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                     remaining_part_of_current_line=asrt.equals(space_after[1:]))
+                ),
+                SourceCase(
+                    'expression is followed by non-expression',
+                    source=
+                    remaining_source('  {simple_with_arg}    {argument} {token_after}'.format(
+                        simple_with_arg=ast.SIMPLE_WITH_ARG,
+                        argument=the_argument,
+                        token_after=token_after)),
+                    source_assertion=
+                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                     remaining_part_of_current_line=asrt.equals(token_after))
+                ),
+            ]
+            for case in cases:
+                with self.subTest(grammar=grammar_description,
+                                  name=case.name):
+                    self._check(
+                        Arrangement(
+                            grammar=grammar,
+                            source=case.source),
+                        Expectation(
+                            expression=ast.SimpleWithArg(the_argument),
+                            source=case.source_assertion,
+                        )
                     )
-                )
 
     def test_fail(self):
-        cases = [
+        for grammar_description, grammar in self.grammars:
+            cases = [
+                (
+                    'source is just space',
+                    remaining_source('   '),
+                ),
+                (
+                    'token is not the name of a simple expression',
+                    remaining_source(ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME),
+                ),
+                (
+                    'token is the name of a simple expression, but it is quoted/soft',
+                    remaining_source(str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG))),
+                ),
+                (
+                    'token is the name of a simple expression, but it is quoted/hard',
+                    remaining_source(str(surrounded_by_hard_quotes(ast.SIMPLE_SANS_ARG))),
+                ),
+                (
+                    'token is the name of a simple expression, but it is on the next line',
+                    remaining_source('',
+                                     [ast.SIMPLE_SANS_ARG]),
+                ),
+            ]
+            for case_name, source in cases:
+                with self.subTest(grammar=grammar_description,
+                                  case_name=case_name):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        sut.parse_from_parse_source(grammar,
+                                                    source)
+
+
+class TestComplexExpression(TestCaseBase):
+    def test_success_of_single_operator(self):
+        space_after = '           '
+        quoted_string = str(surrounded_by_hard_quotes('quoted string'))
+
+        valid_simple_expressions = [
             (
-                'source is just space',
-                remaining_source('   '),
+                '{simple_expression}'.format(simple_expression=ast.SIMPLE_SANS_ARG),
+                ast.SimpleSansArg()
             ),
             (
-                'token is not the name of a simple expression',
-                remaining_source(ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME),
+                '{simple_expression_name} {argument}'.format(
+                    simple_expression_name=ast.SIMPLE_WITH_ARG,
+                    argument='simple-expr-argument'),
+                ast.SimpleWithArg('simple-expr-argument')
+            ),
+
+        ]
+        operators = [
+            (
+                ast.COMPLEX_A,
+                ast.ComplexA,
             ),
             (
-                'token is the name of a simple expression, but it is quoted/soft',
-                remaining_source(str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG))),
-            ),
-            (
-                'token is the name of a simple expression, but it is quoted/hard',
-                remaining_source(str(surrounded_by_hard_quotes(ast.SIMPLE_SANS_ARG))),
-            ),
-            (
-                'token is the name of a simple expression, but it is on the next line',
-                remaining_source('',
-                                 [ast.SIMPLE_SANS_ARG]),
+                ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+                ast.ComplexB,
             ),
         ]
-        for case_name, source in cases:
-            with self.subTest(case_name=case_name):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_from_parse_source(ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                                source)
+
+        for valid_simple_expr_source, expected_simple_expr in valid_simple_expressions:
+            for operator_source, operator_constructor in operators:
+                expected_expression = operator_constructor([expected_simple_expr,
+                                                            expected_simple_expr])
+                cases = [
+                    SourceCase(
+                        'first line is just complex expr',
+                        source=
+                        remaining_source('{simple_expr} {operator} {simple_expr}'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                        )),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1)
+                    ),
+                    SourceCase(
+                        'first line is complex expr, followed by space',
+                        source=
+                        remaining_source('{simple_expr} {operator} {simple_expr}{space_after}'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                            space_after=space_after,
+                        )),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(
+                            current_line_number=asrt.equals(1),
+                            remaining_part_of_current_line=asrt.equals(space_after[1:]))
+                    ),
+                    SourceCase(
+                        'complex expr followed by non-operator',
+                        source=
+                        remaining_source('{simple_expr} {operator} {simple_expr} {quoted_string}'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                            quoted_string=quoted_string,
+                        )),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(
+                            current_line_number=asrt.equals(1),
+                            remaining_part_of_current_line=asrt.equals(quoted_string))
+
+                    ),
+                    SourceCase(
+                        'complex expr followed by simple expression',
+                        source=
+                        remaining_source('{simple_expr} {operator} {simple_expr} {simple_expr}'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                        )),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(
+                            current_line_number=asrt.equals(1),
+                            remaining_part_of_current_line=asrt.equals(valid_simple_expr_source))
+
+                    ),
+                    SourceCase(
+                        'complex expr followed by quoted operator',
+                        source=
+                        remaining_source('{simple_expr} {operator} {simple_expr} {quoted_operator}'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                            quoted_operator=surrounded_by_soft_quotes(operator_source),
+                        )),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(
+                            current_line_number=asrt.equals(1),
+                            remaining_part_of_current_line=asrt.equals(str(surrounded_by_soft_quotes(operator_source))))
+
+                    ),
+                ]
+                for case in cases:
+                    with self.subTest(name=case.name,
+                                      operator_source=operator_source,
+                                      valid_simple_expr_source=valid_simple_expr_source):
+                        self._check(
+                            Arrangement(
+                                grammar=
+                                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                source=
+                                case.source),
+                            Expectation(
+                                expression=
+                                expected_expression,
+                                source=
+                                case.source_assertion,
+                            )
+                        )
+
+    def test_fail_parse_of_complex_expression(self):
+        valid_simple_expressions = [
+            '{simple_expression}'.format(simple_expression=ast.SIMPLE_SANS_ARG),
+            '{simple_expression_name} {argument}'.format(
+                simple_expression_name=ast.SIMPLE_WITH_ARG,
+                argument='simple-expr-argument'),
+
+        ]
+        operators = [ast.COMPLEX_A,
+                     ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME]
+
+        for valid_simple_expr in valid_simple_expressions:
+            for operator in operators:
+                cases = [
+                    (
+                        'operator not followed by expression',
+                        remaining_source('{simple_expr} {operator}'.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator,
+                        )),
+                    ),
+                    (
+                        'operator followed by non-expression',
+                        remaining_source('{simple_expr} {operator} {non_expr}'.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator,
+                            non_expr=ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
+                        )),
+                    ),
+                    (
+                        'operator followed by non-expression/two operators',
+                        remaining_source('{simple_expr} {operator} {simple_expr} {operator} {non_expr}'.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator,
+                            non_expr=ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
+                        )),
+                    ),
+                    (
+                        'operator followed by expression, but following expression is on next line',
+                        remaining_source('{simple_expr} {operator} '.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator),
+                            [valid_simple_expr]),
+                    ),
+                    (
+                        'operator followed by expression, but following expression is on next line/two operators',
+                        remaining_source('{simple_expr} {operator} {simple_expr} {operator} '.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator),
+                            [valid_simple_expr]),
+                    ),
+                ]
+                for case_name, source in cases:
+                    with self.subTest(case_name=case_name,
+                                      operator=operator,
+                                      valid_simple_expr=valid_simple_expr):
+                        with self.assertRaises(SingleInstructionInvalidArgumentException):
+                            sut.parse_from_parse_source(ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                                        source)
 
 
 if __name__ == '__main__':
