@@ -5,8 +5,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
-from exactly_lib.named_element.resolver_structure import ElementType
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EQUALS_ARGUMENT = '='
@@ -76,9 +75,18 @@ SYMBOL_INFO_DICT = {
                  _def_instruction_syntax_lines_function__list),
 }
 
-NON_SYMBOL_INFO_DICT = {
-    ElementType.FILE_SELECTOR:
-        TypeInfo(type_system.FILE_SELECTOR_TYPE,
+ANY_TYPE_INFO_DICT = {
+    ValueType.STRING:
+        TypeInfo(type_system.STRING_TYPE,
+                 _def_instruction_syntax_lines_function__string),
+    ValueType.PATH:
+        TypeInfo(type_system.PATH_TYPE,
+                 _def_instruction_syntax_lines_function__path),
+    ValueType.LIST:
+        TypeInfo(type_system.LIST_TYPE,
+                 _def_instruction_syntax_lines_function__list),
+    ValueType.FILE_SELECTOR:
+        TypeInfo(type_system.LIST_TYPE,
                  _def_instruction_syntax_lines_function__file_selector),
 }
 

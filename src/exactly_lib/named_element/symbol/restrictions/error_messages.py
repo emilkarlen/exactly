@@ -4,12 +4,12 @@ from exactly_lib.named_element.resolver_structure import NamedElementContainer, 
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
 
 
-def invalid_type_msg(expected: SymbolValueType,
-                     symbol_name: str,
-                     container_of_actual: NamedElementContainer) -> ValueRestrictionFailure:
+def invalid_symbol_type_msg(expected: SymbolValueType,
+                            symbol_name: str,
+                            container_of_actual: NamedElementContainer) -> ValueRestrictionFailure:
     actual = container_of_actual.resolver
     if not isinstance(actual, SymbolValueResolver):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
@@ -17,10 +17,10 @@ def invalid_type_msg(expected: SymbolValueType,
             str(actual)
         ))
     assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
-    header_lines = invalid_type_header_lines(expected,
-                                             actual.value_type,
-                                             symbol_name,
-                                             container_of_actual)
+    header_lines = invalid_symbol_type_header_lines(expected,
+                                                    actual.value_type,
+                                                    symbol_name,
+                                                    container_of_actual)
     how_to_fix_lines = invalid_type_how_to_fix_lines(expected)
     return ValueRestrictionFailure('\n'.join(header_lines),
                                    how_to_fix='\n'.join(how_to_fix_lines))
@@ -77,10 +77,10 @@ def unsatisfied_path_relativity(symbol_name: str,
     return '\n'.join(lines)
 
 
-def invalid_type_header_lines(expected: SymbolValueType,
-                              actual: SymbolValueType,
-                              symbol_name: str,
-                              container: NamedElementContainer) -> list:
+def invalid_symbol_type_header_lines(expected: SymbolValueType,
+                                     actual: SymbolValueType,
+                                     symbol_name: str,
+                                     container: NamedElementContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol
     ret_val = ([
                    'Illegal type, of symbol "{}"'.format(symbol_name)
@@ -90,6 +90,23 @@ def invalid_type_header_lines(expected: SymbolValueType,
                    '',
                    'Found    : ' + assign_symbol.SYMBOL_INFO_DICT[actual].type_name,
                    'Expected : ' + assign_symbol.SYMBOL_INFO_DICT[expected].type_name,
+               ])
+    return ret_val
+
+
+def invalid_type_header_lines(expected: ValueType,
+                              actual: ValueType,
+                              symbol_name: str,
+                              container: NamedElementContainer) -> list:
+    from exactly_lib.help_texts import type_system
+    ret_val = ([
+                   'Illegal type, of symbol "{}"'.format(symbol_name)
+               ] +
+               defined_at_line__err_msg_lines(container.definition_source) +
+               [
+                   '',
+                   'Found    : ' + type_system.TYPE_INFO_DICT[actual].type_name,
+                   'Expected : ' + type_system.TYPE_INFO_DICT[expected].type_name,
                ])
     return ret_val
 
