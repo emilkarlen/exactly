@@ -25,6 +25,7 @@ class _Parser:
         self.parser = parser
         self.grammar = grammar
         self.complex_expressions_keys = self.grammar.complex_expressions.keys()
+        self.missing_expression = 'Missing ' + self.grammar.concept.syntax_element.name
 
     def parse(self):
         if not self.grammar.complex_expressions:
@@ -65,6 +66,7 @@ class _Parser:
         return self.grammar.complex_expressions[complex_operator_name].mk_complex(expressions)
 
     def parse_mandatory_simple(self):
+        self.parser.require_is_not_at_eol(self.missing_expression)
         return self.parser.parse_mandatory_string_that_must_be_unquoted(self.grammar.concept.name.singular,
                                                                         self.parse_simple,
                                                                         must_be_on_current_line=True)
