@@ -1,8 +1,9 @@
 import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib_test.common.help.test_resources.see_also_va import is_see_also_item
+from exactly_lib_test.common.help.test_resources.see_also_assertions import is_see_also_item
+from exactly_lib_test.common.help.test_resources.syntax_contents_structure_assertions import is_invokation_variant, \
+    is_syntax_element_description
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
@@ -72,28 +73,4 @@ class TestInvokationVariants(WithDescriptionBase):
 class TestSyntaxElementDescriptions(WithDescriptionBase):
     def runTest(self):
         actual = self.description.syntax_element_descriptions()
-        asrt.every_element('', syntax_element_description_checker).apply(self, actual)
-
-
-is_invokation_variant = asrt.And([
-    asrt.IsInstance(InvokationVariant),
-    asrt.sub_component('syntax',
-                       lambda x: x.syntax,
-                       asrt.IsInstance(str)),
-    asrt.sub_component_list('description_rest',
-                          lambda x: x.description_rest,
-                          struct_check.is_paragraph_item)
-])
-
-syntax_element_description_checker = asrt.And([
-    asrt.IsInstance(SyntaxElementDescription),
-    asrt.sub_component('name',
-                       lambda x: x.element_name,
-                       asrt.IsInstance(str)),
-    asrt.sub_component_list('description_rest',
-                          lambda x: x.description_rest,
-                          struct_check.is_paragraph_item),
-    asrt.sub_component_list('invokation_variants',
-                            lambda sed: sed.invokation_variants,
-                            is_invokation_variant)
-])
+        asrt.every_element('', is_syntax_element_description).apply(self, actual)
