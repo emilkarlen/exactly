@@ -128,13 +128,6 @@ def parse_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
     """
     :raises `SingleInstructionInvalidArgumentException`: source is not a selector
     """
-    return parse(parser)
-
-
-def parse(parser: TokenParserPrime) -> FileSelectorResolver:
-    """
-    :raises `SingleInstructionInvalidArgumentException`: source is not a selector
-    """
     parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
