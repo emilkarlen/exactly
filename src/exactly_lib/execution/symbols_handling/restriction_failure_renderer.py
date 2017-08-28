@@ -1,5 +1,5 @@
+import exactly_lib.help_texts.type_system
 from exactly_lib.execution import error_message_format
-from exactly_lib.help_texts import element_types
 from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.restriction import FailureInfo, InvalidElementTypeFailure
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfDirectReference, \
@@ -27,8 +27,8 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
 def _of_invalid_element_type(failing_symbol: str, symbols: SymbolTable, failure: InvalidElementTypeFailure) -> list:
     msg = '{name}: Expected a {expected_type}. Found a {actual_type}'.format(
         name=failing_symbol,
-        expected_type=element_types.ELEMENT_TYPE_NAME[failure.expected],
-        actual_type=element_types.ELEMENT_TYPE_NAME[failure.actual],
+        expected_type=exactly_lib.help_texts.type_system.ELEMENT_TYPE_NAME[failure.expected],
+        actual_type=exactly_lib.help_texts.type_system.ELEMENT_TYPE_NAME[failure.actual],
     )
     blank_line_separated_parts = [msg]
     return blank_line_separated_parts

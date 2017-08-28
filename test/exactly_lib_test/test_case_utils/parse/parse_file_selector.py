@@ -2,7 +2,6 @@ import shlex
 import unittest
 
 from exactly_lib.named_element.file_selectors import FileSelectorConstant
-from exactly_lib.named_element.resolver_structure import ElementType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -10,6 +9,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_file_selector as sut
 from exactly_lib.type_system_values.file_selector import FileSelector
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.file_selector.test_resources.file_selector_resolver_assertions import \

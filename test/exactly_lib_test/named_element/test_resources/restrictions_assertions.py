@@ -1,5 +1,5 @@
-from exactly_lib.named_element.resolver_structure import ElementType
 from exactly_lib.named_element.restriction import ElementTypeRestriction
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

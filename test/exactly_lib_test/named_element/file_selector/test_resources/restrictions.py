@@ -1,4 +1,4 @@
-from exactly_lib.named_element.resolver_structure import ElementType
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_ne
 from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_element_type_restriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -3,12 +3,12 @@ import unittest
 from exactly_lib.instructions.assert_.utils import checker as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import ElementType
 from exactly_lib.named_element.restriction import ElementTypeRestriction
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_rs

@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.named_element import file_selectors as sut
-from exactly_lib.named_element.resolver_structure import ElementType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system_values.file_selector import SELECT_ALL_FILES
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container

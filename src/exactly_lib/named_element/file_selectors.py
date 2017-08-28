@@ -1,9 +1,10 @@
 import itertools
 
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import FileSelectorResolver, ElementType
+from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.named_element.restriction import ElementTypeRestriction
 from exactly_lib.type_system_values.file_selector import FileSelector
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import SymbolTable
 
