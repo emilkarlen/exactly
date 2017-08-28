@@ -16,8 +16,6 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.parse.token import Token
 
-SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
-
 
 def reference_restrictions_for_path_symbol(accepted_relativity_variants: PathRelativityVariants
                                            ) -> ReferenceRestrictions:
@@ -106,7 +104,7 @@ def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
     ret_val = []
     ret_val.append('  {rel_symbol_option} {symbol_syntax_element_name}'.format(
         rel_symbol_option=option_parsing.long_option_syntax(REL_SYMBOL_OPTION_NAME.long),
-        symbol_syntax_element_name=SYMBOL_SYNTAX_ELEMENT_NAME))
+        symbol_syntax_element_name=symbol_syntax.SYMBOL_SYNTAX_ELEMENT_NAME))
     for option_type in options.accepted_options:
         option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
         option_str = option_parsing.long_option_syntax(option_name.long)

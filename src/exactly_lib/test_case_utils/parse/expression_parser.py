@@ -1,6 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import syntax_of_type_name_in_text
 from exactly_lib.named_element.resolver_structure import NamedElementResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -9,9 +10,10 @@ from exactly_lib.test_case_utils import token_stream_parse_prime
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.parse import normalize_and_parse
 
 
-class SyntaxDescription:
+class SimpleExpressionDescription:
     def __init__(self,
                  argument_usage_list: list,
                  description_rest: list):
@@ -22,7 +24,7 @@ class SyntaxDescription:
 class SimpleExpression:
     def __init__(self,
                  parse_arguments,
-                 syntax: SyntaxDescription):
+                 syntax: SimpleExpressionDescription):
         """
         :param parse_arguments: TokenParserPrime -> NamedElementResolver
         """
@@ -30,25 +32,31 @@ class SimpleExpression:
         self.syntax = syntax
 
 
+class ComplexExpressionDescription:
+    def __init__(self,
+                 description_rest: list):
+        self.description_rest = description_rest
+
+
 class ComplexExpression:
-    def __init__(self, mk_complex):
+    def __init__(self,
+                 mk_complex,
+                 syntax: ComplexExpressionDescription):
         """
         :param mk_complex: [NamedElementResolver] -> NamedElementResolver
         """
         self.mk_complex = mk_complex
+        self.syntax = syntax
 
 
 class Concept:
     def __init__(self,
                  name: Name,
+                 type_system_type_name: str,
                  syntax_element_name: a.Named):
+        self.type_system_type_name = type_system_type_name
         self.name = name
         self.syntax_element = syntax_element_name
-
-
-def concept_with_syntax_element_name_from_singular_name(name: Name) -> Concept:
-    return Concept(name,
-                   a.Named(name.singular.upper()))
 
 
 class Grammar:
@@ -84,7 +92,8 @@ class Syntax:
                 self.invokation_variants_complex())
 
     def invokation_variants_simple(self) -> list:
-        def invokation_variant_of(name: str, syntax: SyntaxDescription) -> InvokationVariant:
+        def invokation_variant_of(name: str,
+                                  syntax: SimpleExpressionDescription) -> InvokationVariant:
             name_argument = a.Single(a.Multiplicity.MANDATORY,
                                      a.Constant(name))
             all_arguments = [name_argument] + syntax.argument_usage_list
@@ -97,10 +106,42 @@ class Syntax:
         ]
 
     def invokation_variants_symbol_ref(self) -> list:
-        return []
+        symbol_argument = a.Single(a.Multiplicity.MANDATORY,
+                                   a.Named(symbol_syntax.SYMBOL_SYNTAX_ELEMENT_NAME))
+        iv = InvokationVariant(cl_syntax.cl_syntax_for_args([symbol_argument]),
+                               self._symbol_ref_description())
+        return [iv]
 
     def invokation_variants_complex(self) -> list:
-        return []
+        operand_argument = a.Single(a.Multiplicity.MANDATORY,
+                                    self.grammar.concept.syntax_element)
+
+        def invokation_variant_of(operator_name: str,
+                                  syntax: ComplexExpressionDescription) -> InvokationVariant:
+            operator_argument = a.Single(a.Multiplicity.MANDATORY,
+                                         a.Constant(operator_name))
+            all_arguments = [operand_argument, operator_argument, operand_argument]
+            return InvokationVariant(cl_syntax.cl_syntax_for_args(all_arguments),
+                                     syntax.description_rest)
+
+        return [
+            invokation_variant_of(name, self.grammar.complex_expressions[name].syntax)
+            for name in sorted(self.grammar.complex_expressions.keys())
+        ]
+
+    def _symbol_ref_description(self):
+        return normalize_and_parse(
+            _SYMBOL_REF_DESCRIPTION.format(
+                concept_name=self.grammar.concept.name.singular,
+                concept_type_name=syntax_of_type_name_in_text(self.grammar.concept.type_system_type_name),
+
+            ))
+
+
+_SYMBOL_REF_DESCRIPTION = """\
+Reference to a {concept_name} symbol,
+that must be defined as a {concept_type_name}.
+"""
 
 
 def parse_from_parse_source(grammar: Grammar,
