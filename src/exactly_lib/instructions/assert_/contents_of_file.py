@@ -1,4 +1,3 @@
-import exactly_lib.test_case_utils.parse.parse_file_transformer
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -16,7 +15,7 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
-from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
+from exactly_lib.test_case_utils.parse.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -36,8 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self._help_parts = FileContentsHelpParts(name,
                                                  self.actual_file_arg.name,
                                                  [self.actual_file])
-        self.with_replaced_env_vars_option = a.Option(
-            exactly_lib.test_case_utils.parse.parse_file_transformer.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+        self.with_replaced_env_vars_option = a.Option(WITH_REPLACED_ENV_VARS_OPTION_NAME)
         self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                                a.Named('ACTUAL-REL'))
 
@@ -96,7 +94,6 @@ class Parser(InstructionParser):
         comparison_target = parse_actual_file_argument(source)
         source.consume_initial_space_on_current_line()
         instruction = parsing.parse_comparison_operation(comparison_target,
-                                                         FileTransformerParser(),
                                                          source)
         return instruction
 
