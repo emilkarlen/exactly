@@ -20,7 +20,7 @@ class TestElementTypeRestriction(unittest.TestCase):
         ElementType.SYMBOL:
             symbol_utils.string_constant('string value'),
 
-        ElementType.FILE_SELECTOR:
+        ElementType.LOGIC:
             FileSelectorConstant(SELECT_ALL_FILES),
     }
 
@@ -41,9 +41,9 @@ class TestElementTypeRestriction(unittest.TestCase):
     def test_dissatisfied_restriction(self):
         # ARRANGE #
         cases = {
-            ElementType.SYMBOL: ElementType.FILE_SELECTOR,
+            ElementType.SYMBOL: ElementType.LOGIC,
 
-            ElementType.FILE_SELECTOR: ElementType.SYMBOL,
+            ElementType.LOGIC: ElementType.SYMBOL,
         }
 
         named_elements = empty_symbol_table()

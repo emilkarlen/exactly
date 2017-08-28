@@ -25,7 +25,7 @@ class TestConstant(unittest.TestCase):
     def test_element_type_SHOULD_be_file_selector(self):
         actual = sut.FileSelectorConstant(sut.FileSelector(dcs.all_files()))
         self.assertIs(actual.element_type,
-                      ElementType.FILE_SELECTOR)
+                      ElementType.LOGIC)
 
     def test_SHOULD_have_no_references(self):
         # ARRANGE #
@@ -52,7 +52,7 @@ class TestReference(unittest.TestCase):
     def test_element_type_SHOULD_be_file_selector(self):
         actual = sut.FileSelectorReference('name of referenced selector')
         self.assertIs(actual.element_type,
-                      ElementType.FILE_SELECTOR)
+                      ElementType.LOGIC)
 
     def test_SHOULD_have_a_single_reference(self):
         # ARRANGE #
@@ -63,7 +63,7 @@ class TestReference(unittest.TestCase):
         # ASSERT #
         assert_single_reference = asrt.matches_sequence([
             matches_reference(asrt.equals(name_of_referenced_resolver),
-                              is_element_type_restriction(ElementType.FILE_SELECTOR),
+                              is_element_type_restriction(ElementType.LOGIC),
                               )
         ])
         assert_single_reference.apply_without_message(self, actual)
@@ -88,7 +88,7 @@ class TestAnd(unittest.TestCase):
     def test_element_type_SHOULD_be_file_selector(self):
         actual = sut.FileSelectorAnd([])
         self.assertIs(actual.element_type,
-                      ElementType.FILE_SELECTOR)
+                      ElementType.LOGIC)
 
     def test_SHOULD_report_references_for_all_combined_resolvers(self):
         # ARRANGE #
@@ -172,7 +172,7 @@ class TestAnd(unittest.TestCase):
 
 def is_ref_to_file_sel(name_of_referenced_element: str) -> asrt.ValueAssertion:
     return matches_reference(asrt.equals(name_of_referenced_element),
-                             is_element_type_restriction(ElementType.FILE_SELECTOR))
+                             is_element_type_restriction(ElementType.LOGIC))
 
 
 def const_name_selector(name_pattern: str) -> sut.FileSelectorResolver:

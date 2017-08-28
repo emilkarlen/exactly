@@ -3,7 +3,7 @@ from enum import Enum
 
 class ElementType(Enum):
     SYMBOL = 1
-    FILE_SELECTOR = 2
+    LOGIC = 2
 
 
 class SymbolValueType(Enum):
@@ -12,8 +12,21 @@ class SymbolValueType(Enum):
     LIST = 2
 
 
+class LogicValueType(Enum):
+    FILE_SELECTOR = 1
+
+
 class ValueType(Enum):
     STRING = 0
     PATH = 1
     LIST = 2
     FILE_SELECTOR = 3
+
+
+VALUE_TYPE_2_ELEMENT_TYPE = {
+    ValueType.STRING: ElementType.SYMBOL,
+    ValueType.PATH: ElementType.SYMBOL,
+    ValueType.LIST: ElementType.SYMBOL,
+
+    ValueType.FILE_SELECTOR: ElementType.LOGIC,
+}

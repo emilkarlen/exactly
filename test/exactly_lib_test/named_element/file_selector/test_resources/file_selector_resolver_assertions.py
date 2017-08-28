@@ -22,7 +22,7 @@ def resolved_value_equals_file_selector(expected: FileSelector,
                                  asrt.and_([
                                      asrt.sub_component('element_type',
                                                         resolver_structure.get_element_type,
-                                                        asrt.is_(ElementType.FILE_SELECTOR)),
+                                                        asrt.is_(ElementType.LOGIC)),
 
                                      asrt.on_transformed(resolve_value,
                                                          equals_file_selector(expected,

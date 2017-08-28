@@ -36,7 +36,7 @@ class FileSelectorReference(FileSelectorResolver):
     def __init__(self, name_of_referenced_resolver: str):
         self._name_of_referenced_resolver = name_of_referenced_resolver
         self._references = [NamedElementReference(name_of_referenced_resolver,
-                                                  ElementTypeRestriction(ElementType.FILE_SELECTOR))]
+                                                  ElementTypeRestriction(ElementType.LOGIC))]
 
     def resolve(self, symbols: SymbolTable) -> FileSelector:
         container = symbols.lookup(self._name_of_referenced_resolver)
