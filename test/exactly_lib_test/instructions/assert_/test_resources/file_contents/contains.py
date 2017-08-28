@@ -1,11 +1,11 @@
 import unittest
 
-import exactly_lib.test_case_utils.parse.parse_file_transformer
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.test_case_utils.parse.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
+from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals, \
@@ -156,5 +156,4 @@ class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegat
         )
 
 
-_WITH_REPLACED_ENV_VARS_OPTION = long_option_syntax(
-    exactly_lib.test_case_utils.parse.parse_file_transformer.WITH_REPLACED_ENV_VARS_OPTION_NAME.long)
+_WITH_REPLACED_ENV_VARS_OPTION = option_syntax(WITH_REPLACED_ENV_VARS_OPTION_NAME)

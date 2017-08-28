@@ -12,8 +12,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
+from exactly_lib.test_case_utils.parse import parse_file_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.expectation_type import ExpectationType
 
 _OPERATION = 'OPERATION'
@@ -79,9 +79,8 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
-                               file_transformer_parser: FileTransformerParser,
                                source: ParseSource) -> AssertPhaseInstruction:
-    actual_file_transformer = file_transformer_parser.parse_from_parse_source(source)
+    actual_file_transformer = parse_file_transformer.parse_from_parse_source(source)
 
     def parse_expectation_type() -> ExpectationType:
         peek_source = source.copy
