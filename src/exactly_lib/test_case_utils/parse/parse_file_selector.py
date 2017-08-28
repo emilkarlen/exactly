@@ -2,6 +2,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
+from exactly_lib.help_texts.test_case.instructions.assign_symbol import FILE_SELECTOR_TYPE
 from exactly_lib.named_element import file_selectors
 from exactly_lib.named_element.file_selectors import FileSelectorConstant
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
@@ -57,43 +58,8 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
     )
 
 
-def selector_syntax_element_description2() -> SyntaxElementDescription:
-    return ep.Syntax(GRAMMAR).syntax_element_description()
-
-
 def selector_syntax_element_description() -> SyntaxElementDescription:
-    return cl_syntax.cli_argument_syntax_element_description(
-        SELECTOR_ARGUMENT,
-        [],
-        [
-            InvokationVariant(cl_syntax.cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY,
-                         a.Constant(COMMAND_NAME__NAME_SELECTOR)),
-                a.Single(a.Multiplicity.MANDATORY,
-                         a.Named(COMMANDS[COMMAND_NAME__NAME_SELECTOR].argument_syntax_element_name)),
-            ]),
-                _fnap(_NAME_SELECTOR_SED_DESCRIPTION)
-            ),
-            InvokationVariant(cl_syntax.cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY,
-                         a.Constant(COMMAND_NAME__TYPE_SELECTOR)),
-                a.Single(a.Multiplicity.MANDATORY,
-                         a.Named(COMMANDS[COMMAND_NAME__TYPE_SELECTOR].argument_syntax_element_name)),
-            ]),
-                _type_selector_sed_description()
-            ),
-            InvokationVariant(cl_syntax.cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY,
-                         SELECTOR_ARGUMENT),
-                a.Single(a.Multiplicity.MANDATORY,
-                         a.Constant(AND_OPERATOR)),
-                a.Single(a.Multiplicity.MANDATORY,
-                         SELECTOR_ARGUMENT),
-            ]),
-                _fnap(_AND_SELECTOR_SED_DESCRIPTION)
-            ),
-        ]
-    )
+    return ep.Syntax(GRAMMAR).syntax_element_description()
 
 
 class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
@@ -214,7 +180,7 @@ def _file_types_table() -> docs.ParagraphItem:
     ])
 
 
-NAME_SYNTAX_DESCRIPTION = ep.SyntaxDescription(
+NAME_SYNTAX_DESCRIPTION = ep.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
                  a.Named(COMMANDS[COMMAND_NAME__NAME_SELECTOR].argument_syntax_element_name))
@@ -222,15 +188,23 @@ NAME_SYNTAX_DESCRIPTION = ep.SyntaxDescription(
     description_rest=_fnap(_NAME_SELECTOR_SED_DESCRIPTION)
 )
 
-TYPE_SYNTAX_DESCRIPTION = ep.SyntaxDescription(
+TYPE_SYNTAX_DESCRIPTION = ep.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
                  a.Named(COMMANDS[COMMAND_NAME__TYPE_SELECTOR].argument_syntax_element_name))],
     description_rest=_type_selector_sed_description()
 )
 
+AND_SYNTAX_DESCRIPTION = ep.ComplexExpressionDescription(
+    description_rest=_fnap(_AND_SELECTOR_SED_DESCRIPTION)
+)
+
 GRAMMAR = ep.Grammar(
-    concept=ep.concept_with_syntax_element_name_from_singular_name(CONCEPT_NAME),
+    concept=ep.Concept(
+        name=CONCEPT_NAME,
+        type_system_type_name=FILE_SELECTOR_TYPE,
+        syntax_element_name=SELECTOR_ARGUMENT,
+    ),
     mk_reference=file_selectors.FileSelectorReference,
     simple_expressions={
         COMMAND_NAME__NAME_SELECTOR: ep.SimpleExpression(_parse_name_selector,
@@ -239,6 +213,7 @@ GRAMMAR = ep.Grammar(
                                                          TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        AND_OPERATOR: ep.ComplexExpression(file_selectors.FileSelectorAnd),
+        AND_OPERATOR: ep.ComplexExpression(file_selectors.FileSelectorAnd,
+                                           AND_SYNTAX_DESCRIPTION),
     }
 )

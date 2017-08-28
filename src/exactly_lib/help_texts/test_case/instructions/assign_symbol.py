@@ -13,6 +13,11 @@ LIST_TYPE = 'list'
 
 FILE_SELECTOR_TYPE = 'file-selector'
 
+
+def syntax_of_type_name_in_text(type_name: str) -> str:
+    return '"' + type_name + '"'
+
+
 EQUALS_ARGUMENT = '='
 
 SYMBOL_NAME = 'NAME'
