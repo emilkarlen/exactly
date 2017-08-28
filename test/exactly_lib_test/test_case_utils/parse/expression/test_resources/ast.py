@@ -50,7 +50,7 @@ class ComplexB(ComplexExpr):
 
 
 def parse_simple_with_arg(parser: TokenParserPrime) -> SimpleWithArg:
-    token = parser.consume_mandatory_token('err msg format')
+    token = parser.consume_mandatory_token('failed parse of simple expression with arg')
     return SimpleWithArg(token.string)
 
 
@@ -66,11 +66,13 @@ NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME = 'not/a/simple/expr/name/and
 COMPLEX_A = 'complex_a'
 COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
+CONCEPT = grammar.Concept(grammar.Name('concept singular',
+                                       'concept plural'),
+                          'type-system-name',
+                          a.Named('SYNTAX-ELEMENT-NAME'))
+
 GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
-    concept=grammar.Concept(grammar.Name('concept singular',
-                                         'concept plural'),
-                            'type-system-name',
-                            a.Named('SYNTAX-ELEMENT-NAME')),
+    concept=CONCEPT,
     mk_reference=RefExpr,
     simple_expressions={
         SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
@@ -86,4 +88,16 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
             grammar.ComplexExpression(ComplexB,
                                       grammar.ComplexExpressionDescription([])),
     },
+)
+
+GRAMMAR_SANS_COMPLEX_EXPRESSIONS = grammar.Grammar(
+    concept=CONCEPT,
+    mk_reference=RefExpr,
+    simple_expressions={
+        SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
+                                                  grammar.SimpleExpressionDescription([], [])),
+        SIMPLE_SANS_ARG: grammar.SimpleExpression(parse_simple_sans_arg,
+                                                  grammar.SimpleExpressionDescription([], [])),
+    },
+    complex_expressions={},
 )
