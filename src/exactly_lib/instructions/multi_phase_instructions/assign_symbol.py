@@ -58,6 +58,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             InvokationVariant(syntax_elements.definition_of_type_string()),
             InvokationVariant(syntax_elements.definition_of_type_path()),
             InvokationVariant(syntax_elements.definition_of_type_list()),
+            InvokationVariant(syntax_elements.definition_of_type_file_selector()),
         ]
 
     def syntax_element_descriptions(self) -> list:
