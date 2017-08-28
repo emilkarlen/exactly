@@ -31,7 +31,7 @@ class StringRestriction(ValueRestriction):
                         symbol_name: str,
                         container: NamedElementContainer) -> ValueRestrictionFailure:
         if not isinstance(container.resolver, StringResolver):
-            return error_messages.invalid_type_msg(SymbolValueType.STRING, symbol_name, container)
+            return error_messages.invalid_symbol_type_msg(SymbolValueType.STRING, symbol_name, container)
         return None
 
 
@@ -49,7 +49,7 @@ class FileRefRelativityRestriction(ValueRestriction):
                         container: NamedElementContainer) -> ValueRestrictionFailure:
         resolver = container.resolver
         if not isinstance(resolver, FileRefResolver):
-            return error_messages.invalid_type_msg(SymbolValueType.PATH, symbol_name, container)
+            return error_messages.invalid_symbol_type_msg(SymbolValueType.PATH, symbol_name, container)
         file_ref = resolver.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         satisfaction = is_satisfied_by(actual_relativity, self._accepted)
