@@ -57,6 +57,10 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
     )
 
 
+def selector_syntax_element_description2() -> SyntaxElementDescription:
+    return ep.Syntax(GRAMMAR).syntax_element_description()
+
+
 def selector_syntax_element_description() -> SyntaxElementDescription:
     return cl_syntax.cli_argument_syntax_element_description(
         SELECTOR_ARGUMENT,
@@ -157,18 +161,6 @@ def _constant(selectors: dcs.Selectors) -> FileSelectorResolver:
     return FileSelectorConstant(FileSelector(selectors))
 
 
-GRAMMAR = ep.Grammar(
-    concept_name=CONCEPT_NAME,
-    mk_reference=file_selectors.FileSelectorReference,
-    simple_expressions={
-        COMMAND_NAME__NAME_SELECTOR: ep.SimpleExpression(_parse_name_selector),
-        COMMAND_NAME__TYPE_SELECTOR: ep.SimpleExpression(_parse_type_selector),
-    },
-    complex_expressions={
-        AND_OPERATOR: ep.ComplexExpression(file_selectors.FileSelectorAnd),
-    }
-)
-
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_SELECTOR_': CONCEPT_NAME.singular,
     '_NAME_SELECTOR_': COMMAND_NAME__NAME_SELECTOR,
@@ -220,3 +212,33 @@ def _file_types_table() -> docs.ParagraphItem:
         for type_info in sorted(file_properties.TYPE_INFO.values(),
                                 key=lambda ti: ti.type_argument)
     ])
+
+
+NAME_SYNTAX_DESCRIPTION = ep.SyntaxDescription(
+    argument_usage_list=[
+        a.Single(a.Multiplicity.MANDATORY,
+                 a.Named(COMMANDS[COMMAND_NAME__NAME_SELECTOR].argument_syntax_element_name))
+    ],
+    description_rest=_fnap(_NAME_SELECTOR_SED_DESCRIPTION)
+)
+
+TYPE_SYNTAX_DESCRIPTION = ep.SyntaxDescription(
+    argument_usage_list=[
+        a.Single(a.Multiplicity.MANDATORY,
+                 a.Named(COMMANDS[COMMAND_NAME__TYPE_SELECTOR].argument_syntax_element_name))],
+    description_rest=_type_selector_sed_description()
+)
+
+GRAMMAR = ep.Grammar(
+    concept=ep.concept_with_syntax_element_name_from_singular_name(CONCEPT_NAME),
+    mk_reference=file_selectors.FileSelectorReference,
+    simple_expressions={
+        COMMAND_NAME__NAME_SELECTOR: ep.SimpleExpression(_parse_name_selector,
+                                                         NAME_SYNTAX_DESCRIPTION),
+        COMMAND_NAME__TYPE_SELECTOR: ep.SimpleExpression(_parse_type_selector,
+                                                         TYPE_SYNTAX_DESCRIPTION),
+    },
+    complex_expressions={
+        AND_OPERATOR: ep.ComplexExpression(file_selectors.FileSelectorAnd),
+    }
+)
