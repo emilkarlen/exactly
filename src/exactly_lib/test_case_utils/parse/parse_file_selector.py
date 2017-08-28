@@ -10,7 +10,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.parse import expression_parser as ep
+from exactly_lib.test_case_utils.parse.expression import expression_parser as ep
+from exactly_lib.test_case_utils.parse.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection as dcs
@@ -59,7 +60,7 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
 
 
 def selector_syntax_element_description() -> SyntaxElementDescription:
-    return ep.Syntax(GRAMMAR).syntax_element_description()
+    return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
 
 
 class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
@@ -180,7 +181,7 @@ def _file_types_table() -> docs.ParagraphItem:
     ])
 
 
-NAME_SYNTAX_DESCRIPTION = ep.SimpleExpressionDescription(
+NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
                  a.Named(COMMANDS[COMMAND_NAME__NAME_SELECTOR].argument_syntax_element_name))
@@ -188,32 +189,32 @@ NAME_SYNTAX_DESCRIPTION = ep.SimpleExpressionDescription(
     description_rest=_fnap(_NAME_SELECTOR_SED_DESCRIPTION)
 )
 
-TYPE_SYNTAX_DESCRIPTION = ep.SimpleExpressionDescription(
+TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
                  a.Named(COMMANDS[COMMAND_NAME__TYPE_SELECTOR].argument_syntax_element_name))],
     description_rest=_type_selector_sed_description()
 )
 
-AND_SYNTAX_DESCRIPTION = ep.ComplexExpressionDescription(
+AND_SYNTAX_DESCRIPTION = grammar.ComplexExpressionDescription(
     description_rest=_fnap(_AND_SELECTOR_SED_DESCRIPTION)
 )
 
-GRAMMAR = ep.Grammar(
-    concept=ep.Concept(
+GRAMMAR = grammar.Grammar(
+    concept=grammar.Concept(
         name=CONCEPT_NAME,
         type_system_type_name=FILE_SELECTOR_TYPE,
         syntax_element_name=SELECTOR_ARGUMENT,
     ),
     mk_reference=file_selectors.FileSelectorReference,
     simple_expressions={
-        COMMAND_NAME__NAME_SELECTOR: ep.SimpleExpression(_parse_name_selector,
-                                                         NAME_SYNTAX_DESCRIPTION),
-        COMMAND_NAME__TYPE_SELECTOR: ep.SimpleExpression(_parse_type_selector,
-                                                         TYPE_SYNTAX_DESCRIPTION),
+        COMMAND_NAME__NAME_SELECTOR: grammar.SimpleExpression(_parse_name_selector,
+                                                              NAME_SYNTAX_DESCRIPTION),
+        COMMAND_NAME__TYPE_SELECTOR: grammar.SimpleExpression(_parse_type_selector,
+                                                              TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        AND_OPERATOR: ep.ComplexExpression(file_selectors.FileSelectorAnd,
-                                           AND_SYNTAX_DESCRIPTION),
+        AND_OPERATOR: grammar.ComplexExpression(file_selectors.FileSelectorAnd,
+                                                AND_SYNTAX_DESCRIPTION),
     }
 )
