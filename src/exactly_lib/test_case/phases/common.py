@@ -59,16 +59,29 @@ class PhaseLoggingPaths:
     Generator of unique logging directories for instructions in a given phase.
     """
     line_number_format = '{:03d}'
+    instruction_file_format = 'instr-{:03d}'
 
     def __init__(self,
                  log_root_dir: pathlib.Path,
                  phase_identifier: str):
         self._phase_dir_path = _sds.log_phase_dir(log_root_dir, phase_identifier)
         self._visited_line_numbers = []
+        self._next_instruction_number = 1
 
     @property
     def dir_path(self) -> pathlib.Path:
         return self._phase_dir_path
+
+    def unique_instruction_file(self) -> pathlib.Path:
+        instruction_number = self._next_instruction_number
+        self._next_instruction_number += 1
+        base_name = self.instruction_file_format.format(instruction_number)
+        return self.dir_path / base_name
+
+    def unique_instruction_file_as_existing_dir(self) -> pathlib.Path:
+        path = self.unique_instruction_file()
+        path.mkdir(parents=True, exist_ok=False)
+        return path
 
     def for_line(self,
                  line_number: int,
