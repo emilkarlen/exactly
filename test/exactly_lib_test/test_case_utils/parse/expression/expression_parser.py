@@ -14,8 +14,11 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quot
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestFailuresCommonToAllGrammars),
         unittest.makeSuite(TestSingleSimpleExpression),
+        unittest.makeSuite(TestSingleRefExpression),
         unittest.makeSuite(TestComplexExpression),
+        unittest.makeSuite(TestCombinedExpressions),
     ])
 
 
@@ -47,6 +50,41 @@ class TestCaseBase(unittest.TestCase):
         expectation.source.apply_with_message(self,
                                               arrangement.source,
                                               'source after parse')
+
+
+class TestFailuresCommonToAllGrammars(TestCaseBase):
+    def test(self):
+        grammars = [
+            (
+                'sans complex expressions',
+                ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
+            ),
+            (
+                'with complex expressions',
+                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+            ),
+        ]
+        for grammar_description, grammar in grammars:
+            cases = [
+                (
+                    'source is just space',
+                    remaining_source('   '),
+                ),
+                (
+                    'first token quoted/soft',
+                    remaining_source(str(surrounded_by_soft_quotes('token'))),
+                ),
+                (
+                    'first token quoted/hard',
+                    remaining_source(str(surrounded_by_hard_quotes('token'))),
+                ),
+            ]
+            for case_name, source in cases:
+                with self.subTest(grammar=grammar_description,
+                                  case_name=case_name):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        sut.parse_from_parse_source(grammar,
+                                                    source)
 
 
 class TestSingleSimpleExpression(TestCaseBase):
@@ -165,10 +203,6 @@ class TestSingleSimpleExpression(TestCaseBase):
         for grammar_description, grammar in self.grammars:
             cases = [
                 (
-                    'source is just space',
-                    remaining_source('   '),
-                ),
-                (
                     'token is not the name of a simple expression',
                     remaining_source(ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME),
                 ),
@@ -184,6 +218,85 @@ class TestSingleSimpleExpression(TestCaseBase):
                     'token is the name of a simple expression, but it is on the next line',
                     remaining_source('',
                                      [ast.SIMPLE_SANS_ARG]),
+                ),
+            ]
+            for case_name, source in cases:
+                with self.subTest(grammar=grammar_description,
+                                  case_name=case_name):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        sut.parse_from_parse_source(grammar,
+                                                    source)
+
+
+class TestSingleRefExpression(TestCaseBase):
+    grammars = [
+        (
+            'sans complex expressions',
+            ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
+        ),
+        (
+            'with complex expressions',
+            ast.GRAMMAR_WITH_ALL_COMPONENTS,
+        ),
+    ]
+
+    def test_successful_parse(self):
+        symbol_name = 'the_symbol_name'
+        space_after = '           '
+        token_after = str(surrounded_by_hard_quotes('not an expression'))
+        for grammar_description, grammar in self.grammars:
+            cases = [
+                SourceCase(
+                    'first line is only simple expr',
+                    source=
+                    remaining_source('{symbol_name}'.format(
+                        symbol_name=symbol_name,
+                    )),
+                    source_assertion=
+                    asrt_source.is_at_end_of_line(1)
+                ),
+                SourceCase(
+                    'first line is simple expr with space around',
+                    source=
+                    remaining_source('  {symbol_name}{space_after}'.format(
+                        symbol_name=symbol_name,
+                        space_after=space_after)),
+                    source_assertion=
+                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                     remaining_part_of_current_line=asrt.equals(space_after[1:]))
+                ),
+                SourceCase(
+                    'expression is followed by non-expression',
+                    source=
+                    remaining_source('{symbol_name} {token_after}'.format(
+                        symbol_name=symbol_name,
+                        token_after=token_after)),
+                    source_assertion=
+                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                     remaining_part_of_current_line=asrt.equals(token_after))
+                ),
+            ]
+
+            for case in cases:
+                with self.subTest(grammar=grammar_description,
+                                  name=case.name):
+                    self._check(
+                        Arrangement(
+                            grammar=grammar,
+                            source=case.source),
+                        Expectation(
+                            expression=ast.RefExpr(symbol_name),
+                            source=case.source_assertion,
+                        )
+                    )
+
+    def test_fail(self):
+        symbol_name = 'the_symbol_name'
+        for grammar_description, grammar in self.grammars:
+            cases = [
+                (
+                    'symbol name is quoted',
+                    remaining_source(str(surrounded_by_hard_quotes(symbol_name))),
                 ),
             ]
             for case_name, source in cases:
@@ -370,6 +483,88 @@ class TestComplexExpression(TestCaseBase):
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
                             sut.parse_from_parse_source(ast.GRAMMAR_WITH_ALL_COMPONENTS,
                                                         source)
+
+
+class TestCombinedExpressions(TestCaseBase):
+    def test_combined_expression_with_single_simple_expr(self):
+        # [ [ [ s A s ] B s B  s ] A s ]
+
+        s = ast.SimpleSansArg()
+
+        op_sequence_1 = ast.ComplexA([s, s])
+        op_sequence_2 = ast.ComplexB([op_sequence_1, s, s])
+        expected = ast.ComplexA([op_sequence_2, s])
+
+        arguments = '{s} {op_a} {s} {op_b} {s} {op_b} {s} {op_a} {s}'.format(
+            op_a=ast.COMPLEX_A,
+            op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+            s=ast.SIMPLE_SANS_ARG,
+        )
+
+        self._check(
+            Arrangement(
+                grammar=
+                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                source=
+                remaining_source(arguments)),
+            Expectation(
+                expression=
+                expected,
+                source=
+                asrt_source.is_at_end_of_line(1),
+            )
+        )
+
+    def test_combined_expression(self):
+        # [ [ [ ref1 OPA s ] OPB s OPB ref2 ] OPA s_x OPA ref3 ]
+
+        ref_1 = ast.RefExpr('symbol_1')
+        ref_2 = ast.RefExpr('symbol_2')
+        ref_3 = ast.RefExpr('symbol_3')
+
+        s = ast.SimpleSansArg()
+
+        s_x = ast.SimpleWithArg('X')
+
+        e1 = ast.ComplexA([
+            ref_1,
+            s,
+        ])
+        e2 = ast.ComplexB([
+            e1,
+            s,
+            ref_2,
+        ])
+        expected = ast.ComplexA([
+            e2,
+            s_x,
+            ref_3,
+        ])
+
+        argument_string = '{ref_1} {op_a} {s} {op_b} {s} {op_b} {ref_2} {op_a} {s_w_arg} {x} {op_a} {ref_3}'.format(
+            s=ast.SIMPLE_SANS_ARG,
+            ref_1=ref_1.symbol_name,
+            ref_2=ref_2.symbol_name,
+            ref_3=ref_3.symbol_name,
+            op_a=ast.COMPLEX_A,
+            op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+            s_w_arg=ast.SIMPLE_WITH_ARG,
+            x=s_x.argument,
+
+        )
+        self._check(
+            Arrangement(
+                grammar=
+                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                source=
+                remaining_source(argument_string)),
+            Expectation(
+                expression=
+                expected,
+                source=
+                asrt_source.is_at_end_of_line(1),
+            )
+        )
 
 
 if __name__ == '__main__':
