@@ -13,7 +13,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources impor
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_reference_restrictions
+    equals_symbol_reference_restrictions
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
@@ -145,10 +145,10 @@ class TestSetWithSymbolReferences(unittest.TestCase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     my_symbol.name,
-                    equals_reference_restrictions(no_restrictions())),
+                    equals_symbol_reference_restrictions(no_restrictions())),
                 matches_reference_2(
                     your_symbol.name,
-                    equals_reference_restrictions(no_restrictions())),
+                    equals_symbol_reference_restrictions(no_restrictions())),
             ]),
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
