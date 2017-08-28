@@ -10,7 +10,7 @@ from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.textformat.structure import structures as docs
@@ -110,6 +110,6 @@ def _string_resolver_of(value_token: Token) -> StringResolver:
         string_made_up_by_just_strings(
             'The {INTEGER} argument must be made up of just {string_type} values.'.format(
                 INTEGER=INTEGER_ARGUMENT.name,
-                string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
+                string_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.STRING].type_name,
             )
         ))

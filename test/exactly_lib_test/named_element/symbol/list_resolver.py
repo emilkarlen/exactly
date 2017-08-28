@@ -5,7 +5,7 @@ from exactly_lib.named_element.symbol.restrictions.reference_restrictions import
 from exactly_lib.type_system_values import list_value as lv
 from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string, \
     string_value_of_single_file_ref
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.named_element.symbol.test_resources.list_assertions import equals_list_resolver_element
@@ -27,7 +27,7 @@ class ListResolverTest(unittest.TestCase):
         # ACT #
         actual = resolver.value_type
         # ASSERT #
-        self.assertIs(ValueType.LIST,
+        self.assertIs(SymbolValueType.LIST,
                       actual)
 
     def test_resolve_without_symbol_references(self):

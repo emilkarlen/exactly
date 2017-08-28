@@ -15,7 +15,7 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import Entry, singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.restrictions.test_resources import \
     concrete_restriction_assertion as restrictions
@@ -163,7 +163,7 @@ class TestRelSymbol(unittest.TestCase):
                         actual_path = file_ref_to_check.value_post_sds(environment.sds)
                     actual_path_pre_or_post_sds = file_ref_to_check.value_of_any_dependency(environment.home_and_sds)
                     # ASSERT #
-                    self.assertIs(ValueType.PATH,
+                    self.assertIs(SymbolValueType.PATH,
                                   fr_resolver_to_check.value_type,
                                   'value type of resolver')
                     self.assertEqual(expected_path_str,
