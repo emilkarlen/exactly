@@ -1,12 +1,13 @@
 import unittest
 
+from exactly_lib.help_texts import type_system
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ElementType
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -68,11 +69,11 @@ def equals_string_resolver(expected: StringResolver,
 
 class _EqualsSymbolValueResolverBase(asrt.ValueAssertion):
     def __init__(self,
-                 expected_value_type: SymbolValueType,
+                 expected_data_value_type: SymbolValueType,
                  expected_symbol_references: asrt.ValueAssertion,
                  expected_resolved_value: asrt.ValueAssertion,
                  symbols_for_checking_resolving: SymbolTable):
-        self.expected_value_type = expected_value_type
+        self.expected_data_value_type = expected_data_value_type
         self.expected_symbol_references = expected_symbol_references
         self.expected_resolved_value = expected_resolved_value
         self.symbols_for_checking_resolving = symbols_for_checking_resolving
@@ -85,9 +86,7 @@ class _EqualsSymbolValueResolverBase(asrt.ValueAssertion):
                              message_builder.apply('object type'))
         assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
 
-        put.assertIs(self.expected_value_type,
-                     actual.value_type,
-                     message_builder.apply('value_type'))
+        self.assert_type_is_expected(put, actual, message_builder)
 
         self.expected_symbol_references.apply(put, actual.references,
                                               message_builder.for_sub_component('symbol_references'))
@@ -101,6 +100,23 @@ class _EqualsSymbolValueResolverBase(asrt.ValueAssertion):
 
         self.expected_resolved_value.apply(put, resolved_value,
                                            message_builder.for_sub_component('resolved value'))
+
+    def assert_type_is_expected(self,
+                                put: unittest.TestCase,
+                                actual: SymbolValueResolver,
+                                message_builder: asrt.MessageBuilder):
+        put.assertIs(ElementType.SYMBOL,
+                     actual.element_type,
+                     'element_type')
+        put.assertIs(self.expected_data_value_type,
+                     actual.data_value_type,
+                     message_builder.apply('data_value_type'))
+
+        expected_value_type = type_system.SYMBOL_TYPE_2_VALUE_TYPE[self.expected_data_value_type]
+
+        put.assertIs(expected_value_type,
+                     actual.value_type,
+                     message_builder.apply('value_type'))
 
     def _custom_check_of_resolver(self,
                                   put: unittest.TestCase,

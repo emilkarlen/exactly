@@ -5,7 +5,7 @@ from exactly_lib.type_system_values import concrete_string_values as csv
 from exactly_lib.type_system_values.file_ref import FileRef
 from exactly_lib.type_system_values.list_value import ListValue
 from exactly_lib.type_system_values.string_value import StringValue
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -104,8 +104,12 @@ class ListResolver(SymbolValueResolver):
         self._elements = tuple(elements)
 
     @property
-    def value_type(self) -> SymbolValueType:
+    def data_value_type(self) -> SymbolValueType:
         return SymbolValueType.LIST
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.LIST
 
     @property
     def elements(self) -> tuple:

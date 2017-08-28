@@ -1,19 +1,19 @@
-from exactly_lib.type_system_values.value_type import ValueType, SymbolValueType, ElementType
+from exactly_lib.type_system_values.value_type import ValueType, SymbolValueType, ElementType, LogicValueType
 
-SYMBOL_ELEMENT_TYPE = 'symbol'
+SYMBOL_ELEMENT_TYPE = 'data'
+LOGIC_ELEMENT_TYPE = 'logic'
 
 PATH_TYPE = 'path'
 STRING_TYPE = 'string'
 LIST_TYPE = 'list'
 
 FILE_SELECTOR_TYPE = 'file-selector'
+FILE_SELECTOR_VALUE = 'SELECTOR'
 
 PATH_VALUE = 'PATH'
 STRING_VALUE = 'STRING'
 LIST_VALUE = 'LIST'
 LIST_ELEMENT = 'ELEMENT'
-
-FILE_SELECTOR_VALUE = 'SELECTOR'
 
 
 class TypeInfo:
@@ -30,17 +30,31 @@ SYMBOL_TYPE_INFO_DICT = {
     SymbolValueType.LIST: TypeInfo(LIST_TYPE, LIST_VALUE),
 }
 
+SYMBOL_TYPE_2_VALUE_TYPE = {
+    SymbolValueType.STRING: ValueType.STRING,
+    SymbolValueType.PATH: ValueType.PATH,
+    SymbolValueType.LIST: ValueType.LIST,
+}
+
+LOGIC_TYPE_INFO_DICT = {
+    LogicValueType.FILE_SELECTOR: TypeInfo(FILE_SELECTOR_TYPE, FILE_SELECTOR_VALUE),
+}
+
+LOGIC_TYPE_2_VALUE_TYPE = {
+    LogicValueType.FILE_SELECTOR: ValueType.FILE_SELECTOR,
+}
+
 TYPE_INFO_DICT = {
     ValueType.STRING: SYMBOL_TYPE_INFO_DICT[SymbolValueType.STRING],
     ValueType.PATH: SYMBOL_TYPE_INFO_DICT[SymbolValueType.PATH],
     ValueType.LIST: SYMBOL_TYPE_INFO_DICT[SymbolValueType.LIST],
-    ValueType.FILE_SELECTOR: TypeInfo(FILE_SELECTOR_TYPE,
-                                      FILE_SELECTOR_VALUE),
+
+    ValueType.FILE_SELECTOR: LOGIC_TYPE_INFO_DICT[LogicValueType.FILE_SELECTOR],
 }
 
 ELEMENT_TYPE_NAME = {
     ElementType.SYMBOL: SYMBOL_ELEMENT_TYPE,
-    ElementType.LOGIC: FILE_SELECTOR_TYPE,
+    ElementType.LOGIC: LOGIC_ELEMENT_TYPE,
 }
 
 

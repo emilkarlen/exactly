@@ -2,7 +2,7 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.type_system_values.lines_transformer import LinesTransformer
-from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType, ElementType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType, ElementType, LogicValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
 
@@ -43,6 +43,10 @@ class LogicValueResolver(NamedElementResolver):
     def element_type(self) -> ElementType:
         return ElementType.LOGIC
 
+    @property
+    def logic_value_type(self) -> LogicValueType:
+        raise NotImplementedError('abstract method')
+
 
 class FileSelectorResolver(LogicValueResolver):
     """ Base class for resolvers of :class:`FileSelector`. """
@@ -82,7 +86,11 @@ class SymbolValueResolver(NamedElementResolver):
         return ElementType.SYMBOL
 
     @property
-    def value_type(self) -> SymbolValueType:
+    def data_value_type(self) -> SymbolValueType:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def value_type(self) -> ValueType:
         raise NotImplementedError('abstract method')
 
     @property

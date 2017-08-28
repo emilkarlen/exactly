@@ -1,3 +1,4 @@
+from exactly_lib.help_texts.type_system import SYMBOL_TYPE_2_VALUE_TYPE
 from exactly_lib.named_element import named_element_usage
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.restriction import ReferenceRestrictions
@@ -5,7 +6,7 @@ from exactly_lib.named_element.symbol import string_resolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -28,8 +29,12 @@ class ConstantValueResolver(SymbolValueResolver):
         self._value = value
 
     @property
-    def value_type(self) -> SymbolValueType:
+    def data_value_type(self) -> SymbolValueType:
         return self._value_type
+
+    @property
+    def value_type(self) -> ValueType:
+        return SYMBOL_TYPE_2_VALUE_TYPE[self._value_type]
 
     @property
     def references(self) -> list:
