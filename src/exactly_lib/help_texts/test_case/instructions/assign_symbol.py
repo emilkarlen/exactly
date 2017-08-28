@@ -4,25 +4,13 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
+from exactly_lib.help_texts.type_system import PATH_TYPE, STRING_TYPE, LIST_TYPE, STRING_VALUE, LIST_ELEMENT
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
-
-PATH_TYPE = 'path'
-STRING_TYPE = 'string'
-LIST_TYPE = 'list'
-
-FILE_SELECTOR_TYPE = 'file-selector'
-
-
-def syntax_of_type_name_in_text(type_name: str) -> str:
-    return '"' + type_name + '"'
-
 
 EQUALS_ARGUMENT = '='
 
 SYMBOL_NAME = 'NAME'
-STRING_VALUE = 'STRING'
-LIST_ELEMENT = 'ELEMENT'
 
 PATH_SUFFIX_IS_REQUIRED = False
 

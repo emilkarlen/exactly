@@ -10,7 +10,7 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import RELATIVITY_ARG
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import PATH_TYPE
+from exactly_lib.help_texts.type_system import PATH_TYPE
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import symbol_syntax

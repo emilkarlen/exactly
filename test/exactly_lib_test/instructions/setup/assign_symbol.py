@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib.help_texts.type_system
 from exactly_lib.instructions.multi_phase_instructions.assign_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import assign_symbol as sut
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition, NamedElementReference
@@ -86,8 +87,8 @@ class TestFailingParsePerTypeDueToInvalidSyntax(unittest.TestCase):
             ('{valid_type} name = {valid_value} superfluous argument', 'Superfluous argument'),
         ]
         type_setups = [
-            (help_texts.PATH_TYPE, '--rel-act f'),
-            (help_texts.STRING_TYPE, 'string-value'),
+            (exactly_lib.help_texts.type_system.PATH_TYPE, '--rel-act f'),
+            (exactly_lib.help_texts.type_system.STRING_TYPE, 'string-value'),
         ]
         setup = sut.setup('instruction-name')
         for type_name, valid_type_value in type_setups:

@@ -2,7 +2,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import FILE_SELECTOR_TYPE
+from exactly_lib.help_texts.type_system import FILE_SELECTOR_TYPE
 from exactly_lib.named_element import file_selectors
 from exactly_lib.named_element.file_selectors import FileSelectorConstant
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
