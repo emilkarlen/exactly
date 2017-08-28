@@ -156,10 +156,6 @@ def parse_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
     return FileSelectorAnd(selectors) if len(selectors) > 1 else selectors[0]
 
 
-def _error_message(template: str) -> str:
-    return template.format_map(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-
-
 def _parse_name_selector(parser: TokenParserPrime) -> FileSelectorResolver:
     pattern = parser.consume_mandatory_string_argument(
         _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME)
