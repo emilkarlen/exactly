@@ -386,7 +386,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
     def test_fail__direct_and_indirect__non_symbol_restriction(self):
         expected = r.ReferenceRestrictionsOnDirectAndIndirect(
             vr.StringRestriction())
-        actual = ElementTypeRestriction(ElementType.FILE_SELECTOR)
+        actual = ElementTypeRestriction(ElementType.LOGIC)
         self._fail(expected, actual)
 
     def test_fail__or__non_symbol_restriction(self):
@@ -395,7 +395,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))
         ])
-        actual = ElementTypeRestriction(ElementType.FILE_SELECTOR)
+        actual = ElementTypeRestriction(ElementType.LOGIC)
         self._fail(expected, actual)
 
     def _fail(self, expected: r.SymbolReferenceRestrictions, actual: ReferenceRestrictions):

@@ -305,7 +305,7 @@ class TestReference(TestCaseBase):
         )
         expected_references = asrt.matches_sequence([
             asrt_ne.matches_reference(asrt.equals(reffed_selector.name),
-                                      is_element_type_restriction(ElementType.FILE_SELECTOR))
+                                      is_element_type_restriction(ElementType.LOGIC))
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
                                                   container(FileSelectorConstant(reffed_selector.value)))
@@ -342,7 +342,7 @@ class TestReference(TestCaseBase):
                                                       file_types=[file_type])
         expected_references = asrt.matches_sequence([
             asrt_ne.matches_reference(asrt.equals(reffed_selector.name),
-                                      is_element_type_restriction(ElementType.FILE_SELECTOR))
+                                      is_element_type_restriction(ElementType.LOGIC))
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
                                                   container(FileSelectorConstant(reffed_selector.value)))

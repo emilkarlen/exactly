@@ -41,7 +41,7 @@ class FileSelectorResolver(NamedElementResolver):
 
     @property
     def element_type(self) -> ElementType:
-        return ElementType.FILE_SELECTOR
+        return ElementType.LOGIC
 
     @property
     def references(self) -> list:

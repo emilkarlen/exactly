@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
 class TestIsElementTypeRestriction(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        expected_type = ElementType.FILE_SELECTOR
+        expected_type = ElementType.LOGIC
 
         assertion_to_check = sut.is_element_type_restriction(expected_type)
 
@@ -26,7 +26,7 @@ class TestIsElementTypeRestriction(unittest.TestCase):
 
     def test_fail_WHEN_element_type_is_unexpected(self):
         # ARRANGE #
-        expected_type = ElementType.FILE_SELECTOR
+        expected_type = ElementType.LOGIC
         actual_type = ElementType.SYMBOL
 
         assertion_to_check = sut.is_element_type_restriction(expected_type)
