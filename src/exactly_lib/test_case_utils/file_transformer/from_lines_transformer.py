@@ -39,9 +39,9 @@ class FileTransformerFromLinesTransformer(FileTransformer):
                   os_services: OsServices,
                   src_file_path: pathlib.Path) -> pathlib.Path:
         src_file_path = src_file_path
-        dst_file_path = self._dst_path_resolver.dst_file_path(environment, src_file_path)
-        if dst_file_path.exists():
-            return dst_file_path
+        instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
+        dst_file_base_name = src_file_path.name
+        dst_file_path = instruction_dir / dst_file_base_name
         self._produce_new_dst_file(environment.home_and_sds,
                                    src_file_path,
                                    dst_file_path)
