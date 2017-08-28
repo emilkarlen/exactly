@@ -9,14 +9,12 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_file_selector as sut
 from exactly_lib.type_system_values.file_selector import FileSelector
-from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.file_selector.test_resources.file_selector_resolver_assertions import \
     resolved_value_equals_file_selector
-from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_ne
+from exactly_lib_test.named_element.file_selector.test_resources.restrictions import is_file_selector_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_element_type_restriction
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -304,8 +302,7 @@ class TestReference(TestCaseBase):
             file_selector_of(name_patterns=['pattern'])
         )
         expected_references = asrt.matches_sequence([
-            asrt_ne.matches_reference(asrt.equals(reffed_selector.name),
-                                      is_element_type_restriction(ElementType.LOGIC))
+            is_file_selector_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
                                                   container(FileSelectorConstant(reffed_selector.value)))
@@ -341,8 +338,7 @@ class TestReference(TestCaseBase):
         expected_resolved_selector = file_selector_of(name_patterns=[name_pattern],
                                                       file_types=[file_type])
         expected_references = asrt.matches_sequence([
-            asrt_ne.matches_reference(asrt.equals(reffed_selector.name),
-                                      is_element_type_restriction(ElementType.LOGIC))
+            is_file_selector_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
                                                   container(FileSelectorConstant(reffed_selector.value)))

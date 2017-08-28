@@ -3,16 +3,16 @@ import unittest
 from exactly_lib.instructions.assert_.utils import checker as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.restriction import ElementTypeRestriction
+from exactly_lib.named_element.restriction import ValueTypeRestriction
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.type_system_values.value_type import ElementType
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_rs
-from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_element_type_restriction
+from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -100,14 +100,14 @@ class TestSequence(unittest.TestCase):
 
     def test_references_from_checker_SHOULD_be_reported(self):
         # ARRANGE #
-        ref_1_info = NameAndValue('ref 1', ElementType.LOGIC)
+        ref_1_info = NameAndValue('ref 1', ValueType.FILE_SELECTOR)
 
         ref_1 = NamedElementReference(ref_1_info.name,
-                                      ElementTypeRestriction(ref_1_info.value))
+                                      ValueTypeRestriction(ref_1_info.value))
 
         expected_references = asrt.matches_sequence([
             asrt_rs.matches_reference(asrt.equals(ref_1_info.name),
-                                      is_element_type_restriction(ref_1_info.value)),
+                                      is_value_type_restriction(ref_1_info.value)),
         ])
 
         checker_with_references = CheckerWithReference([ref_1])
