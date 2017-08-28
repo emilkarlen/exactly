@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import STRING_TYPE
+from exactly_lib.help_texts.type_system import STRING_TYPE
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions

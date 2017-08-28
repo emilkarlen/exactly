@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+import exactly_lib.help_texts.type_system
 from exactly_lib.named_element.resolver_structure import NamedElementContainer, NamedElementResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.line_source import Line
@@ -16,10 +16,10 @@ def src(s: str,
 
 
 _STD_FORMAT_MAP = {
-    'path_type': help_texts.PATH_TYPE,
-    'string_type': help_texts.STRING_TYPE,
-    'list_type': help_texts.LIST_TYPE,
-    'file_sel_type': help_texts.FILE_SELECTOR_TYPE,
+    'path_type': exactly_lib.help_texts.type_system.PATH_TYPE,
+    'string_type': exactly_lib.help_texts.type_system.STRING_TYPE,
+    'list_type': exactly_lib.help_texts.type_system.LIST_TYPE,
+    'file_sel_type': exactly_lib.help_texts.type_system.FILE_SELECTOR_TYPE,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
 }

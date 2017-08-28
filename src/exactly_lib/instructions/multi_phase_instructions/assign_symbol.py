@@ -1,3 +1,4 @@
+import exactly_lib.help_texts.type_system
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -182,10 +183,10 @@ def _parse_file_selector(token_stream: TokenStream) -> FileSelectorResolver:
 
 
 _TYPE_SETUPS = {
-    syntax_elements.PATH_TYPE: _parse_path,
-    syntax_elements.STRING_TYPE: _parse_string,
-    syntax_elements.LIST_TYPE: _parse_list,
-    syntax_elements.FILE_SELECTOR_TYPE: _parse_file_selector,
+    exactly_lib.help_texts.type_system.PATH_TYPE: _parse_path,
+    exactly_lib.help_texts.type_system.STRING_TYPE: _parse_string,
+    exactly_lib.help_texts.type_system.LIST_TYPE: _parse_list,
+    exactly_lib.help_texts.type_system.FILE_SELECTOR_TYPE: _parse_file_selector,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
