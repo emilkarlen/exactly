@@ -2,15 +2,14 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
-from exactly_lib.named_element.file_selectors import FileSelectorConstant, FileSelectorAnd, FileSelectorReference
+from exactly_lib.named_element import file_selectors
+from exactly_lib.named_element.file_selectors import FileSelectorConstant
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.parse import symbol_syntax
+from exactly_lib.test_case_utils.parse import expression_parser as ep
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection as dcs
@@ -118,6 +117,9 @@ def parse_resolver_from_parse_source(source: ParseSource) -> FileSelectorResolve
 
 
 def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
+    parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
+        parser,
+        ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return parser.consume_and_handle_optional_option(
         SELECTION_OF_ALL_FILES,
         parse_resolver,
@@ -125,35 +127,16 @@ def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorR
 
 
 def parse_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
-    """
-    :raises `SingleInstructionInvalidArgumentException`: source is not a selector
-    """
     parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
+    return _parse(parser)
 
-    def parse_simple(selector_name: str) -> FileSelectorResolver:
-        if selector_name in _SELECTOR_PARSERS:
-            return _SELECTOR_PARSERS[selector_name](parser)
-        elif not symbol_syntax.is_symbol_name(selector_name):
-            err_msg = symbol_syntax.invalid_symbol_name_error(selector_name)
-            raise SingleInstructionInvalidArgumentException(err_msg)
-        else:
-            return FileSelectorReference(selector_name)
 
-    def parse_mandatory_simple() -> FileSelectorResolver:
-        return parser.parse_mandatory_string_that_must_be_unquoted(CONCEPT_NAME.singular,
-                                                                   parse_simple,
-                                                                   must_be_on_current_line=True)
-
-    selectors = [parse_mandatory_simple()]
-
-    and_operator_tokens = [AND_OPERATOR]
-    while parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(and_operator_tokens):
-        next_selector = parse_mandatory_simple()
-        selectors.append(next_selector)
-
-    return FileSelectorAnd(selectors) if len(selectors) > 1 else selectors[0]
+def _parse(parser: TokenParserPrime) -> FileSelectorResolver:
+    ret_val = ep.parse(GRAMMAR, parser)
+    assert isinstance(ret_val, FileSelectorResolver), ('Must have parsed a ' + str(FileSelectorResolver))
+    return ret_val
 
 
 def _parse_name_selector(parser: TokenParserPrime) -> FileSelectorResolver:
@@ -174,10 +157,17 @@ def _constant(selectors: dcs.Selectors) -> FileSelectorResolver:
     return FileSelectorConstant(FileSelector(selectors))
 
 
-_SELECTOR_PARSERS = {
-    COMMAND_NAME__NAME_SELECTOR: _parse_name_selector,
-    COMMAND_NAME__TYPE_SELECTOR: _parse_type_selector,
-}
+GRAMMAR = ep.Grammar(
+    concept_name=CONCEPT_NAME,
+    mk_reference=file_selectors.FileSelectorReference,
+    simple_expressions={
+        COMMAND_NAME__NAME_SELECTOR: ep.SimpleExpression(_parse_name_selector),
+        COMMAND_NAME__TYPE_SELECTOR: ep.SimpleExpression(_parse_type_selector),
+    },
+    complex_expressions={
+        AND_OPERATOR: ep.ComplexExpression(file_selectors.FileSelectorAnd),
+    }
+)
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_SELECTOR_': CONCEPT_NAME.singular,
