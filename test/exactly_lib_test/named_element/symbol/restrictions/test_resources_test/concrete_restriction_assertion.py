@@ -315,19 +315,19 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
     def test_pass(self):
         cases = [
             (
-                sut.equals_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
+                sut.equals_symbol_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.NoRestriction())),
                 r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.NoRestriction()),
             ),
             (
-                sut.equals_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
+                sut.equals_symbol_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.StringRestriction())),
                 r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.StringRestriction()),
             ),
             (
-                sut.equals_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
+                sut.equals_symbol_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.StringRestriction(),
                     vr.NoRestriction())),
                 r.ReferenceRestrictionsOnDirectAndIndirect(
@@ -335,7 +335,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                     vr.NoRestriction()),
             ),
             (
-                sut.equals_reference_restrictions(r.OrReferenceRestrictions([])),
+                sut.equals_symbol_reference_restrictions(r.OrReferenceRestrictions([])),
                 r.OrReferenceRestrictions([]),
             ),
         ]
@@ -399,5 +399,5 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         self._fail(expected, actual)
 
     def _fail(self, expected: r.SymbolReferenceRestrictions, actual: ReferenceRestrictions):
-        assertion = sut.equals_reference_restrictions(expected)
+        assertion = sut.equals_symbol_reference_restrictions(expected)
         assert_that_assertion_fails(assertion, actual)

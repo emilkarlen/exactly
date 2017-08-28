@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.named_element.resolver_structure import NamedElementContainer
-from exactly_lib.named_element.restriction import ReferenceRestrictions
+from exactly_lib.named_element.restriction import SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import SymbolReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
@@ -127,7 +127,7 @@ def matches_restrictions_on_direct_and_indirect(
     )
 
 
-def equals_reference_restrictions(expected: ReferenceRestrictions) -> asrt.ValueAssertion:
+def equals_symbol_reference_restrictions(expected: SymbolReferenceRestrictions) -> asrt.ValueAssertion:
     return _EQUALS_REFERENCE_RESTRICTIONS_VISITOR.visit(expected)
 
 

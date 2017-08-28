@@ -20,7 +20,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sub_pro
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_reference_restrictions
+    equals_symbol_reference_restrictions
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
@@ -126,18 +126,18 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     execute_program_option_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         no_restrictions()
                     )),
                 matches_reference_2(
                     exit_code_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         no_restrictions()
                     )),
             ]),
@@ -268,20 +268,20 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     file_to_interpret_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             parse_file_ref.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     exit_code_symbol.name,
-                    equals_reference_restrictions(no_restrictions()
-                                                  )),
+                    equals_symbol_reference_restrictions(no_restrictions()
+                                                         )),
             ]),
             main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
         )
@@ -360,18 +360,18 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     execute_program_option_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         no_restrictions()
                     )),
                 matches_reference_2(
                     exit_code_symbol.name,
-                    equals_reference_restrictions(
+                    equals_symbol_reference_restrictions(
                         no_restrictions()
                     )),
             ]),

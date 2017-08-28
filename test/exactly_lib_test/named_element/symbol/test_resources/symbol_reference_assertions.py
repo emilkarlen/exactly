@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.named_element import named_element_usage as su
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    matches_restrictions_on_direct_and_indirect, equals_reference_restrictions
+    matches_restrictions_on_direct_and_indirect, equals_symbol_reference_restrictions
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -19,7 +19,7 @@ def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str
 
 def equals_symbol_reference(expected: NamedElementReference) -> asrt.ValueAssertion:
     return matches_reference_2(expected.name,
-                               equals_reference_restrictions(expected.restrictions))
+                               equals_symbol_reference_restrictions(expected.restrictions))
 
 
 def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
