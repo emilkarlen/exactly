@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.named_element.resolver_structure import ElementType
 from exactly_lib.named_element.restriction import ElementTypeRestriction
 from exactly_lib.named_element.symbol.restrictions import reference_restrictions
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib_test.named_element.test_resources import restrictions_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 

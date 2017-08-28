@@ -1,11 +1,12 @@
 import unittest
 
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.named_element.resolver_structure import SymbolValueResolver, ElementType
+from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.symbol.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
+from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
     equals_string_resolver

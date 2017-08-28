@@ -1,17 +1,10 @@
-from enum import Enum
-
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.type_system_values.lines_transformer import LinesTransformer
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType, ElementType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
-
-
-class ElementType(Enum):
-    SYMBOL = 1
-    FILE_SELECTOR = 2
 
 
 class NamedElementResolver:
@@ -19,6 +12,10 @@ class NamedElementResolver:
 
     @property
     def element_type(self) -> ElementType:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def value_type(self) -> ValueType:
         raise NotImplementedError('abstract method')
 
     @property

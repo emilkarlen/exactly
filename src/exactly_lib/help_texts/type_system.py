@@ -1,4 +1,6 @@
-from exactly_lib.type_system_values.value_type import ValueType, SymbolValueType
+from exactly_lib.type_system_values.value_type import ValueType, SymbolValueType, ElementType
+
+SYMBOL_ELEMENT_TYPE = 'symbol'
 
 PATH_TYPE = 'path'
 STRING_TYPE = 'string'
@@ -34,6 +36,11 @@ TYPE_INFO_DICT = {
     ValueType.LIST: SYMBOL_TYPE_INFO_DICT[SymbolValueType.LIST],
     ValueType.FILE_SELECTOR: TypeInfo(FILE_SELECTOR_TYPE,
                                       FILE_SELECTOR_VALUE),
+}
+
+ELEMENT_TYPE_NAME = {
+    ElementType.SYMBOL: SYMBOL_ELEMENT_TYPE,
+    ElementType.FILE_SELECTOR: FILE_SELECTOR_TYPE,
 }
 
 

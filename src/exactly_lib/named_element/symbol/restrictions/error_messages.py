@@ -26,6 +26,25 @@ def invalid_symbol_type_msg(expected: SymbolValueType,
                                    how_to_fix='\n'.join(how_to_fix_lines))
 
 
+def invalid_type_msg(expected: ValueType,
+                     symbol_name: str,
+                     container_of_actual: NamedElementContainer) -> ValueRestrictionFailure:
+    actual = container_of_actual.resolver
+    if not isinstance(actual, SymbolValueResolver):
+        raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
+            type(SymbolValueResolver),
+            str(actual)
+        ))
+    assert isinstance(actual, SymbolValueResolver)  # Type info for IDE
+    header_lines = invalid_type_header_lines(expected,
+                                             actual.value_type,
+                                             symbol_name,
+                                             container_of_actual)
+    how_to_fix_lines = invalid_type_how_to_fix_lines(expected)
+    return ValueRestrictionFailure('\n'.join(header_lines),
+                                   how_to_fix='\n'.join(how_to_fix_lines))
+
+
 def unsatisfied_path_relativity(symbol_name: str,
                                 container: NamedElementContainer,
                                 accepted: PathRelativityVariants,
