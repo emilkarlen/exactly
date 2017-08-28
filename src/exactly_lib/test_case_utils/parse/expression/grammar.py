@@ -15,7 +15,7 @@ class SimpleExpression:
                  parse_arguments,
                  syntax: SimpleExpressionDescription):
         """
-        :param parse_arguments: TokenParserPrime -> NamedElementResolver
+        :param parse_arguments: TokenParserPrime -> Expr
         """
         self.parse_arguments = parse_arguments
         self.syntax = syntax
@@ -32,7 +32,7 @@ class ComplexExpression:
                  mk_complex,
                  syntax: ComplexExpressionDescription):
         """
-        :param mk_complex: [NamedElementResolver] -> NamedElementResolver
+        :param mk_complex: [NamedElementResolver] -> Expr
         """
         self.mk_complex = mk_complex
         self.syntax = syntax
@@ -57,6 +57,7 @@ class Grammar:
         """
         :param mk_reference: str -> NamedElementResolver
         :param simple_expressions: dict str -> :class:`SimpleExpression`
+        :param complex_expressions: dict str -> :class:`ComplexExpression`
         """
         self.concept = concept
         self.mk_reference = mk_reference

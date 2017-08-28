@@ -7,6 +7,10 @@ from exactly_lib.util.textformat.parse import normalize_and_parse
 from .grammar import Grammar, SimpleExpressionDescription, ComplexExpressionDescription
 
 
+def syntax_element_description(grammar: Grammar) -> SyntaxElementDescription:
+    return Syntax(grammar).syntax_element_description()
+
+
 class Syntax:
     def __init__(self, grammar: Grammar):
         self.grammar = grammar
