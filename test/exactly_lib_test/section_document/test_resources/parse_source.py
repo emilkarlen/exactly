@@ -45,6 +45,14 @@ def is_at_beginning_of_line(current_line_number: int) -> asrt.ValueAssertion:
     )
 
 
+def is_at_end_of_line(current_line_number: int) -> asrt.ValueAssertion:
+    return assert_source(
+        has_current_line=asrt.is_true,
+        current_line_number=asrt.equals(current_line_number),
+        is_at_eol=asrt.is_true,
+    )
+
+
 source_is_at_end = assert_source(is_at_eof=asrt.Boolean(True),
                                  has_current_line=asrt.Boolean(False),
                                  remaining_source=asrt.equals('')

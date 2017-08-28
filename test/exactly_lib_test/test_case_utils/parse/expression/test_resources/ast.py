@@ -61,8 +61,10 @@ def parse_simple_sans_arg(parser: TokenParserPrime) -> SimpleSansArg:
 SIMPLE_WITH_ARG = 'simple_with_arg'
 SIMPLE_SANS_ARG = 'simple_sans_arg'
 
+NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME = 'not/a/simple/expr/name/and/not/a/valid/symbol/name'
+
 COMPLEX_A = 'complex_a'
-COMPLEX_B = '||'
+COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
 GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=grammar.Concept(grammar.Name('concept singular',
@@ -77,9 +79,11 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
                                                   grammar.SimpleExpressionDescription([], [])),
     },
     complex_expressions={
-        COMPLEX_A: grammar.ComplexExpression(ComplexA,
-                                             grammar.ComplexExpressionDescription([])),
-        COMPLEX_B: grammar.ComplexExpression(ComplexB,
-                                             grammar.ComplexExpressionDescription([])),
+        COMPLEX_A:
+            grammar.ComplexExpression(ComplexA,
+                                      grammar.ComplexExpressionDescription([])),
+        COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME:
+            grammar.ComplexExpression(ComplexB,
+                                      grammar.ComplexExpressionDescription([])),
     },
 )

@@ -19,6 +19,7 @@ from exactly_lib_test.named_element.test_resources.named_elem_utils import conta
 from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_element_type_restriction
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
+from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -50,16 +51,6 @@ def file_selector_of(name_patterns: list = (),
                      file_types: list = ()) -> sut.FileSelector:
     return FileSelector(Selectors(name_patterns=frozenset(name_patterns),
                                   file_types=frozenset(file_types)))
-
-
-class SourceCase:
-    def __init__(self,
-                 name: str,
-                 source: ParseSource,
-                 source_assertion: asrt.ValueAssertion):
-        self.name = name
-        self.source = source
-        self.source_assertion = source_assertion
 
 
 SPACE = '   '

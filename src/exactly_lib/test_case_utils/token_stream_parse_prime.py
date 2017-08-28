@@ -38,7 +38,8 @@ class TokenParserPrime:
 
     @property
     def is_at_eol(self) -> bool:
-        return self.token_stream.remaining_part_of_current_line.isspace()
+        remaining_part_of_current_line = self.token_stream.remaining_part_of_current_line
+        return not remaining_part_of_current_line or remaining_part_of_current_line.isspace()
 
     def require_is_at_eol(self, error_message_format_string: str):
         if not self.is_at_eol:
