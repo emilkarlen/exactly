@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol.string_resolver import StringFragmentResol
     SymbolStringFragmentResolver, StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -68,7 +68,7 @@ def equals_string_resolver(expected: StringResolver,
 
 class _EqualsSymbolValueResolverBase(asrt.ValueAssertion):
     def __init__(self,
-                 expected_value_type: ValueType,
+                 expected_value_type: SymbolValueType,
                  expected_symbol_references: asrt.ValueAssertion,
                  expected_resolved_value: asrt.ValueAssertion,
                  symbols_for_checking_resolving: SymbolTable):
@@ -176,7 +176,7 @@ class _FileRefResolverAssertion(_EqualsSymbolValueResolverBase):
                  expected_symbol_references: asrt.ValueAssertion,
                  expected_resolved_value: asrt.ValueAssertion,
                  symbols_for_checking_resolving: SymbolTable):
-        super().__init__(ValueType.PATH,
+        super().__init__(SymbolValueType.PATH,
                          expected_symbol_references,
                          expected_resolved_value,
                          symbols_for_checking_resolving)
@@ -195,7 +195,7 @@ class _StringValueResolverAssertion(_EqualsSymbolValueResolverBase):
                  expected_resolved_value: asrt.ValueAssertion,
                  expected_string_fragments: asrt.ValueAssertion,
                  symbols_for_checking_resolving: SymbolTable):
-        super().__init__(ValueType.STRING,
+        super().__init__(SymbolValueType.STRING,
                          expected_symbol_references,
                          expected_resolved_value,
                          symbols_for_checking_resolving)

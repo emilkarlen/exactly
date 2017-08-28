@@ -4,10 +4,10 @@ from exactly_lib.named_element.resolver_structure import NamedElementContainer, 
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 
 
-def invalid_type_msg(expected: ValueType,
+def invalid_type_msg(expected: SymbolValueType,
                      symbol_name: str,
                      container_of_actual: NamedElementContainer) -> ValueRestrictionFailure:
     actual = container_of_actual.resolver
@@ -59,8 +59,9 @@ def unsatisfied_path_relativity(symbol_name: str,
         return rows
 
     lines = ([
-                 'Illegal relativity, of {} symbol "{}"'.format(assign_symbol.TYPE_INFO_DICT[ValueType.PATH].type_name,
-                                                                symbol_name)
+                 'Illegal relativity, of {} symbol "{}"'.format(
+                     assign_symbol.SYMBOL_INFO_DICT[SymbolValueType.PATH].type_name,
+                     symbol_name)
              ] +
              defined_at_line__err_msg_lines(container.definition_source) +
              [
@@ -76,8 +77,8 @@ def unsatisfied_path_relativity(symbol_name: str,
     return '\n'.join(lines)
 
 
-def invalid_type_header_lines(expected: ValueType,
-                              actual: ValueType,
+def invalid_type_header_lines(expected: SymbolValueType,
+                              actual: SymbolValueType,
                               symbol_name: str,
                               container: NamedElementContainer) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol
@@ -87,25 +88,25 @@ def invalid_type_header_lines(expected: ValueType,
                defined_at_line__err_msg_lines(container.definition_source) +
                [
                    '',
-                   'Found    : ' + assign_symbol.TYPE_INFO_DICT[actual].type_name,
-                   'Expected : ' + assign_symbol.TYPE_INFO_DICT[expected].type_name,
+                   'Found    : ' + assign_symbol.SYMBOL_INFO_DICT[actual].type_name,
+                   'Expected : ' + assign_symbol.SYMBOL_INFO_DICT[expected].type_name,
                ])
     return ret_val
 
 
-def invalid_type_how_to_fix_lines(expected: ValueType) -> list:
+def invalid_type_how_to_fix_lines(expected: SymbolValueType) -> list:
     from exactly_lib.help_texts.test_case.instructions import assign_symbol
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     from exactly_lib.help_texts.names.formatting import InstructionName
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
     ret_val = [
-        'Define a {} symbol using the {} instruction:'.format(assign_symbol.TYPE_INFO_DICT[expected].type_name,
+        'Define a {} symbol using the {} instruction:'.format(assign_symbol.SYMBOL_INFO_DICT[expected].type_name,
                                                               def_name_emphasised),
         '',
     ]
     def_instruction_syntax_list = [
         SYMBOL_DEFINITION_INSTRUCTION_NAME + ' ' + syntax
-        for syntax in assign_symbol.TYPE_INFO_DICT[expected].def_instruction_syntax_lines_function()
+        for syntax in assign_symbol.SYMBOL_INFO_DICT[expected].def_instruction_syntax_lines_function()
     ]
     ret_val.extend(def_instruction_syntax_list)
     return ret_val

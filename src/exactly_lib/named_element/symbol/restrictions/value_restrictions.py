@@ -5,7 +5,7 @@ from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -31,7 +31,7 @@ class StringRestriction(ValueRestriction):
                         symbol_name: str,
                         container: NamedElementContainer) -> ValueRestrictionFailure:
         if not isinstance(container.resolver, StringResolver):
-            return error_messages.invalid_type_msg(ValueType.STRING, symbol_name, container)
+            return error_messages.invalid_type_msg(SymbolValueType.STRING, symbol_name, container)
         return None
 
 
@@ -49,7 +49,7 @@ class FileRefRelativityRestriction(ValueRestriction):
                         container: NamedElementContainer) -> ValueRestrictionFailure:
         resolver = container.resolver
         if not isinstance(resolver, FileRefResolver):
-            return error_messages.invalid_type_msg(ValueType.PATH, symbol_name, container)
+            return error_messages.invalid_type_msg(SymbolValueType.PATH, symbol_name, container)
         file_ref = resolver.resolve(symbol_table)
         actual_relativity = file_ref.relativity()
         satisfaction = is_satisfied_by(actual_relativity, self._accepted)

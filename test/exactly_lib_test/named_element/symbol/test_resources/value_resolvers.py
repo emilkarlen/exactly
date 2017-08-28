@@ -5,7 +5,7 @@ from exactly_lib.named_element.symbol import string_resolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -22,13 +22,13 @@ def string_resolver_of_single_symbol_reference(
 
 class ConstantValueResolver(SymbolValueResolver):
     def __init__(self,
-                 value_type: ValueType,
+                 value_type: SymbolValueType,
                  value: DirDependentValue):
         self._value_type = value_type
         self._value = value
 
     @property
-    def value_type(self) -> ValueType:
+    def value_type(self) -> SymbolValueType:
         return self._value_type
 
     @property

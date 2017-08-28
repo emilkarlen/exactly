@@ -27,7 +27,7 @@ from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syn
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
@@ -1194,10 +1194,10 @@ def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativ
                                               ) -> ReferenceRestrictions:
     return OrReferenceRestrictions([
         OrRestrictionPart(
-            ValueType.PATH,
+            SymbolValueType.PATH,
             ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))),
         OrRestrictionPart(
-            ValueType.STRING,
+            SymbolValueType.STRING,
             path_part_string_reference_restrictions()),
     ])
 

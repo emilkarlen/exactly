@@ -36,7 +36,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -224,10 +224,10 @@ def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
 def path_or_string_reference_restrictions(accepted_relativity_variants: PathRelativityVariants):
     return OrReferenceRestrictions([
         OrRestrictionPart(
-            ValueType.PATH,
+            SymbolValueType.PATH,
             path_relativity_restriction(accepted_relativity_variants)),
         OrRestrictionPart(
-            ValueType.STRING,
+            SymbolValueType.STRING,
             PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
     ],
         _type_must_be_either_path_or_string__err_msg_generator)
@@ -281,8 +281,8 @@ def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     'Every symbol used as a path component of a {path_type} '
     'must be defined as a {string_type}.'.format(
-        path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
-        string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
+        path_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.PATH].type_name,
+        string_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.STRING].type_name,
     ))
 
 
@@ -290,7 +290,7 @@ def _type_must_be_either_path_or_string__err_msg_generator(value: NamedElementCo
     v = value.resolver
     assert isinstance(v, SymbolValueResolver)  # Type info for IDE
     return 'Expecting either a {path_type} or a {string_type}.\nFound: {actual_type}'.format(
-        path_type=help_texts.TYPE_INFO_DICT[ValueType.PATH].type_name,
-        string_type=help_texts.TYPE_INFO_DICT[ValueType.STRING].type_name,
-        actual_type=help_texts.TYPE_INFO_DICT[v.value_type].type_name
+        path_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.PATH].type_name,
+        string_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.STRING].type_name,
+        actual_type=help_texts.SYMBOL_INFO_DICT[v.value_type].type_name
     )

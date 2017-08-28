@@ -1,11 +1,12 @@
 import types
 
+from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
-from exactly_lib.help_texts.type_system import PATH_TYPE, STRING_TYPE, LIST_TYPE, STRING_VALUE, LIST_ELEMENT
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.named_element.resolver_structure import ElementType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EQUALS_ARGUMENT = '='
@@ -57,22 +58,34 @@ def _def_instruction_syntax_lines_function__list() -> list:
     ]
 
 
-TYPE_INFO_DICT = {
-    ValueType.STRING:
-        TypeInfo(STRING_TYPE,
+def _def_instruction_syntax_lines_function__file_selector() -> list:
+    return [
+        definition_of_type_file_selector()
+    ]
+
+
+SYMBOL_INFO_DICT = {
+    SymbolValueType.STRING:
+        TypeInfo(type_system.STRING_TYPE,
                  _def_instruction_syntax_lines_function__string),
-    ValueType.PATH:
-        TypeInfo(PATH_TYPE,
+    SymbolValueType.PATH:
+        TypeInfo(type_system.PATH_TYPE,
                  _def_instruction_syntax_lines_function__path),
-    ValueType.LIST:
-        TypeInfo(LIST_TYPE,
+    SymbolValueType.LIST:
+        TypeInfo(type_system.LIST_TYPE,
                  _def_instruction_syntax_lines_function__list),
+}
+
+NON_SYMBOL_INFO_DICT = {
+    ElementType.FILE_SELECTOR:
+        TypeInfo(type_system.FILE_SELECTOR_TYPE,
+                 _def_instruction_syntax_lines_function__file_selector),
 }
 
 
 def definition_of_type_string() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(STRING_TYPE))
-    string_value = a.Single(a.Multiplicity.MANDATORY, a.Named(STRING_VALUE))
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.STRING_TYPE))
+    string_value = a.Single(a.Multiplicity.MANDATORY, a.Named(type_system.STRING_VALUE))
     arguments = [
         type_token,
         _symbol_name(),
@@ -83,7 +96,7 @@ def definition_of_type_string() -> str:
 
 
 def definition_of_type_path() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(PATH_TYPE))
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.PATH_TYPE))
     arguments = [
         type_token,
         _symbol_name(),
@@ -97,13 +110,25 @@ def definition_of_type_path() -> str:
 
 
 def definition_of_type_list() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(LIST_TYPE))
-    elements = a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(LIST_ELEMENT))
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.LIST_TYPE))
+    elements = a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(type_system.LIST_ELEMENT))
     arguments = [
         type_token,
         _symbol_name(),
         _equals(),
         elements,
+    ]
+    return cl_syntax.cl_syntax_for_args(arguments)
+
+
+def definition_of_type_file_selector() -> str:
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.FILE_SELECTOR_TYPE))
+    selector = a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(type_system.FILE_SELECTOR_VALUE))
+    arguments = [
+        type_token,
+        _symbol_name(),
+        _equals(),
+        selector,
     ]
     return cl_syntax.cl_syntax_for_args(arguments)
 

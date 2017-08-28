@@ -7,7 +7,7 @@ from exactly_lib.named_element.resolver_structure import SymbolValueResolver, Na
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied, \
@@ -231,8 +231,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
 
     def test_combination_of_satisfied_and_dissatisfied_symbols(self):
         # ARRANGE #
-        satisfied_value_type = ValueType.STRING
-        dissatisfied_value_type = ValueType.PATH
+        satisfied_value_type = SymbolValueType.STRING
+        dissatisfied_value_type = SymbolValueType.PATH
         level_2_symbol = symbol_table_entry('level_2_symbol',
                                             references=[],
                                             value_type=dissatisfied_value_type)
@@ -283,8 +283,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
             indirect=ValueRestrictionThatRaisesErrorIfApplied())
-        satisfied_value_type = ValueType.STRING
-        dissatisfied_value_type = ValueType.PATH
+        satisfied_value_type = SymbolValueType.STRING
+        dissatisfied_value_type = SymbolValueType.PATH
 
         level_3_symbol = symbol_table_entry('level_3_symbol',
                                             references=[],
@@ -340,17 +340,17 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         cases = [
             ('single satisfied string-selector restriction, unconditionally satisfied part',
              sut.OrReferenceRestrictions([
-                 sut.OrRestrictionPart(ValueType.STRING,
+                 sut.OrRestrictionPart(SymbolValueType.STRING,
                                        sut.ReferenceRestrictionsOnDirectAndIndirect(
                                            direct=value_restriction_that_is_unconditionally_satisfied()))
              ])
              ),
             ('multiple unconditionally satisfied restrictions',
              sut.OrReferenceRestrictions([
-                 sut.OrRestrictionPart(ValueType.STRING,
+                 sut.OrRestrictionPart(SymbolValueType.STRING,
                                        sut.ReferenceRestrictionsOnDirectAndIndirect(
                                            direct=value_restriction_that_is_unconditionally_satisfied())),
-                 sut.OrRestrictionPart(ValueType.STRING,
+                 sut.OrRestrictionPart(SymbolValueType.STRING,
                                        sut.ReferenceRestrictionsOnDirectAndIndirect(
                                            direct=value_restriction_that_is_unconditionally_satisfied()))
              ])
@@ -368,8 +368,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
             indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
-        value_type_of_referencing_symbol = ValueType.STRING
-        value_type_other_than_referencing_symbol = ValueType.PATH
+        value_type_of_referencing_symbol = SymbolValueType.STRING
+        value_type_other_than_referencing_symbol = SymbolValueType.PATH
 
         referencing_symbol = symbol_table_entry('referencing_symbol',
                                                 value_type=value_type_of_referencing_symbol,
@@ -466,7 +466,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
         referencing_symbol = symbol_table_entry('referencing_symbol',
-                                                value_type=ValueType.STRING,
+                                                value_type=SymbolValueType.STRING,
                                                 references=[reference_to(referenced_symbol,
                                                                          restrictions_that_should_not_be_used)])
         symbol_table_entries = [referencing_symbol, referenced_symbol]
@@ -520,12 +520,12 @@ class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
 class SymbolValueResolverForTest(SymbolValueResolver):
     def __init__(self,
                  references: list,
-                 value_type: ValueType):
+                 value_type: SymbolValueType):
         self._value_type = value_type
         self._references = references
 
     @property
-    def value_type(self) -> ValueType:
+    def value_type(self) -> SymbolValueType:
         return self._value_type
 
     def resolve(self, symbols: SymbolTable):
@@ -538,7 +538,7 @@ class SymbolValueResolverForTest(SymbolValueResolver):
 
 def symbol_table_entry(symbol_name: str,
                        references,
-                       value_type: ValueType = ValueType.STRING) -> Entry:
+                       value_type: SymbolValueType = SymbolValueType.STRING) -> Entry:
     return Entry(symbol_name,
                  symbol_utils.container(SymbolValueResolverForTest(references,
                                                                    value_type=value_type)))
@@ -559,7 +559,7 @@ def unconditional_dissatisfaction(result: str) -> types.FunctionType:
     return ret_val
 
 
-def dissatisfaction_if_value_type_is(value_type: ValueType) -> types.FunctionType:
+def dissatisfaction_if_value_type_is(value_type: SymbolValueType) -> types.FunctionType:
     def ret_val(container: sut.NamedElementContainer) -> str:
         resolver = container.resolver
         assert isinstance(resolver, SymbolValueResolver), 'Expects a SymbolValueResolver'

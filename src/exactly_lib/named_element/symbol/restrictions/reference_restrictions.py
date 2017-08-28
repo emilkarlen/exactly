@@ -6,7 +6,7 @@ from exactly_lib.named_element.restriction import FailureInfo, \
     SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -132,12 +132,12 @@ class ReferenceRestrictionsOnDirectAndIndirect(SymbolReferenceRestrictions):
 
 class OrRestrictionPart(tuple):
     def __new__(cls,
-                selector: ValueType,
+                selector: SymbolValueType,
                 restriction: ReferenceRestrictionsOnDirectAndIndirect):
         return tuple.__new__(cls, (selector, restriction))
 
     @property
-    def selector(self) -> ValueType:
+    def selector(self) -> SymbolValueType:
         return self[0]
 
     @property
@@ -183,7 +183,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
                                container: NamedElementContainer,
                                resolver: SymbolValueResolver) -> str:
         from exactly_lib.help_texts.test_case.instructions import assign_symbol
-        accepted_value_types = ', '.join([assign_symbol.TYPE_INFO_DICT[part.selector].type_name
+        accepted_value_types = ', '.join([assign_symbol.SYMBOL_INFO_DICT[part.selector].type_name
                                           for part in self._parts])
         lines = ([
                      'Invalid type, of symbol "{}"'.format(symbol_name)
@@ -192,7 +192,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
                  [
                      '',
                      'Accepted : ' + accepted_value_types,
-                     'Found    : ' + assign_symbol.TYPE_INFO_DICT[resolver.value_type].type_name,
+                     'Found    : ' + assign_symbol.SYMBOL_INFO_DICT[resolver.value_type].type_name,
                  ])
         return '\n'.join(lines)
 
