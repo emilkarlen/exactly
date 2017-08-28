@@ -8,15 +8,6 @@ from exactly_lib.type_system_values.lines_transformer import LinesTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 
-class DestinationFilePathResolver:
-    """Resolves a destination path from a given source path."""
-
-    def dst_file_path(self,
-                      environment: InstructionEnvironmentForPostSdsStep,
-                      src_file_path: pathlib.Path) -> pathlib.Path:
-        raise NotImplementedError('abstract method')
-
-
 class FileTransformerFromLinesTransformer(FileTransformer):
     """
     Produces a new destination file, if it does not already exist.
@@ -28,10 +19,7 @@ class FileTransformerFromLinesTransformer(FileTransformer):
     (So that kind of optimizations should have been done in another place.)
     """
 
-    def __init__(self,
-                 dst_path_resolver: DestinationFilePathResolver,
-                 lines_transformer: LinesTransformer):
-        self._dst_path_resolver = dst_path_resolver
+    def __init__(self, lines_transformer: LinesTransformer):
         self._lines_transformer = lines_transformer
 
     def transform(self,

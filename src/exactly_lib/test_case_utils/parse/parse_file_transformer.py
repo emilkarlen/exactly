@@ -2,7 +2,6 @@ from exactly_lib.named_element.lines_transformers import LinesTransformerConstan
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
-from exactly_lib.test_case_utils.file_transformer.from_lines_transformer import DestinationFilePathResolver
 from exactly_lib.test_case_utils.file_transformer.resolver_using_lines_transformers import \
     ResolveFileTransformerFromLinesTransformer
 from exactly_lib.test_case_utils.lines_transformers import custom_transformers as ct
@@ -17,9 +16,6 @@ WITH_REPLACED_ENV_VARS_OPTION = option_syntax.option_syntax(WITH_REPLACED_ENV_VA
 
 
 class FileTransformerParser:
-    def __init__(self, dst_path_resolver: DestinationFilePathResolver):
-        self._dst_path_resolver = dst_path_resolver
-
     def parse_from_parse_source(self, source: ParseSource) -> FileTransformerResolver:
         with_replaced_env_vars = False
         peek_source = source.copy
@@ -32,5 +28,4 @@ class FileTransformerParser:
         if with_replaced_env_vars:
             lines_transformer = ct.CUSTOM_LINES_TRANSFORMERS[ct.ENV_VAR_REPLACEMENT_TRANSFORMER_NAME]
         transformer_resolver = LinesTransformerConstant(lines_transformer)
-        return ResolveFileTransformerFromLinesTransformer(self._dst_path_resolver,
-                                                          transformer_resolver)
+        return ResolveFileTransformerFromLinesTransformer(transformer_resolver)

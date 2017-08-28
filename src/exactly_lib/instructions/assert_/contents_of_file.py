@@ -1,5 +1,3 @@
-import pathlib
-
 import exactly_lib.test_case_utils.parse.parse_file_transformer
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -16,12 +14,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import \
-    root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
-    SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
-from exactly_lib.test_case_utils.file_transformer.from_lines_transformer import DestinationFilePathResolver
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_file_transformer import FileTransformerParser
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -103,35 +96,9 @@ class Parser(InstructionParser):
         comparison_target = parse_actual_file_argument(source)
         source.consume_initial_space_on_current_line()
         instruction = parsing.parse_comparison_operation(comparison_target,
-                                                         FileTransformerParser(_DestinationFile_PathResolver()),
+                                                         FileTransformerParser(),
                                                          source)
         return instruction
-
-
-class _DestinationFile_PathResolver(DestinationFilePathResolver):
-    def dst_file_path(self,
-                      environment: InstructionEnvironmentForPostSdsStep,
-                      src_file_path: pathlib.Path) -> pathlib.Path:
-        root_dir_path = root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(environment.sds)
-        if not src_file_path.is_absolute():
-            src_file_path = pathlib.Path.cwd().resolve() / src_file_path
-        src_file_path = src_file_path.resolve()
-        return self._dst_file_path_for_absolute_src_path(environment,
-                                                         root_dir_path,
-                                                         src_file_path)
-
-    @staticmethod
-    def _dst_file_path_for_absolute_src_path(environment: InstructionEnvironmentForPostSdsStep,
-                                             root_dir_path: pathlib.Path,
-                                             absolute_src_file_path: pathlib.Path) -> pathlib.Path:
-        try:
-            relative_act_dir = absolute_src_file_path.relative_to(environment.sds.act_dir)
-            # path DOES reside under act_dir
-            return root_dir_path / SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR / relative_act_dir
-        except ValueError:
-            # path DOES NOT reside under act_dir
-            return (root_dir_path / SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR).joinpath(
-                *absolute_src_file_path.parts[1:])
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
