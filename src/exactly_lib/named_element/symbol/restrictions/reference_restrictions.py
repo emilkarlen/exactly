@@ -1,12 +1,13 @@
 import types
 
 from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
-from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer, NamedElementResolver, \
+    SymbolValueResolver
 from exactly_lib.named_element.restriction import FailureInfo, \
     SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ElementType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -161,16 +162,19 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
                         symbol_name: str,
                         container: NamedElementContainer) -> FailureInfo:
         resolver = container.resolver
+        assert isinstance(resolver, NamedElementResolver)  # Type info for IDE
+        if resolver.element_type is not ElementType.SYMBOL:
+            return self._no_satisfied_restriction(symbol_name, resolver, container)
         assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
         for part in self._parts:
             assert isinstance(part, OrRestrictionPart)  # Type info for IDE
-            if part.selector == resolver.value_type:
+            if part.selector == resolver.data_value_type:
                 return part.restriction.is_satisfied_by(symbol_table, symbol_name, container)
         return self._no_satisfied_restriction(symbol_name, resolver, container)
 
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
-                                  resolver: SymbolValueResolver,
+                                  resolver: NamedElementResolver,
                                   value: NamedElementContainer) -> FailureOfDirectReference:
         if self._container_2_error_message_if_no_matching_part is not None:
             msg = self._container_2_error_message_if_no_matching_part(value)
@@ -181,7 +185,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
     def _default_error_message(self,
                                symbol_name: str,
                                container: NamedElementContainer,
-                               resolver: SymbolValueResolver) -> str:
+                               resolver: NamedElementResolver) -> str:
         from exactly_lib.help_texts.test_case.instructions import assign_symbol
         accepted_value_types = ', '.join([assign_symbol.SYMBOL_INFO_DICT[part.selector].type_name
                                           for part in self._parts])
@@ -192,7 +196,7 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
                  [
                      '',
                      'Accepted : ' + accepted_value_types,
-                     'Found    : ' + assign_symbol.SYMBOL_INFO_DICT[resolver.value_type].type_name,
+                     'Found    : ' + assign_symbol.ANY_TYPE_INFO_DICT[resolver.value_type].type_name,
                  ])
         return '\n'.join(lines)
 

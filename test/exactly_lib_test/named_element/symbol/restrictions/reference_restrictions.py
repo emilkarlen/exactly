@@ -2,17 +2,21 @@ import types
 import unittest
 from collections import Counter
 
+from exactly_lib.help_texts import type_system
+from exactly_lib.help_texts.type_system import SYMBOL_TYPE_2_VALUE_TYPE
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import SymbolValueResolver, NamedElementContainer
+from exactly_lib.named_element.resolver_structure import SymbolValueResolver, NamedElementContainer, LogicValueResolver, \
+    NamedElementResolver
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    value_restriction_that_is_unconditionally_satisfied, value_restriction_that_is_unconditionally_unsatisfied, \
-    is_failure_of_direct_reference, is_failure_of_indirect_reference
+    value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
+    is_failure_of_indirect_reference, value_restriction_that_is_unconditionally_unsatisfied
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.test_resources import named_elem_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables
 
@@ -231,52 +235,67 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
 
     def test_combination_of_satisfied_and_dissatisfied_symbols(self):
         # ARRANGE #
-        satisfied_value_type = SymbolValueType.STRING
-        dissatisfied_value_type = SymbolValueType.PATH
-        level_2_symbol = symbol_table_entry('level_2_symbol',
-                                            references=[],
-                                            value_type=dissatisfied_value_type)
-        restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
-            direct=ValueRestrictionThatRaisesErrorIfApplied(),
-            indirect=ValueRestrictionThatRaisesErrorIfApplied())
+        dissatisfied_level_2_symbol_variants = [
+            (
+                ValueType.PATH,
+                symbol_table_entry('level_2_symbol',
+                                   references=[],
+                                   value_type=SymbolValueType.PATH)
+            ),
+            (
+                ValueType.FILE_SELECTOR,
+                logic_symbol_table_entry('level_2_symbol',
+                                         references=[],
+                                         value_type=LogicValueType.FILE_SELECTOR)
+            ),
+        ]
+        for dissatisfied_value_type, dissatisfied_level_2_symbol in dissatisfied_level_2_symbol_variants:
+            with self.subTest(dissatisfied_value_type=str(dissatisfied_value_type)):
+                satisfied_value_type = SymbolValueType.STRING
+                restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
+                    direct=ValueRestrictionThatRaisesErrorIfApplied(),
+                    indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
-        level_1a_symbol = symbol_table_entry('level_1a_symbol',
-                                             references=[reference_to(level_2_symbol,
-                                                                      restrictions_that_should_not_be_used)],
-                                             value_type=satisfied_value_type)
-        level_1b_symbol = symbol_table_entry('level_1b_symbol',
-                                             references=[],
-                                             value_type=satisfied_value_type)
-        level_0_symbol = symbol_table_entry('level_0_symbol',
-                                            references=[reference_to(level_1a_symbol,
-                                                                     restrictions_that_should_not_be_used),
-                                                        reference_to(level_1b_symbol,
-                                                                     restrictions_that_should_not_be_used)],
-                                            value_type=satisfied_value_type)
-        symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol, level_2_symbol]
+                level_1a_symbol = symbol_table_entry('level_1a_symbol',
+                                                     references=[reference_to(dissatisfied_level_2_symbol,
+                                                                              restrictions_that_should_not_be_used)],
+                                                     value_type=satisfied_value_type)
+                level_1b_symbol = symbol_table_entry('level_1b_symbol',
+                                                     references=[],
+                                                     value_type=satisfied_value_type)
+                level_0_symbol = symbol_table_entry('level_0_symbol',
+                                                    references=[reference_to(level_1a_symbol,
+                                                                             restrictions_that_should_not_be_used),
+                                                                reference_to(level_1b_symbol,
+                                                                             restrictions_that_should_not_be_used)],
+                                                    value_type=satisfied_value_type)
+                symbol_table_entries = [level_0_symbol, level_1a_symbol, level_1b_symbol, dissatisfied_level_2_symbol]
 
-        symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
+                symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
-        restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
-            resolver_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
-        restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
-            indirect=restriction_on_every_indirect,
-            direct=unconditionally_satisfied_value_restriction(),
-            meaning_of_failure_of_indirect_reference='meaning of failure')
-        # ACT #
-        actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key, level_0_symbol.value)
-        # ASSERT #
-        expected_result = is_failure_of_indirect_reference(failing_symbol=asrt.equals(level_2_symbol.key),
-                                                           path_to_failing_symbol=asrt.equals([level_1a_symbol.key]),
-                                                           meaning_of_failure=asrt.equals('meaning of failure'))
-        expected_result.apply_with_message(self, actual_result, 'result of processing')
-        actual_processed_symbols = dict(restriction_on_every_indirect.visited.items())
-        expected_processed_symbol = {
-            level_1a_symbol.key: 1,
-            level_2_symbol.key: 1,
-        }
-        self.assertEqual(expected_processed_symbol,
-                         actual_processed_symbols)
+                restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
+                    resolver_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
+                restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
+                    indirect=restriction_on_every_indirect,
+                    direct=unconditionally_satisfied_value_restriction(),
+                    meaning_of_failure_of_indirect_reference='meaning of failure')
+                # ACT #
+                actual_result = restrictions_to_test.is_satisfied_by(symbol_table, level_0_symbol.key,
+                                                                     level_0_symbol.value)
+                # ASSERT #
+                expected_result = is_failure_of_indirect_reference(
+                    failing_symbol=asrt.equals(dissatisfied_level_2_symbol.key),
+                    path_to_failing_symbol=asrt.equals(
+                        [level_1a_symbol.key]),
+                    meaning_of_failure=asrt.equals('meaning of failure'))
+                expected_result.apply_with_message(self, actual_result, 'result of processing')
+                actual_processed_symbols = dict(restriction_on_every_indirect.visited.items())
+                expected_processed_symbol = {
+                    level_1a_symbol.key: 1,
+                    dissatisfied_level_2_symbol.key: 1,
+                }
+                self.assertEqual(expected_processed_symbol,
+                                 actual_processed_symbols)
 
     def test_long_path_to_symbol_that_fails(self):
         # ARRANGE #
@@ -311,7 +330,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
         restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
-            resolver_container_2_result__fun=dissatisfaction_if_value_type_is(dissatisfied_value_type))
+            resolver_container_2_result__fun=dissatisfaction_if_value_type_is(
+                SYMBOL_TYPE_2_VALUE_TYPE[dissatisfied_value_type]))
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every_indirect,
             direct=unconditionally_satisfied_value_restriction(),
@@ -379,10 +399,13 @@ class TestOrReferenceRestrictions(unittest.TestCase):
 
         symbol_table = symbol_tables.symbol_table_from_entries(symbol_table_entries)
 
+        def mk_err_msg(value_type: ValueType) -> str:
+            return 'Value type of tested symbol is ' + str(value_type)
+
         def value_type_error_message_function(container: NamedElementContainer) -> str:
             v = container.resolver
-            assert isinstance(v, SymbolValueResolver)  # Type info for IDE
-            return 'Value type of tested symbol is ' + str(v.value_type)
+            assert isinstance(v, NamedElementResolver)  # Type info for IDE
+            return mk_err_msg(v.value_type)
 
         cases = [
             ('no restriction parts / default error message generator',
@@ -391,8 +414,9 @@ class TestOrReferenceRestrictions(unittest.TestCase):
              ),
             ('no restriction parts / custom error message generator',
              sut.OrReferenceRestrictions([], value_type_error_message_function),
-             is_failure_of_direct_reference(message=asrt.equals('Value type of tested symbol is ' +
-                                                                str(value_type_of_referencing_symbol))),
+             is_failure_of_direct_reference(
+                 message=asrt.equals(mk_err_msg(SYMBOL_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])),
+             )
              ),
             ('single direct: unsatisfied selector',
              sut.OrReferenceRestrictions([
@@ -520,13 +544,40 @@ class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
 class SymbolValueResolverForTest(SymbolValueResolver):
     def __init__(self,
                  references: list,
-                 value_type: SymbolValueType):
-        self._value_type = value_type
+                 symbol_value_type: SymbolValueType):
+        self._symbol_value_type = symbol_value_type
         self._references = references
 
     @property
-    def value_type(self) -> SymbolValueType:
-        return self._value_type
+    def data_value_type(self) -> SymbolValueType:
+        return self._symbol_value_type
+
+    @property
+    def value_type(self) -> ValueType:
+        return type_system.SYMBOL_TYPE_2_VALUE_TYPE[self._symbol_value_type]
+
+    def resolve(self, symbols: SymbolTable):
+        raise NotImplementedError('It is an error if this method is called')
+
+    @property
+    def references(self) -> list:
+        return self._references
+
+
+class LogicValueResolverForTest(LogicValueResolver):
+    def __init__(self,
+                 references: list,
+                 logic_value_type: LogicValueType):
+        self._logic_value_type = logic_value_type
+        self._references = references
+
+    @property
+    def logic_value_type(self) -> LogicValueType:
+        return self._logic_value_type
+
+    @property
+    def value_type(self) -> ValueType:
+        return type_system.LOGIC_TYPE_2_VALUE_TYPE[self._logic_value_type]
 
     def resolve(self, symbols: SymbolTable):
         raise NotImplementedError('It is an error if this method is called')
@@ -540,8 +591,16 @@ def symbol_table_entry(symbol_name: str,
                        references,
                        value_type: SymbolValueType = SymbolValueType.STRING) -> Entry:
     return Entry(symbol_name,
-                 symbol_utils.container(SymbolValueResolverForTest(references,
-                                                                   value_type=value_type)))
+                 named_elem_utils.container(SymbolValueResolverForTest(references,
+                                                                       symbol_value_type=value_type)))
+
+
+def logic_symbol_table_entry(symbol_name: str,
+                             references,
+                             value_type: LogicValueType = LogicValueType.FILE_SELECTOR) -> Entry:
+    return Entry(symbol_name,
+                 named_elem_utils.container(LogicValueResolverForTest(references,
+                                                                      logic_value_type=value_type)))
 
 
 def reference_to(entry: Entry, restrictions: ReferenceRestrictions) -> NamedElementReference:
@@ -559,10 +618,10 @@ def unconditional_dissatisfaction(result: str) -> types.FunctionType:
     return ret_val
 
 
-def dissatisfaction_if_value_type_is(value_type: SymbolValueType) -> types.FunctionType:
+def dissatisfaction_if_value_type_is(value_type: ValueType) -> types.FunctionType:
     def ret_val(container: sut.NamedElementContainer) -> str:
         resolver = container.resolver
-        assert isinstance(resolver, SymbolValueResolver), 'Expects a SymbolValueResolver'
+        assert isinstance(resolver, NamedElementResolver), 'Expects a NamedElementResolver'
         if resolver.value_type is value_type:
             return 'fail due to value type is ' + str(value_type)
         return None

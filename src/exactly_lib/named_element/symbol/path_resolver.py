@@ -1,6 +1,6 @@
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -10,8 +10,12 @@ class FileRefResolver(SymbolValueResolver):
     """
 
     @property
-    def value_type(self) -> SymbolValueType:
+    def data_value_type(self) -> SymbolValueType:
         return SymbolValueType.PATH
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.PATH
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
         raise NotImplementedError()
