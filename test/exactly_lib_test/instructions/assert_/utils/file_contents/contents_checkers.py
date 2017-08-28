@@ -4,15 +4,15 @@ import unittest
 from exactly_lib.instructions.assert_.utils.file_contents import contents_checkers as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.restriction import ElementTypeRestriction
+from exactly_lib.named_element.restriction import ValueTypeRestriction
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver, FileTransformer
 from exactly_lib.test_case_utils.file_transformer.file_transformers import ConstantFileTransformerResolver, \
     IdentityFileTransformer
-from exactly_lib.type_system_values.value_type import ElementType
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_rs
-from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_element_type_restriction
+from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -31,14 +31,14 @@ class TestFileTransformerAsChecker(unittest.TestCase):
 
     def test_references_of_transformer_resolver_SHOULD_be_reported(self):
         # ARRANGE #
-        ref_1_info = NameAndValue('ref 1', ElementType.LOGIC)
+        ref_1_info = NameAndValue('ref 1', ValueType.FILE_SELECTOR)
 
         ref_1 = NamedElementReference(ref_1_info.name,
-                                      ElementTypeRestriction(ref_1_info.value))
+                                      ValueTypeRestriction(ref_1_info.value))
 
         expected_references = asrt.matches_sequence([
             asrt_rs.matches_reference(asrt.equals(ref_1_info.name),
-                                      is_element_type_restriction(ref_1_info.value)),
+                                      is_value_type_restriction(ref_1_info.value)),
         ])
 
         ft_with_references = FileTransformerResolverWithReferences([ref_1])

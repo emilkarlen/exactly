@@ -36,12 +36,20 @@ def get_element_type(resolver: NamedElementResolver) -> ElementType:
     return resolver.element_type
 
 
-class FileSelectorResolver(NamedElementResolver):
-    """ Base class for resolvers of :class:`FileSelector`. """
+class LogicValueResolver(NamedElementResolver):
+    """ Base class for logic values - values that represent functionality/logic."""
 
     @property
     def element_type(self) -> ElementType:
         return ElementType.LOGIC
+
+
+class FileSelectorResolver(LogicValueResolver):
+    """ Base class for resolvers of :class:`FileSelector`. """
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.FILE_SELECTOR
 
     @property
     def references(self) -> list:
@@ -51,11 +59,11 @@ class FileSelectorResolver(NamedElementResolver):
         raise NotImplementedError('abstract method')
 
 
-class LinesTransformerResolver(NamedElementResolver):
+class LinesTransformerResolver(LogicValueResolver):
     """ Base class for resolvers of :class:`LinesTransformer`. """
 
     @property
-    def element_type(self) -> ElementType:
+    def value_type(self) -> ValueType:
         raise NotImplementedError('todo')
 
     @property
@@ -67,7 +75,7 @@ class LinesTransformerResolver(NamedElementResolver):
 
 
 class SymbolValueResolver(NamedElementResolver):
-    """ Base class for symbol values in the symbol table used by Exactly. """
+    """ Base class for symbol values - values that represent data."""
 
     @property
     def element_type(self) -> ElementType:
