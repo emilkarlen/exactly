@@ -10,8 +10,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.parse.expression import expression_parser as ep
 from exactly_lib.test_case_utils.parse.expression import grammar, syntax_documentation
+from exactly_lib.test_case_utils.parse.expression import parser as ep
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection as dcs

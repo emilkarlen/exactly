@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.parse.expression import expression_parser as sut
+from exactly_lib.test_case_utils.parse.expression import parser as sut
 from exactly_lib_test.section_document.test_resources import parse_source as asrt_source
 from exactly_lib_test.test_case_utils.parse.expression.test_resources import ast
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
