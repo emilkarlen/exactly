@@ -12,7 +12,8 @@ from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syn
 from exactly_lib.util.parse import token as token_syntax
 from exactly_lib_test.named_element.symbol.test_resources.list_assertions import equals_list_resolver
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_reference
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream
+from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+    assert_token_stream
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

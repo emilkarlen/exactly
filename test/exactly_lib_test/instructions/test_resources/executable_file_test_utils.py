@@ -14,7 +14,8 @@ from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validat
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.named_element.symbol.test_resources.list_assertions import matches_list_resolver
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream
+from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+    assert_token_stream
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file

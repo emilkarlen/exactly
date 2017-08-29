@@ -17,7 +17,8 @@ from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceS
     constant, symbol, Fragment
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_string_resolver
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
+from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+    assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
