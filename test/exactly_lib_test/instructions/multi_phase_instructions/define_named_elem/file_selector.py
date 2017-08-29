@@ -1,7 +1,10 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import assign_symbol as sut
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.parse.parse_file_selector import NAME_SELECTOR_NAME
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors, all_files
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *
@@ -13,9 +16,11 @@ from exactly_lib_test.named_element.file_selector.test_resources.file_selector_r
     resolved_value_equals_file_selector
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_ne
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_container
+from exactly_lib_test.named_element.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selectors_arguments
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 
@@ -78,6 +83,31 @@ class TestSuccessfulScenarios(TestCaseBase):
                 )
                 # ACT & ASSERT #
                 self._check(source, ArrangementWithSds(), expectation)
+
+    def test_failing_parse(self):
+        cases = [
+            (
+                'single quoted argument',
+                str(surrounded_by_hard_quotes(NAME_SELECTOR_NAME)),
+            ),
+            (
+                'non-selector name that is not a valid symbol name',
+                NOT_A_VALID_SYMBOL_NAME,
+            ),
+        ]
+        # ARRANGE #
+        defined_name = 'defined_name'
+        parser = sut.EmbryoParser()
+        for name, rhs_source in cases:
+            with self.subTest(name=name):
+                source = single_line_source(
+                    src('{file_sel_type} {defined_name} = {selector_argument}',
+                        defined_name=defined_name,
+                        selector_argument=rhs_source),
+                )
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    # ACT & ASSERT #
+                    parser.parse(source)
 
 
 if __name__ == '__main__':
