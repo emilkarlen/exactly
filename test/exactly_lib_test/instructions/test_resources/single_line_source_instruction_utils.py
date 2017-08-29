@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.section_document.test_resources.parse_source import every_line_is_consumed, \
+from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed, \
     is_at_beginning_of_line
 from exactly_lib_test.test_resources.parse import remaining_source
 

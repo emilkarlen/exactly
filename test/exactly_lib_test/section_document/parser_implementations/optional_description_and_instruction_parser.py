@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.optional_description_an
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser, \
     InstructionAndDescription
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source, source_is_at_end
+from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end
 from exactly_lib_test.test_resources.parse import source3
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
