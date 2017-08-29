@@ -3,13 +3,13 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.help_texts.type_system import FILE_SELECTOR_TYPE
-from exactly_lib.named_element import file_selectors
-from exactly_lib.named_element.file_selectors import FileSelectorConstant
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
 from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.file_selectors import resolvers
+from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
 from exactly_lib.test_case_utils.parse.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.parse.expression import parser as ep
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
@@ -199,7 +199,7 @@ GRAMMAR = grammar.Grammar(
         type_system_type_name=FILE_SELECTOR_TYPE,
         syntax_element_name=SELECTOR_ARGUMENT,
     ),
-    mk_reference=file_selectors.FileSelectorReference,
+    mk_reference=resolvers.FileSelectorReference,
     simple_expressions={
         NAME_SELECTOR_NAME: grammar.SimpleExpression(_parse_name_selector,
                                                      NAME_SYNTAX_DESCRIPTION),
@@ -207,7 +207,7 @@ GRAMMAR = grammar.Grammar(
                                                      TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        AND_OPERATOR: grammar.ComplexExpression(file_selectors.FileSelectorAnd,
+        AND_OPERATOR: grammar.ComplexExpression(resolvers.FileSelectorAnd,
                                                 AND_SYNTAX_DESCRIPTION),
     }
 )

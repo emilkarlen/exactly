@@ -4,7 +4,7 @@ from exactly_lib.instructions.multi_phase_instructions import assign_symbol as s
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse.parse_file_selector import NAME_SELECTOR_NAME
+from exactly_lib.test_case_utils.file_selectors.parse_file_selector import NAME_SELECTOR_NAME
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors, all_files
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *
@@ -12,11 +12,11 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources impor
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.named_element.file_selector.test_resources.file_selector_resolver_assertions import \
-    resolved_value_equals_file_selector
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_ne
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_container
 from exactly_lib_test.named_element.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
+from exactly_lib_test.test_case_utils.file_selectors.test_resources.resolver_assertions import \
+    resolved_value_equals_file_selector
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selectors_arguments
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
