@@ -36,6 +36,10 @@ def get_element_type(resolver: NamedElementResolver) -> ElementType:
     return resolver.element_type
 
 
+def get_value_type(resolver: NamedElementResolver) -> ValueType:
+    return resolver.value_type
+
+
 class LogicValueResolver(NamedElementResolver):
     """ Base class for logic values - values that represent functionality/logic."""
 
@@ -46,6 +50,10 @@ class LogicValueResolver(NamedElementResolver):
     @property
     def logic_value_type(self) -> LogicValueType:
         raise NotImplementedError('abstract method')
+
+
+def get_logic_value_type(resolver: LogicValueResolver) -> LogicValueType:
+    return resolver.logic_value_type
 
 
 class FileSelectorResolver(LogicValueResolver):
@@ -71,8 +79,12 @@ class LinesTransformerResolver(LogicValueResolver):
     """ Base class for resolvers of :class:`LinesTransformer`. """
 
     @property
+    def logic_value_type(self) -> LogicValueType:
+        return LogicValueType.LINES_TRANSFORMER
+
+    @property
     def value_type(self) -> ValueType:
-        raise NotImplementedError('todo')
+        return ValueType.LINES_TRANSFORMER
 
     @property
     def references(self) -> list:
@@ -113,6 +125,10 @@ class SymbolValueResolver(NamedElementResolver):
         Short cut for resolving the value_of_any_dependency
         """
         return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+
+
+def get_data_value_type(resolver: SymbolValueResolver) -> SymbolValueType:
+    return resolver.data_value_type
 
 
 class NamedElementContainer(SymbolTableValue):
