@@ -34,7 +34,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-NEGATION_OPERATOR = negation_of_predicate.NEGATION_ARGUMENT_STR
+NEGATION_OPERATOR = instruction_arguments.NEGATION_ARGUMENT_STR
 
 FILE_TYPE_OPTIONS = [
     (file_type, a.OptionName(long_name=file_info.type_argument))

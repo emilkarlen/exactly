@@ -15,3 +15,4 @@ RELATIVITY_ARGUMENT = a.Named('RELATIVITY')
 
 OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
                                               RELATIVITY_ARGUMENT)
+NEGATION_ARGUMENT_STR = '!'
