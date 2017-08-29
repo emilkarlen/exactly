@@ -1,4 +1,4 @@
-from exactly_lib.test_case_utils.parse.expression import grammar
+from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax.elements import argument as a
 

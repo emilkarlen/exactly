@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.parse.expression import syntax_documentation, parser
+from exactly_lib_test.test_case_utils.expression import parser
+from exactly_lib_test.test_case_utils.expression import syntax_documentation
 
 
 def suite() -> unittest.TestSuite:
