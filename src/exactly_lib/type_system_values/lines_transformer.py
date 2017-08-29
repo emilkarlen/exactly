@@ -17,6 +17,10 @@ class IdentityLinesTransformer(LinesTransformer):
 
 class SequenceLinesTransformer(LinesTransformer):
     def __init__(self, transformers: list):
+        self._transformers = tuple(transformers)
+
+    @property
+    def transformers(self) -> tuple:
         raise NotImplementedError('todo')
 
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
@@ -51,6 +55,8 @@ class LinesTransformerStructureVisitor:
     def visit(self, transformer: LinesTransformer):
         if isinstance(transformer, CustomLinesTransformer):
             return self.visit_custom(transformer)
+        if isinstance(transformer, SequenceLinesTransformer):
+            return self.visit_sequence(transformer)
         elif isinstance(transformer, IdentityLinesTransformer):
             return self.visit_identity(transformer)
         else:

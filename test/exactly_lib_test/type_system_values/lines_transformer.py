@@ -11,17 +11,6 @@ def suite() -> unittest.TestSuite:
 
 
 class TestFileTransformerStructureVisitor(unittest.TestCase):
-    def test_visit_custom(self):
-        # ARRANGE #
-        instance = MyCustomTransformer()
-        visitor = AVisitorThatRecordsVisitedMethods()
-        # ACT #
-        ret_val = visitor.visit(instance)
-        # ASSERT #
-        self.assertEqual([sut.CustomLinesTransformer],
-                         visitor.visited_types)
-        self.assertIs(instance, ret_val)
-
     def test_visit_identity(self):
         # ARRANGE #
         instance = sut.IdentityLinesTransformer()
@@ -30,6 +19,28 @@ class TestFileTransformerStructureVisitor(unittest.TestCase):
         ret_val = visitor.visit(instance)
         # ASSERT #
         self.assertEqual([sut.IdentityLinesTransformer],
+                         visitor.visited_types)
+        self.assertIs(instance, ret_val)
+
+    def test_visit_sequence(self):
+        # ARRANGE #
+        instance = sut.SequenceLinesTransformer([])
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.SequenceLinesTransformer],
+                         visitor.visited_types)
+        self.assertIs(instance, ret_val)
+
+    def test_visit_custom(self):
+        # ARRANGE #
+        instance = MyCustomTransformer()
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.CustomLinesTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
@@ -51,13 +62,17 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
     def __init__(self):
         self.visited_types = []
 
-    def visit_custom(self, selectors: sut.CustomLinesTransformer):
-        self.visited_types.append(sut.CustomLinesTransformer)
-        return selectors
-
-    def visit_identity(self, selectors: sut.IdentityLinesTransformer):
+    def visit_identity(self, transformer: sut.IdentityLinesTransformer):
         self.visited_types.append(sut.IdentityLinesTransformer)
-        return selectors
+        return transformer
+
+    def visit_sequence(self, transformer: sut.SequenceLinesTransformer):
+        self.visited_types.append(sut.SequenceLinesTransformer)
+        return transformer
+
+    def visit_custom(self, transformer: sut.CustomLinesTransformer):
+        self.visited_types.append(sut.CustomLinesTransformer)
+        return transformer
 
 
 class MyCustomTransformer(sut.CustomLinesTransformer):
