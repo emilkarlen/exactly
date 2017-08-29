@@ -24,7 +24,11 @@ class SequenceLinesTransformer(LinesTransformer):
         return self._transformers
 
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
-        return lines
+        if not self._transformers:
+            return lines
+        elif len(self._transformers) == 1:
+            return self._transformers[0].transform(tcds, lines)
+        raise NotImplementedError('todo')
 
 
 class CustomLinesTransformer(LinesTransformer):
