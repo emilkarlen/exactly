@@ -12,7 +12,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
-from exactly_lib.test_case_utils.parse import parse_file_transformer
+from exactly_lib.test_case_utils.file_transformer import parse_file_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.expectation_type import ExpectationType
 
