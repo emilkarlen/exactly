@@ -1,6 +1,8 @@
 import unittest
 
-from exactly_lib.type_system_values.lines_transformer import IdentityLinesTransformer, SequenceLinesTransformer
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system_values.lines_transformer import IdentityLinesTransformer, SequenceLinesTransformer, \
+    LinesTransformer
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 
 
@@ -43,3 +45,35 @@ class Test(unittest.TestCase):
 
         self.assertEqual(input_lines,
                          output_lines)
+
+    def test_WHEN_single_transformer_THEN_transformer_SHOULD_be_identical_to_the_single_transformer(self):
+        # ARRANGE #
+
+        tcds = fake_home_and_sds()
+
+        to_upper_t = MyToUppercaseTransformer()
+
+        sequence = SequenceLinesTransformer([to_upper_t])
+
+        input_lines = ['first',
+                       'second',
+                       'third']
+
+        # ACT #
+
+        actual = sequence.transform(tcds, iter(input_lines))
+
+        # ASSERT #
+
+        expected = to_upper_t.transform(tcds, iter(input_lines))
+
+        expected_as_list = list(expected)
+        actual_as_list = list(actual)
+
+        self.assertEqual(expected_as_list,
+                         actual_as_list)
+
+
+class MyToUppercaseTransformer(LinesTransformer):
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        return map(str.upper, lines)
