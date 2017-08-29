@@ -3,6 +3,7 @@ import itertools
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
+from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorFromSelectors
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util import dir_contents_selection as dcs
@@ -63,7 +64,7 @@ class FileSelectorAnd(FileSelectorResolver):
 
     def resolve(self, symbols: SymbolTable) -> FileSelector:
         selectors = dcs.and_all([resolver.resolve(symbols).selectors for resolver in self._resolvers])
-        return FileSelector(selectors)
+        return FileSelectorFromSelectors(selectors)
 
     @property
     def references(self) -> list:

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system_values import file_selector as sut
+from exactly_lib.test_case_utils.file_selectors import file_selectors as sut
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors
 
@@ -14,7 +14,7 @@ def suite() -> unittest.TestSuite:
 class TestFileSelectorStructureVisitor(unittest.TestCase):
     def test_visit_selectors(self):
         # ARRANGE #
-        instance = sut.FileSelector(Selectors())
+        instance = sut.FileSelectorFromSelectors(Selectors())
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)

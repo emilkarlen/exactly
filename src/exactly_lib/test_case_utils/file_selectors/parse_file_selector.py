@@ -9,18 +9,18 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import file_properties, token_stream_parse_prime
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.file_selectors import resolvers
+from exactly_lib.test_case_utils.file_selectors.file_selectors import SELECT_ALL_FILES, FileSelectorFromSelectors
 from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
 from exactly_lib.test_case_utils.parse.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.parse.expression import parser as ep
 from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
-SELECTION_OF_ALL_FILES = FileSelectorConstant(FileSelector(dcs.all_files()))
+SELECTION_OF_ALL_FILES = FileSelectorConstant(SELECT_ALL_FILES)
 
 CONCEPT_NAME = Name('selector', 'selectors')
 
@@ -118,7 +118,7 @@ def _parse_type_selector(parser: TokenParserPrime) -> FileSelectorResolver:
 
 
 def _constant(selectors: dcs.Selectors) -> FileSelectorResolver:
-    return FileSelectorConstant(FileSelector(selectors))
+    return FileSelectorConstant(FileSelectorFromSelectors(selectors))
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
