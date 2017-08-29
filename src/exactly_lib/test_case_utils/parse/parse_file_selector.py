@@ -29,15 +29,9 @@ COMMAND_NAME__NAME_SELECTOR = 'name'
 COMMAND_NAME__TYPE_SELECTOR = 'type'
 
 
-class CommandSetup:
-    def __init__(self, argument_syntax_element_name: str):
-        self.argument_syntax_element_name = argument_syntax_element_name
+NAME_SELECTOR_ARGUMENT = a.Named('PATTERN')
 
-
-COMMANDS = {
-    COMMAND_NAME__NAME_SELECTOR: CommandSetup('PATTERN'),
-    COMMAND_NAME__TYPE_SELECTOR: CommandSetup('TYPE'),
-}
+TYPE_SELECTOR_ARGUMENT = a.Named('TYPE')
 
 AND_OPERATOR = '&&'
 
@@ -132,8 +126,8 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_SELECTOR_': CONCEPT_NAME.singular,
     '_NAME_SELECTOR_': COMMAND_NAME__NAME_SELECTOR,
     '_TYPE_SELECTOR_': COMMAND_NAME__TYPE_SELECTOR,
-    '_PATTERN_': COMMANDS[COMMAND_NAME__NAME_SELECTOR].argument_syntax_element_name,
-    '_TYPE_': COMMANDS[COMMAND_NAME__TYPE_SELECTOR].argument_syntax_element_name,
+    '_PATTERN_': NAME_SELECTOR_ARGUMENT.name,
+    '_TYPE_': TYPE_SELECTOR_ARGUMENT.name,
     '_GLOB_PATTERN_': 'Unix glob pattern',
 }
 
@@ -184,7 +178,7 @@ def _file_types_table() -> docs.ParagraphItem:
 NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
-                 a.Named(COMMANDS[COMMAND_NAME__NAME_SELECTOR].argument_syntax_element_name))
+                 NAME_SELECTOR_ARGUMENT)
     ],
     description_rest=_fnap(_NAME_SELECTOR_SED_DESCRIPTION)
 )
@@ -192,7 +186,7 @@ NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
-                 a.Named(COMMANDS[COMMAND_NAME__TYPE_SELECTOR].argument_syntax_element_name))],
+                 TYPE_SELECTOR_ARGUMENT)],
     description_rest=_type_selector_sed_description()
 )
 
