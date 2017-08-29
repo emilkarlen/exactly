@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib_test.type_system_values import concrete_path_parts, file_refs, string_value, list_value
 from exactly_lib_test.type_system_values import file_selector
-from exactly_lib_test.type_system_values import lines_transformer
 from exactly_lib_test.type_system_values import test_resources_test
 from exactly_lib_test.type_system_values import utils
 
@@ -16,7 +15,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(string_value.suite())
     ret_val.addTest(list_value.suite())
     ret_val.addTest(file_selector.suite())
-    ret_val.addTest(lines_transformer.suite())
     return ret_val
 
 
