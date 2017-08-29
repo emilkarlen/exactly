@@ -196,7 +196,7 @@ TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     description_rest=_type_selector_sed_description()
 )
 
-AND_SYNTAX_DESCRIPTION = grammar.ComplexExpressionDescription(
+AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
     description_rest=_fnap(_AND_SELECTOR_SED_DESCRIPTION)
 )
 

@@ -27,6 +27,23 @@ class RefExpr(Expr):
                                self.symbol_name)
 
 
+class PrefixExprBase(Expr):
+    def __init__(self, expression: Expr):
+        self.expression = expression
+
+    def __str__(self):
+        return '{}({})'.format(self.__class__.__name__,
+                               str(self.expression))
+
+
+class PrefixExprP(PrefixExprBase):
+    pass
+
+
+class PrefixExprQ(PrefixExprBase):
+    pass
+
+
 class SimpleExpr(Expr):
     pass
 
@@ -76,6 +93,9 @@ SIMPLE_SANS_ARG = 'simple_sans_arg'
 
 NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME = 'not/a/simple/expr/name/and/not/a/valid/symbol/name'
 
+PREFIX_P = '!'
+PREFIX_Q = 'prefix_q'
+
 COMPLEX_A = 'complex_a'
 COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
@@ -84,33 +104,39 @@ CONCEPT = grammar.Concept(grammar.Name('concept singular',
                           'type-system-name',
                           a.Named('SYNTAX-ELEMENT-NAME'))
 
+SIMPLE_EXPRESSIONS = {
+    SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
+                                              grammar.SimpleExpressionDescription([], [])),
+    SIMPLE_SANS_ARG: grammar.SimpleExpression(parse_simple_sans_arg,
+                                              grammar.SimpleExpressionDescription([], [])),
+}
+
+PREFIX_EXPRESSIONS = {
+    PREFIX_P: grammar.PrefixExpression(PrefixExprP,
+                                       grammar.OperatorExpressionDescription([])),
+    PREFIX_Q: grammar.PrefixExpression(PrefixExprQ,
+                                       grammar.OperatorExpressionDescription([])),
+}
+
 GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=RefExpr,
-    simple_expressions={
-        SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
-                                                  grammar.SimpleExpressionDescription([], [])),
-        SIMPLE_SANS_ARG: grammar.SimpleExpression(parse_simple_sans_arg,
-                                                  grammar.SimpleExpressionDescription([], [])),
-    },
+    simple_expressions=SIMPLE_EXPRESSIONS,
     complex_expressions={
         COMPLEX_A:
             grammar.ComplexExpression(ComplexA,
-                                      grammar.ComplexExpressionDescription([])),
+                                      grammar.OperatorExpressionDescription([])),
         COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME:
             grammar.ComplexExpression(ComplexB,
-                                      grammar.ComplexExpressionDescription([])),
+                                      grammar.OperatorExpressionDescription([])),
     },
+    prefix_expressions=PREFIX_EXPRESSIONS,
 )
 
 GRAMMAR_SANS_COMPLEX_EXPRESSIONS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=RefExpr,
-    simple_expressions={
-        SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
-                                                  grammar.SimpleExpressionDescription([], [])),
-        SIMPLE_SANS_ARG: grammar.SimpleExpression(parse_simple_sans_arg,
-                                                  grammar.SimpleExpressionDescription([], [])),
-    },
+    simple_expressions=SIMPLE_EXPRESSIONS,
+    prefix_expressions=PREFIX_EXPRESSIONS,
     complex_expressions={},
 )

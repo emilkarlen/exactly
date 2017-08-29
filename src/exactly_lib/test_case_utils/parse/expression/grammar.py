@@ -21,7 +21,7 @@ class SimpleExpression:
         self.syntax = syntax
 
 
-class ComplexExpressionDescription:
+class OperatorExpressionDescription:
     def __init__(self,
                  description_rest: list):
         self.description_rest = description_rest
@@ -30,11 +30,22 @@ class ComplexExpressionDescription:
 class ComplexExpression:
     def __init__(self,
                  mk_complex,
-                 syntax: ComplexExpressionDescription):
+                 syntax: OperatorExpressionDescription):
         """
-        :param mk_complex: [NamedElementResolver] -> Expr
+        :param mk_complex: [Expr] -> Expr
         """
         self.mk_complex = mk_complex
+        self.syntax = syntax
+
+
+class PrefixExpression:
+    def __init__(self,
+                 mk_expression,
+                 syntax: OperatorExpressionDescription):
+        """
+        :param mk_expression: Expr -> Expr
+        """
+        self.mk_expression = mk_expression
         self.syntax = syntax
 
 
@@ -53,13 +64,16 @@ class Grammar:
                  concept: Concept,
                  mk_reference,
                  simple_expressions: dict,
-                 complex_expressions: dict):
+                 complex_expressions: dict,
+                 prefix_expressions: dict=None):
         """
-        :param mk_reference: str -> NamedElementResolver
+        :param mk_reference: str -> Expr
         :param simple_expressions: dict str -> :class:`SimpleExpression`
         :param complex_expressions: dict str -> :class:`ComplexExpression`
+        :param prefix_expressions: dict str -> :class:`PrefixExpression`
         """
         self.concept = concept
         self.mk_reference = mk_reference
         self.simple_expressions = simple_expressions
         self.complex_expressions = complex_expressions
+        self.prefix_expressions = prefix_expressions if prefix_expressions else {}
