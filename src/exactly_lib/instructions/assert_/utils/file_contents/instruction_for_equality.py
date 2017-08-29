@@ -2,10 +2,10 @@ import difflib
 import filecmp
 import pathlib
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
     ActualFileChecker
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
-from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -137,7 +137,7 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
 
     def _expected_obj_description(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         if self.expected_contents.here_document:
-            return documentation_text.HERE_DOCUMENT.name
+            return instruction_arguments.HERE_DOCUMENT.name
         if self.expected_contents.is_file_ref:
             resolving_env = environment.path_resolving_environment_pre_or_post_sds
             path_value = self.expected_contents.file_reference_resolver.resolve(resolving_env.symbols)

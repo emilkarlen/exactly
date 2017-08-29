@@ -17,10 +17,6 @@ def here_document_syntax_element_description(instruction_name: str,
                                     normalize_and_parse(s))
 
 
-HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
-
-REG_EX = a.Named('REG-EX')
-
 _HERE_DOCUMENT_DESCRIPTION = """\
 A sequence of lines, given using the shell "here document" syntax.
 

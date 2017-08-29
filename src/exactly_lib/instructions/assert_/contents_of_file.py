@@ -2,6 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
@@ -55,7 +56,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
-                                                                     path_syntax.PATH_ARGUMENT)
+                                                                     instruction_arguments.PATH_ARGUMENT)
         relativity_of_actual_arg = a.Named('RELATIVITY-OF-ACTUAL-PATH')
         optional_relativity_of_actual = a.Single(a.Multiplicity.OPTIONAL,
                                                  relativity_of_actual_arg)
@@ -68,12 +69,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                     [optional_relativity_of_actual,
                      mandatory_actual_path]),
                 rel_opts.default_relativity_for_rel_opt_type(
-                    path_syntax.PATH_ARGUMENT.name,
+                    instruction_arguments.PATH_ARGUMENT.name,
                     ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
         )
 
         relativity_of_actual_file_seds = rel_opts.relativity_syntax_element_descriptions(
-            path_syntax.PATH_ARGUMENT,
+            instruction_arguments.PATH_ARGUMENT,
             ACTUAL_RELATIVITY_CONFIGURATION.options,
             relativity_of_actual_arg)
 

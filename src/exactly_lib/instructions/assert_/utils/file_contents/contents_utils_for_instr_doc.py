@@ -2,6 +2,7 @@ from exactly_lib import program_info
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
@@ -59,12 +60,13 @@ class FileContentsHelpParts:
                                 a.Constant(
                                     instruction_options.CONTAINS_ARGUMENT))
         reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
-                              dt.REG_EX)
+                              instruction_arguments.REG_EX)
         expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
                                      self.expected_file_arg)
         optional_replace_env_vars_option = a.Single(a.Multiplicity.OPTIONAL,
                                                     self.with_replaced_env_vars_option)
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
+        here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
+                                instruction_arguments.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cls([optional_replace_env_vars_option,
                                          optional_not_arg,
@@ -95,7 +97,7 @@ class FileContentsHelpParts:
 
     def syntax_element_descriptions_at_bottom(self) -> list:
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
-                                                              path_syntax.PATH_ARGUMENT)
+                                                              instruction_arguments.PATH_ARGUMENT)
 
         relativity_of_expected_arg = a.Named('RELATIVITY-OF-EXPECTED-PATH')
         optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
@@ -113,17 +115,17 @@ class FileContentsHelpParts:
                                             ),
                ] + \
                rel_opts.relativity_syntax_element_descriptions(
-                   path_syntax.PATH_ARGUMENT,
+                   instruction_arguments.PATH_ARGUMENT,
                    EXPECTED_FILE_REL_OPT_ARG_CONFIG.options,
                    relativity_of_expected_arg) + \
                [
-                   SyntaxElementDescription(dt.REG_EX.name,
+                   SyntaxElementDescription(instruction_arguments.REG_EX.name,
                                             self._parser.fnap('A Python regular expression.')),
                    cl_syntax.cli_argument_syntax_element_description(
                        self.with_replaced_env_vars_option,
                        self._with_replaced_env_vars_help()),
                    dt.here_document_syntax_element_description(self.instruction_name,
-                                                               dt.HERE_DOCUMENT),
+                                                               instruction_arguments.HERE_DOCUMENT),
                ]
 
     def see_also_items(self) -> list:

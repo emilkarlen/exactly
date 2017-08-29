@@ -11,7 +11,7 @@ from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_C
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.names import formatting
@@ -76,7 +76,7 @@ DOCUMENTATION = FileInterpreterActorDocumentation()
 
 class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
     def __init__(self):
-        self.file = path_syntax.FILE_ARGUMENT
+        self.file = instruction_arguments.FILE_ARGUMENT
         self.argument = a.Named(help_texts.ARGUMENT)
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         fm = {

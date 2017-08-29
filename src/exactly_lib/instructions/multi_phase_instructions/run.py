@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.concepts import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import \
@@ -79,10 +79,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         if additional_format_map:
             format_map.update(additional_format_map)
         super().__init__(name, format_map)
-        self.relativity_arg_path = path_syntax.PATH_ARGUMENT
+        self.relativity_arg_path = instruction_arguments.PATH_ARGUMENT
         self.mandatory_path = a.Single(a.Multiplicity.MANDATORY,
-                                       path_syntax.PATH_ARGUMENT)
-        self.optional_relativity = path_syntax.OPTIONAL_RELATIVITY_ARGUMENT_USAGE
+                                       instruction_arguments.PATH_ARGUMENT)
+        self.optional_relativity = instruction_arguments.OPTIONAL_RELATIVITY_ARGUMENT_USAGE
         self.mandatory_executable = a.Single(a.Multiplicity.MANDATORY,
                                              self.executable_arg)
         self.generic_arg = a.Named('ARGUMENT')
@@ -147,7 +147,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                [self.zero_or_more_generic_args,
                                                 right_parenthesis])
         default_relativity_desc = rel_path_doc.default_relativity_for_rel_opt_type(
-            path_syntax.PATH_ARGUMENT.name,
+            instruction_arguments.PATH_ARGUMENT.name,
             REL_OPTION_ARG_CONF.options.default_option)
         python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                                a.Option(PYTHON_EXECUTABLE_OPTION_NAME))

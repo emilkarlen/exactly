@@ -1,6 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -100,7 +101,6 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForErrorMessageStringResult())
 
-
-_PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
+_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)

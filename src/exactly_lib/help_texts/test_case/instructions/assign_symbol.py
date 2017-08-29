@@ -1,6 +1,6 @@
 import types
 
-from exactly_lib.help_texts import type_system
+from exactly_lib.help_texts import type_system, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
@@ -112,7 +112,7 @@ def definition_of_type_path() -> str:
     ]
     arguments.extend(
         path_syntax.mandatory_path_with_optional_relativity(
-            path_syntax.PATH_ARGUMENT,
+            instruction_arguments.PATH_ARGUMENT,
             PATH_SUFFIX_IS_REQUIRED))
     return cl_syntax.cl_syntax_for_args(arguments)
 

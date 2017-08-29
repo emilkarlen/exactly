@@ -1,6 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -40,7 +41,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
             REL_OPT_ARG_CONF.path_suffix_is_required)
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
+        here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
+                                instruction_arguments.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               docs.paras('Creates an empty file.')),
@@ -53,7 +55,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                                    REL_OPT_ARG_CONF.options) + \
                [
                    dt.here_document_syntax_element_description(self.instruction_name(),
-                                                               dt.HERE_DOCUMENT),
+                                                               instruction_arguments.HERE_DOCUMENT),
                ]
 
     def _see_also_cross_refs(self) -> list:
@@ -79,7 +81,6 @@ class FileInfo(tuple):
     @property
     def references(self) -> list:
         return self.file_ref.references + self.contents.references
-
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
@@ -138,7 +139,7 @@ def create_file(file_info: FileInfo,
     return None
 
 
-_PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
+_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION
 

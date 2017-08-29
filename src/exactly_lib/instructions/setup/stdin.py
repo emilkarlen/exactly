@@ -2,6 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -37,7 +38,7 @@ RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_file_ref.CONFIGURATION
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {})
-        self.path_arg = path_syntax.PATH_ARGUMENT
+        self.path_arg = instruction_arguments.PATH_ARGUMENT
 
     def single_line_description(self) -> str:
         return 'Sets the contents of stdin for the act phase program'
@@ -53,7 +54,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         arguments = path_syntax.mandatory_path_with_optional_relativity(
             self.path_arg,
             RELATIVITY_OPTIONS_CONFIGURATION.path_suffix_is_required)
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
+        here_doc_arg = a.Single(a.Multiplicity.MANDATORY, instruction_arguments.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               docs.paras('Sets stdin to be the contents of a file.')),
@@ -68,7 +69,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 parse_here_doc_or_file_ref.CONFIGURATION.options) +
             [
                 dt.here_document_syntax_element_description(self.instruction_name(),
-                                                            dt.HERE_DOCUMENT),
+                                                            instruction_arguments.HERE_DOCUMENT),
             ]
         )
 

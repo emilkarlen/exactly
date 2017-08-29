@@ -2,6 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
@@ -42,7 +43,7 @@ FILE_TYPE_OPTIONS = [
 
 _TYPE_ARGUMENT_STR = 'TYPE'
 
-_PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
+_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 _DEFAULT_FILE_PROPERTIES_CHECK = file_properties.must_exist(follow_symlinks=False)
 
