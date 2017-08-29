@@ -73,9 +73,16 @@ class _EqualsResolver(asrt.ValueAssertion):
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertIsInstance(value, SymbolValueResolver)
+        assert isinstance(value, SymbolValueResolver)
         put.assertEqual(ElementType.SYMBOL,
                         value.element_type,
                         _ELEMENT_TYPE_ERROR_MESSAGE)
+        put.assertIs(self.expected.data_value_type,
+                     value.data_value_type,
+                     'data_value_type')
+        put.assertIs(self.expected.value_type,
+                     value.value_type,
+                     'value_type')
         _EqualsSymbolValueResolverVisitor(value, put, message_builder).visit(self.expected)
 
 
