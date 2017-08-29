@@ -16,7 +16,7 @@ from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_
     equals_symbol_reference_restrictions
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.parse import remaining_source

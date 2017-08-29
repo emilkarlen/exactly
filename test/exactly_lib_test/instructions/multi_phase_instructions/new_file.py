@@ -21,7 +21,7 @@ from exactly_lib_test.instructions.test_resources.relativity_options import conf
     conf_rel_non_home, default_conf_rel_non_home
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.section_document.test_resources.parse_source import source_is_at_end, \
+from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly

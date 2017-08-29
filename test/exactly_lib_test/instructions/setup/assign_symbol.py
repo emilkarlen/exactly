@@ -30,7 +30,7 @@ from exactly_lib_test.named_element.symbol.test_resources.symbol_usage_assertion
     assert_symbol_usages_is_singleton_list
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import string_constant_container, \
     container
-from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_case_utils.parse.parse_string import string_resolver_from_fragments
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
