@@ -1,21 +1,21 @@
 import shlex
 import unittest
 
-from exactly_lib.named_element.file_selectors import FileSelectorConstant
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse import parse_file_selector as sut
+from exactly_lib.test_case_utils.file_selectors import parse_file_selector as sut
+from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
-from exactly_lib_test.named_element.file_selector.test_resources.file_selector_resolver_assertions import \
-    resolved_value_equals_file_selector
-from exactly_lib_test.named_element.file_selector.test_resources.restrictions import is_file_selector_reference_to
+from exactly_lib_test.named_element.test_resources.file_selector import is_file_selector_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.test_resources.parse_source import assert_source
+from exactly_lib_test.test_case_utils.file_selectors.test_resources.resolver_assertions import \
+    resolved_value_equals_file_selector
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

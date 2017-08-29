@@ -3,8 +3,8 @@ from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib.util import symbol_table
+from exactly_lib_test.test_case_utils.file_selectors.test_resources.value_assertions import equals_file_selector
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.file_selector_assertions import equals_file_selector
 
 
 def resolved_value_equals_file_selector(expected: FileSelector,

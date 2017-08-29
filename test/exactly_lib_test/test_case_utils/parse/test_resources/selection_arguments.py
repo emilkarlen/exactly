@@ -1,6 +1,6 @@
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse import parse_file_selector
+from exactly_lib.test_case_utils.file_selectors import parse_file_selector
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.parse import token
 

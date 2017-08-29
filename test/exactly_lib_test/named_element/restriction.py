@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.named_element import restriction as sut
-from exactly_lib.named_element.file_selectors import FileSelectorConstant
+from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
 from exactly_lib.type_system_values.file_selector import SELECT_ALL_FILES
 from exactly_lib.type_system_values.value_type import ElementType
 from exactly_lib.util.symbol_table import empty_symbol_table

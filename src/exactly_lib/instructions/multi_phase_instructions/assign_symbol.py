@@ -24,7 +24,8 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list, parse_file_selector
+from exactly_lib.test_case_utils.file_selectors import parse_file_selector
+from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
