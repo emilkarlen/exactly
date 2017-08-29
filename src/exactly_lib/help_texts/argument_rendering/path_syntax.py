@@ -1,15 +1,5 @@
+from exactly_lib.help_texts.instruction_arguments import OPTIONAL_RELATIVITY_ARGUMENT_USAGE
 from exactly_lib.util.cli_syntax.elements import argument as a
-
-PATH_SYNTAX_ELEMENT_NAME = 'PATH'
-
-PATH_ARGUMENT = a.Named(PATH_SYNTAX_ELEMENT_NAME)
-FILE_ARGUMENT = a.Named('FILE')
-DIR_ARGUMENT = a.Named('DIR')
-
-RELATIVITY_ARGUMENT = a.Named('RELATIVITY')
-OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
-                                              RELATIVITY_ARGUMENT)
-SYMBOL_REFERENCE = a.Named('SYMBOL-REFERENCE')
 
 
 def path_or_symbol_reference(multiplicity: a.Multiplicity, path_argument: a.Named) -> a.ArgumentUsage:

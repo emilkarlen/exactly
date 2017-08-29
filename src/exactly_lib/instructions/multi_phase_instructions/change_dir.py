@@ -4,7 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -50,7 +50,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                path_syntax.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+                instruction_arguments.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
                 a.Single(a.Multiplicity.OPTIONAL,
                          _DIR_ARGUMENT),
             ])),
@@ -123,7 +123,7 @@ def parts_parser(is_after_act_phase: bool) -> InstructionPartsParser:
                                        MainStepResultTranslatorForErrorMessageStringResult())
 
 
-_DIR_ARGUMENT = path_syntax.PATH_ARGUMENT
+_DIR_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 
 def relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfiguration:

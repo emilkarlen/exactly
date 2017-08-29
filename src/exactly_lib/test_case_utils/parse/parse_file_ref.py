@@ -2,7 +2,7 @@ import functools
 import pathlib
 import types
 
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
@@ -63,7 +63,7 @@ def all_rel_options_config(argument_syntax_name: str,
                                           path_suffix_is_required)
 
 
-ALL_REL_OPTIONS_CONFIG = all_rel_options_config(path_syntax.PATH_SYNTAX_ELEMENT_NAME)
+ALL_REL_OPTIONS_CONFIG = all_rel_options_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
 
 STANDARD_NON_HOME_RELATIVITY_VARIANTS = PathRelativityVariants(
     ALL_REL_OPTIONS - {RelOptionType.REL_HOME_CASE},
@@ -80,7 +80,7 @@ def non_home_config(argument_syntax_name: str,
                                           path_suffix_is_required)
 
 
-NON_HOME_CONFIG = non_home_config(path_syntax.PATH_SYNTAX_ELEMENT_NAME)
+NON_HOME_CONFIG = non_home_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
 
 
 def parse_file_ref_from_parse_source(source: ParseSource,

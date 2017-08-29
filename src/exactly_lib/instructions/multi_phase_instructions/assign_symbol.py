@@ -2,7 +2,7 @@ import exactly_lib.help_texts.type_system
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
@@ -143,14 +143,14 @@ def _parse(source: ParseSource) -> NamedElementDefinition:
     return NamedElementDefinition(name_str, NamedElementContainer(value_resolver, source_line))
 
 
-_PATH_ARGUMENT = path_syntax.PATH_ARGUMENT
+_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
     PathRelativityVariants(frozenset(RelOptionType), True),
     RelOptionType.REL_CWD)
 
 REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
-                                                                   path_syntax.PATH_ARGUMENT,
+                                                                   instruction_arguments.PATH_ARGUMENT,
                                                                    syntax_elements.PATH_SUFFIX_IS_REQUIRED)
 
 _MAIN_DESCRIPTION_REST = """\

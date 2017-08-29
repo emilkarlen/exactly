@@ -6,8 +6,8 @@ from exactly_lib.help.concepts.configuration_parameters.home_case_directory impo
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts, concepts as ci
-from exactly_lib.help_texts.argument_rendering.path_syntax import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
+from exactly_lib.help_texts.instruction_arguments import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.type_system import PATH_TYPE

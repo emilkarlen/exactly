@@ -8,6 +8,7 @@ from exactly_lib.help.concepts.configuration_parameters.home_case_directory impo
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -92,7 +93,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _syntax_element_descriptions_for_src(self) -> list:
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
-                                                              path_syntax.PATH_ARGUMENT)
+                                                              instruction_arguments.PATH_ARGUMENT)
         relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(OPTION_ARGUMENT_FOR_SOURCE.name))
         optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                        relativity_of_arg)
@@ -105,12 +106,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                     [optional_relativity,
                      mandatory_path]),
                 rel_opts.default_relativity_for_rel_opt_type(
-                    path_syntax.PATH_ARGUMENT.name,
+                    instruction_arguments.PATH_ARGUMENT.name,
                     REL_OPTION_ARG_CONF_FOR_SOURCE.options.default_option))]
         )
 
         relativity_of_file_seds = rel_opts.relativity_syntax_element_descriptions(
-            path_syntax.PATH_ARGUMENT,
+            instruction_arguments.PATH_ARGUMENT,
             REL_OPTION_ARG_CONF_FOR_SOURCE.options,
             relativity_of_arg)
 
@@ -118,7 +119,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _syntax_element_descriptions_for_dst(self) -> list:
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.OPTIONAL,
-                                                              path_syntax.PATH_ARGUMENT)
+                                                              instruction_arguments.PATH_ARGUMENT)
         relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(OPTION_ARGUMENT_FOR_DESTINATION.name))
         optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                        relativity_of_arg)
@@ -131,12 +132,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                     [optional_relativity,
                      mandatory_path]),
                 rel_opts.default_relativity_for_rel_opt_type(
-                    path_syntax.PATH_ARGUMENT.name,
+                    instruction_arguments.PATH_ARGUMENT.name,
                     REL_OPTION_ARG_CONF_FOR_DESTINATION.options.default_option))]
         )
 
         relativity_of_file_seds = rel_opts.relativity_syntax_element_descriptions(
-            path_syntax.PATH_ARGUMENT,
+            instruction_arguments.PATH_ARGUMENT,
             REL_OPTION_ARG_CONF_FOR_DESTINATION.options,
             relativity_of_arg)
 
