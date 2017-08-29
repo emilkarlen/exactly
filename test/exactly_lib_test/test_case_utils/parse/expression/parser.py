@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_utils.parse.expression import parser as sut
 from exactly_lib_test.section_document.test_resources import parse_source as asrt_source
 from exactly_lib_test.test_case_utils.parse.expression.test_resources import ast
-from exactly_lib_test.test_case_utils.parse.expression.test_resources.ast import ComplexA, ComplexB
+from exactly_lib_test.test_case_utils.parse.expression.test_resources.ast import ComplexA, ComplexB, PrefixExprP
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -17,6 +17,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailuresCommonToAllGrammars),
         unittest.makeSuite(TestSingleSimpleExpression),
+        unittest.makeSuite(TestSinglePrefixExpression),
         unittest.makeSuite(TestSingleRefExpression),
         unittest.makeSuite(TestComplexExpression),
         unittest.makeSuite(TestCombinedExpressions),
@@ -279,6 +280,186 @@ class TestSingleSimpleExpression(TestCaseBase):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         sut.parse_from_parse_source(grammar,
                                                     source)
+
+
+class TestSinglePrefixExpression(TestCaseBase):
+    prefix_operators = [
+        (
+            ast.PREFIX_P,
+            ast.PrefixExprP,
+        ),
+        (
+            ast.PREFIX_Q,
+            ast.PrefixExprQ,
+        ),
+    ]
+
+    grammars = [
+        (
+            'sans complex expressions',
+            ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
+        ),
+        (
+            'with complex expressions',
+            ast.GRAMMAR_WITH_ALL_COMPONENTS,
+        ),
+    ]
+
+    def test_successful_parse_with_simple_expr(self):
+
+        space_after = '           '
+        token_after = str(surrounded_by_hard_quotes('not an expression'))
+
+        simple_expr = ast.SimpleSansArg()
+        simple_expr_src = ast.SIMPLE_SANS_ARG
+
+        for grammar_description, grammar in self.grammars:
+            for prefix_operator, mk_prefix_expr in self.prefix_operators:
+                cases = [
+                    SourceCase(
+                        'first line is only simple expr',
+                        source=
+                        remaining_source('{op} {simple_expr}'.format(
+                            op=prefix_operator,
+                            simple_expr=simple_expr_src,
+                        )),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1)
+                    ),
+                    SourceCase(
+                        'first line is simple expr with space around',
+                        source=
+                        remaining_source(' {op}  {simple_expr}{space_after}'.format(
+                            op=prefix_operator,
+                            simple_expr=simple_expr_src,
+                            space_after=space_after)),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                         remaining_part_of_current_line=asrt.equals(space_after[1:]))
+                    ),
+                    SourceCase(
+                        'expression is followed by non-expression',
+                        source=
+                        remaining_source('{op} {simple_expr} {token_after}'.format(
+                            op=prefix_operator,
+                            simple_expr=simple_expr_src,
+                            token_after=token_after)),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                         remaining_part_of_current_line=asrt.equals(token_after))
+                    ),
+                    SourceCase(
+                        '( op simple )',
+                        source=
+                        remaining_source('( {op} {simple_expr} )'.format(
+                            op=prefix_operator,
+                            simple_expr=simple_expr_src,
+                            token_after=token_after)),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1),
+                    ),
+                    SourceCase(
+                        'op ( simple )',
+                        source=
+                        remaining_source('{op} ( {simple_expr} )'.format(
+                            op=prefix_operator,
+                            simple_expr=simple_expr_src,
+                            token_after=token_after)),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1),
+                    ),
+                ]
+
+                for case in cases:
+                    with self.subTest(grammar=grammar_description,
+                                      prefix_operator=prefix_operator,
+                                      name=case.name):
+                        self._check(
+                            Arrangement(
+                                grammar=grammar,
+                                source=case.source),
+                            Expectation(
+                                expression=mk_prefix_expr(simple_expr),
+                                source=case.source_assertion,
+                            )
+                        )
+
+    def test_successful_parse_with_complex_expressions(self):
+        s = ast.SimpleSansArg()
+        cases = [
+            (
+                'prefix operator binds to following simple expression (single complex ops)',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('{p_op} {s}  {bin_op}  {s}  {bin_op}  {p_op} {s}'.format(
+                        s=ast.SIMPLE_SANS_ARG,
+                        p_op=ast.PREFIX_P,
+                        bin_op=ast.COMPLEX_A,
+                    )),
+                ),
+                Expectation(
+                    expression=ComplexA([PrefixExprP(s), s, PrefixExprP(s)]),
+                    source=asrt_source.is_at_end_of_line(1),
+                ),
+            ),
+            (
+                'prefix operator binds to following simple expression (different complex ops)',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('{p_op} {s}  {bin_op_a}  {s}  {bin_op_b}  {p_op} {s}'.format(
+                        s=ast.SIMPLE_SANS_ARG,
+                        p_op=ast.PREFIX_P,
+                        bin_op_a=ast.COMPLEX_A,
+                        bin_op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+                    )),
+                ),
+                Expectation(
+                    expression=ComplexB([ComplexA([PrefixExprP(s), s]), PrefixExprP(s)]),
+                    source=asrt_source.is_at_end_of_line(1),
+                ),
+            ),
+        ]
+        for case_name, arrangement, expectation in cases:
+            with self.subTest(name=case_name):
+                self._check(
+                    arrangement,
+                    expectation
+                )
+
+    def test_fail(self):
+        for grammar_description, grammar in self.grammars:
+            for prefix_operator, mk_prefix_expr in self.prefix_operators:
+                cases = [
+                    (
+                        'no source after operator',
+                        remaining_source(prefix_operator),
+                    ),
+                    (
+                        'no source after operator, but expr on following line',
+                        remaining_source(prefix_operator,
+                                         [ast.SIMPLE_SANS_ARG]),
+                    ),
+                    (
+                        'operator followed by non-expression',
+                        remaining_source('{op} {non_expr}'.format(
+                            op=prefix_operator,
+                            non_expr=str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG)))),
+                    ),
+                    (
+                        'operator followed by expr in ( ), but ) is missing (but one is found on following line)',
+                        remaining_source('{op} ( {expr} '.format(
+                            op=prefix_operator,
+                            expr=ast.SIMPLE_SANS_ARG),
+                            [')']),
+                    ),
+                ]
+                for case_name, source in cases:
+                    with self.subTest(grammar=grammar_description,
+                                      prefix_operator=prefix_operator,
+                                      case_name=case_name):
+                        with self.assertRaises(SingleInstructionInvalidArgumentException):
+                            sut.parse_from_parse_source(grammar,
+                                                        source)
 
 
 class TestSingleRefExpression(TestCaseBase):

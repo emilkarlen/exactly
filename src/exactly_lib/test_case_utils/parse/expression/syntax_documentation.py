@@ -4,7 +4,7 @@ from exactly_lib.help_texts.type_system import syntax_of_type_name_in_text
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
-from .grammar import Grammar, SimpleExpressionDescription, ComplexExpressionDescription
+from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription
 
 
 def syntax_element_description(grammar: Grammar) -> SyntaxElementDescription:
@@ -54,7 +54,7 @@ class Syntax:
 
     def invokation_variants_complex(self) -> list:
         def invokation_variant_of(operator_name: str,
-                                  syntax: ComplexExpressionDescription) -> InvokationVariant:
+                                  syntax: OperatorExpressionDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
                                          a.Constant(operator_name))
             all_arguments = [self.concept_argument, operator_argument, self.concept_argument]
