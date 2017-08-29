@@ -1,9 +1,11 @@
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
+from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.lines_transformers import custom_transformers as ct
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
+from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
@@ -25,3 +27,17 @@ def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
     if with_replaced_env_vars:
         lines_transformer = ct.CUSTOM_LINES_TRANSFORMERS[ct.ENV_VAR_REPLACEMENT_TRANSFORMER_NAME]
     return LinesTransformerConstant(lines_transformer)
+
+
+def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
+    raise NotImplementedError('todo')
+
+
+def mk_reference(symbol_name: str) -> LinesTransformerResolver:
+    raise NotImplementedError('todo')
+
+
+CONCEPT = grammar.Concept(
+    Name()
+)
+GRAMMAR = grammar.Grammar()
