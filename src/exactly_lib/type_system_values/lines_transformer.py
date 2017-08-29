@@ -21,7 +21,7 @@ class SequenceLinesTransformer(LinesTransformer):
 
     @property
     def transformers(self) -> tuple:
-        raise NotImplementedError('todo')
+        return self._transformers
 
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         raise NotImplementedError('todo')
