@@ -1,5 +1,3 @@
-import re
-
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT, \
     EQUALS_ARGUMENT, CONTAINS_ARGUMENT
@@ -14,6 +12,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_transformer import parse_file_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.expectation_type import ExpectationType
 
 _OPERATION = 'OPERATION'
@@ -53,10 +52,7 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
         reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
         _ensure_no_more_arguments(source)
         source.consume_current_line()
-        try:
-            reg_ex = re.compile(reg_ex_arg.string)
-        except Exception as ex:
-            raise _parse_exception("Invalid {}: '{}'".format(_REG_EX, str(ex)))
+        reg_ex = compile_regex(reg_ex_arg.string)
 
         failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
             description_of_actual_file,
