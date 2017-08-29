@@ -7,9 +7,9 @@ from exactly_lib.instructions.assert_.utils.expression import comparators, integ
 from exactly_lib.instructions.assert_.utils.expression.integer_resolver import IntegerResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse.token import Token

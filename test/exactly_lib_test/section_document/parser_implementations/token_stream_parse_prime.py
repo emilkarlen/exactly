@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.section_document.parser_implementations import token_stream_parse_prime as sut
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.test_case_utils import token_stream_parse_prime as sut
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

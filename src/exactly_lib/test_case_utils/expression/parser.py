@@ -1,9 +1,9 @@
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils import token_stream_parse_prime
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.parse import symbol_syntax
-from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from .grammar import Grammar
 
 

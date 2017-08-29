@@ -4,11 +4,11 @@ from exactly_lib.help_texts.types import LINES_TRANSFORMER_CONCEPT_INFO
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.lines_transformers import custom_transformers as ct
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
-from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches

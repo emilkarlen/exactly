@@ -22,6 +22,7 @@ from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -35,7 +36,6 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.test_case_utils.file_selectors import parse_file_selector
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
-from exactly_lib.test_case_utils.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.expectation_type import ExpectationType
 
