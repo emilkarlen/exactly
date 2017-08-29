@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib_test.type_system_values import concrete_path_parts, file_refs, string_value, list_value
-from exactly_lib_test.type_system_values import file_selector, lines_transformer
+from exactly_lib_test.type_system_values import file_selector
+from exactly_lib_test.type_system_values import lines_transformer
 from exactly_lib_test.type_system_values import test_resources_test
 from exactly_lib_test.type_system_values import utils
 
