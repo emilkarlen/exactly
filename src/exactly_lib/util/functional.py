@@ -1,6 +1,10 @@
 import types
 
 
+def compose_first_and_second(f, g):
+    return Composition(g, f)
+
+
 class Composition:
     def __init__(self, g, f):
         self.g = g
