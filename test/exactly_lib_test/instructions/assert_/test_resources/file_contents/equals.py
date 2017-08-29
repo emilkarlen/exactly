@@ -27,7 +27,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources import \
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources.replaced_env_vars import \
     ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
