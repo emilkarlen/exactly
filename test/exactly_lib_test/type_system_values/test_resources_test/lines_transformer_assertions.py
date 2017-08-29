@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.type_system_values.lines_transformer import CustomLinesTransformer, \
-    IdentityLinesTransformer
+    IdentityLinesTransformer, SequenceLinesTransformer
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.type_system_values.test_resources import lines_transformer_assertions as sut
 
@@ -23,6 +23,14 @@ class TestEquals(unittest.TestCase):
                 CustomLinesTransformer(custom_transformer_name),
                 CustomLinesTransformer(custom_transformer_name)
             ),
+            (
+                SequenceLinesTransformer([]),
+                SequenceLinesTransformer([]),
+            ),
+            (
+                SequenceLinesTransformer([IdentityLinesTransformer()]),
+                SequenceLinesTransformer([IdentityLinesTransformer()]),
+            ),
         ]
         for expected, actual in cases:
             with self.subTest(transformer=expected.__class__.__name__):
@@ -30,27 +38,56 @@ class TestEquals(unittest.TestCase):
                 assertion = sut.equals_lines_transformer(expected)
                 assertion.apply_without_message(self, actual)
 
-    def test_not_equals_empty(self):
+    def test_not_equals__identity(self):
+        # ARRANGE #
+        expected = IdentityLinesTransformer()
+
+        different_transformers = [
+            CustomLinesTransformer('name'),
+            SequenceLinesTransformer([]),
+        ]
+        for actual in different_transformers:
+            assertion_to_check = sut.equals_lines_transformer(expected)
+            with self.subTest(actual=str(actual)):
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion_to_check,
+                                            actual)
+
+    def test_not_equals__sequence(self):
+        # ARRANGE #
+        expected = SequenceLinesTransformer([IdentityLinesTransformer()])
+
+        different_transformers = [
+            IdentityLinesTransformer(),
+            CustomLinesTransformer('custom transformer'),
+            SequenceLinesTransformer([]),
+            SequenceLinesTransformer([CustomLinesTransformer('custom transformer')]),
+            SequenceLinesTransformer([IdentityLinesTransformer(),
+                                      IdentityLinesTransformer()]),
+        ]
+        for actual in different_transformers:
+            assertion_to_check = sut.equals_lines_transformer(expected)
+            with self.subTest(actual=str(actual)):
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion_to_check,
+                                            actual)
+
+    def test_not_equals__custom(self):
         # ARRANGE #
         expected_transformer_name = 'expected name of custom transformer'
         actual_transformer_name = 'actual name of custom transformer'
 
-        cases = [
-            (
-                IdentityLinesTransformer(),
-                CustomLinesTransformer('name'),
+        # ARRANGE #
+        expected = CustomLinesTransformer(expected_transformer_name)
 
-            ),
-            (
-                CustomLinesTransformer(expected_transformer_name),
-                CustomLinesTransformer(actual_transformer_name),
-
-            ),
+        different_transformers = [
+            IdentityLinesTransformer(),
+            SequenceLinesTransformer([]),
+            CustomLinesTransformer(actual_transformer_name),
         ]
-        for expected, actual in cases:
+        for actual in different_transformers:
             assertion_to_check = sut.equals_lines_transformer(expected)
-            with self.subTest(expected=expected.__class__.__name__,
-                              actual=actual.__class__.__name__):
+            with self.subTest(actual=str(actual)):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check,
                                             actual)
