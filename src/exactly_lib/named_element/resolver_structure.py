@@ -52,6 +52,10 @@ class FileSelectorResolver(LogicValueResolver):
     """ Base class for resolvers of :class:`FileSelector`. """
 
     @property
+    def logic_value_type(self) -> LogicValueType:
+        return LogicValueType.FILE_SELECTOR
+
+    @property
     def value_type(self) -> ValueType:
         return ValueType.FILE_SELECTOR
 

@@ -4,8 +4,8 @@ from exactly_lib.instructions.multi_phase_instructions import assign_symbol as s
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorFromSelectors
 from exactly_lib.test_case_utils.file_selectors.parse_file_selector import NAME_SELECTOR_NAME
-from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors, all_files
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
@@ -25,9 +25,7 @@ from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestSuccessfulScenarios),
-    ])
+    return unittest.makeSuite(TestSuccessfulScenarios)
 
 
 class TestCaseBase(unittest.TestCase):
@@ -68,7 +66,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                 )
 
                 expected_container = matches_container(
-                    resolved_value_equals_file_selector(FileSelector(expected_selectors))
+                    resolved_value_equals_file_selector(FileSelectorFromSelectors(expected_selectors))
                 )
 
                 expectation = Expectation(

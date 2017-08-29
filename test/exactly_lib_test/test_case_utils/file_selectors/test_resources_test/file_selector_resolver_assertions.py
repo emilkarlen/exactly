@@ -1,13 +1,13 @@
 import unittest
 
-import exactly_lib_test.named_element.test_resources.file_selector
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorFromSelectors
 from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
-from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.test_resources import named_elem_utils
+from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
 from exactly_lib_test.test_case_utils.file_selectors.test_resources import resolver_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -29,14 +29,13 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(
-                                 exactly_lib_test.named_element.test_resources.file_selector.fake()),
+                             named_elem_utils.container(fake()),
                          )),
 
         ]
         name_patterns = frozenset(['first name pattern',
                                    'second name pattern'])
-        actual_and_expected = FileSelector(Selectors(name_patterns=name_patterns))
+        actual_and_expected = FileSelectorFromSelectors(Selectors(name_patterns=name_patterns))
         resolver = FileSelectorConstant(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
@@ -53,15 +52,14 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(
-                                 exactly_lib_test.named_element.test_resources.file_selector.fake()),
+                             named_elem_utils.container(fake()),
                          )),
 
         ]
         common_name_patterns = frozenset(['first name pattern'])
-        actual = FileSelector(Selectors(name_patterns=common_name_patterns))
-        expected = FileSelector(Selectors(name_patterns=common_name_patterns,
-                                          file_types=frozenset([FileType.REGULAR])))
+        actual = FileSelectorFromSelectors(Selectors(name_patterns=common_name_patterns))
+        expected = FileSelectorFromSelectors(Selectors(name_patterns=common_name_patterns,
+                                                       file_types=frozenset([FileType.REGULAR])))
 
         resolver_of_actual = FileSelectorConstant(actual)
         for case in cases:
@@ -75,8 +73,8 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
         # ARRANGE #
         actual_reference = symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
-        resolver = exactly_lib_test.named_element.test_resources.file_selector.fake(Selectors(),
-                                                                                    references=actual_references)
+        resolver = fake(Selectors(),
+                        references=actual_references)
         assertion_to_check = sut.resolved_value_equals_file_selector(resolver.resolved_value,
                                                                      expected_references=asrt.matches_sequence([
                                                                          asrt.is_(actual_reference)
@@ -89,8 +87,8 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
         # ARRANGE #
         actual_reference = symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
-        resolver = exactly_lib_test.named_element.test_resources.file_selector.fake(Selectors(),
-                                                                                    references=actual_references)
+        resolver = fake(Selectors(),
+                        references=actual_references)
 
         cases = [
             NameAndValue('assert no references',
@@ -108,6 +106,12 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
                                                                              )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, resolver)
+
+
+def fake(selectors: Selectors = Selectors(),
+         references: list = None) -> FileSelectorResolverConstantTestImpl:
+    return FileSelectorResolverConstantTestImpl(FileSelectorFromSelectors(selectors),
+                                                references if references else [])
 
 
 if __name__ == '__main__':

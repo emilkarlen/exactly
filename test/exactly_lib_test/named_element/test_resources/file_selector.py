@@ -1,7 +1,6 @@
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.type_system_values.file_selector import FileSelector
 from exactly_lib.type_system_values.value_type import ValueType
-from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_ne
 from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_value_type_restriction
@@ -10,9 +9,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class FileSelectorResolverConstantTestImpl(FileSelectorResolver):
     def __init__(self, resolved_value: FileSelector,
-                 references: list):
-        self._references = references
+                 references: list = ()):
         self._resolved_value = resolved_value
+        self._references = list(references)
 
     @property
     def resolved_value(self) -> FileSelector:
@@ -24,12 +23,6 @@ class FileSelectorResolverConstantTestImpl(FileSelectorResolver):
 
     def resolve(self, named_elements: SymbolTable) -> FileSelector:
         return self._resolved_value
-
-
-def fake(selectors: Selectors = Selectors(),
-         references: list = None) -> FileSelectorResolverConstantTestImpl:
-    return FileSelectorResolverConstantTestImpl(FileSelector(selectors),
-                                                references if references else [])
 
 
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_SELECTOR)

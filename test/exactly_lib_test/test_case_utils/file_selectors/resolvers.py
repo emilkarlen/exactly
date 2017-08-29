@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_selectors import resolvers as sut
-from exactly_lib.type_system_values.file_selector import SELECT_ALL_FILES
-from exactly_lib.type_system_values.value_type import ElementType, ValueType
+from exactly_lib.test_case_utils.file_selectors.file_selectors import SELECT_ALL_FILES
+from exactly_lib.type_system_values.value_type import ElementType, ValueType, LogicValueType
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.test_resources.file_selector import is_file_selector_reference_to
@@ -21,14 +21,24 @@ def suite() -> unittest.TestSuite:
 
 
 class TestConstant(unittest.TestCase):
-    def test_element_type_SHOULD_be_file_selector(self):
-        actual = sut.FileSelectorConstant(sut.FileSelector(dcs.all_files()))
+    def test_element_type_SHOULD_be_logic(self):
+        actual = sut.FileSelectorConstant(SELECT_ALL_FILES)
         self.assertIs(actual.element_type,
                       ElementType.LOGIC)
 
+    def test_logic_type_SHOULD_be_file_selector(self):
+        actual = sut.FileSelectorConstant(SELECT_ALL_FILES)
+        self.assertIs(actual.logic_value_type,
+                      LogicValueType.FILE_SELECTOR)
+
+    def test_value_type_SHOULD_be_file_selector(self):
+        actual = sut.FileSelectorConstant(SELECT_ALL_FILES)
+        self.assertIs(actual.value_type,
+                      ValueType.FILE_SELECTOR)
+
     def test_SHOULD_have_no_references(self):
         # ARRANGE #
-        expected_value = sut.FileSelector(dcs.all_files())
+        expected_value = SELECT_ALL_FILES
         resolver = sut.FileSelectorConstant(expected_value)
         # ACT #
         actual = resolver.references
@@ -38,7 +48,7 @@ class TestConstant(unittest.TestCase):
 
     def test_resolve(self):
         # ARRANGE #
-        expected_value = sut.FileSelector(dcs.all_files())
+        expected_value = SELECT_ALL_FILES
         resolver = sut.FileSelectorConstant(expected_value)
         # ACT #
         actual_value = resolver.resolve(empty_symbol_table())
@@ -73,7 +83,7 @@ class TestReference(unittest.TestCase):
     def test_resolve(self):
         # ARRANGE #
         name_of_referenced_element = 'name of referenced selector'
-        expected_value = sut.FileSelector(dcs.all_files())
+        expected_value = SELECT_ALL_FILES
         resolver = sut.FileSelectorReference(name_of_referenced_element)
         # ACT #
         named_elements = SymbolTable({
@@ -149,17 +159,17 @@ class TestAnd(unittest.TestCase):
                 'components with different kind of property',
                 [const_name_selector(name_pattern_1),
                  const_type_selector(FileType.REGULAR)],
-                sut.FileSelector(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
-                                              dcs.file_type_is(FileType.REGULAR)])),
+                sut.FileSelectorFromSelectors(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
+                                                           dcs.file_type_is(FileType.REGULAR)])),
             ),
             (
                 'multiple components with same kind of property',
                 [const_name_selector(name_pattern_1),
                  const_name_selector(name_pattern_2),
                  const_type_selector(FileType.REGULAR)],
-                sut.FileSelector(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
-                                              dcs.name_matches_pattern(name_pattern_2),
-                                              dcs.file_type_is(FileType.REGULAR)])),
+                sut.FileSelectorFromSelectors(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
+                                                           dcs.name_matches_pattern(name_pattern_2),
+                                                           dcs.file_type_is(FileType.REGULAR)])),
             ),
         ]
         named_elements = empty_symbol_table()
@@ -177,8 +187,8 @@ def const_name_selector(name_pattern: str) -> sut.FileSelectorResolver:
         name_selector(name_pattern))
 
 
-def name_selector(name_pattern) -> sut.FileSelector:
-    return sut.FileSelector(
+def name_selector(name_pattern) -> sut.FileSelectorFromSelectors:
+    return sut.FileSelectorFromSelectors(
         dcs.Selectors(name_patterns=frozenset([name_pattern])))
 
 
@@ -187,6 +197,6 @@ def const_type_selector(file_type: FileType) -> sut.FileSelectorResolver:
         type_selector(file_type))
 
 
-def type_selector(file_type) -> sut.FileSelector:
-    return sut.FileSelector(
+def type_selector(file_type) -> sut.FileSelectorFromSelectors:
+    return sut.FileSelectorFromSelectors(
         dcs.Selectors(file_types=frozenset([file_type])))
