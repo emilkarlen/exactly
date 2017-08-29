@@ -15,6 +15,14 @@ class IdentityLinesTransformer(LinesTransformer):
         raise NotImplementedError('this method should never be called')
 
 
+class SequenceLinesTransformer(LinesTransformer):
+    def __init__(self, transformers: list):
+        raise NotImplementedError('todo')
+
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        raise NotImplementedError('todo')
+
+
 class CustomLinesTransformer(LinesTransformer):
     """
     Base class for built in custom transformers.
@@ -49,8 +57,11 @@ class LinesTransformerStructureVisitor:
             raise TypeError('Unknown {}: {}'.format(LinesTransformer,
                                                     str(transformer)))
 
-    def visit_custom(self, transformer: CustomLinesTransformer):
+    def visit_identity(self, transformer: IdentityLinesTransformer):
         raise NotImplementedError('abstract method')
 
-    def visit_identity(self, transformer: IdentityLinesTransformer):
+    def visit_sequence(self, transformer: SequenceLinesTransformer):
+        raise NotImplementedError('abstract method')
+
+    def visit_custom(self, transformer: CustomLinesTransformer):
         raise NotImplementedError('abstract method')
