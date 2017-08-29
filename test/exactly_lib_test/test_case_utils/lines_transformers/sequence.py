@@ -7,9 +7,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(Test),
-    ])
+    return unittest.makeSuite(Test)
 
 
 class Test(unittest.TestCase):
@@ -46,7 +44,7 @@ class Test(unittest.TestCase):
         self.assertEqual(input_lines,
                          output_lines)
 
-    def test_WHEN_single_transformer_THEN_transformer_SHOULD_be_identical_to_the_single_transformer(self):
+    def test_WHEN_single_transformer_THEN_sequence_SHOULD_be_identical_to_the_single_transformer(self):
         # ARRANGE #
 
         tcds = fake_home_and_sds()
@@ -65,15 +63,59 @@ class Test(unittest.TestCase):
 
         # ASSERT #
 
-        expected = to_upper_t.transform(tcds, iter(input_lines))
+        expected_output_lines = ['FIRST',
+                                 'SECOND',
+                                 'THIRD']
 
-        expected_as_list = list(expected)
         actual_as_list = list(actual)
 
-        self.assertEqual(expected_as_list,
+        self.assertEqual(expected_output_lines,
+                         actual_as_list)
+
+    def test_WHEN_multiple_transformers_THEN_transformers_SHOULD_be_chained(self):
+        # ARRANGE #
+
+        tcds = fake_home_and_sds()
+
+        to_upper_t = MyToUppercaseTransformer()
+        count_num_upper = MyCountNumUppercaseCharactersTransformer()
+
+        sequence = SequenceLinesTransformer([to_upper_t,
+                                             count_num_upper])
+
+        input_lines = ['this is',
+                       'the',
+                       'input']
+
+        # ACT #
+
+        actual = sequence.transform(tcds, iter(input_lines))
+
+        # ASSERT #
+
+        expected_output_lines = ['6',
+                                 '3',
+                                 '5']
+
+        actual_as_list = list(actual)
+
+        self.assertEqual(expected_output_lines,
                          actual_as_list)
 
 
 class MyToUppercaseTransformer(LinesTransformer):
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         return map(str.upper, lines)
+
+
+class MyCountNumUppercaseCharactersTransformer(LinesTransformer):
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        return map(get_number_of_uppercase_characters, lines)
+
+
+def get_number_of_uppercase_characters(line: str) -> str:
+    ret_val = 0
+    for ch in line:
+        if ch.isupper():
+            ret_val += 1
+    return str(ret_val)

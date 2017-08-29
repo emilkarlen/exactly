@@ -1,4 +1,7 @@
+import functools
+
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.util.functional import compose_first_and_second
 
 
 class LinesTransformer:
@@ -26,9 +29,14 @@ class SequenceLinesTransformer(LinesTransformer):
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         if not self._transformers:
             return lines
-        elif len(self._transformers) == 1:
-            return self._transformers[0].transform(tcds, lines)
-        raise NotImplementedError('todo')
+        else:
+            return self._sequenced_transformers(tcds)(lines)
+
+    def _sequenced_transformers(self, tcds: HomeAndSds):
+        lines_to_lines_transformers = [functools.partial(t.transform, tcds)
+                                       for t in self._transformers]
+
+        return functools.reduce(compose_first_and_second, lines_to_lines_transformers)
 
 
 class CustomLinesTransformer(LinesTransformer):
