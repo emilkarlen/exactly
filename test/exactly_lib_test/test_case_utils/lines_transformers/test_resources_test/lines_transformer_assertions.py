@@ -1,7 +1,8 @@
+import re
 import unittest
 
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
-    SequenceLinesTransformer, CustomLinesTransformer
+    SequenceLinesTransformer, CustomLinesTransformer, ReplaceLinesTransformer
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import lines_transformer_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
@@ -22,6 +23,10 @@ class TestEquals(unittest.TestCase):
             (
                 CustomLinesTransformer(custom_transformer_name),
                 CustomLinesTransformer(custom_transformer_name)
+            ),
+            (
+                ReplaceLinesTransformer(re.compile('regex'), 'replacement'),
+                ReplaceLinesTransformer(re.compile('regex'), 'replacement'),
             ),
             (
                 SequenceLinesTransformer([]),
@@ -45,6 +50,31 @@ class TestEquals(unittest.TestCase):
         different_transformers = [
             CustomLinesTransformer('name'),
             SequenceLinesTransformer([]),
+        ]
+        for actual in different_transformers:
+            assertion_to_check = sut.equals_lines_transformer(expected)
+            with self.subTest(actual=str(actual)):
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion_to_check,
+                                            actual)
+
+    def test_not_equals__replace(self):
+        # ARRANGE #
+        expected_regex = re.compile('expected_regex')
+        expected_replacement = 'expected_replacement'
+
+        unexpected_regex = re.compile('unexpected_regex')
+        unexpected_replacement = 'unexpected_replacement'
+
+        expected = ReplaceLinesTransformer(expected_regex,
+                                           expected_replacement)
+
+        different_transformers = [
+            IdentityLinesTransformer(),
+            CustomLinesTransformer('custom transformer'),
+            SequenceLinesTransformer([]),
+            ReplaceLinesTransformer(unexpected_regex, expected_replacement),
+            ReplaceLinesTransformer(expected_regex, unexpected_replacement),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_lines_transformer(expected)
