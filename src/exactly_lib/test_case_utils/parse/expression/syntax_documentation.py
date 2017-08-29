@@ -27,6 +27,7 @@ class Syntax:
     def invokation_variants(self) -> list:
         return (self.invokation_variants_simple() +
                 self.invokation_variants_symbol_ref() +
+                self.invokation_variants_prefix() +
                 self.invokation_variants_complex() +
                 self.invokation_variants_parentheses()
                 )
@@ -64,6 +65,20 @@ class Syntax:
         return [
             invokation_variant_of(name, self.grammar.complex_expressions[name].syntax)
             for name in sorted(self.grammar.complex_expressions.keys())
+        ]
+
+    def invokation_variants_prefix(self) -> list:
+        def invokation_variant_of(operator_name: str,
+                                  syntax: OperatorExpressionDescription) -> InvokationVariant:
+            operator_argument = a.Single(a.Multiplicity.MANDATORY,
+                                         a.Constant(operator_name))
+            all_arguments = [operator_argument, self.concept_argument]
+            return InvokationVariant(cl_syntax.cl_syntax_for_args(all_arguments),
+                                     syntax.description_rest)
+
+        return [
+            invokation_variant_of(name, self.grammar.prefix_expressions[name].syntax)
+            for name in sorted(self.grammar.prefix_expressions.keys())
         ]
 
     def invokation_variants_parentheses(self) -> list:
