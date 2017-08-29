@@ -1,3 +1,4 @@
+import re
 import unittest
 
 import exactly_lib.test_case_utils.lines_transformers.transformers as sut
@@ -33,6 +34,17 @@ class TestFileTransformerStructureVisitor(unittest.TestCase):
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
+    def test_visit_replace(self):
+        # ARRANGE #
+        instance = sut.ReplaceLinesTransformer(re.compile('pattern'), 'replacement')
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.ReplaceLinesTransformer],
+                         visitor.visited_types)
+        self.assertIs(instance, ret_val)
+
     def test_visit_custom(self):
         # ARRANGE #
         instance = MyCustomTransformer()
@@ -46,7 +58,7 @@ class TestFileTransformerStructureVisitor(unittest.TestCase):
 
     def test_raise_type_error_WHEN_visited_object_is_of_unknown_class(self):
         # ARRANGE #
-        instance = 'A value of a type that is not a ' + str(sut.LinesTransformer)
+        instance = UnidentifiedFlyingTransformer()
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         with self.assertRaises(TypeError):
@@ -70,6 +82,10 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
         self.visited_types.append(sut.SequenceLinesTransformer)
         return transformer
 
+    def visit_replace(self, transformer: sut.ReplaceLinesTransformer):
+        self.visited_types.append(sut.ReplaceLinesTransformer)
+        return transformer
+
     def visit_custom(self, transformer: sut.CustomLinesTransformer):
         self.visited_types.append(sut.CustomLinesTransformer)
         return transformer
@@ -81,3 +97,11 @@ class MyCustomTransformer(sut.CustomLinesTransformer):
 
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         return iter
+
+
+class UnidentifiedFlyingTransformer(sut.LinesTransformer):
+    def __init__(self):
+        pass
+
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        raise NotImplementedError('unidentified')

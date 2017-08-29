@@ -35,6 +35,22 @@ class SequenceLinesTransformer(LinesTransformer):
                                ','.join(map(str, self._transformers)))
 
 
+class ReplaceLinesTransformer(LinesTransformer):
+    def __init__(self, compiled_regular_expression, replacement: str):
+        self._compiled_regular_expression = compiled_regular_expression
+        self._replacement = replacement
+
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        return (
+            self._compiled_regular_expression.sub(self._replacement, line)
+            for line in lines
+        )
+
+    def __str__(self):
+        return '{}({})'.format(type(self).__name__,
+                               str(self._compiled_regular_expression))
+
+
 class CustomLinesTransformer(LinesTransformer):
     """
     Base class for built in custom transformers.
@@ -64,6 +80,8 @@ class LinesTransformerStructureVisitor:
     """
 
     def visit(self, transformer: LinesTransformer):
+        if isinstance(transformer, ReplaceLinesTransformer):
+            return self.visit_replace(transformer)
         if isinstance(transformer, CustomLinesTransformer):
             return self.visit_custom(transformer)
         if isinstance(transformer, SequenceLinesTransformer):
@@ -78,6 +96,9 @@ class LinesTransformerStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_sequence(self, transformer: SequenceLinesTransformer):
+        raise NotImplementedError('abstract method')
+
+    def visit_replace(self, transformer: ReplaceLinesTransformer):
         raise NotImplementedError('abstract method')
 
     def visit_custom(self, transformer: CustomLinesTransformer):
