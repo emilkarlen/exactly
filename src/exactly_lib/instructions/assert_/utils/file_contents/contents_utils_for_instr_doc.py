@@ -36,7 +36,7 @@ class FileContentsHelpParts:
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,
             'expected_file_arg': self.expected_file_arg.name,
-            'not_option': negation_of_predicate.NEGATION_ARGUMENT_STR,
+            'not_option': instruction_arguments.NEGATION_ARGUMENT_STR,
             'program_name': program_info.PROGRAM_NAME,
             'home_act_env_var': environment_variables.ENV_VAR_HOME_ACT,
             'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,

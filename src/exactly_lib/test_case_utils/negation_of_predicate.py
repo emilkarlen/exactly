@@ -1,8 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
-
-NEGATION_ARGUMENT_STR = '!'
 
 
 def syntax_element_description(additional_text: str = '') -> SyntaxElementDescription:

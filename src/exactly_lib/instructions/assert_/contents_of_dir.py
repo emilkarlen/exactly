@@ -49,7 +49,7 @@ _NUM_FILES_PROPERTY_NAME = 'number of files in dir'
 
 _EMPTINESS_PROPERTY_NAME = 'contents of dir'
 
-NEGATION_OPERATOR = negation_of_predicate.NEGATION_ARGUMENT_STR
+NEGATION_OPERATOR = instruction_arguments.NEGATION_ARGUMENT_STR
 
 SELECTION_OPTION = parse_file_selector.SELECTION_OPTION
 
