@@ -24,10 +24,9 @@ SELECTION_OF_ALL_FILES = FileSelectorConstant(FileSelector(dcs.all_files()))
 
 CONCEPT_NAME = Name('selector', 'selectors')
 
-COMMAND_NAME__NAME_SELECTOR = 'name'
+NAME_SELECTOR_NAME = 'name'
 
-COMMAND_NAME__TYPE_SELECTOR = 'type'
-
+TYPE_SELECTOR_NAME = 'type'
 
 NAME_SELECTOR_ARGUMENT = a.Named('PATTERN')
 
@@ -124,8 +123,8 @@ def _constant(selectors: dcs.Selectors) -> FileSelectorResolver:
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_SELECTOR_': CONCEPT_NAME.singular,
-    '_NAME_SELECTOR_': COMMAND_NAME__NAME_SELECTOR,
-    '_TYPE_SELECTOR_': COMMAND_NAME__TYPE_SELECTOR,
+    '_NAME_SELECTOR_': NAME_SELECTOR_NAME,
+    '_TYPE_SELECTOR_': TYPE_SELECTOR_NAME,
     '_PATTERN_': NAME_SELECTOR_ARGUMENT.name,
     '_TYPE_': TYPE_SELECTOR_ARGUMENT.name,
     '_GLOB_PATTERN_': 'Unix glob pattern',
@@ -202,10 +201,10 @@ GRAMMAR = grammar.Grammar(
     ),
     mk_reference=file_selectors.FileSelectorReference,
     simple_expressions={
-        COMMAND_NAME__NAME_SELECTOR: grammar.SimpleExpression(_parse_name_selector,
-                                                              NAME_SYNTAX_DESCRIPTION),
-        COMMAND_NAME__TYPE_SELECTOR: grammar.SimpleExpression(_parse_type_selector,
-                                                              TYPE_SYNTAX_DESCRIPTION),
+        NAME_SELECTOR_NAME: grammar.SimpleExpression(_parse_name_selector,
+                                                     NAME_SYNTAX_DESCRIPTION),
+        TYPE_SELECTOR_NAME: grammar.SimpleExpression(_parse_type_selector,
+                                                     TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
         AND_OPERATOR: grammar.ComplexExpression(file_selectors.FileSelectorAnd,

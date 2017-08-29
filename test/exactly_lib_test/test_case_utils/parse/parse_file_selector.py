@@ -223,7 +223,7 @@ class TestAnd(TestCaseBase):
                 remaining_source('{selector} {and_}  {command_name_in_quotes}'.format(
                     selector=name_selector_of('pattern'),
                     and_=sut.AND_OPERATOR,
-                    command_name_in_quotes=surrounded_by_hard_quotes(sut.COMMAND_NAME__NAME_SELECTOR)),
+                    command_name_in_quotes=surrounded_by_hard_quotes(sut.NAME_SELECTOR_NAME)),
                     ['following line'])
             ),
             (
@@ -376,7 +376,7 @@ class TestReference(TestCaseBase):
 
     def test_WHEN_name_has_illegal_syntax_THEN_parse_SHOULD_fail(self):
         cases = [
-            str(surrounded_by_hard_quotes(sut.COMMAND_NAME__TYPE_SELECTOR)),
+            str(surrounded_by_hard_quotes(sut.TYPE_SELECTOR_NAME)),
             'illegal-name'
         ]
         for argument_string in cases:
