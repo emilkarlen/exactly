@@ -67,9 +67,14 @@ class _Parser:
 
     def parse_mandatory_simple(self):
         self.parser.require_is_not_at_eol(self.missing_expression)
-        return self.parser.parse_mandatory_string_that_must_be_unquoted(self.grammar.concept.name.singular,
-                                                                        self.parse_simple,
-                                                                        must_be_on_current_line=True)
+        if self.consume_optional_start_parentheses():
+            expression = self.parse()
+            self.consume_mandatory_end_parentheses()
+            return expression
+        else:
+            return self.parser.parse_mandatory_string_that_must_be_unquoted(self.grammar.concept.name.singular,
+                                                                            self.parse_simple,
+                                                                            must_be_on_current_line=True)
 
     def parse_simple(self, selector_name: str):
         if selector_name in self.grammar.simple_expressions:
@@ -79,3 +84,16 @@ class _Parser:
             raise SingleInstructionInvalidArgumentException(err_msg)
         else:
             return self.grammar.mk_reference(selector_name)
+
+    def consume_optional_start_parentheses(self) -> bool:
+        return self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(['(']) is not None
+
+    def consume_mandatory_end_parentheses(self):
+        self.parser.require_is_not_at_eol('Missing )')
+        self.parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal([')'],
+                                                                                      _do_nothing,
+                                                                                      'Expression inside ( )')
+
+
+def _do_nothing(*arg, **kwargs):
+    return None

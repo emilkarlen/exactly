@@ -6,6 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_utils.parse.expression import parser as sut
 from exactly_lib_test.section_document.test_resources import parse_source as asrt_source
 from exactly_lib_test.test_case_utils.parse.expression.test_resources import ast
+from exactly_lib_test.test_case_utils.parse.expression.test_resources.ast import ComplexA, ComplexB
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -44,9 +45,14 @@ class TestCaseBase(unittest.TestCase):
                expectation: Expectation):
         actual = sut.parse_from_parse_source(arrangement.grammar,
                                              arrangement.source)
+        if expectation.expression != actual:
+            self.fail('Unexpected expression.\nExpected: {}\nActual  : {}'.format(
+                str(expectation.expression),
+                str(actual),
+            ))
         self.assertEqual(expectation.expression,
                          actual,
-                         'parsed expression')
+                         'parsed expression: ' + str(actual))
         expectation.source.apply_with_message(self,
                                               arrangement.source,
                                               'source after parse')
@@ -77,6 +83,15 @@ class TestFailuresCommonToAllGrammars(TestCaseBase):
                 (
                     'first token quoted/hard',
                     remaining_source(str(surrounded_by_hard_quotes('token'))),
+                ),
+                (
+                    'missing )',
+                    remaining_source('( {simple} '.format(simple=ast.SIMPLE_SANS_ARG)),
+                ),
+                (
+                    'missing ), but found on following line',
+                    remaining_source('( {simple} '.format(simple=ast.SIMPLE_SANS_ARG),
+                                     [')']),
                 ),
             ]
             for case_name, source in cases:
@@ -133,6 +148,24 @@ class TestSingleSimpleExpression(TestCaseBase):
                     asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
                                                      remaining_part_of_current_line=asrt.equals(token_after))
                 ),
+                SourceCase(
+                    '( simple )',
+                    source=
+                    remaining_source('( {simple_expr} )'.format(
+                        simple_expr=ast.SIMPLE_SANS_ARG,
+                        token_after=token_after)),
+                    source_assertion=
+                    asrt_source.is_at_end_of_line(1),
+                ),
+                SourceCase(
+                    '( ( simple ) )',
+                    source=
+                    remaining_source('( ( {simple_expr} ) )'.format(
+                        simple_expr=ast.SIMPLE_SANS_ARG,
+                        token_after=token_after)),
+                    source_assertion=
+                    asrt_source.is_at_end_of_line(1),
+                ),
             ]
 
             for case in cases:
@@ -184,6 +217,26 @@ class TestSingleSimpleExpression(TestCaseBase):
                     source_assertion=
                     asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
                                                      remaining_part_of_current_line=asrt.equals(token_after))
+                ),
+                SourceCase(
+                    '( simple )',
+                    source=
+                    remaining_source('( {simple_with_arg} {argument} )'.format(
+                        simple_with_arg=ast.SIMPLE_WITH_ARG,
+                        argument=the_argument,
+                    )),
+                    source_assertion=
+                    asrt_source.is_at_end_of_line(1),
+                ),
+                SourceCase(
+                    '( ( simple ) )',
+                    source=
+                    remaining_source('( ( {simple_with_arg} {argument} ) )'.format(
+                        simple_with_arg=ast.SIMPLE_WITH_ARG,
+                        argument=the_argument,
+                    )),
+                    source_assertion=
+                    asrt_source.is_at_end_of_line(1),
                 ),
             ]
             for case in cases:
@@ -405,6 +458,36 @@ class TestComplexExpression(TestCaseBase):
                             remaining_part_of_current_line=asrt.equals(str(surrounded_by_soft_quotes(operator_source))))
 
                     ),
+                    SourceCase(
+                        'first line is just complex expr: inside ()',
+                        source=
+                        remaining_source('( {simple_expr} {operator} {simple_expr} )'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                        )),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1)
+                    ),
+                    SourceCase(
+                        'first simple expr inside ()',
+                        source=
+                        remaining_source('( {simple_expr} ) {operator} {simple_expr}'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                        )),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1)
+                    ),
+                    SourceCase(
+                        'second simple expr inside ()',
+                        source=
+                        remaining_source('{simple_expr} {operator} ( {simple_expr} )'.format(
+                            simple_expr=valid_simple_expr_source,
+                            operator=operator_source,
+                        )),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1)
+                    ),
                 ]
                 for case in cases:
                     with self.subTest(name=case.name,
@@ -423,6 +506,60 @@ class TestComplexExpression(TestCaseBase):
                                 case.source_assertion,
                             )
                         )
+
+    def test_success_of_expression_within_parentheses(self):
+        s = ast.SimpleSansArg()
+        cases = [
+            (
+                'parentheses around first expr to make nested expr instead of "linear" args to op',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('( {s} {op}  {s} ) {op} {s}'.format(
+                        s=ast.SIMPLE_SANS_ARG,
+                        op=ast.COMPLEX_A,
+                    )),
+                ),
+                Expectation(
+                    expression=ComplexA([ComplexA([s, s]), s]),
+                    source=asrt_source.is_at_end_of_line(1),
+                ),
+            ),
+            (
+                'parentheses around final (second) expr to make first op have precedence',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('{s} {op} ( {s} {op} {s} )'.format(
+                        s=ast.SIMPLE_SANS_ARG,
+                        op=ast.COMPLEX_A,
+                    )),
+                ),
+                Expectation(
+                    expression=ComplexA([s, ComplexA([s, s])]),
+                    source=asrt_source.is_at_end_of_line(1),
+                ),
+            ),
+            (
+                '"linear" (sequence) of OPA, by embedding OPB inside parentheses',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('{s} {op_a} ( {s} {op_b} {s} ) {op_a} {s}'.format(
+                        s=ast.SIMPLE_SANS_ARG,
+                        op_a=ast.COMPLEX_A,
+                        op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+                    )),
+                ),
+                Expectation(
+                    expression=ComplexA([s, ComplexB([s, s]), s]),
+                    source=asrt_source.is_at_end_of_line(1),
+                ),
+            ),
+        ]
+        for case_name, arrangement, expectation in cases:
+            with self.subTest(name=case_name):
+                self._check(
+                    arrangement,
+                    expectation
+                )
 
     def test_fail_parse_of_complex_expression(self):
         valid_simple_expressions = [
@@ -475,6 +612,34 @@ class TestComplexExpression(TestCaseBase):
                             operator=operator),
                             [valid_simple_expr]),
                     ),
+                    (
+                        '( at start of expr: missing )',
+                        remaining_source('( {simple_expr} {operator} {simple_expr} '.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator),
+                            []),
+                    ),
+                    (
+                        '( at start of expr: missing ), but found on following line',
+                        remaining_source('( {simple_expr} {operator} {simple_expr} '.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator),
+                            [')']),
+                    ),
+                    (
+                        '( in middle of expr: missing )',
+                        remaining_source('( {simple_expr} {operator} ( {simple_expr} '.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator),
+                            []),
+                    ),
+                    (
+                        '( in middle of expr: missing ), but found on following line',
+                        remaining_source(' {simple_expr} {operator} ( {simple_expr} '.format(
+                            simple_expr=valid_simple_expr,
+                            operator=operator),
+                            [')']),
+                    ),
                 ]
                 for case_name, source in cases:
                     with self.subTest(case_name=case_name,
@@ -515,7 +680,7 @@ class TestCombinedExpressions(TestCaseBase):
             )
         )
 
-    def test_combined_expression(self):
+    def test_combined_expression_sans_parentheses(self):
         # [ [ [ ref1 OPA s ] OPB s OPB ref2 ] OPA s_x OPA ref3 ]
 
         ref_1 = ast.RefExpr('symbol_1')
@@ -550,6 +715,52 @@ class TestCombinedExpressions(TestCaseBase):
             op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
             s_w_arg=ast.SIMPLE_WITH_ARG,
             x=s_x.argument,
+
+        )
+        self._check(
+            Arrangement(
+                grammar=
+                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                source=
+                remaining_source(argument_string)),
+            Expectation(
+                expression=
+                expected,
+                source=
+                asrt_source.is_at_end_of_line(1),
+            )
+        )
+
+    def test_combined_expression_with_parentheses(self):
+        #  ref1 OPA ( s OPB s_x OPB ref2 ) OPB s_y
+
+        ref_1 = ast.RefExpr('symbol_1')
+        ref_2 = ast.RefExpr('symbol_2')
+        ref_3 = ast.RefExpr('symbol_3')
+
+        s = ast.SimpleSansArg()
+
+        s_x = ast.SimpleWithArg('X')
+        s_y = ast.SimpleWithArg('Y')
+
+        expected = ComplexB([
+            ComplexA([
+                ref_1,
+                ComplexB([s, s_x, ref_2])
+            ]),
+            s_y,
+        ])
+
+        argument_string = '{ref_1} {op_a} ( {s} {op_b} {s_w_arg} {x} {op_b} {ref_2} ) {op_b} {s_w_arg} {y}'.format(
+            s=ast.SIMPLE_SANS_ARG,
+            ref_1=ref_1.symbol_name,
+            ref_2=ref_2.symbol_name,
+            ref_3=ref_3.symbol_name,
+            op_a=ast.COMPLEX_A,
+            op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+            s_w_arg=ast.SIMPLE_WITH_ARG,
+            x=s_x.argument,
+            y=s_y.argument,
 
         )
         self._check(

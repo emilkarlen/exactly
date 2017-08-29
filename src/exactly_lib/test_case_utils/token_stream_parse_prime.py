@@ -153,7 +153,7 @@ class TokenParserPrime:
 
     def consume_optional_constant_string_that_must_be_unquoted_and_equal(self, expected_constants) -> str:
         """
-        Consumes the first token if it is an unquoted string that is equal to the expected string.
+        Consumes the first token if it is an unquoted string that is equal to one of the expected string constants.
         :param expected_constants: collection of names=strings. Must support the Python 'in' operator
         :return: None iff no match, else the constant that matched
         """
