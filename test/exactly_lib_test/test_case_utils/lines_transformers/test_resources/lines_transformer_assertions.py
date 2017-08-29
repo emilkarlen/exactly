@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
-    SequenceLinesTransformer, CustomLinesTransformer, LinesTransformerStructureVisitor
+    SequenceLinesTransformer, CustomLinesTransformer, LinesTransformerStructureVisitor, ReplaceLinesTransformer
 from exactly_lib.type_system_values.lines_transformer import LinesTransformer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -53,6 +53,19 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
         self.put.assertIsInstance(self.actual,
                                   IdentityLinesTransformer,
                                   builder_with_description.apply('class'))
+
+    def visit_replace(self, expected: ReplaceLinesTransformer):
+        builder_with_description = self.message_builder.with_description(self.description)
+        self.put.assertIsInstance(self.actual,
+                                  ReplaceLinesTransformer,
+                                  builder_with_description.apply('class'))
+        assert isinstance(self.actual, ReplaceLinesTransformer)  # Type info for IDE
+        self.put.assertEqual(expected.regex.pattern,
+                             self.actual.regex.pattern,
+                             builder_with_description.apply('regex'))
+        self.put.assertEqual(expected.replacement,
+                             self.actual.replacement,
+                             builder_with_description.apply('replacement'))
 
     def visit_sequence(self, expected: SequenceLinesTransformer):
         builder_with_description = self.message_builder.with_description(self.description)

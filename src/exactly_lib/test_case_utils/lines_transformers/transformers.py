@@ -40,6 +40,14 @@ class ReplaceLinesTransformer(LinesTransformer):
         self._compiled_regular_expression = compiled_regular_expression
         self._replacement = replacement
 
+    @property
+    def regex(self):
+        return self._compiled_regular_expression
+
+    @property
+    def replacement(self) -> str:
+        return self._replacement
+
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         return (
             self._compiled_regular_expression.sub(self._replacement, line)
