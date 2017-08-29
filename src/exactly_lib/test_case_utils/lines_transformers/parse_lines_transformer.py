@@ -1,7 +1,6 @@
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
-from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.lines_transformers import custom_transformers as ct
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
@@ -35,9 +34,3 @@ def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
 
 def mk_reference(symbol_name: str) -> LinesTransformerResolver:
     raise NotImplementedError('todo')
-
-
-CONCEPT = grammar.Concept(
-    Name()
-)
-GRAMMAR = grammar.Grammar()
