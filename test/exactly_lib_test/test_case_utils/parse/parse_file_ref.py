@@ -40,7 +40,8 @@ from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_asser
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
     entry
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
+from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+    assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source

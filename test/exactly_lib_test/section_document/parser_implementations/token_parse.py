@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.section_document.parser_implementations import token_parse as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_quoted, assert_plain
+from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+    assert_quoted, assert_plain
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end, assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

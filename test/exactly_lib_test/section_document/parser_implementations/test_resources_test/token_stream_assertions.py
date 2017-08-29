@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.util.parse.token import Token
-from exactly_lib_test.section_document.parser_implementations import test_resources as sut
+from exactly_lib_test.section_document.parser_implementations.test_resources import token_stream_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

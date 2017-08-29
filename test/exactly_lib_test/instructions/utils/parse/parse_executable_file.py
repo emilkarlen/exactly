@@ -30,7 +30,8 @@ from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validat
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
     ExpectationOnExeFile
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.section_document.parser_implementations.test_resources import assert_token_stream, \
+from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+    assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
