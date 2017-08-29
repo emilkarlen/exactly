@@ -1,7 +1,7 @@
 import unittest
 
+import exactly_lib.test_case_utils.lines_transformers.transformers as sut
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system_values import lines_transformer as sut
 
 
 def suite() -> unittest.TestSuite:

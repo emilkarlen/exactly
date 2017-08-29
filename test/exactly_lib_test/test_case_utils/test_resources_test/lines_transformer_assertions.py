@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.type_system_values.lines_transformer import CustomLinesTransformer, \
-    IdentityLinesTransformer, SequenceLinesTransformer
+from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
+    SequenceLinesTransformer, CustomLinesTransformer
+from exactly_lib_test.test_case_utils.test_resources import lines_transformer_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
-from exactly_lib_test.type_system_values.test_resources import lines_transformer_assertions as sut
 
 
 def suite() -> unittest.TestSuite:
