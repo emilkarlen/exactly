@@ -13,13 +13,13 @@ from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.test_resources.file_selector import is_file_selector_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_case_utils.file_selectors.test_resources.resolver_assertions import \
     resolved_value_equals_file_selector
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 

@@ -1,6 +1,6 @@
 from exactly_lib.instructions.multi_phase_instructions.run import INTERPRET_OPTION
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib_test.test_resources.parse import single_line_source
+from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
 

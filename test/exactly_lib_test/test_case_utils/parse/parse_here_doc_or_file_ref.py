@@ -14,11 +14,11 @@ from exactly_lib_test.named_element.symbol.test_resources.concrete_value_asserti
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_string_values_from_name_and_value
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, \
     is_at_beginning_of_line, \
     source_is_at_end
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

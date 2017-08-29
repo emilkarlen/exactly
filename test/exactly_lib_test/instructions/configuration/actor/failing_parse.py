@@ -4,7 +4,7 @@ from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib_test.test_resources.parse import source4
+from exactly_lib_test.section_document.test_resources.parse_source import source4
 
 
 def suite() -> unittest.TestSuite:

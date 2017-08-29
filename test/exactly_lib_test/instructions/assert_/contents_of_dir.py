@@ -33,12 +33,12 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.named_element.test_resources.file_selector import is_file_selector_reference_to
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

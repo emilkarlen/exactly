@@ -15,9 +15,9 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negat
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds
-from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \

@@ -3,7 +3,6 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-import exactly_lib_test.test_resources.parse
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import OsServices
@@ -19,6 +18,7 @@ from exactly_lib_test.instructions.test_resources.symbol_table_check_help import
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils, symbol_reference_assertions as sym_asrt
+from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -240,7 +240,7 @@ class TestMiscCases(TestCaseBase):
 
 
 def single_line_source() -> ParseSource:
-    return exactly_lib_test.test_resources.parse.source4('instruction arguments')
+    return source4('instruction arguments')
 
 
 SUCCESSFUL_INSTRUCTION = setup_phase_instruction_that()

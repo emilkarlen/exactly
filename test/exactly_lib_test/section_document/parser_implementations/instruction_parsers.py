@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parser_implementations import instruction_parsers as sut
+from exactly_lib_test.section_document.test_resources.parse_source import source3
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
-from exactly_lib_test.test_resources.parse import source3
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

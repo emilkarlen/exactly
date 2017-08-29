@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parser_implementations import parser_for_dictionary_of_instructions as sut
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
-from exactly_lib_test.test_resources.parse import source3
+from exactly_lib_test.section_document.test_resources.parse_source import source3
 
 
 def suite() -> unittest.TestSuite:

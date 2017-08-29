@@ -21,7 +21,7 @@ from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
-from exactly_lib_test.test_resources.parse import remaining_source
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

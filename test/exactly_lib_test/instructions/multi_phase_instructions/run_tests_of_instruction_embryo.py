@@ -23,13 +23,13 @@ from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_
     equals_symbol_reference_restrictions
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

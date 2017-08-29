@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed, \
     is_at_beginning_of_line
-from exactly_lib_test.test_resources.parse import remaining_source
 
 
 def equivalent_source_variants__with_source_check(put: unittest.TestCase,

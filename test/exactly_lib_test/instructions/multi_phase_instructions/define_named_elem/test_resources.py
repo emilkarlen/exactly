@@ -3,7 +3,7 @@ from exactly_lib.named_element.resolver_structure import NamedElementContainer, 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
-from exactly_lib_test.test_resources.parse import remaining_source
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 
 
 def src(s: str,
