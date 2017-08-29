@@ -13,3 +13,7 @@ bin/do-something-with-dir my-dir
 [assert]
 
 dir-contents my-dir --selection type file && name '*A.txt' num-files = 1
+
+# readability might be improved by ( )
+
+dir-contents my-dir --selection ( type file && name '*A.txt' ) num-files = 1

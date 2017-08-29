@@ -22,6 +22,10 @@ class RefExpr(Expr):
     def __init__(self, symbol_name: str):
         self.symbol_name = symbol_name
 
+    def __str__(self):
+        return '{}({})'.format(self.__class__.__name__,
+                               self.symbol_name)
+
 
 class SimpleExpr(Expr):
     pass
@@ -31,14 +35,23 @@ class SimpleWithArg(SimpleExpr):
     def __init__(self, argument: str):
         self.argument = argument
 
+    def __str__(self):
+        return '{}({})'.format(self.__class__.__name__,
+                               repr(self.argument))
+
 
 class SimpleSansArg(SimpleExpr):
-    pass
+    def __str__(self):
+        return self.__class__.__name__
 
 
 class ComplexExpr(Expr):
     def __init__(self, expressions: list):
         self.expressions = expressions
+
+    def __str__(self):
+        return '{}[{}]'.format(self.__class__.__name__,
+                               ', '.join(map(str, self.expressions)))
 
 
 class ComplexA(ComplexExpr):
