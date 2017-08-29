@@ -7,6 +7,7 @@ from exactly_lib.util import functional as sut
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestComposition),
+        unittest.makeSuite(TestCombineFirstAndSecond),
         unittest.makeSuite(TestAndPredicate),
     ])
 
@@ -14,6 +15,14 @@ def suite() -> unittest.TestSuite:
 class TestComposition(unittest.TestCase):
     def test(self):
         composition = sut.Composition(operator.neg, len)
+        actual = composition(['a', 'b'])
+        self.assertEqual(-2,
+                         actual)
+
+
+class TestCombineFirstAndSecond(unittest.TestCase):
+    def test(self):
+        composition = sut.compose_first_and_second(len, operator.neg)
         actual = composition(['a', 'b'])
         self.assertEqual(-2,
                          actual)
