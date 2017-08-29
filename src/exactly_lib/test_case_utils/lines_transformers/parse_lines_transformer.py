@@ -8,7 +8,9 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.lines_transformers import custom_transformers as ct
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
-from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
+from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
+    ReplaceLinesTransformer
+from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
@@ -23,6 +25,10 @@ REPLACE_TRANSFORMER_NAME = 'replace'
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
 REPLACE_REPLACEMENT_ARGUMENT = a.Named(type_system.STRING_VALUE)
+
+_MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
+
+_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
@@ -40,7 +46,12 @@ def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
 
 
 def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
-    raise NotImplementedError('todo')
+    parser.require_is_not_at_eol(_MISSING_REGEX_ARGUMENT_ERR_MSG)
+    regex_pattern = parser.consume_mandatory_token(_MISSING_REGEX_ARGUMENT_ERR_MSG)
+    parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
+    replacement = parser.consume_mandatory_token(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
+    regex = compile_regex(regex_pattern.string)
+    return LinesTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
 
 
 def mk_lines_transformer_reference(symbol_name: str) -> LinesTransformerResolver:

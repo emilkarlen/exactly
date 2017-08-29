@@ -24,8 +24,8 @@ def assert_token_stream(
             asrt.sub_component('position', TokenStream.position.fget, position),
             asrt.sub_component('is_null', TokenStream.is_null.fget, is_null),
             asrt.or_([
-                # The following must only be checked if not is_null (because of precondition of TokenStream2):
                 asrt.sub_component('is_null', TokenStream.is_null.fget, asrt.is_true),
+                # The following must only be checked if not is_null (because of precondition):
                 asrt.and_([
                     asrt.sub_component('head_token', TokenStream.head.fget, head_token),
                     asrt.sub_component('remaining_source_after_head',
