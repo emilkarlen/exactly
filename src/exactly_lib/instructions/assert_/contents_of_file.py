@@ -14,8 +14,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
-from exactly_lib.test_case_utils.parse.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 

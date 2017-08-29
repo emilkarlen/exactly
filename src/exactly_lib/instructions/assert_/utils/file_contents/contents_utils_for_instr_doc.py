@@ -15,7 +15,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.file_transformer import env_vars_replacement
-from exactly_lib.test_case_utils.parse.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
+from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
