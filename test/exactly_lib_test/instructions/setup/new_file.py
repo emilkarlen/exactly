@@ -18,13 +18,13 @@ from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import file_ref_constant_container
+from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
-from exactly_lib_test.test_resources.parse import argument_list_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 

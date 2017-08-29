@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.lines_transformers import parse_lines_transformer as sut
-from exactly_lib_test.test_resources.parse import remaining_source
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 
 
 def suite() -> unittest.TestSuite:

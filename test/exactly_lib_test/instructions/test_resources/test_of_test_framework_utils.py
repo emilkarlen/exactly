@@ -5,7 +5,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.common import TestCaseInstruction, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources.parse import source3
+from exactly_lib_test.section_document.test_resources.parse_source import source3
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

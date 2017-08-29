@@ -9,11 +9,11 @@ from exactly_lib_test.instructions.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
-from exactly_lib_test.test_resources.parse import source4
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

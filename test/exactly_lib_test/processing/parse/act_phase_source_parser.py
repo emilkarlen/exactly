@@ -5,7 +5,7 @@ from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstr
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib_test.test_resources.parse import source3
+from exactly_lib_test.section_document.test_resources.parse_source import source3
 
 
 def suite() -> unittest.TestSuite:

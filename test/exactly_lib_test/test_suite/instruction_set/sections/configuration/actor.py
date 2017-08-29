@@ -11,10 +11,10 @@ from exactly_lib_test.instructions.configuration.actor.test_resources import she
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
-from exactly_lib_test.test_resources.parse import remaining_source
 from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
     configuration_section_environment
 

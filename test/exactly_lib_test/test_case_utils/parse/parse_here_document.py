@@ -10,10 +10,10 @@ from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_string_values_from_name_and_value
 from exactly_lib_test.section_document.parser_implementations.optional_description_and_instruction_parser import \
     source_is_at_end
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.parse import remaining_source, remaining_source_lines
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
