@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.type_system_values.lines_transformer import LinesTransformer, LinesTransformerStructureVisitor, \
-    CustomLinesTransformer, IdentityLinesTransformer
+    CustomLinesTransformer, IdentityLinesTransformer, SequenceLinesTransformer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -22,15 +22,15 @@ class _EqualsAssertion(asrt.ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              actual,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         assert_is_file_selector_type = asrt.is_instance(LinesTransformer, self.description)
-        assert_is_file_selector_type.apply_with_message(put, value,
-                                                        'Value must be a ' + str(LinesTransformer))
-        assert isinstance(value, LinesTransformer)  # Type info for IDE
+        assert_is_file_selector_type.apply_with_message(put, actual,
+                                                        'Value must be a ' + type(LinesTransformer).__name__)
+        assert isinstance(actual, LinesTransformer)  # Type info for IDE
         checker = _EqualityChecker(put,
                                    message_builder,
-                                   value,
+                                   actual,
                                    self.description
                                    )
         checker.visit(self.expected)
@@ -47,6 +47,25 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
         self.actual = actual
         self.description = description
 
+    def visit_identity(self, expected: IdentityLinesTransformer):
+        builder_with_description = self.message_builder.with_description(self.description)
+        self.put.assertIsInstance(self.actual,
+                                  IdentityLinesTransformer,
+                                  builder_with_description.apply('class'))
+
+    def visit_sequence(self, expected: SequenceLinesTransformer):
+        builder_with_description = self.message_builder.with_description(self.description)
+        self.put.assertIsInstance(self.actual,
+                                  SequenceLinesTransformer,
+                                  builder_with_description.apply('class'))
+        assert isinstance(self.actual, SequenceLinesTransformer)  # Type info for IDE
+        assert_components_equals = asrt.matches_sequence(list(map(equals_lines_transformer,
+                                                                  expected.transformers)))
+        assert_components_equals.apply_with_message(self.put,
+                                                    list(self.actual.transformers),
+                                                    'component transformers'
+                                                    )
+
     def visit_custom(self, expected: CustomLinesTransformer):
         builder_with_description = self.message_builder.with_description(self.description)
         self.put.assertIsInstance(self.actual,
@@ -56,9 +75,3 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
         self.put.assertEqual(expected.name,
                              self.actual.name,
                              builder_with_description.apply('name'))
-
-    def visit_identity(self, expected: IdentityLinesTransformer):
-        builder_with_description = self.message_builder.with_description(self.description)
-        self.put.assertIsInstance(self.actual,
-                                  IdentityLinesTransformer,
-                                  builder_with_description.apply('class'))

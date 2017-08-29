@@ -12,6 +12,9 @@ class LinesTransformer:
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         raise NotImplementedError('abstract method')
 
+    def __str__(self):
+        return type(self).__name__
+
 
 class IdentityLinesTransformer(LinesTransformer):
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
@@ -38,6 +41,10 @@ class SequenceLinesTransformer(LinesTransformer):
 
         return functools.reduce(compose_first_and_second, lines_to_lines_transformers)
 
+    def __str__(self):
+        return '{}[{}]'.format(type(self).__name__,
+                               ','.join(map(str, self._transformers)))
+
 
 class CustomLinesTransformer(LinesTransformer):
     """
@@ -53,6 +60,9 @@ class CustomLinesTransformer(LinesTransformer):
     @property
     def name(self) -> str:
         return self._name
+
+    def __str__(self):
+        return '{}({})'.format(type(self).__name__, repr(self._name))
 
 
 class LinesTransformerStructureVisitor:
