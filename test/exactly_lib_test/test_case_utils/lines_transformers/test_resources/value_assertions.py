@@ -60,9 +60,9 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
                                   ReplaceLinesTransformer,
                                   builder_with_description.apply('class'))
         assert isinstance(self.actual, ReplaceLinesTransformer)  # Type info for IDE
-        self.put.assertEqual(expected.regex.pattern,
-                             self.actual.regex.pattern,
-                             builder_with_description.apply('regex'))
+        self.put.assertEqual(expected.regex_pattern_string,
+                             self.actual.regex_pattern_string,
+                             builder_with_description.apply('regex pattern string'))
         self.put.assertEqual(expected.replacement,
                              self.actual.replacement,
                              builder_with_description.apply('replacement'))

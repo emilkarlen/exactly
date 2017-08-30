@@ -41,8 +41,8 @@ class ReplaceLinesTransformer(LinesTransformer):
         self._replacement = replacement
 
     @property
-    def regex(self):
-        return self._compiled_regular_expression
+    def regex_pattern_string(self) -> str:
+        return self._compiled_regular_expression.pattern
 
     @property
     def replacement(self) -> str:
