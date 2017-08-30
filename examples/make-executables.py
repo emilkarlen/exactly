@@ -135,6 +135,7 @@ cleanup_dir = pathlib.Path('cleanup')
 dir_contents_dir = pathlib.Path('dir-contents')
 external_programs_dir = pathlib.Path('external-programs')
 setup_dir = pathlib.Path('setup')
+file_transformations_dir = pathlib.Path('file-transformations')
 
 
 def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
@@ -173,6 +174,10 @@ files = itertools.chain.from_iterable([
          'classify-files-by-moving-to-appropriate-dir',
          'print-number-of-lines-in-file',
          'filter-lines',
+         ]),
+
+    sts(file_transformations_dir / 'bin',
+        ['print-one-argument-per-line',
          ]),
 
     do_nothing_list(cleanup_dir,
