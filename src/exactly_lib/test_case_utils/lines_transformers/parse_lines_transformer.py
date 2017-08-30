@@ -22,6 +22,8 @@ WITH_REPLACED_ENV_VARS_OPTION = option_syntax.option_syntax(WITH_REPLACED_ENV_VA
 
 REPLACE_TRANSFORMER_NAME = 'replace'
 
+SEQUENCE_OPERATOR_NAME = '|'
+
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
 REPLACE_REPLACEMENT_ARGUMENT = a.Named(type_system.STRING_VALUE)
@@ -63,6 +65,8 @@ def parse_lines_transformer_from_token_parser(parser: TokenParserPrime) -> Lines
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
+    '_TRANSFORMER_': LINES_TRANSFORMER_CONCEPT_INFO.name.singular,
+    '_TRANSFORMERS_': LINES_TRANSFORMER_CONCEPT_INFO.name.plural,
 }
 
 
@@ -76,6 +80,13 @@ Replaces the contents of a file.
 All occurrences of {_REG_EX_} are replaced with {_STRING_}.
 """
 
+_SEQUENCE_TRANSFORMER_SED_DESCRIPTION = """\
+Sequence of two or more {_TRANSFORMERS_}.
+
+The result of the {_TRANSFORMER_} to the left is feed to the
+{_TRANSFORMER_} to the right.
+"""
+
 _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
@@ -84,6 +95,10 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  REPLACE_REPLACEMENT_ARGUMENT),
     ],
     description_rest=_fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION)
+)
+
+_SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
+    _fnap(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
 )
 
 _CONCEPT = grammar.Concept(
@@ -100,6 +115,11 @@ _GRAMMAR = grammar.Grammar(
             grammar.SimpleExpression(parse_replace,
                                      _REPLACE_SYNTAX_DESCRIPTION),
     },
-    complex_expressions={},
+    complex_expressions={
+        SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
+            resolvers.LinesTransformerSequenceResolver,
+            _SEQUENCE_SYNTAX_DESCRIPTION,
+        ),
+    },
     prefix_expressions={},
 )
