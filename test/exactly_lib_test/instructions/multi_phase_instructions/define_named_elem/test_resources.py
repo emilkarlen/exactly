@@ -20,6 +20,7 @@ _STD_FORMAT_MAP = {
     'string_type': exactly_lib.help_texts.type_system.STRING_TYPE,
     'list_type': exactly_lib.help_texts.type_system.LIST_TYPE,
     'file_sel_type': exactly_lib.help_texts.type_system.FILE_SELECTOR_TYPE,
+    'lines_trans_type': exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
 }

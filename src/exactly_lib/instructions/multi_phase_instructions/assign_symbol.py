@@ -26,6 +26,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.file_selectors import parse_file_selector
+from exactly_lib.test_case_utils.lines_transformers import resolvers as line_transformer_resolvers, \
+    parse_lines_transformer
+from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
@@ -60,6 +63,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             InvokationVariant(syntax_elements.definition_of_type_path()),
             InvokationVariant(syntax_elements.definition_of_type_list()),
             InvokationVariant(syntax_elements.definition_of_type_file_selector()),
+            InvokationVariant(syntax_elements.definition_of_type_lines_transformer()),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -184,11 +188,19 @@ def _parse_file_selector(token_stream: TokenStream) -> FileSelectorResolver:
         return parse_file_selector.parse_resolver(TokenParserPrime(token_stream))
 
 
+def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_resolvers.LinesTransformerResolver:
+    token_parser = TokenParserPrime(token_stream)
+    if token_parser.is_at_eol:
+        return line_transformer_resolvers.LinesTransformerConstant(IdentityLinesTransformer())
+    return parse_lines_transformer.parse_lines_transformer_from_token_parser(token_parser)
+
+
 _TYPE_SETUPS = {
     exactly_lib.help_texts.type_system.PATH_TYPE: _parse_path,
     exactly_lib.help_texts.type_system.STRING_TYPE: _parse_string,
     exactly_lib.help_texts.type_system.LIST_TYPE: _parse_list,
     exactly_lib.help_texts.type_system.FILE_SELECTOR_TYPE: _parse_file_selector,
+    exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE: _parse_lines_transformer,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
