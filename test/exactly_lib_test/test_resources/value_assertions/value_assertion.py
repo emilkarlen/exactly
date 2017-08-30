@@ -2,6 +2,8 @@ import os
 import types
 import unittest
 
+COMPONENT_SEPARATOR = '/'
+
 
 class MessageBuilder:
     def __init__(self,
@@ -18,8 +20,11 @@ class MessageBuilder:
         else:
             return '' if tail is None else tail
 
+    def msg_for_sub_component(self, component_name: str) -> str:
+        return self.apply(COMPONENT_SEPARATOR + component_name)
+
     def for_sub_component(self, component_name: str,
-                          component_separator: str = '/'):
+                          component_separator: str = COMPONENT_SEPARATOR):
         return sub_component_builder(component_name,
                                      self,
                                      component_separator)
@@ -287,7 +292,7 @@ class OnTransformed(ValueAssertion):
 def sub_component(component_name: str,
                   component_getter: types.FunctionType,
                   component_assertion: ValueAssertion,
-                  component_separator: str = '/') -> ValueAssertion:
+                  component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion:
     """
     Short cut for creating a SubComponentValueAssertion
     """
@@ -312,7 +317,7 @@ def append_to_message(s: str) -> types.FunctionType:
 def sub_component_list(list_name: str,
                        list_getter: types.FunctionType,
                        element_assertion: ValueAssertion,
-                       component_separator: str = '/') -> ValueAssertion:
+                       component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion:
     """
     Short cut for creating a SubComponentValueAssertion that checks a list
     """
@@ -345,7 +350,7 @@ class _IsInstanceWith(ValueAssertion):
             message_builder = message_builder.with_description(self.description)
         put.assertIsInstance(value,
                              self.expected_type,
-                             message_builder.apply(''))
+                             message_builder.msg_for_sub_component('type'))
         self.value_assertion.apply(put, value, message_builder)
 
 
@@ -402,7 +407,7 @@ def is_none_or_instance_with(expected_type: type,
 
 def every_element(iterable_name: str,
                   element_assertion: ValueAssertion,
-                  component_separator: str = '/') -> ValueAssertion:
+                  component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion:
     """
     Short cut for creating a IterableElementsValueAssertion
     """
@@ -414,7 +419,7 @@ def every_element(iterable_name: str,
 class SubComponentMessageHeadConstructor:
     def __init__(self,
                  component_name: str,
-                 component_separator: str = '/'):
+                 component_separator: str = COMPONENT_SEPARATOR):
         self.component_name = component_name
         self.component_separator = component_separator
 
@@ -427,14 +432,14 @@ class SubComponentMessageHeadConstructor:
 
 def sub_component_header(component_name: str,
                          super_message_builder: MessageBuilder,
-                         component_separator: str = '/') -> str:
+                         component_separator: str = COMPONENT_SEPARATOR) -> str:
     con = SubComponentMessageHeadConstructor(component_name, component_separator=component_separator)
     return con.apply(super_message_builder)
 
 
 def sub_component_builder(component_name: str,
                           super_message_builder: MessageBuilder,
-                          component_separator: str = '/') -> MessageBuilder:
+                          component_separator: str = COMPONENT_SEPARATOR) -> MessageBuilder:
     return MessageBuilder(sub_component_header(component_name, super_message_builder, component_separator))
 
 
