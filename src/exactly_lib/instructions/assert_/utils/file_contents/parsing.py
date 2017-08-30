@@ -76,7 +76,7 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
         return parsers[first_argument]()
     else:
         def _no_checker_msg() -> str:
-            '\n'.join([
+            return '\n'.join([
                 'Expecting one of : ' + ', '.join(parsers.keys()),
                 'Found            : ' + source.remaining_part_of_current_line,
             ])

@@ -7,6 +7,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
+from exactly_lib_test.section_document.parser_implementations.test_resources.exception_assertions import \
+    assert_is_single_instruction_invalid_argument_exception
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
@@ -36,8 +38,13 @@ class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(TestWithConfigu
                          illegal_argument=case.value,
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 )
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
                     parser.parse(source)
+                assert_is_single_instruction_invalid_argument_exception().apply_with_message(
+                    self,
+                    cm.exception,
+                    'exception from parser'
+                )
 
 
 class ParseShouldFailWhenCheckIsMissing(TestWithConfigurationAndNegationArgumentBase):
@@ -50,8 +57,13 @@ class ParseShouldFailWhenCheckIsMissing(TestWithConfigurationAndNegationArgument
                          maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 )
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
                     parser.parse(source)
+                assert_is_single_instruction_invalid_argument_exception().apply_with_message(
+                    self,
+                    cm.exception,
+                    'exception from parser'
+                )
 
 
 class ParseShouldFailWhenCheckIsIllegal(TestWithConfigurationAndNegationArgumentBase):
@@ -74,5 +86,10 @@ class ParseShouldFailWhenCheckIsIllegal(TestWithConfigurationAndNegationArgument
                              illegal_check=case.value,
                              ),
                     )
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
                         parser.parse(source)
+                    assert_is_single_instruction_invalid_argument_exception().apply_with_message(
+                        self,
+                        cm.exception,
+                        'exception from parser'
+                    )
