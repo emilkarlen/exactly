@@ -1,0 +1,3 @@
+from exactly_lib.default.program_modes.test_case.predef_symbols import test_case_dir_symbols
+
+ALL = test_case_dir_symbols.ALL

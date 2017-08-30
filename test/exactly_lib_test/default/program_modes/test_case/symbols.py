@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 import exactly_lib.help_texts.type_system
-from exactly_lib.default.program_modes.test_case import execution_properties
+from exactly_lib.default.program_modes.test_case.predef_symbols import test_case_dir_symbols
 from exactly_lib.execution import exit_values
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.test_case import phase_identifier
@@ -45,7 +45,7 @@ class AllPredefinedSymbolsShouldBeAvailableInTheSetupPhase(SetupWithoutPreproces
                 path_type=exactly_lib.help_texts.type_system.PATH_TYPE,
                 name_to_define='COPY_OF_' + symbol.key,
                 reference_to_predefined_symbol=symbol_reference_syntax_for_name(symbol.key))
-            for symbol in execution_properties.ALL
+            for symbol in test_case_dir_symbols.ALL
         ]
 
         return lines_content(
