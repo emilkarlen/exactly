@@ -1,11 +1,14 @@
+from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
+from exactly_lib.named_element.restriction import ValueTypeRestriction
 from exactly_lib.type_system_values.lines_transformer import LinesTransformer
+from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class LinesTransformerConstant(LinesTransformerResolver):
     """
-    A :class:`FileSelectorResolver` that is a constant :class:`FileSelector`
+    A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformer`
     """
 
     def __init__(self, value: LinesTransformer):
@@ -20,3 +23,28 @@ class LinesTransformerConstant(LinesTransformerResolver):
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._value) + '\''
+
+
+class LinesTransformerReference(LinesTransformerResolver):
+    """
+    A :class:`LinesTransformerResolver` that is a reference to a symbol
+    """
+
+    def __init__(self, name_of_referenced_resolver: str):
+        super().__init__()
+        self._name_of_referenced_resolver = name_of_referenced_resolver
+        self._references = [NamedElementReference(name_of_referenced_resolver,
+                                                  ValueTypeRestriction(ValueType.LINES_TRANSFORMER))]
+
+    def resolve(self, symbols: SymbolTable) -> LinesTransformer:
+        container = symbols.lookup(self._name_of_referenced_resolver)
+        resolver = container.resolver
+        assert isinstance(resolver, LinesTransformerResolver)
+        return resolver.resolve(symbols)
+
+    @property
+    def references(self) -> list:
+        return self._references
+
+    def __str__(self):
+        return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
