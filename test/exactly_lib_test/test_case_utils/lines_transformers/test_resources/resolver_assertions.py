@@ -8,13 +8,13 @@ from exactly_lib_test.test_case_utils.lines_transformers.test_resources.value_as
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def resolved_value_equals_lines_transformer(expected: LinesTransformer,
-                                            expected_references: asrt.ValueAssertion = asrt.is_empty_list,
-                                            environment: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
+def resolved_value_equals_lines_transformer(value: LinesTransformer,
+                                            references: asrt.ValueAssertion = asrt.is_empty_list,
+                                            symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
     """
-    :return: A assertion on a :class:`FileSelectorResolver`
+    :return: A assertion on a :class:`LinesTransformerResolver`
     """
-    named_elements = symbol_table.symbol_table_from_none_or_value(environment)
+    named_elements = symbol_table.symbol_table_from_none_or_value(symbols)
 
     def resolve_value(resolver: LinesTransformerResolver) -> LinesTransformer:
         return resolver.resolve(named_elements)
@@ -25,10 +25,10 @@ def resolved_value_equals_lines_transformer(expected: LinesTransformer,
                                                                ValueType.LINES_TRANSFORMER),
 
                                      asrt.on_transformed(resolve_value,
-                                                         equals_lines_transformer(expected,
+                                                         equals_lines_transformer(value,
                                                                                   'resolved lines transformer')),
 
                                      asrt.sub_component('references',
                                                         resolver_structure.get_references,
-                                                        expected_references),
+                                                        references),
                                  ]))

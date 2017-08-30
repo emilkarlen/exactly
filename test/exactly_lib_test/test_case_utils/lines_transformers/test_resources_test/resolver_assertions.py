@@ -41,7 +41,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_value_equals_lines_transformer(actual_and_expected,
-                                                                                 environment=case.value)
+                                                                                 symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
@@ -64,7 +64,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_equals_lines_transformer(expected,
-                                                                                        environment=case.value)
+                                                                                        symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
@@ -87,7 +87,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_equals_lines_transformer(expected,
-                                                                                        environment=case.value)
+                                                                                        symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
@@ -99,7 +99,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
             IdentityLinesTransformer(),
             references=actual_references)
         assertion_to_check = sut.resolved_value_equals_lines_transformer(actual_resolver.resolved_value,
-                                                                         expected_references=asrt.matches_sequence([
+                                                                         references=asrt.matches_sequence([
                                                                              asrt.is_(actual_reference)
                                                                          ]),
                                                                          )
@@ -126,7 +126,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_value_equals_lines_transformer(actual_resolver.resolved_value,
-                                                                                 expected_references=case.value,
+                                                                                 references=case.value,
                                                                                  )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, actual_resolver)

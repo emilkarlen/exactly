@@ -31,7 +31,7 @@ class FileSelectorConstant(FileSelectorResolver):
 
 class FileSelectorReference(FileSelectorResolver):
     """
-    A :class:`FileSelectorResolver` that is a constant :class:`FileSelector`
+    A :class:`FileSelectorResolver` that is a reference to a symbol
     """
 
     def __init__(self, name_of_referenced_resolver: str):

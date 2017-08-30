@@ -5,9 +5,9 @@ from exactly_lib.named_element.resolver_structure import LinesTransformerResolve
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.test_case_utils.expression import grammar
+from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.lines_transformers import custom_transformers as ct
-from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformers import resolvers
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
     ReplaceLinesTransformer
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
@@ -30,6 +30,8 @@ _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
+LINES_TRANSFORMER_ARGUMENT = a.Named(type_system.LINES_TRANSFORMER_VALUE)
+
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
     with_replaced_env_vars = False
@@ -42,7 +44,7 @@ def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
     lines_transformer = IdentityLinesTransformer()
     if with_replaced_env_vars:
         lines_transformer = ct.CUSTOM_LINES_TRANSFORMERS[ct.ENV_VAR_REPLACEMENT_TRANSFORMER_NAME]
-    return LinesTransformerConstant(lines_transformer)
+    return resolvers.LinesTransformerConstant(lines_transformer)
 
 
 def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
@@ -51,11 +53,11 @@ def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
     parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
     replacement = parser.consume_mandatory_token(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
     regex = compile_regex(regex_pattern.string)
-    return LinesTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
+    return resolvers.LinesTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
 
 
-def mk_lines_transformer_reference(symbol_name: str) -> LinesTransformerResolver:
-    raise NotImplementedError('todo')
+def parse_lines_transformer_from_token_parser(parser: TokenParserPrime) -> LinesTransformerResolver:
+    return parse_expression.parse(_GRAMMAR, parser)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
@@ -87,12 +89,12 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 _CONCEPT = grammar.Concept(
     LINES_TRANSFORMER_CONCEPT_INFO.name,
     type_system.LINES_TRANSFORMER_TYPE,
-    type_system.LINES_TRANSFORMER_VALUE,
+    LINES_TRANSFORMER_ARGUMENT,
 )
 
 _GRAMMAR = grammar.Grammar(
     _CONCEPT,
-    mk_reference=mk_lines_transformer_reference,
+    mk_reference=resolvers.LinesTransformerReference,
     simple_expressions={
         REPLACE_TRANSFORMER_NAME:
             grammar.SimpleExpression(parse_replace,
