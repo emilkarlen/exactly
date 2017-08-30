@@ -19,6 +19,7 @@ from exactly_lib_test.named_element.test_resources.named_elem_utils import conta
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_container
 from exactly_lib_test.named_element.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case_utils.lines_transformers import parse_lines_transformer
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.resolver_assertions import \
     resolved_value_equals_lines_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -85,10 +86,10 @@ class TestSuccessfulScenarios(TestCaseBase):
         symbol = NameAndValue('the_symbol_name',
                               parse_lines_transformer.CustomLinesTransformerTestImpl('the referenced transformer'))
 
-        replace_transformer_syntax = parse_lines_transformer.syntax_for_replace_transformer(regex_str,
-                                                                                            replacement_str)
+        replace_transformer_syntax = argument_syntax.syntax_for_replace_transformer(regex_str,
+                                                                                    replacement_str)
 
-        transformer_argument = parse_lines_transformer.syntax_for_sequence_of_transformers([
+        transformer_argument = argument_syntax.syntax_for_sequence_of_transformers([
             symbol.name,
             replace_transformer_syntax,
         ])

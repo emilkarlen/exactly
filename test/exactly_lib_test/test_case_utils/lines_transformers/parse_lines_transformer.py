@@ -18,6 +18,8 @@ from exactly_lib_test.section_document.parser_implementations.test_resources.tok
     import remaining_source
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources.argument_syntax import \
+    syntax_for_replace_transformer, syntax_for_sequence_of_transformers
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.resolver_assertions import \
     resolved_value_equals_lines_transformer
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -274,19 +276,6 @@ class TestParseLineTransformer(unittest.TestCase):
                     }),
                 )),
         )
-
-
-def syntax_for_replace_transformer(regex_token_str: str,
-                                   replacement_token_str: str) -> str:
-    return ' '.join([
-        sut.REPLACE_TRANSFORMER_NAME,
-        regex_token_str,
-        replacement_token_str,
-    ])
-
-
-def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
-    return (' ' + sut.SEQUENCE_OPERATOR_NAME + ' ').join(transformer_syntax_list)
 
 
 def resolved_value_is_replace_transformer(regex_str: str,
