@@ -3,18 +3,15 @@ from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.types import LINES_TRANSFORMER_CONCEPT_INFO
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations import token_parse, token_stream_parse_prime
+from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
-from exactly_lib.test_case_utils.lines_transformers import custom_transformers as ct
 from exactly_lib.test_case_utils.lines_transformers import resolvers
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
     ReplaceLinesTransformer
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.option_parsing import matches
-from exactly_lib.util.parse.token import TokenType
 from exactly_lib.util.textformat.parse import normalize_and_parse
 
 IDENTITY_TRANSFORMER_RESOLVER = resolvers.LinesTransformerConstant(IdentityLinesTransformer())
@@ -38,20 +35,6 @@ _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
 LINES_TRANSFORMER_ARGUMENT = a.Named(type_system.LINES_TRANSFORMER_VALUE)
-
-
-def parse_lines_transformer_(source: ParseSource) -> LinesTransformerResolver:
-    with_replaced_env_vars = False
-    peek_source = source.copy
-    next_arg = token_parse.parse_token_or_none_on_current_line(peek_source)
-    if next_arg is not None and next_arg.type == TokenType.PLAIN and \
-            matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, next_arg.string):
-        source.catch_up_with(peek_source)
-        with_replaced_env_vars = True
-    lines_transformer = IdentityLinesTransformer()
-    if with_replaced_env_vars:
-        lines_transformer = ct.CUSTOM_LINES_TRANSFORMERS[ct.ENV_VAR_REPLACEMENT_TRANSFORMER_NAME]
-    return resolvers.LinesTransformerConstant(lines_transformer)
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
