@@ -1,6 +1,5 @@
-import itertools
-
 from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
 from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorFromSelectors
@@ -60,7 +59,7 @@ class FileSelectorAnd(FileSelectorResolver):
 
     def __init__(self, resolvers: list):
         self._resolvers = tuple(resolvers)
-        self._references = list(itertools.chain.from_iterable([r.references for r in resolvers]))
+        self._references = references_from_objects_with_symbol_references(resolvers)
 
     def resolve(self, symbols: SymbolTable) -> FileSelector:
         selectors = dcs.and_all([resolver.resolve(symbols).selectors for resolver in self._resolvers])

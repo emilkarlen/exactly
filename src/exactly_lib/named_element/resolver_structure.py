@@ -1,3 +1,4 @@
+from exactly_lib.named_element.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system_values.file_selector import FileSelector
@@ -7,7 +8,7 @@ from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
 
 
-class NamedElementResolver:
+class NamedElementResolver(ObjectWithSymbolReferences):
     """ Base class for values in the symbol table used by Exactly. """
 
     @property

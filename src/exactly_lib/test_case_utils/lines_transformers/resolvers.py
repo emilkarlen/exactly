@@ -1,6 +1,7 @@
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
+from exactly_lib.test_case_utils.lines_transformers import transformers
 from exactly_lib.type_system_values.lines_transformer import LinesTransformer
 from exactly_lib.type_system_values.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -31,7 +32,6 @@ class LinesTransformerReference(LinesTransformerResolver):
     """
 
     def __init__(self, name_of_referenced_resolver: str):
-        super().__init__()
         self._name_of_referenced_resolver = name_of_referenced_resolver
         self._references = [NamedElementReference(name_of_referenced_resolver,
                                                   ValueTypeRestriction(ValueType.LINES_TRANSFORMER))]
@@ -48,3 +48,24 @@ class LinesTransformerReference(LinesTransformerResolver):
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
+
+
+class LinesTransformerSequenceResolver(LinesTransformerResolver):
+    """
+    Resolver of :class:`LinesTransformerSequence`
+    """
+
+    def __init__(self, transformer_list: list):
+        self.transformers = transformer_list
+        self._references = [transformer.references
+                            for transformer in transformer_list]
+
+    def resolve(self, symbols: SymbolTable) -> LinesTransformer:
+        return transformers.SequenceLinesTransformer([
+            transformer.resolve(symbols)
+            for transformer in self.transformers
+        ])
+
+    @property
+    def references(self) -> list:
+        return self._references
