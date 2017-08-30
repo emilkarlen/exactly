@@ -7,12 +7,21 @@
 [setup]
 
 
-def file-transformer MY_1ST_TRANSFORMER = replace '[0-9]+' 'ID'
+def file-transformer TURN_WINTER_TO_SPRING = replace 'winter' 'spring'
 
-def file-transformer MY_2ND_TRANSFORMER = MY_1ST_TRANSFORMER | replace 'coffee' 'coffee with milk'
+def file-transformer TURN_WINTER_AND_SPRING_TO_SUMMER = TURN_WINTER_TO_SPRING | replace 'spring' 'summer'
 
 
 [act]
 
 
-$ exit 0
+bin/print-one-argument-per-line 'now is winter' 'now is spring'
+
+
+[assert]
+
+stdout  --transformation TURN_WINTER_AND_SPRING_TO_SUMMER equals <<EOF
+now is summer
+now is summer
+EOF
+
