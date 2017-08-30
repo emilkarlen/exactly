@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.default.program_modes.test_case import misc, preprocessing, act_phase, symbols
+from exactly_lib_test.default.program_modes.test_case import misc, preprocessing, act_phase, predefined_symbols
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
@@ -15,7 +15,7 @@ def suite_that_does_require_main_program_runner(mpr: MainProgramRunner) -> unitt
 
 
 def suite_that_does_require_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
-    return symbols.suite_that_requires_main_program_runner_with_default_setup(mpr)
+    return predefined_symbols.suite_that_requires_main_program_runner_with_default_setup(mpr)
 
 
 def _suite_with_main_program_runner_with_default_setup() -> unittest.TestSuite:
