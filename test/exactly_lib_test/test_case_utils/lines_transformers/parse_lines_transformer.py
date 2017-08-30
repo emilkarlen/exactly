@@ -8,8 +8,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformers import parse_lines_transformer as sut
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformers.transformers import ReplaceLinesTransformer, \
-    CustomLinesTransformer
-from exactly_lib.util.symbol_table import singleton_symbol_table_2
+    CustomLinesTransformer, SequenceLinesTransformer
+from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
@@ -226,17 +226,58 @@ class TestParseLineTransformer(unittest.TestCase):
 
         # ACT & ASSERT #
         self._check(
-            remaining_source(replace_simple_transformer_syntax(regex_str,
-                                                               replacement_str)),
+            remaining_source(syntax_for_replace_transformer(regex_str,
+                                                            replacement_str)),
             Expectation(
                 resolver=resolved_value_is_replace_transformer(
                     regex_str,
                     replacement_str)),
         )
 
+    def test_sequence(self):
+        # ARRANGE #
+        symbol_1 = NameAndValue('symbol_1_name',
+                                CustomLinesTransformerTestImpl('the 1st referenced transformer'))
+        symbol_2 = NameAndValue('symbol_2_name',
+                                CustomLinesTransformerTestImpl('the 2nd referenced transformer'))
 
-def replace_simple_transformer_syntax(regex_token_str: str,
-                                      replacement_token_str: str) -> str:
+        regex_str = 'regex'
+        replacement_str = 'replacement'
+
+        the_replace_transformer = replace_transformer(regex_str,
+                                                      replacement_str)
+        replace_transformer_syntax = syntax_for_replace_transformer(regex_str,
+                                                                    replacement_str)
+
+        arguments = syntax_for_sequence_of_transformers([
+            symbol_1.name,
+            replace_transformer_syntax,
+            symbol_2.name,
+        ])
+        # ACT & ASSERT #
+        self._check(
+            remaining_source(arguments),
+            Expectation(
+                resolver=resolved_value_equals_lines_transformer(
+                    SequenceLinesTransformer([
+                        symbol_1.value,
+                        the_replace_transformer,
+                        symbol_2.value,
+                    ]),
+                    references=asrt.matches_sequence([
+                        is_lines_transformer_reference_to(symbol_1.name),
+                        is_lines_transformer_reference_to(symbol_2.name),
+                    ]),
+                    symbols=SymbolTable({
+                        symbol_1.name: container(LinesTransformerConstant(symbol_1.value)),
+                        symbol_2.name: container(LinesTransformerConstant(symbol_2.value)),
+                    }),
+                )),
+        )
+
+
+def syntax_for_replace_transformer(regex_token_str: str,
+                                   replacement_token_str: str) -> str:
     return ' '.join([
         sut.REPLACE_TRANSFORMER_NAME,
         regex_token_str,
@@ -244,13 +285,21 @@ def replace_simple_transformer_syntax(regex_token_str: str,
     ])
 
 
+def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
+    return (' ' + sut.SEQUENCE_OPERATOR_NAME + ' ').join(transformer_syntax_list)
+
+
 def resolved_value_is_replace_transformer(regex_str: str,
                                           replacement_str: str,
                                           references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
-    expected_transformer = ReplaceLinesTransformer(re.compile(regex_str),
-                                                   replacement_str)
+    expected_transformer = replace_transformer(regex_str, replacement_str)
     return resolved_value_equals_lines_transformer(expected_transformer,
                                                    references=references)
+
+
+def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceLinesTransformer:
+    return ReplaceLinesTransformer(re.compile(regex_str),
+                                   replacement_str)
 
 
 class CustomLinesTransformerTestImpl(CustomLinesTransformer):

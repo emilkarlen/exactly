@@ -1,4 +1,5 @@
 from exactly_lib.named_element.named_element_usage import NamedElementReference
+from exactly_lib.named_element.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
 from exactly_lib.test_case_utils.lines_transformers import transformers
@@ -55,10 +56,9 @@ class LinesTransformerSequenceResolver(LinesTransformerResolver):
     Resolver of :class:`LinesTransformerSequence`
     """
 
-    def __init__(self, transformer_list: list):
-        self.transformers = transformer_list
-        self._references = [transformer.references
-                            for transformer in transformer_list]
+    def __init__(self, transformer_resolver_list: list):
+        self.transformers = transformer_resolver_list
+        self._references = references_from_objects_with_symbol_references(transformer_resolver_list)
 
     def resolve(self, symbols: SymbolTable) -> LinesTransformer:
         return transformers.SequenceLinesTransformer([
