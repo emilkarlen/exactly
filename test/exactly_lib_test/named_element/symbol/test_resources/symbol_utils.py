@@ -4,7 +4,7 @@ from exactly_lib.named_element.resolver_structure import NamedElementContainer, 
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
@@ -127,7 +127,8 @@ def symbol_table_with_single_file_ref_value(
         [file_ref_symbol_definition(name, file_ref_value, line_num, source_line)])
 
 
-def symbol_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> NamedElementReference:
+def symbol_reference(name: str,
+                     value_restriction: ValueRestriction = AnySymbolTypeRestriction()) -> NamedElementReference:
     return NamedElementReference(name, ReferenceRestrictionsOnDirectAndIndirect(value_restriction))
 
 

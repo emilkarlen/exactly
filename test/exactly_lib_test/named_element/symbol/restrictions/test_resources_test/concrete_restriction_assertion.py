@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.named_element.restriction import ReferenceRestrictions, ElementTypeRestriction
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as r
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfIndirectReference
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction, \
+    StringRestriction, \
     FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -137,7 +138,7 @@ class TestIsFailureOfIndirectReference(unittest.TestCase):
 class TestIsNoRestriction(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            NoRestriction(),
+            AnySymbolTypeRestriction(),
         ]
         for restriction in test_cases:
             with self.subTest():
@@ -158,7 +159,7 @@ class TestIsStringRestriction(unittest.TestCase):
                 sut.is_string_value_restriction.apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
-        actual = NoRestriction()
+        actual = AnySymbolTypeRestriction()
         assert_that_assertion_fails(sut.is_string_value_restriction, actual)
 
 
@@ -173,7 +174,7 @@ class TestEqualsStringRestriction(unittest.TestCase):
 
     def test_not_equals__different__types(self):
         expected = StringRestriction()
-        actual = NoRestriction()
+        actual = AnySymbolTypeRestriction()
         assert_that_assertion_fails(sut.equals_string_restriction(expected), actual)
 
 
@@ -190,7 +191,7 @@ class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
 
     def test_not_equals__different__types(self):
         expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
-        actual = NoRestriction()
+        actual = AnySymbolTypeRestriction()
         assert_that_assertion_fails(sut.equals_file_ref_relativity_restriction(expected), actual)
 
     def test_not_equals__different__accepted_relativity_variants(self):
@@ -205,7 +206,7 @@ class TestEqualsValueRestriction(unittest.TestCase):
             FileRefRelativityRestriction(PathRelativityVariants(set(), False)),
             FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_ACT}, True)),
             StringRestriction(),
-            NoRestriction(),
+            AnySymbolTypeRestriction(),
         ]
         for restriction in test_cases:
             with self.subTest():
@@ -213,12 +214,12 @@ class TestEqualsValueRestriction(unittest.TestCase):
 
     def test_not_equals__different__types__one_is_file_ref_relativity_variants(self):
         expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
-        actual = NoRestriction()
+        actual = AnySymbolTypeRestriction()
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
     def test_not_equals__different__types__one_is_string_restriction(self):
         expected = StringRestriction()
-        actual = NoRestriction()
+        actual = AnySymbolTypeRestriction()
         assert_that_assertion_fails(sut.equals_value_restriction(expected), actual)
 
     def test_not_equals__same_type__different_accepted_relativity_variants(self):
@@ -239,19 +240,19 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
                 'multiple parts',
                 r.OrReferenceRestrictions([
                     r.OrRestrictionPart(SymbolValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
-                        vr.NoRestriction())),
+                        vr.AnySymbolTypeRestriction())),
                     r.OrRestrictionPart(SymbolValueType.STRING,
                                         r.ReferenceRestrictionsOnDirectAndIndirect(
                                             vr.StringRestriction(),
-                                            vr.NoRestriction()))
+                                            vr.AnySymbolTypeRestriction()))
                 ]),
                 r.OrReferenceRestrictions([
                     r.OrRestrictionPart(SymbolValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
-                        vr.NoRestriction())),
+                        vr.AnySymbolTypeRestriction())),
                     r.OrRestrictionPart(SymbolValueType.STRING,
                                         r.ReferenceRestrictionsOnDirectAndIndirect(
                                             vr.StringRestriction(),
-                                            vr.NoRestriction()))
+                                            vr.AnySymbolTypeRestriction()))
                 ]),
             ),
         ]
@@ -302,7 +303,7 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
         actual = r.OrReferenceRestrictions([
             r.OrRestrictionPart(SymbolValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
-                                    vr.NoRestriction()))])
+                                    vr.AnySymbolTypeRestriction()))])
         self._assert_fails(expected, actual)
 
     @staticmethod
@@ -316,9 +317,9 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         cases = [
             (
                 sut.equals_symbol_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
-                    vr.NoRestriction())),
+                    vr.AnySymbolTypeRestriction())),
                 r.ReferenceRestrictionsOnDirectAndIndirect(
-                    vr.NoRestriction()),
+                    vr.AnySymbolTypeRestriction()),
             ),
             (
                 sut.equals_symbol_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
@@ -329,10 +330,10 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
             (
                 sut.equals_symbol_reference_restrictions(r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.StringRestriction(),
-                    vr.NoRestriction())),
+                    vr.AnySymbolTypeRestriction())),
                 r.ReferenceRestrictionsOnDirectAndIndirect(
                     vr.StringRestriction(),
-                    vr.NoRestriction()),
+                    vr.AnySymbolTypeRestriction()),
             ),
             (
                 sut.equals_symbol_reference_restrictions(r.OrReferenceRestrictions([])),
@@ -345,7 +346,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
 
     def test_fail__direct_and_indirect__different_node_restrictions(self):
         expected = r.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction())
+            vr.AnySymbolTypeRestriction())
         actual = r.ReferenceRestrictionsOnDirectAndIndirect(
             vr.StringRestriction())
         self._fail(expected, actual)
@@ -354,7 +355,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         expected = r.OrReferenceRestrictions([
             r.OrRestrictionPart(SymbolValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
-                                    vr.NoRestriction()))
+                                    vr.AnySymbolTypeRestriction()))
         ])
         actual = r.OrReferenceRestrictions([
             r.OrRestrictionPart(SymbolValueType.STRING,

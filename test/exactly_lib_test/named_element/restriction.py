@@ -11,10 +11,9 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources_test.resolver_assertions import \
-    LinesTransformerResolverWithHardCodedValues
-from exactly_lib_test.type_system_values.logic.test_resources import FakeLinesTransformer
+from exactly_lib_test.type_system_values.logic.test_resources.values import FakeLinesTransformer
 from exactly_lib_test.type_system_values.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
 
 
@@ -83,7 +82,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             FileSelectorResolverConstantTestImpl(FileSelectorThatSelectsAllFilesTestImpl()),
 
         ValueType.LINES_TRANSFORMER:
-            LinesTransformerResolverWithHardCodedValues(FakeLinesTransformer(), []),
+            LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
     }
 
     def test_satisfied_restriction(self):

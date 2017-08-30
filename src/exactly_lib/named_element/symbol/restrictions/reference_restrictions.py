@@ -5,7 +5,7 @@ from exactly_lib.named_element.resolver_structure import NamedElementContainer, 
     SymbolValueResolver
 from exactly_lib.named_element.restriction import FailureInfo, \
     SymbolReferenceRestrictions
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction, StringRestriction
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.type_system_values.value_type import SymbolValueType, ElementType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -220,7 +220,7 @@ def no_restrictions() -> SymbolReferenceRestrictions:
     """
     :return: A restriction that is unconditionally satisfied
     """
-    return ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())
+    return ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction())
 
 
 def string_made_up_by_just_strings(meaning_of_failure_of_indirect_reference: str = ''
