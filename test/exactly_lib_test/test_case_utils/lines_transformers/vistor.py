@@ -3,6 +3,7 @@ import unittest
 
 import exactly_lib.test_case_utils.lines_transformers.transformers as sut
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib_test.type_system_values.logic.test_resources import FakeLinesTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -58,7 +59,7 @@ class TestFileTransformerStructureVisitor(unittest.TestCase):
 
     def test_raise_type_error_WHEN_visited_object_is_of_unknown_class(self):
         # ARRANGE #
-        instance = UnidentifiedFlyingTransformer()
+        instance = FakeLinesTransformer()
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         with self.assertRaises(TypeError):
@@ -97,11 +98,3 @@ class MyCustomTransformer(sut.CustomLinesTransformer):
 
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         return iter
-
-
-class UnidentifiedFlyingTransformer(sut.LinesTransformer):
-    def __init__(self):
-        pass
-
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
-        raise NotImplementedError('unidentified')
