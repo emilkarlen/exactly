@@ -182,10 +182,11 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
 
 
 def _parse_file_selector(token_stream: TokenStream) -> FileSelectorResolver:
-    if token_stream.is_null or token_stream.remaining_part_of_current_line.isspace():
+    token_parser = TokenParserPrime(token_stream)
+    if token_parser.is_at_eol:
         return parse_file_selector.SELECTION_OF_ALL_FILES
     else:
-        return parse_file_selector.parse_resolver(TokenParserPrime(token_stream))
+        return parse_file_selector.parse_resolver(token_parser)
 
 
 def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_resolvers.LinesTransformerResolver:
