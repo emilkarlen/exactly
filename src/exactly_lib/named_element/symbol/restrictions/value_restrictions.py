@@ -1,5 +1,5 @@
 from exactly_lib.help_texts import type_system
-from exactly_lib.named_element import error_messages as err_msg_for_any_type
+from exactly_lib.named_element.err_msg import error_messages as err_msg_for_any_type
 from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions import error_messages
