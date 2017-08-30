@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.symbols_handling import restriction_failure_renderer as sut
+from exactly_lib.named_element.err_msg import restriction_failure_renderer as sut
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.named_element.symbol.string_resolver import string_constant

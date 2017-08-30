@@ -1,8 +1,8 @@
-from exactly_lib.execution.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.help_texts import type_system
 from exactly_lib.named_element.resolver_structure import NamedElementContainer, NamedElementResolver
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 
 
 def invalid_type_msg(expected_value_types: list,
