@@ -1,3 +1,4 @@
+from exactly_lib.named_element.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.named_element.resolver_structure import NamedElementContainer, NamedElementResolver
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.util.symbol_table import Entry
@@ -12,7 +13,7 @@ class NamedElementUsage:
         return self._name
 
 
-class NamedElementDefinition(NamedElementUsage):
+class NamedElementDefinition(NamedElementUsage, ObjectWithSymbolReferences):
     """
     Defines a named element so that it can be used via references to it.
     """
@@ -29,7 +30,6 @@ class NamedElementDefinition(NamedElementUsage):
 
     @property
     def references(self) -> list:
-        """All :class:`NamedElementReference` directly referenced by this object"""
         return self._container.resolver.references
 
     @property

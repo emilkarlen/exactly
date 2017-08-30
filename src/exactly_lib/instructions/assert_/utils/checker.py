@@ -1,7 +1,8 @@
-import itertools
 import types
 
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
+from exactly_lib.named_element.object_with_symbol_references import ObjectWithSymbolReferences, \
+    references_from_objects_with_symbol_references
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -12,7 +13,7 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
     PreOrPostSdsSvhValidationErrorValidator
 
 
-class Checker:
+class Checker(ObjectWithSymbolReferences):
     """
     Checks a value given to the constructor,
     and returns an associated value, that may be
@@ -23,10 +24,6 @@ class Checker:
 
     def __init__(self, validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
         self._validator = validator
-
-    @property
-    def references(self) -> list:
-        return []
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
@@ -62,7 +59,7 @@ class SequenceOfChecks(Checker):
     def __init__(self, checkers: list):
         super().__init__(pre_or_post_validation.AndValidator([c.validator for c in checkers]))
         self._checkers = tuple(checkers)
-        self._references = list(itertools.chain.from_iterable([c.references for c in checkers]))
+        self._references = references_from_objects_with_symbol_references(checkers)
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
