@@ -141,6 +141,18 @@ def definition_of_type_file_selector() -> str:
     return cl_syntax.cl_syntax_for_args(arguments)
 
 
+def definition_of_type_lines_transformer() -> str:
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.LINES_TRANSFORMER_TYPE))
+    selector = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINES_TRANSFORMER_VALUE))
+    arguments = [
+        type_token,
+        _symbol_name(),
+        _equals(),
+        selector,
+    ]
+    return cl_syntax.cl_syntax_for_args(arguments)
+
+
 def _symbol_name() -> a.ArgumentUsage:
     return a.Single(a.Multiplicity.MANDATORY, a.Named(SYMBOL_NAME))
 
