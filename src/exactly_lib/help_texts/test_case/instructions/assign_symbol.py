@@ -131,7 +131,7 @@ def definition_of_type_list() -> str:
 
 def definition_of_type_file_selector() -> str:
     type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.FILE_SELECTOR_TYPE))
-    selector = a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(type_system.FILE_SELECTOR_VALUE))
+    selector = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_SELECTOR_VALUE))
     arguments = [
         type_token,
         _symbol_name(),
