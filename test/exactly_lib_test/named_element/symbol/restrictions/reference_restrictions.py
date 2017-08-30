@@ -385,13 +385,15 @@ class TestOrReferenceRestrictions(unittest.TestCase):
 
     def test_unsatisfied(self):
 
-        def mk_err_msg(value_type: ValueType) -> str:
-            return 'Value type of tested symbol is ' + str(value_type)
+        def mk_err_msg(symbol_name: str,
+                       value_type: ValueType) -> str:
+            return symbol_name + ': ' + 'Value type of tested symbol is ' + str(value_type)
 
-        def value_type_error_message_function(container: NamedElementContainer) -> str:
+        def value_type_error_message_function(symbol_name: str,
+                                              container: NamedElementContainer) -> str:
             v = container.resolver
             assert isinstance(v, NamedElementResolver)  # Type info for IDE
-            return mk_err_msg(v.value_type)
+            return mk_err_msg(symbol_name, v.value_type)
 
         referenced_symbol_cases = [
             ('data symbol',
@@ -429,7 +431,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                 ('no restriction parts / custom error message generator',
                  sut.OrReferenceRestrictions([], value_type_error_message_function),
                  is_failure_of_direct_reference(
-                     message=asrt.equals(mk_err_msg(SYMBOL_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])),
+                     message=asrt.equals(mk_err_msg(referencing_symbol.key,
+                                                    SYMBOL_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])),
                  )
                  ),
                 ('single direct: unsatisfied selector',

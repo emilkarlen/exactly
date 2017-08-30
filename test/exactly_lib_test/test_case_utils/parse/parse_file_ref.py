@@ -27,6 +27,7 @@ from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syn
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system_values.list_value import ListValue
 from exactly_lib.type_system_values.value_type import SymbolValueType
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -35,11 +36,15 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
     matches_file_ref_resolver
+from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
     equals_symbol_reference
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
     entry
+from exactly_lib_test.named_element.test_resources import named_elem_utils
+from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream, \
     assert_token_string_is
@@ -47,6 +52,8 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system_values.logic.test_resources.values import FakeLinesTransformer
+from exactly_lib_test.type_system_values.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system_values.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 
@@ -65,6 +72,8 @@ def suite() -> unittest.TestSuite:
 
     ret_val.addTest(unittest.makeSuite(TestParseFromParseSource))
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromParseSource))
+
+    ret_val.addTest(unittest.makeSuite(TestTypeMustBeEitherPathOrStringErrMsgGenerator))
 
     return ret_val
 
@@ -606,7 +615,8 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
             for accepted_relativities in accepted_relativities_variants:
                 expected_symbol_reference = NamedElementReference(symbol_name,
                                                                   ReferenceRestrictionsOnDirectAndIndirect(
-                                                                FileRefRelativityRestriction(accepted_relativities)))
+                                                                      FileRefRelativityRestriction(
+                                                                          accepted_relativities)))
                 expected_file_ref_resolver = rel_symbol(expected_symbol_reference,
                                                         PathPartResolverAsFixedPath(file_name_argument))
                 for path_suffix_is_required in [False, True]:
@@ -1141,6 +1151,24 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parse_file_ref_from_parse_source(remaining_source('%s file.txt' % REL_TMP_OPTION),
                                                          custom_configuration.config_for(path_suffix_is_required))
+
+
+class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
+    def test_SHOULD_be_able_to_generate_an_error_message_for_every_illegal_type(self):
+        cases = [
+            ListResolverTestImplForConstantListValue(ListValue([])),
+            FileSelectorResolverConstantTestImpl(FileSelectorThatSelectsAllFilesTestImpl()),
+            LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
+        ]
+        for resolver in cases:
+            with self.subTest(invalid_type=str(resolver.value_type)):
+                resolver_container = named_elem_utils.container(resolver)
+                # ACT #
+                actual = sut.type_must_be_either_path_or_string__err_msg_generator('failing_symbol',
+                                                                                   resolver_container)
+                # ASSERT #
+                self.assertIsInstance(actual, str,
+                                      'error message must be a ' + str(str))
 
 
 def _remaining_source(ts: TokenStream) -> str:
