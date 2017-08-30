@@ -4,7 +4,7 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
 from exactly_lib.named_element.symbol.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
     ConstantStringFragmentResolver, StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -269,8 +269,8 @@ def fragment_resolver_from_fragment(fragment: Fragment) -> StringFragmentResolve
         return ConstantStringFragmentResolver(fragment.value)
     else:
         sr = NamedElementReference(fragment.value,
-                                   ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
-                                                                      indirect=None))
+                                   ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
+                                                                            indirect=None))
         return SymbolStringFragmentResolver(sr)
 
 
@@ -284,4 +284,4 @@ def single_symbol_reference(symbol_name: str,
 
 
 def no_restrictions() -> ReferenceRestrictions:
-    return ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction())
+    return ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction())

@@ -5,14 +5,15 @@ from exactly_lib.named_element.restriction import SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import SymbolReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, StringRestriction, \
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction, \
+    StringRestriction, \
     FileRefRelativityRestriction, ValueRestrictionVisitor
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
-is_no_restriction = asrt.is_instance(NoRestriction)
+is_no_restriction = asrt.is_instance(AnySymbolTypeRestriction)
 
 is_string_value_restriction = asrt.is_instance(StringRestriction)
 
@@ -96,7 +97,7 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
         self.actual = actual
         self.put = put
 
-    def visit_none(self, expected: NoRestriction):
+    def visit_none(self, expected: AnySymbolTypeRestriction):
         is_no_restriction.apply(self.put, self.actual, self.message_builder)
 
     def visit_string(self, expected: StringRestriction):
@@ -132,7 +133,7 @@ def equals_symbol_reference_restrictions(expected: SymbolReferenceRestrictions) 
 
 
 REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
-    assertion_on_direct=asrt.is_instance(NoRestriction),
+    assertion_on_direct=asrt.is_instance(AnySymbolTypeRestriction),
     assertion_on_every=asrt.ValueIsNone())
 
 

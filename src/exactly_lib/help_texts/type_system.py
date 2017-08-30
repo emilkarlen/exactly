@@ -39,6 +39,12 @@ SYMBOL_TYPE_2_VALUE_TYPE = {
     SymbolValueType.LIST: ValueType.LIST,
 }
 
+SYMBOL_TYPE_LIST_ORDER = [
+    SymbolValueType.STRING,
+    SymbolValueType.PATH,
+    SymbolValueType.LIST,
+]
+
 LOGIC_TYPE_INFO_DICT = {
     LogicValueType.FILE_SELECTOR: TypeInfo(FILE_SELECTOR_TYPE, FILE_SELECTOR_VALUE),
     LogicValueType.LINES_TRANSFORMER: TypeInfo(LINES_TRANSFORMER_TYPE, LINES_TRANSFORMER_VALUE),

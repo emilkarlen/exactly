@@ -4,7 +4,7 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import OrReferenceRestrictions, \
     ReferenceRestrictionsOnDirectAndIndirect, no_restrictions
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
@@ -209,7 +209,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         equals_symbol_references([NamedElementReference(string_symbol.name,
                                                                         ReferenceRestrictionsOnDirectAndIndirect(
-                                                                            NoRestriction()))]),
+                                                                            AnySymbolTypeRestriction()))]),
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
                             NamedElementReference(string_symbol.name,

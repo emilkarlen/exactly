@@ -4,7 +4,7 @@ from exactly_lib.named_element.resolver_structure import NamedElementContainer, 
     NamedElementResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
 from exactly_lib.util.line_source import Line
@@ -21,7 +21,8 @@ def container_of_builtin(value_resolver: NamedElementResolver) -> NamedElementCo
     return resolver_structure.container_of_builtin(value_resolver)
 
 
-def element_reference(name: str, value_restriction: ValueRestriction = NoRestriction()) -> NamedElementReference:
+def element_reference(name: str,
+                      value_restriction: ValueRestriction = AnySymbolTypeRestriction()) -> NamedElementReference:
     return NamedElementReference(name, ReferenceRestrictionsOnDirectAndIndirect(value_restriction))
 
 

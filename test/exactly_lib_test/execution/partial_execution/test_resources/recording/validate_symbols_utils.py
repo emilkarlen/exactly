@@ -5,7 +5,7 @@ from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.named_element.named_element_usage import NamedElementReference, NamedElementDefinition
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, SymbolStringFragmentResolver
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -125,14 +125,15 @@ class TestImplementationError(TestCaseBase):
 
 
 def _reference_to_undefined_symbol() -> NamedElementReference:
-    return NamedElementReference('undefined symbol', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))
+    return NamedElementReference('undefined symbol',
+                                 ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction()))
 
 
 def definition_with_reference(name_of_defined: str,
                               name_of_referenced: str) -> NamedElementDefinition:
     symbol_reference = NamedElementReference(name_of_referenced,
-                                             ReferenceRestrictionsOnDirectAndIndirect(direct=NoRestriction(),
-                                                                                      indirect=NoRestriction()))
+                                             ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
+                                                                                      indirect=AnySymbolTypeRestriction()))
     return NamedElementDefinition(name_of_defined,
                                   symbol_utils.container(
                                       StringResolver((SymbolStringFragmentResolver(symbol_reference),))

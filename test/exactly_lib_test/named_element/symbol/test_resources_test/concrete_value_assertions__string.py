@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
 from exactly_lib.named_element.symbol.string_resolver import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, \
     StringResolver, string_constant
@@ -29,9 +29,11 @@ class TestEqualsFragment(unittest.TestCase):
             (ConstantStringFragmentResolver('abc'),
              ConstantStringFragmentResolver('abc')),
             (SymbolStringFragmentResolver(
-                NamedElementReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))),
+                NamedElementReference('symbol_name',
+                                      ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction()))),
              SymbolStringFragmentResolver(
-                 NamedElementReference('symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))),
+                 NamedElementReference('symbol_name',
+                                       ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction())))),
         ]
         for fragment1, fragment2 in test_cases:
             with self.subTest(msg=str(fragment1) + ' ' + str(fragment2)):
@@ -43,7 +45,7 @@ class TestEqualsFragment(unittest.TestCase):
         value = 'a_value'
         string_fragment = ConstantStringFragmentResolver(value)
         symbol_fragment = SymbolStringFragmentResolver(
-            NamedElementReference(value, ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
+            NamedElementReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction())))
         assertion = sut.equals_string_fragment(string_fragment)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, symbol_fragment)
@@ -53,7 +55,7 @@ class TestEqualsFragment(unittest.TestCase):
         value = 'a_value'
         string_fragment = ConstantStringFragmentResolver(value)
         symbol_fragment = SymbolStringFragmentResolver(
-            NamedElementReference(value, ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())))
+            NamedElementReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction())))
         assertion = sut.equals_string_fragment(symbol_fragment)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, string_fragment)
@@ -70,10 +72,10 @@ class TestEqualsFragment(unittest.TestCase):
         # ARRANGE #
         fragment1 = SymbolStringFragmentResolver(NamedElementReference('symbol_name_1',
                                                                        ReferenceRestrictionsOnDirectAndIndirect(
-                                                                     NoRestriction())))
+                                                                           AnySymbolTypeRestriction())))
         fragment2 = SymbolStringFragmentResolver(NamedElementReference('symbol_name_2',
                                                                        ReferenceRestrictionsOnDirectAndIndirect(
-                                                                     NoRestriction())))
+                                                                           AnySymbolTypeRestriction())))
         assertion = sut.equals_string_fragment(fragment1)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, fragment2)
@@ -93,20 +95,20 @@ class TestEqualsFragments(unittest.TestCase):
             (
                 (SymbolStringFragmentResolver(NamedElementReference('symbol_name',
                                                                     ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  NoRestriction()))),),
+                                                                        AnySymbolTypeRestriction()))),),
                 (SymbolStringFragmentResolver(NamedElementReference('symbol_name',
                                                                     ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  NoRestriction()))),),
+                                                                        AnySymbolTypeRestriction()))),),
             ),
             (
                 (ConstantStringFragmentResolver('abc'),
                  SymbolStringFragmentResolver(NamedElementReference('symbol_name',
                                                                     ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  NoRestriction()))),),
+                                                                        AnySymbolTypeRestriction()))),),
                 (ConstantStringFragmentResolver('abc'),
                  SymbolStringFragmentResolver(NamedElementReference('symbol_name',
                                                                     ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  NoRestriction()))),),
+                                                                        AnySymbolTypeRestriction()))),),
             ),
         ]
         for fragments1, fragments2 in test_cases:
@@ -143,7 +145,7 @@ class TestEqualsFragments(unittest.TestCase):
         expected = (ConstantStringFragmentResolver('value'),)
         actual = (SymbolStringFragmentResolver(NamedElementReference('value',
                                                                      ReferenceRestrictionsOnDirectAndIndirect(
-                                                                   NoRestriction()))),)
+                                                                         AnySymbolTypeRestriction()))),)
         assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -159,7 +161,7 @@ class TestEquals(unittest.TestCase):
             ('String with reference',
              resolver_with_references([NamedElementReference('symbol_name',
                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                 NoRestriction()))]),
+                                                                 AnySymbolTypeRestriction()))]),
              empty_symbol_table(),
              ),
         ]
@@ -187,7 +189,7 @@ class TestNotEquals3(unittest.TestCase):
         expected = string_constant(expected_string)
         actual = resolver_with_references([NamedElementReference('symbol_name',
                                                                  ReferenceRestrictionsOnDirectAndIndirect(
-                                                                     NoRestriction()))])
+                                                                     AnySymbolTypeRestriction()))])
         assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -196,9 +198,11 @@ class TestNotEquals3(unittest.TestCase):
         # ARRANGE #
         expected_string = 'expected value'
         expected_references = [
-            NamedElementReference('expected_symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
+            NamedElementReference('expected_symbol_name',
+                                  ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction()))]
         actual_references = [
-            NamedElementReference('actual_symbol_name', ReferenceRestrictionsOnDirectAndIndirect(NoRestriction()))]
+            NamedElementReference('actual_symbol_name',
+                                  ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction()))]
         expected = _StringResolverTestImpl(expected_string, expected_references)
         actual = _StringResolverTestImpl(expected_string, actual_references)
         assertion = sut.equals_string_resolver(expected)

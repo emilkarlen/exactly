@@ -36,7 +36,7 @@ def file_ref_resolver_test_impl(valid_relativities: PathRelativityVariants) -> F
 
 
 class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):
-    def visit_none(self, x: vr.NoRestriction) -> SymbolValueResolver:
+    def visit_none(self, x: vr.AnySymbolTypeRestriction) -> SymbolValueResolver:
         return string_constant('a string (from <no restriction>)')
 
     def visit_string(self, x: vr.StringRestriction) -> SymbolValueResolver:

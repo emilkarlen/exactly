@@ -6,7 +6,8 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     no_restrictions
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import NoRestriction, FileRefRelativityRestriction
+from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction, \
+    FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsStringResolver
@@ -43,7 +44,8 @@ class TestRelSymbol(unittest.TestCase):
             PathRelativityVariants({RelOptionType.REL_ACT, RelOptionType.REL_HOME_CASE}, True))
         symbol_name_of_rel_path = 'symbol_name_of_rel_path'
         symbol_name_of_path_suffix = 'symbol_name_of_path_suffix'
-        restrictions_on_path_suffix_symbol = restrictions.ReferenceRestrictionsOnDirectAndIndirect(NoRestriction())
+        restrictions_on_path_suffix_symbol = restrictions.ReferenceRestrictionsOnDirectAndIndirect(
+            AnySymbolTypeRestriction())
         expected_mandatory_references = [
             vr_tr.equals_symbol_reference_with_restriction_on_direct_target(
                 symbol_name_of_rel_path,

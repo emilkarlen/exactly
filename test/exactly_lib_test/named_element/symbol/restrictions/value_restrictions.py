@@ -1,33 +1,40 @@
 import unittest
 
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
+from exactly_lib.named_element.symbol.value_restriction import ValueRestriction, ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib.type_system_values.list_value import ListValue
+from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
+from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
+from exactly_lib_test.type_system_values.logic.test_resources.values import FileSelectorTestImpl, FakeLinesTransformer
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestNoRestriction),
+        unittest.makeSuite(TestAnySymbolTypeRestriction),
         unittest.makeSuite(TestStringRestriction),
         unittest.makeSuite(TestFileRefRelativityRestriction),
         unittest.makeSuite(TestValueRestrictionVisitor),
     ])
 
 
-class TestNoRestriction(unittest.TestCase):
-    def test_pass(self):
+class TestAnySymbolTypeRestriction(unittest.TestCase):
+    def test_pass_WHEN_element_type_is_data(self):
         # ARRANGE #
         test_cases = [
             string_constant('string'),
             file_ref_constant_resolver(),
+            ListResolverTestImplForConstantListValue(ListValue([])),
         ]
-        restriction = vr.NoRestriction()
+        restriction = vr.AnySymbolTypeRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -36,6 +43,23 @@ class TestNoRestriction(unittest.TestCase):
                 actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
                 self.assertIsNone(actual)
+
+    def test_fail_WHEN_element_type_is_not_data(self):
+        # ARRANGE #
+        test_cases = [
+            FileSelectorResolverConstantTestImpl(FileSelectorTestImpl()),
+            LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
+        ]
+        restriction = vr.AnySymbolTypeRestriction()
+        symbols = empty_symbol_table()
+        for value in test_cases:
+            with self.subTest(msg='value=' + str(value)):
+                container = symbol_utils.container(value)
+                # ACT #
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
+                # ASSERT #
+                self.assertIsNotNone(actual,
+                                     'Result should denote failing validation')
 
 
 class TestStringRestriction(unittest.TestCase):
@@ -59,6 +83,7 @@ class TestStringRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             file_ref_constant_resolver(),
+            FileSelectorResolverConstantTestImpl(FileSelectorTestImpl()),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
@@ -119,9 +144,9 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         expected_return_value = 72
         visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
-        actual_return_value = visitor.visit(vr.NoRestriction())
+        actual_return_value = visitor.visit(vr.AnySymbolTypeRestriction())
         # ASSERT #
-        self.assertEqual([vr.NoRestriction],
+        self.assertEqual([vr.AnySymbolTypeRestriction],
                          visitor.visited_classes,
                          'visited classes')
         self.assertEqual(expected_return_value,
@@ -161,10 +186,9 @@ class TestValueRestrictionVisitor(unittest.TestCase):
     def test_visit_invalid_object_should_raise_exception(self):
         # ARRANGE #
         visitor = _VisitorThatRegisterClassOfVisitMethod("not used")
-        non_concept = 'a string is not a sub class of ' + str(ValueRestriction)
         # ACT & ASSERT #
         with self.assertRaises(TypeError):
-            visitor.visit(non_concept)
+            visitor.visit(UnknownValueRestriction())
 
 
 class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
@@ -172,8 +196,8 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
         self.visited_classes = []
         self.return_value = return_value
 
-    def visit_none(self, x: vr.NoRestriction):
-        self.visited_classes.append(vr.NoRestriction)
+    def visit_none(self, x: vr.AnySymbolTypeRestriction):
+        self.visited_classes.append(vr.AnySymbolTypeRestriction)
         return self.return_value
 
     def visit_string(self, x: vr.StringRestriction):
@@ -189,3 +213,11 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
 def file_ref_constant_resolver() -> FileRefResolver:
     return FileRefConstant(file_ref_test_impl('file-name-rel-home',
                                               relativity=RelOptionType.REL_HOME_CASE))
+
+
+class UnknownValueRestriction(ValueRestriction):
+    def is_satisfied_by(self,
+                        symbol_table: SymbolTable,
+                        symbol_name: str,
+                        container: NamedElementContainer) -> ValueRestrictionFailure:
+        raise NotImplementedError('the method should never be called')

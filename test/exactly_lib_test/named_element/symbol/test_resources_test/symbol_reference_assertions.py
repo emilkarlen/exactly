@@ -18,27 +18,28 @@ class TestEqualsSymbolReference(unittest.TestCase):
         # ARRANGE #
         symbol_name = 'value name'
         symbol_reference = NamedElementReference(symbol_name,
-                                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
+                                                 r.ReferenceRestrictionsOnDirectAndIndirect(
+                                                     vr.AnySymbolTypeRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(symbol_name,
                                                                                   asrt.is_instance(
-                                                                                      vr.NoRestriction))
+                                                                                      vr.AnySymbolTypeRestriction))
         # ACT & ASSERT #
         assertion.apply_without_message(self, symbol_reference)
 
     def test_fail__different_name(self):
         # ARRANGE #
         actual = NamedElementReference('actual value name',
-                                       r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
+                                       r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnySymbolTypeRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target('expected value name',
                                                                                   asrt.is_instance(
-                                                                                      vr.NoRestriction))
+                                                                                      vr.AnySymbolTypeRestriction))
         assert_that_assertion_fails(assertion, actual)
 
     def test_fail__failing_assertion_on_value_restriction(self):
         # ARRANGE #
         common_name = 'actual value name'
         actual = NamedElementReference(common_name,
-                                       r.ReferenceRestrictionsOnDirectAndIndirect(vr.NoRestriction()))
+                                       r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnySymbolTypeRestriction()))
         assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(
             common_name,
             asrt.is_instance(vr.FileRefRelativityRestriction))

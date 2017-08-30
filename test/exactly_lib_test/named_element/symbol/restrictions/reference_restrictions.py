@@ -37,7 +37,7 @@ class TestReferenceRestrictionVisitor(unittest.TestCase):
         visitor = _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
         actual_return_value = visitor.visit(sut.ReferenceRestrictionsOnDirectAndIndirect(
-            vr.NoRestriction()))
+            vr.AnySymbolTypeRestriction()))
         # ASSERT #
         self.assertEqual([sut.ReferenceRestrictionsOnDirectAndIndirect],
                          visitor.visited_classes,
@@ -74,7 +74,7 @@ class _ReferenceRestrictionsVisitorThatRegisterClassOfVisitMethod(sut.SymbolRefe
         self.visited_classes = []
         self.return_value = return_value
 
-    def visit_direct_and_indirect(self, x: vr.NoRestriction):
+    def visit_direct_and_indirect(self, x: vr.AnySymbolTypeRestriction):
         self.visited_classes.append(sut.ReferenceRestrictionsOnDirectAndIndirect)
         return self.return_value
 
