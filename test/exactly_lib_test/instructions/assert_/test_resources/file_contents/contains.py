@@ -2,11 +2,7 @@ import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure import environment_variables
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
-from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contents_transformation
@@ -122,47 +118,6 @@ class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
         )
-
-
-class _ShouldReplaceEnvVarsWhenOptionIsGiven(TestWithConfigurationAndNegationArgumentBase):
-    def runTest(self):
-        def home_dir_path_name(home_and_sds: HomeAndSds):
-            return str(home_and_sds.hds.case_dir)
-
-        reg_ex = environment_variables.ENV_VAR_HOME_CASE
-
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
-                args("{replace_env_vars_option} {maybe_not} {contains} '{reg_ex}'",
-                     reg_ex=reg_ex,
-                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
-            self.configuration.arrangement_for_contents_from_fun(
-                home_dir_path_name,
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative),
-        )
-
-
-class _ShouldNotReplaceEnvVarsWhenOptionIsNotGiven(TestWithConfigurationAndNegationArgumentBase):
-    def runTest(self):
-        def home_dir_path_name(home_and_sds: HomeAndSds):
-            return str(home_and_sds.hds.case_dir)
-
-        reg_ex = environment_variables.ENV_VAR_HOME_CASE
-
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
-                args("{maybe_not} {contains} '{reg_ex}'",
-                     reg_ex=reg_ex,
-                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
-            self.configuration.arrangement_for_contents_from_fun(
-                home_dir_path_name,
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
-            Expectation(main_result=self.maybe_not.fail__if_positive__pass_if_negative),
-        )
-
-
-_WITH_REPLACED_ENV_VARS_OPTION = option_syntax(WITH_REPLACED_ENV_VARS_OPTION_NAME)
 
 
 class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(
