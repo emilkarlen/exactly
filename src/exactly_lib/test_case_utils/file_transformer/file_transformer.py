@@ -8,6 +8,10 @@ from exactly_lib.util.symbol_table import SymbolTable
 class FileTransformer:
     """ Transforms an existing regular file. """
 
+    # TODO: Maybe this class should be removed,
+    # it is a wrapping of new LinesTransformer into old structures.
+    # But perhaps it is motivated to have it. Have not looked into it.
+
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
@@ -17,6 +21,10 @@ class FileTransformer:
 
 class FileTransformerResolver:
     """Resolver of a :class:`FileTransformer`"""
+
+    # TODO: Maybe this class should be removed,
+    # it is a wrapping of new LinesTransformer into old structures.
+    # But perhaps it is motivated to have it. Have not looked into it.
 
     @property
     def references(self) -> list:

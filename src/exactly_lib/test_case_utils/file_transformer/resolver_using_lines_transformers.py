@@ -1,8 +1,7 @@
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case_utils.file_transformer import file_transformers
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver, FileTransformer
-from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
-    CustomLinesTransformer, LinesTransformerStructureVisitor
+from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -12,15 +11,13 @@ class ResolveFileTransformerFromLinesTransformer(FileTransformerResolver):
 
     def resolve(self, named_elements: SymbolTable) -> FileTransformer:
         lines_transformer = self._lines_transformer_resolver.resolve(named_elements)
-        resolver = _FileTransformerResolver()
-        return resolver.visit(lines_transformer)
+        if isinstance(lines_transformer, IdentityLinesTransformer):
+            return file_transformers.IdentityFileTransformer()
+        else:
+            from exactly_lib.test_case_utils.file_transformer.from_lines_transformer import \
+                FileTransformerFromLinesTransformer
+            return FileTransformerFromLinesTransformer(lines_transformer)
 
-
-class _FileTransformerResolver(LinesTransformerStructureVisitor):
-    def visit_identity(self, transformer: IdentityLinesTransformer) -> FileTransformer:
-        return file_transformers.IdentityFileTransformer()
-
-    def visit_custom(self, transformer: CustomLinesTransformer) -> FileTransformer:
-        from exactly_lib.test_case_utils.file_transformer.from_lines_transformer import \
-            FileTransformerFromLinesTransformer
-        return FileTransformerFromLinesTransformer(transformer)
+    @property
+    def references(self) -> list:
+        return self._lines_transformer_resolver.references

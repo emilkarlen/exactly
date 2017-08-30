@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import NOT_ARGUMENT, EMPTY_ARGUMENT, \
     EQUALS_ARGUMENT, CONTAINS_ARGUMENT
@@ -20,8 +21,6 @@ _OPERATION = 'OPERATION'
 EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 
 _COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
-
-_REG_EX = 'REG EX'
 
 
 def parse_checker(description_of_actual_file: PropertyDescriptor,
@@ -49,7 +48,8 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
                                                         description_of_actual_file)
 
     def parse_contains_checker() -> ActualFileChecker:
-        reg_ex_arg = token_parse.parse_token_on_current_line(source, _REG_EX)
+        reg_ex_arg = token_parse.parse_token_on_current_line(source,
+                                                             instruction_arguments.REG_EX.name)
         _ensure_no_more_arguments(source)
         source.consume_current_line()
         reg_ex = compile_regex(reg_ex_arg.string)
@@ -57,7 +57,9 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
         failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
             description_of_actual_file,
             expectation_type,
-            diff_msg_utils.expected_constant('any line matches {} {}'.format(_REG_EX, reg_ex_arg.source_string))
+            diff_msg_utils.expected_constant('any line matches {} {}'.format(
+                instruction_arguments.REG_EX.name,
+                reg_ex_arg.source_string))
         )
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
         return instruction_for_contains.checker_for(expectation_type, failure_resolver, reg_ex)
@@ -72,6 +74,14 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
     if first_argument in parsers:
         source.catch_up_with(peek_source)
         return parsers[first_argument]()
+    else:
+        def _no_checker_msg() -> str:
+            '\n'.join([
+                'Expecting one of : ' + ', '.join(parsers.keys()),
+                'Found            : ' + source.remaining_part_of_current_line,
+            ])
+
+        raise SingleInstructionInvalidArgumentException(_no_checker_msg())
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,

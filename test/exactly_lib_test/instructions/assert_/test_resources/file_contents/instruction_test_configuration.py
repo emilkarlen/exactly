@@ -4,7 +4,8 @@ from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
+from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME, \
+    WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -106,6 +107,7 @@ _FORMAT_MAP = {
     'equals': instruction_options.EQUALS_ARGUMENT,
     'not': instruction_options.NOT_ARGUMENT,
     'replace_env_vars_option': option_syntax(WITH_REPLACED_ENV_VARS_OPTION_NAME),
+    'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
     'rel_home_case_option': file_ref_texts.REL_HOME_CASE_OPTION,
     'rel_cwd_option': file_ref_texts.REL_CWD_OPTION,
     'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
