@@ -28,7 +28,7 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quot
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestParseReplace),
+        unittest.makeSuite(TestReplaceParser),
         unittest.makeSuite(TestParseLineTransformer),
     ])
 
@@ -41,7 +41,7 @@ class Expectation:
         self.token_stream = token_stream
 
 
-class TestParseReplace(unittest.TestCase):
+class TestReplaceParser(unittest.TestCase):
     def _check(self,
                source: TokenParserPrime,
                expectation: Expectation):
@@ -86,8 +86,8 @@ class TestParseReplace(unittest.TestCase):
 
         text_on_following_line = 'text on following line'
 
-        expected_resolver = is_replace_transformer(regex_str,
-                                                   replacement_str)
+        expected_resolver = resolved_value_is_replace_transformer(regex_str,
+                                                                  replacement_str)
         cases = [
             SourceCase(
                 'transformer is only source',
@@ -137,8 +137,8 @@ class TestParseReplace(unittest.TestCase):
 
         text_on_following_line = 'text on following line'
 
-        expected_resolver = is_replace_transformer(regex_str,
-                                                   replacement_str)
+        expected_resolver = resolved_value_is_replace_transformer(regex_str,
+                                                                  replacement_str)
         cases = [
             SourceCase(
                 'soft quotes',
@@ -219,10 +219,34 @@ class TestParseLineTransformer(unittest.TestCase):
                 ),
             ))
 
+    def test_replace(self):
+        # ARRANGE #
+        regex_str = 'regex'
+        replacement_str = 'replacement'
 
-def is_replace_transformer(regex_str: str,
-                           replacement_str: str,
-                           references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+        # ACT & ASSERT #
+        self._check(
+            remaining_source(replace_simple_transformer_syntax(regex_str,
+                                                               replacement_str)),
+            Expectation(
+                resolver=resolved_value_is_replace_transformer(
+                    regex_str,
+                    replacement_str)),
+        )
+
+
+def replace_simple_transformer_syntax(regex_token_str: str,
+                                      replacement_token_str: str) -> str:
+    return ' '.join([
+        sut.REPLACE_TRANSFORMER_NAME,
+        regex_token_str,
+        replacement_token_str,
+    ])
+
+
+def resolved_value_is_replace_transformer(regex_str: str,
+                                          replacement_str: str,
+                                          references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
     expected_transformer = ReplaceLinesTransformer(re.compile(regex_str),
                                                    replacement_str)
     return resolved_value_equals_lines_transformer(expected_transformer,
