@@ -5,8 +5,7 @@ from exactly_lib_test.instructions.assert_.contents_of_file import parse
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file import \
     contains as contains_with_relative_actual, \
     empty as empty_with_relative_actual, \
-    equals as equals_with_relative_actual, \
-    equals_with_replaced_env_vars
+    equals as equals_with_relative_actual
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import TestConfigurationForFile
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import TestConfigurationForFile
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains
@@ -23,7 +22,6 @@ def suite() -> unittest.TestSuite:
         empty_with_relative_actual.suite_for(configuration),
         equals.suite_for(configuration),
         equals_with_relative_actual.suite_for(configuration),
-        equals_with_replaced_env_vars.suite_for(configuration),
         contains.suite_for(configuration),
         contains_with_relative_actual.suite_for(configuration),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
