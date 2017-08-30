@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     suite_for__conf__rel_opts__negations, TestWithConfigurationAndRelativityOptionAndNegationBase, \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.transformations import \
-    REPLACE_ENV_VARS_OPTION_ALTERNATIVES
+    TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
@@ -30,12 +30,12 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
 
 class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
-                    args('{relativity_option} actual.txt {maybe_replace_env_vars_option} {maybe_not} {empty}',
+                    args('{relativity_option} actual.txt {maybe_with_transformer_option} {maybe_not} {empty}',
                          relativity_option=self.rel_opt.option_string,
-                         maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                         maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
@@ -47,12 +47,12 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
 
 class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
-                    args('{relativity_option} actual-dir {maybe_replace_env_vars_option} {maybe_not} {empty}',
+                    args('{relativity_option} actual-dir {maybe_with_transformer_option} {maybe_not} {empty}',
                          relativity_option=self.rel_opt.option_string,
-                         maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                         maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
                         home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
@@ -66,12 +66,12 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
 
 class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
-                    args('{relativity_option} actual.txt {maybe_replace_env_vars_option} {maybe_not} {empty}',
+                    args('{relativity_option} actual.txt {maybe_with_transformer_option} {maybe_not} {empty}',
                          relativity_option=self.rel_opt.option_string,
-                         maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                         maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
                         home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
@@ -88,12 +88,12 @@ class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationBas
 
 class _ContentsIsEmpty(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        for maybe_replace_env_vars_option in REPLACE_ENV_VARS_OPTION_ALTERNATIVES:
-            with self.subTest(maybe_replace_env_vars_option=maybe_replace_env_vars_option):
+        for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
+            with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
-                    args('{relativity_option} actual.txt {maybe_replace_env_vars_option} {maybe_not} {empty}',
+                    args('{relativity_option} actual.txt {maybe_with_transformer_option} {maybe_not} {empty}',
                          relativity_option=self.rel_opt.option_string,
-                         maybe_replace_env_vars_option=maybe_replace_env_vars_option,
+                         maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
                         home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
