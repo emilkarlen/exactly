@@ -11,6 +11,7 @@ from exactly_lib_test.instructions.assert_.contents_of_file.test_resources impor
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contains
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import equals
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import parse_invalid_syntax
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 
 
@@ -18,6 +19,7 @@ def suite() -> unittest.TestSuite:
     configuration = TestConfigurationForFile()
     return unittest.TestSuite([
         parse.suite(),
+        parse_invalid_syntax.suite_for(configuration),
         empty.suite_for(configuration),
         empty_with_relative_actual.suite_for(configuration),
         equals.suite_for(configuration),
