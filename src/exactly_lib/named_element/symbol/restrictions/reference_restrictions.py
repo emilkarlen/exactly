@@ -149,9 +149,10 @@ class OrRestrictionPart(tuple):
 class OrReferenceRestrictions(SymbolReferenceRestrictions):
     def __init__(self,
                  or_restriction_parts: list,
-                 resolver_container_2_error_message_if_no_matching_part: types.FunctionType = None):
+                 sym_name_and_container_2_err_msg_if_no_matching_part: types.FunctionType = None):
         self._parts = tuple(or_restriction_parts)
-        self._container_2_error_message_if_no_matching_part = resolver_container_2_error_message_if_no_matching_part
+        self._sym_name_and_container_2_err_msg_if_no_matching_part = \
+            sym_name_and_container_2_err_msg_if_no_matching_part
 
     @property
     def parts(self) -> tuple:
@@ -176,8 +177,8 @@ class OrReferenceRestrictions(SymbolReferenceRestrictions):
                                   symbol_name: str,
                                   resolver: NamedElementResolver,
                                   value: NamedElementContainer) -> FailureOfDirectReference:
-        if self._container_2_error_message_if_no_matching_part is not None:
-            msg = self._container_2_error_message_if_no_matching_part(value)
+        if self._sym_name_and_container_2_err_msg_if_no_matching_part is not None:
+            msg = self._sym_name_and_container_2_err_msg_if_no_matching_part(symbol_name, value)
         else:
             msg = self._default_error_message(symbol_name, value, resolver)
         return FailureOfDirectReference(ValueRestrictionFailure(msg))

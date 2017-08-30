@@ -4,8 +4,10 @@ import types
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+from exactly_lib.named_element.err_msg.error_messages import invalid_type_msg
+from exactly_lib.named_element.err_msg.restriction_failure_renderer import error_message_for_direct_reference
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
+from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -36,7 +38,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
 from exactly_lib.type_system_values import file_refs
 from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -230,7 +232,7 @@ def path_or_string_reference_restrictions(accepted_relativity_variants: PathRela
             SymbolValueType.STRING,
             PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
     ],
-        _type_must_be_either_path_or_string__err_msg_generator)
+        type_must_be_either_path_or_string__err_msg_generator)
 
 
 def path_relativity_restriction(accepted_relativity_variants: PathRelativityVariants):
@@ -286,11 +288,9 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     ))
 
 
-def _type_must_be_either_path_or_string__err_msg_generator(value: NamedElementContainer) -> str:
-    v = value.resolver
-    assert isinstance(v, SymbolValueResolver)  # Type info for IDE
-    return 'Expecting either a {path_type} or a {string_type}.\nFound: {actual_type}'.format(
-        path_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.PATH].type_name,
-        string_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.STRING].type_name,
-        actual_type=help_texts.SYMBOL_INFO_DICT[v.value_type].type_name
-    )
+def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol: str,
+                                                          container_of_illegal_symbol: NamedElementContainer) -> str:
+    value_restriction_failure = invalid_type_msg([ValueType.PATH, ValueType.STRING],
+                                                 name_of_failing_symbol,
+                                                 container_of_illegal_symbol)
+    return '\n'.join(error_message_for_direct_reference(value_restriction_failure))

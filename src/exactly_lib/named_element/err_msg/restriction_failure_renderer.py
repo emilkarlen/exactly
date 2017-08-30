@@ -13,7 +13,7 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
     Renders an error for presentation to the user
     """
     if isinstance(failure, FailureOfDirectReference):
-        blank_line_separated_parts = _of_direct(failure.error)
+        blank_line_separated_parts = error_message_for_direct_reference(failure.error)
     elif isinstance(failure, FailureOfIndirectReference):
         blank_line_separated_parts = _of_indirect(failing_symbol, symbols, failure)
     elif isinstance(failure, InvalidElementTypeFailure):
@@ -46,7 +46,7 @@ def _of_invalid_value_type(failing_symbol: str, symbols: SymbolTable, failure: I
     return blank_line_separated_parts
 
 
-def _of_direct(error: ValueRestrictionFailure) -> list:
+def error_message_for_direct_reference(error: ValueRestrictionFailure) -> list:
     blank_line_separated_parts = [error.message]
     blank_line_separated_parts.extend(_final_how_to_fix(error))
     return blank_line_separated_parts

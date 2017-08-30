@@ -63,6 +63,12 @@ def _def_instruction_syntax_lines_function__file_selector() -> list:
     ]
 
 
+def _def_instruction_syntax_lines_function__lines_transformer() -> list:
+    return [
+        definition_of_type_lines_transformer()
+    ]
+
+
 SYMBOL_INFO_DICT = {
     SymbolValueType.STRING:
         TypeInfo(type_system.STRING_TYPE,
@@ -86,8 +92,11 @@ ANY_TYPE_INFO_DICT = {
         TypeInfo(type_system.LIST_TYPE,
                  _def_instruction_syntax_lines_function__list),
     ValueType.FILE_SELECTOR:
-        TypeInfo(type_system.LIST_TYPE,
+        TypeInfo(type_system.FILE_SELECTOR_TYPE,
                  _def_instruction_syntax_lines_function__file_selector),
+    ValueType.LINES_TRANSFORMER:
+        TypeInfo(type_system.LINES_TRANSFORMER_TYPE,
+                 _def_instruction_syntax_lines_function__lines_transformer),
 }
 
 
