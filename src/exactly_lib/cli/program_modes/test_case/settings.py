@@ -19,15 +19,15 @@ class TestCaseExecutionSettings:
                  initial_home_dir_path: pathlib.Path,
                  output: Output,
                  handling_setup: TestCaseHandlingSetup,
-                 is_keep_execution_directory_root: bool = False,
-                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-',
+                 is_keep_sandbox: bool = False,
+                 sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-',
                  ):
         self.__file_path = file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
         self.__handling_setup = handling_setup
-        self.__is_keep_execution_directory_root = is_keep_execution_directory_root
-        self.__execution_directory_root_name_prefix = execution_directory_root_name_prefix
+        self.__is_keep_sandbox = is_keep_sandbox
+        self.__sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
 
     @property
     def file_path(self) -> pathlib.Path:
@@ -46,9 +46,9 @@ class TestCaseExecutionSettings:
         return self.__handling_setup
 
     @property
-    def is_keep_execution_directory_root(self) -> bool:
-        return self.__is_keep_execution_directory_root
+    def is_keep_sandbox(self) -> bool:
+        return self.__is_keep_sandbox
 
     @property
-    def execution_directory_root_name_prefix(self) -> str:
-        return self.__execution_directory_root_name_prefix
+    def sandbox_directory_root_name_prefix(self) -> str:
+        return self.__sandbox_directory_root_name_prefix

@@ -33,10 +33,10 @@ class Expectation:
 def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation,
-          is_keep_execution_directory_root: bool = False):
+          is_keep_sandbox: bool = False):
     result = full_execution.execute(arrangement.test_case,
                                     arrangement.predefined_properties,
                                     arrangement.configuration_builder,
                                     program_info.PROGRAM_NAME + '-full-execution',
-                                    is_keep_execution_directory_root)
+                                    is_keep_sandbox)
     expectation.full_result.apply(put, result, asrt.MessageBuilder('FullResult'))

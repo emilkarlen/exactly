@@ -142,11 +142,11 @@ def test(put: unittest.TestCase,
          test_case: partial_execution.TestCase,
          act_phase_handling: ActPhaseHandling,
          assertions: types.FunctionType,
-         is_keep_execution_directory_root: bool = True):
+         is_keep_sandbox: bool = True):
     with preserved_cwd():
         result = _execute(test_case,
                           Arrangement(act_phase_handling=act_phase_handling),
-                          is_keep_execution_directory_root=is_keep_execution_directory_root)
+                          is_keep_sandbox=is_keep_sandbox)
 
         assertions(put,
                    result)
@@ -162,7 +162,7 @@ def test__va(put: unittest.TestCase,
     with preserved_cwd():
         result = _execute(test_case,
                           arrangement,
-                          is_keep_execution_directory_root=False)
+                          is_keep_sandbox=False)
 
         assertions_on_result.apply(put,
                                    result,
@@ -174,7 +174,7 @@ def test__va(put: unittest.TestCase,
 
 def _execute(test_case: partial_execution.TestCase,
              arrangement: Arrangement,
-             is_keep_execution_directory_root: bool = True) -> Result:
+             is_keep_sandbox: bool = True) -> Result:
     environ = arrangement.environ
     if environ is None:
         environ = {}
@@ -188,6 +188,6 @@ def _execute(test_case: partial_execution.TestCase,
                                         predefined_symbols=arrangement.predefined_symbols_or_none),
         setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
-        is_keep_execution_directory_root)
+        is_keep_sandbox)
     return Result(arrangement.hds,
                   partial_result)
