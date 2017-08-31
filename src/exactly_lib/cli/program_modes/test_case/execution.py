@@ -10,40 +10,27 @@ from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
 
-class Executor:
+class ResultReporter:
+    """Reports the result of the execution via exitcode, stdout, stderr."""
+
     def __init__(self,
-                 output: StdOutputFiles,
-                 test_case_definition: TestCaseDefinition,
-                 settings: TestCaseExecutionSettings):
-        self._std = output
-        self._out_printer = FilePrinter(output.out)
-        self._err_printer = FilePrinter(output.err)
-        self._test_case_definition = test_case_definition
-        self._settings = settings
+                 output_files: StdOutputFiles,
+                 output_type: Output):
+        self._std = output_files
+        self._out_printer = FilePrinter(output_files.out)
+        self._err_printer = FilePrinter(output_files.err)
+        self._output_type = output_type
 
-    def execute(self) -> int:
-        if self._settings.output is Output.ACT_PHASE_OUTPUT:
-            return self._execute_act_phase()
-        else:
-            return self._execute_normal()
-
-    def _execute_normal(self) -> int:
-        result = self._process(self._settings.is_keep_sandbox)
+    def report_result_of_normal_execution(self, result: test_case_processing.Result) -> int:
         exit_value = exit_values.from_result(result)
         if result.status is test_case_processing.Status.EXECUTED:
-            self._report_full_result(result.execution_result)
+            self._output_report_of_full_result(result.execution_result)
         else:
             self.__output_error_result(exit_value.exit_identifier,
                                        result.error_info)
         return exit_value.exit_code
 
-    def __output_error_result(self,
-                              stdout_error_code: str,
-                              error_info: ErrorInfo):
-        self._out_printer.write_line(stdout_error_code)
-        print_error_info(self._err_printer, error_info)
-
-    def _execute_act_phase(self) -> int:
+    def report_result_of_act_phase_execution(self, result: test_case_processing.Result) -> int:
         def copy_file(input_file_path: pathlib.Path,
                       output_file):
             with input_file_path.open() as f:
@@ -55,7 +42,6 @@ class Executor:
                 exit_code_string = f.read()
                 return int(exit_code_string)
 
-        result = self._process(True)
         full_result = result.execution_result
 
         copy_file(full_result.sds.result.stdout_file, self._std.out)
@@ -64,15 +50,46 @@ class Executor:
         shutil.rmtree(str(full_result.sds.root_dir))
         return exit_code
 
-    def _report_full_result(self, the_full_result: full_execution.FullResult):
+    def __output_error_result(self,
+                              stdout_error_code: str,
+                              error_info: ErrorInfo):
+        self._out_printer.write_line(stdout_error_code)
+        print_error_info(self._err_printer, error_info)
+
+    def _output_report_of_full_result(self, the_full_result: full_execution.FullResult):
         self._print_output_to_stdout_for_full_result(the_full_result)
         print_error_message_for_full_result(self._err_printer, the_full_result)
 
     def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
-        if self._settings.output is Output.STATUS_CODE:
+        if self._output_type is Output.STATUS_CODE:
             self._out_printer.write_line(the_full_result.status.name)
-        elif self._settings.output is Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT:
+        elif self._output_type is Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT:
             self._out_printer.write_line(str(the_full_result.sds.root_dir))
+
+
+class Executor:
+    def __init__(self,
+                 output: StdOutputFiles,
+                 test_case_definition: TestCaseDefinition,
+                 settings: TestCaseExecutionSettings):
+        self._test_case_definition = test_case_definition
+        self._settings = settings
+        self._result_reporter = ResultReporter(output,
+                                               settings.output)
+
+    def execute(self) -> int:
+        if self._settings.output is Output.ACT_PHASE_OUTPUT:
+            return self._execute_act_phase()
+        else:
+            return self._execute_normal()
+
+    def _execute_normal(self) -> int:
+        result = self._process(self._settings.is_keep_sandbox)
+        return self._result_reporter.report_result_of_normal_execution(result)
+
+    def _execute_act_phase(self) -> int:
+        result = self._process(True)
+        return self._result_reporter.report_result_of_act_phase_execution(result)
 
     def _process(self,
                  is_keep_sds: bool) -> test_case_processing.Result:

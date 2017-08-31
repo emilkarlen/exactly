@@ -1,4 +1,9 @@
 class ExitValue(tuple):
+    """
+    Result reporting of a process by an exit code together with an
+    corresponding identifier on stdout.
+    """
+
     def __new__(cls,
                 exit_code: int,
                 exit_identifier: str):
