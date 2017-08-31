@@ -56,10 +56,9 @@ class FullExecutionHandler:
         return self._default_non_complete_execution(result)
 
     def _default_non_complete_execution(self, result: FullResult) -> int:
-        return _report_exit_value_and_optional_error_message_for_full_execution(self.exit_value,
-                                                                                result,
-                                                                                self._out_printer,
-                                                                                self._err_printer)
+        self._out_printer.write_line(result.status.name)
+        print_error_message_for_full_result(self._err_printer, result)
+        return self.exit_value.exit_code
 
 
 class ResultReporter:
@@ -94,44 +93,34 @@ class ResultReporter:
         return exit_value.exit_code
 
 
-class ResultReporterWithExitCodeFromExitValue(ResultReporter):
-    """Reports the result of the execution via exitcode, stdout, stderr."""
-
+class ResultReporterForNormalOutput(ResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return False
 
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: full_execution.FullResult) -> int:
-        self._print_output_to_stdout_for_full_result(result)
+        self._out_printer.write_line(result.status.name)
         print_error_message_for_full_result(self._err_printer, result)
         return exit_value.exit_code
 
-    def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
-        raise NotImplementedError('abstract method')
+
+class FullExecutionHandlerForPreserveAndPrintSandboxDir(FullExecutionHandler):
+    def complete(self, result: FullResult):
+        self._out_printer.write_line(str(result.sds.root_dir))
+        print_error_message_for_full_result(self._err_printer, result)
+        return self.exit_value.exit_code
 
 
-def _report_exit_value_and_optional_error_message_for_full_execution(exit_value: ExitValue,
-                                                                     result: full_execution.FullResult,
-                                                                     stdout_printer: FilePrinter,
-                                                                     stderr_printer: FilePrinter) -> int:
-    stdout_printer.write_line(result.status.name)
-    print_error_message_for_full_result(stderr_printer, result)
-    return exit_value.exit_code
+class ResultReporterForPreserveAndPrintSandboxDir(ResultReporter):
+    def depends_on_result_in_sandbox(self) -> bool:
+        return True
 
-
-class ResultReporterForNormalOutput(ResultReporterWithExitCodeFromExitValue):
-    """Reports the result of the execution via exitcode, stdout, stderr."""
-
-    def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
-        self._out_printer.write_line(the_full_result.status.name)
-
-
-class ResultReporterForPreserveAndPrintSandboxDir(ResultReporterWithExitCodeFromExitValue):
-    """Reports the result of the execution via exitcode, stdout, stderr."""
-
-    def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
-        self._out_printer.write_line(str(the_full_result.sds.root_dir))
+    def report_full_execution(self,
+                              exit_value: ExitValue,
+                              result: full_execution.FullResult) -> int:
+        handler = FullExecutionHandlerForPreserveAndPrintSandboxDir(exit_value, self._std)
+        return handler.handle(result)
 
 
 class FullExecutionHandlerForActPhaseOutput(FullExecutionHandler):
