@@ -31,6 +31,16 @@ class SetupBase:
         raise NotImplementedError()
 
 
+class SetupWithJustMainProgramRunner:
+    def arguments(self) -> list:
+        raise NotImplementedError('abstract method')
+
+    def check(self,
+              put: unittest.TestCase,
+              actual_result: SubProcessResult):
+        raise NotImplementedError('abstract method')
+
+
 class SetupWithPreprocessor(SetupBase):
     """
     Setup that executes a suite that may use a preprocessor
@@ -72,6 +82,16 @@ def run_default_main_program_via_sub_process(put: unittest.TestCase,
 def run_stripped_main_program_internally(put: unittest.TestCase,
                                          arguments: list) -> SubProcessResult:
     return execute_main_program(arguments)
+
+
+def check_with_just_main_program_runner(setup: SetupWithJustMainProgramRunner,
+                                        put: unittest.TestCase,
+                                        runner):
+    """
+    :param runner: (unittest.TestCase, list) -> SubProcessResult
+    """
+    sub_process_result = runner(put, setup.arguments())
+    setup.check(put, sub_process_result)
 
 
 def check(additional_arguments: list,
@@ -138,6 +158,23 @@ class TestForSetupWithoutPreprocessor(unittest.TestCase):
         return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
 
 
+class TestForSetupWithOnlMainProgramRunner(unittest.TestCase):
+    def __init__(self,
+                 setup: SetupWithJustMainProgramRunner,
+                 main_program_runner: MainProgramRunner):
+        super().__init__()
+        self.setup = setup
+        self.main_program_runner = main_program_runner
+
+    def runTest(self):
+        check_with_just_main_program_runner(self.setup,
+                                            self,
+                                            self.main_program_runner)
+
+    def shortDescription(self):
+        return str(self.setup) + '/' + self.main_program_runner.description_for_test_name()
+
+
 class TestForSetupWithPreprocessor(unittest.TestCase):
     def __init__(self,
                  setup: SetupWithPreprocessor,
@@ -153,6 +190,15 @@ class TestForSetupWithPreprocessor(unittest.TestCase):
 
     def shortDescription(self):
         return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
+
+
+def tests_for_setup_with_just_main_program_runner(setups: list,
+                                                  main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    """
+    :type setups: [SetupWithOnlMainProgramRunner]
+    """
+    return unittest.TestSuite([TestForSetupWithOnlMainProgramRunner(setup, main_program_runner)
+                               for setup in setups])
 
 
 def tests_for_setup_without_preprocessor(setups: list,
