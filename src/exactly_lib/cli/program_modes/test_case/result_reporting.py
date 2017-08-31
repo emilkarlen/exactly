@@ -1,7 +1,7 @@
 import pathlib
 import shutil
 
-from exactly_lib.cli.program_modes.test_case.settings import Output
+from exactly_lib.cli.program_modes.test_case.settings import ReportingOption
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FullResultStatus, FullResult
@@ -147,9 +147,9 @@ class _ResultReporterForActPhaseOutput(ResultReporter):
 
 
 RESULT_REPORTERS = {
-    Output.STATUS_CODE: _ResultReporterForNormalOutput,
-    Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT: _ResultReporterForPreserveAndPrintSandboxDir,
-    Output.ACT_PHASE_OUTPUT: _ResultReporterForActPhaseOutput,
+    ReportingOption.STATUS_CODE: _ResultReporterForNormalOutput,
+    ReportingOption.SANDBOX_DIRECTORY_STRUCTURE_ROOT: _ResultReporterForPreserveAndPrintSandboxDir,
+    ReportingOption.ACT_PHASE_OUTPUT: _ResultReporterForActPhaseOutput,
 }
 
 _FULL_EXECUTION__SKIPPED = {FullResultStatus.SKIPPED}
