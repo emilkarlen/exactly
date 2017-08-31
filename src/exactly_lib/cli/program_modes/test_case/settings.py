@@ -15,21 +15,21 @@ class TestCaseExecutionSettings:
     """Settings derived after parsing of command line arguments."""
 
     def __init__(self,
-                 file_path: pathlib.Path,
+                 test_case_file_path: pathlib.Path,
                  initial_home_dir_path: pathlib.Path,
                  output: ReportingOption,
                  handling_setup: TestCaseHandlingSetup,
                  sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-',
                  ):
-        self.__file_path = file_path
+        self.__test_case_file_path = test_case_file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
         self.__handling_setup = handling_setup
         self.__sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
 
     @property
-    def file_path(self) -> pathlib.Path:
-        return self.__file_path
+    def test_case_file_path(self) -> pathlib.Path:
+        return self.__test_case_file_path
 
     @property
     def initial_home_dir_path(self) -> pathlib.Path:
