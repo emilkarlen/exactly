@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.expression import comparators
@@ -12,7 +13,6 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.file_selectors import parse_file_selector
 from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.cli_syntax import option_syntax
@@ -128,21 +128,24 @@ class TestParseInvalidSyntax(TestCaseBase):
         NameAndValue(
             'missing argument for selector option ' + sut.SELECTION_OPTION.name.long,
             'file-name {selection_option} <not_opt> {empty}'.format(
-                selection_option=option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name),
+                selection_option=option_syntax.option_syntax(
+                    instruction_arguments.SELECTION_OPTION.name),
                 empty=sut.EMPTINESS_CHECK_ARGUMENT
             )
         ),
         NameAndValue(
             'missing argument for num-files option ' + sut.SELECTION_OPTION.name.long,
             'file-name <not_opt> {num_files}'.format(
-                selection_option=option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name),
+                selection_option=option_syntax.option_syntax(
+                    instruction_arguments.SELECTION_OPTION.name),
                 num_files=sut.NUM_FILES_CHECK_ARGUMENT
             )
         ),
         NameAndValue(
             'superfluous argument for num-files option ' + sut.SELECTION_OPTION.name.long,
             'file-name <not_opt> {num_files} {eq} 10 superfluous'.format(
-                selection_option=option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name),
+                selection_option=option_syntax.option_syntax(
+                    instruction_arguments.SELECTION_OPTION.name),
                 num_files=sut.NUM_FILES_CHECK_ARGUMENT,
                 eq=comparators.EQ.name,
             )

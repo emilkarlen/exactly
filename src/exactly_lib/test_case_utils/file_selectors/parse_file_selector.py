@@ -1,8 +1,9 @@
 """Functionality for accessing a subset of the files in a directory."""
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.name_and_cross_ref import Name
+from exactly_lib.help_texts.instruction_arguments import SELECTOR_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.help_texts.type_system import FILE_SELECTOR_TYPE
+from exactly_lib.help_texts.types import FILE_SELECTOR_CONCEPT_INFO
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -23,8 +24,6 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 SELECTION_OF_ALL_FILES = FileSelectorConstant(SELECT_ALL_FILES)
 
-CONCEPT_NAME = Name('selector', 'selectors')
-
 NAME_SELECTOR_NAME = 'name'
 
 TYPE_SELECTOR_NAME = 'type'
@@ -34,13 +33,6 @@ NAME_SELECTOR_ARGUMENT = a.Named('PATTERN')
 TYPE_SELECTOR_ARGUMENT = a.Named('TYPE')
 
 AND_OPERATOR = '&&'
-
-SELECTOR_ARGUMENT = a.Named('SELECTOR')
-
-SELECTION_OPTION = a.option(long_name='selection',
-                            argument=SELECTOR_ARGUMENT.name)
-
-SELECTION = a.Named('SELECTION')
 
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
@@ -123,7 +115,7 @@ def _constant(selectors: dcs.Selectors) -> FileSelectorResolver:
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
-    '_SELECTOR_': CONCEPT_NAME.singular,
+    '_SELECTOR_': FILE_SELECTOR_CONCEPT_INFO.name.singular,
     '_NAME_SELECTOR_': NAME_SELECTOR_NAME,
     '_TYPE_SELECTOR_': TYPE_SELECTOR_NAME,
     '_PATTERN_': NAME_SELECTOR_ARGUMENT.name,
@@ -196,7 +188,7 @@ AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
 
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
-        name=CONCEPT_NAME,
+        name=FILE_SELECTOR_CONCEPT_INFO.name,
         type_system_type_name=FILE_SELECTOR_TYPE,
         syntax_element_name=SELECTOR_ARGUMENT,
     ),

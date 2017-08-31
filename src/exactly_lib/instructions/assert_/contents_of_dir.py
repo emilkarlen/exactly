@@ -51,7 +51,7 @@ _EMPTINESS_PROPERTY_NAME = 'contents of dir'
 
 NEGATION_OPERATOR = instruction_arguments.NEGATION_ARGUMENT_STR
 
-SELECTION_OPTION = parse_file_selector.SELECTION_OPTION
+SELECTION_OPTION = instruction_arguments.SELECTION_OPTION
 
 NUM_FILES_CHECK_ARGUMENT = 'num-files'
 
@@ -67,7 +67,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str):
         super().__init__(name, {
             'checked_file': _PATH_ARGUMENT.name,
-            'selection': parse_file_selector.SELECTION.name,
+            'selection': instruction_arguments.SELECTION.name,
         })
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     _PATH_ARGUMENT)
@@ -84,7 +84,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def invokation_variants(self) -> list:
         negation_argument = negation_of_predicate.optional_negation_argument_usage()
         selection_arg = a.Single(a.Multiplicity.OPTIONAL,
-                                 parse_file_selector.SELECTION)
+                                 instruction_arguments.SELECTION)
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        EMPTY_ARGUMENT_CONSTANT)
 

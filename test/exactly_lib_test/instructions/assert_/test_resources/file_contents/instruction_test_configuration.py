@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

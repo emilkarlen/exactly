@@ -15,10 +15,8 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_utils import negation_of_predicate
-from exactly_lib.test_case_utils.file_transformer import env_vars_replacement
-from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import WITH_REPLACED_ENV_VARS_OPTION_NAME
+from exactly_lib.test_case_utils.lines_transformers import parse_lines_transformer
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.structure import structures as docs
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 
@@ -31,7 +29,6 @@ class FileContentsHelpParts:
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self.expected_file_arg = a.Named('EXPECTED-PATH')
-        self.with_replaced_env_vars_option = a.Option(WITH_REPLACED_ENV_VARS_OPTION_NAME)
         format_map = {
             'instruction_name': InstructionName(instruction_name),
             'checked_file': checked_file,
@@ -40,7 +37,7 @@ class FileContentsHelpParts:
             'program_name': program_info.PROGRAM_NAME,
             'home_act_env_var': environment_variables.ENV_VAR_HOME_ACT,
             'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,
-            'home_env_var_with_replacement_precedence': env_vars_replacement.HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE,
+            'transformation': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
         }
         self._parser = TextParser(format_map)
 
@@ -63,28 +60,28 @@ class FileContentsHelpParts:
                               instruction_arguments.REG_EX)
         expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
                                      self.expected_file_arg)
-        optional_replace_env_vars_option = a.Single(a.Multiplicity.OPTIONAL,
-                                                    self.with_replaced_env_vars_option)
+        optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
+                                                  instruction_arguments.LINES_TRANSFORMATION_ARGUMENT)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
                                 instruction_arguments.HERE_DOCUMENT)
         return [
-            InvokationVariant(self._cls([optional_replace_env_vars_option,
+            InvokationVariant(self._cls([optional_transformation_option,
                                          optional_not_arg,
                                          mandatory_empty_arg]),
                               self._paragraphs(_DESCRIPTION_OF_EMPTY)),
-            InvokationVariant(self._cls([optional_replace_env_vars_option,
+            InvokationVariant(self._cls([optional_transformation_option,
                                          optional_not_arg,
                                          equals_arg,
                                          here_doc_arg,
                                          ]),
                               self._paragraphs(_DESCRIPTION_OF_EQUALS_HERE_DOC)),
-            InvokationVariant(self._cls([optional_replace_env_vars_option,
+            InvokationVariant(self._cls([optional_transformation_option,
                                          optional_not_arg,
                                          equals_arg,
                                          expected_file_arg,
                                          ]),
                               self._paragraphs(_DESCRIPTION_OF_EQUALS_FILE)),
-            InvokationVariant(self._cls([optional_replace_env_vars_option,
+            InvokationVariant(self._cls([optional_transformation_option,
                                          optional_not_arg,
                                          contains_arg,
                                          reg_ex_arg,
@@ -96,6 +93,10 @@ class FileContentsHelpParts:
         return [negation_of_predicate.syntax_element_description()]
 
     def syntax_element_descriptions_at_bottom(self) -> list:
+        transformation = parse_lines_transformer.selection_syntax_element_description()
+
+        transformer = parse_lines_transformer.selector_syntax_element_description()
+
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                               instruction_arguments.PATH_ARGUMENT)
 
@@ -103,6 +104,8 @@ class FileContentsHelpParts:
         optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
                                                    relativity_of_expected_arg)
         return [
+                   transformation,
+                   transformer,
                    SyntaxElementDescription(self.expected_file_arg.name,
                                             self._paragraphs("The file that contains the expected contents."),
                                             [InvokationVariant(cl_syntax.cl_syntax_for_args(
@@ -121,9 +124,6 @@ class FileContentsHelpParts:
                [
                    SyntaxElementDescription(instruction_arguments.REG_EX.name,
                                             self._parser.fnap('A Python regular expression.')),
-                   cl_syntax.cli_argument_syntax_element_description(
-                       self.with_replaced_env_vars_option,
-                       self._with_replaced_env_vars_help()),
                    dt.here_document_syntax_element_description(self.instruction_name,
                                                                instruction_arguments.HERE_DOCUMENT),
                ]
@@ -147,12 +147,6 @@ class FileContentsHelpParts:
         """
         return self._parser.fnap(s, extra)
 
-    def _with_replaced_env_vars_help(self) -> list:
-        prologue = self._paragraphs(_WITH_REPLACED_ENV_VARS_PROLOGUE)
-        variables_list = [docs.simple_header_only_list(sorted(environment_variables.ALL_REPLACED_ENV_VARS),
-                                                       docs.lists.ListType.VARIABLE_LIST)]
-        return prologue + variables_list
-
 
 _DESCRIPTION_OF_EMPTY = """\
 Asserts that {checked_file} is empty.
@@ -168,17 +162,4 @@ Asserts that the contents of {checked_file} is equal to the contents of file {ex
 
 _DESCRIPTION_OF_CONTAINS = """\
 Asserts that the contents of {checked_file} contains a line matching a regular expression.
-"""
-
-_WITH_REPLACED_ENV_VARS_PROLOGUE = """\
-Every occurrence of a path that matches an {program_name} environment variable
-in contents of {checked_file} is replaced with the name of the matching variable.
-(Variable values are replaced with variable names.)
-
-
-If {home_case_env_var} and {home_act_env_var} are equal, then paths will be replaced with
-{home_env_var_with_replacement_precedence}.
-
-
-The environment variables that are replaced are:
 """
