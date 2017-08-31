@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution import exit_values
+from exactly_lib.processing import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process

@@ -20,7 +20,7 @@ from exactly_lib.util.textformat.structure.structures import section_contents
 class InterpreterActorDocumentation(ActorDocumentation):
     def __init__(self):
         super().__init__(SOURCE_INTERPRETER_ACTOR)
-        from exactly_lib.execution.exit_values import EXECUTION__VALIDATE
+        from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),

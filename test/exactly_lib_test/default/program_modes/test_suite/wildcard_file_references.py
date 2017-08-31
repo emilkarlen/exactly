@@ -4,7 +4,7 @@ NOTE: These tests should not use MainProgramRunner, but should be normal (à la 
 import pathlib
 import unittest
 
-from exactly_lib.execution.exit_values import EXECUTION__PASS
+from exactly_lib.processing.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
