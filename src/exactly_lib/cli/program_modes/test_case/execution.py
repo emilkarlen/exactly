@@ -21,6 +21,12 @@ class ResultReporter:
         self._err_printer = FilePrinter(output_files.err)
         self._output_type = output_type
 
+    def report(self, result: test_case_processing.Result) -> int:
+        if self._output_type is Output.ACT_PHASE_OUTPUT:
+            return self.report_result_of_act_phase_execution(result)
+        else:
+            return self.report_result_of_normal_execution(result)
+
     def report_result_of_normal_execution(self, result: test_case_processing.Result) -> int:
         exit_value = exit_values.from_result(result)
         if result.status is test_case_processing.Status.EXECUTED:
@@ -78,18 +84,15 @@ class Executor:
                                                settings.output)
 
     def execute(self) -> int:
+        is_keep_sandbox = self._derive_should_keep_sandbox()
+        result = self._process(is_keep_sandbox)
+        return self._result_reporter.report(result)
+
+    def _derive_should_keep_sandbox(self) -> bool:
         if self._settings.output is Output.ACT_PHASE_OUTPUT:
-            return self._execute_act_phase()
+            return True
         else:
-            return self._execute_normal()
-
-    def _execute_normal(self) -> int:
-        result = self._process(self._settings.is_keep_sandbox)
-        return self._result_reporter.report_result_of_normal_execution(result)
-
-    def _execute_act_phase(self) -> int:
-        result = self._process(True)
-        return self._result_reporter.report_result_of_act_phase_execution(result)
+            return self._settings.is_keep_sandbox
 
     def _process(self,
                  is_keep_sds: bool) -> test_case_processing.Result:
