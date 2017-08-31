@@ -16,20 +16,26 @@ from exactly_lib_test.test_resources.main_program.main_program_check_for_test_ca
     SetupWithoutPreprocessorAndTestActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, process_result_info_assertions
+from exactly_lib_test.test_resources.value_assertions import process_result_info_assertions
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, \
+    process_result_info_assertions as asrt_process_result_info, \
+    process_result_assertions as asrt_process_result
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(tests_for_setup_without_preprocessor(SPECIAL_EXECUTION_CONFIGURATIONS_TESTS, main_program_runner))
-    return ret_val
+    tests = [
+        WhenParseFailsThenDoNormalReporting(),
+        WhenValidatePreSdsFailsThenDoNormalReporting(),
+        PreserveAndPrintSandboxWhenExecutionWasComplete(),
+    ]
+    return tests_for_setup_without_preprocessor(tests, main_program_runner)
 
 
 def suite() -> unittest.TestSuite:
     return suite_for(main_program_runner_with_default_setup__in_same_process())
 
 
-class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessorAndTestActor):
+class PreserveAndPrintSandboxWhenExecutionWasComplete(SetupWithoutPreprocessorAndTestActor):
     def test_case(self) -> str:
         return ''
 
@@ -44,6 +50,42 @@ class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessorAndTestActor):
                                    asrt.Equals(exit_values.EXECUTION__PASS.exit_code)),
                 AssertStdoutIsNameOfExistingSandboxDirectory(),
             ]))
+
+
+class WhenParseFailsThenDoNormalReporting(SetupWithoutPreprocessorAndTestActor):
+    def test_case(self) -> str:
+        test_case_source = """\
+        [not_the_name_of_a_test_case_phase]
+        """
+        return test_case_source
+
+    def additional_arguments(self) -> list:
+        return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
+
+    def expected_result(self) -> asrt.ValueAssertion:
+        return asrt_process_result_info.assertion_on_process_result(
+            asrt_process_result.is_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR))
+
+
+class WhenValidatePreSdsFailsThenDoNormalReporting(SetupWithoutPreprocessorAndTestActor):
+    def test_case(self) -> str:
+        test_case_source = """\
+    [setup]
+
+    install non-existing-file
+
+    [act]
+
+    ignored action
+    """
+        return test_case_source
+
+    def additional_arguments(self) -> list:
+        return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
+
+    def expected_result(self) -> asrt.ValueAssertion:
+        return asrt_process_result_info.assertion_on_process_result(
+            asrt_process_result.is_result_for_exit_value(exit_values.EXECUTION__VALIDATE))
 
 
 class AssertStdoutIsNameOfExistingSandboxDirectory(asrt.ValueAssertion):
@@ -64,10 +106,6 @@ class AssertStdoutIsNameOfExistingSandboxDirectory(asrt.ValueAssertion):
         else:
             put.fail('The output from the program is not the sandbox: "%s"' % actual_sds_directory)
 
-
-SPECIAL_EXECUTION_CONFIGURATIONS_TESTS = [
-    FlagForPrintingAndPreservingSandbox(),
-]
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
