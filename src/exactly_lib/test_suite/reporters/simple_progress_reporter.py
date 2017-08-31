@@ -2,9 +2,8 @@ import datetime
 import os
 import pathlib
 
-from exactly_lib.execution import exit_values as test_case_exit_values
 from exactly_lib.execution.result import FullResultStatus
-from exactly_lib.processing import test_case_processing
+from exactly_lib.processing import test_case_processing, exit_values as test_case_exit_values
 from exactly_lib.processing.test_case_processing import Status
 from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo

@@ -3,9 +3,9 @@ import unittest
 
 import exactly_lib.help_texts.type_system
 from exactly_lib.default.program_modes.test_case.predef_symbols import test_case_dir_symbols, lines_transformers
-from exactly_lib.execution import exit_values
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
+from exactly_lib.processing import exit_values
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.string import lines_content

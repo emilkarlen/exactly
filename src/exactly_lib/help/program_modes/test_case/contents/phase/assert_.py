@@ -1,4 +1,3 @@
-from exactly_lib.execution.exit_values import EXECUTION__PASS, EXECUTION__FAIL
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
@@ -11,6 +10,7 @@ from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReferenc
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, BEFORE_ASSERT_PHASE_NAME, \
     CLEANUP_PHASE_NAME
+from exactly_lib.processing.exit_values import EXECUTION__PASS, EXECUTION__FAIL
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN, ENV_VAR_RESULT
 from exactly_lib.util.description import Description

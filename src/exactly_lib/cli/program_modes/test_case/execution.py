@@ -2,9 +2,9 @@ import pathlib
 import shutil
 
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
-from exactly_lib.execution import full_execution, exit_values
+from exactly_lib.execution import full_execution
 from exactly_lib.execution.result_reporting import print_error_message_for_full_result, print_error_info
-from exactly_lib.processing import test_case_processing, processors
+from exactly_lib.processing import test_case_processing, processors, exit_values
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter

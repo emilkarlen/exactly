@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
-from exactly_lib.execution import exit_values
+from exactly_lib.processing import exit_values
 from exactly_lib_test.default.program_modes.test_case.test_resources.utils import remove_if_is_directory, \
     get_printed_sds_or_fail
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \

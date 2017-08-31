@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.execution.exit_values import EXECUTION__PASS, \
+from exactly_lib.processing.exit_values import EXECUTION__PASS, \
     NO_EXECUTION__SYNTAX_ERROR
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier

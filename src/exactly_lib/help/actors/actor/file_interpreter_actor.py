@@ -34,7 +34,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
 
     def __init__(self):
         super().__init__(FILE_INTERPRETER_ACTOR)
-        from exactly_lib.execution.exit_values import EXECUTION__VALIDATE
+        from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
             'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),

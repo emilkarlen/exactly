@@ -3,9 +3,8 @@ import re
 import unittest
 from pathlib import Path
 
-from exactly_lib.execution import exit_values as case_ev
 from exactly_lib.execution import result
-from exactly_lib.processing import test_case_processing
+from exactly_lib.processing import test_case_processing, exit_values as case_ev
 from exactly_lib.test_suite import execution
 from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite import structure

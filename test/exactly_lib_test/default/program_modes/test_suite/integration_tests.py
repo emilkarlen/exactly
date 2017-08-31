@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.cli import main_program
-from exactly_lib.execution.exit_values import NO_EXECUTION__SYNTAX_ERROR, \
+from exactly_lib.processing.exit_values import NO_EXECUTION__SYNTAX_ERROR, \
     EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content

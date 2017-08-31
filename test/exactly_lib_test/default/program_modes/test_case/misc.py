@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
-from exactly_lib.execution import exit_values
+from exactly_lib.processing import exit_values
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case_file_structure import sandbox_directory_structure, environment_variables
