@@ -18,10 +18,9 @@ class MainProgram(main_program.MainProgram):
         self._test_case_definition = test_case_definition
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
-        executor = test_case_execution.Executor(self._std,
-                                                self._test_case_definition,
-                                                settings)
-        return executor.execute()
+        return test_case_execution.execute(self._std,
+                                           self._test_case_definition,
+                                           settings)
 
     def execute_test_suite(self, test_suite_execution_settings) -> int:
         from exactly_lib.processing import processors
