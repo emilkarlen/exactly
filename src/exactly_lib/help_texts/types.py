@@ -15,6 +15,11 @@ def name_and_ref_target(name: Name,
 
 
 LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
-    Name('lines transformer', 'lines transformers'),
+    Name('file transformer', 'file transformers'),
     'Transforms the lines of a text file.',
+)
+
+FILE_SELECTOR_CONCEPT_INFO = name_and_ref_target(
+    Name('file selector', 'file selectors'),
+    'Selects files in a directory.'
 )

@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_selectors import parse_file_selector
@@ -19,7 +20,8 @@ def selection_arguments(name_option_pattern: str = '',
                                                   type_selection,
                                                   named_selector)
     if the_selectors_arguments:
-        selector_option = option_syntax.option_syntax(parse_file_selector.SELECTION_OPTION.name)
+        selector_option = option_syntax.option_syntax(
+            instruction_arguments.SELECTION_OPTION.name)
         return selector_option + ' ' + the_selectors_arguments
     else:
         return ''

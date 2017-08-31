@@ -8,7 +8,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case_utils.lines_transformers import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -26,8 +25,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'FILE_ARG': self.file_arg.name,
         })
         self.checked_file = name_of_checked_file
-        self.with_replaced_env_vars_option = a.Option(
-            parse_lines_transformer.WITH_REPLACED_ENV_VARS_OPTION_NAME)
 
     def single_line_description(self) -> str:
         return self._format('Tests the contents of {checked_file}')

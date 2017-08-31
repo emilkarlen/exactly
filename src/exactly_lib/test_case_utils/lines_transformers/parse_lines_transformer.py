@@ -1,26 +1,23 @@
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
+from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.help_texts.types import LINES_TRANSFORMER_CONCEPT_INFO
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
+from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression, syntax_documentation
 from exactly_lib.test_case_utils.lines_transformers import resolvers
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
     ReplaceLinesTransformer
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
-from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.structure import structures as docs
 
 IDENTITY_TRANSFORMER_RESOLVER = resolvers.LinesTransformerConstant(IdentityLinesTransformer())
-
-WITH_REPLACED_ENV_VARS_OPTION_NAME = a.OptionName(long_name='with-replaced-env-vars')
-WITH_REPLACED_ENV_VARS_OPTION = option_syntax.option_syntax(WITH_REPLACED_ENV_VARS_OPTION_NAME)
-
-WITH_TRANSFORMED_CONTENTS_OPTION_NAME = a.OptionName(long_name='transformation')
-WITH_TRANSFORMED_CONTENTS_OPTION = option_syntax.option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 REPLACE_TRANSFORMER_NAME = 'replace'
 
@@ -35,6 +32,25 @@ _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
 LINES_TRANSFORMER_ARGUMENT = a.Named(type_system.LINES_TRANSFORMER_VALUE)
+
+
+def selection_syntax_element_description() -> SyntaxElementDescription:
+    return cl_syntax.cli_argument_syntax_element_description(
+        instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
+        docs.paras(_TRANSFORMATION_DESCRIPTION),
+        [
+            InvokationVariant(cl_syntax.arg_syntax(instruction_arguments.TRANSFORMATION_OPTION)),
+        ]
+    )
+
+
+def selector_syntax_element_description() -> SyntaxElementDescription:
+    return syntax_documentation.Syntax(_GRAMMAR).syntax_element_description()
+
+
+_TRANSFORMATION_DESCRIPTION = """\
+Transforms the contents of the tested file before it is tested.
+"""
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:

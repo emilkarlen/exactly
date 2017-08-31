@@ -1,10 +1,11 @@
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.test_case_utils.lines_transformers import parse_lines_transformer
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
 
 def syntax_for_transformer_option(transformer_expression: str) -> str:
     return ' '.join([
-        option_syntax(parse_lines_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+        option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
         transformer_expression,
     ])
 
