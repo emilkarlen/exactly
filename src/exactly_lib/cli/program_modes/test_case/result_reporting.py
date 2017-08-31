@@ -10,18 +10,8 @@ from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
-FULL_EXECUTION__SKIPPED = {FullResultStatus.SKIPPED}
 
-FULL_EXECUTION__VALIDATE = {FullResultStatus.VALIDATE}
-
-FULL_EXECUTION__COMPLETE = {FullResultStatus.PASS,
-                            FullResultStatus.FAIL,
-                            FullResultStatus.XPASS,
-                            FullResultStatus.XFAIL,
-                            }
-
-
-class FullExecutionHandler:
+class _FullExecutionHandler:
     """Helper class for handling some different cases of result of test case execution."""
 
     def __init__(self,
@@ -34,11 +24,11 @@ class FullExecutionHandler:
 
     def handle(self, result: FullResult):
         status = result.status
-        if status in FULL_EXECUTION__SKIPPED:
+        if status in _FULL_EXECUTION__SKIPPED:
             return self.skipped(result)
-        elif status in FULL_EXECUTION__VALIDATE:
+        elif status in _FULL_EXECUTION__VALIDATE:
             return self.validation(result)
-        elif status in FULL_EXECUTION__COMPLETE:
+        elif status in _FULL_EXECUTION__COMPLETE:
             return self.complete(result)
         else:
             return self.hard_error_or_implementation_error(result)
@@ -93,7 +83,7 @@ class ResultReporter:
         return exit_value.exit_code
 
 
-class ResultReporterForNormalOutput(ResultReporter):
+class _ResultReporterForNormalOutput(ResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return False
 
@@ -105,25 +95,25 @@ class ResultReporterForNormalOutput(ResultReporter):
         return exit_value.exit_code
 
 
-class FullExecutionHandlerForPreserveAndPrintSandboxDir(FullExecutionHandler):
+class _FullExecutionHandlerForPreserveAndPrintSandboxDir(_FullExecutionHandler):
     def complete(self, result: FullResult):
         self._out_printer.write_line(str(result.sds.root_dir))
         print_error_message_for_full_result(self._err_printer, result)
         return self.exit_value.exit_code
 
 
-class ResultReporterForPreserveAndPrintSandboxDir(ResultReporter):
+class _ResultReporterForPreserveAndPrintSandboxDir(ResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return True
 
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: full_execution.FullResult) -> int:
-        handler = FullExecutionHandlerForPreserveAndPrintSandboxDir(exit_value, self._std)
+        handler = _FullExecutionHandlerForPreserveAndPrintSandboxDir(exit_value, self._std)
         return handler.handle(result)
 
 
-class FullExecutionHandlerForActPhaseOutput(FullExecutionHandler):
+class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
     def complete(self, result: FullResult):
         def copy_file(input_file_path: pathlib.Path,
                       output_file):
@@ -143,7 +133,7 @@ class FullExecutionHandlerForActPhaseOutput(FullExecutionHandler):
         return exit_code
 
 
-class ResultReporterForActPhaseOutput(ResultReporter):
+class _ResultReporterForActPhaseOutput(ResultReporter):
     """Reports the result of the execution via exitcode, stdout, stderr."""
 
     def depends_on_result_in_sandbox(self) -> bool:
@@ -152,12 +142,22 @@ class ResultReporterForActPhaseOutput(ResultReporter):
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: full_execution.FullResult) -> int:
-        handler = FullExecutionHandlerForActPhaseOutput(exit_value, self._std)
+        handler = _FullExecutionHandlerForActPhaseOutput(exit_value, self._std)
         return handler.handle(result)
 
 
 RESULT_REPORTERS = {
-    Output.STATUS_CODE: ResultReporterForNormalOutput,
-    Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT: ResultReporterForPreserveAndPrintSandboxDir,
-    Output.ACT_PHASE_OUTPUT: ResultReporterForActPhaseOutput,
+    Output.STATUS_CODE: _ResultReporterForNormalOutput,
+    Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT: _ResultReporterForPreserveAndPrintSandboxDir,
+    Output.ACT_PHASE_OUTPUT: _ResultReporterForActPhaseOutput,
 }
+
+_FULL_EXECUTION__SKIPPED = {FullResultStatus.SKIPPED}
+
+_FULL_EXECUTION__VALIDATE = {FullResultStatus.VALIDATE}
+
+_FULL_EXECUTION__COMPLETE = {FullResultStatus.PASS,
+                             FullResultStatus.FAIL,
+                             FullResultStatus.XPASS,
+                             FullResultStatus.XFAIL,
+                             }
