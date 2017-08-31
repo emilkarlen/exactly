@@ -26,22 +26,22 @@ class MainProgram(main_program.MainProgram):
         from exactly_lib.processing import processors
         from exactly_lib.test_suite import enumeration
         from exactly_lib.test_suite import suite_hierarchy_reading
-        from exactly_lib.test_suite import execution as test_suite_execution
+        from exactly_lib.test_suite import execution
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          test_suite_execution_settings.handling_setup,
                                                          False,
                                                          self._sds_root_name_prefix_for_suite())
-        executor = test_suite_execution.Executor(default_configuration,
-                                                 self._output,
-                                                 suite_hierarchy_reading.Reader(
-                                                     suite_hierarchy_reading.Environment(
-                                                         default_configuration.default_handling_setup.preprocessor,
-                                                         default_configuration.default_handling_setup.default_act_phase_setup)
-                                                 ),
-                                                 test_suite_execution_settings.reporter_factory,
-                                                 enumeration.DepthFirstEnumerator(),
-                                                 processors.new_processor_that_should_not_pollute_current_process,
-                                                 test_suite_execution_settings.suite_root_file_path)
+        executor = execution.Executor(default_configuration,
+                                      self._output,
+                                      suite_hierarchy_reading.Reader(
+                                          suite_hierarchy_reading.Environment(
+                                              default_configuration.default_handling_setup.preprocessor,
+                                              default_configuration.default_handling_setup.default_act_phase_setup)
+                                      ),
+                                      test_suite_execution_settings.reporter_factory,
+                                      enumeration.DepthFirstEnumerator(),
+                                      processors.new_processor_that_should_not_pollute_current_process,
+                                      test_suite_execution_settings.suite_root_file_path)
         return executor.execute()
 
     @staticmethod

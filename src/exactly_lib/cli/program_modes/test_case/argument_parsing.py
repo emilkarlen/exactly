@@ -34,8 +34,9 @@ def parse(default: TestCaseHandlingSetup,
     preprocessor = _parse_preprocessor(default.preprocessor,
                                        namespace.preprocessor)
     actual_handling_setup = TestCaseHandlingSetup(act_phase_setup, preprocessor)
-    return TestCaseExecutionSettings(pathlib.Path(namespace.file),
-                                     pathlib.Path(namespace.file).parent.resolve(),
+    test_case_file_path = pathlib.Path(namespace.file)
+    return TestCaseExecutionSettings(test_case_file_path,
+                                     argument_parsing_utils.resolve_path(test_case_file_path.parent),
                                      output,
                                      actual_handling_setup)
 
