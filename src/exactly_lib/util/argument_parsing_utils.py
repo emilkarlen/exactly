@@ -1,4 +1,5 @@
 import argparse
+import pathlib
 
 
 class ArgumentParsingError(Exception):
@@ -7,11 +8,15 @@ class ArgumentParsingError(Exception):
     ArgumentParser cannot parse.
     """
 
-    def __init__(self,
-                 argument_parser: argparse.ArgumentParser,
-                 error_message: str):
-        self.argument_parser = argument_parser
+    def __init__(self, error_message: str):
         self.error_message = error_message
+
+
+def resolve_path(path_to_resolve: pathlib.Path) -> pathlib.Path:
+    try:
+        return path_to_resolve.resolve()
+    except FileNotFoundError as ex:
+        raise ArgumentParsingError(str(ex))
 
 
 def raise_exception_instead_of_exiting_on_error(parser: argparse.ArgumentParser,
@@ -24,7 +29,7 @@ def raise_exception_instead_of_exiting_on_error(parser: argparse.ArgumentParser,
     original_error_handler = argparse.ArgumentParser.error
 
     def error_handler(the_parser: argparse.ArgumentParser, the_message: str):
-        raise ArgumentParsingError(the_parser, the_message)
+        raise ArgumentParsingError(the_message)
 
     try:
         argparse.ArgumentParser.error = error_handler
