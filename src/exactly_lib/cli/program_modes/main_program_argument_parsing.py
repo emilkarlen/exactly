@@ -5,7 +5,7 @@ import shlex
 from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
-from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
+from exactly_lib.cli.program_modes.test_case.settings import ReportingOption, TestCaseExecutionSettings
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -19,19 +19,16 @@ def parse(default: TestCaseHandlingSetup,
           argv: list,
           commands: dict) -> TestCaseExecutionSettings:
     """
-    :param default_preprocessor:
     :raises ArgumentParsingError Invalid usage
     """
-    output = Output.STATUS_CODE
-    is_keep_sandbox = False
+    output = ReportingOption.STATUS_CODE
     argument_parser = _new_argument_parser(commands)
     namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                    argv)
     if namespace.act:
-        output = Output.ACT_PHASE_OUTPUT
+        output = ReportingOption.ACT_PHASE_OUTPUT
     elif namespace.keep:
-        output = Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT
-        is_keep_sandbox = True
+        output = ReportingOption.SANDBOX_DIRECTORY_STRUCTURE_ROOT
     act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
                                                                      namespace.actor)
     preprocessor = _parse_preprocessor(default.preprocessor,
@@ -40,8 +37,7 @@ def parse(default: TestCaseHandlingSetup,
     return TestCaseExecutionSettings(pathlib.Path(namespace.file),
                                      pathlib.Path(namespace.file).parent.resolve(),
                                      output,
-                                     actual_handling_setup,
-                                     is_keep_sandbox=is_keep_sandbox)
+                                     actual_handling_setup)
 
 
 def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:

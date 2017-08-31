@@ -16,7 +16,7 @@ class Executor:
                                              settings)
 
     def execute(self) -> int:
-        is_keep_sandbox = self._settings.is_keep_sandbox or self._result_reporter.depends_on_result_in_sandbox()
+        is_keep_sandbox = self._result_reporter.depends_on_result_in_sandbox()
         result = self._process(is_keep_sandbox)
         return self._result_reporter.report(result)
 
@@ -32,4 +32,4 @@ class Executor:
 
 def get_reporter(std_output_files: StdOutputFiles,
                  settings: TestCaseExecutionSettings) -> result_reporting.ResultReporter:
-    return result_reporting.RESULT_REPORTERS[settings.output](std_output_files)
+    return result_reporting.RESULT_REPORTERS[settings.reporting_option](std_output_files)
