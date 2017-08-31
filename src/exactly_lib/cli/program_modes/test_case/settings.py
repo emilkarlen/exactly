@@ -12,6 +12,8 @@ class Output(enum.Enum):
 
 
 class TestCaseExecutionSettings:
+    """Settings derived after parsing of command line arguments."""
+
     def __init__(self,
                  file_path: pathlib.Path,
                  initial_home_dir_path: pathlib.Path,

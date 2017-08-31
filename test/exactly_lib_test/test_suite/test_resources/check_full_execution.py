@@ -6,6 +6,7 @@ from exactly_lib import program_info
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.execution import Executor
@@ -58,10 +59,8 @@ def check(setup: Setup,
 
 
 def _default_case_configuration(test_case_handling_setup: TestCaseHandlingSetup) -> case_processing.Configuration:
-    return case_processing.Configuration(white_space_name_and_argument_splitter,
-                                         INSTRUCTION_SETUP,
+    return case_processing.Configuration(_DEFAULT_TEST_CASE_DEFINITION,
                                          test_case_handling_setup,
-                                         PredefinedProperties(),
                                          False)
 
 
@@ -75,3 +74,8 @@ INSTRUCTION_SETUP = InstructionsSetup(
     {},
     {},
     {})
+
+_DEFAULT_TEST_CASE_DEFINITION = TestCaseDefinition(white_space_name_and_argument_splitter,
+                                                   INSTRUCTION_SETUP,
+                                                   PredefinedProperties(),
+                                                   )
