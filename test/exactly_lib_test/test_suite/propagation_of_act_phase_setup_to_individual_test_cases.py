@@ -19,6 +19,13 @@ from exactly_lib_test.test_suite.test_resources.suite_reporting import Execution
     ExecutionTracingSubSuiteProgressReporter, CaseEndInfo
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestActorIsPropagatedToEveryTestCaseThatIsListedDirectlyInTheSuite))
+    ret_val.addTest(unittest.makeSuite(TestActorIsNotPropagatedToSubSuites))
+    return ret_val
+
+
 class TestActorIsPropagatedToEveryTestCaseThatIsListedDirectlyInTheSuite(unittest.TestCase):
     def runTest(self):
         check(ActorIsPropagatedToEveryTestCaseThatIsListedDirectlyInTheSuite(), self)
@@ -27,17 +34,6 @@ class TestActorIsPropagatedToEveryTestCaseThatIsListedDirectlyInTheSuite(unittes
 class TestActorIsNotPropagatedToSubSuites(unittest.TestCase):
     def runTest(self):
         check(ActorIsNotPropagatedToSubSuites(), self)
-
-
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestActorIsPropagatedToEveryTestCaseThatIsListedDirectlyInTheSuite))
-    ret_val.addTest(unittest.makeSuite(TestActorIsNotPropagatedToSubSuites))
-    return ret_val
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
 
 
 class SetupForSuccessfulExecution(Setup):
@@ -135,3 +131,7 @@ def _assert_every_test_case_to_pass(put: unittest.TestCase,
         for case_end_info in listener.case_end_list:
             assert isinstance(case_end_info, CaseEndInfo)
             assert_is_pass(case_end_info)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

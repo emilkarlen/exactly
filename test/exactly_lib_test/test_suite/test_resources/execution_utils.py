@@ -50,12 +50,17 @@ class TestCaseProcessorThatGivesConstantPerCase(tcp.Processor):
         return self.test_case_id_2_result[id(test_case)]
 
 
-DUMMY_CASE_PROCESSING = case_processing.Configuration(
+DUMMY_TEST_CASE_DEFINITION = case_processing.TestCaseDefinition(
     lambda x: ((), ()),
     InstructionsSetup({}, {}, {}, {}, {}),
-    test_case_handling_setup_with_identity_preprocessor(),
     full_execution.PredefinedProperties(),
-    False)
+)
+
+DUMMY_CASE_PROCESSING = case_processing.Configuration(
+    DUMMY_TEST_CASE_DEFINITION,
+    test_case_handling_setup_with_identity_preprocessor(),
+    False,
+)
 
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 

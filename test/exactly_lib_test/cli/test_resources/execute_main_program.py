@@ -4,6 +4,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.default import default_main_program as sut
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib_test.cli.test_resources.test_case_handling_setup import test_case_handling_setup
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
@@ -36,9 +37,11 @@ def execute_main_program(arguments: list,
                          ) -> SubProcessResult:
     str_std_out_files = StringStdOutFiles()
     program = sut.MainProgram(str_std_out_files.stdout_files,
-                              name_and_argument_splitter,
-                              instructions_setup,
-                              predefined_properties,
+                              TestCaseDefinition(
+                                  name_and_argument_splitter,
+                                  instructions_setup,
+                                  predefined_properties,
+                              ),
                               test_case_handling_setup())
     exit_status = program.execute(arguments)
     str_std_out_files.finish()

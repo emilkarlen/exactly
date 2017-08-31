@@ -120,10 +120,8 @@ class SuitesExecutor:
 
     def _configuration_for_cases_in_suite(self, suite: structure.TestSuite) -> case_processing.Configuration:
         return case_processing.Configuration(
-            self._default_case_configuration.instruction_name_extractor_function,
-            self._default_case_configuration.instruction_setup,
+            self._default_case_configuration.test_case_definition,
             suite.test_case_handling_setup,
-            self._default_case_configuration.predefined_properties,
             self._default_case_configuration.is_keep_execution_directory_root,
             self._default_case_configuration.execution_directory_root_name_prefix)
 

@@ -20,18 +20,29 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 
 
-class Configuration:
+class TestCaseDefinition:
+    """Test case configuration that is defined in code."""
+
+    #  TODO: Should act phase parser be part of this class?
+    # Feels right, but have not looked into it.
+
     def __init__(self,
                  instruction_name_extractor_function,
                  instruction_setup: InstructionsSetup,
-                 default_handling_setup: TestCaseHandlingSetup,
-                 predefined_properties: full_execution.PredefinedProperties,
-                 is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
+                 predefined_properties: full_execution.PredefinedProperties):
         self.predefined_properties = predefined_properties
-        self.default_handling_setup = default_handling_setup
         self.instruction_setup = instruction_setup
         self.instruction_name_extractor_function = instruction_name_extractor_function
+
+
+class Configuration:
+    def __init__(self,
+                 test_case_definition: TestCaseDefinition,
+                 default_handling_setup: TestCaseHandlingSetup,
+                 is_keep_execution_directory_root: bool,
+                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
+        self.default_handling_setup = default_handling_setup
+        self.test_case_definition = test_case_definition
         self.is_keep_execution_directory_root = is_keep_execution_directory_root
         self.execution_directory_root_name_prefix = execution_directory_root_name_prefix
 
@@ -49,12 +60,12 @@ def new_processor_that_is_allowed_to_pollute_current_process(configuration: Conf
 
 
 def new_accessor(configuration: Configuration) -> processing.Accessor:
-    return processing_utils.AccessorFromParts(_SourceReader(),
-                                              configuration.default_handling_setup.preprocessor,
-                                              _Parser(configuration.instruction_name_extractor_function,
-                                                      # configuration.handling_setup.act_phase_setup.parser,
-                                                      ActPhaseParser(),
-                                                      configuration.instruction_setup))
+    return processing_utils.AccessorFromParts(
+        _SourceReader(),
+        configuration.default_handling_setup.preprocessor,
+        _Parser(configuration.test_case_definition.instruction_name_extractor_function,
+                ActPhaseParser(),
+                configuration.test_case_definition.instruction_setup))
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
@@ -65,7 +76,7 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
     return _Executor(configuration.default_handling_setup.default_act_phase_setup,
                      configuration.is_keep_execution_directory_root,
-                     configuration.predefined_properties,
+                     configuration.test_case_definition.predefined_properties,
                      configuration.execution_directory_root_name_prefix)
 
 

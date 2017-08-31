@@ -5,7 +5,7 @@ from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExe
 from exactly_lib.execution import full_execution, exit_values
 from exactly_lib.execution.result_reporting import print_error_message_for_full_result, print_error_info
 from exactly_lib.processing import test_case_processing, processors
-from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
@@ -13,16 +13,12 @@ from exactly_lib.util.std import StdOutputFiles, FilePrinter
 class Executor:
     def __init__(self,
                  output: StdOutputFiles,
-                 instruction_name_extractor_function,
-                 instruction_setup: InstructionsSetup,
-                 predefined_properties: full_execution.PredefinedProperties,
+                 test_case_definition: TestCaseDefinition,
                  settings: TestCaseExecutionSettings):
         self._std = output
         self._out_printer = FilePrinter(output.out)
         self._err_printer = FilePrinter(output.err)
-        self._instruction_name_extractor_function = instruction_name_extractor_function
-        self._instruction_setup = instruction_setup
-        self._predefined_properties = predefined_properties
+        self._test_case_definition = test_case_definition
         self._settings = settings
 
     def execute(self) -> int:
@@ -80,10 +76,8 @@ class Executor:
 
     def _process(self,
                  is_keep_sds: bool) -> test_case_processing.Result:
-        configuration = processors.Configuration(self._instruction_name_extractor_function,
-                                                 self._instruction_setup,
+        configuration = processors.Configuration(self._test_case_definition,
                                                  self._settings.handling_setup,
-                                                 self._predefined_properties,
                                                  is_keep_sds,
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
