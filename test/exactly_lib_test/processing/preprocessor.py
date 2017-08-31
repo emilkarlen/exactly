@@ -11,6 +11,10 @@ from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestIdentityPreprocessor)
+
+
 class TestIdentityPreprocessor(unittest.TestCase):
     def test(self):
         processor = IdentityPreprocessor()
@@ -120,12 +124,6 @@ class TestPreprocessorViaExternalProgram(unittest.TestCase):
 
             with self.assertRaises(ProcessError) as ex_info:
                 pre_proc.apply(test_case_path, unused_test_case_source)
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestIdentityPreprocessor))
-    return ret_val
 
 
 if __name__ == '__main__':
