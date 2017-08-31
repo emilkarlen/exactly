@@ -44,7 +44,7 @@ def execute_and_check(put: unittest.TestCase,
                                                 dict(os.environ)),
                 arrangement.initial_setup_settings,
                 program_info.PROGRAM_NAME + '-test-',
-                is_keep_execution_directory_root=True)
+                is_keep_sandbox=True)
 
             expectation.partial_result.apply_with_message(put,
                                                           partial_result,

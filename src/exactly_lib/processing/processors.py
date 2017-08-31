@@ -39,12 +39,12 @@ class Configuration:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
                  default_handling_setup: TestCaseHandlingSetup,
-                 is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
+                 is_keep_sandbox: bool,
+                 sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self.default_handling_setup = default_handling_setup
         self.test_case_definition = test_case_definition
-        self.is_keep_execution_directory_root = is_keep_execution_directory_root
-        self.execution_directory_root_name_prefix = execution_directory_root_name_prefix
+        self.is_keep_sandbox = is_keep_sandbox
+        self.sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
 
 
 def new_processor_that_should_not_pollute_current_process(configuration: Configuration) -> processing.Processor:
@@ -75,9 +75,9 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
     return _Executor(configuration.default_handling_setup.default_act_phase_setup,
-                     configuration.is_keep_execution_directory_root,
+                     configuration.is_keep_sandbox,
                      configuration.test_case_definition.predefined_properties,
-                     configuration.execution_directory_root_name_prefix)
+                     configuration.sandbox_directory_root_name_prefix)
 
 
 class _SourceReader(processing_utils.SourceReader):
@@ -124,13 +124,13 @@ def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:
 class _Executor(processing_utils.Executor):
     def __init__(self,
                  default_act_phase_setup: ActPhaseSetup,
-                 is_keep_execution_directory_root: bool,
+                 is_keep_sandbox: bool,
                  predefined_properties: full_execution.PredefinedProperties,
-                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
+                 sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self.predefined_properties = predefined_properties
         self.default_act_phase_setup = default_act_phase_setup
-        self._is_keep_execution_directory_root = is_keep_execution_directory_root
-        self._execution_directory_root_name_prefix = execution_directory_root_name_prefix
+        self._is_keep_sandbox = is_keep_sandbox
+        self._sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
 
     def apply(self,
               test_case_file_path: pathlib.Path,
@@ -141,6 +141,6 @@ class _Executor(processing_utils.Executor):
                                       ConfigurationBuilder(dir_containing_test_case_file,
                                                            dir_containing_test_case_file,
                                                            act_phase_handling_for_setup(self.default_act_phase_setup)),
-                                      self._execution_directory_root_name_prefix,
-                                      self._is_keep_execution_directory_root,
+                                      self._sandbox_directory_root_name_prefix,
+                                      self._is_keep_sandbox,
                                       )

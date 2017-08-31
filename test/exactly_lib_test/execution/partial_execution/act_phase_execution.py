@@ -348,7 +348,7 @@ def _empty_test_case() -> sut.TestCase:
 def _execute(constructor: ActSourceAndExecutorConstructor,
              test_case: sut.TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
-             is_keep_execution_directory_root: bool = False,
+             is_keep_sandbox: bool = False,
              current_directory: pathlib.Path = None,
              ) -> sut.PartialResult:
     if current_directory is None:
@@ -364,7 +364,7 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
                                   dict(os.environ)),
                 setup_settings,
                 program_info.PROGRAM_NAME + '-test-',
-                is_keep_execution_directory_root)
+                is_keep_sandbox)
 
 
 def _python_program_that_prints_stdin_to(output_file_path: pathlib.Path) -> str:

@@ -49,5 +49,5 @@ class MainProgram(main_program.MainProgram):
     def _sds_root_name_prefix_for_suite():
         today = datetime.datetime.today()
         datetime_suffix = today.strftime('%Y-%m-%d-%H-%M-%S')
-        execution_directory_root_name_prefix = program_info.PROGRAM_NAME + '-suite-' + datetime_suffix + '-'
-        return execution_directory_root_name_prefix
+        sandbox_directory_root_name_prefix = program_info.PROGRAM_NAME + '-suite-' + datetime_suffix + '-'
+        return sandbox_directory_root_name_prefix

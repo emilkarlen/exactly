@@ -19,7 +19,7 @@ class Test(unittest.TestCase):
             test_case_that_does_nothing(),
             dummy_act_phase_handling(),
             sandbox_directory_structure_exists,
-            is_keep_execution_directory_root=True)
+            is_keep_sandbox=True)
 
     def test_do_not_keep_execution_directory_root(self):
         test(
@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
             test_case_that_does_nothing(),
             dummy_act_phase_handling(),
             sandbox_directory_structure_does_not_exist,
-            is_keep_execution_directory_root=False)
+            is_keep_sandbox=False)
 
 
 def sandbox_directory_structure_exists(put: unittest.TestCase,

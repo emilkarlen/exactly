@@ -83,15 +83,15 @@ class Configuration(tuple):
 class _ExecutionConfiguration(tuple):
     def __new__(cls,
                 configuration: Configuration,
-                execution_directory_root_name_prefix: str):
-        return tuple.__new__(cls, (configuration, execution_directory_root_name_prefix))
+                sandbox_directory_root_name_prefix: str):
+        return tuple.__new__(cls, (configuration, sandbox_directory_root_name_prefix))
 
     @property
     def configuration(self) -> Configuration:
         return self[0]
 
     @property
-    def execution_directory_root_name_prefix(self) -> str:
+    def sandbox_directory_root_name_prefix(self) -> str:
         return self[1]
 
 
@@ -160,8 +160,8 @@ def execute(act_phase_handling: ActPhaseHandling,
             test_case: TestCase,
             configuration: Configuration,
             initial_setup_settings: SetupSettingsBuilder,
-            execution_directory_root_name_prefix: str,
-            is_keep_execution_directory_root: bool) -> PartialResult:
+            sandbox_directory_root_name_prefix: str,
+            is_keep_sandbox: bool) -> PartialResult:
     """
     Takes care of construction of the Sandbox directory structure, including
     the root directory, and executes a given Test Case in this directory.
@@ -179,7 +179,7 @@ def execute(act_phase_handling: ActPhaseHandling,
     try:
         with preserved_cwd():
             exe_configuration = _ExecutionConfiguration(configuration,
-                                                        execution_directory_root_name_prefix)
+                                                        sandbox_directory_root_name_prefix)
 
             test_case_execution = _PartialExecutor(exe_configuration,
                                                    act_phase_handling,
@@ -188,7 +188,7 @@ def execute(act_phase_handling: ActPhaseHandling,
             ret_val = test_case_execution.execute()
             return ret_val
     finally:
-        if not is_keep_execution_directory_root:
+        if not is_keep_sandbox:
             if ret_val is not None and ret_val.has_sds:
                 shutil.rmtree(str(ret_val.sds.root_dir))
 
@@ -456,7 +456,7 @@ class _PartialExecutor:
         os.chdir(str(self._sds.act_dir))
 
     def __construct_and_set_sds(self):
-        sds_root_dir_name = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
+        sds_root_dir_name = tempfile.mkdtemp(prefix=self.__exe_configuration.sandbox_directory_root_name_prefix)
         self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
 
     def __post_sds_environment(self,

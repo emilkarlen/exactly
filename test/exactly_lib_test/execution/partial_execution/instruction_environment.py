@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
             test_case,
             dummy_act_phase_handling(),
             functools.partial(log_dir_is_correct_for_each_phase, recorder),
-            is_keep_execution_directory_root=False)
+            is_keep_sandbox=False)
 
 
 def log_dir_is_correct_for_each_phase(recordings: dict,

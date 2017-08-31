@@ -122,8 +122,8 @@ class SuitesExecutor:
         return case_processing.Configuration(
             self._default_case_configuration.test_case_definition,
             suite.test_case_handling_setup,
-            self._default_case_configuration.is_keep_execution_directory_root,
-            self._default_case_configuration.execution_directory_root_name_prefix)
+            self._default_case_configuration.is_keep_sandbox,
+            self._default_case_configuration.sandbox_directory_root_name_prefix)
 
 
 def _process_and_time(case_processor: test_case_processing.Processor,

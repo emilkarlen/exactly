@@ -30,8 +30,8 @@ class PredefinedProperties:
 def execute(test_case: test_case_doc.TestCase,
             predefined_properties: PredefinedProperties,
             configuration_builder: ConfigurationBuilder,
-            execution_directory_root_name_prefix: str,
-            is_keep_execution_directory_root: bool) -> FullResult:
+            sandbox_directory_root_name_prefix: str,
+            is_keep_sandbox: bool) -> FullResult:
     """
     The main method for executing a Test Case.
     """
@@ -58,8 +58,8 @@ def execute(test_case: test_case_doc.TestCase,
                                                                           test_case.cleanup_phase),
                                                partial_execution_configuration,
                                                setup.default_settings(),
-                                               execution_directory_root_name_prefix,
-                                               is_keep_execution_directory_root)
+                                               sandbox_directory_root_name_prefix,
+                                               is_keep_sandbox)
     return new_named_phases_result_from(configuration_builder.execution_mode,
                                         partial_result)
 

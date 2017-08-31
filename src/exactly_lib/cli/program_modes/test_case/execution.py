@@ -28,7 +28,7 @@ class Executor:
             return self._execute_normal()
 
     def _execute_normal(self) -> int:
-        result = self._process(self._settings.is_keep_execution_directory_root)
+        result = self._process(self._settings.is_keep_sandbox)
         exit_value = exit_values.from_result(result)
         if result.status is test_case_processing.Status.EXECUTED:
             self._report_full_result(result.execution_result)
@@ -79,6 +79,6 @@ class Executor:
         configuration = processors.Configuration(self._test_case_definition,
                                                  self._settings.handling_setup,
                                                  is_keep_sds,
-                                                 self._settings.execution_directory_root_name_prefix)
+                                                 self._settings.sandbox_directory_root_name_prefix)
         processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
         return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))

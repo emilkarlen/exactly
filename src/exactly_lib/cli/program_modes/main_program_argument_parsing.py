@@ -23,7 +23,7 @@ def parse(default: TestCaseHandlingSetup,
     :raises ArgumentParsingError Invalid usage
     """
     output = Output.STATUS_CODE
-    is_keep_execution_directory_root = False
+    is_keep_sandbox = False
     argument_parser = _new_argument_parser(commands)
     namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                    argv)
@@ -31,7 +31,7 @@ def parse(default: TestCaseHandlingSetup,
         output = Output.ACT_PHASE_OUTPUT
     elif namespace.keep:
         output = Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT
-        is_keep_execution_directory_root = True
+        is_keep_sandbox = True
     act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
                                                                      namespace.actor)
     preprocessor = _parse_preprocessor(default.preprocessor,
@@ -41,7 +41,7 @@ def parse(default: TestCaseHandlingSetup,
                                      pathlib.Path(namespace.file).parent.resolve(),
                                      output,
                                      actual_handling_setup,
-                                     is_keep_execution_directory_root=is_keep_execution_directory_root)
+                                     is_keep_sandbox=is_keep_sandbox)
 
 
 def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
