@@ -2,9 +2,7 @@ import functools
 import pathlib
 
 from exactly_lib.processing import test_case_processing
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_suite.instruction_set import parse, instruction
@@ -24,23 +22,17 @@ class SuiteHierarchyReader:
 class Environment(tuple):
     def __new__(cls,
                 configuration_section_parser: SectionElementParser,
-                preprocessor: Preprocessor,
-                act_phase_setup: ActPhaseSetup):
-        return tuple.__new__(cls, (preprocessor,
-                                   act_phase_setup,
-                                   configuration_section_parser))
-
-    @property
-    def preprocessor(self) -> Preprocessor:
-        return self[0]
-
-    @property
-    def act_phase_setup(self) -> ActPhaseSetup:
-        return self[1]
+                default_test_case_handling_setup: TestCaseHandlingSetup):
+        return tuple.__new__(cls, (configuration_section_parser,
+                                   default_test_case_handling_setup))
 
     @property
     def configuration_section_parser(self) -> SectionElementParser:
-        return self[2]
+        return self[0]
+
+    @property
+    def default_test_case_handling_setup(self) -> TestCaseHandlingSetup:
+        return self[1]
 
 
 class Reader(SuiteHierarchyReader):
@@ -69,8 +61,7 @@ class _SingleFileReader:
                                                             self.environment.configuration_section_parser)
         test_case_handling_setup = suite_file_reading.resolve_test_case_handling_setup(
             test_suite,
-            TestCaseHandlingSetup(self.environment.act_phase_setup,
-                                  self.environment.preprocessor))
+            self.environment.default_test_case_handling_setup)
 
         suite_file_path_list, case_file_path_list = self._resolve_paths(test_suite,
                                                                         suite_file_path)
