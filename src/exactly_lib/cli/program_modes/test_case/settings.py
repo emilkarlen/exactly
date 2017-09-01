@@ -20,12 +20,14 @@ class TestCaseExecutionSettings:
                  output: ReportingOption,
                  handling_setup: TestCaseHandlingSetup,
                  sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-',
+                 suite_to_read_config_from: pathlib.Path = None,
                  ):
         self.__test_case_file_path = test_case_file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
         self.__handling_setup = handling_setup
         self.__sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
+        self.__suite_to_read_config_from = suite_to_read_config_from
 
     @property
     def test_case_file_path(self) -> pathlib.Path:
@@ -46,3 +48,13 @@ class TestCaseExecutionSettings:
     @property
     def sandbox_directory_root_name_prefix(self) -> str:
         return self.__sandbox_directory_root_name_prefix
+
+    @property
+    def suite_to_read_config_from(self) -> pathlib.Path:
+        """
+        If this is not None, then a suite file has been given,
+        and config should be read from that file and
+        used as default.
+        :return: None iff config should not be read from a suite.
+        """
+        return self.__suite_to_read_config_from

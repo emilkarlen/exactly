@@ -26,6 +26,7 @@ class MainProgram(main_program.MainProgram):
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         return test_case_execution.execute(self._std,
                                            self._test_case_definition,
+                                           self._test_suite_definition,
                                            settings)
 
     def execute_test_suite(self, test_suite_execution_settings) -> int:
