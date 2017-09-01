@@ -11,10 +11,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
-
-
-def do_nothing():
-    pass
+from exactly_lib_test.test_resources.actions import do_nothing
 
 
 class ActSourceAndExecutorThatJustReturnsSuccess(ActSourceAndExecutor):

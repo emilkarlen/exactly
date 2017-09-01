@@ -4,24 +4,6 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import new_failure_details_from_message
 
 
-def do_nothing(*args, **kwargs):
-    pass
-
-
-def action_that_returns(ret_val):
-    def f(*args, **kwargs):
-        return ret_val
-
-    return f
-
-
-def action_that_raises(ex: Exception):
-    def f(*args, **kwargs):
-        raise ex
-
-    return f
-
-
 def validate_action_that_returns(ret_val: svh.SuccessOrValidationErrorOrHardError):
     def f(*args, **kwargs):
         return ret_val

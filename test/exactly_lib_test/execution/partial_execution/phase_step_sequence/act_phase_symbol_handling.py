@@ -12,9 +12,9 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import SYMBOL_VALIDATION_STEPS__ONCE, \
     PRE_SDS_VALIDATION_STEPS__ONCE
-from exactly_lib_test.execution.test_resources.test_actions import action_that_returns, action_that_raises
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_reference
+from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForPhaseFailure, \
     ExpectedFailureForNoFailure
 
@@ -39,7 +39,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         ]
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=action_that_returns(symbol_usages)),
+                        act_executor_symbol_usages=do_return(symbol_usages)),
             Expectation(PartialResultStatus.PASS,
                         ExpectedFailureForNoFailure(),
                         [phase_step.ACT__PARSE] +
@@ -70,7 +70,7 @@ class TestFailingScenarios(TestCaseBase):
         symbol_usages_with_ref_to_undefined_symbol = [symbol_reference('undefined_symbol')]
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=action_that_returns(symbol_usages_with_ref_to_undefined_symbol)),
+                        act_executor_symbol_usages=do_return(symbol_usages_with_ref_to_undefined_symbol)),
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
@@ -84,7 +84,7 @@ class TestFailingScenarios(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=action_that_raises(test.ImplementationErrorTestException())),
+                        act_executor_symbol_usages=do_raise(test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
@@ -106,7 +106,7 @@ class TestFailingScenarios(TestCaseBase):
         ]
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=action_that_returns(symbol_usages)),
+                        act_executor_symbol_usages=do_return(symbol_usages)),
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
