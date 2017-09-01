@@ -74,7 +74,7 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(configuration.default_handling_setup.default_act_phase_setup,
+    return _Executor(configuration.default_handling_setup.act_phase_setup,
                      configuration.is_keep_sandbox,
                      configuration.test_case_definition.predefined_properties,
                      configuration.sandbox_directory_root_name_prefix)

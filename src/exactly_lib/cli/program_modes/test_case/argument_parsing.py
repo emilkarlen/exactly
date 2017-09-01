@@ -32,7 +32,7 @@ def parse(default: TestCaseHandlingSetup,
         output = ReportingOption.ACT_PHASE_OUTPUT
     elif namespace.keep:
         output = ReportingOption.SANDBOX_DIRECTORY_STRUCTURE_ROOT
-    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
+    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
                                                                      namespace.actor)
     preprocessor = _parse_preprocessor(default.preprocessor,
                                        namespace.preprocessor)

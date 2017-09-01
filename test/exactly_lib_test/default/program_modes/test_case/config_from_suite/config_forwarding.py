@@ -54,8 +54,8 @@ SUCCESS_INDICATOR_STRING = 'output from actor set in suite'
 
 class Test(unittest.TestCase):
     def test(self):
-        default_test_case_handling_setup = TestCaseHandlingSetup(
-            default_act_phase_setup=act_setup_that_does_nothing(),
+        default_test_case_handling = TestCaseHandlingSetup(
+            act_phase_setup=act_setup_that_does_nothing(),
             preprocessor=IdentityPreprocessor()
         )
 
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
                                        suite_and_case_files,
                                        test_case_definition,
                                        test_suite_definition,
-                                       default_test_case_handling_setup)
+                                       default_test_case_handling)
         # ASSERT #
         if actual_result.exitcode != EXECUTION__PASS.exit_code:
             self.fail(_error_message(actual_result))

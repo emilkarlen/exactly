@@ -43,7 +43,7 @@ class _Parser:
         argument_parser = self._new_argument_parser()
         namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                        argv)
-        act_phase_setup = resolve_act_phase_setup_from_argparse_argument(self.default.default_act_phase_setup,
+        act_phase_setup = resolve_act_phase_setup_from_argparse_argument(self.default.act_phase_setup,
                                                                          namespace.actor)
         return TestSuiteExecutionSettings(self._resolve_reporter_factory(vars(namespace)),
                                           TestCaseHandlingSetup(act_phase_setup,
