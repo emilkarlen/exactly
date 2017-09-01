@@ -52,6 +52,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             self._keep_sandbox_argument(),
             self._execute_act_phase_argument(),
             self._preprocessor_argument(),
+            self._suite_argument(),
         ]
 
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
@@ -92,6 +93,14 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                                 SHELL_SYNTAX_CONCEPT.cross_reference_target()
                                             ]
                                             ))
+
+    def _suite_argument(self) -> cli_syntax.DescribedArgument:
+        extra_format_map = {
+            'preprocessor': _PREPROCESSOR_OPTION.argument,
+        }
+        return cli_syntax.DescribedArgument(_SUITE_OPTION,
+                                            self.parser.fnap(_SUITE_OPTION_DESCRIPTION, extra_format_map),
+                                            )
 
 
 def synopsis() -> cli_syntax.Synopsis:
@@ -157,3 +166,12 @@ When executed, it is given a single (additional) argument: the name of the test 
 
 _PREPROCESSOR_OPTION = arg.option(long_name=opt.OPTION_FOR_PREPROCESSOR__LONG,
                                   argument=opt.PREPROCESSOR_OPTION_ARGUMENT)
+
+_SUITE_OPTION_DESCRIPTION = """\
+A test suite to read configuration from.
+
+The test case is executed as if it were part of the given suite.
+"""
+
+_SUITE_OPTION = arg.option(long_name=opt.OPTION_FOR_SUITE__LONG,
+                           argument=opt.SUITE_OPTION_METAVAR)
