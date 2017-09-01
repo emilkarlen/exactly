@@ -16,8 +16,8 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
+from exactly_lib.help_texts.test_suite import section_names
 from exactly_lib.help_texts.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
-from exactly_lib.test_suite.parser import SECTION_NAME__CONF
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -67,8 +67,9 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                             see_also_items=see_also_items_from_cross_refs([
                                                 actor.ACTOR_CONCEPT.cross_reference_target(),
                                                 SHELL_SYNTAX_CONCEPT.cross_reference_target(),
-                                                TestSuiteSectionInstructionCrossReference(SECTION_NAME__CONF,
-                                                                                          INSTRUCTION_NAME__ACTOR),
+                                                TestSuiteSectionInstructionCrossReference(
+                                                    section_names.SECTION_NAME__CONF,
+                                                    INSTRUCTION_NAME__ACTOR),
                                             ]))
 
     def _reporter_argument(self) -> cli_syntax.DescribedArgument:
