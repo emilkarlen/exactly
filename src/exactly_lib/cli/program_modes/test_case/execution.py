@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.test_case import result_reporting
-from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
+from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.util.std import StdOutputFiles
@@ -8,8 +8,8 @@ from exactly_lib.util.std import StdOutputFiles
 def execute(std_output_files: StdOutputFiles,
             test_case_definition: TestCaseDefinition,
             settings: TestCaseExecutionSettings) -> int:
-    result_reporter = get_reporter(std_output_files,
-                                   settings)
+    result_reporter = _get_reporter(std_output_files,
+                                    settings.reporting_option)
     is_keep_sandbox = result_reporter.depends_on_result_in_sandbox()
     result = _process(is_keep_sandbox,
                       test_case_definition,
@@ -29,6 +29,6 @@ def _process(is_keep_sds: bool,
     return processor.apply(test_case_processing.TestCaseSetup(settings.test_case_file_path))
 
 
-def get_reporter(std_output_files: StdOutputFiles,
-                 settings: TestCaseExecutionSettings) -> result_reporting.ResultReporter:
-    return result_reporting.RESULT_REPORTERS[settings.reporting_option](std_output_files)
+def _get_reporter(std_output_files: StdOutputFiles,
+                  reporting_option: ReportingOption) -> result_reporting.ResultReporter:
+    return result_reporting.RESULT_REPORTERS[reporting_option](std_output_files)
