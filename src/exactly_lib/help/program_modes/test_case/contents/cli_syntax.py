@@ -168,9 +168,9 @@ _PREPROCESSOR_OPTION = arg.option(long_name=opt.OPTION_FOR_PREPROCESSOR__LONG,
                                   argument=opt.PREPROCESSOR_OPTION_ARGUMENT)
 
 _SUITE_OPTION_DESCRIPTION = """\
-A test suite to read configuration from.
+Reads configuration from the given suite.
 
-The test case is executed as if it were part of the given suite.
+The test case is executed as if it were part of the suite.
 """
 
 _SUITE_OPTION = arg.option(long_name=opt.OPTION_FOR_SUITE__LONG,
