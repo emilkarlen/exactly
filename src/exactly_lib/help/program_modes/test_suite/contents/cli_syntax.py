@@ -16,7 +16,7 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
+from exactly_lib.help_texts.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.parser import SECTION_NAME__CONF
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax

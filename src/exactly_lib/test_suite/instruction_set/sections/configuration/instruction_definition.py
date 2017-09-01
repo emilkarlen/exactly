@@ -28,8 +28,7 @@ class ConfigurationSectionEnvironment:
 
 
 class ConfigurationSectionInstruction(TestSuiteInstruction):
-    def execute(self,
-                environment: ConfigurationSectionEnvironment):
+    def execute(self, environment: ConfigurationSectionEnvironment):
         """
         Updates the environment.
         """

@@ -6,6 +6,7 @@ from exactly_lib.cli.program_modes.test_case import execution as test_case_execu
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -13,9 +14,14 @@ class MainProgram(main_program.MainProgram):
     def __init__(self,
                  output: StdOutputFiles,
                  test_case_definition: TestCaseDefinition,
+                 test_suite_definition: TestSuiteDefinition,
                  default: TestCaseHandlingSetup):
-        super().__init__(output, test_case_definition.instruction_setup, default)
+        super().__init__(output,
+                         test_case_definition.instruction_setup,
+                         test_suite_definition.configuration_section_instructions,
+                         default)
         self._test_case_definition = test_case_definition
+        self._test_suite_definition = test_suite_definition
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         return test_case_execution.execute(self._std,
@@ -35,6 +41,7 @@ class MainProgram(main_program.MainProgram):
                                       self._output,
                                       suite_hierarchy_reading.Reader(
                                           suite_hierarchy_reading.Environment(
+                                              self._test_suite_definition.configuration_section_parser,
                                               default_configuration.default_handling_setup.preprocessor,
                                               default_configuration.default_handling_setup.default_act_phase_setup)
                                       ),

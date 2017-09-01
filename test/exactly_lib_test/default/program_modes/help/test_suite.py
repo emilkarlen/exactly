@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.help_texts.test_suite import section_names
-from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
+from exactly_lib.help_texts.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases

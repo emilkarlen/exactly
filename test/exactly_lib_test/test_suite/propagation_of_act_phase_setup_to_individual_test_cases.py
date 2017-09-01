@@ -3,11 +3,11 @@ import unittest
 
 from exactly_lib.act_phase_setups import command_line
 from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.help_texts.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.instructions.configuration.utils.actor_utils import SOURCE_INTERPRETER_OPTION
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.reporting import SubSuiteReporter
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, File
