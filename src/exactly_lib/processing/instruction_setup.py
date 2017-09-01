@@ -2,8 +2,8 @@ class InstructionsSetup(tuple):
     def __new__(cls,
                 config_instruction_set: dict,
                 setup_instruction_set: dict,
-                assert_instruction_set: dict,
                 before_assert_instruction_set: dict,
+                assert_instruction_set: dict,
                 cleanup_instruction_set: dict):
         """
         Each dictionary is a mapping: instruction-name -> `SingleInstructionSetup`.
@@ -13,8 +13,8 @@ class InstructionsSetup(tuple):
         """
         return tuple.__new__(cls, (config_instruction_set,
                                    setup_instruction_set,
-                                   assert_instruction_set,
                                    before_assert_instruction_set,
+                                   assert_instruction_set,
                                    cleanup_instruction_set))
 
     @property
