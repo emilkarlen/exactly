@@ -15,7 +15,8 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    execute_action_that_returns_exit_code, prepare_action_that_returns, do_nothing
+    execute_action_that_returns_exit_code, prepare_action_that_returns
+from exactly_lib_test.test_resources.actions import do_nothing
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 

@@ -9,21 +9,21 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources import test_actions
-from exactly_lib_test.test_resources.actions import do_nothing
+from exactly_lib_test.test_resources import actions
 
 
 class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def __init__(self,
-                 parse_action=test_actions.do_nothing,
+                 parse_action=actions.do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
-                 validate_pre_sds_initial_action=test_actions.do_nothing,
+                 validate_pre_sds_initial_action=actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
-                 validate_post_setup_initial_action=test_actions.do_nothing,
+                 validate_post_setup_initial_action=actions.do_nothing,
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
-                 prepare_initial_action=test_actions.do_nothing,
+                 prepare_initial_action=actions.do_nothing,
                  execute_action=test_actions.execute_action_that_returns_exit_code(0),
-                 execute_initial_action=test_actions.do_nothing,
-                 symbol_usages_action=test_actions.action_that_returns([])
+                 execute_initial_action=actions.do_nothing,
+                 symbol_usages_action=actions.do_return([])
                  ):
         self.__parse_action = parse_action
         self.__validate_pre_sds_initial_action = validate_pre_sds_initial_action
@@ -67,16 +67,16 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
 
 class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecutorConstructor):
     def __init__(self,
-                 parse_action=do_nothing,
+                 parse_action=actions.do_nothing,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
-                 validate_pre_sds_initial_action=test_actions.do_nothing,
+                 validate_pre_sds_initial_action=actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
-                 validate_post_setup_initial_action=test_actions.do_nothing,
+                 validate_post_setup_initial_action=actions.do_nothing,
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
-                 prepare_initial_action=test_actions.do_nothing,
+                 prepare_initial_action=actions.do_nothing,
                  execute_action=test_actions.execute_action_that_returns_exit_code(0),
-                 execute_initial_action=test_actions.do_nothing,
-                 apply_action_before_executor_is_constructed=test_actions.do_nothing):
+                 execute_initial_action=actions.do_nothing,
+                 apply_action_before_executor_is_constructed=actions.do_nothing):
         self.apply_action_before_executor_is_constructed = apply_action_before_executor_is_constructed
         self.parse_action = parse_action
         self.validate_pre_sds_initial_action = validate_pre_sds_initial_action

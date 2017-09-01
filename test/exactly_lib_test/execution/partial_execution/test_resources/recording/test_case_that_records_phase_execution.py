@@ -14,8 +14,9 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
     ActSourceAndExecutorWrapperConstructorThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
-from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    execute_action_that_returns_exit_code, prepare_action_that_returns, action_that_returns, do_nothing
+from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code, \
+    prepare_action_that_returns
+from exactly_lib_test.test_resources.actions import do_nothing, do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
@@ -23,11 +24,11 @@ class Arrangement(tuple):
     def __new__(cls,
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
                 act_executor_parse=do_nothing,
-                act_executor_validate_post_setup=validate_action_that_returns(svh.new_svh_success()),
+                act_executor_validate_post_setup=do_return(svh.new_svh_success()),
                 act_executor_prepare=prepare_action_that_returns(sh.new_sh_success()),
                 act_executor_execute=execute_action_that_returns_exit_code(),
-                act_executor_validate_pre_sds=validate_action_that_returns(svh.new_svh_success()),
-                act_executor_symbol_usages=action_that_returns([])
+                act_executor_validate_pre_sds=do_return(svh.new_svh_success()),
+                act_executor_symbol_usages=do_return([])
                 ):
         return tuple.__new__(cls, (test_case_generator,
                                    act_executor_validate_post_setup,
