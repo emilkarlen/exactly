@@ -5,7 +5,8 @@ from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, \
     SectionContentsRendererForConstantContents
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, parent, \
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, SectionRendererNode, \
+    parent, \
     leaf, \
     SectionFromGeneratorAsSectionContentsRenderer
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
@@ -17,11 +18,11 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 def specification_renderer(suite_help: TestSuiteHelp) -> SectionContentsRenderer:
     return SectionFromGeneratorAsSectionContentsRenderer(
-        SpecificationGenerator('unused section header', suite_help)
+        SpecificationHierarchyGenerator('unused section header', suite_help)
     )
 
 
-class SpecificationGenerator(SectionGenerator):
+class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
     def __init__(self,
                  header: str,
                  suite_help: TestSuiteHelp):

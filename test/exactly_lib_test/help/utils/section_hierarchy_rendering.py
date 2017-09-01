@@ -118,7 +118,7 @@ class Test(unittest.TestCase):
                              section_assertion)
 
     def _act_and_assert(self,
-                        object_to_test: sut.SectionGenerator,
+                        object_to_test: sut.SectionHierarchyGenerator,
                         target_factory: CustomTargetInfoFactory,
                         target_info_node_assertion: asrt.ValueAssertion,
                         section_assertion: asrt.ValueAssertion):

@@ -12,7 +12,7 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-def generator(header: str, setup: Setup) -> hierarchy_rendering.SectionGenerator:
+def generator(header: str, setup: Setup) -> hierarchy_rendering.SectionHierarchyGenerator:
     text_parser = _text_parser(setup)
     return hierarchy_rendering.parent(
         header, [],

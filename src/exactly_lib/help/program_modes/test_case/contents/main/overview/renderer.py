@@ -1,9 +1,9 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import parent, leaf, SectionGenerator
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import parent, leaf, SectionHierarchyGenerator
 from . import intro, environment as env_doc, phases, test_case
 
 
-def generator(header: str, setup: Setup) -> SectionGenerator:
+def generator(header: str, setup: Setup) -> SectionHierarchyGenerator:
     return parent(header, [],
                   [
                       ('introduction', leaf('Introduction', intro.Documentation(setup))),
