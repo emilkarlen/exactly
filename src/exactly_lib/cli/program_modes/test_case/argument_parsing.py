@@ -6,6 +6,9 @@ from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption, TestCaseExecutionSettings
+from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
+from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -35,10 +38,21 @@ def parse(default: TestCaseHandlingSetup,
                                        namespace.preprocessor)
     actual_handling_setup = TestCaseHandlingSetup(act_phase_setup, preprocessor)
     test_case_file_path = pathlib.Path(namespace.file)
+
+    suite_file = None
+    if namespace.suite:
+        suite_file = pathlib.Path(namespace.suite[0])
+        _resolve_and_fail_if_is_not_an_existing_file(suite_file)
+    _resolve_and_fail_if_is_not_an_existing_file(test_case_file_path)
     return TestCaseExecutionSettings(test_case_file_path,
-                                     argument_parsing_utils.resolve_path(test_case_file_path.parent),
+                                     _resolve_and_fail_if_is_not_an_existing_file(test_case_file_path.parent),
                                      output,
-                                     actual_handling_setup)
+                                     actual_handling_setup,
+                                     suite_to_read_config_from=suite_file)
+
+
+def _resolve_and_fail_if_is_not_an_existing_file(test_case_file_path) -> pathlib.Path:
+    return argument_parsing_utils.resolve_path(test_case_file_path)
 
 
 def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
@@ -72,9 +86,6 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         the output from the act phase script is emitted:
                         Output on stdout/stderr from the script is printed to stdout/stderr.
                         The exit code from the act script becomes the exit code from the program.""")
-    from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
-    from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-    from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_ACTOR__LONG),
                          metavar=opt.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
@@ -84,6 +95,10 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                              ACTOR_CONCEPT=ACTOR_CONCEPT.singular_name(),
                              shell_syntax_concept=formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
                          ))
+    ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_SUITE__LONG),
+                         metavar=opt.SUITE_OPTION_METAVAR,
+                         nargs=1,
+                         help=_SUITE_OPTION_DESCRIPTION)
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_PREPROCESSOR__LONG),
                          metavar=opt.PREPROCESSOR_OPTION_ARGUMENT,
                          nargs=1,
@@ -119,4 +134,10 @@ Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program th
 
 Note that an {ACTOR_CONCEPT} specified in the test case has precedence over the
 {ACTOR_CONCEPT} given here.
+"""
+
+_SUITE_OPTION_DESCRIPTION = """\
+A test suite to read configuration from.
+
+The test case is executed as if it were part of the given suite.
 """

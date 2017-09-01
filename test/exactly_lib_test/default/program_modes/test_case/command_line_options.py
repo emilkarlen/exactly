@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.cli import main_program
-from exactly_lib.processing import exit_values
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor, \
@@ -10,8 +9,8 @@ from exactly_lib_test.test_resources.main_program.main_program_check_for_test_ca
     SetupWithoutPreprocessorAndTestActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_process_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_exit_code
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     is_process_result_for_exit_code
 
@@ -52,7 +51,7 @@ class TestCaseFileDoesNotExistShouldExitWithInvalidUsageStatus(SetupWithJustMain
     def check(self,
               put: unittest.TestCase,
               actual_result: SubProcessResult):
-        expectation = asrt_process_result.is_result_for_exit_value(exit_values.NO_EXECUTION__FILE_ACCESS_ERROR)
+        expectation = is_result_for_exit_code(main_program.EXIT_INVALID_USAGE)
         expectation.apply_without_message(put, actual_result)
 
 

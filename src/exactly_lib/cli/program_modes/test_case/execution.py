@@ -2,11 +2,13 @@ from exactly_lib.cli.program_modes.test_case import result_reporting
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
 from exactly_lib.util.std import StdOutputFiles
 
 
 def execute(std_output_files: StdOutputFiles,
             test_case_definition: TestCaseDefinition,
+            test_suite_definition: TestSuiteDefinition,
             settings: TestCaseExecutionSettings) -> int:
     result_reporter = _get_reporter(std_output_files,
                                     settings.reporting_option)
