@@ -43,8 +43,7 @@ class MainProgram(main_program.MainProgram):
                                       suite_hierarchy_reading.Reader(
                                           suite_hierarchy_reading.Environment(
                                               self._test_suite_definition.configuration_section_parser,
-                                              default_configuration.default_handling_setup.preprocessor,
-                                              default_configuration.default_handling_setup.act_phase_setup)
+                                              default_configuration.default_handling_setup)
                                       ),
                                       test_suite_execution_settings.reporter_factory,
                                       enumeration.DepthFirstEnumerator(),
