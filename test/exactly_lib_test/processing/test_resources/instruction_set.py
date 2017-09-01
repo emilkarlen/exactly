@@ -13,12 +13,12 @@ def instruction_set() -> InstructionsSetup:
         setup_instruction_set=dict(
             [instruction_item('setup_instruction',
                               instr.setup_phase_instruction_that())]),
-        assert_instruction_set=dict(
-            [instruction_item('assert_instruction',
-                              instr.assert_phase_instruction_that())]),
         before_assert_instruction_set=dict(
             [instruction_item('before_assert_instruction',
                               instr.before_assert_phase_instruction_that())]),
+        assert_instruction_set=dict(
+            [instruction_item('assert_instruction',
+                              instr.assert_phase_instruction_that())]),
         cleanup_instruction_set=dict(
             [instruction_item('cleanup_instruction',
                               instr.cleanup_phase_instruction_that())]),
