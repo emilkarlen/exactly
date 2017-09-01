@@ -18,7 +18,6 @@ from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import CONFIGURATION_INSTRUCTIONS
 
 
 class ApplicationHelp(tuple):
@@ -61,20 +60,27 @@ class ApplicationHelp(tuple):
         return self[5]
 
 
-def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHelp:
+def application_help_for_2(instructions_setup: InstructionsSetup,
+                           suite_configuration_section_instructions: dict) -> ApplicationHelp:
+    """
+    :param instructions_setup: Test case instruction set
+    :param suite_configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
+    """
     return ApplicationHelp(MainProgramHelp(),
                            concepts_help(all_concepts()),
                            actors_help(ALL_ACTOR_DOCS),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
-                           test_suite_help(),
+                           test_suite_help(suite_configuration_section_instructions),
                            suite_reporters_help(ALL_SUITE_REPORTERS))
 
 
-def test_suite_help() -> TestSuiteHelp:
+def test_suite_help(configuration_section_instructions: dict) -> TestSuiteHelp:
+    """
+    :param configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
+    """
     return TestSuiteHelp([
         ConfigurationSectionDocumentation(SECTION_NAME__CONF,
-                                          instruction_set_help(
-                                              CONFIGURATION_INSTRUCTIONS)),
+                                          instruction_set_help(configuration_section_instructions)),
         CasesSectionDocumentation(SECTION_NAME__CASES),
         SuitesSectionDocumentation(SECTION_NAME__SUITS),
     ])

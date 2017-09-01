@@ -3,6 +3,7 @@ import tempfile
 import unittest
 
 from exactly_lib import program_info
+from exactly_lib.default.program_modes import test_suite
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import InstructionsSetup
@@ -41,7 +42,8 @@ def check(setup: Setup,
         tmp_dir_path = resolved_path(tmp_dir)
         setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
         test_case_handling_setup = setup.test_case_handling_setup()
-        suite_reading_environment = Environment(test_case_handling_setup.preprocessor,
+        suite_reading_environment = Environment(test_suite.new_parser(),
+                                                test_case_handling_setup.preprocessor,
                                                 test_case_handling_setup.default_act_phase_setup)
         hierarchy_reader = Reader(suite_reading_environment)
         reporter_factory = ExecutionTracingReporterFactory()

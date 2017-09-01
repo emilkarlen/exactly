@@ -2,6 +2,7 @@ import sys
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
 from exactly_lib.default import default_main_program as sut
+from exactly_lib.default.program_modes.test_suite import test_suite_definition
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.processors import TestCaseDefinition
@@ -42,6 +43,7 @@ def execute_main_program(arguments: list,
                                   instructions_setup,
                                   predefined_properties,
                               ),
+                              test_suite_definition(),
                               test_case_handling_setup())
     exit_status = program.execute(arguments)
     str_std_out_files.finish()

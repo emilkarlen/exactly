@@ -5,6 +5,7 @@ from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
+from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.section_document.utils import new_for_file
@@ -26,9 +27,12 @@ class SuiteHierarchyReader:
 
 class Environment(tuple):
     def __new__(cls,
+                configuration_section_parser: SectionElementParser,
                 preprocessor: Preprocessor,
                 act_phase_setup: ActPhaseSetup):
-        return tuple.__new__(cls, (preprocessor, act_phase_setup))
+        return tuple.__new__(cls, (preprocessor,
+                                   act_phase_setup,
+                                   configuration_section_parser))
 
     @property
     def preprocessor(self) -> Preprocessor:
@@ -37,6 +41,10 @@ class Environment(tuple):
     @property
     def act_phase_setup(self) -> ActPhaseSetup:
         return self[1]
+
+    @property
+    def configuration_section_parser(self) -> SectionElementParser:
+        return self[2]
 
 
 class Reader(SuiteHierarchyReader):
@@ -64,7 +72,7 @@ class _SingleFileReader:
                  suite_file_path: pathlib.Path) -> structure.TestSuite:
         source = new_for_file(suite_file_path)
         try:
-            test_suite = test_suite_parser.Parser().apply(source)
+            test_suite = test_suite_parser.Parser(self.environment.configuration_section_parser).apply(source)
         except FileSourceError as ex:
             raise parse.SuiteSyntaxError(suite_file_path,
                                          ex.source_error.line,

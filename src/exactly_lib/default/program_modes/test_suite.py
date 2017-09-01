@@ -1,0 +1,31 @@
+from exactly_lib.common import instruction_setup
+from exactly_lib.default import instruction_name_and_argument_splitter
+from exactly_lib.help_texts.test_suite import instruction_names
+from exactly_lib.section_document import document_parser
+from exactly_lib.section_document.parser_implementations import section_element_parsers
+from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
+    InstructionWithOptionalDescriptionParser
+from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
+    InstructionParserForDictionaryOfInstructions
+from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor, actor
+from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
+
+CONFIGURATION_SECTION_INSTRUCTIONS = instruction_setup.instruction_set_from_name_and_setup_constructor_list(
+    [
+        (instruction_names.INSTRUCTION_NAME__PREPROCESSOR, preprocessor.setup),
+        (instruction_names.INSTRUCTION_NAME__ACTOR, actor.setup),
+    ]
+)
+
+
+def new_parser() -> document_parser.SectionElementParser:
+    return section_element_parsers.StandardSyntaxElementParser(
+        InstructionWithOptionalDescriptionParser(
+            InstructionParserForDictionaryOfInstructions(
+                instruction_name_and_argument_splitter.splitter,
+                CONFIGURATION_SECTION_INSTRUCTIONS)))
+
+
+def test_suite_definition() -> TestSuiteDefinition:
+    return TestSuiteDefinition(CONFIGURATION_SECTION_INSTRUCTIONS,
+                               new_parser())
