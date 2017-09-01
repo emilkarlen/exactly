@@ -37,7 +37,7 @@ def resolve_test_case_handling_setup(
         test_suite: test_suite_doc.TestSuiteDocument,
         default_handling_setup: TestCaseHandlingSetup) -> TestCaseHandlingSetup:
     instruction_environment = ConfigurationSectionEnvironment(default_handling_setup.preprocessor,
-                                                              default_handling_setup.default_act_phase_setup)
+                                                              default_handling_setup.act_phase_setup)
     for section_element in test_suite.configuration_section.elements:
         if section_element.element_type is ElementType.INSTRUCTION:
             section_element.instruction.execute(instruction_environment)

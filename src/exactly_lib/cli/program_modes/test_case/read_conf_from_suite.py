@@ -15,7 +15,7 @@ def resolve_handling_setup_from_suite(default_handling_setup: TestCaseHandlingSe
         suite_hierarchy_reading.Environment(
             test_suite_definition.configuration_section_parser,
             default_handling_setup.preprocessor,
-            default_handling_setup.default_act_phase_setup)
+            default_handling_setup.act_phase_setup)
     )
     test_suite = suite_reader.apply(suite_to_read_config_from)
     return test_suite.test_case_handling_setup
