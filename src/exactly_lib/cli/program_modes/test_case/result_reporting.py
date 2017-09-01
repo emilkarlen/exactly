@@ -8,6 +8,7 @@ from exactly_lib.execution.result import FullResultStatus, FullResult
 from exactly_lib.execution.result_reporting import print_error_message_for_full_result, print_error_info
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.test_case_processing import ErrorInfo
+from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
 
@@ -59,6 +60,20 @@ class ResultReporter:
         self._out_printer = FilePrinter(output_files.out)
         self._err_printer = FilePrinter(output_files.err)
 
+
+class TestSuiteSyntaxErrorReporter(ResultReporter):
+    """Reports the result of the execution via exitcode, stdout, stderr."""
+
+    def report(self, ex: SuiteSyntaxError) -> int:
+        from exactly_lib.test_suite.error_reporint import report_suite_read_error
+        return report_suite_read_error(ex, self._out_printer,
+                                       self._err_printer,
+                                       exit_values.NO_EXECUTION__SYNTAX_ERROR)
+
+
+class TestCaseResultReporter(ResultReporter):
+    """Reports the result of the execution via exitcode, stdout, stderr."""
+
     def report(self, result: test_case_processing.Result) -> int:
         exit_value = exit_values.from_result(result)
         if result.status is test_case_processing.Status.EXECUTED:
@@ -83,7 +98,7 @@ class ResultReporter:
         return exit_value.exit_code
 
 
-class _ResultReporterForNormalOutput(ResultReporter):
+class _ResultReporterForNormalOutput(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return False
 
@@ -102,7 +117,7 @@ class _FullExecutionHandlerForPreserveAndPrintSandboxDir(_FullExecutionHandler):
         return self.exit_value.exit_code
 
 
-class _ResultReporterForPreserveAndPrintSandboxDir(ResultReporter):
+class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return True
 
@@ -133,7 +148,7 @@ class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
         return exit_code
 
 
-class _ResultReporterForActPhaseOutput(ResultReporter):
+class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
     """Reports the result of the execution via exitcode, stdout, stderr."""
 
     def depends_on_result_in_sandbox(self) -> bool:

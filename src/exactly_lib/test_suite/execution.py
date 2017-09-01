@@ -2,8 +2,6 @@ import datetime
 import pathlib
 import types
 
-from exactly_lib.execution.result_reporting import output_location
-from exactly_lib.help_texts.test_suite.section_names import SECTION_CONCEPT_NAME
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_case import error_description
@@ -11,6 +9,7 @@ from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
+from exactly_lib.test_suite.error_reporint import report_suite_read_error
 from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
 from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
@@ -48,19 +47,12 @@ class Executor:
         try:
             root_suite = self._read_structure(self._suite_root_file_path)
         except SuiteReadError as ex:
-            file_printer = FilePrinter(self._std.err)
-            output_location(file_printer,
-                            ex.suite_file,
-                            ex.maybe_section_name,
-                            ex.line,
-                            None,
-                            SECTION_CONCEPT_NAME)
-            file_printer.write_lines(ex.error_message_lines())
-            exit_identifier_output_file = FilePrinter(self._std.out)
-            exit_value = exit_values.INVALID_SUITE
-            self._std.err.flush()
-            exit_identifier_output_file.write_line(exit_value.exit_identifier)
-            return exit_value.exit_code
+            return report_suite_read_error(
+                ex,
+                FilePrinter(self._std.out),
+                FilePrinter(self._std.err),
+                exit_values.INVALID_SUITE
+            )
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
         executor = SuitesExecutor(self._reporter_factory.new_reporter(root_suite,

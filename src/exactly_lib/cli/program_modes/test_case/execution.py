@@ -7,6 +7,7 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.test_suite import suite_file_reading
+from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -17,9 +18,14 @@ def execute(std_output_files: StdOutputFiles,
     result_reporter = _get_reporter(std_output_files,
                                     settings.reporting_option)
     is_keep_sandbox = result_reporter.depends_on_result_in_sandbox()
-    handling_setup = _resolve_handling_setup(settings.handling_setup,
-                                             configuration_section_parser,
-                                             settings.suite_to_read_config_from)
+
+    try:
+        handling_setup = _resolve_handling_setup(settings.handling_setup,
+                                                 configuration_section_parser,
+                                                 settings.suite_to_read_config_from)
+    except SuiteSyntaxError as ex:
+        reporter = result_reporting.TestSuiteSyntaxErrorReporter(std_output_files)
+        return reporter.report(ex)
     result = _process(settings.test_case_file_path,
                       is_keep_sandbox,
                       test_case_definition,
@@ -43,7 +49,7 @@ def _process(test_case_file_path: pathlib.Path,
 
 
 def _get_reporter(std_output_files: StdOutputFiles,
-                  reporting_option: ReportingOption) -> result_reporting.ResultReporter:
+                  reporting_option: ReportingOption) -> result_reporting.TestCaseResultReporter:
     return result_reporting.RESULT_REPORTERS[reporting_option](std_output_files)
 
 
