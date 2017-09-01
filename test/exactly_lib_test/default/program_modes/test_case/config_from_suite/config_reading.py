@@ -6,11 +6,11 @@ from exactly_lib.common import instruction_setup
 from exactly_lib.default import default_main_program
 from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.execution.full_execution import PredefinedProperties
-from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME
+from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help_texts.test_suite.section_names_with_syntax import SECTION_NAME__CONF
+from exactly_lib.processing import exit_values
 from exactly_lib.processing import instruction_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.processing.exit_values import EXECUTION__PASS
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -41,19 +41,21 @@ from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_exit_value
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(Test),
+        TestConfigFromSuiteShouldBeForwardedToTestCase(),
+        TestSyntaxErrorInSuiteFile(),
     ])
 
 
 SUCCESS_INDICATOR_STRING = 'output from actor set in suite'
 
 
-class Test(unittest.TestCase):
-    def test(self):
+class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
+    def runTest(self):
         default_test_case_handling = TestCaseHandlingSetup(
             act_phase_setup=act_setup_that_does_nothing(),
             preprocessor=IdentityPreprocessor()
@@ -108,8 +110,45 @@ class Test(unittest.TestCase):
                                        test_suite_definition,
                                        default_test_case_handling)
         # ASSERT #
-        if actual_result.exitcode != EXECUTION__PASS.exit_code:
+        if actual_result.exitcode != exit_values.EXECUTION__PASS.exit_code:
             self.fail(_error_message(actual_result))
+
+
+class TestSyntaxErrorInSuiteFile(unittest.TestCase):
+    def runTest(self):
+        default_test_case_handling = TestCaseHandlingSetup(
+            act_phase_setup=act_setup_that_does_nothing(),
+            preprocessor=IdentityPreprocessor()
+        )
+
+        test_suite_definition = test_suite_definition_with_without_instructions()
+
+        test_case_definition = test_case_definition_with_only_assert_phase_instructions([])
+
+        suite_file_name = 'test.suite'
+        case_file_name = 'test.case'
+
+        command_line_arguments = cli_args_for(
+            suite_file=suite_file_name,
+            case_file=case_file_name,
+        )
+
+        suite_and_case_files = DirContents([
+            File(suite_file_name,
+                 '[this_is_not_a_suite_section]\n'),
+            File(case_file_name,
+                 test_case_source_with_single_act_phase_instruction('act-phase-content-that-should-be-ignored')),
+        ])
+
+        # ACT #
+        actual_result = _run_test_case(command_line_arguments,
+                                       suite_and_case_files,
+                                       test_case_definition,
+                                       test_suite_definition,
+                                       default_test_case_handling)
+        # ASSERT #
+        expectation = is_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR)
+        expectation.apply_without_message(self, actual_result)
 
 
 def _error_message(actual: SubProcessResult) -> str:
@@ -120,7 +159,7 @@ def _error_message(actual: SubProcessResult) -> str:
          'stderr="{stderr}"\n')
     err_msg = s.format(
         unexpected=str(actual.exitcode),
-        expected=str(EXECUTION__PASS.exit_code),
+        expected=str(exit_values.EXECUTION__PASS.exit_code),
         stdout=actual.stdout,
         stderr=actual.stderr)
     return err_msg
@@ -177,6 +216,13 @@ def test_case_source_with_single_assert_phase_instruction(instruction: str) -> s
     ])
 
 
+def test_case_source_with_single_act_phase_instruction(instruction: str) -> str:
+    return lines_content([
+        ACT_PHASE_NAME.syntax,
+        instruction,
+    ])
+
+
 SUITE_CONF_INSTRUCTION_THAT_SETS_PREPROCESSOR_AND_ACTOR__NAME = \
     'SUITE_CONF_INSTRUCTION_THAT_SETS_PREPROCESSOR_AND_ACTOR'
 
@@ -192,6 +238,14 @@ def test_suite_definition_with_single_conf_instruction(name: str,
         name: single_instruction_setup(name, instruction)
 
     }
+    return test_suite_definition_with_instructions(configuration_section_instructions)
+
+
+def test_suite_definition_with_without_instructions() -> TestSuiteDefinition:
+    return test_suite_definition_with_instructions({})
+
+
+def test_suite_definition_with_instructions(configuration_section_instructions: dict) -> TestSuiteDefinition:
     parser = section_element_parsers.StandardSyntaxElementParser(
         InstructionWithOptionalDescriptionParser(
             InstructionParserForDictionaryOfInstructions(
