@@ -4,14 +4,14 @@ import unittest
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, \
-    ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.act_source_and_executor_constructor import \
+    ActSourceAndExecutorConstructorThatRaisesException
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -67,15 +67,7 @@ def _configuration_builder_with_exception_throwing_act_phase_setup() -> Configur
     initial_home_dir = pathlib.Path()
     return ConfigurationBuilder(initial_home_dir,
                                 initial_home_dir,
-                                ActPhaseHandling(_ActSourceAndExecutorConstructorThatRaisesException()))
-
-
-class _ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorConstructor):
-    def apply(self,
-              os_process_executor: ActPhaseOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
-              act_phase_instructions: list):
-        raise ValueError('the method should never be called')
+                                ActPhaseHandling(ActSourceAndExecutorConstructorThatRaisesException()))
 
 
 def file_in_home_act_dir(file_name: str) -> home_populators.HomePopulator:

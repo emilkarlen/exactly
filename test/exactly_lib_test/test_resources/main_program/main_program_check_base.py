@@ -8,7 +8,8 @@ from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
     ARGUMENTS_FOR_TEST_INTERPRETER
 from exactly_lib_test.test_resources.cli_main_program_via_sub_process_utils import run
-from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult
 
@@ -37,6 +38,20 @@ class SetupWithJustMainProgramRunner:
 
     def check(self,
               put: unittest.TestCase,
+              actual_result: SubProcessResult):
+        raise NotImplementedError('abstract method')
+
+
+class SetupWithTmpCwdDirContents:
+    def arguments(self, tmp_cwd_dir_path: pathlib.Path) -> list:
+        raise NotImplementedError('abstract method')
+
+    def file_structure(self, tmp_cwd_dir_path: pathlib.Path) -> DirContents:
+        return empty_dir_contents()
+
+    def check(self,
+              put: unittest.TestCase,
+              tmp_cwd_dir_path: pathlib.Path,
               actual_result: SubProcessResult):
         raise NotImplementedError('abstract method')
 
@@ -108,6 +123,21 @@ def check(additional_arguments: list,
         first_arguments = setup.first_arguments(tmp_dir_path)
         arguments_for_interpreter = setup.arguments_for_interpreter()
         arguments = first_arguments + arguments_for_interpreter + additional_arguments + [file_argument]
+        sub_process_result = runner(put, arguments)
+        setup.check(put,
+                    tmp_dir_path,
+                    sub_process_result)
+
+
+def check_with_tmp_dir_contents(setup: SetupWithTmpCwdDirContents,
+                                put: unittest.TestCase,
+                                runner):
+    """
+    :param runner: (unittest.TestCase, list) -> SubProcessResult
+    """
+    with tmp_dir_as_cwd() as tmp_dir_path:
+        setup.file_structure(tmp_dir_path).write_to(tmp_dir_path)
+        arguments = setup.arguments(tmp_dir_path)
         sub_process_result = runner(put, arguments)
         setup.check(put,
                     tmp_dir_path,
@@ -190,6 +220,32 @@ class TestForSetupWithPreprocessor(unittest.TestCase):
 
     def shortDescription(self):
         return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
+
+
+class TestForSetupWithTmpCwdDirContents(unittest.TestCase):
+    def __init__(self,
+                 setup: SetupWithTmpCwdDirContents,
+                 main_program_runner: MainProgramRunner):
+        super().__init__()
+        self.setup = setup
+        self.main_program_runner = main_program_runner
+
+    def runTest(self):
+        check_with_tmp_dir_contents(self.setup,
+                                    self,
+                                    self.main_program_runner)
+
+    def shortDescription(self):
+        return str(self.setup) + '/' + self.main_program_runner.description_for_test_name()
+
+
+def tests_for_setup_with_tmp_cwd(setups: list,
+                                 main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    """
+    :type setups: [TestForSetupWithTmpDirContents]
+    """
+    return unittest.TestSuite([TestForSetupWithTmpCwdDirContents(setup, main_program_runner)
+                               for setup in setups])
 
 
 def tests_for_setup_with_just_main_program_runner(setups: list,

@@ -48,8 +48,7 @@ class Environment(tuple):
 
 
 class Reader(SuiteHierarchyReader):
-    def __init__(self,
-                 environment: Environment):
+    def __init__(self, environment: Environment):
         self._environment = environment
 
     def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
