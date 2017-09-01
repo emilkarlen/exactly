@@ -1,5 +1,14 @@
 -*- org -*-
 
+* division of responsibilities between default MainProgram and the super class
+<2017-09-01 Fri>
+# NOTE: The division of responsibilities between this class and
+# the super class does not feel natural:
+# * This class - the default - defines the case / suite functionality after cli arguments
+#   have been parsed.
+# * The super class parses arguments - why?
+# * This class is configurable in terms of instructions - so those are not "default"
+
 * remove / replace --rel-cd relativity?
 <2017-08-19 Sat>
 It doesn't fit together with the other roots that has a RelOptionType,
