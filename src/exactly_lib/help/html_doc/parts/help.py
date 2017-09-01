@@ -3,12 +3,12 @@ from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocument
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, leaf, parent
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf, parent
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.util.textformat.structure import document as doc
 
 
-def generator(header: str) -> SectionGenerator:
+def generator(header: str) -> SectionHierarchyGenerator:
     return parent(
         header,
         [],

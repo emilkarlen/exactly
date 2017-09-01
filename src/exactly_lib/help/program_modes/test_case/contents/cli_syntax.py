@@ -9,7 +9,7 @@ from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_C
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, leaf
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
@@ -19,7 +19,7 @@ from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-def generator(header: str) -> SectionGenerator:
+def generator(header: str) -> SectionHierarchyGenerator:
     return leaf(header, ProgramDocumentationSectionContentsRenderer(TestCaseCliSyntaxDocumentation()))
 
 

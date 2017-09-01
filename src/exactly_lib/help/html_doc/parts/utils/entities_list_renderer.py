@@ -7,12 +7,12 @@ import types
 
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import sorted_entity_list
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, SectionRendererNode, \
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, SectionRendererNode, \
     LeafSectionRendererNode, SectionRendererNodeWithSubSections
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 
 
-class HtmlDocGeneratorForEntitiesHelp(SectionGenerator):
+class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
     def __init__(self,
                  header: str,
                  entity_2_section_contents_renderer: types.FunctionType,

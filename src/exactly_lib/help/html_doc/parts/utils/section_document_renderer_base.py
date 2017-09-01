@@ -4,7 +4,7 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
-    SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionGenerator
+    SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionHierarchyGenerator
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 
@@ -24,23 +24,23 @@ class HtmlDocGeneratorForSectionDocumentBase:
                                       section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
 
-    def generator_for_sections(self, header: str) -> SectionGenerator:
+    def generator_for_sections(self, header: str) -> SectionHierarchyGenerator:
         super_self = self
 
-        class _Generator(SectionGenerator):
+        class _HierarchyGenerator(SectionHierarchyGenerator):
             def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
                 return super_self._sections_renderer_node(header, target_factory)
 
-        return _Generator()
+        return _HierarchyGenerator()
 
-    def generator_for_instructions_per_section(self, header: str) -> SectionGenerator:
+    def generator_for_instructions_per_section(self, header: str) -> SectionHierarchyGenerator:
         super_self = self
 
-        class _Generator(SectionGenerator):
+        class _HierarchyGenerator(SectionHierarchyGenerator):
             def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
                 return super_self._instructions_per_section_node(header, target_factory)
 
-        return _Generator()
+        return _HierarchyGenerator()
 
     def _sections_renderer_node(self,
                                 header: str,

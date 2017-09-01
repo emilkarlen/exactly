@@ -42,7 +42,7 @@ class SectionRendererNodeWithRoot(SectionRendererNode):
         return self.section_renderer().apply(environment)
 
 
-class SectionGenerator:
+class SectionHierarchyGenerator:
     """
     A section that can be put anywhere in the section hierarchy, since
     it takes an `CustomTargetInfoFactory` as input and uses that to
@@ -54,21 +54,21 @@ class SectionGenerator:
 
 
 def leaf(header: str,
-         contents_renderer: SectionContentsRenderer) -> SectionGenerator:
+         contents_renderer: SectionContentsRenderer) -> SectionHierarchyGenerator:
     """A section without sub sections that appear in the TOC/target hierarchy"""
-    return _SectionGeneratorLeaf(header, contents_renderer)
+    return _SectionLeafGenerator(header, contents_renderer)
 
 
 def parent(header: str,
            initial_paragraphs: list,
            local_target_name__sub_section__list: list,
-           ) -> SectionGenerator:
+           ) -> SectionHierarchyGenerator:
     """
     A section with ub sections that appear in the TOC/target hierarchy.
     :param local_target_name__sub_section__list: [(str, SectionGenerator)]
     :param initial_paragraphs: [ParagraphItem]
     """
-    return _SectionGeneratorWithSubSections(header, initial_paragraphs, local_target_name__sub_section__list)
+    return _SectionHierarchyGeneratorWithSubSections(header, initial_paragraphs, local_target_name__sub_section__list)
 
 
 class LeafSectionRendererNode(SectionRendererNodeWithRoot):
@@ -135,7 +135,7 @@ class SectionRendererNodeWithSubSections(SectionRendererNodeWithRoot):
         return RetVal()
 
 
-class _SectionGeneratorLeaf(SectionGenerator):
+class _SectionLeafGenerator(SectionHierarchyGenerator):
     """
     A section without sub sections.
     """
@@ -152,7 +152,7 @@ class _SectionGeneratorLeaf(SectionGenerator):
                                        self._contents_renderer)
 
 
-class _SectionGeneratorWithSubSections(SectionGenerator):
+class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
     """
     A section with sub sections.
     """
@@ -189,7 +189,7 @@ class SectionFromGeneratorAsSectionContentsRenderer(SectionContentsRenderer):
     for usages where section header and target hierarchy is irrelevant.
     """
 
-    def __init__(self, generator: SectionGenerator):
+    def __init__(self, generator: SectionHierarchyGenerator):
         self.generator = generator
 
     def apply(self, environment: RenderingEnvironment) -> SectionContents:

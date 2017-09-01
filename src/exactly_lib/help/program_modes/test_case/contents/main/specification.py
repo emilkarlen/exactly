@@ -11,7 +11,7 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
-def generator(header: str, test_case_help: TestCaseHelp) -> hierarchy_rendering.SectionGenerator:
+def generator(header: str, test_case_help: TestCaseHelp) -> hierarchy_rendering.SectionHierarchyGenerator:
     setup = Setup(test_case_help)
     return hierarchy_rendering.parent(
         header,

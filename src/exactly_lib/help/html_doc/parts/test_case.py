@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help import texts
 from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
-from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
+from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocHierarchyGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
@@ -16,7 +16,7 @@ from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
 
 
 def generator(header: str,
-              test_case_help: TestCaseHelp) -> section_hierarchy_rendering.SectionGenerator:
+              test_case_help: TestCaseHelp) -> section_hierarchy_rendering.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help)
     return section_hierarchy_rendering.parent(
         header,
@@ -31,9 +31,9 @@ def generator(header: str,
              sections_helper.generator_for_sections('Phases')
              ),
             ('actors',
-             HtmlDocGeneratorForEntitiesHelp('Actors',
-                                             IndividualActorRenderer,
-                                             ALL_ACTOR_DOCS)
+             HtmlDocHierarchyGeneratorForEntitiesHelp('Actors',
+                                                      IndividualActorRenderer,
+                                                      ALL_ACTOR_DOCS)
              ),
             ('cli-syntax',
              cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)

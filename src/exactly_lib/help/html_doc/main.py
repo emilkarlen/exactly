@@ -5,10 +5,11 @@ from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRender
 from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
-from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
+from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocHierarchyGeneratorForEntitiesHelp
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionGenerator, parent, SectionRendererNode
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
+    SectionRendererNode
 from exactly_lib.help.utils.table_of_contents import toc_list
 from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNode
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
@@ -40,7 +41,7 @@ def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
     return ret_val
 
 
-def _generator(application_help: ApplicationHelp) -> SectionGenerator:
+def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
     return parent(
         page_setup.PAGE_TITLE,
         [],
@@ -55,9 +56,9 @@ def _generator(application_help: ApplicationHelp) -> SectionGenerator:
             ),
             (
                 'concepts',
-                HtmlDocGeneratorForEntitiesHelp('Concepts',
-                                                IndividualConceptRenderer,
-                                                application_help.concepts_help.all_entities)
+                HtmlDocHierarchyGeneratorForEntitiesHelp('Concepts',
+                                                         IndividualConceptRenderer,
+                                                         application_help.concepts_help.all_entities)
             ),
             (
                 'help',
