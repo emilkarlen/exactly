@@ -40,7 +40,7 @@ class IndividualActorRenderer(SectionContentsRenderer):
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _default_reporter_info(self) -> list:
-        from exactly_lib.help_texts.actors import DEFAULT_ACTOR
+        from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR
         if self.actor.singular_name() == DEFAULT_ACTOR.singular_name:
             return self._parser.fnap('This is the default {actor_concept}.')
         else:
