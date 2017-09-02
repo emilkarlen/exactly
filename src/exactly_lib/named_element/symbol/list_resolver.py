@@ -3,8 +3,8 @@ from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, string_constant
 from exactly_lib.type_system.data import concrete_string_values as csv
 from exactly_lib.type_system.data.file_ref import FileRef
+from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.type_system.list_value import ListValue
 from exactly_lib.type_system.value_type import SymbolValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 

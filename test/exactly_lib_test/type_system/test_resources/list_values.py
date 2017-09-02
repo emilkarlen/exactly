@@ -1,5 +1,5 @@
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
-from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.data.list_value import ListValue
 
 
 def empty_list_value() -> ListValue:

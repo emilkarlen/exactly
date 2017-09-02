@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.symbol import list_resolver, concrete_resolvers
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
-from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources.assertion_utils import \
