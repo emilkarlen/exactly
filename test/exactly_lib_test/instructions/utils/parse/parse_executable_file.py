@@ -50,7 +50,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.test_resources.list_values import list_value_of_string_constants, \
+from exactly_lib_test.type_system.data.test_resources.list_values import list_value_of_string_constants, \
     empty_list_value
 
 
@@ -297,8 +297,8 @@ class TestParseWithSymbols(unittest.TestCase):
             ))
         reference_of_path_string_symbol_as_path_component = NamedElementReference(string_symbol.name,
                                                                                   ReferenceRestrictionsOnDirectAndIndirect(
-                                                                                direct=StringRestriction(),
-                                                                                indirect=StringRestriction()),
+                                                                                      direct=StringRestriction(),
+                                                                                      indirect=StringRestriction()),
                                                                                   )
         reference_of_string_symbol_as_argument = NamedElementReference(string_symbol.name,
                                                                        no_restrictions(),

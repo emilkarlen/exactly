@@ -22,7 +22,7 @@ from exactly_lib_test.test_resources.file_structure import File, executable_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.test_resources.list_values import list_value_of_string_constants
+from exactly_lib_test.type_system.data.test_resources.list_values import list_value_of_string_constants
 
 
 class RelativityConfiguration:

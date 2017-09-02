@@ -13,8 +13,8 @@ from exactly_lib_test.named_element.symbol.test_resources.list_values import Lis
 from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
+from exactly_lib_test.type_system.data.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
-from exactly_lib_test.type_system.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
 
 
 def suite() -> unittest.TestSuite:
