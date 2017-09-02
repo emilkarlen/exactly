@@ -10,7 +10,7 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.file_ref_base import FileRefWithPathSuffixBase, \
     FileRefWithPathSuffixAndIsNotAbsoluteBase
-from exactly_lib.type_system.path_part import PathPart
+from exactly_lib.type_system.data.path_part import PathPart
 
 
 class _FileRefWithConstantLocationBase(FileRefWithPathSuffixAndIsNotAbsoluteBase):

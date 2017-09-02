@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
     ResolvingDependency
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.path_part import PathPart
+from exactly_lib.type_system.data.path_part import PathPart
 
 
 class FileRef(SingleDirDependentValue):

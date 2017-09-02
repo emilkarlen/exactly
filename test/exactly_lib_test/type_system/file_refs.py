@@ -9,7 +9,7 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIO
 from exactly_lib.type_system.data import file_refs as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.path_part import PathPart
+from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \

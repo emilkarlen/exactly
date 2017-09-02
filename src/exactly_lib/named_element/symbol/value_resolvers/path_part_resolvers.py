@@ -1,7 +1,7 @@
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
-from exactly_lib.type_system.path_part import PathPart
+from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.type_system.string_value import StringValue
 from exactly_lib.util.symbol_table import SymbolTable
 
