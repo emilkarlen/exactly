@@ -39,7 +39,8 @@ class RunViaMainProgramInternally(MainProgramRunner):
 
 
 def main_program_runner_with_default_setup__in_same_process() -> RunViaMainProgramInternally:
-    return RunViaMainProgramInternally(test_case_handling_setup=test_case_handling_setup(),
+    return RunViaMainProgramInternally(the_test_case_handling_setup=test_case_handling_setup(),
                                        instructions_setup=INSTRUCTIONS_SETUP,
+                                       name_and_argument_splitter=default_splitter,
                                        predefined_properties=PREDEFINED_PROPERTIES,
-                                       name_and_argument_splitter=default_splitter)
+                                       )
