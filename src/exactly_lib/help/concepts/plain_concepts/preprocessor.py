@@ -1,7 +1,7 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.help_texts.concepts import PREPROCESSOR_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import PREPROCESSOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 

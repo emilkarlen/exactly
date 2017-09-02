@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME

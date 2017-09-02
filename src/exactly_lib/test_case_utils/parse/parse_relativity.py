@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.restriction import ReferenceRestrictions

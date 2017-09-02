@@ -1,5 +1,5 @@
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help_texts.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.document import SectionContents

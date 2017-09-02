@@ -1,7 +1,7 @@
 import types
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.help_texts.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
 from exactly_lib.instructions.assert_.utils.expression import comparators, integer_resolver
 from exactly_lib.instructions.assert_.utils.expression.integer_resolver import IntegerResolver
