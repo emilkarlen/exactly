@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.type_system import file_ref
+from exactly_lib.type_system.data import file_ref
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.symbol_table import SymbolTable
 

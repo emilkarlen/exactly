@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.value_type import SymbolValueType, ElementType
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources.assertion_utils import \

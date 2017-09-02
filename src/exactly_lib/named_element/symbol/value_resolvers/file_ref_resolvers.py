@@ -2,7 +2,7 @@ from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.type_system import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
-from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
 

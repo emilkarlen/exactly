@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
     RelOptionType, RESOLVING_DEPENDENCY_OF, ResolvingDependency
-from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.path_part import PathPart
 
 

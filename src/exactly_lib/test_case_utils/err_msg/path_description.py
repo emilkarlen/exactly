@@ -6,7 +6,7 @@ from exactly_lib.test_case_file_structure import path_relativity as pr
 from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.data.file_ref import FileRef
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
 

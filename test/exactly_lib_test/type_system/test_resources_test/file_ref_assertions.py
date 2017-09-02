@@ -4,7 +4,7 @@ from exactly_lib.named_element.symbol.restrictions.value_restrictions import Fil
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
-from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \

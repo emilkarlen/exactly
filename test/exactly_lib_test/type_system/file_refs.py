@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_relativity import ResolvingDepend
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system import file_refs as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.path_part import PathPart
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds

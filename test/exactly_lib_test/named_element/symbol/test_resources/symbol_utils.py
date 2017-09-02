@@ -9,7 +9,7 @@ from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system import file_ref as _file_ref
+from exactly_lib.type_system.data import file_ref as _file_ref
 from exactly_lib.type_system.list_value import ListValue
 from exactly_lib.type_system.string_value import StringValue
 from exactly_lib.type_system.value_type import SymbolValueType
