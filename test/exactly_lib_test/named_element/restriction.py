@@ -5,7 +5,7 @@ from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import 
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
-from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.value_type import ElementType, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils

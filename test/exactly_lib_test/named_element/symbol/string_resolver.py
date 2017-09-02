@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol.restrictions.reference_restrictions import
 from exactly_lib.type_system.data import concrete_string_values as csv, file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
-from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.value_type import SymbolValueType, ElementType, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, Entry
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su

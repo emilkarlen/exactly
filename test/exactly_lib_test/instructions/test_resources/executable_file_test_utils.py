@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
