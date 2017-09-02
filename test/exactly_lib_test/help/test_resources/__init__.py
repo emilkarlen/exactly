@@ -1,14 +1,10 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.actors.contents_structure import actors_help
-from exactly_lib.help.concepts.contents_structure import concepts_help
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
-from exactly_lib.help.types.contents_structure import types_help
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
@@ -51,24 +47,19 @@ def section_instruction_set(section_name: str,
 
 def application_help_for(test_case_phase_helps: list,
                          suite_sections=(),
-                         entity_helps: list = (),
+                         entity_name_2_entity_configuration: dict = None,
                          ) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp(test_case_phase_helps),
                            TestSuiteHelp(suite_sections),
-                           list(entity_helps))
+                           {} if entity_name_2_entity_configuration is None else entity_name_2_entity_configuration)
 
 
 def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp([]),
                            TestSuiteHelp(suite_sections),
-                           [
-                               concepts_help([]),
-                               actors_help([]),
-                               suite_reporters_help([]),
-                               types_help([]),
-                           ])
+                           {})
 
 
 class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumentation):

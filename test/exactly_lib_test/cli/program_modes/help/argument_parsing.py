@@ -9,22 +9,19 @@ from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request 
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.actors.contents_structure import actors_help
-from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
-    concepts_help
-from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.actors.render import IndividualActorRenderer
+from exactly_lib.help.contents_structure import ApplicationHelp, EntityConfiguration
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
-from exactly_lib.help.types.contents_structure import types_help
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
-from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME
+from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
+    entity_doc_list_renderer_as_single_line_description
+from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.names import formatting
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
 from exactly_lib_test.help.actors.test_resources import documentation as actor_doc
-from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
 from exactly_lib_test.help.test_resources import application_help_for
 from exactly_lib_test.help.test_resources import section_documentation, \
     single_line_description_that_identifies_instruction_and_section, \
@@ -36,7 +33,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
     ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
     ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForActor()))
-    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForConcept()))
     ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
@@ -127,13 +123,7 @@ class TestTestCasePhase(unittest.TestCase):
                                TestCaseHelp(map(lambda ph_name: section_documentation(ph_name, []),
                                                 all_phases)),
                                TestSuiteHelp({}),
-                               [
-                                   concepts_help(()),
-                                   actors_help(()),
-                                   types_help(()),
-                                   suite_reporters_help(()),
-                               ],
-                               )
+                               {})
 
 
 class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
@@ -445,27 +435,16 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
 
     def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
         return application_help_for([],
-                                    entity_helps=[EntitiesHelp(ACTOR_ENTITY_TYPE_NAME,
-                                                               entities)])
+                                    entity_name_2_entity_configuration={
+                                        ACTOR_ENTITY_TYPE_NAME:
+                                            EntityConfiguration(
+                                                EntitiesHelp(ACTOR_ENTITY_TYPE_NAME,
+                                                             entities),
+                                                IndividualActorRenderer,
+                                                entity_doc_list_renderer_as_single_line_description,
 
-
-class TestSetupForConcept(entity_lookup_test_cases.EntityTestSetup):
-    def __init__(self):
-        super().__init__(ConceptDocumentation, CONCEPT_ENTITY_TYPE_NAME)
-
-    def entity_with_name(self, entity_name: str):
-        return ConceptTestImpl(entity_name)
-
-    def arguments_for_list(self) -> list:
-        return arguments_for.concept_list()
-
-    def arguments_for_single_entity(self, entity_name_pattern: str) -> list:
-        return arguments_for.concept_single(entity_name_pattern)
-
-    def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
-        return application_help_for([],
-                                    entity_helps=[EntitiesHelp(CONCEPT_ENTITY_TYPE_NAME,
-                                                               entities)])
+                                            )
+                                    })
 
 
 if __name__ == '__main__':

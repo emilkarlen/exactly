@@ -36,7 +36,7 @@ class Parser:
         command_argument = help_command_arguments[0].lower()
         if command_argument == HELP:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
-        if command_argument in self.application_help.entities:
+        if command_argument in self.application_help.entity_name_2_entity_configuration:
             return self._parse_entity_help(command_argument, help_command_arguments[1:])
         if command_argument == HTML_DOCUMENTATION:
             return self._parse_html_doc_help(help_command_arguments[1:])
@@ -136,7 +136,7 @@ class Parser:
     def _parse_entity_help(self, entity_type_name: str, arguments: list) -> EntityHelpRequest:
         if not arguments:
             return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
-        entities_help = self.application_help.entities[entity_type_name]
+        entities_help = self.application_help.entity_name_2_entity_configuration[entity_type_name].entities_help
         match = lookup_entity(entities_help, arguments)
         return EntityHelpRequest(entity_type_name,
                                  EntityHelpItem.INDIVIDUAL_ENTITY,

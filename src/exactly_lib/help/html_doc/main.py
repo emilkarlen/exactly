@@ -1,4 +1,3 @@
-from exactly_lib.help.concepts.render import IndividualConceptRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
@@ -43,6 +42,8 @@ def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
 
 
 def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
+    concept_entity_conf = application_help.entity_name_2_entity_configuration[entity_names.CONCEPT_ENTITY_TYPE_NAME]
+
     return parent(
         page_setup.PAGE_TITLE,
         [],
@@ -58,9 +59,8 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
             (
                 'concepts',
                 HtmlDocHierarchyGeneratorForEntitiesHelp('Concepts',
-                                                         IndividualConceptRenderer,
-                                                         application_help.entities[
-                                                             entity_names.CONCEPT_ENTITY_TYPE_NAME].all_entities)
+                                                         concept_entity_conf.entity_doc_2_section_contents_renderer,
+                                                         concept_entity_conf.entities_help.all_entities)
             ),
             (
                 'help',
