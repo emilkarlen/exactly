@@ -36,7 +36,7 @@ from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.type_system import file_refs
-from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system.file_ref import FileRef
 from exactly_lib.type_system.value_type import SymbolValueType, ValueType
 from exactly_lib.util.parse.token import TokenType, Token

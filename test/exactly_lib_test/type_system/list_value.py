@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure.path_relativity import ResolvingDepend
 from exactly_lib.type_system import concrete_string_values as sv
 from exactly_lib.type_system import file_refs
 from exactly_lib.type_system import list_value as sut
-from exactly_lib.type_system.concrete_path_parts import PathPartAsNothing
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     equals_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue

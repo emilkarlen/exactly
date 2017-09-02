@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system import concrete_path_parts as sut
+from exactly_lib.type_system.data import concrete_path_parts as sut
 
 
 def suite() -> unittest.TestSuite:

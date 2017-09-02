@@ -22,7 +22,7 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_refe
     path_relativity_restriction
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system import file_refs
-from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils

@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol.restrictions.value_restrictions import Fil
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.type_system import file_refs
-from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util import symbol_table
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
