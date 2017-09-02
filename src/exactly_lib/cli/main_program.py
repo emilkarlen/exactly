@@ -23,7 +23,8 @@ class MainProgram:
                  output: StdOutputFiles,
                  instruction_set: InstructionsSetup,
                  configuration_section_instructions: dict,
-                 default: TestCaseHandlingSetup):
+                 default: TestCaseHandlingSetup,
+                 builtin_symbol_documentation_list: list):
         """
         :param configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
         """
@@ -32,6 +33,7 @@ class MainProgram:
         self._instruction_set = instruction_set
         self._configuration_section_instructions = configuration_section_instructions
         self._default = default
+        self._builtin_symbol_documentation_list = builtin_symbol_documentation_list
 
     def execute(self, command_line_arguments: list) -> int:
         if len(command_line_arguments) > 0:
@@ -74,7 +76,8 @@ class MainProgram:
         from exactly_lib.help.the_application_help import new_application_help
         try:
             application_help = new_application_help(self._instruction_set,
-                                                    self._configuration_section_instructions)
+                                                    self._configuration_section_instructions,
+                                                    self._builtin_symbol_documentation_list)
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
         except exactly_lib.cli.program_modes.help.error.HelpError as ex:

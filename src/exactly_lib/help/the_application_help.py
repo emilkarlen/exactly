@@ -1,4 +1,5 @@
 from exactly_lib.help.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
+from exactly_lib.help.builtin.entity_configuration import builtin_symbols_entity_configuration
 from exactly_lib.help.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
@@ -20,26 +21,32 @@ from exactly_lib.test_case import phase_identifier
 
 
 def new_application_help(instructions_setup: InstructionsSetup,
-                         suite_configuration_section_instructions: dict) -> ApplicationHelp:
+                         suite_configuration_section_instructions: dict,
+                         builtin_symbol_documentation_list: list = ()) -> ApplicationHelp:
     """
+    :param builtin_symbol_documentation_list: [`BuiltinSymbolDocumentation`]
     :param instructions_setup: Test case instruction set
     :param suite_configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
     """
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            test_suite_help(suite_configuration_section_instructions),
-                           ENTITY_NAME_2_ENTITY_CONFIGURATION)
+                           entity_name_2_entity_configuration(list(builtin_symbol_documentation_list)))
 
 
-ENTITY_NAME_2_ENTITY_CONFIGURATION = {
-    entity_names.CONCEPT_ENTITY_TYPE_NAME: CONCEPT_ENTITY_CONFIGURATION,
+def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list):
+    return {
+        entity_names.CONCEPT_ENTITY_TYPE_NAME: CONCEPT_ENTITY_CONFIGURATION,
 
-    entity_names.ACTOR_ENTITY_TYPE_NAME: ACTOR_ENTITY_CONFIGURATION,
+        entity_names.ACTOR_ENTITY_TYPE_NAME: ACTOR_ENTITY_CONFIGURATION,
 
-    entity_names.SUITE_REPORTER_ENTITY_TYPE_NAME: SUITE_REPORTER_ENTITY_CONFIGURATION,
+        entity_names.SUITE_REPORTER_ENTITY_TYPE_NAME: SUITE_REPORTER_ENTITY_CONFIGURATION,
 
-    entity_names.TYPE_ENTITY_TYPE_NAME: TYPE_ENTITY_CONFIGURATION,
-}
+        entity_names.TYPE_ENTITY_TYPE_NAME: TYPE_ENTITY_CONFIGURATION,
+
+        entity_names.BUILTIN_ENTITY_TYPE_NAME: builtin_symbols_entity_configuration(
+            builtin_symbol_documentation_list),
+    }
 
 
 def test_suite_help(configuration_section_instructions: dict) -> TestSuiteHelp:

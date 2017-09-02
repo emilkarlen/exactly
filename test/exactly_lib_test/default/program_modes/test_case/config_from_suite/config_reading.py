@@ -5,14 +5,13 @@ import unittest
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import default_main_program
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.execution.full_execution import PredefinedProperties
+from exactly_lib.default.default_main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help_texts.test_suite.section_names_with_syntax import SECTION_NAME__CONF
 from exactly_lib.processing import exit_values
 from exactly_lib.processing import instruction_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
-from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.section_document.parser_implementations import section_element_parsers
@@ -29,7 +28,6 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
 from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 from exactly_lib.util.string import lines_content
-from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.default.program_modes.test_case.config_from_suite.test_resources import cli_args_for
 from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
@@ -167,7 +165,7 @@ def _error_message(actual: SubProcessResult) -> str:
 
 def _run_test_case(command_line_arguments: list,
                    cwd_contents: DirContents,
-                   test_case_definition: TestCaseDefinition,
+                   test_case_definition: TestCaseDefinitionForMainProgram,
                    test_suite_definition: TestSuiteDefinition,
                    default_test_case_handling_setup: TestCaseHandlingSetup,
                    ) -> SubProcessResult:
@@ -257,12 +255,13 @@ def test_suite_definition_with_instructions(configuration_section_instructions: 
                                parser)
 
 
-def test_case_definition_with_only_assert_phase_instructions(assert_phase_instructions: list) -> TestCaseDefinition:
+def test_case_definition_with_only_assert_phase_instructions(assert_phase_instructions: list
+                                                             ) -> TestCaseDefinitionForMainProgram:
     def mk_setup(name_and_instruction):
         return name_and_instruction[0], single_instruction_setup(name_and_instruction[0], name_and_instruction[1])
 
     assert_phase_instructions_dict = dict(map(mk_setup, assert_phase_instructions))
-    return TestCaseDefinition(
+    return TestCaseDefinitionForMainProgram(
         instruction_name_extractor_function=instruction_name_and_argument_splitter.splitter,
         instruction_setup=instruction_setup.InstructionsSetup(
             config_instruction_set={},
@@ -271,7 +270,7 @@ def test_case_definition_with_only_assert_phase_instructions(assert_phase_instru
             before_assert_instruction_set={},
             cleanup_instruction_set={},
         ),
-        predefined_properties=PredefinedProperties(empty_symbol_table())
+        builtin_symbols=[]
     )
 
 

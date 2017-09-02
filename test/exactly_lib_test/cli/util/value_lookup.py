@@ -20,6 +20,16 @@ class TestMatch(unittest.TestCase):
                 actual = sut.lookup(key_pattern, iterable)
                 self._assertIsExactMatch(key_pattern, expected_value, actual)
 
+    def test_case_SHOULD_be_ignored(self):
+        cases = [('a', 'A', 1, [('A', 1)]),
+                 ('B', 'b', 2, [('a', 1), ('b', 2)])]
+        for key_pattern, expected_key, expected_value, key_value_list in cases:
+            with self.subTest(key_pattern=key_pattern,
+                              expected_value=expected_value,
+                              key_value_list=key_value_list):
+                actual = sut.lookup(key_pattern, key_value_list)
+                self._assertIsExactMatch(expected_key, expected_value, actual)
+
     def test_WHEN_sequence_contains_key_pattern_as_sub_string_THEN_corresponding_value_SHOULD_be_returned(self):
         cases = [('b', 'abc', 1, [('abc', 1)]),
                  ('ab', 'abc', 2, [('ac', 1), ('abc', 2)])]
