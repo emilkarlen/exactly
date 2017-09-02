@@ -1,6 +1,7 @@
 from exactly_lib.named_element import resolver_structure as struct, named_element_usage as su
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
-from exactly_lib.type_system import string_value as sv, concrete_string_values as csv
+from exactly_lib.type_system import string_value as sv
+from exactly_lib.type_system.data import concrete_string_values as csv
 from exactly_lib.type_system.file_ref import FileRef
 from exactly_lib.type_system.list_value import ListValue
 from exactly_lib.type_system.value_type import SymbolValueType, ValueType

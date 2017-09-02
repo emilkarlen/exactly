@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system import concrete_string_values as csv
+from exactly_lib.type_system.data import concrete_string_values as csv
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.type_system.test_resources import list_value_assertions as sut
 
