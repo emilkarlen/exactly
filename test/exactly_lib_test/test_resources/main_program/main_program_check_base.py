@@ -7,6 +7,7 @@ from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
     ARGUMENTS_FOR_TEST_INTERPRETER
+from exactly_lib_test.cli.test_resources.test_case_handling_setup import test_case_handling_setup
 from exactly_lib_test.test_resources.cli_main_program_via_sub_process_utils import run
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
@@ -96,7 +97,8 @@ def run_default_main_program_via_sub_process(put: unittest.TestCase,
 
 def run_stripped_main_program_internally(put: unittest.TestCase,
                                          arguments: list) -> SubProcessResult:
-    return execute_main_program(arguments)
+    return execute_main_program(arguments,
+                                test_case_handling_setup())
 
 
 def check_with_just_main_program_runner(setup: SetupWithJustMainProgramRunner,

@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.processing import exit_values
+from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
@@ -23,15 +24,38 @@ def suite() -> unittest.TestSuite:
     return suite_for(main_program_runner_with_default_setup__in_same_process())
 
 
-class EmptyTestCaseShouldFailDueToMissingActPhase(SetupWithoutPreprocessorAndDefaultActor):
+class DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> asrt.ValueAssertion:
-        return process_result_for_exit_value(exit_values.EXECUTION__VALIDATE)
+        return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
         return ''
 
 
-class DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(
+class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(SetupWithoutPreprocessorAndDefaultActor):
+    def expected_result(self) -> asrt.ValueAssertion:
+        return process_result_for_exit_value(exit_values.EXECUTION__PASS)
+
+    def test_case(self) -> str:
+        return lines_content([
+            '',
+            '    ',
+            '  ',
+        ])
+
+
+class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(SetupWithoutPreprocessorAndDefaultActor):
+    def expected_result(self) -> asrt.ValueAssertion:
+        return process_result_for_exit_value(exit_values.EXECUTION__PASS)
+
+    def test_case(self) -> str:
+        return lines_content([
+            LINE_COMMENT_MARKER + ' a comment',
+            '  ',
+        ])
+
+
+class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(
     SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> asrt.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
@@ -46,7 +70,7 @@ class DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutablePro
         return lines_content(['system-under-test'])
 
 
-class DefaultActorShouldFailWhenActPhaseIsMultipleCommandLines(
+class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(
     SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> asrt.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__VALIDATE)
@@ -63,9 +87,11 @@ class DefaultActorShouldFailWhenActPhaseIsMultipleCommandLines(
 
 
 TESTS = [
-    EmptyTestCaseShouldFailDueToMissingActPhase(),
-    DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(),
-    DefaultActorShouldFailWhenActPhaseIsMultipleCommandLines(),
+    DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(),
+    DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(),
+    DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(),
+    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(),
+    DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(),
 ]
 
 PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0 = lines_content(['import sys',
