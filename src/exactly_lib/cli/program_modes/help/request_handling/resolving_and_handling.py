@@ -1,4 +1,3 @@
-from exactly_lib.cli.program_modes.help.argument_parsing import ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpRequest, EntityHelpRequestRendererResolver
 from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.html_doc.request_rendering import HtmlGenerationRequestHandler
@@ -70,6 +69,9 @@ def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp
     try:
         renderer_resolver = resolvers[request.entity_type]
     except KeyError:
-        raise ValueError('Non existing entity: ' + str(request.entity_type))
-    get_entity_help_from_app_help = ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER[request.entity_type]
-    return renderer_resolver(get_entity_help_from_app_help(application_help))
+        raise ValueError('Resolver not found for entity: ' + str(request.entity_type))
+    try:
+        entity_help = application_help.entities[request.entity_type]
+    except KeyError:
+        raise ValueError('Entity is not found in application help: ' + request.entity_type)
+    return renderer_resolver(entity_help)

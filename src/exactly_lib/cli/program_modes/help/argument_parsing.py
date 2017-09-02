@@ -11,8 +11,6 @@ from exactly_lib.cli.util import argument_value_lookup
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
-from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
-    SUITE_REPORTER_ENTITY_TYPE_NAME, TYPE_ENTITY_TYPE_NAME
 from exactly_lib.test_case import phase_identifier
 
 
@@ -38,7 +36,7 @@ class Parser:
         command_argument = help_command_arguments[0].lower()
         if command_argument == HELP:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
-        if command_argument in ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER:
+        if command_argument in self.application_help.entities:
             return self._parse_entity_help(command_argument, help_command_arguments[1:])
         if command_argument == HTML_DOCUMENTATION:
             return self._parse_html_doc_help(help_command_arguments[1:])
@@ -138,7 +136,7 @@ class Parser:
     def _parse_entity_help(self, entity_type_name: str, arguments: list) -> EntityHelpRequest:
         if not arguments:
             return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
-        entities_help = ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER[entity_type_name](self.application_help)
+        entities_help = self.application_help.entities[entity_type_name]
         match = lookup_entity(entities_help, arguments)
         return EntityHelpRequest(entity_type_name,
                                  EntityHelpItem.INDIVIDUAL_ENTITY,
@@ -160,11 +158,3 @@ def lookup_entity(entities: EntitiesHelp, arguments: list) -> argument_value_loo
     return argument_value_lookup.lookup_argument(entities.entity_type_name,
                                                  ' '.join(arguments).lower(),
                                                  argument_value_lookup.entities_key_value_iter(entities))
-
-
-ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER = {
-    TYPE_ENTITY_TYPE_NAME: ApplicationHelp.types_help.fget,
-    ACTOR_ENTITY_TYPE_NAME: ApplicationHelp.actors_help.fget,
-    CONCEPT_ENTITY_TYPE_NAME: ApplicationHelp.concepts_help.fget,
-    SUITE_REPORTER_ENTITY_TYPE_NAME: ApplicationHelp.suite_reporters_help.fget,
-}
