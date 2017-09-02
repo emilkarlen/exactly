@@ -16,7 +16,7 @@ from exactly_lib_test import test_case_file_structure
 from exactly_lib_test import test_case_utils
 from exactly_lib_test import test_resources
 from exactly_lib_test import test_suite
-from exactly_lib_test import type_system_values
+from exactly_lib_test import type_system
 from exactly_lib_test import util
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.main_program.main_program_runners import RunDefaultMainProgramViaOsInSubProcess
@@ -30,7 +30,7 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(section_document.suite())
     ret_val.addTest(common.suite())
     ret_val.addTest(test_case_file_structure.suite())
-    ret_val.addTest(type_system_values.suite())
+    ret_val.addTest(type_system.suite())
     ret_val.addTest(named_element.suite())
     ret_val.addTest(test_case.suite())
     ret_val.addTest(execution.suite())

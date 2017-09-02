@@ -6,15 +6,15 @@ from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import SymbolValueType, ElementType
+from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.value_type import SymbolValueType, ElementType
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.file_ref_assertions import equals_file_ref
-from exactly_lib_test.type_system_values.test_resources.string_value_assertions import equals_string_value
+from exactly_lib_test.type_system.test_resources.file_ref_assertions import equals_file_ref
+from exactly_lib_test.type_system.test_resources.string_value_assertions import equals_string_value
 
 
 def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:

@@ -2,7 +2,7 @@ from exactly_lib.help_texts import message_rendering
 from exactly_lib.named_element.resolver_structure import NamedElementContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system.value_type import SymbolValueType
 from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 
 

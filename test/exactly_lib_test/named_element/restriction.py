@@ -3,18 +3,18 @@ import unittest
 from exactly_lib.named_element import restriction as sut
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.type_system_values import file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
-from exactly_lib.type_system_values.list_value import ListValue
-from exactly_lib.type_system_values.value_type import ElementType, ValueType
+from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.concrete_path_parts import PathPartAsNothing
+from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.value_type import ElementType, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.type_system_values.logic.test_resources.values import FakeLinesTransformer
-from exactly_lib_test.type_system_values.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
+from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
+from exactly_lib_test.type_system.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
 
 
 def suite() -> unittest.TestSuite:

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
-from exactly_lib.type_system_values.lines_transformer import LinesTransformer
+from exactly_lib.type_system.lines_transformer import LinesTransformer
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 
 

@@ -9,7 +9,7 @@ from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver, FileTransformer
 from exactly_lib.test_case_utils.file_transformer.file_transformers import ConstantFileTransformerResolver, \
     IdentityFileTransformer
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_rs
 from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_value_type_restriction

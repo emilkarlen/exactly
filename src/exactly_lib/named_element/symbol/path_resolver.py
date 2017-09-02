@@ -1,6 +1,6 @@
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
-from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.value_type import SymbolValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 

@@ -9,10 +9,10 @@ from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system_values import file_ref as _file_ref
-from exactly_lib.type_system_values.list_value import ListValue
-from exactly_lib.type_system_values.string_value import StringValue
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system import file_ref as _file_ref
+from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.string_value import StringValue
+from exactly_lib.type_system.value_type import SymbolValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue

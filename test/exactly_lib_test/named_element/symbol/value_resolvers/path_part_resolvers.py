@@ -4,7 +4,7 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.named_element.symbol.value_resolvers import path_part_resolvers as sut
-from exactly_lib.type_system_values.path_part import PathPart
+from exactly_lib.type_system.path_part import PathPart
 from exactly_lib.util import symbol_table as st
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_string_values_from_name_and_value

@@ -1,4 +1,4 @@
-from exactly_lib.type_system_values.path_part import PathPart
+from exactly_lib.type_system.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
 
 

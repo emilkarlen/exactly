@@ -11,8 +11,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system_values import file_ref, file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system import file_ref, file_refs
+from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \

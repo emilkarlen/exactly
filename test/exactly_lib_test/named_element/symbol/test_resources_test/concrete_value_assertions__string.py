@@ -7,8 +7,8 @@ from exactly_lib.named_element.symbol.restrictions.value_restrictions import Any
 from exactly_lib.named_element.symbol.string_resolver import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, \
     StringResolver, string_constant
-from exactly_lib.type_system_values.concrete_string_values import ConstantFragment
-from exactly_lib.type_system_values.string_value import StringValue
+from exactly_lib.type_system.concrete_string_values import ConstantFragment
+from exactly_lib.type_system.string_value import StringValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails

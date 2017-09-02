@@ -14,9 +14,9 @@ from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.type_system_values import file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.value_type import SymbolValueType, ValueType
 from exactly_lib.util.symbol_table import Entry, singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.restrictions.test_resources import \
     concrete_restriction_assertion as restrictions

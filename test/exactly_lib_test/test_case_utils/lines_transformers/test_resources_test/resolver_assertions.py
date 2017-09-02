@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_utils.lines_transformers.test_resources import r
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.logic.test_resources.values import FileSelectorTestImpl
+from exactly_lib_test.type_system.logic.test_resources.values import FileSelectorTestImpl
 
 
 def suite() -> unittest.TestSuite:

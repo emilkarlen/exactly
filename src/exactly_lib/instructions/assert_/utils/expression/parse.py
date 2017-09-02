@@ -10,7 +10,7 @@ from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.type_system_values.value_type import ValueType
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.textformat.structure import structures as docs

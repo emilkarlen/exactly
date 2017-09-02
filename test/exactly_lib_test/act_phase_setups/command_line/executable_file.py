@@ -10,8 +10,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system_values import file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources import \
@@ -36,7 +36,7 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
-from exactly_lib_test.type_system_values.test_resources import list_values as lv
+from exactly_lib_test.type_system.test_resources import list_values as lv
 
 
 def suite() -> unittest.TestSuite:

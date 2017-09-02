@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.symbol import list_resolver, concrete_resolvers
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
-from exactly_lib.type_system_values.list_value import ListValue
-from exactly_lib.type_system_values.value_type import SymbolValueType
+from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.value_type import SymbolValueType
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -13,8 +13,8 @@ from exactly_lib_test.named_element.symbol.test_resources.concrete_value_asserti
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references, \
     equals_symbol_reference
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.list_value_assertions import equals_list_value
-from exactly_lib_test.type_system_values.test_resources.string_value_assertions import equals_string_value
+from exactly_lib_test.type_system.test_resources.list_value_assertions import equals_list_value
+from exactly_lib_test.type_system.test_resources.string_value_assertions import equals_string_value
 
 
 def equals_list_resolver_element(expected: list_resolver.Element,

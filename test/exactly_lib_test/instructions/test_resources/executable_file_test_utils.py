@@ -7,8 +7,8 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
-from exactly_lib.type_system_values.file_ref import FileRef
-from exactly_lib.type_system_values.list_value import ListValue
+from exactly_lib.type_system.file_ref import FileRef
+from exactly_lib.type_system.list_value import ListValue
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
@@ -22,7 +22,7 @@ from exactly_lib_test.test_resources.file_structure import File, executable_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.list_values import list_value_of_string_constants
+from exactly_lib_test.type_system.test_resources.list_values import list_value_of_string_constants
 
 
 class RelativityConfiguration:
