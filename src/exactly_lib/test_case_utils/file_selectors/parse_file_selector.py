@@ -1,9 +1,9 @@
 """Functionality for accessing a subset of the files in a directory."""
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.entity.types import FILE_SELECTOR_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import SELECTOR_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.help_texts.type_system import FILE_SELECTOR_TYPE
-from exactly_lib.help_texts.types import FILE_SELECTOR_CONCEPT_INFO
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
