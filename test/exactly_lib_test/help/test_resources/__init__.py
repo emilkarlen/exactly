@@ -51,27 +51,24 @@ def section_instruction_set(section_name: str,
 
 def application_help_for(test_case_phase_helps: list,
                          suite_sections=(),
-                         concepts=(),
-                         actors=(),
-                         suite_reporters=(),
-                         types=()) -> ApplicationHelp:
+                         entity_helps: list = (),
+                         ) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
-                           concepts_help(concepts),
-                           actors_help(actors),
                            TestCaseHelp(test_case_phase_helps),
                            TestSuiteHelp(suite_sections),
-                           suite_reporters_help(suite_reporters),
-                           types_help(types))
+                           list(entity_helps))
 
 
 def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
-                           concepts_help([]),
-                           actors_help([]),
                            TestCaseHelp([]),
                            TestSuiteHelp(suite_sections),
-                           suite_reporters_help([]),
-                           types_help([]))
+                           [
+                               concepts_help([]),
+                               actors_help([]),
+                               suite_reporters_help([]),
+                               types_help([]),
+                           ])
 
 
 class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumentation):

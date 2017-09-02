@@ -17,15 +17,14 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation, suite_reporters_help
+from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
 from exactly_lib.help.types.contents_structure import types_help
-from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, SUITE_REPORTER_ENTITY_TYPE_NAME, \
-    ACTOR_ENTITY_TYPE_NAME
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp
+from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.names import formatting
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
 from exactly_lib_test.help.actors.test_resources import documentation as actor_doc
 from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
-from exactly_lib_test.help.suite_reporters.test_resources.documentation import SuiteReporterDocTestImpl
 from exactly_lib_test.help.test_resources import application_help_for
 from exactly_lib_test.help.test_resources import section_documentation, \
     single_line_description_that_identifies_instruction_and_section, \
@@ -38,7 +37,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
     ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForActor()))
     ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForConcept()))
-    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForSuiteReporter()))
     ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
@@ -126,13 +124,15 @@ class TestTestCasePhase(unittest.TestCase):
 
     def _application_help_with_phases(self, all_phases):
         return ApplicationHelp(MainProgramHelp(),
-                               concepts_help(()),
-                               actors_help(()),
                                TestCaseHelp(map(lambda ph_name: section_documentation(ph_name, []),
                                                 all_phases)),
                                TestSuiteHelp({}),
-                               suite_reporters_help(()),
-                               types_help(()),
+                               [
+                                   concepts_help(()),
+                                   actors_help(()),
+                                   types_help(()),
+                                   suite_reporters_help(()),
+                               ],
                                )
 
 
@@ -444,7 +444,9 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
         return arguments_for.actor_single(entity_name_pattern)
 
     def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
-        return application_help_for([], actors=entities)
+        return application_help_for([],
+                                    entity_helps=[EntitiesHelp(ACTOR_ENTITY_TYPE_NAME,
+                                                               entities)])
 
 
 class TestSetupForConcept(entity_lookup_test_cases.EntityTestSetup):
@@ -461,24 +463,9 @@ class TestSetupForConcept(entity_lookup_test_cases.EntityTestSetup):
         return arguments_for.concept_single(entity_name_pattern)
 
     def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
-        return application_help_for([], concepts=entities)
-
-
-class TestSetupForSuiteReporter(entity_lookup_test_cases.EntityTestSetup):
-    def __init__(self):
-        super().__init__(SuiteReporterDocumentation, SUITE_REPORTER_ENTITY_TYPE_NAME)
-
-    def entity_with_name(self, entity_name: str):
-        return SuiteReporterDocTestImpl(entity_name)
-
-    def arguments_for_list(self) -> list:
-        return arguments_for.suite_reporter_list()
-
-    def arguments_for_single_entity(self, entity_name_pattern: str) -> list:
-        return arguments_for.suite_reporter_single(entity_name_pattern)
-
-    def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
-        return application_help_for([], suite_reporters=entities)
+        return application_help_for([],
+                                    entity_helps=[EntitiesHelp(CONCEPT_ENTITY_TYPE_NAME,
+                                                               entities)])
 
 
 if __name__ == '__main__':
