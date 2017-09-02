@@ -26,7 +26,7 @@ def generator(header: str) -> SectionHierarchyGenerator:
 class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
-        from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
+        from exactly_lib.help_texts.actors import SOURCE_INTERPRETER_ACTOR
         self.parser = TextParser({
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,

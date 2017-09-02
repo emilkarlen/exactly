@@ -4,7 +4,6 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.actors.actor.common import SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, \
     ARGUMENT_SYNTAX_ELEMENT, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.actors.names_and_cross_references import COMMAND_LINE_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -12,6 +11,7 @@ from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_C
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.actors import COMMAND_LINE_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME

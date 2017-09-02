@@ -3,7 +3,6 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help.actors.actor.common import ARGUMENT_SYNTAX_ELEMENT, \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.actors.names_and_cross_references import FILE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -12,6 +11,7 @@ from exactly_lib.help.program_modes.common.render_syntax_contents import invokat
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.names import formatting

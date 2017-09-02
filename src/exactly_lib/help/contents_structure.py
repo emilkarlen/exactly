@@ -1,4 +1,4 @@
-from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
+from exactly_lib.help.actors.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import concepts_help

@@ -1,6 +1,6 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import texts
-from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
+from exactly_lib.help.actors.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocHierarchyGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \

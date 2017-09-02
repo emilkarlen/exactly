@@ -1,5 +1,4 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
-from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
@@ -12,6 +11,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
+from exactly_lib.help_texts.actors import all_actor_cross_refs
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
@@ -46,7 +46,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         }
 
     def purpose(self) -> Description:
-        from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
+        from exactly_lib.help.actors.all_actor_docs import DEFAULT_ACTOR_DOC
         actor_info = (self._parse(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
                       docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
                       self._parse(HOW_TO_SPECIFY_ACTOR)

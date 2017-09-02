@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.actors.actor.all_actor_docs import ALL_ACTOR_DOCS
+from exactly_lib.help.actors.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib_test.help.actors.test_resources.test_case_impls import suite_for_actor_documentation
 
 
