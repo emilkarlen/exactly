@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath, \
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing, \
     PathPart, PathPartVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

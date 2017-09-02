@@ -7,7 +7,7 @@ from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import 
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.type_system.file_ref import FileRef
 from exactly_lib.type_system.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
