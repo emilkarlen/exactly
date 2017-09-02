@@ -1,6 +1,6 @@
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts.concepts import HOME_ACT_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.entity.concepts import HOME_ACT_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_HOME_ACT_OPTION
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_ACT_DIRECTORY_INSTRUCTION_NAME

@@ -2,7 +2,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.help_texts.concepts import ACTOR_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts

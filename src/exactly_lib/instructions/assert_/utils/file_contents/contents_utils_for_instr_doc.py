@@ -5,7 +5,7 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options

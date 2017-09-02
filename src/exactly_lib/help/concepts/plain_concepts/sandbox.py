@@ -1,8 +1,8 @@
 from exactly_lib import program_info
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help_texts import concepts
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME

@@ -3,7 +3,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
+from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
