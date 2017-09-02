@@ -8,6 +8,11 @@ def sorted_entity_list(entities: list) -> list:
     return sorted(entities, key=lambda ed: ed.singular_name())
 
 
+def entity_doc_list_renderer_as_single_line_description(entity_doc_list: list) -> SectionContentsRenderer:
+    return AllEntitiesListRenderer(lambda entity_doc: docs.paras(entity_doc.single_line_description()),
+                                   entity_doc_list)
+
+
 class AllEntitiesListRenderer(SectionContentsRenderer):
     def __init__(self,
                  entity_2_summary_paragraphs,
