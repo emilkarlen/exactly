@@ -1,6 +1,6 @@
 from exactly_lib.named_element import resolver_structure
 from exactly_lib.named_element.resolver_structure import LogicValueResolver, SymbolValueResolver
-from exactly_lib.type_system_values.value_type import ElementType, ValueType, LogicValueType, SymbolValueType
+from exactly_lib.type_system.value_type import ElementType, ValueType, LogicValueType, SymbolValueType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

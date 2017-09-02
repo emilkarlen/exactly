@@ -5,7 +5,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
-from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system.value_type import SymbolValueType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EQUALS_ARGUMENT = '='

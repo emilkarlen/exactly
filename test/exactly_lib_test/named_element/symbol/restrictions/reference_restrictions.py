@@ -10,7 +10,7 @@ from exactly_lib.named_element.resolver_structure import SymbolValueResolver, Na
 from exactly_lib.named_element.restriction import ReferenceRestrictions
 from exactly_lib.named_element.symbol.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
-from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType, LogicValueType
+from exactly_lib.type_system.value_type import SymbolValueType, ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
@@ -19,7 +19,7 @@ from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.test_resources import named_elem_utils
 from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.logic.test_resources.values import FakeLinesTransformer
+from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
 from exactly_lib_test.util.test_resources import symbol_tables
 
 

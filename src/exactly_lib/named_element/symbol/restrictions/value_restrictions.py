@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol.restrictions import error_messages
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
-from exactly_lib.type_system_values.value_type import ValueType, ElementType
+from exactly_lib.type_system.value_type import ValueType, ElementType
 from exactly_lib.util.symbol_table import SymbolTable
 
 

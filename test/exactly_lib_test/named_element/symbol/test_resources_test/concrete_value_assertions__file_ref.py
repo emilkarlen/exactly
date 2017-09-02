@@ -9,9 +9,9 @@ from exactly_lib.named_element.symbol.restrictions.value_restrictions import Any
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath, \
+from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath, \
     PathPartAsNothing
-from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system.file_ref import FileRef
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references

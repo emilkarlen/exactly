@@ -5,8 +5,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_ins
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system_values import file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsNothing
+from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.concrete_path_parts import PathPartAsNothing
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \

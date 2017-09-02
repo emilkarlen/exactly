@@ -8,7 +8,7 @@ from exactly_lib.named_element.symbol.restrictions.value_restrictions import Any
     FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_restriction import ValueRestrictionFailure
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.type_system_values.value_type import SymbolValueType, ElementType
+from exactly_lib.type_system.value_type import SymbolValueType, ElementType
 from exactly_lib_test.named_element.symbol.restrictions.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -1,6 +1,6 @@
 from exactly_lib.named_element.restriction import ElementTypeRestriction, ValueTypeRestriction
-from exactly_lib.type_system_values import value_type
-from exactly_lib.type_system_values.value_type import ElementType, ValueType
+from exactly_lib.type_system import value_type
+from exactly_lib.type_system.value_type import ElementType, ValueType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

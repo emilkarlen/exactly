@@ -8,7 +8,7 @@ from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as
 from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
-from exactly_lib_test.type_system_values.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
+from exactly_lib_test.type_system.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
 
 
 def suite() -> unittest.TestSuite:

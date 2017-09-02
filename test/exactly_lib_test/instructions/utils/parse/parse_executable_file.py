@@ -21,9 +21,9 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system_values import file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system_values.file_ref import FileRef
+from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
@@ -50,7 +50,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.list_values import list_value_of_string_constants, \
+from exactly_lib_test.type_system.test_resources.list_values import list_value_of_string_constants, \
     empty_list_value
 
 

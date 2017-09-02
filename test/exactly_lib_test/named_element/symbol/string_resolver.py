@@ -3,17 +3,17 @@ import unittest
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sut
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import OrReferenceRestrictions
-from exactly_lib.type_system_values import concrete_string_values as csv, file_refs
-from exactly_lib.type_system_values.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
-from exactly_lib.type_system_values.list_value import ListValue
-from exactly_lib.type_system_values.value_type import SymbolValueType, ElementType, ValueType
+from exactly_lib.type_system import concrete_string_values as csv, file_refs
+from exactly_lib.type_system.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.concrete_string_values import string_value_of_single_string
+from exactly_lib.type_system.list_value import ListValue
+from exactly_lib.type_system.value_type import SymbolValueType, ElementType, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, Entry
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_string_fragments
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.type_system_values.test_resources.string_value_assertions import equals_string_fragment, \
+from exactly_lib_test.type_system.test_resources.string_value_assertions import equals_string_fragment, \
     equals_string_value
 from exactly_lib_test.util.test_resources import symbol_tables
 

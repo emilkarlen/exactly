@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol.restrictions.reference_restrictions import
     ReferenceRestrictionsOnDirectAndIndirect, no_restrictions
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
-from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string
+from exactly_lib.type_system.concrete_string_values import string_value_of_single_string
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su, list_assertions as sut
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references

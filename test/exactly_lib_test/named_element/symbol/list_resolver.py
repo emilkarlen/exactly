@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as sut
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import OrReferenceRestrictions
-from exactly_lib.type_system_values import list_value as lv
-from exactly_lib.type_system_values.concrete_string_values import string_value_of_single_string, \
+from exactly_lib.type_system import list_value as lv
+from exactly_lib.type_system.concrete_string_values import string_value_of_single_string, \
     string_value_of_single_file_ref
-from exactly_lib.type_system_values.value_type import SymbolValueType, ElementType, ValueType
+from exactly_lib.type_system.value_type import SymbolValueType, ElementType, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.named_element.symbol.test_resources.list_assertions import equals_list_resolver_element
@@ -13,7 +13,7 @@ from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_asser
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system_values.test_resources.list_value_assertions import equals_list_value
+from exactly_lib_test.type_system.test_resources.list_value_assertions import equals_list_value
 
 
 def suite() -> unittest.TestSuite:

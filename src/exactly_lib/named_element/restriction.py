@@ -1,6 +1,6 @@
 from exactly_lib.named_element.resolver_structure import NamedElementContainer
-from exactly_lib.type_system_values import value_type
-from exactly_lib.type_system_values.value_type import ElementType, ValueType
+from exactly_lib.type_system import value_type
+from exactly_lib.type_system.value_type import ElementType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 

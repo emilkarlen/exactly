@@ -6,7 +6,7 @@ from exactly_lib.named_element.symbol import string_resolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system_values.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system.value_type import SymbolValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 

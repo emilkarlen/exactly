@@ -4,7 +4,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformer
-from exactly_lib.type_system_values.lines_transformer import LinesTransformer
+from exactly_lib.type_system.lines_transformer import LinesTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 

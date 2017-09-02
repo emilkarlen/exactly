@@ -1,4 +1,4 @@
-from exactly_lib.type_system_values.value_type import ValueType, SymbolValueType, ElementType, LogicValueType
+from exactly_lib.type_system.value_type import ValueType, SymbolValueType, ElementType, LogicValueType
 
 SYMBOL_ELEMENT_TYPE = 'data'
 LOGIC_ELEMENT_TYPE = 'logic'
