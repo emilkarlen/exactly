@@ -7,7 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation

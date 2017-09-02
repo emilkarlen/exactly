@@ -2,8 +2,8 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.type_system import string_value as sut, file_refs
-from exactly_lib.type_system.data import concrete_string_values as csv
+from exactly_lib.type_system import string_value as sut
+from exactly_lib.type_system.data import concrete_string_values as csv, file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string, \
     string_value_of_single_file_ref
