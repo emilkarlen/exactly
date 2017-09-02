@@ -1,5 +1,5 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help import texts
+from exactly_lib.help import header_texts
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocHierarchyGeneratorForEntitiesHelp
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
@@ -35,7 +35,7 @@ def generator(header: str,
                                                       ALL_SUITE_REPORTERS)
              ),
             ('cli-syntax',
-             cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
+             cli_syntax.generator(header_texts.COMMAND_LINE_SYNTAX)
              ),
             ('instructions',
              sections_helper.generator_for_instructions_per_section('Instructions per section')

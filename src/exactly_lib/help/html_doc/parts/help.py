@@ -1,4 +1,4 @@
-from exactly_lib.help import texts
+from exactly_lib.help import header_texts
 from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
@@ -14,7 +14,7 @@ def generator(header: str) -> SectionHierarchyGenerator:
         [],
         [
             ('cli-syntax',
-             leaf(texts.COMMAND_LINE_SYNTAX,
+             leaf(header_texts.COMMAND_LINE_SYNTAX,
                   ProgramDocumentationSectionContentsRenderer(HelpCliSyntaxDocumentation()))
              ),
         ]
@@ -28,7 +28,7 @@ class HtmlDocGeneratorForHelpHelp:
     def apply(self, targets_factory: cross_ref.CustomTargetInfoFactory) -> (list, doc.SectionContents):
         cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax',
                                                                      targets_factory)
-        cli_syntax_target = cli_syntax_targets_factory.root(texts.COMMAND_LINE_SYNTAX)
+        cli_syntax_target = cli_syntax_targets_factory.root(header_texts.COMMAND_LINE_SYNTAX)
         cli_syntax_contents = self._cli_syntax_contents()
 
         ret_val_contents = doc.SectionContents(

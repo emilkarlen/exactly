@@ -37,7 +37,13 @@ class ApplicationHelp(tuple):
                                    test_suite_help,
                                    actors_help,
                                    suite_reporters_help,
-                                   types_help))
+                                   types_help,
+                                   dict(map(lambda eh: (eh.entity_type_name, eh),
+                                            [concepts_help,
+                                             actors_help,
+                                             suite_reporters_help,
+                                             types_help])))
+                             )
 
     @property
     def main_program_help(self) -> MainProgramHelp:
@@ -66,6 +72,15 @@ class ApplicationHelp(tuple):
     @property
     def types_help(self) -> EntitiesHelp:
         return self[6]
+
+    @property
+    def entities(self) -> dict:
+        """
+        entity-name -> EntitiesHelp
+
+        :return: str -> :class:`EntitiesHelp`
+        """
+        return self[7]
 
 
 def application_help_for_2(instructions_setup: InstructionsSetup,

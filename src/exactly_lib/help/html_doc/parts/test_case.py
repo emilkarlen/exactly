@@ -1,5 +1,5 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help import texts
+from exactly_lib.help import header_texts
 from exactly_lib.help.actors.all_actor_docs import ALL_ACTOR_DOCS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocHierarchyGeneratorForEntitiesHelp
@@ -43,7 +43,7 @@ def generator(header: str,
                                                       all_types())
              ),
             ('cli-syntax',
-             cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
+             cli_syntax.generator(header_texts.COMMAND_LINE_SYNTAX)
              ),
             ('instructions',
              sections_helper.generator_for_instructions_per_section('Instructions per phase')
