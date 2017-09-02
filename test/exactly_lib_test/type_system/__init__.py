@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib_test.type_system import concrete_path_parts, file_refs, string_value, list_value
 from exactly_lib_test.type_system import test_resources_test
 from exactly_lib_test.type_system import utils
+from exactly_lib_test.type_system.data import concrete_path_parts, file_refs, list_value, string_value
 
 
 def suite() -> unittest.TestSuite:
