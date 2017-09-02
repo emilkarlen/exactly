@@ -1,7 +1,7 @@
 import functools
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.functional import compose_first_and_second
 
 

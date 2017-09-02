@@ -1,6 +1,6 @@
 from exactly_lib.named_element import resolver_structure
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
-from exactly_lib.type_system.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.named_element.test_resources.type_assertions import is_resolver_of_logic_type

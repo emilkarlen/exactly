@@ -1,7 +1,7 @@
 from exactly_lib.named_element import resolver_structure
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorFromSelectors
-from exactly_lib.type_system.file_selector import FileSelector
+from exactly_lib.type_system.logic.file_selector import FileSelector
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.named_element.test_resources.type_assertions import is_resolver_of_logic_type
