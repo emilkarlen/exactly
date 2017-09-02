@@ -10,7 +10,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_suite import command_lin
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
-from exactly_lib.help.suite_reporters import names_and_cross_references as reporters
+from exactly_lib.help_texts.entity import suite_reporters as reporters
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
