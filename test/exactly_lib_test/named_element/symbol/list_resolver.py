@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as sut
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.type_system import list_value as lv
-from exactly_lib.type_system.concrete_string_values import string_value_of_single_string, \
+from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string, \
     string_value_of_single_file_ref
 from exactly_lib.type_system.value_type import SymbolValueType, ElementType, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable

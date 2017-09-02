@@ -1,4 +1,4 @@
-from exactly_lib.type_system.concrete_string_values import string_value_of_single_string
+from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.type_system.list_value import ListValue
 
 

@@ -1,7 +1,7 @@
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import SymbolValueResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, string_constant
-from exactly_lib.type_system import concrete_string_values as csv
+from exactly_lib.type_system.data import concrete_string_values as csv
 from exactly_lib.type_system.file_ref import FileRef
 from exactly_lib.type_system.list_value import ListValue
 from exactly_lib.type_system.string_value import StringValue
