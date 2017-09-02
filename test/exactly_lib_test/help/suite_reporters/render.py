@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.help.suite_reporters import render as sut
+from exactly_lib.help.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.suite_reporters.test_resources.documentation import SuiteReporterDocTestImpl
@@ -15,15 +16,12 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestAllSuiteReportersList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = sut.all_suite_reporters_list_renderer([SuiteReporterDocTestImpl('reporter 1'),
-                                                          SuiteReporterDocTestImpl('reporter 2')])
+        renderer = SUITE_REPORTER_ENTITY_CONFIGURATION.entities_doc_2_section_contents_renderer(
+            [SuiteReporterDocTestImpl('reporter 1'),
+             SuiteReporterDocTestImpl('reporter 2')])
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
@@ -60,3 +58,6 @@ class TestIndividualSuiteReporter(unittest.TestCase):
 
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.help.actors import render as sut
+from exactly_lib.help.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.util.textformat.structure import structures as docs
@@ -16,17 +17,15 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
 
 
 class TestAllActorsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = sut.all_actors_list_renderer([ActorTestImpl('actor 1'),
-                                                 ActorTestImpl('actor 2')])
+        renderer = ACTOR_ENTITY_CONFIGURATION.entities_doc_2_section_contents_renderer(
+            [ActorTestImpl('actor 1'),
+             ActorTestImpl('actor 2')])
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
@@ -78,3 +77,7 @@ def _sections():
 
 def _section_contents():
     return docs.section_contents(_paragraphs(), _sections())
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
