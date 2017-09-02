@@ -6,7 +6,7 @@ from exactly_lib.default.program_modes.test_suite import test_suite_definition
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.processors import TestCaseDefinition
-from exactly_lib_test.cli.test_resources.test_case_handling_setup import test_case_handling_setup
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 
@@ -32,6 +32,7 @@ EMPTY_INSTRUCTIONS_SETUP = InstructionsSetup(
 
 
 def execute_main_program(arguments: list,
+                         the_test_case_handling_setup: TestCaseHandlingSetup,
                          instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP,
                          name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter,
                          predefined_properties: PredefinedProperties = PredefinedProperties(),
@@ -44,7 +45,7 @@ def execute_main_program(arguments: list,
                                   predefined_properties,
                               ),
                               test_suite_definition(),
-                              test_case_handling_setup())
+                              the_test_case_handling_setup)
     exit_status = program.execute(arguments)
     str_std_out_files.finish()
     return SubProcessResult(exit_status,
