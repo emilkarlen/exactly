@@ -1,5 +1,5 @@
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.actors.names_and_cross_references import name_and_ref_target
+from exactly_lib.help_texts.actors import name_and_ref_target
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 

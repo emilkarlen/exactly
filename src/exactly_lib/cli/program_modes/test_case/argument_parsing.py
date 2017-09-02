@@ -6,9 +6,9 @@ from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption, TestCaseExecutionSettings
-from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
+from exactly_lib.help_texts.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup

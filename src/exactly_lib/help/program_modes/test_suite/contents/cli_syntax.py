@@ -3,7 +3,6 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
-from exactly_lib.help.actors.names_and_cross_references import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help.concepts.configuration_parameters import actor
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
@@ -13,6 +12,7 @@ from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering impo
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting

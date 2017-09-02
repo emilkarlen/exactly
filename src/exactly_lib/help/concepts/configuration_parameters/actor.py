@@ -1,7 +1,7 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
-from exactly_lib.help.actors.names_and_cross_references import all_actor_cross_refs
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.actors import all_actor_cross_refs
 from exactly_lib.help_texts.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
@@ -29,7 +29,7 @@ class _ActorConcept(ConfigurationParameterDocumentation):
                                           docs.section_contents(contents))
 
     def default_value_str(self) -> str:
-        from exactly_lib.help.actors.actor.all_actor_docs import DEFAULT_ACTOR_DOC
+        from exactly_lib.help.actors.all_actor_docs import DEFAULT_ACTOR_DOC
         return (formatting.entity(DEFAULT_ACTOR_DOC.singular_name()) +
                 ' - ' +
                 DEFAULT_ACTOR_DOC.single_line_description_str())
