@@ -6,6 +6,7 @@ from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.symbol import SYMBOL_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.type_ import TYPE_CONCEPT
 
 
 def all_plain_concepts() -> list:
@@ -21,4 +22,5 @@ def all_plain_concepts() -> list:
         PREPROCESSOR_CONCEPT,
         CURRENT_WORKING_DIRECTORY_CONCEPT,
         SUITE_REPORTER_CONCEPT,
+        TYPE_CONCEPT,
     ]
