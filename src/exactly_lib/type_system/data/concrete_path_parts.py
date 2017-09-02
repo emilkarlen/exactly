@@ -1,4 +1,4 @@
-from exactly_lib.type_system.path_part import PathPart
+from exactly_lib.type_system.data.path_part import PathPart
 
 
 class PathPartAsFixedPath(PathPart):
