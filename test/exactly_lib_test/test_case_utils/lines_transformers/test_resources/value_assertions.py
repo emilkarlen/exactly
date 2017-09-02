@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer, CustomLinesTransformer, LinesTransformerStructureVisitor, ReplaceLinesTransformer
-from exactly_lib.type_system.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

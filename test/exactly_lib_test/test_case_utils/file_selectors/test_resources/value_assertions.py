@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorStructureVisitor, \
     FileSelectorFromSelectors
-from exactly_lib.type_system.file_selector import FileSelector
+from exactly_lib.type_system.logic.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.type_system.file_selector import FileSelector
+from exactly_lib.type_system.logic.file_selector import FileSelector
 from exactly_lib.util import dir_contents_selection
 
 

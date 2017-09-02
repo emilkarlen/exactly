@@ -1,8 +1,8 @@
 from exactly_lib.named_element.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system.file_selector import FileSelector
-from exactly_lib.type_system.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.file_selector import FileSelector
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.value_type import SymbolValueType, ValueType, ElementType, LogicValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
