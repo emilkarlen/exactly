@@ -1,15 +1,9 @@
 from exactly_lib.help.types.contents_structure import TypeDocumentation
-from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
-
-
-def all_types_list_renderer(all_types: list) -> SectionContentsRenderer:
-    return AllEntitiesListRenderer(lambda type_: docs.paras(type_.single_line_description()),
-                                   all_types)
 
 
 class IndividualTypeRenderer(SectionContentsRenderer):

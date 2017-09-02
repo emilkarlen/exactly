@@ -1,6 +1,5 @@
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help.utils.textformat_parser import TextParser
@@ -9,11 +8,6 @@ from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
-
-
-def all_actors_list_renderer(all_actors: list) -> SectionContentsRenderer:
-    return AllEntitiesListRenderer(lambda actor: docs.paras(actor.single_line_description()),
-                                   all_actors)
 
 
 class IndividualActorRenderer(SectionContentsRenderer):

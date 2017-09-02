@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.help.concepts import render as sut
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, ConfigurationParameterDocumentation
+from exactly_lib.help.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.entity.concepts import name_and_ref_target
 from exactly_lib.help_texts.name_and_cross_ref import Name
@@ -28,7 +29,7 @@ if __name__ == '__main__':
 class TestAllConceptsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = sut.all_concepts_list_renderer(all_concepts())
+        renderer = CONCEPT_ENTITY_CONFIGURATION.entities_doc_2_section_contents_renderer(all_concepts())
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
