@@ -37,11 +37,13 @@ def lookup(key_pattern: str, key_value_iter: iter) -> Match:
     then the value associated with that key is returned. If no key is identical, but one, and only one,
     key contains key_pattern as a sub string, then the associated value is returned.
     """
+    upper_key_pattern = key_pattern.upper()
     matches = []
     for key, value in key_value_iter:
-        if key_pattern == key:
+        upper_key = key.upper()
+        if upper_key_pattern == upper_key:
             return Match(key, value, True)
-        if key_pattern in key:
+        if upper_key_pattern in upper_key:
             matches.append((key, value))
     num_matches = len(matches)
     if num_matches == 0:

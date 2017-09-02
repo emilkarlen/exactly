@@ -3,10 +3,9 @@ import unittest
 
 from exactly_lib.default.instruction_name_and_argument_splitter import \
     splitter as default_splitter
+from exactly_lib.default.program_modes.test_case import builtin_symbols
 from exactly_lib.default.program_modes.test_case.default_instructions_setup import INSTRUCTIONS_SETUP
-from exactly_lib.default.program_modes.test_case.execution_properties import PREDEFINED_PROPERTIES
 from exactly_lib.default.program_modes.test_case.test_case_handling_setup import test_case_handling_setup
-from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
@@ -20,21 +19,21 @@ class RunViaMainProgramInternally(MainProgramRunner):
                  the_test_case_handling_setup: TestCaseHandlingSetup,
                  instructions_setup: InstructionsSetup = INSTRUCTIONS_SETUP,
                  name_and_argument_splitter: types.FunctionType = first_char_is_name_and_rest_is_argument__splitter,
-                 predefined_properties: PredefinedProperties = PredefinedProperties(),
+                 builtin_symbols: list = (),
                  ):
         self.instructions_setup = instructions_setup
         self.name_and_argument_splitter = name_and_argument_splitter
-        self.predefined_properties = predefined_properties
-        self.test_case_handling_setup = the_test_case_handling_setup
+        self.builtin_symbols = list(builtin_symbols)
+        self.the_test_case_handling_setup = the_test_case_handling_setup
 
     def description_for_test_name(self) -> str:
         return 'run internally'
 
     def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
         return execute_main_program(arguments,
-                                    self.test_case_handling_setup,
+                                    self.the_test_case_handling_setup,
                                     self.instructions_setup,
-                                    predefined_properties=self.predefined_properties,
+                                    builtin_symbols=self.builtin_symbols,
                                     name_and_argument_splitter=self.name_and_argument_splitter)
 
 
@@ -42,5 +41,5 @@ def main_program_runner_with_default_setup__in_same_process() -> RunViaMainProgr
     return RunViaMainProgramInternally(the_test_case_handling_setup=test_case_handling_setup(),
                                        instructions_setup=INSTRUCTIONS_SETUP,
                                        name_and_argument_splitter=default_splitter,
-                                       predefined_properties=PREDEFINED_PROPERTIES,
+                                       builtin_symbols=builtin_symbols.ALL,
                                        )

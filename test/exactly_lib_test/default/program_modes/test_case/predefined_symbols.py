@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 import exactly_lib.help_texts.type_system
-from exactly_lib.default.program_modes.test_case.predef_symbols import test_case_dir_symbols, lines_transformers
+from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, lines_transformers
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.processing import exit_values
@@ -45,9 +45,9 @@ class AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(SetupWitho
             '{def_instruction} {path_type} {name_to_define} = {reference_to_predefined_symbol}'.format(
                 def_instruction=instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
                 path_type=exactly_lib.help_texts.type_system.PATH_TYPE,
-                name_to_define='COPY_OF_' + symbol.key,
-                reference_to_predefined_symbol=symbol_reference_syntax_for_name(symbol.key))
-            for symbol in test_case_dir_symbols.ALL
+                name_to_define='COPY_OF_' + builtin_symbol.name,
+                reference_to_predefined_symbol=symbol_reference_syntax_for_name(builtin_symbol.name))
+            for builtin_symbol in test_case_dir_symbols.ALL
         ]
 
         return lines_content(
@@ -97,7 +97,7 @@ class TheTestCaseDirReplacementTransformerShouldBeAvailableInTheSetupPhase(Setup
                         lines_transformers.EXACTLY_TEST_CASE_DIRS_REPLACEMENT),
                     equals=instruction_options.EQUALS_ARGUMENT,
                 ),
-                test_case_dir_symbols.SYMBOL_ACT.key,
+                test_case_dir_symbols.SYMBOL_ACT.name,
                 'EOF',
             ])
 

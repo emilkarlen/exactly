@@ -4,23 +4,81 @@ from exactly_lib import program_info
 from exactly_lib.cli import main_program
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
+from exactly_lib.execution.full_execution import PredefinedProperties
+from exactly_lib.help.builtin.contents_structure import BuiltinSymbolDocumentation
+from exactly_lib.named_element.resolver_structure import NamedElementResolver, container_of_builtin
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
 from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.symbol_table import SymbolTable
+
+
+class BuiltinSymbol:
+    def __init__(self,
+                 name: str,
+                 resolver: NamedElementResolver,
+                 documentation: BuiltinSymbolDocumentation,
+                 ):
+        self._name = name
+        self._resolver = resolver
+        self._documentation = documentation
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def as_name_and_container_pair(self):
+        return self._name, container_of_builtin(self._resolver)
+
+    @property
+    def documentation(self) -> BuiltinSymbolDocumentation:
+        return self._documentation
+
+
+class TestCaseDefinitionForMainProgram:
+    """
+    Corresponds to TestCaseDefinition, but with
+    extra information about predefined symbols for the help system.
+    """
+
+    #  TODO: Should act phase parser be part of this class?
+    # Feels right, but have not looked into it.
+
+    def __init__(self,
+                 instruction_name_extractor_function,
+                 instruction_setup: InstructionsSetup,
+                 builtin_symbols: list):
+        """
+        :param builtin_symbols: [`BuiltinSymbol`]
+        """
+        self.instruction_setup = instruction_setup
+        self.instruction_name_extractor_function = instruction_name_extractor_function
+        self.builtin_symbols = builtin_symbols
 
 
 class MainProgram(main_program.MainProgram):
     def __init__(self,
                  output: StdOutputFiles,
-                 test_case_definition: TestCaseDefinition,
+                 test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
                  default: TestCaseHandlingSetup):
         super().__init__(output,
                          test_case_definition.instruction_setup,
                          test_suite_definition.configuration_section_instructions,
-                         default)
-        self._test_case_definition = test_case_definition
+                         default,
+                         list(map(BuiltinSymbol.documentation.fget,
+                                  test_case_definition.builtin_symbols)))
+        self._test_case_definition = TestCaseDefinition(
+            test_case_definition.instruction_name_extractor_function,
+            test_case_definition.instruction_setup,
+            PredefinedProperties(
+                SymbolTable(dict(map(BuiltinSymbol.as_name_and_container_pair.fget,
+                                     test_case_definition.builtin_symbols)))
+            )
+        )
         self._test_suite_definition = test_suite_definition
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:

@@ -2,22 +2,21 @@ import sys
 
 from exactly_lib.cli import main_program
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.default.default_main_program import MainProgram
+from exactly_lib.default.default_main_program import MainProgram, TestCaseDefinitionForMainProgram
 from exactly_lib.default.program_modes import test_suite
+from exactly_lib.default.program_modes.test_case import builtin_symbols
 from exactly_lib.default.program_modes.test_case import default_instructions_setup
-from exactly_lib.default.program_modes.test_case import execution_properties
 from exactly_lib.default.program_modes.test_case.test_case_handling_setup import test_case_handling_setup
-from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.util.std import StdOutputFiles
 
 
 def default_main_program() -> main_program.MainProgram:
     return MainProgram(StdOutputFiles(sys.stdout,
                                       sys.stderr),
-                       TestCaseDefinition(instruction_name_and_argument_splitter.splitter,
-                                          default_instructions_setup.INSTRUCTIONS_SETUP,
-                                          execution_properties.PREDEFINED_PROPERTIES,
-                                          ),
+                       TestCaseDefinitionForMainProgram(instruction_name_and_argument_splitter.splitter,
+                                                        default_instructions_setup.INSTRUCTIONS_SETUP,
+                                                        builtin_symbols.ALL,
+                                                        ),
                        test_suite.test_suite_definition(),
                        test_case_handling_setup())
 
