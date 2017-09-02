@@ -36,12 +36,14 @@ def application_help_for_3(instructions_setup: InstructionsSetup,
     :param suite_configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
     """
     return ApplicationHelp(MainProgramHelp(),
-                           concepts_help(all_concepts()),
-                           actors_help(ALL_ACTOR_DOCS),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            test_suite_help(suite_configuration_section_instructions),
-                           suite_reporters_help(ALL_SUITE_REPORTERS),
-                           types_help(all_types()),
+                           [
+                               concepts_help(all_concepts()),
+                               actors_help(ALL_ACTOR_DOCS),
+                               suite_reporters_help(ALL_SUITE_REPORTERS),
+                               types_help(all_types()),
+                           ],
                            ENTITY_NAME_2_ENTITY_CONFIGURATION)
 
 

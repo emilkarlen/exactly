@@ -11,6 +11,7 @@ from exactly_lib.help.utils.rendering.section_contents_renderer import Rendering
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
     SectionRendererNode
 from exactly_lib.help.utils.table_of_contents import toc_list
+from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNode
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
@@ -58,7 +59,8 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                 'concepts',
                 HtmlDocHierarchyGeneratorForEntitiesHelp('Concepts',
                                                          IndividualConceptRenderer,
-                                                         application_help.concepts_help.all_entities)
+                                                         application_help.entities[
+                                                             entity_names.CONCEPT_ENTITY_TYPE_NAME].all_entities)
             ),
             (
                 'help',
