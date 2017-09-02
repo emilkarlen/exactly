@@ -13,7 +13,7 @@ from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_string_fragments
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.type_system.test_resources.string_value_assertions import equals_string_fragment, \
+from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_fragment, \
     equals_string_value
 from exactly_lib_test.util.test_resources import symbol_tables
 

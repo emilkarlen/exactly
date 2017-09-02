@@ -36,7 +36,7 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
-from exactly_lib_test.type_system.test_resources import list_values as lv
+from exactly_lib_test.type_system.data.test_resources import list_values as lv
 
 
 def suite() -> unittest.TestSuite:

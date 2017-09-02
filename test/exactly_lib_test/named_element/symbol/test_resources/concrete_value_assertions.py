@@ -13,8 +13,8 @@ from exactly_lib_test.named_element.symbol.test_resources.assertion_utils import
     symbol_table_with_values_matching_references
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.test_resources.file_ref_assertions import equals_file_ref
-from exactly_lib_test.type_system.test_resources.string_value_assertions import equals_string_value
+from exactly_lib_test.type_system.data.test_resources.file_ref_assertions import equals_file_ref
+from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value
 
 
 def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:
