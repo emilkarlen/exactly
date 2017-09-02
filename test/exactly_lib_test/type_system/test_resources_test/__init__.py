@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib_test.type_system.data.test_resources_test import file_ref_assertions, list_value_assertions
-from exactly_lib_test.type_system.test_resources_test import string_value_assertions, path_part_assertions
+from exactly_lib_test.type_system.data.test_resources_test import file_ref_assertions, list_value_assertions, \
+    path_part_assertions, string_value_assertions
 
 
 def suite() -> unittest.TestSuite:
