@@ -1,5 +1,5 @@
 from exactly_lib.help.actors.actor import command_line, source_interpreter_actor, file_interpreter_actor
-from exactly_lib.help_texts.actors import DEFAULT_ACTOR
+from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR
 
 ALL_ACTOR_DOCS = [
     command_line.DOCUMENTATION,

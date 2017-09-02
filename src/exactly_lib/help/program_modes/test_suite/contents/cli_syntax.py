@@ -12,8 +12,8 @@ from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering impo
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.help_texts.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
+from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_suite import section_names

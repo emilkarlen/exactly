@@ -7,7 +7,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.actors.actor import command_line as command_line_actor_help
-from exactly_lib.help_texts.actors import FILE_INTERPRETER_ACTOR
+from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
@@ -51,7 +51,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._format(self.single_line_description_unformatted)
 
     def invokation_variants(self) -> list:
-        from exactly_lib.help_texts.actors import SOURCE_INTERPRETER_ACTOR
+        from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
         source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
         file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
         return (self._command_line_invokation_variants() +
@@ -71,7 +71,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
 
     def _see_also_cross_refs(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-        from exactly_lib.help_texts.actors import all_actor_cross_refs
+        from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
         return ([ACTOR_CONCEPT.cross_reference_target()] +
                 all_actor_cross_refs() +
                 command_line_actor_help.see_also_targets())
@@ -119,7 +119,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         })
 
     def _description_of_command_line(self) -> list:
-        from exactly_lib.help_texts.actors import COMMAND_LINE_ACTOR
+        from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
         return self._paragraphs(_DESCRIPTION_OF_SHELL, {
             'command_line_actor': formatting.entity(COMMAND_LINE_ACTOR.singular_name)
         })

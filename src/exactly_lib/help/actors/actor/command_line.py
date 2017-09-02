@@ -11,7 +11,7 @@ from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_C
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.help_texts.actors import COMMAND_LINE_ACTOR
+from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
