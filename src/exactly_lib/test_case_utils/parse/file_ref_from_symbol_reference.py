@@ -8,7 +8,7 @@ from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable

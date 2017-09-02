@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref as sut
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table

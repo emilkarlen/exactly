@@ -3,8 +3,7 @@ import unittest
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sut
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import OrReferenceRestrictions
-from exactly_lib.type_system import file_refs
-from exactly_lib.type_system.data import concrete_string_values as csv
+from exactly_lib.type_system.data import concrete_string_values as csv, file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.type_system.list_value import ListValue

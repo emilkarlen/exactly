@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.named_element import restriction as sut
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.type_system import file_refs
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.list_value import ListValue
 from exactly_lib.type_system.value_type import ElementType, ValueType
