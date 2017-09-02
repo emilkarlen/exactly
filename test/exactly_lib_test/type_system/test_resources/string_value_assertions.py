@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.string_value import StringValue, StringFragment
+from exactly_lib.type_system.data.string_value import StringValue, StringFragment
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
