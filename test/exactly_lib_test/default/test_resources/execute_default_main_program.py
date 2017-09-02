@@ -1,41 +1,20 @@
-import sys
-
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
 from exactly_lib.default import default_main_program as sut
 from exactly_lib.default.default_main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.default.program_modes.test_suite import test_suite_definition
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib_test.cli.test_resources.main_program_runner_utils import \
+    first_char_is_name_and_rest_is_argument__splitter, EMPTY_INSTRUCTIONS_SETUP
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 
-ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE = (OPTION_FOR_ACTOR, sys.executable)
 
-ARGUMENTS_FOR_TEST_INTERPRETER = list(ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE)
-
-
-def arguments_for_test_interpreter_and_more_tuple(additional_args: iter) -> tuple:
-    return ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE + tuple(additional_args)
-
-
-def first_char_is_name_and_rest_is_argument__splitter(s: str) -> str:
-    return s[0]
-
-
-EMPTY_INSTRUCTIONS_SETUP = InstructionsSetup(
-    {},
-    {},
-    {},
-    {},
-    {})
-
-
-def execute_main_program(arguments: list,
-                         the_test_case_handling_setup: TestCaseHandlingSetup,
-                         instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP,
-                         name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter,
-                         builtin_symbols: list = (),
-                         ) -> SubProcessResult:
+def execute_default_main_program(arguments: list,
+                                 the_test_case_handling_setup: TestCaseHandlingSetup,
+                                 instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP,
+                                 name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter,
+                                 builtin_symbols: list = (),
+                                 ) -> SubProcessResult:
     str_std_out_files = StringStdOutFiles()
     program = sut.MainProgram(str_std_out_files.stdout_files,
                               TestCaseDefinitionForMainProgram(
