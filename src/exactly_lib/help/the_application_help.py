@@ -1,10 +1,6 @@
-from exactly_lib.help.actors.all_actor_docs import ALL_ACTOR_DOCS
-from exactly_lib.help.actors.contents_structure import actors_help
-from exactly_lib.help.actors.render import IndividualActorRenderer
-from exactly_lib.help.concepts.all_concepts import all_concepts
-from exactly_lib.help.concepts.contents_structure import concepts_help
-from exactly_lib.help.concepts.render import IndividualConceptRenderer, all_concepts_list_renderer
-from exactly_lib.help.contents_structure import ApplicationHelp, EntityConfiguration
+from exactly_lib.help.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
+from exactly_lib.help.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
+from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
@@ -15,22 +11,16 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
-from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
-from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
-from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
-from exactly_lib.help.types.all_types import all_types
-from exactly_lib.help.types.contents_structure import types_help
-from exactly_lib.help.types.render import IndividualTypeRenderer
-from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
-    entity_doc_list_renderer_as_single_line_description
+from exactly_lib.help.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
+from exactly_lib.help.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
 
 
-def application_help_for_3(instructions_setup: InstructionsSetup,
-                           suite_configuration_section_instructions: dict) -> ApplicationHelp:
+def new_application_help(instructions_setup: InstructionsSetup,
+                         suite_configuration_section_instructions: dict) -> ApplicationHelp:
     """
     :param instructions_setup: Test case instruction set
     :param suite_configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
@@ -38,35 +28,17 @@ def application_help_for_3(instructions_setup: InstructionsSetup,
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            test_suite_help(suite_configuration_section_instructions),
-                           [
-                               concepts_help(all_concepts()),
-                               actors_help(ALL_ACTOR_DOCS),
-                               suite_reporters_help(ALL_SUITE_REPORTERS),
-                               types_help(all_types()),
-                           ],
                            ENTITY_NAME_2_ENTITY_CONFIGURATION)
 
 
 ENTITY_NAME_2_ENTITY_CONFIGURATION = {
-    entity_names.CONCEPT_ENTITY_TYPE_NAME:
-        EntityConfiguration(concepts_help(all_concepts()),
-                            IndividualConceptRenderer,
-                            all_concepts_list_renderer),
+    entity_names.CONCEPT_ENTITY_TYPE_NAME: CONCEPT_ENTITY_CONFIGURATION,
 
-    entity_names.ACTOR_ENTITY_TYPE_NAME:
-        EntityConfiguration(actors_help(ALL_ACTOR_DOCS),
-                            IndividualActorRenderer,
-                            entity_doc_list_renderer_as_single_line_description),
+    entity_names.ACTOR_ENTITY_TYPE_NAME: ACTOR_ENTITY_CONFIGURATION,
 
-    entity_names.SUITE_REPORTER_ENTITY_TYPE_NAME:
-        EntityConfiguration(suite_reporters_help(ALL_SUITE_REPORTERS),
-                            IndividualSuiteReporterRenderer,
-                            entity_doc_list_renderer_as_single_line_description),
+    entity_names.SUITE_REPORTER_ENTITY_TYPE_NAME: SUITE_REPORTER_ENTITY_CONFIGURATION,
 
-    entity_names.TYPE_ENTITY_TYPE_NAME:
-        EntityConfiguration(types_help(all_types()),
-                            IndividualTypeRenderer,
-                            entity_doc_list_renderer_as_single_line_description),
+    entity_names.TYPE_ENTITY_TYPE_NAME: TYPE_ENTITY_CONFIGURATION,
 }
 
 

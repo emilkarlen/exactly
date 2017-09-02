@@ -37,7 +37,6 @@ class ApplicationHelp(tuple):
                 main_program_help: MainProgramHelp,
                 test_case_help: TestCaseHelp,
                 test_suite_help: TestSuiteHelp,
-                entity_helps: list,
                 entity_name_2_entity_configuration: dict = ()):
         """
         :type entity_helps: list of `EntitiesHelp`
@@ -46,8 +45,6 @@ class ApplicationHelp(tuple):
         return tuple.__new__(cls, (main_program_help,
                                    test_case_help,
                                    test_suite_help,
-                                   dict(map(lambda eh: (eh.entity_type_name, eh),
-                                            entity_helps)),
                                    dict(entity_name_2_entity_configuration)),
                              )
 
@@ -64,19 +61,10 @@ class ApplicationHelp(tuple):
         return self[2]
 
     @property
-    def entities(self) -> dict:
-        """
-        entity-name -> EntitiesHelp
-
-        :return: str -> :class:`EntitiesHelp`
-        """
-        return self[3]
-
-    @property
     def entity_name_2_entity_configuration(self) -> dict:
         """
         entity-name -> EntityConfiguration
 
         :return: str -> :class:`EntityConfiguration`
         """
-        return self[4]
+        return self[3]

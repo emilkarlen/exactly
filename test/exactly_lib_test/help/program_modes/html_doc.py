@@ -2,7 +2,7 @@ import io
 import unittest
 
 from exactly_lib.help.html_doc import main as sut
-from exactly_lib.help.the_application_help import application_help_for_3
+from exactly_lib.help.the_application_help import new_application_help
 from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
 from exactly_lib_test.processing.test_resources.instruction_set import instruction_set
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -22,8 +22,8 @@ class TestHtmlDoc(unittest.TestCase):
 
     def test_that_html_doc_renderer_returns_valid_section_contents(self):
         # ARRANGE #
-        application_help = application_help_for_3(self.TEST_CASE_INSTRUCTION_SET,
-                                                  self.TEST_SUITE_CONFIGURATION_SECTION_INSTRUCTIONS)
+        application_help = new_application_help(self.TEST_CASE_INSTRUCTION_SET,
+                                                self.TEST_SUITE_CONFIGURATION_SECTION_INSTRUCTIONS)
         # ACT #
         actual = sut.section_contents(application_help)
         # ASSERT #
@@ -31,8 +31,8 @@ class TestHtmlDoc(unittest.TestCase):
 
     def test_generate_and_output_SHOULD_output_xhtml(self):
         # ARRANGE #
-        application_help = application_help_for_3(self.TEST_CASE_INSTRUCTION_SET,
-                                                  self.TEST_SUITE_CONFIGURATION_SECTION_INSTRUCTIONS)
+        application_help = new_application_help(self.TEST_CASE_INSTRUCTION_SET,
+                                                self.TEST_SUITE_CONFIGURATION_SECTION_INSTRUCTIONS)
         output_file = io.StringIO()
         # ACT #
         sut.generate_and_output(output_file, application_help)

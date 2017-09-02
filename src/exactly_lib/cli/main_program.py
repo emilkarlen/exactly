@@ -71,10 +71,10 @@ class MainProgram:
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:
         from exactly_lib.cli.program_modes.help import argument_parsing
         from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
-        from exactly_lib.help.the_application_help import application_help_for_3
+        from exactly_lib.help.the_application_help import new_application_help
         try:
-            application_help = application_help_for_3(self._instruction_set,
-                                                      self._configuration_section_instructions)
+            application_help = new_application_help(self._instruction_set,
+                                                    self._configuration_section_instructions)
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
         except exactly_lib.cli.program_modes.help.error.HelpError as ex:
