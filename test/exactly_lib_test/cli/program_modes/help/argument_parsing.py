@@ -17,7 +17,8 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
+from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation, suite_reporters_help
+from exactly_lib.help.types.contents_structure import types_help
 from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, SUITE_REPORTER_ENTITY_TYPE_NAME, \
     ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.names import formatting
@@ -29,6 +30,22 @@ from exactly_lib_test.help.test_resources import application_help_for
 from exactly_lib_test.help.test_resources import section_documentation, \
     single_line_description_that_identifies_instruction_and_section, \
     SectionDocumentationForSectionWithoutInstructionsTestImpl, application_help_for_suite_sections
+
+
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestProgramHelp))
+    ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
+    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForActor()))
+    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForConcept()))
+    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForSuiteReporter()))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionList))
+    ret_val.addTest(unittest.makeSuite(TestTestSuiteHelp))
+    ret_val.addTest(unittest.makeSuite(TestTestSuiteSingleInstructionInSection))
+    return ret_val
 
 
 class TestProgramHelp(unittest.TestCase):
@@ -113,7 +130,10 @@ class TestTestCasePhase(unittest.TestCase):
                                actors_help(()),
                                TestCaseHelp(map(lambda ph_name: section_documentation(ph_name, []),
                                                 all_phases)),
-                               TestSuiteHelp({}))
+                               TestSuiteHelp({}),
+                               suite_reporters_help(()),
+                               types_help(()),
+                               )
 
 
 class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
@@ -459,22 +479,6 @@ class TestSetupForSuiteReporter(entity_lookup_test_cases.EntityTestSetup):
 
     def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
         return application_help_for([], suite_reporters=entities)
-
-
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestProgramHelp))
-    ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
-    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForActor()))
-    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForConcept()))
-    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForSuiteReporter()))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionList))
-    ret_val.addTest(unittest.makeSuite(TestTestSuiteHelp))
-    ret_val.addTest(unittest.makeSuite(TestTestSuiteSingleInstructionInSection))
-    return ret_val
 
 
 if __name__ == '__main__':

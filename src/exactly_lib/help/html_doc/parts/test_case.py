@@ -10,6 +10,8 @@ from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationRenderer
+from exactly_lib.help.types.all_types import all_types
+from exactly_lib.help.types.render import IndividualTypeRenderer
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
@@ -34,6 +36,11 @@ def generator(header: str,
              HtmlDocHierarchyGeneratorForEntitiesHelp('Actors',
                                                       IndividualActorRenderer,
                                                       ALL_ACTOR_DOCS)
+             ),
+            ('types',
+             HtmlDocHierarchyGeneratorForEntitiesHelp('Types',
+                                                      IndividualTypeRenderer,
+                                                      all_types())
              ),
             ('cli-syntax',
              cli_syntax.generator(texts.COMMAND_LINE_SYNTAX)
