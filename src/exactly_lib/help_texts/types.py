@@ -14,6 +14,11 @@ def name_and_ref_target(name: Name,
                                                     type_cross_ref(name.singular))
 
 
+STRING_CONCEPT_INFO = name_and_ref_target(
+    Name('string', 'strings'),
+    'A sequence of characters.',
+)
+
 LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
     Name('file transformer', 'file transformers'),
     'Transforms the lines of a text file.',

@@ -38,6 +38,8 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             _synopsis(_ns(arguments_for.suite_section_for_name('SECTION')), 'Describes a test suite section.'),
             _synopsis(_ns(arguments_for.suite_instruction_in_section('SECTION', 'INSTRUCTION')),
                       'Describes an instruction in a test suite section.'),
+            _entity_list_and_describe(clo.TYPE, 'TYPE',
+                                      'Lists all types; or describes a given type.'),
             _entity_list_and_describe(clo.ACTOR, 'ACTOR',
                                       'Lists all actors; or describes a given actor.'),
             _entity_list_and_describe(clo.CONCEPT, 'CONCEPT',

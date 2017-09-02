@@ -13,8 +13,10 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.request_renderi
     TestSuiteHelpRendererResolver
 from exactly_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
+from exactly_lib.cli.program_modes.help.types import type_help_request_renderer_resolver
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -60,6 +62,7 @@ def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp
     from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME, CONCEPT_ENTITY_TYPE_NAME, \
         SUITE_REPORTER_ENTITY_TYPE_NAME
     resolvers = {
+        TYPE_ENTITY_TYPE_NAME: type_help_request_renderer_resolver,
         ACTOR_ENTITY_TYPE_NAME: actor_help_request_renderer_resolver,
         CONCEPT_ENTITY_TYPE_NAME: concept_help_request_renderer_resolver,
         SUITE_REPORTER_ENTITY_TYPE_NAME: suite_reporter_help_request_renderer_resolver,

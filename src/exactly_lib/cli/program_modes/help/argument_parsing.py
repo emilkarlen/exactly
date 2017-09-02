@@ -12,7 +12,7 @@ from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
-    SUITE_REPORTER_ENTITY_TYPE_NAME
+    SUITE_REPORTER_ENTITY_TYPE_NAME, TYPE_ENTITY_TYPE_NAME
 from exactly_lib.test_case import phase_identifier
 
 
@@ -163,6 +163,7 @@ def lookup_entity(entities: EntitiesHelp, arguments: list) -> argument_value_loo
 
 
 ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER = {
+    TYPE_ENTITY_TYPE_NAME: ApplicationHelp.types_help.fget,
     ACTOR_ENTITY_TYPE_NAME: ApplicationHelp.actors_help.fget,
     CONCEPT_ENTITY_TYPE_NAME: ApplicationHelp.concepts_help.fget,
     SUITE_REPORTER_ENTITY_TYPE_NAME: ApplicationHelp.suite_reporters_help.fget,

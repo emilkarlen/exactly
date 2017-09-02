@@ -14,6 +14,8 @@ from exactly_lib.help.program_modes.test_suite.section.configuration import Conf
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
 from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
+from exactly_lib.help.types.all_types import all_types
+from exactly_lib.help.types.contents_structure import types_help
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 from exactly_lib.processing.instruction_setup import InstructionsSetup
@@ -27,13 +29,15 @@ class ApplicationHelp(tuple):
                 actors_help: EntitiesHelp,
                 test_case_help: TestCaseHelp,
                 test_suite_help: TestSuiteHelp,
-                suite_reporters_help: EntitiesHelp):
+                suite_reporters_help: EntitiesHelp,
+                types_help: EntitiesHelp):
         return tuple.__new__(cls, (main_program_help,
                                    concepts_help,
                                    test_case_help,
                                    test_suite_help,
                                    actors_help,
-                                   suite_reporters_help))
+                                   suite_reporters_help,
+                                   types_help))
 
     @property
     def main_program_help(self) -> MainProgramHelp:
@@ -59,6 +63,10 @@ class ApplicationHelp(tuple):
     def suite_reporters_help(self) -> EntitiesHelp:
         return self[5]
 
+    @property
+    def types_help(self) -> EntitiesHelp:
+        return self[6]
+
 
 def application_help_for_2(instructions_setup: InstructionsSetup,
                            suite_configuration_section_instructions: dict) -> ApplicationHelp:
@@ -71,7 +79,9 @@ def application_help_for_2(instructions_setup: InstructionsSetup,
                            actors_help(ALL_ACTOR_DOCS),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            test_suite_help(suite_configuration_section_instructions),
-                           suite_reporters_help(ALL_SUITE_REPORTERS))
+                           suite_reporters_help(ALL_SUITE_REPORTERS),
+                           types_help(all_types()),
+                           )
 
 
 def test_suite_help(configuration_section_instructions: dict) -> TestSuiteHelp:
