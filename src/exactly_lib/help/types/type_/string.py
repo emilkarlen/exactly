@@ -1,6 +1,6 @@
 from exactly_lib.help.types.contents_structure import TypeDocumentation
 from exactly_lib.help_texts import type_system
-from exactly_lib.help_texts import types
+from exactly_lib.help_texts.entity import types
 
 
 class StringTypeDocumentation(TypeDocumentation):
