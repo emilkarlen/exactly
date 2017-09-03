@@ -122,7 +122,7 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
             path_description = path_value_with_relativity_name_prefix(path_value,
                                                                       resolving_env.home_and_sds,
                                                                       pathlib.Path.cwd())
-            return 'file ' + path_description
+            return instruction_arguments.FILE_ARGUMENT.name + ' ' + path_description
 
     def _string_fragment(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         expected = self.expected_contents.string_resolver.resolve_value_of_any_dependency(environment)

@@ -1,7 +1,7 @@
 [assert]
 
 
-stdout ! equals expected-contents.txt
+stdout ! equals --file expected-contents.txt
 
 
 [act]
