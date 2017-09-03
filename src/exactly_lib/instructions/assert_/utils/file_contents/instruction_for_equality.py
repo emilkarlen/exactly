@@ -16,7 +16,7 @@ from exactly_lib.test_case_utils.err_msg.path_description import path_value_with
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import HereDocOrFileRef
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import StringResolverOrFileRef
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.util import file_utils
@@ -40,7 +40,7 @@ def _file_diff_description(actual_file_path: pathlib.Path,
 class EqualityChecker(ActualFileChecker):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 expected_contents: HereDocOrFileRef,
+                 expected_contents: StringResolverOrFileRef,
                  description_of_actual_file: PropertyDescriptor):
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
@@ -120,7 +120,7 @@ class EqualityChecker(ActualFileChecker):
             return expected_contents.file_reference_resolver.resolve_value_of_any_dependency(environment)
 
 
-def _validator_of_expected(expected_contents: HereDocOrFileRef) -> PreOrPostSdsValidator:
+def _validator_of_expected(expected_contents: StringResolverOrFileRef) -> PreOrPostSdsValidator:
     if expected_contents.is_here_document:
         return ConstantSuccessValidator()
     file_ref_check = FileRefCheck(expected_contents.file_reference_resolver,
@@ -129,7 +129,7 @@ def _validator_of_expected(expected_contents: HereDocOrFileRef) -> PreOrPostSdsV
 
 
 class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
-    def __init__(self, expected_contents: HereDocOrFileRef):
+    def __init__(self, expected_contents: StringResolverOrFileRef):
         self.expected_contents = expected_contents
 
     def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:

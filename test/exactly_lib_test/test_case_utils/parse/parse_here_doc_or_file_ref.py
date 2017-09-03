@@ -149,6 +149,9 @@ def _expect_file_ref(put: unittest.TestCase,
     # ASSERT #
     put.assertTrue(actual.is_file_ref,
                    'is_file_ref')
+    put.assertIs(actual.source_type,
+                 sut.SourceType.PATH,
+                 'source type')
     put.assertFalse(actual.is_here_document,
                     'is_here_document')
     symbol_references_assertion = equals_symbol_references(expectation.common.symbol_references)
@@ -169,12 +172,15 @@ def _expect_here_doc(put: unittest.TestCase,
     # ASSERT #
     put.assertTrue(actual.is_here_document,
                    'is_here_document')
+    put.assertIs(actual.source_type,
+                 sut.SourceType.HERE_DOC,
+                 'source type')
     put.assertFalse(actual.is_file_ref,
                     'is_file_ref')
     assertion_on_here_doc = hd.matches_resolved_value(expectation.resolved_here_doc_lines,
                                                       expectation.common.symbol_references,
                                                       expectation.common.symbol_table)
-    assertion_on_here_doc.apply_with_message(put, actual.here_document,
+    assertion_on_here_doc.apply_with_message(put, actual.string_resolver,
                                              'here_document')
     _expect_common(put, source, actual,
                    expectation.common)
@@ -182,7 +188,7 @@ def _expect_here_doc(put: unittest.TestCase,
 
 def _expect_common(put: unittest.TestCase,
                    actual_source: ParseSource,
-                   actual_result: sut.HereDocOrFileRef,
+                   actual_result: sut.StringResolverOrFileRef,
                    expectation: CommonExpectation):
     symbol_references_assertion = equals_symbol_references(expectation.symbol_references)
     symbol_references_assertion.apply_with_message(put, actual_result.symbol_usages,
