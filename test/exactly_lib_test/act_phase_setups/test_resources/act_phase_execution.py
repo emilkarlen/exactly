@@ -16,9 +16,10 @@ from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions, sh_assertions
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
