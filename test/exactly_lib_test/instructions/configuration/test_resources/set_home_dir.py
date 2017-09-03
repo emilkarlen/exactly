@@ -13,8 +13,8 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
+from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
-from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType

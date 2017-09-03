@@ -12,9 +12,9 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.execution.partial_execution.test_resources.basic import dummy_act_phase_handling
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
+from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_case_utils.test_resources import sh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
