@@ -7,7 +7,9 @@ from stat import S_IREAD, S_IRGRP, S_IROTH
 
 @contextmanager
 def open_and_make_read_only_on_close(filename: str, mode: str):
-    yield open(filename, mode=mode)
+    f = open(filename, mode=mode)
+    yield f
+    f.close()
     make_file_read_only(filename)
 
 
