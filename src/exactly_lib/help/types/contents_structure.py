@@ -1,6 +1,7 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, Name
+from exactly_lib.test_case_utils.expression.grammar import Grammar
 
 
 class TypeDocumentation(EntityDocumentationBase):
@@ -10,6 +11,25 @@ class TypeDocumentation(EntityDocumentationBase):
         super().__init__(name_and_cross_ref_target)
         self._name_and_cross_ref_target = name_and_cross_ref_target
         self._type_identifier = type_identifier
+
+    """
+    Documents a type of the type system.
+    """
+
+    def type_identifier(self) -> str:
+        return self._type_identifier
+
+    def name(self) -> Name:
+        return self._name_and_cross_ref_target.name
+
+
+class TypeWithExpressionGrammarDocumentation(TypeDocumentation):
+    def __init__(self,
+                 type_identifier: str,
+                 name_and_cross_ref_target: SingularAndPluralNameAndCrossReferenceId,
+                 grammar: Grammar):
+        super().__init__(type_identifier, name_and_cross_ref_target)
+        self._grammar = grammar
 
     """
     Documents a type of the type system.

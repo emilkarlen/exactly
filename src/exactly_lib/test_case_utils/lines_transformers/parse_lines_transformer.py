@@ -45,7 +45,7 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
 
 
 def selector_syntax_element_description() -> SyntaxElementDescription:
-    return syntax_documentation.Syntax(_GRAMMAR).syntax_element_description()
+    return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
 
 
 _TRANSFORMATION_DESCRIPTION = """\
@@ -66,7 +66,7 @@ def parse_optional_transformer_resolver(parser: TokenParserPrime) -> LinesTransf
 
 
 def parse_lines_transformer_from_token_parser(parser: TokenParserPrime) -> LinesTransformerResolver:
-    return parse_expression.parse(_GRAMMAR, parser)
+    return parse_expression.parse(GRAMMAR, parser)
 
 
 def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
@@ -123,7 +123,7 @@ _CONCEPT = grammar.Concept(
     LINES_TRANSFORMER_ARGUMENT,
 )
 
-_GRAMMAR = grammar.Grammar(
+GRAMMAR = grammar.Grammar(
     _CONCEPT,
     mk_reference=resolvers.LinesTransformerReference,
     simple_expressions={

@@ -1,4 +1,4 @@
-from exactly_lib.help.types.type_ import data_types
+from exactly_lib.help.types.type_ import data_types, logic_types
 
 
 def all_types() -> list:
@@ -6,6 +6,8 @@ def all_types() -> list:
         data_types.STRING_DOCUMENTATION,
         data_types.LIST_DOCUMENTATION,
         data_types.PATH_DOCUMENTATION,
+        logic_types.LINES_TRANSFORMER_DOCUMENTATION,
+        logic_types.FILE_SELECTOR_DOCUMENTATION,
     ]
 
 
