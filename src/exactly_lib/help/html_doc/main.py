@@ -50,8 +50,6 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                 'test-case',
                 test_case.generator('Test Cases',
                                     application_help.test_case_help,
-                                    application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME),
-                                    application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME),
                                     )
             ),
             (
@@ -64,6 +62,18 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                 entities_list_renderer.hierarchy_generator(
                     'Concepts',
                     application_help.entity_conf_for(entity_names.CONCEPT_ENTITY_TYPE_NAME)),
+            ),
+            (
+                'actors',
+                entities_list_renderer.hierarchy_generator(
+                    'Actors',
+                    application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME)),
+            ),
+            (
+                'types',
+                entities_list_renderer.hierarchy_generator(
+                    'Types',
+                    application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME)),
             ),
             (
                 'help',
