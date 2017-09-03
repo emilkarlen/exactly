@@ -49,6 +49,7 @@ class TestParse(unittest.TestCase):
     def test_invalid_syntax(self):
         test_cases = [
             source4(''),
+            source4('string superfluous-argument'),
             source4('{file_option} --rel-home file superfluous-argument'.format(
                 file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
             )),
@@ -70,6 +71,17 @@ class TestParse(unittest.TestCase):
         for rel_option_type in sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_options:
             option_string = long_option_syntax(REL_OPTIONS_MAP[rel_option_type].option_name.long)
             instruction_argument = '{file_option} {rel_option} file'.format(
+                file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                rel_option=option_string)
+            with self.subTest(msg='Argument ' + instruction_argument):
+                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                    parser.parse(source)
+
+    def test_succeed_when_syntax_is_correct__string(self):
+        parser = sut.Parser()
+        for rel_option_type in sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_options:
+            option_string = long_option_syntax(REL_OPTIONS_MAP[rel_option_type].option_name.long)
+            instruction_argument = 'string'.format(
                 file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
                 rel_option=option_string)
             with self.subTest(msg='Argument ' + instruction_argument):

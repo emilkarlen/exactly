@@ -22,6 +22,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import SourceType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -85,17 +86,17 @@ class Parser(InstructionParser):
             raise SingleInstructionInvalidArgumentException('Missing arguments: no arguments')
         here_doc_or_file_ref = parse_here_doc_or_file_ref.parse_from_parse_source(source,
                                                                                   RELATIVITY_OPTIONS_CONFIGURATION)
-        if here_doc_or_file_ref.is_file_ref:
+        if not here_doc_or_file_ref.source_type is SourceType.HERE_DOC:
             if not source.is_at_eol__except_for_space:
                 raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
                                                                 str(source.remaining_part_of_current_line))
             source.consume_current_line()
         if not here_doc_or_file_ref.is_file_ref:
-            return _InstructionForHereDocument(here_doc_or_file_ref.string_resolver)
+            return _InstructionForStringResolver(here_doc_or_file_ref.string_resolver)
         return _InstructionForFileRef(here_doc_or_file_ref.file_reference_resolver)
 
 
-class _InstructionForHereDocument(SetupPhaseInstruction):
+class _InstructionForStringResolver(SetupPhaseInstruction):
     def __init__(self, contents: StringResolver):
         self.contents = contents
 
