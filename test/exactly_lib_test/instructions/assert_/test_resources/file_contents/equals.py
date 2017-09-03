@@ -26,6 +26,7 @@ from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
@@ -62,6 +63,7 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
     test_cases_without_rel_opts = [
         _ContentsEqualsAHereDocument,
         _ContentsEqualsAString,
+        _ContentsEqualsAStringAndFollowingLine,
         _ContentsEqualsAHereDocumentWithSymbolReferences,
         _ContentsDoNotEqualAHereDocument,
     ]
@@ -196,6 +198,24 @@ class _ContentsEqualsAString(TestWithConfigurationAndNegationArgumentBase):
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                         source=source_is_at_end),
+        )
+
+
+class _ContentsEqualsAStringAndFollowingLine(TestWithConfigurationAndNegationArgumentBase):
+    def runTest(self):
+        expected_contents = 'expected contents'
+        self._check(
+            self.configuration.source_for(
+                args('{maybe_not} {equals} {expected_contents}  ',
+                     expected_contents=surrounded_by_hard_quotes_str(expected_contents),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
+                ['following line']
+            ),
+            self.configuration.arrangement_for_contents(
+                expected_contents,
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
+                        source=asrt_source.is_at_beginning_of_line(2)),
         )
 
 
