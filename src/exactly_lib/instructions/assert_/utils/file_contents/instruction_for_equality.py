@@ -2,7 +2,6 @@ import difflib
 import filecmp
 import pathlib
 
-from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
     ActualFileChecker
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
@@ -10,13 +9,11 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
-from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import StringResolverOrFileRef
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import StringResolverOrFileRef, ExpectedValueResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.util import file_utils
@@ -50,7 +47,7 @@ class EqualityChecker(ActualFileChecker):
         self._failure_resolver = DiffFailureInfoResolver(
             description_of_actual_file,
             expectation_type,
-            ExpectedValueResolver(expected_contents),
+            ExpectedValueResolver(_EQUALITY_CHECK_EXPECTED_VALUE, expected_contents),
         )
 
     @property
@@ -126,22 +123,3 @@ def _validator_of_expected(expected_contents: StringResolverOrFileRef) -> PreOrP
     file_ref_check = FileRefCheck(expected_contents.file_reference_resolver,
                                   must_exist_as(FileType.REGULAR))
     return FileRefCheckValidator(file_ref_check)
-
-
-class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
-    def __init__(self, expected_contents: StringResolverOrFileRef):
-        self.expected_contents = expected_contents
-
-    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        return _EQUALITY_CHECK_EXPECTED_VALUE + ' ' + self._expected_obj_description(environment)
-
-    def _expected_obj_description(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        if self.expected_contents.string_resolver:
-            return instruction_arguments.HERE_DOCUMENT.name
-        if self.expected_contents.is_file_ref:
-            resolving_env = environment.path_resolving_environment_pre_or_post_sds
-            path_value = self.expected_contents.file_reference_resolver.resolve(resolving_env.symbols)
-            path_description = path_value_with_relativity_name_prefix(path_value,
-                                                                      resolving_env.home_and_sds,
-                                                                      pathlib.Path.cwd())
-            return 'file ' + path_description

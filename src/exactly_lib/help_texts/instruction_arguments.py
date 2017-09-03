@@ -4,6 +4,8 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 
+STRING = a.Named('STRING')
+
 REG_EX = a.Named('REG-EX')
 
 SYMBOL_REFERENCE = a.Named('SYMBOL-REFERENCE')
