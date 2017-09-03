@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
@@ -128,7 +128,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
                 NamedElementReference(symbol_for_source_file.name,
                                       path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
                 NamedElementReference(argument_symbol.name,
-                                      no_restrictions()),
+                                      is_any_data_type()),
             ]),
         )
         self._check(command_line,

@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -133,12 +133,12 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
                 matches_reference_2(
                     execute_program_option_symbol.name,
                     equals_symbol_reference_restrictions(
-                        no_restrictions()
+                        is_any_data_type()
                     )),
                 matches_reference_2(
                     exit_code_symbol.name,
                     equals_symbol_reference_restrictions(
-                        no_restrictions()
+                        is_any_data_type()
                     )),
             ]),
             main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
@@ -280,7 +280,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                         ))),
                 matches_reference_2(
                     exit_code_symbol.name,
-                    equals_symbol_reference_restrictions(no_restrictions()
+                    equals_symbol_reference_restrictions(is_any_data_type()
                                                          )),
             ]),
             main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
@@ -367,12 +367,12 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
                 matches_reference_2(
                     execute_program_option_symbol.name,
                     equals_symbol_reference_restrictions(
-                        no_restrictions()
+                        is_any_data_type()
                     )),
                 matches_reference_2(
                     exit_code_symbol.name,
                     equals_symbol_reference_restrictions(
-                        no_restrictions()
+                        is_any_data_type()
                     )),
             ]),
             main_result=spr_check.is_success_result(exit_code_symbol.value, ''),

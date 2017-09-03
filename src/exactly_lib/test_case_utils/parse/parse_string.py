@@ -1,7 +1,7 @@
 from exactly_lib.help_texts.type_system import STRING_TYPE
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.restriction import ReferenceRestrictions
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, ConstantStringFragmentResolver, \
     StringFragmentResolver, \
     SymbolStringFragmentResolver
@@ -94,6 +94,6 @@ def string_resolver_from_fragments(fragments,
     :type fragments: List of `symbol_syntax.Fragment`
     """
     if reference_restrictions is None:
-        reference_restrictions = no_restrictions()
+        reference_restrictions = is_any_data_type()
     return StringResolver(tuple([fragment_resolver_from_fragment(f, reference_restrictions)
                                  for f in fragments]))

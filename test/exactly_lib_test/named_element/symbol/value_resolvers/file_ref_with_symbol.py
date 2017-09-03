@@ -5,7 +5,7 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
-    no_restrictions
+    is_any_data_type
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction, \
     FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_resolvers import file_ref_with_symbol as sut
@@ -89,7 +89,7 @@ class TestRelSymbol(unittest.TestCase):
              ()
              ),
             (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol_name',
-                                                                                         no_restrictions())),
+                                                                                         is_any_data_type())),
              (Entry('path_suffix_symbol_name',
                     string_constant_container('path-suffix')),),
              ),
@@ -127,7 +127,7 @@ class TestRelSymbol(unittest.TestCase):
             (PathPartResolverAsFixedPath(path_suffix_str), ()
              ),
             (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol',
-                                                                                         no_restrictions())),
+                                                                                         is_any_data_type())),
              (Entry('path_suffix_symbol',
                     string_constant_container(path_suffix_str)),)
              ),

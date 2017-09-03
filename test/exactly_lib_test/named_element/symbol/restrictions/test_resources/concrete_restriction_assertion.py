@@ -13,7 +13,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
-is_no_restriction = asrt.is_instance(AnySymbolTypeRestriction)
+is_any_data_type_restriction = asrt.is_instance(AnySymbolTypeRestriction)
 
 is_string_value_restriction = asrt.is_instance(StringRestriction)
 
@@ -98,7 +98,7 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
         self.put = put
 
     def visit_none(self, expected: AnySymbolTypeRestriction):
-        is_no_restriction.apply(self.put, self.actual, self.message_builder)
+        is_any_data_type_restriction.apply(self.put, self.actual, self.message_builder)
 
     def visit_string(self, expected: StringRestriction):
         equals_string_restriction(expected).apply(self.put, self.actual, self.message_builder)

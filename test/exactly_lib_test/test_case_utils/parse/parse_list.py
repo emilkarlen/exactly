@@ -180,7 +180,7 @@ class TestSingleElementList(unittest.TestCase):
                              sr.ConstantStringFragmentResolver(single_token_value),
                              sr.SymbolStringFragmentResolver(
                                  NamedElementReference(string_symbol.name,
-                                                       reference_restrictions.no_restrictions())
+                                                       reference_restrictions.is_any_data_type())
                              ),
                          ]))],
                      source=
@@ -332,7 +332,7 @@ class TestMultipleElementList(unittest.TestCase):
                  [
                      lr.string_element(sr.resolver_from_fragments([
                          sr.SymbolStringFragmentResolver(NamedElementReference(symbol_name,
-                                                                               reference_restrictions.no_restrictions())),
+                                                                               reference_restrictions.is_any_data_type())),
                          sr.ConstantStringFragmentResolver(single_token_value),
                      ])),
                      lr.string_element(sr.string_constant(single_token_value_1)),

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import command_line as sut
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.act_phase_handling import ParseException
@@ -96,7 +96,7 @@ class TestSymbolReferences(unittest.TestCase):
         act_phase_instructions = [instr([shell_command_source_line_for(shell_source_line)])]
 
         expected_symbol_references = [
-            NamedElementReference(symbol.name, no_restrictions()),
+            NamedElementReference(symbol.name, is_any_data_type()),
         ]
 
         check_execution(

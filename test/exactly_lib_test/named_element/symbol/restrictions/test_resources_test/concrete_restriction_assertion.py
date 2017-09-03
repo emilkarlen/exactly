@@ -142,11 +142,11 @@ class TestIsNoRestriction(unittest.TestCase):
         ]
         for restriction in test_cases:
             with self.subTest():
-                sut.is_no_restriction.apply_without_message(self, restriction)
+                sut.is_any_data_type_restriction.apply_without_message(self, restriction)
 
     def test_not_equals__different__types(self):
         actual = StringRestriction()
-        assert_that_assertion_fails(sut.is_no_restriction, actual)
+        assert_that_assertion_fails(sut.is_any_data_type_restriction, actual)
 
 
 class TestIsStringRestriction(unittest.TestCase):

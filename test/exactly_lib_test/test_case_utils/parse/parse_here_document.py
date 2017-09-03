@@ -6,6 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_utils.parse import parse_here_document as sut
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib_test.named_element.symbol.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.named_element.symbol.test_resources import references
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_string_values_from_name_and_value
 from exactly_lib_test.section_document.parser_implementations.optional_description_and_instruction_parser import \
@@ -172,7 +173,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                         symbol=symbol1.value),
                 ],
                     symbol_references=[
-                        hd.reference_to(symbol1),
+                        references.reference_to_any_data_type_value(symbol1.name),
                     ],
                     symbols=symbol_table_with_string_values_from_name_and_value([
                         symbol1,
@@ -201,9 +202,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
                         second_symbol=symbol3.value),
                 ],
                     symbol_references=[
-                        hd.reference_to(symbol1),
-                        hd.reference_to(symbol2),
-                        hd.reference_to(symbol3),
+                        references.reference_to_any_data_type_value(symbol1.name),
+                        references.reference_to_any_data_type_value(symbol2.name),
+                        references.reference_to_any_data_type_value(symbol3.name),
                     ],
                     symbols=symbol_table_with_string_values_from_name_and_value([
                         symbol1,

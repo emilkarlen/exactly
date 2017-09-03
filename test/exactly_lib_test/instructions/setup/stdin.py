@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.named_element.symbol.string_resolver import StringResolver, string_constant
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -176,7 +176,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         symbol = NameAndValue('symbol_name', 'the symbol value')
         expected_symbol_references = [
             NamedElementReference(symbol.name,
-                                  no_restrictions())
+                                  is_any_data_type())
         ]
         cases = [
             ('string value container',

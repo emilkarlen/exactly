@@ -91,7 +91,7 @@ class Parser(InstructionParser):
                                                                 str(source.remaining_part_of_current_line))
             source.consume_current_line()
         if here_doc_or_file_ref.is_here_document:
-            return _InstructionForHereDocument(here_doc_or_file_ref.here_document)
+            return _InstructionForHereDocument(here_doc_or_file_ref.string_resolver)
         return _InstructionForFileRef(here_doc_or_file_ref.file_reference_resolver)
 
 

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.named_element.symbol.value_resolvers import path_part_resolvers as sut
 from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util import symbol_table as st
@@ -87,4 +87,4 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
 
     @staticmethod
     def _symbol_reference(symbol_name: str) -> NamedElementReference:
-        return NamedElementReference(symbol_name, no_restrictions())
+        return NamedElementReference(symbol_name, is_any_data_type())

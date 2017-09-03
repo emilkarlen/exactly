@@ -217,9 +217,9 @@ class SymbolReferenceRestrictionsVisitor:
         raise NotImplementedError()
 
 
-def no_restrictions() -> SymbolReferenceRestrictions:
+def is_any_data_type() -> SymbolReferenceRestrictions:
     """
-    :return: A restriction that is unconditionally satisfied
+    :return: A restriction that is satisfied iff the symbol is a data value
     """
     return ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction())
 

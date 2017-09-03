@@ -6,8 +6,7 @@ from exactly_lib.instructions.setup import assign_symbol as sut
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition, NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect, \
-    no_restrictions
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
@@ -24,6 +23,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.named_element.symbol.test_resources import references
 from exactly_lib_test.named_element.symbol.test_resources import symbol_structure_assertions as vs_asrt
 from exactly_lib_test.named_element.symbol.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.named_element.symbol.test_resources.symbol_usage_assertions import \
@@ -267,7 +267,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         ),
             ['following line'],
         )
-        expected_symbol_reference = NamedElementReference(referred_symbol.name, no_restrictions())
+        expected_symbol_reference = references.reference_to_any_data_type_value(referred_symbol.name)
         expected_resolver = lr.ListResolver([lr.SymbolReferenceElement(expected_symbol_reference)])
 
         expected_resolver_container = container(expected_resolver)

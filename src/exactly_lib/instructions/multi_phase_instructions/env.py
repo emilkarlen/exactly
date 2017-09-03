@@ -8,7 +8,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils import instruction_
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForUnconditionalSuccess
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -130,7 +130,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
         if not tokens_for_value.is_null:
             raise SingleInstructionInvalidArgumentException(_format('Superfluous arguments.'))
         value_resolver = parse_string.parse_string_resolver_from_token(value_token,
-                                                                       no_restrictions())
+                                                                       is_any_data_type())
         executor = _SetExecutor(variable_name, value_resolver)
         return TheInstructionEmbryo(executor, value_resolver.references)
 
