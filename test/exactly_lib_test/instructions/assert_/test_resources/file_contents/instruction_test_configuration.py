@@ -5,6 +5,7 @@ from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTEN
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -104,6 +105,7 @@ _FORMAT_MAP = {
     'contains': instruction_options.CONTAINS_ARGUMENT,
     'empty': instruction_options.EMPTY_ARGUMENT,
     'equals': instruction_options.EQUALS_ARGUMENT,
+    'file_option': option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
     'not': instruction_options.NOT_ARGUMENT,
     'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
     'rel_home_case_option': file_ref_texts.REL_HOME_CASE_OPTION,
