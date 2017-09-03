@@ -4,7 +4,7 @@ import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
@@ -175,7 +175,7 @@ class TestSymbolUsages(unittest.TestCase):
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references(
                 [NamedElementReference(symbol.name,
-                                       no_restrictions())]
+                                       is_any_data_type())]
             )
         )
         act_phase_execution.check_execution(self,

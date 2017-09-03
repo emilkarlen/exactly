@@ -2,7 +2,7 @@ import sys
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import shell as sut
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
@@ -64,10 +64,10 @@ class TestSymbolReferences(unittest.TestCase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_symbol_reference_restrictions(no_restrictions())),
+                    equals_symbol_reference_restrictions(is_any_data_type())),
                 matches_reference_2(
                     file_to_interpret_symbol.name,
-                    equals_symbol_reference_restrictions(no_restrictions())),
+                    equals_symbol_reference_restrictions(is_any_data_type())),
             ]),
             main_result=spr_check.is_success_result(expected_exit_status, ''),
         )

@@ -40,7 +40,7 @@ class TestIsElementTypeRestriction(unittest.TestCase):
         # ARRANGE #
         assertion_to_check = sut.is_element_type_restriction(ElementType.SYMBOL)
 
-        restriction = reference_restrictions.no_restrictions()
+        restriction = reference_restrictions.is_any_data_type()
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, restriction)
 
@@ -71,6 +71,6 @@ class TestIsValueTypeRestriction(unittest.TestCase):
         # ARRANGE #
         assertion_to_check = sut.is_value_type_restriction(ValueType.PATH)
 
-        restriction = reference_restrictions.no_restrictions()
+        restriction = reference_restrictions.is_any_data_type()
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, restriction)

@@ -9,7 +9,8 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
-from exactly_lib_test.named_element.symbol.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.named_element.symbol.test_resources import here_doc_assertion_utils as asrt_hd
+from exactly_lib_test.named_element.symbol.test_resources import references
 from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
@@ -84,7 +85,7 @@ class TestHereDoc(unittest.TestCase):
             ],
             common=CommonExpectation(
                 symbol_references=[
-                    hd.reference_to(symbol1),
+                    references.reference_to_any_data_type_value(symbol1.name),
                 ],
                 symbol_table=symbol_table_with_string_values_from_name_and_value([
                     symbol1,
@@ -177,9 +178,9 @@ def _expect_here_doc(put: unittest.TestCase,
                  'source type')
     put.assertFalse(actual.is_file_ref,
                     'is_file_ref')
-    assertion_on_here_doc = hd.matches_resolved_value(expectation.resolved_here_doc_lines,
-                                                      expectation.common.symbol_references,
-                                                      expectation.common.symbol_table)
+    assertion_on_here_doc = asrt_hd.matches_resolved_value(expectation.resolved_here_doc_lines,
+                                                           expectation.common.symbol_references,
+                                                           expectation.common.symbol_table)
     assertion_on_here_doc.apply_with_message(put, actual.string_resolver,
                                              'here_document')
     _expect_common(put, source, actual,

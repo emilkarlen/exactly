@@ -8,7 +8,7 @@ from exactly_lib.instructions.utils.parse import parse_executable_file as sut
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
-    no_restrictions
+    is_any_data_type
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
 from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
@@ -301,7 +301,7 @@ class TestParseWithSymbols(unittest.TestCase):
                                                                                       indirect=StringRestriction()),
                                                                                   )
         reference_of_string_symbol_as_argument = NamedElementReference(string_symbol.name,
-                                                                       no_restrictions(),
+                                                                       is_any_data_type(),
                                                                        )
         symbols = SymbolTable({
             file_symbol.name: su.container(FileRefConstant(file_symbol.value)),

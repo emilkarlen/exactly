@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case import eh
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -82,7 +82,7 @@ class TestConstructor(unittest.TestCase):
         # ARRANGE #
         expected_symbol_references = [
             NamedElementReference('symbol_name',
-                                  no_restrictions())
+                                  is_any_data_type())
         ]
         constructor = sut.Constructor(ParserWithConstantResult(
             SymbolUserWithConstantSymbolReferences(expected_symbol_references)),

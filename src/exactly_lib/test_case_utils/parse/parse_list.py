@@ -1,7 +1,7 @@
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse as tp
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
@@ -59,7 +59,7 @@ def element_of(token: Token) -> lr.Element:
             return _symbol_reference_element(single_fragment.value)
     else:
         string_resolver = parse_string.string_resolver_from_fragments(string_fragments,
-                                                                      no_restrictions())
+                                                                      is_any_data_type())
         return lr.StringResolverElement(string_resolver)
 
 
@@ -73,4 +73,4 @@ def _symbol_reference_element(s: str) -> lr.Element:
 
 def _symbol_reference(symbol_name: str) -> NamedElementReference:
     return NamedElementReference(symbol_name,
-                                 no_restrictions())
+                                 is_any_data_type())

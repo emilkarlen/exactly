@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import no_restrictions
+from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -303,7 +303,7 @@ class TestSymbolReferences(TestCaseBase):
                 ACCEPTED_RELATIVITY_VARIANTS))
         expected_here_doc_symbol_reference = NamedElementReference(
             here_doc_symbol.name,
-            no_restrictions())
+            is_any_data_type())
 
         here_doc_line_template = 'pre symbol {symbol} post symbol'
 

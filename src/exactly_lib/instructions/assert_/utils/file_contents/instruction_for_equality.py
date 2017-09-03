@@ -111,7 +111,7 @@ class EqualityChecker(ActualFileChecker):
                                                    environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
         expected_contents = self._expected_contents
         if expected_contents.is_here_document:
-            contents = expected_contents.here_document.resolve_value_of_any_dependency(environment)
+            contents = expected_contents.string_resolver.resolve_value_of_any_dependency(environment)
             return tmp_text_file_containing(contents,
                                             prefix='contents-',
                                             suffix='.txt',
@@ -136,7 +136,7 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         return _EQUALITY_CHECK_EXPECTED_VALUE + ' ' + self._expected_obj_description(environment)
 
     def _expected_obj_description(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        if self.expected_contents.here_document:
+        if self.expected_contents.string_resolver:
             return instruction_arguments.HERE_DOCUMENT.name
         if self.expected_contents.is_file_ref:
             resolving_env = environment.path_resolving_environment_pre_or_post_sds
