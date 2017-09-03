@@ -19,6 +19,16 @@ STRING_CONCEPT_INFO = name_and_ref_target(
     'A sequence of characters.',
 )
 
+LIST_CONCEPT_INFO = name_and_ref_target(
+    Name('list', 'lists'),
+    'A sequence of zero or more strings.',
+)
+
+PATH_CONCEPT_INFO = name_and_ref_target(
+    Name('path', 'paths'),
+    'A path of a file or directory, with special support for the test case directories.',
+)
+
 LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
     Name('file transformer', 'file transformers'),
     'Transforms the lines of a text file.',
