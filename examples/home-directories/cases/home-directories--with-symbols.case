@@ -47,5 +47,5 @@ do-something-good-with @[TEST_FILE]@
 [assert]
 
 
-contents @[TEST_FILE]@ equals @[FILE_WITH_EXPECTED_CONTENTS]@
+contents @[TEST_FILE]@ equals --file @[FILE_WITH_EXPECTED_CONTENTS]@
 

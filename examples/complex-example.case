@@ -83,7 +83,7 @@ contents a-file.txt empty
 
 contents a-second-file.txt ! empty
 
-contents another-file.txt --with-replaced-env-vars equals expected-content.txt
+contents another-file.txt --with-replaced-env-vars equals --file expected-content.txt
 
 exists --dir actual-file
 

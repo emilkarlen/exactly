@@ -49,4 +49,4 @@ do-something-good-with test-file.txt
 
 # The "contents" instruction looks for referenced files in the "case home" directory.
 
-contents test-file.txt equals expectation/expected.txt
+contents test-file.txt equals --file expectation/expected.txt
