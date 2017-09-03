@@ -13,8 +13,6 @@ from exactly_lib.util.symbol_table import symbol_table_with_entries, SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
@@ -28,6 +26,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt, \
+    relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe

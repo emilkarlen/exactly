@@ -6,10 +6,10 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, python_executable_file
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

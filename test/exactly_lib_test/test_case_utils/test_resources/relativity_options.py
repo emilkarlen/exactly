@@ -319,7 +319,8 @@ def default_conf_rel_non_home(relativity: RelNonHomeOptionType) -> RelativityOpt
 
 def symbol_conf_rel_non_home(relativity: RelNonHomeOptionType,
                              symbol_name: str,
-                             accepted_relativities: PathRelativityVariants) -> RelativityOptionConfigurationForRelNonHome:
+                             accepted_relativities: PathRelativityVariants
+                             ) -> RelativityOptionConfigurationForRelNonHome:
     return RelativityOptionConfigurationForRelNonHomeBase(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
