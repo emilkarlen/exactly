@@ -1,8 +1,7 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import header_texts
-from exactly_lib.help.actors.all_actor_docs import ALL_ACTOR_DOCS
-from exactly_lib.help.actors.render import IndividualActorRenderer
-from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocHierarchyGeneratorForEntitiesHelp
+from exactly_lib.help.contents_structure import EntityConfiguration
+from exactly_lib.help.html_doc.parts.utils import entities_list_renderer
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
@@ -10,15 +9,15 @@ from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationRenderer
-from exactly_lib.help.types.all_types import all_types
-from exactly_lib.help.types.render import IndividualTypeRenderer
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
 
 
 def generator(header: str,
-              test_case_help: TestCaseHelp) -> section_hierarchy_rendering.SectionHierarchyGenerator:
+              test_case_help: TestCaseHelp,
+              actors: EntityConfiguration,
+              types: EntityConfiguration) -> section_hierarchy_rendering.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help)
     return section_hierarchy_rendering.parent(
         header,
@@ -33,14 +32,10 @@ def generator(header: str,
              sections_helper.generator_for_sections('Phases')
              ),
             ('actors',
-             HtmlDocHierarchyGeneratorForEntitiesHelp('Actors',
-                                                      IndividualActorRenderer,
-                                                      ALL_ACTOR_DOCS)
+             entities_list_renderer.hierarchy_generator('Actors', actors)
              ),
             ('types',
-             HtmlDocHierarchyGeneratorForEntitiesHelp('Types',
-                                                      IndividualTypeRenderer,
-                                                      all_types())
+             entities_list_renderer.hierarchy_generator('Types', types)
              ),
             ('cli-syntax',
              cli_syntax.generator(header_texts.COMMAND_LINE_SYNTAX)

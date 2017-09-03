@@ -60,6 +60,9 @@ class ApplicationHelp(tuple):
     def test_suite_help(self) -> TestSuiteHelp:
         return self[2]
 
+    def entity_conf_for(self, entity_type_name: str) -> EntityConfiguration:
+        return self.entity_name_2_entity_configuration[entity_type_name]
+
     @property
     def entity_name_2_entity_configuration(self) -> dict:
         """

@@ -5,11 +5,24 @@ Makes it possible to reuse some code for generating documentation.
 """
 import types
 
+from exactly_lib.help.contents_structure import EntityConfiguration
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import sorted_entity_list
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, SectionRendererNode, \
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
     LeafSectionRendererNode, SectionRendererNodeWithSubSections
 from exactly_lib.help_texts import cross_reference_id as cross_ref
+
+
+def hierarchy_generator(header: str,
+                        entity_conf: EntityConfiguration,
+                        ) -> SectionHierarchyGenerator:
+    """
+    Utility to make a hierarchy from an `EntityConfiguration`
+    """
+    return HtmlDocHierarchyGeneratorForEntitiesHelp(header,
+                                                    entity_conf.entity_doc_2_section_contents_renderer,
+                                                    entity_conf.entities_help.all_entities)
 
 
 class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
