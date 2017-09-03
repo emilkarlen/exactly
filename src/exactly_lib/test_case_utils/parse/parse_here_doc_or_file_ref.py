@@ -1,10 +1,15 @@
 import enum
+import pathlib
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case_utils.err_msg import diff_msg_utils
+from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
@@ -88,3 +93,31 @@ def parse_from_parse_source(source: ParseSource,
 def _raise_ex(source: ParseSource) -> StringResolverOrFileRef:
     msg = 'Neither a "here document" nor a file reference: {}'.format(source.remaining_part_of_current_line)
     raise SingleInstructionInvalidArgumentException(msg)
+
+
+class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
+    def __init__(self,
+                 prefix: str,
+                 expected_contents: StringResolverOrFileRef):
+        self._prefix = prefix
+        self.expected_contents = expected_contents
+
+    def resolve(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+        prefix = ''
+        if self._prefix:
+            prefix = self._prefix + ' '
+        return prefix + self._expected_obj_description(environment)
+
+    def _expected_obj_description(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+        source_type = self.expected_contents.source_type
+        if source_type is SourceType.HERE_DOC:
+            return instruction_arguments.HERE_DOCUMENT.name
+        elif source_type is SourceType.STRING:
+            return instruction_arguments.STRING.name
+        else:
+            resolving_env = environment.path_resolving_environment_pre_or_post_sds
+            path_value = self.expected_contents.file_reference_resolver.resolve(resolving_env.symbols)
+            path_description = path_value_with_relativity_name_prefix(path_value,
+                                                                      resolving_env.home_and_sds,
+                                                                      pathlib.Path.cwd())
+            return 'file ' + path_description
