@@ -14,5 +14,13 @@ def surrounded_by_soft_quotes(surrounded: str) -> Surrounded:
     return Surrounded(SOFT_QUOTE_CHAR, surrounded)
 
 
+def surrounded_by_soft_quotes_str(surrounded: str) -> str:
+    return str(Surrounded(SOFT_QUOTE_CHAR, surrounded))
+
+
 def surrounded_by_hard_quotes(surrounded: str) -> Surrounded:
     return Surrounded(HARD_QUOTE_CHAR, surrounded)
+
+
+def surrounded_by_hard_quotes_str(surrounded: str) -> str:
+    return str(Surrounded(HARD_QUOTE_CHAR, surrounded))
