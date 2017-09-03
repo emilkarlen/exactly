@@ -1,0 +1,16 @@
+[setup]
+
+
+stdin 'actual contents'
+
+
+[assert]
+
+
+stdout equals 'expected contents'
+
+
+[act]
+
+
+$ cat

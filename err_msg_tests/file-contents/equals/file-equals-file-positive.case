@@ -9,7 +9,7 @@ EOF
 [assert]
 
 
-contents checked-file equals expected-contents.txt
+contents checked-file equals --file expected-contents.txt
 
 
 [act]
