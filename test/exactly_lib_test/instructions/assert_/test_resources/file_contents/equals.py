@@ -36,6 +36,7 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 
 class InstructionTestConfigurationForEquals(InstructionTestConfigurationForContentsOrEquals):
@@ -60,6 +61,7 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
 
     test_cases_without_rel_opts = [
         _ContentsEqualsAHereDocument,
+        _ContentsEqualsAString,
         _ContentsEqualsAHereDocumentWithSymbolReferences,
         _ContentsDoNotEqualAHereDocument,
     ]
@@ -174,6 +176,23 @@ class _ContentsEqualsAHereDocument(TestWithConfigurationAndNegationArgumentBase)
                  'EOF']),
             self.configuration.arrangement_for_contents(
                 lines_content(['expected content line']),
+                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
+            Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
+                        source=source_is_at_end),
+        )
+
+
+class _ContentsEqualsAString(TestWithConfigurationAndNegationArgumentBase):
+    def runTest(self):
+        expected_contents = 'expected contents'
+        self._check(
+            self.configuration.source_for(
+                args('{maybe_not} {equals} {expected_contents}',
+                     expected_contents=surrounded_by_hard_quotes_str(expected_contents),
+                     maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
+            ),
+            self.configuration.arrangement_for_contents(
+                expected_contents,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                         source=source_is_at_end),
