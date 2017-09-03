@@ -1,3 +1,5 @@
+import enum
+
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -10,51 +12,63 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
 CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
 
-class HereDocOrFileRef(tuple):
+class SourceType(enum.Enum):
+    HERE_DOC = 2
+    PATH = 3
+
+
+class StringResolverOrFileRef(tuple):
     def __new__(cls,
-                here_document: StringResolver,
+                source_type: SourceType,
+                string_resolver: StringResolver,
                 file_reference: FileRefResolver):
-        return tuple.__new__(cls, (here_document, file_reference))
+        return tuple.__new__(cls, (source_type,
+                                   string_resolver,
+                                   file_reference,
+                                   (string_resolver.references
+                                    if string_resolver is not None
+                                    else file_reference.references)))
 
     @property
     def is_here_document(self) -> bool:
-        return self.here_document is not None
+        return self.source_type is SourceType.HERE_DOC
 
     @property
     def is_file_ref(self) -> bool:
-        return not self.is_here_document
+        return self.source_type is SourceType.PATH
 
     @property
-    def here_document(self) -> StringResolver:
+    def source_type(self) -> SourceType:
         return self[0]
 
     @property
-    def file_reference_resolver(self) -> FileRefResolver:
+    def string_resolver(self) -> StringResolver:
         return self[1]
 
     @property
+    def file_reference_resolver(self) -> FileRefResolver:
+        return self[2]
+
+    @property
     def symbol_usages(self) -> list:
-        if self.is_file_ref:
-            return self.file_reference_resolver.references
-        else:
-            return self.here_document.references
+        return self[3]
 
 
 def parse_from_parse_source(source: ParseSource,
-                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> HereDocOrFileRef:
+                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringResolverOrFileRef:
     try:
         copy_of_source = source.copy
         here_doc = parse_here_document.parse_as_last_argument(False, copy_of_source)
         source.catch_up_with(copy_of_source)
         if source.is_at_eol__except_for_space:
             source.consume_current_line()
-        return HereDocOrFileRef(here_doc, None)
+        return StringResolverOrFileRef(SourceType.HERE_DOC, here_doc, None)
     except HereDocumentContentsParsingException as ex:
         raise ex
     except SingleInstructionInvalidArgumentException:
         try:
             file_reference = parse_file_ref.parse_file_ref_from_parse_source(source, conf)
-            return HereDocOrFileRef(None, file_reference)
+            return StringResolverOrFileRef(SourceType.PATH, None, file_reference)
         except SingleInstructionInvalidArgumentException:
             msg = 'Neither a "here document" nor a file reference: {}'.format(source.remaining_part_of_current_line)
             raise SingleInstructionInvalidArgumentException(msg)
