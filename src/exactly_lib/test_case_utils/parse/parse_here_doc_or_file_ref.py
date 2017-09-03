@@ -1,7 +1,9 @@
 import enum
 import pathlib
+import shlex
 
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -109,15 +111,23 @@ class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
         return prefix + self._expected_obj_description(environment)
 
     def _expected_obj_description(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+        resolving_env = environment.path_resolving_environment_pre_or_post_sds
         source_type = self.expected_contents.source_type
         if source_type is SourceType.HERE_DOC:
             return instruction_arguments.HERE_DOCUMENT.name
         elif source_type is SourceType.STRING:
-            return instruction_arguments.STRING.name
+            return instruction_arguments.STRING.name + ' ' + self._string_fragment(resolving_env)
         else:
-            resolving_env = environment.path_resolving_environment_pre_or_post_sds
             path_value = self.expected_contents.file_reference_resolver.resolve(resolving_env.symbols)
             path_description = path_value_with_relativity_name_prefix(path_value,
                                                                       resolving_env.home_and_sds,
                                                                       pathlib.Path.cwd())
             return 'file ' + path_description
+
+    def _string_fragment(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+        expected = self.expected_contents.string_resolver.resolve_value_of_any_dependency(environment)
+        max_num_chars = 20
+        string_fragment = shlex.quote(expected[:max_num_chars])
+        if len(expected) > max_num_chars:
+            string_fragment += '...'
+        return '(' + string_fragment + ')'
