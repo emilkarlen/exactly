@@ -94,7 +94,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args('{maybe_not} {equals} {relativity_option} non-existing-file.txt',
+                args('{maybe_not} {equals} {file_option} {relativity_option} non-existing-file.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(
@@ -109,7 +109,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args('{maybe_not} {equals} {relativity_option} dir',
+                args('{maybe_not} {equals} {file_option} {relativity_option} dir',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             ArrangementPostAct(
@@ -126,7 +126,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args('{maybe_not} {equals} {relativity_option} expected.txt',
+                args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
@@ -147,7 +147,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args('{maybe_not} {equals} {relativity_option} expected.txt',
+                args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_actual_and_expected(
@@ -251,10 +251,12 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         )
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args('{transform_option} {transformer} {maybe_not} {equals} {relativity_option} expected.txt',
-                     transformer=named_transformer.name,
-                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                     relativity_option=self.rel_opt.option_string)),
+                args(
+                    '{transform_option} {transformer} {maybe_not} {equals} '
+                    '{file_option} {relativity_option} expected.txt',
+                    transformer=named_transformer.name,
+                    maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
+                    relativity_option=self.rel_opt.option_string)),
             self.configuration.arrangement_for_contents_from_fun(
                 contents_generator.contents_before_replacement,
                 home_or_sds_contents=populator_for_relativity_option_root_for_contents_from_fun(

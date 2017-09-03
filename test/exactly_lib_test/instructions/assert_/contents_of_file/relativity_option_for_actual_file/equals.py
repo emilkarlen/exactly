@@ -5,8 +5,10 @@ from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_ins
 from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
+from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
@@ -47,7 +49,8 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
 class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
+            args('{relativity_option} actual.txt {maybe_not} {equals} '
+                 '{file_option} {rel_home_case_option} expected.txt',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
@@ -63,9 +66,10 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
 class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual-dir {maybe_not} {equals} {rel_home_case_option} expected.txt',
-                 relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
+            args(
+                '{relativity_option} actual-dir {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
+                relativity_option=self.rel_opt.option_string,
+                maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
@@ -81,9 +85,10 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
 class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
-                 relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
+            args(
+                '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
+                relativity_option=self.rel_opt.option_string,
+                maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
@@ -102,9 +107,10 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
 class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {equals} {rel_home_case_option} expected.txt',
-                 relativity_option=self.rel_opt.option_string,
-                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
+            args(
+                '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
+                relativity_option=self.rel_opt.option_string,
+                maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
@@ -156,9 +162,10 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         ])
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {equals} '
-                 '{rel_symbol_option} {rel_symbol_name} expected.txt',
+                 '{file_option} {rel_symbol_option} {rel_symbol_name} expected.txt',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
+                 file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
                  rel_symbol_name=expected_file_relativity_symbol),
             ArrangementPostAct(
                 home_or_sds_contents=home_or_sds_contents_arrangement,
