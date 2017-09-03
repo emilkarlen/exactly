@@ -6,8 +6,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     RelativityOptionConfigurationForRelCwdForTestCwdDir
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
-from exactly_lib_test.instructions.test_resources.relativity_options import \
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfiguration
 
 RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE = [

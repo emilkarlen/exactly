@@ -12,12 +12,12 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check_with
     InstructionArgumentsVariantConstructor, InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
     with_negation_argument, PassOrFail, ExpectationTypeConfig
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \

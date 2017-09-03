@@ -6,9 +6,9 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import AssertCwdIsSubDirOf
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.file_structure import DirContents, Dir, empty_dir, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

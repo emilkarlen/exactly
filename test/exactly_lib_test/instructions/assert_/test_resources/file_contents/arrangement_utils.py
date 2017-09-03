@@ -1,7 +1,7 @@
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib_test.instructions.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 

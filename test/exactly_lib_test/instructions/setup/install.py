@@ -6,7 +6,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelHomeOptionType
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
-from exactly_lib_test.instructions.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
@@ -18,7 +17,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_populators im
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check as sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions, relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     ChangeDirectoryToDirectory
