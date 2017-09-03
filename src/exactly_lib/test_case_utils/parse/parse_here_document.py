@@ -1,5 +1,6 @@
 import re
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -7,6 +8,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.string import lines_content
 
+DOCUMENT_MARKER_PREFIX = '<<'
 DOCUMENT_TOKEN_RE = re.compile('(<<)([0-9a-zA-Z_-]+)')
 
 
@@ -27,7 +29,7 @@ def parse_as_last_argument(here_document_is_mandatory: bool,
     source.consume_initial_space_on_current_line()
     if source.is_at_eol:
         if here_document_is_mandatory:
-            raise SingleInstructionInvalidArgumentException('Missing here-document')
+            raise SingleInstructionInvalidArgumentException(instruction_arguments.HERE_DOCUMENT.name)
         else:
             source.consume_current_line()
             return None
