@@ -75,6 +75,11 @@ class OptionStringConfigurationForRelativityOption(OptionStringConfiguration):
     def __init__(self, relativity: RelOptionType):
         super().__init__(
             option_syntax.long_option_syntax(relative_path_options.REL_OPTIONS_MAP[relativity].option_name.long))
+        self._relativity = relativity
+
+    @property
+    def rel_option_type(self) -> RelOptionType:
+        return self._relativity
 
 
 class OptionStringConfigurationForRelativityOptionRelHome(OptionStringConfigurationForRelativityOption):
