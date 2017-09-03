@@ -14,7 +14,7 @@ pre {
 }
 
 h1 {
-  background-color: #E6E6FA;
+  background-color: #80bfff;
   padding: 5px;
 }
 
