@@ -110,7 +110,7 @@ class EqualityChecker(ActualFileChecker):
     def _file_path_for_file_with_expected_contents(self,
                                                    environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
         expected_contents = self._expected_contents
-        if expected_contents.is_here_document:
+        if not expected_contents.is_file_ref:
             contents = expected_contents.string_resolver.resolve_value_of_any_dependency(environment)
             return tmp_text_file_containing(contents,
                                             prefix='contents-',
@@ -121,7 +121,7 @@ class EqualityChecker(ActualFileChecker):
 
 
 def _validator_of_expected(expected_contents: StringResolverOrFileRef) -> PreOrPostSdsValidator:
-    if expected_contents.is_here_document:
+    if not expected_contents.is_file_ref:
         return ConstantSuccessValidator()
     file_ref_check = FileRefCheck(expected_contents.file_reference_resolver,
                                   must_exist_as(FileType.REGULAR))

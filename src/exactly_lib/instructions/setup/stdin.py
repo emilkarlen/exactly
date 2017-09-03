@@ -90,7 +90,7 @@ class Parser(InstructionParser):
                 raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
                                                                 str(source.remaining_part_of_current_line))
             source.consume_current_line()
-        if here_doc_or_file_ref.is_here_document:
+        if not here_doc_or_file_ref.is_file_ref:
             return _InstructionForHereDocument(here_doc_or_file_ref.string_resolver)
         return _InstructionForFileRef(here_doc_or_file_ref.file_reference_resolver)
 
