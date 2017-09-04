@@ -34,7 +34,7 @@ from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValueDescriptor
-from exactly_lib.test_case_utils.file_selectors import parse_file_selector
+from exactly_lib.test_case_utils.file_selectors import parse_file_matcher
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.expectation_type import ExpectationType
@@ -113,9 +113,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         negation = negation_of_predicate.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
 
-        selection = parse_file_selector.selection_syntax_element_description()
+        selection = parse_file_matcher.selection_syntax_element_description()
 
-        selector = parse_file_selector.selector_syntax_element_description()
+        selector = parse_file_matcher.selector_syntax_element_description()
 
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      instruction_arguments.PATH_ARGUMENT)
@@ -169,7 +169,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         tokens = new_token_parser(rest_of_line,
                                   self.format_map)
         path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
-        file_selection = parse_file_selector.parse_optional_selection_resolver(tokens)
+        file_selection = parse_file_matcher.parse_optional_selection_resolver(tokens)
         expectation_type = tokens.consume_optional_negation_operator()
         instructions_parser = _CheckInstructionParser(_Settings(expectation_type,
                                                                 path_to_check,
@@ -225,7 +225,7 @@ class _InstructionBase(AssertPhaseInstruction):
             property_name,
             property_description.multiple_object_descriptors([
                 PathValueDescriptor(self.settings.path_to_check),
-                parse_file_selector.SelectorsDescriptor(self.settings.file_selector),
+                parse_file_matcher.SelectorsDescriptor(self.settings.file_selector),
             ])
         )
 
