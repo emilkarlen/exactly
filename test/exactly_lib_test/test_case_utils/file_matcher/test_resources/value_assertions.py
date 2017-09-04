@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileSelectorStructureVisitor, \
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor, \
     FileMatcherFromSelectors
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util import dir_contents_selection
@@ -41,7 +41,7 @@ class _EqualsAssertion(asrt.ValueAssertion):
         checker.visit(value)
 
 
-class _StructureChecker(FileSelectorStructureVisitor):
+class _StructureChecker(FileMatcherStructureVisitor):
     def __init__(self,
                  put: unittest.TestCase,
                  message_builder: asrt.MessageBuilder,
