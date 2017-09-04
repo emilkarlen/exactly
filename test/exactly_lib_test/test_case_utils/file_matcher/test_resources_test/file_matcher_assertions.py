@@ -19,7 +19,7 @@ class TestEqualsFileSelector(unittest.TestCase):
         # ARRANGE #
         expected = FileMatcherFromSelectors(Selectors())
         actual = FileMatcherFromSelectors(Selectors())
-        assertion = sut.equals_file_selector(expected)
+        assertion = sut.equals_file_matcher(expected)
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
 
@@ -33,7 +33,7 @@ class TestEqualsFileSelector(unittest.TestCase):
                          FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.REGULAR])))
                          ),
         ]
-        assertion_to_check = sut.equals_file_selector(FileMatcherFromSelectors(Selectors()))
+        assertion_to_check = sut.equals_file_matcher(FileMatcherFromSelectors(Selectors()))
         for case in cases:
             with self.subTest(name=case.name):
                 # ACT & ASSERT #
@@ -46,13 +46,13 @@ class TestEqualsFileSelector(unittest.TestCase):
                                                                                 'pattern 2'])))
         actual = FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern 1',
                                                                               'pattern 2'])))
-        assertion = sut.equals_file_selector(expected)
+        assertion = sut.equals_file_matcher(expected)
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
 
     def test_not_equals_name_patterns(self):
         # ARRANGE #
-        assertion_to_check = sut.equals_file_selector(FileMatcherFromSelectors(Selectors(
+        assertion_to_check = sut.equals_file_matcher(FileMatcherFromSelectors(Selectors(
             name_patterns=frozenset(['expected pattern'])
         )))
         cases = [
@@ -82,13 +82,13 @@ class TestEqualsFileSelector(unittest.TestCase):
                                                                             FileType.SYMLINK])))
         actual = FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.REGULAR,
                                                                           FileType.SYMLINK])))
-        assertion = sut.equals_file_selector(expected)
+        assertion = sut.equals_file_matcher(expected)
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
 
     def test_not_equals_file_types(self):
         # ARRANGE #
-        assertion_to_check = sut.equals_file_selector(FileMatcherFromSelectors(Selectors(
+        assertion_to_check = sut.equals_file_matcher(FileMatcherFromSelectors(Selectors(
             file_types=frozenset([FileType.SYMLINK,
                                   FileType.DIRECTORY])
         )))
@@ -126,7 +126,7 @@ class TestEqualsFileSelector(unittest.TestCase):
                                                       file_types=frozenset([FileType.REGULAR])))
         actual = FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['p']),
                                                     file_types=frozenset([FileType.REGULAR])))
-        assertion = sut.equals_file_selector(expected)
+        assertion = sut.equals_file_matcher(expected)
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
 

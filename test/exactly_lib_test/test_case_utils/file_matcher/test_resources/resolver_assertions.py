@@ -5,7 +5,7 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.named_element.test_resources.type_assertions import is_resolver_of_logic_type
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.value_assertions import equals_file_selector
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.value_assertions import equals_file_matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -26,7 +26,7 @@ def resolved_value_equals_file_matcher(expected: FileMatcherFromSelectors,
                                                                ValueType.FILE_MATCHER),
 
                                      asrt.on_transformed(resolve_value,
-                                                         equals_file_selector(expected,
+                                                         equals_file_matcher(expected,
                                                                               'resolved file matcher')),
 
                                      asrt.sub_component('references',
