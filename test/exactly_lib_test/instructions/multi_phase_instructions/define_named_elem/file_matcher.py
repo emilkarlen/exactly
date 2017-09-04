@@ -16,7 +16,7 @@ from exactly_lib_test.named_element.test_resources import resolver_structure_ass
 from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_container
 from exactly_lib_test.named_element.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
-from exactly_lib_test.test_case_utils.file_selectors.test_resources.resolver_assertions import \
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_selector
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selectors_arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

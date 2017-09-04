@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.file_selectors.test_resources_test import file_matcher_assertions
-from exactly_lib_test.test_case_utils.file_selectors.test_resources_test import file_matcher_resolver_assertions
+from exactly_lib_test.test_case_utils.file_matcher.test_resources_test import file_matcher_assertions
+from exactly_lib_test.test_case_utils.file_matcher.test_resources_test import file_matcher_resolver_assertions
 
 
 def suite() -> unittest.TestSuite:

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.dir_contents_selection import Selectors
-from exactly_lib_test.test_case_utils.file_selectors.test_resources import value_assertions as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import value_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 

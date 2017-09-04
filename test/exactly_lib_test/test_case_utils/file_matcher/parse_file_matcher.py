@@ -15,7 +15,7 @@ from exactly_lib_test.named_element.test_resources.file_matcher import is_file_s
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
-from exactly_lib_test.test_case_utils.file_selectors.test_resources.resolver_assertions import \
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_selector
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase

@@ -8,7 +8,7 @@ from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.test_resources import named_elem_utils
 from exactly_lib_test.named_element.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
-from exactly_lib_test.test_case_utils.file_selectors.test_resources import resolver_assertions as sut
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import resolver_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
