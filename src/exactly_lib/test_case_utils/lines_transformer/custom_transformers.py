@@ -1,4 +1,4 @@
-from exactly_lib.test_case_utils.lines_transformers.env_vars_replacement import EnvVarReplacementLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.env_vars_replacement import EnvVarReplacementLinesTransformer
 
 ENV_VAR_REPLACEMENT_TRANSFORMER_NAME = 'env-var-replacement'
 

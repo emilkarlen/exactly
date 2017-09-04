@@ -1,5 +1,5 @@
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.test_case_utils.lines_transformers import parse_lines_transformer
+from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
 

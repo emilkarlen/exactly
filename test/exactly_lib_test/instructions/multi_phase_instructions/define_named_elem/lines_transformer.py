@@ -3,9 +3,9 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import assign_symbol as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.lines_transformers.parse_lines_transformer import REPLACE_TRANSFORMER_NAME
-from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
-from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
+from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import REPLACE_TRANSFORMER_NAME
+from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *

@@ -26,9 +26,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.lines_transformers import resolvers as line_transformer_resolvers, \
+from exactly_lib.test_case_utils.lines_transformer import resolvers as line_transformer_resolvers, \
     parse_lines_transformer
-from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver

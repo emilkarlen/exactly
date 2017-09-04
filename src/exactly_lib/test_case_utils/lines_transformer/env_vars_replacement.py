@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.lines_transformers.transformers import CustomLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer
 
 HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CASE
 
