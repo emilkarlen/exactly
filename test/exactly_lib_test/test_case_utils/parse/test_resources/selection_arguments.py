@@ -1,7 +1,7 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.file_selectors import parse_file_selector
+from exactly_lib.test_case_utils.file_selectors import parse_file_matcher
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.parse import token
 
@@ -48,7 +48,7 @@ def selectors_arguments(name_pattern: str = '',
     if named_selector:
         selectors.append(named_selector)
 
-    and_combinator = ' ' + parse_file_selector.AND_OPERATOR + ' '
+    and_combinator = ' ' + parse_file_matcher.AND_OPERATOR + ' '
     return and_combinator.join(selectors)
 
 
@@ -57,10 +57,10 @@ def name_selector_of(pattern: str) -> str:
     if ' ' in pattern_arg and pattern_arg[0] not in token.QUOTE_CHARS:
         pattern_arg = token.HARD_QUOTE_CHAR + pattern_arg + token.HARD_QUOTE_CHAR
 
-    return parse_file_selector.NAME_SELECTOR_NAME + ' ' + pattern_arg
+    return parse_file_matcher.NAME_SELECTOR_NAME + ' ' + pattern_arg
 
 
 def type_selector_of(file_type: file_properties.FileType) -> str:
-    return parse_file_selector.TYPE_SELECTOR_NAME + \
+    return parse_file_matcher.TYPE_SELECTOR_NAME + \
            ' ' + \
            file_properties.TYPE_INFO[file_type].type_argument

@@ -25,7 +25,7 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_utils.file_selectors import parse_file_selector
+from exactly_lib.test_case_utils.file_selectors import parse_file_matcher
 from exactly_lib.test_case_utils.lines_transformers import resolvers as line_transformer_resolvers, \
     parse_lines_transformer
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer
@@ -184,9 +184,9 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
 def _parse_file_selector(token_stream: TokenStream) -> FileSelectorResolver:
     token_parser = TokenParserPrime(token_stream)
     if token_parser.is_at_eol:
-        return parse_file_selector.SELECTION_OF_ALL_FILES
+        return parse_file_matcher.SELECTION_OF_ALL_FILES
     else:
-        return parse_file_selector.parse_resolver(token_parser)
+        return parse_file_matcher.parse_resolver(token_parser)
 
 
 def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_resolvers.LinesTransformerResolver:

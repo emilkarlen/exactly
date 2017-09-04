@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_selectors.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_selectors.parse_file_selector import NAME_SELECTOR_NAME
+from exactly_lib.test_case_utils.file_selectors.parse_file_matcher import NAME_SELECTOR_NAME
 from exactly_lib.util.dir_contents_selection import Selectors, all_files
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
