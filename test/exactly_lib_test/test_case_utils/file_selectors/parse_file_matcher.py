@@ -34,19 +34,19 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-NON_SELECTOR_ARGUMENTS = 'not_a_selector argument'
+NON_MATCHER_ARGUMENTS = 'not_a_matcher argument'
 
 
-def expected_selector(name_patterns: list = (),
-                      file_types: list = (),
-                      references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
-    expected = file_selector_of(name_patterns, file_types)
+def expected_matcher(name_patterns: list = (),
+                     file_types: list = (),
+                     references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+    expected = file_matcher_of(name_patterns, file_types)
     return resolved_value_equals_file_selector(expected,
                                                expected_references=references)
 
 
-def file_selector_of(name_patterns: list = (),
-                     file_types: list = ()) -> sut.FileMatcherFromSelectors:
+def file_matcher_of(name_patterns: list = (),
+                    file_types: list = ()) -> sut.FileMatcherFromSelectors:
     return FileMatcherFromSelectors(Selectors(name_patterns=frozenset(name_patterns),
                                               file_types=frozenset(file_types)))
 
@@ -149,9 +149,9 @@ class TestNamePattern(TestCaseBase):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        expected_selector(name_patterns=[pattern],
-                                          file_types=[],
-                                          ),
+                        expected_matcher(name_patterns=[pattern],
+                                         file_types=[],
+                                         ),
                         source=case.source_assertion,
                     )
                 )
@@ -190,8 +190,8 @@ class TestFileType(TestCaseBase):
                     self._check_parse(
                         source_case.source,
                         Expectation(
-                            expected_selector(name_patterns=[],
-                                              file_types=[file_type])
+                            expected_matcher(name_patterns=[],
+                                             file_types=[file_type])
                             ,
                             source=source_case.source_assertion,
                         ),
@@ -256,8 +256,8 @@ class TestAnd(TestCaseBase):
             remaining_source(instruction_arguments,
                              ['following line']),
             Expectation(
-                expected_selector(name_patterns=[name_pattern],
-                                  file_types=[file_type]),
+                expected_matcher(name_patterns=[name_pattern],
+                                 file_types=[file_type]),
                 source=assert_source(
                     current_line_number=asrt.equals(1),
                     remaining_part_of_current_line=asrt.equals(remaining_part_of_line[1:]))
@@ -286,8 +286,8 @@ class TestAnd(TestCaseBase):
             remaining_source(instruction_arguments,
                              ['following line']),
             Expectation(
-                expected_selector(name_patterns=[name_pattern_1, name_pattern_2],
-                                  file_types=[file_type_1, file_type_2]),
+                expected_matcher(name_patterns=[name_pattern_1, name_pattern_2],
+                                 file_types=[file_type_1, file_type_2]),
                 source=assert_source(
                     current_line_number=asrt.equals(1),
                     remaining_part_of_current_line=asrt.equals(remaining_part_of_line[1:]))
@@ -299,7 +299,7 @@ class TestReference(TestCaseBase):
     def test_WHEN_legal_syntax_and_legal_name_THEN_parse_SHOULD_succeed(self):
         reffed_selector = NameAndValue(
             'name_of_selector',
-            file_selector_of(name_patterns=['pattern'])
+            file_matcher_of(name_patterns=['pattern'])
         )
         expected_references = asrt.matches_sequence([
             is_file_selector_reference_to(reffed_selector.name)
@@ -332,11 +332,11 @@ class TestReference(TestCaseBase):
         file_type = FileType.SYMLINK
         reffed_selector = NameAndValue(
             'name_of_selector',
-            file_selector_of(file_types=[file_type])
+            file_matcher_of(file_types=[file_type])
         )
 
-        expected_resolved_selector = file_selector_of(name_patterns=[name_pattern],
-                                                      file_types=[file_type])
+        expected_resolved_selector = file_matcher_of(name_patterns=[name_pattern],
+                                                     file_types=[file_type])
         expected_references = asrt.matches_sequence([
             is_file_selector_reference_to(reffed_selector.name)
         ])
