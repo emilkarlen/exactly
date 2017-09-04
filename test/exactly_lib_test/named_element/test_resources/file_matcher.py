@@ -28,6 +28,6 @@ class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)
 
 
-def is_file_selector_reference_to(name_of_file_selector: str) -> asrt.ValueAssertion:
-    return asrt_ne.matches_reference(asrt.equals(name_of_file_selector),
+def is_file_matcher_reference_to(symbol_name: str) -> asrt.ValueAssertion:
+    return asrt_ne.matches_reference(asrt.equals(symbol_name),
                                      IS_FILE_REFERENCE_RESTRICTION)

@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConsta
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
-from exactly_lib_test.named_element.test_resources.file_matcher import is_file_selector_reference_to
+from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
@@ -302,7 +302,7 @@ class TestReference(TestCaseBase):
             file_matcher_of(name_patterns=['pattern'])
         )
         expected_references = asrt.matches_sequence([
-            is_file_selector_reference_to(reffed_selector.name)
+            is_file_matcher_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
                                                   container(FileMatcherConstant(reffed_selector.value)))
@@ -338,7 +338,7 @@ class TestReference(TestCaseBase):
         expected_resolved_selector = file_matcher_of(name_patterns=[name_pattern],
                                                      file_types=[file_type])
         expected_references = asrt.matches_sequence([
-            is_file_selector_reference_to(reffed_selector.name)
+            is_file_matcher_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
                                                   container(FileMatcherConstant(reffed_selector.value)))
