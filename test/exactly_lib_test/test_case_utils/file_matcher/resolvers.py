@@ -8,7 +8,7 @@ from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_selector_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.test_case_utils.file_selectors.test_resources.value_assertions import equals_file_selector
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.value_assertions import equals_file_selector
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
