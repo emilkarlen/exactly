@@ -34,7 +34,7 @@ from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValueDescriptor
-from exactly_lib.test_case_utils.file_selectors import parse_file_matcher
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.expectation_type import ExpectationType

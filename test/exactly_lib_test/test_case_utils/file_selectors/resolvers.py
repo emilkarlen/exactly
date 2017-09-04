@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.test_case_utils.file_matcher import resolvers as sut
+from exactly_lib.test_case_utils.file_matcher.file_matchers import SELECT_ALL_FILES
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.file_selectors import resolvers as sut
-from exactly_lib.test_case_utils.file_selectors.file_matchers import SELECT_ALL_FILES
 from exactly_lib.type_system.value_type import ElementType, ValueType, LogicValueType
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable

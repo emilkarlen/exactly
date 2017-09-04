@@ -1,6 +1,6 @@
 from exactly_lib.named_element import resolver_structure
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
-from exactly_lib.test_case_utils.file_selectors.file_matchers import FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util import symbol_table

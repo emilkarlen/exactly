@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_selectors.resolvers import FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
