@@ -11,7 +11,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class FileMatcherConstant(FileMatcherResolver):
     """
-    A :class:`FileSelectorResolver` that is a constant :class:`FileSelector`
+    A :class:`FileMatcherResolver` that is a constant :class:`FileMatcher`
     """
 
     def __init__(self, value: FileMatcher):
@@ -30,7 +30,7 @@ class FileMatcherConstant(FileMatcherResolver):
 
 class FileMatcherReference(FileMatcherResolver):
     """
-    A :class:`FileSelectorResolver` that is a reference to a symbol
+    A :class:`FileMatcherResolver` that is a reference to a symbol
     """
 
     def __init__(self, name_of_referenced_resolver: str):
@@ -54,7 +54,7 @@ class FileMatcherReference(FileMatcherResolver):
 
 class FileMatcherAnd(FileMatcherResolver):
     """
-    A :class:`FileSelectorResolver` that combines selectors using AND.
+    A :class:`FileMatcherResolver` that combines selectors using AND.
     """
 
     def __init__(self, resolvers: list):

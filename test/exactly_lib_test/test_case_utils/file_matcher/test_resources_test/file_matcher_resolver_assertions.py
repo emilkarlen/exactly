@@ -16,12 +16,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestResolvedValueEqualsFileSelector),
+        unittest.makeSuite(TestResolvedValueEqualsFileMatcher),
     ])
 
 
-class TestResolvedValueEqualsFileSelector(unittest.TestCase):
-    def test_equals_file_selector(self):
+class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
+    def test_equals_file_matcher(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -39,12 +39,12 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
         resolver = FileMatcherConstant(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_file_selector(actual_and_expected,
-                                                                             environment=case.value)
+                assertion_to_check = sut.resolved_value_equals_file_matcher(actual_and_expected,
+                                                                            environment=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
-    def test_not_equals_file_selector(self):
+    def test_not_equals_file_matcher(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -64,8 +64,8 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
         resolver_of_actual = FileMatcherConstant(actual)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_file_selector(expected,
-                                                                                    environment=case.value)
+                assertion_equals_expected = sut.resolved_value_equals_file_matcher(expected,
+                                                                                   environment=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
@@ -75,11 +75,11 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
         actual_references = [actual_reference]
         resolver = fake(Selectors(),
                         references=actual_references)
-        assertion_to_check = sut.resolved_value_equals_file_selector(resolver.resolved_value,
-                                                                     expected_references=asrt.matches_sequence([
+        assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
+                                                                    expected_references=asrt.matches_sequence([
                                                                          asrt.is_(actual_reference)
                                                                      ]),
-                                                                     )
+                                                                    )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, resolver)
 
@@ -101,9 +101,9 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_file_selector(resolver.resolved_value,
-                                                                             expected_references=case.value,
-                                                                             )
+                assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
+                                                                            expected_references=case.value,
+                                                                            )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, resolver)
 

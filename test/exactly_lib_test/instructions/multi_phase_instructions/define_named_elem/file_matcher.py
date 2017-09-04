@@ -17,7 +17,7 @@ from exactly_lib_test.named_element.test_resources.resolver_structure_assertions
 from exactly_lib_test.named_element.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
-    resolved_value_equals_file_selector
+    resolved_value_equals_file_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selectors_arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -66,7 +66,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                 )
 
                 expected_container = matches_container(
-                    resolved_value_equals_file_selector(FileMatcherFromSelectors(expected_selectors))
+                    resolved_value_equals_file_matcher(FileMatcherFromSelectors(expected_selectors))
                 )
 
                 expectation = Expectation(

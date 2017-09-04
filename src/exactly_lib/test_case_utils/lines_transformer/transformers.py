@@ -80,9 +80,9 @@ class CustomLinesTransformer(LinesTransformer):
 
 class LinesTransformerStructureVisitor:
     """
-    Visits all variants of :class:`FileSelector`.
+    Visits all variants of :class:`FileMatcher`.
 
-    The existence of this class means that the structure of :class:`FileSelector`s
+    The existence of this class means that the structure of :class:`FileMatcher`s
     is fixed. The reason for this is to, among other things, support optimizations
     of selectors.
     """

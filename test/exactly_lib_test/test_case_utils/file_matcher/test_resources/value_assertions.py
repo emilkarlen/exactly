@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def equals_file_selector(expected: FileMatcherFromSelectors,
                          description: str = '') -> asrt.ValueAssertion:
     """
-    :return: A assertion on a :class:`FileSelector`
+    :return: A assertion on a :class:`FileMatcher`
     """
     return _EqualsAssertion(expected, description)
 

@@ -9,11 +9,11 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources.value_assertio
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def resolved_value_equals_file_selector(expected: FileMatcherFromSelectors,
-                                        expected_references: asrt.ValueAssertion = asrt.is_empty_list,
-                                        environment: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
+def resolved_value_equals_file_matcher(expected: FileMatcherFromSelectors,
+                                       expected_references: asrt.ValueAssertion = asrt.is_empty_list,
+                                       environment: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
     """
-    :return: A assertion on a :class:`FileSelectorResolver`
+    :return: A assertion on a :class:`FileMatcherResolver`
     """
     named_elements = symbol_table.symbol_table_from_none_or_value(environment)
 
@@ -27,7 +27,7 @@ def resolved_value_equals_file_selector(expected: FileMatcherFromSelectors,
 
                                      asrt.on_transformed(resolve_value,
                                                          equals_file_selector(expected,
-                                                                              'resolved file selector')),
+                                                                              'resolved file matcher')),
 
                                      asrt.sub_component('references',
                                                         resolver_structure.get_references,
