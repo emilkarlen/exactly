@@ -16,7 +16,7 @@ from exactly_lib_test.named_element.test_resources.named_elem_utils import conta
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
-    resolved_value_equals_file_selector
+    resolved_value_equals_file_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -41,8 +41,8 @@ def expected_matcher(name_patterns: list = (),
                      file_types: list = (),
                      references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
     expected = file_matcher_of(name_patterns, file_types)
-    return resolved_value_equals_file_selector(expected,
-                                               expected_references=references)
+    return resolved_value_equals_file_matcher(expected,
+                                              expected_references=references)
 
 
 def file_matcher_of(name_patterns: list = (),
@@ -320,9 +320,9 @@ class TestReference(TestCaseBase):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        selector=resolved_value_equals_file_selector(reffed_selector.value,
-                                                                     expected_references,
-                                                                     named_elements),
+                        selector=resolved_value_equals_file_matcher(reffed_selector.value,
+                                                                    expected_references,
+                                                                    named_elements),
                         source=case.source_assertion,
                     )
                 )
@@ -367,9 +367,9 @@ class TestReference(TestCaseBase):
                 self._check_parse(
                     case.source,
                     Expectation(
-                        selector=resolved_value_equals_file_selector(expected_resolved_selector,
-                                                                     expected_references,
-                                                                     named_elements),
+                        selector=resolved_value_equals_file_matcher(expected_resolved_selector,
+                                                                    expected_references,
+                                                                    named_elements),
                         source=case.source_assertion,
                     )
                 )

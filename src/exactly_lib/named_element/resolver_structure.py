@@ -58,7 +58,7 @@ def get_logic_value_type(resolver: LogicValueResolver) -> LogicValueType:
 
 
 class FileMatcherResolver(LogicValueResolver):
-    """ Base class for resolvers of :class:`FileSelector`. """
+    """ Base class for resolvers of :class:`FileMatcher`. """
 
     @property
     def logic_value_type(self) -> LogicValueType:
