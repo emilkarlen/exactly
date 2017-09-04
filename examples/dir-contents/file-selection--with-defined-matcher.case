@@ -6,7 +6,7 @@ dir my-dir
 file my-dir/file-A.txt
 file my-dir/file-B.txt
 
-def file-selector MY_SELECTION = type file && name '*A.txt'
+def file-matcher MY_SELECTION = type file && name '*A.txt'
 
 
 [act]
