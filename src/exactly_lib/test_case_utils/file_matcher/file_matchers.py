@@ -26,7 +26,7 @@ class FileMatcherFromSelectors(FileMatcher):
 SELECT_ALL_FILES = FileMatcherFromSelectors(dir_contents_selection.Selectors())
 
 
-class FileSelectorStructureVisitor:
+class FileMatcherStructureVisitor:
     """
     Visits all variants of :class:`FileSelector`.
 

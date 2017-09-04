@@ -7,11 +7,11 @@ from exactly_lib.util.dir_contents_selection import Selectors
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFileSelectorStructureVisitor),
+        unittest.makeSuite(TestFileMatcherStructureVisitor),
     ])
 
 
-class TestFileSelectorStructureVisitor(unittest.TestCase):
+class TestFileMatcherStructureVisitor(unittest.TestCase):
     def test_visit_selectors(self):
         # ARRANGE #
         instance = sut.FileMatcherFromSelectors(Selectors())
@@ -38,7 +38,7 @@ class TestFileSelectorStructureVisitor(unittest.TestCase):
     pass
 
 
-class AVisitorThatRecordsVisitedMethods(sut.FileSelectorStructureVisitor):
+class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
     def __init__(self):
         self.visited_types = []
 
