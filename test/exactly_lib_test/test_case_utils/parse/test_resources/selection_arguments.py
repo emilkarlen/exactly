@@ -8,7 +8,7 @@ from exactly_lib.util.parse import token
 
 def selection_arguments(name_option_pattern: str = '',
                         type_selection: FileType = None,
-                        named_selector: str = '') -> str:
+                        named_matcher: str = '') -> str:
     """
     Gives the CLI argument and options for selection of given
     selectors
@@ -18,7 +18,7 @@ def selection_arguments(name_option_pattern: str = '',
     """
     the_selectors_arguments = selectors_arguments(name_option_pattern,
                                                   type_selection,
-                                                  named_selector)
+                                                  named_matcher)
     if the_selectors_arguments:
         selector_option = option_syntax.option_syntax(
             instruction_arguments.SELECTION_OPTION.name)
