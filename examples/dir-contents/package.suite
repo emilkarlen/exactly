@@ -4,4 +4,4 @@ dir-is-empty.case
 
 file-selection.case
 
-file-selection--with-defined-selector.case
+file-selection--with-defined-matcher.case

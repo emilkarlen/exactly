@@ -1,6 +1,6 @@
 [setup]
 
-def string my_fs = 'not a file selector'
+def string my_fs = 'not a file matcher'
 
 [assert]
 

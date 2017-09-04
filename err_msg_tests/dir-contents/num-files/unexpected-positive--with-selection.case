@@ -11,7 +11,7 @@ cd ..
 [assert]
 
 
-dir-contents checked-dir --selection name '*.good' & type file  num-files = 2
+dir-contents checked-dir --selection name '*.good' && type file  num-files = 2
 
 
 [act]
