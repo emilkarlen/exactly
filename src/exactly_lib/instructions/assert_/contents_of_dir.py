@@ -115,7 +115,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         selection = parse_file_matcher.selection_syntax_element_description()
 
-        matcher = parse_file_matcher.selector_syntax_element_description()
+        matcher = parse_file_matcher.matcher_syntax_element_description()
 
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      instruction_arguments.PATH_ARGUMENT)
