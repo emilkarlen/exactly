@@ -78,7 +78,7 @@ class TestValueTypeRestriction(unittest.TestCase):
         ValueType.PATH:
             FileRefConstant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, PathPartAsNothing())),
 
-        ValueType.FILE_SELECTOR:
+        ValueType.FILE_MATCHER:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
 
         ValueType.LINES_TRANSFORMER:
@@ -104,8 +104,8 @@ class TestValueTypeRestriction(unittest.TestCase):
         cases = {
             ValueType.STRING: ValueType.LIST,
             ValueType.LIST: ValueType.PATH,
-            ValueType.PATH: ValueType.FILE_SELECTOR,
-            ValueType.FILE_SELECTOR: ValueType.LINES_TRANSFORMER,
+            ValueType.PATH: ValueType.FILE_MATCHER,
+            ValueType.FILE_MATCHER: ValueType.LINES_TRANSFORMER,
             ValueType.LINES_TRANSFORMER: ValueType.STRING,
         }
 

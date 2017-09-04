@@ -48,7 +48,7 @@ class TestIsElementTypeRestriction(unittest.TestCase):
 class TestIsValueTypeRestriction(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        expected_type = ValueType.FILE_SELECTOR
+        expected_type = ValueType.FILE_MATCHER
 
         assertion_to_check = sut.is_value_type_restriction(expected_type)
 
@@ -59,7 +59,7 @@ class TestIsValueTypeRestriction(unittest.TestCase):
     def test_fail_WHEN_element_type_is_unexpected(self):
         # ARRANGE #
         expected_type = ValueType.STRING
-        actual_type = ValueType.FILE_SELECTOR
+        actual_type = ValueType.FILE_MATCHER
 
         assertion_to_check = sut.is_value_type_restriction(expected_type)
 

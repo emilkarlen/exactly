@@ -29,12 +29,12 @@ class TestConstant(unittest.TestCase):
     def test_logic_type_SHOULD_be_file_selector(self):
         actual = sut.FileMatcherConstant(SELECT_ALL_FILES)
         self.assertIs(actual.logic_value_type,
-                      LogicValueType.FILE_SELECTOR)
+                      LogicValueType.FILE_MATCHER)
 
     def test_value_type_SHOULD_be_file_selector(self):
         actual = sut.FileMatcherConstant(SELECT_ALL_FILES)
         self.assertIs(actual.value_type,
-                      ValueType.FILE_SELECTOR)
+                      ValueType.FILE_MATCHER)
 
     def test_SHOULD_have_no_references(self):
         # ARRANGE #
@@ -66,7 +66,7 @@ class TestReference(unittest.TestCase):
     def test_value_type_SHOULD_be_file_selector(self):
         actual = sut.FileMatcherReference('name of referenced selector')
         self.assertIs(actual.value_type,
-                      ValueType.FILE_SELECTOR)
+                      ValueType.FILE_MATCHER)
 
     def test_SHOULD_have_a_single_reference(self):
         # ARRANGE #

@@ -245,10 +245,10 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                                    value_type=SymbolValueType.PATH)
             ),
             (
-                ValueType.FILE_SELECTOR,
+                ValueType.FILE_MATCHER,
                 logic_symbol_table_entry('level_2_symbol',
                                          references=[],
-                                         value_type=LogicValueType.FILE_SELECTOR)
+                                         value_type=LogicValueType.FILE_MATCHER)
             ),
         ]
         for dissatisfied_value_type, dissatisfied_level_2_symbol in dissatisfied_level_2_symbol_variants:
@@ -617,7 +617,7 @@ def symbol_table_entry(symbol_name: str,
 
 def logic_symbol_table_entry(symbol_name: str,
                              references,
-                             value_type: LogicValueType = LogicValueType.FILE_SELECTOR) -> Entry:
+                             value_type: LogicValueType = LogicValueType.FILE_MATCHER) -> Entry:
     return Entry(symbol_name,
                  named_elem_utils.container(LogicValueResolverForTest(references,
                                                                       logic_value_type=value_type)))

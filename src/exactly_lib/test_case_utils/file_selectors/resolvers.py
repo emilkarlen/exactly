@@ -36,7 +36,7 @@ class FileMatcherReference(FileMatcherResolver):
     def __init__(self, name_of_referenced_resolver: str):
         self._name_of_referenced_resolver = name_of_referenced_resolver
         self._references = [NamedElementReference(name_of_referenced_resolver,
-                                                  ValueTypeRestriction(ValueType.FILE_SELECTOR))]
+                                                  ValueTypeRestriction(ValueType.FILE_MATCHER))]
 
     def resolve(self, symbols: SymbolTable) -> FileMatcher:
         container = symbols.lookup(self._name_of_referenced_resolver)
