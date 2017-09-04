@@ -200,7 +200,7 @@ _TYPE_SETUPS = {
     exactly_lib.help_texts.type_system.PATH_TYPE: _parse_path,
     exactly_lib.help_texts.type_system.STRING_TYPE: _parse_string,
     exactly_lib.help_texts.type_system.LIST_TYPE: _parse_list,
-    exactly_lib.help_texts.type_system.FILE_SELECTOR_TYPE: _parse_file_selector,
+    exactly_lib.help_texts.type_system.FILE_MATCHER_TYPE: _parse_file_selector,
     exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE: _parse_lines_transformer,
 }
 

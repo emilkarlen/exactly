@@ -3,7 +3,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import SELECTOR_ARGUMENT, SELECTION_OPTION, SELECTION
-from exactly_lib.help_texts.type_system import FILE_SELECTOR_TYPE
+from exactly_lib.help_texts.type_system import FILE_MATCHER_TYPE
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -189,7 +189,7 @@ AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
         name=FILE_MATCHER_CONCEPT_INFO.name,
-        type_system_type_name=FILE_SELECTOR_TYPE,
+        type_system_type_name=FILE_MATCHER_TYPE,
         syntax_element_name=SELECTOR_ARGUMENT,
     ),
     mk_reference=resolvers.FileMatcherReference,

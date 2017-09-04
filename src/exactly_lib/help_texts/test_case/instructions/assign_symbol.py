@@ -92,7 +92,7 @@ ANY_TYPE_INFO_DICT = {
         TypeInfo(type_system.LIST_TYPE,
                  _def_instruction_syntax_lines_function__list),
     ValueType.FILE_MATCHER:
-        TypeInfo(type_system.FILE_SELECTOR_TYPE,
+        TypeInfo(type_system.FILE_MATCHER_TYPE,
                  _def_instruction_syntax_lines_function__file_selector),
     ValueType.LINES_TRANSFORMER:
         TypeInfo(type_system.LINES_TRANSFORMER_TYPE,
@@ -139,8 +139,8 @@ def definition_of_type_list() -> str:
 
 
 def definition_of_type_file_selector() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.FILE_SELECTOR_TYPE))
-    selector = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_SELECTOR_VALUE))
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.FILE_MATCHER_TYPE))
+    selector = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_MATCHER_VALUE))
     arguments = [
         type_token,
         _symbol_name(),

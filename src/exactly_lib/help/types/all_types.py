@@ -7,7 +7,7 @@ def all_types() -> list:
         data_types.LIST_DOCUMENTATION,
         data_types.PATH_DOCUMENTATION,
         logic_types.LINES_TRANSFORMER_DOCUMENTATION,
-        logic_types.FILE_SELECTOR_DOCUMENTATION,
+        logic_types.FILE_MATCHER_DOCUMENTATION,
     ]
 
 

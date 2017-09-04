@@ -8,6 +8,6 @@ LINES_TRANSFORMER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(type_sy
                                                                          types.LINES_TRANSFORMER_CONCEPT_INFO,
                                                                          parse_lines_transformer.GRAMMAR)
 
-FILE_SELECTOR_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(type_system.FILE_SELECTOR_TYPE,
-                                                                     types.FILE_MATCHER_CONCEPT_INFO,
-                                                                     parse_file_matcher.GRAMMAR)
+FILE_MATCHER_DOCUMENTATION = TypeWithExpressionGrammarDocumentation(type_system.FILE_MATCHER_TYPE,
+                                                                    types.FILE_MATCHER_CONCEPT_INFO,
+                                                                    parse_file_matcher.GRAMMAR)

@@ -21,7 +21,7 @@ OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
                                               RELATIVITY_ARGUMENT)
 NEGATION_ARGUMENT_STR = '!'
 
-SELECTOR_ARGUMENT = a.Named(type_system.FILE_SELECTOR_VALUE)
+SELECTOR_ARGUMENT = a.Named(type_system.FILE_MATCHER_VALUE)
 SELECTION_OPTION = a.option(long_name='selection',
                             argument=SELECTOR_ARGUMENT.name)
 SELECTION = a.Named('SELECTION')
