@@ -24,13 +24,13 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 SELECTION_OF_ALL_FILES = FileMatcherConstant(SELECT_ALL_FILES)
 
-NAME_SELECTOR_NAME = 'name'
+NAME_MATCHER_NAME = 'name'
 
-TYPE_SELECTOR_NAME = 'type'
+TYPE_MATCHER_NAME = 'type'
 
-NAME_SELECTOR_ARGUMENT = a.Named('PATTERN')
+NAME_MATCHER_ARGUMENT = a.Named('PATTERN')
 
-TYPE_SELECTOR_ARGUMENT = a.Named('TYPE')
+TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
 
 AND_OPERATOR = '&&'
 
@@ -116,10 +116,10 @@ def _constant(selectors: dcs.Selectors) -> FileMatcherResolver:
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_SELECTOR_': FILE_MATCHER_CONCEPT_INFO.name.singular,
-    '_NAME_SELECTOR_': NAME_SELECTOR_NAME,
-    '_TYPE_SELECTOR_': TYPE_SELECTOR_NAME,
-    '_PATTERN_': NAME_SELECTOR_ARGUMENT.name,
-    '_TYPE_': TYPE_SELECTOR_ARGUMENT.name,
+    '_NAME_SELECTOR_': NAME_MATCHER_NAME,
+    '_TYPE_SELECTOR_': TYPE_MATCHER_NAME,
+    '_PATTERN_': NAME_MATCHER_ARGUMENT.name,
+    '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
     '_GLOB_PATTERN_': 'Unix glob pattern',
 }
 
@@ -170,7 +170,7 @@ def _file_types_table() -> docs.ParagraphItem:
 NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
-                 NAME_SELECTOR_ARGUMENT)
+                 NAME_MATCHER_ARGUMENT)
     ],
     description_rest=_fnap(_NAME_SELECTOR_SED_DESCRIPTION)
 )
@@ -178,7 +178,7 @@ NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
-                 TYPE_SELECTOR_ARGUMENT)],
+                 TYPE_MATCHER_ARGUMENT)],
     description_rest=_type_selector_sed_description()
 )
 
@@ -194,10 +194,10 @@ GRAMMAR = grammar.Grammar(
     ),
     mk_reference=resolvers.FileMatcherReference,
     simple_expressions={
-        NAME_SELECTOR_NAME: grammar.SimpleExpression(_parse_name_selector,
-                                                     NAME_SYNTAX_DESCRIPTION),
-        TYPE_SELECTOR_NAME: grammar.SimpleExpression(_parse_type_selector,
-                                                     TYPE_SYNTAX_DESCRIPTION),
+        NAME_MATCHER_NAME: grammar.SimpleExpression(_parse_name_selector,
+                                                    NAME_SYNTAX_DESCRIPTION),
+        TYPE_MATCHER_NAME: grammar.SimpleExpression(_parse_type_selector,
+                                                    TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
         AND_OPERATOR: grammar.ComplexExpression(resolvers.FileMatcherAnd,

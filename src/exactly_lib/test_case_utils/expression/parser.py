@@ -83,14 +83,14 @@ class _Parser:
                                                                                 self.parse_simple,
                                                                                 must_be_on_current_line=True)
 
-    def parse_simple(self, selector_name: str):
-        if selector_name in self.grammar.simple_expressions:
-            return self.grammar.simple_expressions[selector_name].parse_arguments(self.parser)
-        elif not symbol_syntax.is_symbol_name(selector_name):
-            err_msg = symbol_syntax.invalid_symbol_name_error(selector_name)
+    def parse_simple(self, simple_name: str):
+        if simple_name in self.grammar.simple_expressions:
+            return self.grammar.simple_expressions[simple_name].parse_arguments(self.parser)
+        elif not symbol_syntax.is_symbol_name(simple_name):
+            err_msg = symbol_syntax.invalid_symbol_name_error(simple_name)
             raise SingleInstructionInvalidArgumentException(err_msg)
         else:
-            return self.grammar.mk_reference(selector_name)
+            return self.grammar.mk_reference(simple_name)
 
     def consume_optional_prefix_operator(self):
         prefix_operator_name = self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(

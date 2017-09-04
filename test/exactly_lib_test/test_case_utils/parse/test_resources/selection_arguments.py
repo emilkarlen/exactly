@@ -57,10 +57,10 @@ def name_selector_of(pattern: str) -> str:
     if ' ' in pattern_arg and pattern_arg[0] not in token.QUOTE_CHARS:
         pattern_arg = token.HARD_QUOTE_CHAR + pattern_arg + token.HARD_QUOTE_CHAR
 
-    return parse_file_matcher.NAME_SELECTOR_NAME + ' ' + pattern_arg
+    return parse_file_matcher.NAME_MATCHER_NAME + ' ' + pattern_arg
 
 
 def type_selector_of(file_type: file_properties.FileType) -> str:
-    return parse_file_matcher.TYPE_SELECTOR_NAME + \
+    return parse_file_matcher.TYPE_MATCHER_NAME + \
            ' ' + \
            file_properties.TYPE_INFO[file_type].type_argument
