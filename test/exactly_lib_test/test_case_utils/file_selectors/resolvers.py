@@ -22,24 +22,24 @@ def suite() -> unittest.TestSuite:
 
 class TestConstant(unittest.TestCase):
     def test_element_type_SHOULD_be_logic(self):
-        actual = sut.FileSelectorConstant(SELECT_ALL_FILES)
+        actual = sut.FileMatcherConstant(SELECT_ALL_FILES)
         self.assertIs(actual.element_type,
                       ElementType.LOGIC)
 
     def test_logic_type_SHOULD_be_file_selector(self):
-        actual = sut.FileSelectorConstant(SELECT_ALL_FILES)
+        actual = sut.FileMatcherConstant(SELECT_ALL_FILES)
         self.assertIs(actual.logic_value_type,
                       LogicValueType.FILE_SELECTOR)
 
     def test_value_type_SHOULD_be_file_selector(self):
-        actual = sut.FileSelectorConstant(SELECT_ALL_FILES)
+        actual = sut.FileMatcherConstant(SELECT_ALL_FILES)
         self.assertIs(actual.value_type,
                       ValueType.FILE_SELECTOR)
 
     def test_SHOULD_have_no_references(self):
         # ARRANGE #
         expected_value = SELECT_ALL_FILES
-        resolver = sut.FileSelectorConstant(expected_value)
+        resolver = sut.FileMatcherConstant(expected_value)
         # ACT #
         actual = resolver.references
         # ASSERT #
@@ -49,7 +49,7 @@ class TestConstant(unittest.TestCase):
     def test_resolve(self):
         # ARRANGE #
         expected_value = SELECT_ALL_FILES
-        resolver = sut.FileSelectorConstant(expected_value)
+        resolver = sut.FileMatcherConstant(expected_value)
         # ACT #
         actual_value = resolver.resolve(empty_symbol_table())
         # ASSERT #
@@ -59,19 +59,19 @@ class TestConstant(unittest.TestCase):
 
 class TestReference(unittest.TestCase):
     def test_element_type_SHOULD_be_logic(self):
-        actual = sut.FileSelectorReference('name of referenced selector')
+        actual = sut.FileMatcherReference('name of referenced selector')
         self.assertIs(actual.element_type,
                       ElementType.LOGIC)
 
     def test_value_type_SHOULD_be_file_selector(self):
-        actual = sut.FileSelectorReference('name of referenced selector')
+        actual = sut.FileMatcherReference('name of referenced selector')
         self.assertIs(actual.value_type,
                       ValueType.FILE_SELECTOR)
 
     def test_SHOULD_have_a_single_reference(self):
         # ARRANGE #
         name_of_referenced_resolver = 'name of referenced selector'
-        resolver = sut.FileSelectorReference(name_of_referenced_resolver)
+        resolver = sut.FileMatcherReference(name_of_referenced_resolver)
         # ACT #
         actual = resolver.references
         # ASSERT #
@@ -84,11 +84,11 @@ class TestReference(unittest.TestCase):
         # ARRANGE #
         name_of_referenced_element = 'name of referenced selector'
         expected_value = SELECT_ALL_FILES
-        resolver = sut.FileSelectorReference(name_of_referenced_element)
+        resolver = sut.FileMatcherReference(name_of_referenced_element)
         # ACT #
         named_elements = SymbolTable({
             name_of_referenced_element:
-                container(sut.FileSelectorConstant(expected_value))
+                container(sut.FileMatcherConstant(expected_value))
         })
         actual_value = resolver.resolve(named_elements)
         # ASSERT #
@@ -98,7 +98,7 @@ class TestReference(unittest.TestCase):
 
 class TestAnd(unittest.TestCase):
     def test_element_type_SHOULD_be_file_selector(self):
-        actual = sut.FileSelectorAnd([])
+        actual = sut.FileMatcherAnd([])
         self.assertIs(actual.element_type,
                       ElementType.LOGIC)
 
@@ -115,26 +115,26 @@ class TestAnd(unittest.TestCase):
             ),
             (
                 'single component without references',
-                [sut.FileSelectorConstant(SELECT_ALL_FILES)],
+                [sut.FileMatcherConstant(SELECT_ALL_FILES)],
                 asrt.is_empty_list
             ),
             (
                 'single component with reference',
-                [sut.FileSelectorReference(name_1)],
+                [sut.FileMatcherReference(name_1)],
                 asrt.matches_sequence([is_file_selector_reference_to(name_1)])
             ),
             (
                 'multiple components with reference',
-                [sut.FileSelectorReference(name_1),
-                 sut.FileSelectorConstant(SELECT_ALL_FILES),
-                 sut.FileSelectorReference(name_2)],
+                [sut.FileMatcherReference(name_1),
+                 sut.FileMatcherConstant(SELECT_ALL_FILES),
+                 sut.FileMatcherReference(name_2)],
                 asrt.matches_sequence([is_file_selector_reference_to(name_1),
                                        is_file_selector_reference_to(name_2)])
             ),
         ]
         for case_name, component_resolvers, expectation_on_references in cases:
             with self.subTest(case_name=case_name):
-                resolver = sut.FileSelectorAnd(component_resolvers)
+                resolver = sut.FileMatcherAnd(component_resolvers)
                 # ACT #
                 actual = resolver.references
                 # ASSERT #
@@ -174,7 +174,7 @@ class TestAnd(unittest.TestCase):
         ]
         named_elements = empty_symbol_table()
         for case_name, component_resolvers, expected_resolved_file_selector in cases:
-            resolver = sut.FileSelectorAnd(component_resolvers)
+            resolver = sut.FileMatcherAnd(component_resolvers)
             # ACT #
             actual = resolver.resolve(named_elements)
             # ASSERT #
@@ -182,8 +182,8 @@ class TestAnd(unittest.TestCase):
             expectation.apply_without_message(self, actual)
 
 
-def const_name_selector(name_pattern: str) -> sut.FileSelectorResolver:
-    return sut.FileSelectorConstant(
+def const_name_selector(name_pattern: str) -> sut.FileMatcherResolver:
+    return sut.FileMatcherConstant(
         name_selector(name_pattern))
 
 
@@ -192,8 +192,8 @@ def name_selector(name_pattern) -> sut.FileMatcherFromSelectors:
         dcs.Selectors(name_patterns=frozenset([name_pattern])))
 
 
-def const_type_selector(file_type: FileType) -> sut.FileSelectorResolver:
-    return sut.FileSelectorConstant(
+def const_type_selector(file_type: FileType) -> sut.FileMatcherResolver:
+    return sut.FileMatcherConstant(
         type_selector(file_type))
 
 

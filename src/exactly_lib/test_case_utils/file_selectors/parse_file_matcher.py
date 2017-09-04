@@ -4,7 +4,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity.types import FILE_SELECTOR_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import SELECTOR_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.help_texts.type_system import FILE_SELECTOR_TYPE
-from exactly_lib.named_element.resolver_structure import FileSelectorResolver
+from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
@@ -15,14 +15,14 @@ from exactly_lib.test_case_utils.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_selectors import resolvers
 from exactly_lib.test_case_utils.file_selectors.file_matchers import SELECT_ALL_FILES, FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
+from exactly_lib.test_case_utils.file_selectors.resolvers import FileMatcherConstant
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
-SELECTION_OF_ALL_FILES = FileSelectorConstant(SELECT_ALL_FILES)
+SELECTION_OF_ALL_FILES = FileMatcherConstant(SELECT_ALL_FILES)
 
 NAME_SELECTOR_NAME = 'name'
 
@@ -50,7 +50,7 @@ def selector_syntax_element_description() -> SyntaxElementDescription:
 
 
 class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
-    def __init__(self, resolver: FileSelectorResolver):
+    def __init__(self, resolver: FileMatcherResolver):
         self.resolver = resolver
 
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
@@ -68,12 +68,12 @@ def every_file_in_dir() -> Selectors:
     return dcs.all_files()
 
 
-def parse_resolver_from_parse_source(source: ParseSource) -> FileSelectorResolver:
+def parse_resolver_from_parse_source(source: ParseSource) -> FileMatcherResolver:
     with token_stream_parse_prime.from_parse_source(source) as tp:
         return parse_resolver(tp)
 
 
-def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
+def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileMatcherResolver:
     parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
@@ -83,26 +83,26 @@ def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileSelectorR
         SELECTION_OPTION.name)
 
 
-def parse_resolver(parser: TokenParserPrime) -> FileSelectorResolver:
+def parse_resolver(parser: TokenParserPrime) -> FileMatcherResolver:
     parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return _parse(parser)
 
 
-def _parse(parser: TokenParserPrime) -> FileSelectorResolver:
+def _parse(parser: TokenParserPrime) -> FileMatcherResolver:
     ret_val = ep.parse(GRAMMAR, parser)
-    assert isinstance(ret_val, FileSelectorResolver), ('Must have parsed a ' + str(FileSelectorResolver))
+    assert isinstance(ret_val, FileMatcherResolver), ('Must have parsed a ' + str(FileMatcherResolver))
     return ret_val
 
 
-def _parse_name_selector(parser: TokenParserPrime) -> FileSelectorResolver:
+def _parse_name_selector(parser: TokenParserPrime) -> FileMatcherResolver:
     pattern = parser.consume_mandatory_string_argument(
         _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME)
     return _constant(dcs.name_matches_pattern(pattern))
 
 
-def _parse_type_selector(parser: TokenParserPrime) -> FileSelectorResolver:
+def _parse_type_selector(parser: TokenParserPrime) -> FileMatcherResolver:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
@@ -110,8 +110,8 @@ def _parse_type_selector(parser: TokenParserPrime) -> FileSelectorResolver:
     return _constant(dcs.file_type_is(file_type))
 
 
-def _constant(selectors: dcs.Selectors) -> FileSelectorResolver:
-    return FileSelectorConstant(FileMatcherFromSelectors(selectors))
+def _constant(selectors: dcs.Selectors) -> FileMatcherResolver:
+    return FileMatcherConstant(FileMatcherFromSelectors(selectors))
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
@@ -192,7 +192,7 @@ GRAMMAR = grammar.Grammar(
         type_system_type_name=FILE_SELECTOR_TYPE,
         syntax_element_name=SELECTOR_ARGUMENT,
     ),
-    mk_reference=resolvers.FileSelectorReference,
+    mk_reference=resolvers.FileMatcherReference,
     simple_expressions={
         NAME_SELECTOR_NAME: grammar.SimpleExpression(_parse_name_selector,
                                                      NAME_SYNTAX_DESCRIPTION),
@@ -200,7 +200,7 @@ GRAMMAR = grammar.Grammar(
                                                      TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        AND_OPERATOR: grammar.ComplexExpression(resolvers.FileSelectorAnd,
+        AND_OPERATOR: grammar.ComplexExpression(resolvers.FileMatcherAnd,
                                                 AND_SYNTAX_DESCRIPTION),
     }
 )

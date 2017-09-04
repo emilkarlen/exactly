@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
+from exactly_lib.test_case_utils.file_selectors.resolvers import FileMatcherConstant
 from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
@@ -58,7 +58,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         actual = FileMatcherTestImpl()
         expected = IdentityLinesTransformer()
 
-        resolver_of_actual = FileSelectorConstant(actual)
+        resolver_of_actual = FileMatcherConstant(actual)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_equals_lines_transformer(expected,

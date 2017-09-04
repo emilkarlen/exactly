@@ -8,7 +8,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_selectors import parse_file_matcher as sut
 from exactly_lib.test_case_utils.file_selectors.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
+from exactly_lib.test_case_utils.file_selectors.resolvers import FileMatcherConstant
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_selector_reference_to
@@ -305,7 +305,7 @@ class TestReference(TestCaseBase):
             is_file_selector_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
-                                                  container(FileSelectorConstant(reffed_selector.value)))
+                                                  container(FileMatcherConstant(reffed_selector.value)))
         space = '   '
         cases = [
             SourceCase('single name argument followed by space, and following lines',
@@ -341,7 +341,7 @@ class TestReference(TestCaseBase):
             is_file_selector_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
-                                                  container(FileSelectorConstant(reffed_selector.value)))
+                                                  container(FileMatcherConstant(reffed_selector.value)))
         space = '   '
         instruction_arguments = '{concrete_selector} {and_} {selector_reference}'.format(
             and_=sut.AND_OPERATOR,

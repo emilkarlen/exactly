@@ -10,7 +10,7 @@ from exactly_lib.type_system.value_type import ElementType, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
-from exactly_lib_test.named_element.test_resources.file_matcher import FileSelectorResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
@@ -30,7 +30,7 @@ class TestElementTypeRestriction(unittest.TestCase):
             symbol_utils.string_constant('string value'),
 
         ElementType.LOGIC:
-            FileSelectorResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
     }
 
     def test_satisfied_restriction(self):
@@ -79,7 +79,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             FileRefConstant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, PathPartAsNothing())),
 
         ValueType.FILE_SELECTOR:
-            FileSelectorResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
+            FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
 
         ValueType.LINES_TRANSFORMER:
             LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),

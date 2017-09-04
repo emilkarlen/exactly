@@ -18,7 +18,7 @@ from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
-from exactly_lib.named_element.resolver_structure import FileSelectorResolver
+from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
@@ -189,7 +189,7 @@ class _Settings:
     def __init__(self,
                  expectation_type: ExpectationType,
                  path_to_check: FileRefResolver,
-                 file_selector: FileSelectorResolver):
+                 file_selector: FileMatcherResolver):
         self.expectation_type = expectation_type
         self.path_to_check = path_to_check
         self.file_selector = file_selector
@@ -353,7 +353,7 @@ class _EmptinessChecker:
 class NumFilesResolver(comparison_structures.OperandResolver):
     def __init__(self,
                  path_to_check: FileRefResolver,
-                 file_selector: FileSelectorResolver):
+                 file_selector: FileMatcherResolver):
         super().__init__(_NUM_FILES_PROPERTY_NAME)
         self.path_to_check = path_to_check
         self.file_selector = file_selector
