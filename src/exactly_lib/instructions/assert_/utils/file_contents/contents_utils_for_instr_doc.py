@@ -95,7 +95,7 @@ class FileContentsHelpParts:
     def syntax_element_descriptions_at_bottom(self) -> list:
         transformation = parse_lines_transformer.selection_syntax_element_description()
 
-        transformer = parse_lines_transformer.selector_syntax_element_description()
+        transformer = parse_lines_transformer.transformer_syntax_element_description()
 
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                               instruction_arguments.PATH_ARGUMENT)

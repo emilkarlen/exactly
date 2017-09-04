@@ -44,7 +44,7 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
     )
 
 
-def selector_syntax_element_description() -> SyntaxElementDescription:
+def transformer_syntax_element_description() -> SyntaxElementDescription:
     return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
 
 

@@ -125,7 +125,7 @@ class TestParseInvalidSyntax(TestCaseBase):
                 empty=sut.EMPTINESS_CHECK_ARGUMENT)
         ),
         NameAndValue(
-            'missing argument for selector option ' + sut.SELECTION_OPTION.name.long,
+            'missing argument for matcher option ' + sut.SELECTION_OPTION.name.long,
             'file-name {selection_option} <not_opt> {empty}'.format(
                 selection_option=option_syntax.option_syntax(
                     instruction_arguments.SELECTION_OPTION.name),
