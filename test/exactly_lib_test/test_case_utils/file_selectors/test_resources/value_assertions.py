@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_selectors.file_matchers import FileSelectorStructureVisitor, \
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileSelectorStructureVisitor, \
     FileMatcherFromSelectors
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util import dir_contents_selection

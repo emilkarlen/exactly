@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.file_selectors.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_selectors.resolvers import FileMatcherConstant
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils

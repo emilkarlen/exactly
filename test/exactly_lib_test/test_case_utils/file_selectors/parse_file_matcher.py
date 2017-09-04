@@ -5,10 +5,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.file_selectors import parse_file_matcher as sut
-from exactly_lib.test_case_utils.file_selectors.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_selectors.resolvers import FileMatcherConstant
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_selector_reference_to
