@@ -328,11 +328,11 @@ class TestEmpty(TestCaseBaseForParser):
 
 
 class TestEmptyWithFileSelection(TestCaseBaseForParser):
-    def test_file_selector_reference_is_reported(self):
-        name_of_file_selector = 'a_file_selector'
+    def test_file_matcher_reference_is_reported(self):
+        name_of_file_matcher = 'a_file_matcher'
 
         arguments = 'dir-name {selection} {empty}'.format(
-            selection=selection_arguments(named_selector=name_of_file_selector),
+            selection=selection_arguments(named_matcher=name_of_file_matcher),
             empty=sut.EMPTINESS_CHECK_ARGUMENT)
 
         source = remaining_source(arguments)
@@ -342,7 +342,7 @@ class TestEmptyWithFileSelection(TestCaseBaseForParser):
         actual = instruction.symbol_usages()
         # ASSERT #
         expected_references = asrt.matches_sequence([
-            is_file_matcher_reference_to(name_of_file_selector)
+            is_file_matcher_reference_to(name_of_file_matcher)
         ])
         expected_references.apply_without_message(self, actual)
 
@@ -432,7 +432,7 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
         name_of_file_selector = 'a_file_selector'
 
         arguments = 'dir-name {selection} {num_files} {cmp_op} 0'.format(
-            selection=selection_arguments(named_selector=name_of_file_selector),
+            selection=selection_arguments(named_matcher=name_of_file_selector),
             num_files=sut.NUM_FILES_CHECK_ARGUMENT,
             cmp_op=comparators.EQ.name)
 
