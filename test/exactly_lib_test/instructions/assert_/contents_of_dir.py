@@ -30,7 +30,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.named_element.test_resources.file_matcher import is_file_selector_reference_to
+from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
@@ -342,7 +342,7 @@ class TestEmptyWithFileSelection(TestCaseBaseForParser):
         actual = instruction.symbol_usages()
         # ASSERT #
         expected_references = asrt.matches_sequence([
-            is_file_selector_reference_to(name_of_file_selector)
+            is_file_matcher_reference_to(name_of_file_selector)
         ])
         expected_references.apply_without_message(self, actual)
 
@@ -443,7 +443,7 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
         actual = instruction.symbol_usages()
         # ASSERT #
         expected_references = asrt.matches_sequence([
-            is_file_selector_reference_to(name_of_file_selector)
+            is_file_matcher_reference_to(name_of_file_selector)
         ])
         expected_references.apply_without_message(self, actual)
 
