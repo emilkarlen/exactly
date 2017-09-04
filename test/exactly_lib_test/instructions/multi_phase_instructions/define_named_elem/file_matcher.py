@@ -4,7 +4,7 @@ from exactly_lib.instructions.multi_phase_instructions import assign_symbol as s
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_matcher.parse_file_matcher import NAME_SELECTOR_NAME
+from exactly_lib.test_case_utils.file_matcher.parse_file_matcher import NAME_MATCHER_NAME
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.dir_contents_selection import Selectors, all_files
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *
@@ -86,7 +86,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         cases = [
             (
                 'single quoted argument',
-                str(surrounded_by_hard_quotes(NAME_SELECTOR_NAME)),
+                str(surrounded_by_hard_quotes(NAME_MATCHER_NAME)),
             ),
             (
                 'non-selector name that is not a valid symbol name',

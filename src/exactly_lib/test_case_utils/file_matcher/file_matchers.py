@@ -35,12 +35,12 @@ class FileMatcherStructureVisitor:
     of selectors.
     """
 
-    def visit(self, file_selector: FileMatcher):
-        if isinstance(file_selector, FileMatcherFromSelectors):
-            return self.visit_selectors(file_selector.selectors)
+    def visit(self, file_matcher: FileMatcher):
+        if isinstance(file_matcher, FileMatcherFromSelectors):
+            return self.visit_selectors(file_matcher.selectors)
         else:
             raise TypeError('Unknown {}: {}'.format(FileMatcher,
-                                                    str(file_selector)))
+                                                    str(file_matcher)))
 
     def visit_selectors(self, selectors: dir_contents_selection.Selectors):
         raise NotImplementedError('abstract method')
