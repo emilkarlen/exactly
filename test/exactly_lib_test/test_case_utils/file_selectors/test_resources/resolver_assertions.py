@@ -1,5 +1,5 @@
 from exactly_lib.named_element import resolver_structure
-from exactly_lib.named_element.resolver_structure import FileSelectorResolver
+from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case_utils.file_selectors.file_matchers import FileMatcherFromSelectors
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
@@ -17,10 +17,10 @@ def resolved_value_equals_file_selector(expected: FileMatcherFromSelectors,
     """
     named_elements = symbol_table.symbol_table_from_none_or_value(environment)
 
-    def resolve_value(resolver: FileSelectorResolver) -> FileMatcher:
+    def resolve_value(resolver: FileMatcherResolver) -> FileMatcher:
         return resolver.resolve(named_elements)
 
-    return asrt.is_instance_with(FileSelectorResolver,
+    return asrt.is_instance_with(FileMatcherResolver,
                                  asrt.and_([
                                      is_resolver_of_logic_type(LogicValueType.FILE_SELECTOR,
                                                                ValueType.FILE_SELECTOR),

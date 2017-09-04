@@ -13,7 +13,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition
 from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver, \
-    FileSelectorResolver
+    FileMatcherResolver
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -181,7 +181,7 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
     return parse_list.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
 
 
-def _parse_file_selector(token_stream: TokenStream) -> FileSelectorResolver:
+def _parse_file_selector(token_stream: TokenStream) -> FileMatcherResolver:
     token_parser = TokenParserPrime(token_stream)
     if token_parser.is_at_eol:
         return parse_file_matcher.SELECTION_OF_ALL_FILES

@@ -1,4 +1,4 @@
-from exactly_lib.named_element.resolver_structure import FileSelectorResolver
+from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -7,7 +7,7 @@ from exactly_lib_test.named_element.test_resources.restrictions_assertions impor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-class FileSelectorResolverConstantTestImpl(FileSelectorResolver):
+class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
     def __init__(self, resolved_value: FileMatcher,
                  references: list = ()):
         self._resolved_value = resolved_value

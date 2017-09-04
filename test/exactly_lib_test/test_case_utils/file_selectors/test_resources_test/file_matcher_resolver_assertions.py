@@ -2,12 +2,12 @@ import unittest
 
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_selectors.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
+from exactly_lib.test_case_utils.file_selectors.resolvers import FileMatcherConstant
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.test_resources import named_elem_utils
-from exactly_lib_test.named_element.test_resources.file_matcher import FileSelectorResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.test_case_utils.file_selectors.test_resources import resolver_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -36,7 +36,7 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
         name_patterns = frozenset(['first name pattern',
                                    'second name pattern'])
         actual_and_expected = FileMatcherFromSelectors(Selectors(name_patterns=name_patterns))
-        resolver = FileSelectorConstant(actual_and_expected)
+        resolver = FileMatcherConstant(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_value_equals_file_selector(actual_and_expected,
@@ -61,7 +61,7 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
         expected = FileMatcherFromSelectors(Selectors(name_patterns=common_name_patterns,
                                                       file_types=frozenset([FileType.REGULAR])))
 
-        resolver_of_actual = FileSelectorConstant(actual)
+        resolver_of_actual = FileMatcherConstant(actual)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_equals_file_selector(expected,
@@ -109,9 +109,9 @@ class TestResolvedValueEqualsFileSelector(unittest.TestCase):
 
 
 def fake(selectors: Selectors = Selectors(),
-         references: list = None) -> FileSelectorResolverConstantTestImpl:
-    return FileSelectorResolverConstantTestImpl(FileMatcherFromSelectors(selectors),
-                                                references if references else [])
+         references: list = None) -> FileMatcherResolverConstantTestImpl:
+    return FileMatcherResolverConstantTestImpl(FileMatcherFromSelectors(selectors),
+                                               references if references else [])
 
 
 if __name__ == '__main__':
