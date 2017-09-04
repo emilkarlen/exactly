@@ -181,7 +181,7 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
     return parse_list.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
 
 
-def _parse_file_selector(token_stream: TokenStream) -> FileMatcherResolver:
+def _parse_file_matcher(token_stream: TokenStream) -> FileMatcherResolver:
     token_parser = TokenParserPrime(token_stream)
     if token_parser.is_at_eol:
         return parse_file_matcher.SELECTION_OF_ALL_FILES
@@ -200,7 +200,7 @@ _TYPE_SETUPS = {
     exactly_lib.help_texts.type_system.PATH_TYPE: _parse_path,
     exactly_lib.help_texts.type_system.STRING_TYPE: _parse_string,
     exactly_lib.help_texts.type_system.LIST_TYPE: _parse_list,
-    exactly_lib.help_texts.type_system.FILE_MATCHER_TYPE: _parse_file_selector,
+    exactly_lib.help_texts.type_system.FILE_MATCHER_TYPE: _parse_file_matcher,
     exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE: _parse_lines_transformer,
 }
 
