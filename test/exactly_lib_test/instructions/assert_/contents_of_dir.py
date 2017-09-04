@@ -50,7 +50,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestTestCommonFailureConditionsForEmpty),
         unittest.makeSuite(TestEmpty),
         unittest.makeSuite(TestDifferentSourceVariantsForEmpty),
-        unittest.makeSuite(TestEmptyWithFileSelector),
+        unittest.makeSuite(TestEmptyWithFileSelection),
 
         unittest.makeSuite(TestTestCommonFailureConditionsForNumFiles),
         unittest.makeSuite(TestDifferentSourceVariantsForNumFiles),
@@ -327,7 +327,7 @@ class TestEmpty(TestCaseBaseForParser):
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
 
-class TestEmptyWithFileSelector(TestCaseBaseForParser):
+class TestEmptyWithFileSelection(TestCaseBaseForParser):
     def test_file_selector_reference_is_reported(self):
         name_of_file_selector = 'a_file_selector'
 
