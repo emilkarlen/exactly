@@ -115,7 +115,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         selection = parse_file_matcher.selection_syntax_element_description()
 
-        selector = parse_file_matcher.selector_syntax_element_description()
+        matcher = parse_file_matcher.selector_syntax_element_description()
 
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      instruction_arguments.PATH_ARGUMENT)
@@ -140,7 +140,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         return ([negation,
                  selection,
-                 selector] +
+                 matcher] +
                 expression_parse.syntax_element_descriptions() +
                 [actual_file_arg_sed,
                  relativity_of_actual_file_sed,
@@ -189,10 +189,10 @@ class _Settings:
     def __init__(self,
                  expectation_type: ExpectationType,
                  path_to_check: FileRefResolver,
-                 file_selector: FileMatcherResolver):
+                 file_matcher: FileMatcherResolver):
         self.expectation_type = expectation_type
         self.path_to_check = path_to_check
-        self.file_selector = file_selector
+        self.file_matcher = file_matcher
 
 
 class _CheckInstructionParser:
@@ -225,7 +225,7 @@ class _InstructionBase(AssertPhaseInstruction):
             property_name,
             property_description.multiple_object_descriptors([
                 PathValueDescriptor(self.settings.path_to_check),
-                parse_file_matcher.SelectorsDescriptor(self.settings.file_selector),
+                parse_file_matcher.SelectorsDescriptor(self.settings.file_matcher),
             ])
         )
 
@@ -258,12 +258,12 @@ class _InstructionForNumFiles(_InstructionBase):
             self._property_descriptor(_NUM_FILES_PROPERTY_NAME),
             settings.expectation_type,
             NumFilesResolver(settings.path_to_check,
-                             settings.file_selector),
+                             settings.file_matcher),
             operator_and_r_operand.operator,
             operator_and_r_operand.right_operand)
 
     def symbol_usages(self) -> list:
-        return self.comparison_handler.references + self.settings.file_selector.references
+        return self.comparison_handler.references + self.settings.file_matcher.references
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -276,7 +276,7 @@ class _InstructionForNumFiles(_InstructionBase):
 
 class _InstructionForEmptiness(_InstructionBase):
     def symbol_usages(self) -> list:
-        return self.settings.path_to_check.references + self.settings.file_selector.references
+        return self.settings.path_to_check.references + self.settings.file_matcher.references
 
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
         checker = _EmptinessChecker(self._property_descriptor(_EMPTINESS_PROPERTY_NAME),
@@ -306,8 +306,8 @@ class _EmptinessChecker:
     def _files_in_dir_to_check(self) -> list:
         path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        file_selector = self.settings.file_selector.resolve(self.path_resolving_env.symbols)
-        return list(file_selector.select_from(path_to_check))
+        file_matcher = self.settings.file_matcher.resolve(self.path_resolving_env.symbols)
+        return list(file_matcher.select_from(path_to_check))
 
     def _fail_if_path_dir_is_not_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
@@ -353,10 +353,10 @@ class _EmptinessChecker:
 class NumFilesResolver(comparison_structures.OperandResolver):
     def __init__(self,
                  path_to_check: FileRefResolver,
-                 file_selector: FileMatcherResolver):
+                 file_matcher: FileMatcherResolver):
         super().__init__(_NUM_FILES_PROPERTY_NAME)
         self.path_to_check = path_to_check
-        self.file_selector = file_selector
+        self.file_matcher = file_matcher
 
     @property
     def references(self) -> list:
@@ -366,8 +366,8 @@ class NumFilesResolver(comparison_structures.OperandResolver):
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         path_to_check = self.path_to_check.resolve_value_of_any_dependency(path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
-        file_selector = self.file_selector.resolve(environment.symbols)
-        selected_files = file_selector.select_from(path_to_check)
+        file_matcher = self.file_matcher.resolve(environment.symbols)
+        selected_files = file_matcher.select_from(path_to_check)
         return len(list(selected_files))
 
 

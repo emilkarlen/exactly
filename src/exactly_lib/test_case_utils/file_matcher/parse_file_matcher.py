@@ -2,7 +2,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_CONCEPT_INFO
-from exactly_lib.help_texts.instruction_arguments import SELECTOR_ARGUMENT, SELECTION_OPTION, SELECTION
+from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.help_texts.type_system import FILE_MATCHER_TYPE
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -190,7 +190,7 @@ GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
         name=FILE_MATCHER_CONCEPT_INFO.name,
         type_system_type_name=FILE_MATCHER_TYPE,
-        syntax_element_name=SELECTOR_ARGUMENT,
+        syntax_element_name=MATCHER_ARGUMENT,
     ),
     mk_reference=resolvers.FileMatcherReference,
     simple_expressions={
