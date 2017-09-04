@@ -362,14 +362,14 @@ class TestEmptyWithFileSelection(TestCaseBaseForParser):
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
     def test_file_is_directory_that_contain_files_but_non_matching_given_type_pattern(self):
-        type_selector = FileType.DIRECTORY
+        type_matcher = FileType.DIRECTORY
 
         existing_file = empty_file('a-regular-file')
 
         name_of_directory = 'name-of-directory'
 
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_directory,
-                                                                                    type_selection=type_selector)
+                                                                                    type_matcher=type_matcher)
 
         contents_of_relativity_option_root = DirContents([Dir(name_of_directory,
                                                               [existing_file])])
@@ -428,11 +428,11 @@ class TestFailingValidationPreSdsCausedByCustomValidationForNumFiles(TestCaseBas
 
 
 class TestSymbolReferencesForNumFiles(unittest.TestCase):
-    def test_file_selector_reference_is_reported(self):
-        name_of_file_selector = 'a_file_selector'
+    def test_file_matcher_reference_is_reported(self):
+        name_of_file_matcher = 'a_file_matcher'
 
         arguments = 'dir-name {selection} {num_files} {cmp_op} 0'.format(
-            selection=selection_arguments(named_matcher=name_of_file_selector),
+            selection=selection_arguments(named_matcher=name_of_file_matcher),
             num_files=sut.NUM_FILES_CHECK_ARGUMENT,
             cmp_op=comparators.EQ.name)
 
@@ -443,7 +443,7 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
         actual = instruction.symbol_usages()
         # ASSERT #
         expected_references = asrt.matches_sequence([
-            is_file_matcher_reference_to(name_of_file_selector)
+            is_file_matcher_reference_to(name_of_file_matcher)
         ])
         expected_references.apply_without_message(self, actual)
 
@@ -568,12 +568,12 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
 
 def argument_constructor_for_emptiness_check(file_name: str,
                                              name_option_pattern: str = '',
-                                             type_selection: FileType = None,
-                                             named_selector: str = '',
+                                             type_matcher: FileType = None,
+                                             named_matcher: str = '',
                                              ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
     selection = selection_arguments(name_option_pattern,
-                                    type_selection,
-                                    named_selector)
+                                    type_matcher,
+                                    named_matcher)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
         '<rel_opt> {file_name} {selection} <not_opt> {empty}'.format(
@@ -587,12 +587,12 @@ def argument_constructor_for_emptiness_check(file_name: str,
 def argument_constructor_for_num_files_check(file_name: str,
                                              int_condition: str,
                                              name_option_pattern: str = '',
-                                             type_selection: FileType = None,
-                                             named_selector: str = '',
+                                             type_matcher: FileType = None,
+                                             named_matcher: str = '',
                                              ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
     selection = selection_arguments(name_option_pattern,
-                                    type_selection,
-                                    named_selector)
+                                    type_matcher,
+                                    named_matcher)
 
     return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
         '<rel_opt> {file_name} {selection} <not_opt> {num_files} {num_files_condition}'.format(
