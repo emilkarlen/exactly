@@ -62,7 +62,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             InvokationVariant(syntax_elements.definition_of_type_string()),
             InvokationVariant(syntax_elements.definition_of_type_path()),
             InvokationVariant(syntax_elements.definition_of_type_list()),
-            InvokationVariant(syntax_elements.definition_of_type_file_selector()),
+            InvokationVariant(syntax_elements.definition_of_type_file_matcher()),
             InvokationVariant(syntax_elements.definition_of_type_lines_transformer()),
         ]
 
