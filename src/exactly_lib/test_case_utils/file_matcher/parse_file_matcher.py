@@ -45,7 +45,7 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
     )
 
 
-def selector_syntax_element_description() -> SyntaxElementDescription:
+def matcher_syntax_element_description() -> SyntaxElementDescription:
     return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
 
 
@@ -96,13 +96,13 @@ def _parse(parser: TokenParserPrime) -> FileMatcherResolver:
     return ret_val
 
 
-def _parse_name_selector(parser: TokenParserPrime) -> FileMatcherResolver:
+def _parse_name_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
     pattern = parser.consume_mandatory_string_argument(
         _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME)
     return _constant(dcs.name_matches_pattern(pattern))
 
 
-def _parse_type_selector(parser: TokenParserPrime) -> FileMatcherResolver:
+def _parse_type_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
@@ -115,37 +115,37 @@ def _constant(selectors: dcs.Selectors) -> FileMatcherResolver:
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
-    '_SELECTOR_': FILE_MATCHER_CONCEPT_INFO.name.singular,
-    '_NAME_SELECTOR_': NAME_MATCHER_NAME,
-    '_TYPE_SELECTOR_': TYPE_MATCHER_NAME,
+    '_MATCHER_': FILE_MATCHER_CONCEPT_INFO.name.singular,
+    '_NAME_MATCHER_': NAME_MATCHER_NAME,
+    '_TYPE_MATCHER_': TYPE_MATCHER_NAME,
     '_PATTERN_': NAME_MATCHER_ARGUMENT.name,
     '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
     '_GLOB_PATTERN_': 'Unix glob pattern',
 }
 
-_ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_PATTERN_} argument for {_NAME_SELECTOR_}'
+_ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_PATTERN_} argument for {_NAME_MATCHER_}'
 
 _SELECTION_DESCRIPTION = """\
 Selects a sub set of files in the directory that the test applies to
 (instead of applying it to all files in the directory).
 """
 
-_NAME_SELECTOR_SED_DESCRIPTION = """\
+_NAME_MATCHER_SED_DESCRIPTION = """\
 Selects files who's name matches the given {_GLOB_PATTERN_}.
 """
 
 
-def _type_selector_sed_description() -> list:
-    return _fnap(_TYPE_SELECTOR_SED_DESCRIPTION) + [_file_types_table()]
+def _type_matcher_sed_description() -> list:
+    return _fnap(_TYPE_MATCHER_SED_DESCRIPTION) + [_file_types_table()]
 
 
-_TYPE_SELECTOR_SED_DESCRIPTION = """\
+_TYPE_MATCHER_SED_DESCRIPTION = """\
 Selects files with the given type. Symbolic links are followed.
 {_TYPE_} is one of:
 """
 
-_AND_SELECTOR_SED_DESCRIPTION = """\
-Selects files selected by both {_SELECTOR_}s.
+_AND_MATCHER_SED_DESCRIPTION = """\
+Selects files selected by both {_MATCHER_}s.
 """
 
 
@@ -172,18 +172,18 @@ NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  NAME_MATCHER_ARGUMENT)
     ],
-    description_rest=_fnap(_NAME_SELECTOR_SED_DESCRIPTION)
+    description_rest=_fnap(_NAME_MATCHER_SED_DESCRIPTION)
 )
 
 TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
         a.Single(a.Multiplicity.MANDATORY,
                  TYPE_MATCHER_ARGUMENT)],
-    description_rest=_type_selector_sed_description()
+    description_rest=_type_matcher_sed_description()
 )
 
 AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    description_rest=_fnap(_AND_SELECTOR_SED_DESCRIPTION)
+    description_rest=_fnap(_AND_MATCHER_SED_DESCRIPTION)
 )
 
 GRAMMAR = grammar.Grammar(
@@ -194,9 +194,9 @@ GRAMMAR = grammar.Grammar(
     ),
     mk_reference=resolvers.FileMatcherReference,
     simple_expressions={
-        NAME_MATCHER_NAME: grammar.SimpleExpression(_parse_name_selector,
+        NAME_MATCHER_NAME: grammar.SimpleExpression(_parse_name_matcher,
                                                     NAME_SYNTAX_DESCRIPTION),
-        TYPE_MATCHER_NAME: grammar.SimpleExpression(_parse_type_selector,
+        TYPE_MATCHER_NAME: grammar.SimpleExpression(_parse_type_matcher,
                                                     TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
