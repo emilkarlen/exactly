@@ -9,8 +9,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression, syntax_documentation
-from exactly_lib.test_case_utils.lines_transformers import resolvers
-from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
+from exactly_lib.test_case_utils.lines_transformer import resolvers
+from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     ReplaceLinesTransformer
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.cli_syntax.elements import argument as a

@@ -2,7 +2,7 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
-from exactly_lib.test_case_utils.lines_transformers import transformers
+from exactly_lib.test_case_utils.lines_transformer import transformers
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable

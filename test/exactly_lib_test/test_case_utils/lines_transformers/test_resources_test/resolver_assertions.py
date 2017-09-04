@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
-from exactly_lib.test_case_utils.lines_transformers.resolvers import LinesTransformerConstant
-from exactly_lib.test_case_utils.lines_transformers.transformers import IdentityLinesTransformer, \
+from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils

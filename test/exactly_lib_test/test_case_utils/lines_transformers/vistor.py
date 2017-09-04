@@ -1,7 +1,7 @@
 import re
 import unittest
 
-import exactly_lib.test_case_utils.lines_transformers.transformers as sut
+import exactly_lib.test_case_utils.lines_transformer.transformers as sut
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
 
