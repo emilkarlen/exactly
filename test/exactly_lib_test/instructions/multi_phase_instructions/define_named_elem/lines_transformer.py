@@ -148,7 +148,7 @@ class TestUnsuccessfulScenarios(TestCaseBase):
                 str(surrounded_by_hard_quotes(REPLACE_TRANSFORMER_NAME)),
             ),
             (
-                'non-selector name that is not a valid symbol name',
+                'non-transformer name that is not a valid symbol name',
                 NOT_A_VALID_SYMBOL_NAME,
             ),
         ]

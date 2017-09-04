@@ -9,12 +9,10 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestEqualsFileSelector),
-    ])
+    return unittest.makeSuite(TestEqualsFileMatcher)
 
 
-class TestEqualsFileSelector(unittest.TestCase):
+class TestEqualsFileMatcher(unittest.TestCase):
     def test_equals_empty(self):
         # ARRANGE #
         expected = FileMatcherFromSelectors(Selectors())
@@ -43,9 +41,9 @@ class TestEqualsFileSelector(unittest.TestCase):
     def test_equals_name_patterns(self):
         # ARRANGE #
         expected = FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern 1',
-                                                                                'pattern 2'])))
+                                                                               'pattern 2'])))
         actual = FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern 1',
-                                                                              'pattern 2'])))
+                                                                             'pattern 2'])))
         assertion = sut.equals_file_matcher(expected)
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
@@ -61,7 +59,7 @@ class TestEqualsFileSelector(unittest.TestCase):
                          ),
             NameAndValue('one additional pattern',
                          FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['expected pattern',
-                                                                                      'actual pattern'])))
+                                                                                     'actual pattern'])))
                          ),
             NameAndValue('file type mismatch',
                          FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.REGULAR])))
@@ -98,7 +96,7 @@ class TestEqualsFileSelector(unittest.TestCase):
                          ),
             NameAndValue('one additional pattern',
                          FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['expected pattern',
-                                                                                      'actual pattern'])))
+                                                                                     'actual pattern'])))
                          ),
             NameAndValue('missing file type',
                          FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.DIRECTORY])))

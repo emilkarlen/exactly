@@ -140,24 +140,24 @@ def definition_of_type_list() -> str:
 
 def definition_of_type_file_matcher() -> str:
     type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.FILE_MATCHER_TYPE))
-    selector = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_MATCHER_VALUE))
+    matcher = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_MATCHER_VALUE))
     arguments = [
         type_token,
         _symbol_name(),
         _equals(),
-        selector,
+        matcher,
     ]
     return cl_syntax.cl_syntax_for_args(arguments)
 
 
 def definition_of_type_lines_transformer() -> str:
     type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.LINES_TRANSFORMER_TYPE))
-    selector = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINES_TRANSFORMER_VALUE))
+    transformer = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINES_TRANSFORMER_VALUE))
     arguments = [
         type_token,
         _symbol_name(),
         _equals(),
-        selector,
+        transformer,
     ]
     return cl_syntax.cl_syntax_for_args(arguments)
 
