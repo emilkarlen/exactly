@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_selectors import resolvers
-from exactly_lib.test_case_utils.file_selectors.file_selectors import SELECT_ALL_FILES, FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_selectors.file_matchers import SELECT_ALL_FILES, FileMatcherFromSelectors
 from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.cli_syntax.elements import argument as a
