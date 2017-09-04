@@ -7,11 +7,11 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_selectors import parse_file_selector as sut
-from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorFromSelectors
+from exactly_lib.test_case_utils.file_selectors.file_selectors import FileMatcherFromSelectors
 from exactly_lib.test_case_utils.file_selectors.resolvers import FileSelectorConstant
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
-from exactly_lib_test.named_element.test_resources.file_selector import is_file_selector_reference_to
+from exactly_lib_test.named_element.test_resources.file_matcher import is_file_selector_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
@@ -46,9 +46,9 @@ def expected_selector(name_patterns: list = (),
 
 
 def file_selector_of(name_patterns: list = (),
-                     file_types: list = ()) -> sut.FileSelectorFromSelectors:
-    return FileSelectorFromSelectors(Selectors(name_patterns=frozenset(name_patterns),
-                                               file_types=frozenset(file_types)))
+                     file_types: list = ()) -> sut.FileMatcherFromSelectors:
+    return FileMatcherFromSelectors(Selectors(name_patterns=frozenset(name_patterns),
+                                              file_types=frozenset(file_types)))
 
 
 SPACE = '   '

@@ -43,7 +43,7 @@ from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
     symbol_table_with_single_string_value, symbol_table_with_single_file_ref_value, symbol_table_with_string_values, \
     entry
 from exactly_lib_test.named_element.test_resources import named_elem_utils
-from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.file_matcher import FileSelectorResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream, \
@@ -52,7 +52,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.data.test_resources.file_selector import FileSelectorThatSelectsAllFilesTestImpl
+from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
@@ -1157,7 +1157,7 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
     def test_SHOULD_be_able_to_generate_an_error_message_for_every_illegal_type(self):
         cases = [
             ListResolverTestImplForConstantListValue(ListValue([])),
-            FileSelectorResolverConstantTestImpl(FileSelectorThatSelectsAllFilesTestImpl()),
+            FileSelectorResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
             LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
         ]
         for resolver in cases:

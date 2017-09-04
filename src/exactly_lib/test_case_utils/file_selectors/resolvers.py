@@ -2,8 +2,8 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.named_element.resolver_structure import FileSelectorResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
-from exactly_lib.test_case_utils.file_selectors.file_selectors import FileSelectorFromSelectors
-from exactly_lib.type_system.logic.file_selector import FileSelector
+from exactly_lib.test_case_utils.file_selectors.file_selectors import FileMatcherFromSelectors
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import SymbolTable
@@ -14,10 +14,10 @@ class FileSelectorConstant(FileSelectorResolver):
     A :class:`FileSelectorResolver` that is a constant :class:`FileSelector`
     """
 
-    def __init__(self, value: FileSelector):
+    def __init__(self, value: FileMatcher):
         self._value = value
 
-    def resolve(self, symbols: SymbolTable) -> FileSelector:
+    def resolve(self, symbols: SymbolTable) -> FileMatcher:
         return self._value
 
     @property
@@ -38,7 +38,7 @@ class FileSelectorReference(FileSelectorResolver):
         self._references = [NamedElementReference(name_of_referenced_resolver,
                                                   ValueTypeRestriction(ValueType.FILE_SELECTOR))]
 
-    def resolve(self, symbols: SymbolTable) -> FileSelector:
+    def resolve(self, symbols: SymbolTable) -> FileMatcher:
         container = symbols.lookup(self._name_of_referenced_resolver)
         resolver = container.resolver
         assert isinstance(resolver, FileSelectorResolver)
@@ -61,9 +61,9 @@ class FileSelectorAnd(FileSelectorResolver):
         self._resolvers = tuple(resolvers)
         self._references = references_from_objects_with_symbol_references(resolvers)
 
-    def resolve(self, symbols: SymbolTable) -> FileSelector:
+    def resolve(self, symbols: SymbolTable) -> FileMatcher:
         selectors = dcs.and_all([resolver.resolve(symbols).selectors for resolver in self._resolvers])
-        return FileSelectorFromSelectors(selectors)
+        return FileMatcherFromSelectors(selectors)
 
     @property
     def references(self) -> list:

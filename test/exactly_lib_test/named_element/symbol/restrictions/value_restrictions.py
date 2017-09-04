@@ -11,10 +11,10 @@ from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
-from exactly_lib_test.named_element.test_resources.file_selector import FileSelectorResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.file_matcher import FileSelectorResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
-from exactly_lib_test.type_system.logic.test_resources.values import FileSelectorTestImpl, FakeLinesTransformer
+from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl, FakeLinesTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -47,7 +47,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
     def test_fail_WHEN_element_type_is_not_data(self):
         # ARRANGE #
         test_cases = [
-            FileSelectorResolverConstantTestImpl(FileSelectorTestImpl()),
+            FileSelectorResolverConstantTestImpl(FileMatcherTestImpl()),
             LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
         ]
         restriction = vr.AnySymbolTypeRestriction()
@@ -83,7 +83,7 @@ class TestStringRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             file_ref_constant_resolver(),
-            FileSelectorResolverConstantTestImpl(FileSelectorTestImpl()),
+            FileSelectorResolverConstantTestImpl(FileMatcherTestImpl()),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
