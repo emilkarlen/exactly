@@ -1,7 +1,7 @@
 """Functionality for accessing a subset of the files in a directory."""
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity.types import FILE_SELECTOR_CONCEPT_INFO
+from exactly_lib.help_texts.entity.types import FILE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import SELECTOR_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.help_texts.type_system import FILE_SELECTOR_TYPE
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
@@ -115,7 +115,7 @@ def _constant(selectors: dcs.Selectors) -> FileMatcherResolver:
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
-    '_SELECTOR_': FILE_SELECTOR_CONCEPT_INFO.name.singular,
+    '_SELECTOR_': FILE_MATCHER_CONCEPT_INFO.name.singular,
     '_NAME_SELECTOR_': NAME_SELECTOR_NAME,
     '_TYPE_SELECTOR_': TYPE_SELECTOR_NAME,
     '_PATTERN_': NAME_SELECTOR_ARGUMENT.name,
@@ -188,7 +188,7 @@ AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
 
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
-        name=FILE_SELECTOR_CONCEPT_INFO.name,
+        name=FILE_MATCHER_CONCEPT_INFO.name,
         type_system_type_name=FILE_SELECTOR_TYPE,
         syntax_element_name=SELECTOR_ARGUMENT,
     ),
