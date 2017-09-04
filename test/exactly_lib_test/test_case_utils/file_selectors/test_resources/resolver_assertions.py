@@ -22,8 +22,8 @@ def resolved_value_equals_file_selector(expected: FileMatcherFromSelectors,
 
     return asrt.is_instance_with(FileMatcherResolver,
                                  asrt.and_([
-                                     is_resolver_of_logic_type(LogicValueType.FILE_SELECTOR,
-                                                               ValueType.FILE_SELECTOR),
+                                     is_resolver_of_logic_type(LogicValueType.FILE_MATCHER,
+                                                               ValueType.FILE_MATCHER),
 
                                      asrt.on_transformed(resolve_value,
                                                          equals_file_selector(expected,

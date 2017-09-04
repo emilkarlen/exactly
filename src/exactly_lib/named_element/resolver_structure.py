@@ -62,11 +62,11 @@ class FileMatcherResolver(LogicValueResolver):
 
     @property
     def logic_value_type(self) -> LogicValueType:
-        return LogicValueType.FILE_SELECTOR
+        return LogicValueType.FILE_MATCHER
 
     @property
     def value_type(self) -> ValueType:
-        return ValueType.FILE_SELECTOR
+        return ValueType.FILE_MATCHER
 
     @property
     def references(self) -> list:

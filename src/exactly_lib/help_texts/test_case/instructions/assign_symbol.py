@@ -91,7 +91,7 @@ ANY_TYPE_INFO_DICT = {
     ValueType.LIST:
         TypeInfo(type_system.LIST_TYPE,
                  _def_instruction_syntax_lines_function__list),
-    ValueType.FILE_SELECTOR:
+    ValueType.FILE_MATCHER:
         TypeInfo(type_system.FILE_SELECTOR_TYPE,
                  _def_instruction_syntax_lines_function__file_selector),
     ValueType.LINES_TRANSFORMER:

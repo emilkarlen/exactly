@@ -31,7 +31,7 @@ class TestFileTransformerAsChecker(unittest.TestCase):
 
     def test_references_of_transformer_resolver_SHOULD_be_reported(self):
         # ARRANGE #
-        ref_1_info = NameAndValue('ref 1', ValueType.FILE_SELECTOR)
+        ref_1_info = NameAndValue('ref 1', ValueType.FILE_MATCHER)
 
         ref_1 = NamedElementReference(ref_1_info.name,
                                       ValueTypeRestriction(ref_1_info.value))
