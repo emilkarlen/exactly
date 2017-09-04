@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.file_selectors import file_selectors as sut
-from exactly_lib.type_system.logic.file_selector import FileSelector
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.dir_contents_selection import Selectors
 
 
@@ -14,7 +14,7 @@ def suite() -> unittest.TestSuite:
 class TestFileSelectorStructureVisitor(unittest.TestCase):
     def test_visit_selectors(self):
         # ARRANGE #
-        instance = sut.FileSelectorFromSelectors(Selectors())
+        instance = sut.FileMatcherFromSelectors(Selectors())
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
@@ -26,7 +26,7 @@ class TestFileSelectorStructureVisitor(unittest.TestCase):
 
     def test_raise_type_error_WHEN_visited_object_is_of_unknown_class(self):
         # ARRANGE #
-        instance = 'A value of a type that is not a ' + str(FileSelector)
+        instance = 'A value of a type that is not a ' + str(FileMatcher)
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         with self.assertRaises(TypeError):

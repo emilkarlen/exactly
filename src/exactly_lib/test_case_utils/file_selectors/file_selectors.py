@@ -1,10 +1,10 @@
 import pathlib
 
-from exactly_lib.type_system.logic.file_selector import FileSelector
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util import dir_contents_selection
 
 
-class FileSelectorFromSelectors(FileSelector):
+class FileMatcherFromSelectors(FileMatcher):
     """Selects files from a directory according the a file condition."""
 
     def __init__(self, selectors: dir_contents_selection.Selectors):
@@ -23,7 +23,7 @@ class FileSelectorFromSelectors(FileSelector):
                                                     self._selectors)
 
 
-SELECT_ALL_FILES = FileSelectorFromSelectors(dir_contents_selection.Selectors())
+SELECT_ALL_FILES = FileMatcherFromSelectors(dir_contents_selection.Selectors())
 
 
 class FileSelectorStructureVisitor:
@@ -35,11 +35,11 @@ class FileSelectorStructureVisitor:
     of selectors.
     """
 
-    def visit(self, file_selector: FileSelector):
-        if isinstance(file_selector, FileSelectorFromSelectors):
+    def visit(self, file_selector: FileMatcher):
+        if isinstance(file_selector, FileMatcherFromSelectors):
             return self.visit_selectors(file_selector.selectors)
         else:
-            raise TypeError('Unknown {}: {}'.format(FileSelector,
+            raise TypeError('Unknown {}: {}'.format(FileMatcher,
                                                     str(file_selector)))
 
     def visit_selectors(self, selectors: dir_contents_selection.Selectors):

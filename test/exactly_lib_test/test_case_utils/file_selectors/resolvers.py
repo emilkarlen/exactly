@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.file_selectors.file_selectors import SELECT_ALL
 from exactly_lib.type_system.value_type import ElementType, ValueType, LogicValueType
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
-from exactly_lib_test.named_element.test_resources.file_selector import is_file_selector_reference_to
+from exactly_lib_test.named_element.test_resources.file_matcher import is_file_selector_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.test_case_utils.file_selectors.test_resources.value_assertions import equals_file_selector
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -159,17 +159,17 @@ class TestAnd(unittest.TestCase):
                 'components with different kind of property',
                 [const_name_selector(name_pattern_1),
                  const_type_selector(FileType.REGULAR)],
-                sut.FileSelectorFromSelectors(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
-                                                           dcs.file_type_is(FileType.REGULAR)])),
+                sut.FileMatcherFromSelectors(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
+                                                          dcs.file_type_is(FileType.REGULAR)])),
             ),
             (
                 'multiple components with same kind of property',
                 [const_name_selector(name_pattern_1),
                  const_name_selector(name_pattern_2),
                  const_type_selector(FileType.REGULAR)],
-                sut.FileSelectorFromSelectors(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
-                                                           dcs.name_matches_pattern(name_pattern_2),
-                                                           dcs.file_type_is(FileType.REGULAR)])),
+                sut.FileMatcherFromSelectors(dcs.and_all([dcs.name_matches_pattern(name_pattern_1),
+                                                          dcs.name_matches_pattern(name_pattern_2),
+                                                          dcs.file_type_is(FileType.REGULAR)])),
             ),
         ]
         named_elements = empty_symbol_table()
@@ -187,8 +187,8 @@ def const_name_selector(name_pattern: str) -> sut.FileSelectorResolver:
         name_selector(name_pattern))
 
 
-def name_selector(name_pattern) -> sut.FileSelectorFromSelectors:
-    return sut.FileSelectorFromSelectors(
+def name_selector(name_pattern) -> sut.FileMatcherFromSelectors:
+    return sut.FileMatcherFromSelectors(
         dcs.Selectors(name_patterns=frozenset([name_pattern])))
 
 
@@ -197,6 +197,6 @@ def const_type_selector(file_type: FileType) -> sut.FileSelectorResolver:
         type_selector(file_type))
 
 
-def type_selector(file_type) -> sut.FileSelectorFromSelectors:
-    return sut.FileSelectorFromSelectors(
+def type_selector(file_type) -> sut.FileMatcherFromSelectors:
+    return sut.FileMatcherFromSelectors(
         dcs.Selectors(file_types=frozenset([file_type])))

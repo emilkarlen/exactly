@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformers import transformers as sut
-from exactly_lib.type_system.logic.file_selector import FileSelector
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 
 
 class FakeLinesTransformer(sut.LinesTransformer):
@@ -13,6 +13,6 @@ class FakeLinesTransformer(sut.LinesTransformer):
         raise NotImplementedError('should never be used')
 
 
-class FileSelectorTestImpl(FileSelector):
+class FileMatcherTestImpl(FileMatcher):
     def select_from(self, directory: pathlib.Path) -> iter:
         raise NotImplementedError('should never be used')

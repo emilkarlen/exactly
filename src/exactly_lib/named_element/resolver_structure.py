@@ -1,7 +1,7 @@
 from exactly_lib.named_element.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.type_system.logic.file_selector import FileSelector
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.value_type import SymbolValueType, ValueType, ElementType, LogicValueType
 from exactly_lib.util.line_source import Line
@@ -72,7 +72,7 @@ class FileSelectorResolver(LogicValueResolver):
     def references(self) -> list:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, named_elements: SymbolTable) -> FileSelector:
+    def resolve(self, named_elements: SymbolTable) -> FileMatcher:
         raise NotImplementedError('abstract method')
 
 
