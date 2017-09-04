@@ -34,7 +34,7 @@ LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
     'Transforms the lines of a text file.',
 )
 
-FILE_SELECTOR_CONCEPT_INFO = name_and_ref_target(
-    Name('file selector', 'file selectors'),
-    'Selects files in a directory.'
+FILE_MATCHER_CONCEPT_INFO = name_and_ref_target(
+    Name('file matcher', 'file matchers'),
+    'Matches properties of files, like name and type.'
 )
