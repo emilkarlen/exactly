@@ -13,16 +13,19 @@ class SymbolValueType(Enum):
 
 
 class LogicValueType(Enum):
-    FILE_MATCHER = 1
-    LINES_TRANSFORMER = 2
+    LINE_MATCHER = 1
+    FILE_MATCHER = 2
+    LINES_TRANSFORMER = 3
 
 
 class ValueType(Enum):
     STRING = 0
     PATH = 1
     LIST = 2
-    FILE_MATCHER = 3
-    LINES_TRANSFORMER = 4
+
+    LINE_MATCHER = 3
+    FILE_MATCHER = 4
+    LINES_TRANSFORMER = 5
 
 
 VALUE_TYPE_2_ELEMENT_TYPE = {
@@ -31,5 +34,6 @@ VALUE_TYPE_2_ELEMENT_TYPE = {
     ValueType.LIST: ElementType.SYMBOL,
 
     ValueType.FILE_MATCHER: ElementType.LOGIC,
+    ValueType.LINE_MATCHER: ElementType.LOGIC,
     ValueType.LINES_TRANSFORMER: ElementType.LOGIC,
 }
