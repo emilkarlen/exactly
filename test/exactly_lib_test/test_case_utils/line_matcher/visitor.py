@@ -47,6 +47,18 @@ class TestLineMatcherStructureVisitor(unittest.TestCase):
         self.assertIs(instance,
                       ret_val)
 
+    def test_visit_and(self):
+        # ARRANGE #
+        instance = sut.LineMatcherAnd([])
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.LineMatcherAnd],
+                         visitor.visited_types)
+        self.assertIs(instance,
+                      ret_val)
+
     def test_raise_type_error_WHEN_visited_object_is_of_unknown_class(self):
         # ARRANGE #
         instance = UnknownLineMatcher()
@@ -75,6 +87,10 @@ class AVisitorThatRecordsVisitedMethods(sut.LineMatcherStructureVisitor):
 
     def visit_not(self, matcher: sut.LineMatcherNot):
         self.visited_types.append(sut.LineMatcherNot)
+        return matcher
+
+    def visit_and(self, matcher: sut.LineMatcherAnd):
+        self.visited_types.append(sut.LineMatcherAnd)
         return matcher
 
 
