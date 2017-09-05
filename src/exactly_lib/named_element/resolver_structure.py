@@ -92,7 +92,7 @@ class LineMatcherResolver(LogicValueResolver):
     def references(self) -> list:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, named_elements: SymbolTable) -> LineMatcher:
+    def resolve(self, symbols: SymbolTable) -> LineMatcher:
         raise NotImplementedError('abstract method')
 
 

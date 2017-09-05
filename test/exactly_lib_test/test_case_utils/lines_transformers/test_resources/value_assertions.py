@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def equals_lines_transformer(expected: LinesTransformer,
                              description: str = '') -> asrt.ValueAssertion:
     """
-    :return: A assertion on a :class:`FileMatcher`
+    :return: A assertion on a :class:`LinesTransformer`
     """
     return _EqualsAssertion(expected, description)
 

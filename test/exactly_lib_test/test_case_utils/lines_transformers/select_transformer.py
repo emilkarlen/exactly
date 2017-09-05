@@ -1,16 +1,29 @@
 import unittest
 
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
+from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver, LineMatcherReferenceResolver
 from exactly_lib.test_case_utils.lines_transformer import transformers as sut
+from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerSelectResolver
+from exactly_lib.test_case_utils.lines_transformer.transformers import SelectLinesTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.named_element.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
+    is_line_matcher_reference_to
+from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestSelect)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestSelectTransformer),
+        unittest.makeSuite(TestSelectTransformerResolver),
+    ])
 
 
-class TestSelect(unittest.TestCase):
+class TestSelectTransformer(unittest.TestCase):
     def test_select(self):
         home_and_sds = fake_home_and_sds()
 
@@ -50,6 +63,45 @@ class TestSelect(unittest.TestCase):
                 actual_lines = list(actual)
                 self.assertEqual(expected_output_lines,
                                  actual_lines)
+
+
+class TestSelectTransformerResolver(unittest.TestCase):
+    def test_sans_references(self):
+        line_matcher = LineMatcherConstant(False)
+
+        resolved_value = SelectLinesTransformer(line_matcher)
+        assertion_on_resolver = asrt_resolver.resolved_value_equals_lines_transformer(
+            resolved_value,
+            references=asrt.is_empty_list)
+
+        actual_resolver = LinesTransformerSelectResolver(
+            LineMatcherResolverConstantTestImpl(line_matcher))
+        assertion_on_resolver.apply_without_message(self,
+                                                    actual_resolver)
+
+    def test_references(self):
+        # ARRANGE #
+        symbol = NameAndValue('matcher_symbol',
+                              LineMatcherConstant(True))
+
+        actual_resolver = LinesTransformerSelectResolver(
+            LineMatcherReferenceResolver(symbol.name))
+
+        # EXPECTATION #
+
+        expected_resolved_value = SelectLinesTransformer(symbol.value)
+
+        assertion_on_resolver = asrt_resolver.resolved_value_equals_lines_transformer(
+            expected_resolved_value,
+            references=asrt.matches_sequence(([
+                is_line_matcher_reference_to(symbol.name)
+            ])),
+            symbols=SymbolTable({
+                symbol.name: container(LineMatcherConstantResolver(symbol.value)),
+            }))
+        # ACT & ASSERT #
+        assertion_on_resolver.apply_without_message(self,
+                                                    actual_resolver)
 
 
 class SubStringLineMatcher(LineMatcher):
