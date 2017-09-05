@@ -3,6 +3,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
@@ -13,7 +14,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition
 from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver, \
-    FileMatcherResolver
+    FileMatcherResolver, LineMatcherResolver
 from exactly_lib.named_element.symbol.list_resolver import ListResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -26,6 +27,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers as line_transformer_resolvers, \
     parse_lines_transformer
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
@@ -62,6 +64,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             InvokationVariant(syntax_elements.definition_of_type_string()),
             InvokationVariant(syntax_elements.definition_of_type_path()),
             InvokationVariant(syntax_elements.definition_of_type_list()),
+            InvokationVariant(syntax_elements.definition_of_type_line_matcher()),
             InvokationVariant(syntax_elements.definition_of_type_file_matcher()),
             InvokationVariant(syntax_elements.definition_of_type_lines_transformer()),
         ]
@@ -79,6 +82,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         concepts = []
         concepts.append(SYMBOL_CONCEPT_INFO)
         concepts.extend(rel_path_doc.see_also_concepts(REL_OPTIONS_CONFIGURATION))
+        concepts.extend(types.ALL_TYPE_CONCEPT_INFO_TUPLE)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]
 
@@ -181,6 +185,14 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
     return parse_list.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
 
 
+def _parse_line_matcher(token_stream: TokenStream) -> LineMatcherResolver:
+    token_parser = TokenParserPrime(token_stream)
+    if token_parser.is_at_eol:
+        return parse_line_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
+    else:
+        return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
+
+
 def _parse_file_matcher(token_stream: TokenStream) -> FileMatcherResolver:
     token_parser = TokenParserPrime(token_stream)
     if token_parser.is_at_eol:
@@ -200,6 +212,7 @@ _TYPE_SETUPS = {
     exactly_lib.help_texts.type_system.PATH_TYPE: _parse_path,
     exactly_lib.help_texts.type_system.STRING_TYPE: _parse_string,
     exactly_lib.help_texts.type_system.LIST_TYPE: _parse_list,
+    exactly_lib.help_texts.type_system.LINE_MATCHER_TYPE: _parse_line_matcher,
     exactly_lib.help_texts.type_system.FILE_MATCHER_TYPE: _parse_file_matcher,
     exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE: _parse_lines_transformer,
 }

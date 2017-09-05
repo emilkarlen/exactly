@@ -6,3 +6,7 @@ def syntax_for_regex_matcher(regex_token_str: str) -> str:
         parse_line_matcher.REGEX_MATCHER_NAME,
         regex_token_str,
     ])
+
+
+def syntax_for_and(matchers: list) -> str:
+    return (' ' + parse_line_matcher.AND_OPERATOR_NAME + ' ').join(matchers)

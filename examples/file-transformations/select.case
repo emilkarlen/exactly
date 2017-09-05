@@ -14,10 +14,15 @@ second
 third
 EOF
 
+def line-matcher THIRD = regex third
 
 [assert]
 
 
 contents my-file.txt --transformation ( select regex 'second' ) equals <<EOF
 second
+EOF
+
+contents my-file.txt --transformation THIRD equals <<EOF
+third
 EOF

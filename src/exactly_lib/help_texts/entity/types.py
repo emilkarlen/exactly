@@ -43,3 +43,12 @@ LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
     Name('file transformer', 'file transformers'),
     'Transforms the lines of a text file.',
 )
+
+ALL_TYPE_CONCEPT_INFO_TUPLE = (
+    STRING_CONCEPT_INFO,
+    LIST_CONCEPT_INFO,
+    PATH_CONCEPT_INFO,
+    LINE_MATCHER_CONCEPT_INFO,
+    FILE_MATCHER_CONCEPT_INFO,
+    LINES_TRANSFORMER_CONCEPT_INFO,
+)
