@@ -27,21 +27,19 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
 
 
 def _of_invalid_element_type(failing_symbol: str, symbols: SymbolTable, failure: InvalidElementTypeFailure) -> list:
-    msg = '{name}: Expected a {expected_type}. Found a {actual_type}'.format(
-        name=failing_symbol,
-        expected_type=type_system.ELEMENT_TYPE_NAME[failure.expected],
-        actual_type=type_system.ELEMENT_TYPE_NAME[failure.actual],
-    )
+    msg = _expected_actual(failing_symbol,
+                           type_system.ELEMENT_TYPE_NAME[failure.expected],
+                           type_system.ELEMENT_TYPE_NAME[failure.actual],
+                           )
     blank_line_separated_parts = [msg]
     return blank_line_separated_parts
 
 
 def _of_invalid_value_type(failing_symbol: str, symbols: SymbolTable, failure: InvalidValueTypeFailure) -> list:
-    msg = '{name}: Expected a {expected_type}. Found a {actual_type}'.format(
-        name=failing_symbol,
-        expected_type=type_system.TYPE_INFO_DICT[failure.expected].type_name,
-        actual_type=type_system.TYPE_INFO_DICT[failure.actual].type_name,
-    )
+    msg = _expected_actual(failing_symbol,
+                           type_system.TYPE_INFO_DICT[failure.expected].type_name,
+                           type_system.TYPE_INFO_DICT[failure.actual].type_name,
+                           )
     blank_line_separated_parts = [msg]
     return blank_line_separated_parts
 
@@ -88,3 +86,13 @@ def _concat_parts(blank_line_separated_parts: list) -> str:
     parts = [part + '\n' for part in blank_line_separated_parts[:-1]]
     parts.append(blank_line_separated_parts[-1])
     return '\n'.join(parts)
+
+
+def _expected_actual(failing_symbol: str, expected: str, actual: str) -> str:
+    # TODO: replace with other utilities for expected/actual
+    return '\n'.join([
+        'Invalid type of symbol {}'.format(failing_symbol),
+        '',
+        'Expected : ' + expected,
+        'Found    : ' + actual,
+    ])

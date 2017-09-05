@@ -57,6 +57,12 @@ def _def_instruction_syntax_lines_function__list() -> list:
     ]
 
 
+def _def_instruction_syntax_lines_function__line_matcher() -> list:
+    return [
+        definition_of_type_line_matcher()
+    ]
+
+
 def _def_instruction_syntax_lines_function__file_matcher() -> list:
     return [
         definition_of_type_file_matcher()
@@ -91,6 +97,9 @@ ANY_TYPE_INFO_DICT = {
     ValueType.LIST:
         TypeInfo(type_system.LIST_TYPE,
                  _def_instruction_syntax_lines_function__list),
+    ValueType.LINE_MATCHER:
+        TypeInfo(type_system.LINE_MATCHER_TYPE,
+                 _def_instruction_syntax_lines_function__lines_transformer),
     ValueType.FILE_MATCHER:
         TypeInfo(type_system.FILE_MATCHER_TYPE,
                  _def_instruction_syntax_lines_function__file_matcher),
@@ -134,6 +143,18 @@ def definition_of_type_list() -> str:
         _symbol_name(),
         _equals(),
         elements,
+    ]
+    return cl_syntax.cl_syntax_for_args(arguments)
+
+
+def definition_of_type_line_matcher() -> str:
+    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.LINE_MATCHER_TYPE))
+    matcher = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINE_MATCHER_VALUE))
+    arguments = [
+        type_token,
+        _symbol_name(),
+        _equals(),
+        matcher,
     ]
     return cl_syntax.cl_syntax_for_args(arguments)
 

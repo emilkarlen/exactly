@@ -19,6 +19,7 @@ _STD_FORMAT_MAP = {
     'path_type': exactly_lib.help_texts.type_system.PATH_TYPE,
     'string_type': exactly_lib.help_texts.type_system.STRING_TYPE,
     'list_type': exactly_lib.help_texts.type_system.LIST_TYPE,
+    'line_match_type': exactly_lib.help_texts.type_system.LINE_MATCHER_TYPE,
     'file_sel_type': exactly_lib.help_texts.type_system.FILE_MATCHER_TYPE,
     'lines_trans_type': exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE,
     'soft_quote': SOFT_QUOTE_CHAR,
