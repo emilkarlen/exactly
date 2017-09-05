@@ -51,6 +51,22 @@ class LineMatcherReferenceResolver(LineMatcherResolver):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
 
 
+class LineMatcherNotResolver(LineMatcherResolver):
+    """
+    Resolver of :class:`LineMatcherAnd`
+    """
+
+    def __init__(self, line_matcher_resolver: LineMatcherResolver):
+        self._resolver = line_matcher_resolver
+
+    def resolve(self, symbols: SymbolTable) -> LineMatcher:
+        return line_matchers.LineMatcherNot(self._resolver.resolve(symbols))
+
+    @property
+    def references(self) -> list:
+        return self._resolver.references
+
+
 class LineMatcherAndResolver(LineMatcherResolver):
     """
     Resolver of :class:`LineMatcherAnd`
@@ -62,6 +78,26 @@ class LineMatcherAndResolver(LineMatcherResolver):
 
     def resolve(self, symbols: SymbolTable) -> LineMatcher:
         return line_matchers.LineMatcherAnd([
+            resolver.resolve(symbols)
+            for resolver in self._resolvers
+        ])
+
+    @property
+    def references(self) -> list:
+        return self._references
+
+
+class LineMatcherOrResolver(LineMatcherResolver):
+    """
+    Resolver of :class:`LineMatcherOr`
+    """
+
+    def __init__(self, line_matcher_resolver_list: list):
+        self._resolvers = line_matcher_resolver_list
+        self._references = references_from_objects_with_symbol_references(line_matcher_resolver_list)
+
+    def resolve(self, symbols: SymbolTable) -> LineMatcher:
+        return line_matchers.LineMatcherOr([
             resolver.resolve(symbols)
             for resolver in self._resolvers
         ])
