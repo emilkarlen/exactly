@@ -2,7 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_CONCEPT_INFO
+from exactly_lib.help_texts.entity.types import LINE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.named_element.resolver_structure import LineMatcherResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -30,7 +30,7 @@ _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
-LINES_TRANSFORMER_ARGUMENT = a.Named(type_system.LINES_TRANSFORMER_VALUE)
+LINE_MATCHER_ARGUMENT = a.Named(type_system.LINE_MATCHER_VALUE)
 
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
@@ -78,8 +78,6 @@ def parse_regex(parser: TokenParserPrime) -> LineMatcherResolver:
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
-    '_TRANSFORMER_': LINES_TRANSFORMER_CONCEPT_INFO.name.singular,
-    '_TRANSFORMERS_': LINES_TRANSFORMER_CONCEPT_INFO.name.plural,
 }
 
 
@@ -89,11 +87,8 @@ def _fnap(s: str) -> list:
 
 _REGEX_MATCHER_SED_DESCRIPTION = """Matches lines that contains a given {_REG_EX_}."""
 
-_SEQUENCE_TRANSFORMER_SED_DESCRIPTION = """\
-Sequence of two or more {_TRANSFORMERS_}.
-
-The result of the {_TRANSFORMER_} to the left is feed to the
-{_TRANSFORMER_} to the right.
+_AND_TRANSFORMER_SED_DESCRIPTION = """\
+Matches lines matched by all matchers.
 """
 
 _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
@@ -104,14 +99,14 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     description_rest=_fnap(_REGEX_MATCHER_SED_DESCRIPTION)
 )
 
-_SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    _fnap(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
+_AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
+    _fnap(_AND_TRANSFORMER_SED_DESCRIPTION)
 )
 
 _CONCEPT = grammar.Concept(
-    LINES_TRANSFORMER_CONCEPT_INFO.name,
-    type_system.LINES_TRANSFORMER_TYPE,
-    LINES_TRANSFORMER_ARGUMENT,
+    LINE_MATCHER_CONCEPT_INFO.name,
+    type_system.LINE_MATCHER_TYPE,
+    LINE_MATCHER_ARGUMENT,
 )
 
 GRAMMAR = grammar.Grammar(
@@ -125,7 +120,7 @@ GRAMMAR = grammar.Grammar(
     complex_expressions={
         AND_OPERATOR_NAME: grammar.ComplexExpression(
             resolvers.LineMatcherAndResolver,
-            _SEQUENCE_SYNTAX_DESCRIPTION,
+            _AND_SYNTAX_DESCRIPTION,
         ),
     },
     prefix_expressions={},

@@ -29,9 +29,9 @@ PATH_CONCEPT_INFO = name_and_ref_target(
     'A path of a file or directory, with special support for the test case directories.',
 )
 
-LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
-    Name('file transformer', 'file transformers'),
-    'Transforms the lines of a text file.',
+LINE_MATCHER_CONCEPT_INFO = name_and_ref_target(
+    Name('line matcher', 'line matchers'),
+    'Matches individual text lines.'
 )
 
 FILE_MATCHER_CONCEPT_INFO = name_and_ref_target(
@@ -39,7 +39,7 @@ FILE_MATCHER_CONCEPT_INFO = name_and_ref_target(
     'Matches properties of files, like name and type.'
 )
 
-LINE_MATCHER_CONCEPT_INFO = name_and_ref_target(
-    Name('line matcher', 'line matchers'),
-    'Matches individual text lines.'
+LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
+    Name('file transformer', 'file transformers'),
+    'Transforms the lines of a text file.',
 )
