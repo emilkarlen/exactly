@@ -26,6 +26,8 @@ SELECTION_OPTION = a.option(long_name='selection',
                             argument=MATCHER_ARGUMENT.name)
 SELECTION = a.Named('SELECTION')
 
+LINE_MATCHER = a.Named('LINE-MATCHER')
+
 LINES_TRANSFORMATION_ARGUMENT = a.Named('TRANSFORMATION')
 WITH_TRANSFORMED_CONTENTS_OPTION_NAME = a.OptionName(long_name='transformation')
 WITH_TRANSFORMED_CONTENTS_OPTION = option_syntax.option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME)

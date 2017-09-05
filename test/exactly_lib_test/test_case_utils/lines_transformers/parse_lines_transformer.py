@@ -5,10 +5,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer as sut
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLinesTransformer, \
-    CustomLinesTransformer, SequenceLinesTransformer
+    CustomLinesTransformer, SequenceLinesTransformer, SelectLinesTransformer
+from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
@@ -18,8 +20,9 @@ from exactly_lib_test.section_document.parser_implementations.test_resources.tok
     import remaining_source
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.argument_syntax import \
-    syntax_for_replace_transformer, syntax_for_sequence_of_transformers
+    syntax_for_replace_transformer, syntax_for_sequence_of_transformers, syntax_for_select_transformer
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.resolver_assertions import \
     resolved_value_equals_lines_transformer
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -31,6 +34,7 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quot
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestReplaceParser),
+        unittest.makeSuite(TestSelectParser),
         unittest.makeSuite(TestParseLineTransformer),
     ])
 
@@ -176,6 +180,79 @@ class TestReplaceParser(unittest.TestCase):
                                         case.source_assertion))
 
 
+class TestSelectParser(unittest.TestCase):
+    def _check(self,
+               source: TokenParserPrime,
+               expectation: Expectation):
+        # ACT #
+        actual_resolver = sut.parse_select(source)
+        # ASSERT #
+        expectation.resolver.apply_with_message(self, actual_resolver,
+                                                'resolver')
+        expectation.token_stream.apply_with_message(self,
+                                                    source.token_stream,
+                                                    'token stream')
+
+    def test_failing_parse(self):
+        cases = [
+            (
+                'no arguments',
+                remaining_source(''),
+            ),
+            (
+                'argument is not a line matcher',
+                remaining_source('not_a_line_matcher'),
+            ),
+        ]
+        for name, source in cases:
+            with self.subTest(case_name=name):
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_replace(source)
+
+    def test_successful_parse_with_regex_matcher(self):
+        # ARRANGE #
+        regex_str = 'regex'
+
+        text_on_following_line = 'text on following line'
+
+        expected_resolver = resolved_value_is_select_regex_transformer(regex_str)
+        cases = [
+            SourceCase(
+                'transformer is only source',
+                source=
+                remaining_source(syntax_for_regex_matcher(regex_str)),
+                source_assertion=
+                assert_token_stream(is_null=asrt.is_true),
+            ),
+            SourceCase(
+                'transformer is followed by a token',
+                source=
+                remaining_source('{regex_matcher} following_token'.format(
+                    regex_matcher=syntax_for_regex_matcher(regex_str),
+                )),
+                source_assertion=
+                assert_token_stream(
+                    is_null=asrt.is_false,
+                    remaining_part_of_current_line=asrt.equals('following_token')),
+            ),
+            SourceCase(
+                'transformer is only element on current line, but followed by more lines',
+                source=
+                remaining_source(syntax_for_regex_matcher(regex_str),
+                                 following_lines=[text_on_following_line]),
+                source_assertion=
+                assert_token_stream(
+                    is_null=asrt.is_false,
+                    remaining_source=asrt.equals('\n' + text_on_following_line)),
+            ),
+        ]
+        for case in cases:
+            with self.subTest(case_name=case.name):
+                self._check(case.source,
+                            Expectation(expected_resolver,
+                                        case.source_assertion))
+
+
 class TestParseLineTransformer(unittest.TestCase):
     def _check(self,
                source: TokenParserPrime,
@@ -236,6 +313,18 @@ class TestParseLineTransformer(unittest.TestCase):
                     replacement_str)),
         )
 
+    def test_select(self):
+        # ARRANGE #
+        regex_str = 'regex'
+
+        # ACT & ASSERT #
+        self._check(
+            remaining_source(syntax_for_select_transformer(syntax_for_regex_matcher(regex_str))),
+            Expectation(
+                resolver=resolved_value_is_select_transformer(
+                    LineMatcherRegex(re.compile(regex_str)))),
+        )
+
     def test_sequence(self):
         # ARRANGE #
         symbol_1 = NameAndValue('symbol_1_name',
@@ -289,6 +378,28 @@ def resolved_value_is_replace_transformer(regex_str: str,
 def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceLinesTransformer:
     return ReplaceLinesTransformer(re.compile(regex_str),
                                    replacement_str)
+
+
+def resolved_value_is_select_regex_transformer(regex_str: str,
+                                               references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+    expected_transformer = select_regex_transformer(regex_str)
+    return resolved_value_equals_lines_transformer(expected_transformer,
+                                                   references=references)
+
+
+def resolved_value_is_select_transformer(line_matcher: LineMatcher,
+                                         references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+    expected_transformer = select_transformer(line_matcher)
+    return resolved_value_equals_lines_transformer(expected_transformer,
+                                                   references=references)
+
+
+def select_regex_transformer(regex_str: str) -> SelectLinesTransformer:
+    return select_transformer(LineMatcherRegex(re.compile(regex_str)))
+
+
+def select_transformer(line_matcher: LineMatcher) -> SelectLinesTransformer:
+    return SelectLinesTransformer(line_matcher)
 
 
 class CustomLinesTransformerTestImpl(CustomLinesTransformer):
