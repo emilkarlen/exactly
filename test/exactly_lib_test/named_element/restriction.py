@@ -11,10 +11,12 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.named_element.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
+from exactly_lib_test.named_element.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
-from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
+from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer, \
+    LineMatcherNotImplementedTestImpl
 
 
 def suite() -> unittest.TestSuite:
@@ -71,12 +73,18 @@ class TestElementTypeRestriction(unittest.TestCase):
 
 class TestValueTypeRestriction(unittest.TestCase):
     value_type_2_resolver_of_type = {
+
         ValueType.STRING:
             symbol_utils.string_constant('string value'),
+
         ValueType.LIST:
             ListResolverTestImplForConstantListValue(ListValue([])),
+
         ValueType.PATH:
             FileRefConstant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, PathPartAsNothing())),
+
+        ValueType.LINE_MATCHER:
+            LineMatcherResolverConstantTestImpl(LineMatcherNotImplementedTestImpl()),
 
         ValueType.FILE_MATCHER:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
