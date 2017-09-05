@@ -132,7 +132,10 @@ class FileContentsHelpParts:
         cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
         reg_ex_url = see_also_url('Python regular expressions',
                                   'https://docs.python.org/3/library/re.html#regular-expression-syntax')
-        return cross_refs + [reg_ex_url]
+        from exactly_lib.help_texts.entity import types
+        types = [CrossReferenceIdSeeAlsoItem(types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target),
+                 CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target)]
+        return cross_refs + types + [reg_ex_url]
 
     @staticmethod
     def _see_also_cross_refs() -> list:
