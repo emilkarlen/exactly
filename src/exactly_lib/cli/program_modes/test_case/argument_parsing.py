@@ -52,7 +52,7 @@ def parse(default: TestCaseHandlingSetup,
 
 
 def _resolve_and_fail_if_is_not_an_existing_file(test_case_file_path) -> pathlib.Path:
-    return argument_parsing_utils.resolve_path(test_case_file_path)
+    return argument_parsing_utils.resolve_existing_path(test_case_file_path)
 
 
 def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
