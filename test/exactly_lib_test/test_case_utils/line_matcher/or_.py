@@ -13,9 +13,9 @@ def suite() -> unittest.TestSuite:
 
 class Test(unittest.TestCase):
     def _check(self, case_name: str,
-               anded_matchers: list,
+               ored_matchers: list,
                expected_result: bool):
-        matcher = sut.LineMatcherAnd(anded_matchers)
+        matcher = sut.LineMatcherOr(ored_matchers)
         with self.subTest(sub_case_name=case_name):
             # ACT #
             actual_matchers = matcher.matchers
@@ -28,14 +28,14 @@ class Test(unittest.TestCase):
                              actual_result,
                              'result')
 
-            assertion_on_matchers = asrt.matches_sequence(list(map(asrt_lm.equals_line_matcher, anded_matchers)))
+            assertion_on_matchers = asrt.matches_sequence(list(map(asrt_lm.equals_line_matcher, ored_matchers)))
             assertion_on_matchers.apply_with_message(self, actual_matchers,
                                                      'matchers')
 
-    def test_empty_list_of_matchers_SHOULD_evaluate_to_True(self):
+    def test_empty_list_of_matchers_SHOULD_evaluate_to_False(self):
         self._check('',
                     [],
-                    True)
+                    False)
 
     def test_single_matcher_SHOULD_evaluate_to_value_of_the_single_matcher(self):
         cases = [
@@ -51,43 +51,39 @@ class Test(unittest.TestCase):
                          )),
         ]
         for case in cases:
-            anded_matchers, expected_result = case.value
+            ored_matchers, expected_result = case.value
             self._check(case.name,
-                        anded_matchers,
+                        ored_matchers,
                         expected_result)
 
-    def test_more_than_one_matcher_SHOULD_evaluate_to_True_WHEN_all_matchers_evaluate_to_True(self):
+    def test_more_than_one_matcher_SHOULD_evaluate_to_True_WHEN_any_matchers_evaluate_to_True(self):
         cases = [
             NameAndValue('two matchers',
-                         [LineMatcherConstant(True),
-                          LineMatcherConstant(True)],
-                         ),
-            NameAndValue('three matchers',
-                         [LineMatcherConstant(True),
-                          LineMatcherConstant(True),
-                          LineMatcherConstant(True)],
-                         ),
-        ]
-        for case in cases:
-            anded_matchers = case.value
-            self._check(case.name,
-                        anded_matchers,
-                        True)
-
-    def test_more_than_one_matcher_SHOULD_evaluate_to_False_WHEN_any_matcher_evaluates_to_False(self):
-        cases = [
-            NameAndValue('two matchers/first is false',
                          [LineMatcherConstant(False),
                           LineMatcherConstant(True)],
                          ),
-            NameAndValue('two matchers/second is false',
-                         [LineMatcherConstant(True),
+            NameAndValue('three matchers',
+                         [LineMatcherConstant(False),
+                          LineMatcherConstant(True),
+                          LineMatcherConstant(False)],
+                         ),
+        ]
+        for case in cases:
+            ored_matchers = case.value
+            self._check(case.name,
+                        ored_matchers,
+                        True)
+
+    def test_more_than_one_matcher_SHOULD_evaluate_to_False_WHEN_all_matcher_evaluates_to_False(self):
+        cases = [
+            NameAndValue('two matchers',
+                         [LineMatcherConstant(False),
                           LineMatcherConstant(False)],
                          ),
             NameAndValue('three matchers',
-                         [LineMatcherConstant(True),
+                         [LineMatcherConstant(False),
                           LineMatcherConstant(False),
-                          LineMatcherConstant(True)],
+                          LineMatcherConstant(False)],
                          ),
         ]
         for case in cases:
