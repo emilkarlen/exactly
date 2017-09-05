@@ -11,6 +11,18 @@ def suite() -> unittest.TestSuite:
 
 
 class TestLineMatcherStructureVisitor(unittest.TestCase):
+    def test_visit_constant(self):
+        # ARRANGE #
+        instance = sut.LineMatcherConstant(True)
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.LineMatcherConstant],
+                         visitor.visited_types)
+        self.assertIs(instance,
+                      ret_val)
+
     def test_visit_regex(self):
         # ARRANGE #
         instance = sut.LineMatcherRegex(re.compile('regex pattern'))
@@ -40,6 +52,10 @@ class TestLineMatcherStructureVisitor(unittest.TestCase):
 class AVisitorThatRecordsVisitedMethods(sut.LineMatcherStructureVisitor):
     def __init__(self):
         self.visited_types = []
+
+    def visit_constant(self, matcher: sut.LineMatcherConstant):
+        self.visited_types.append(sut.LineMatcherConstant)
+        return matcher
 
     def visit_regex(self, matcher: sut.LineMatcherRegex):
         self.visited_types.append(sut.LineMatcherRegex)
