@@ -2,13 +2,13 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_CONCEPT_INFO
-from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+from exactly_lib.help_texts.entity import types
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression, syntax_documentation
+from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     ReplaceLinesTransformer
@@ -20,6 +20,8 @@ from exactly_lib.util.textformat.structure import structures as docs
 IDENTITY_TRANSFORMER_RESOLVER = resolvers.LinesTransformerConstant(IdentityLinesTransformer())
 
 REPLACE_TRANSFORMER_NAME = 'replace'
+
+SELECT_TRANSFORMER_NAME = 'select'
 
 SEQUENCE_OPERATOR_NAME = '|'
 
@@ -62,7 +64,7 @@ def parse_optional_transformer_resolver(parser: TokenParserPrime) -> LinesTransf
     return parser.consume_and_handle_optional_option(
         IDENTITY_TRANSFORMER_RESOLVER,
         parse_lines_transformer_from_token_parser,
-        WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
+        instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
 def parse_lines_transformer_from_token_parser(parser: TokenParserPrime) -> LinesTransformerResolver:
@@ -78,11 +80,17 @@ def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
     return resolvers.LinesTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
 
 
+def parse_select(parser: TokenParserPrime) -> LinesTransformerResolver:
+    line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser(parser)
+    return resolvers.LinesTransformerSelectResolver(line_matcher)
+
+
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
-    '_TRANSFORMER_': LINES_TRANSFORMER_CONCEPT_INFO.name.singular,
-    '_TRANSFORMERS_': LINES_TRANSFORMER_CONCEPT_INFO.name.plural,
+    '_TRANSFORMER_': types.LINES_TRANSFORMER_CONCEPT_INFO.name.singular,
+    '_LINE_MATCHER_': types.LINE_MATCHER_CONCEPT_INFO.name.singular,
+    '_TRANSFORMERS_': types.LINES_TRANSFORMER_CONCEPT_INFO.name.plural,
 }
 
 
@@ -95,6 +103,10 @@ Replaces the contents of a file.
 
 All occurrences of {_REG_EX_} are replaced with {_STRING_}.
 """
+
+_SELECT_TRANSFORMER_SED_DESCRIPTION = """\
+Keeps lines matched by the given {_LINE_MATCHER_},
+and discards lines not matched."""
 
 _SEQUENCE_TRANSFORMER_SED_DESCRIPTION = """\
 Sequence of two or more {_TRANSFORMERS_}.
@@ -113,12 +125,20 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     description_rest=_fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION)
 )
 
+_SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
+    argument_usage_list=[
+        a.Single(a.Multiplicity.MANDATORY,
+                 instruction_arguments.LINE_MATCHER),
+    ],
+    description_rest=_fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION)
+)
+
 _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
     _fnap(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
 )
 
 _CONCEPT = grammar.Concept(
-    LINES_TRANSFORMER_CONCEPT_INFO.name,
+    types.LINES_TRANSFORMER_CONCEPT_INFO.name,
     type_system.LINES_TRANSFORMER_TYPE,
     LINES_TRANSFORMER_ARGUMENT,
 )
@@ -130,6 +150,9 @@ GRAMMAR = grammar.Grammar(
         REPLACE_TRANSFORMER_NAME:
             grammar.SimpleExpression(parse_replace,
                                      _REPLACE_SYNTAX_DESCRIPTION),
+        SELECT_TRANSFORMER_NAME:
+            grammar.SimpleExpression(parse_select,
+                                     _SELECT_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
         SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(

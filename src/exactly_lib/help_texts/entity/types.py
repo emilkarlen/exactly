@@ -38,3 +38,8 @@ FILE_MATCHER_CONCEPT_INFO = name_and_ref_target(
     Name('file matcher', 'file matchers'),
     'Matches properties of files, like name and type.'
 )
+
+LINE_MATCHER_CONCEPT_INFO = name_and_ref_target(
+    Name('line matcher', 'line matchers'),
+    'Matches individual text lines.'
+)

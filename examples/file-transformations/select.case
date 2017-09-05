@@ -1,0 +1,23 @@
+#
+# The "select" transformer selects lines that matches a given LINE-MATCHER,
+#
+# all other lines are discarded.
+#
+
+
+[setup]
+
+
+file my-file.txt <<EOF
+first
+second
+third
+EOF
+
+
+[assert]
+
+
+contents my-file.txt --transformation ( select regex 'second' ) equals <<EOF
+second
+EOF

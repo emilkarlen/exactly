@@ -19,5 +19,12 @@ def syntax_for_replace_transformer(regex_token_str: str,
     ])
 
 
+def syntax_for_select_transformer(line_matcher: str) -> str:
+    return ' '.join([
+        parse_lines_transformer.SELECT_TRANSFORMER_NAME,
+        line_matcher,
+    ])
+
+
 def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
     return (' ' + parse_lines_transformer.SEQUENCE_OPERATOR_NAME + ' ').join(transformer_syntax_list)
