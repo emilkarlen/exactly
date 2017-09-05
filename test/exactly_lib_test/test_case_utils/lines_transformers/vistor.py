@@ -3,6 +3,7 @@ import unittest
 
 import exactly_lib.test_case_utils.lines_transformer.transformers as sut
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
 
 
@@ -46,6 +47,17 @@ class TestFileTransformerStructureVisitor(unittest.TestCase):
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
+    def test_visit_select(self):
+        # ARRANGE #
+        instance = sut.SelectLinesTransformer(LineMatcherConstant(True))
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.SelectLinesTransformer],
+                         visitor.visited_types)
+        self.assertIs(instance, ret_val)
+
     def test_visit_custom(self):
         # ARRANGE #
         instance = MyCustomTransformer()
@@ -85,6 +97,10 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
 
     def visit_replace(self, transformer: sut.ReplaceLinesTransformer):
         self.visited_types.append(sut.ReplaceLinesTransformer)
+        return transformer
+
+    def visit_select(self, transformer: sut.SelectLinesTransformer):
+        self.visited_types.append(sut.SelectLinesTransformer)
         return transformer
 
     def visit_custom(self, transformer: sut.CustomLinesTransformer):

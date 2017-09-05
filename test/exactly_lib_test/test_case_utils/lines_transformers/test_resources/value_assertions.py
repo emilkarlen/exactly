@@ -1,8 +1,10 @@
 import unittest
 
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
-    SequenceLinesTransformer, CustomLinesTransformer, LinesTransformerStructureVisitor, ReplaceLinesTransformer
+    SequenceLinesTransformer, CustomLinesTransformer, LinesTransformerStructureVisitor, ReplaceLinesTransformer, \
+    SelectLinesTransformer
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -44,34 +46,39 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
                  actual: LinesTransformer,
                  description: str):
         self.put = put
-        self.message_builder = message_builder
+        self.message_builder = message_builder.with_description(description)
         self.actual = actual
-        self.description = description
 
     def visit_identity(self, expected: IdentityLinesTransformer):
-        builder_with_description = self.message_builder.with_description(self.description)
         self.put.assertIsInstance(self.actual,
                                   IdentityLinesTransformer,
-                                  builder_with_description.apply('class'))
+                                  self.message_builder.apply('class'))
 
     def visit_replace(self, expected: ReplaceLinesTransformer):
-        builder_with_description = self.message_builder.with_description(self.description)
         self.put.assertIsInstance(self.actual,
                                   ReplaceLinesTransformer,
-                                  builder_with_description.apply('class'))
+                                  self.message_builder.apply('class'))
         assert isinstance(self.actual, ReplaceLinesTransformer)  # Type info for IDE
         self.put.assertEqual(expected.regex_pattern_string,
                              self.actual.regex_pattern_string,
-                             builder_with_description.apply('regex pattern string'))
+                             self.message_builder.apply('regex pattern string'))
         self.put.assertEqual(expected.replacement,
                              self.actual.replacement,
-                             builder_with_description.apply('replacement'))
+                             self.message_builder.apply('replacement'))
+
+    def visit_select(self, expected: SelectLinesTransformer):
+        self.put.assertIsInstance(self.actual,
+                                  SelectLinesTransformer,
+                                  self.message_builder.apply('class'))
+        assert isinstance(self.actual, SelectLinesTransformer)  # Type info for IDE
+        assertion_on_line_matcher = asrt_line_matcher.equals_line_matcher(expected.line_matcher)
+        assertion_on_line_matcher.apply_with_message(self.put, self.actual.line_matcher,
+                                                     'line matcher')
 
     def visit_sequence(self, expected: SequenceLinesTransformer):
-        builder_with_description = self.message_builder.with_description(self.description)
         self.put.assertIsInstance(self.actual,
                                   SequenceLinesTransformer,
-                                  builder_with_description.apply('class'))
+                                  self.message_builder.apply('class'))
         assert isinstance(self.actual, SequenceLinesTransformer)  # Type info for IDE
         assert_components_equals = asrt.matches_sequence(list(map(equals_lines_transformer,
                                                                   expected.transformers)))
@@ -81,11 +88,10 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
                                                     )
 
     def visit_custom(self, expected: CustomLinesTransformer):
-        builder_with_description = self.message_builder.with_description(self.description)
         self.put.assertIsInstance(self.actual,
                                   CustomLinesTransformer,
-                                  builder_with_description.apply('class'))
+                                  self.message_builder.apply('class'))
         assert isinstance(self.actual, CustomLinesTransformer)  # Type info for IDE
         self.put.assertEqual(expected.name,
                              self.actual.name,
-                             builder_with_description.apply('name'))
+                             self.message_builder.apply('name'))
