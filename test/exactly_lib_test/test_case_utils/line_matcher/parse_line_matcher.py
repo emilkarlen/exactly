@@ -5,9 +5,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant, \
+    LineMatcherNot, LineMatcherAnd, LineMatcherOr
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
-from exactly_lib.util.symbol_table import singleton_symbol_table_2
+from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.named_element.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
@@ -202,6 +203,90 @@ class TestParseLineMatcher(unittest.TestCase):
                 resolver=resolved_value_equals_line_matcher(
                     value=symbol.value,
                     references=asrt.matches_sequence([is_line_matcher_reference_to(symbol.name)]),
+                    symbols=symbols
+                ),
+            ))
+
+    def test_not(self):
+        # ARRANGE #
+        symbol = NameAndValue('the_symbol_name',
+                              LineMatcherConstant(True))
+
+        symbols = singleton_symbol_table_2(symbol.name,
+                                           container(LineMatcherConstantResolver(symbol.value)))
+
+        # ACT & ASSERT #
+        self._check(
+            remaining_source('{not_} {symbol}'.format(not_=sut.NOT_OPERATOR_NAME,
+                                                      symbol=symbol.name)),
+            Expectation(
+                resolver=resolved_value_equals_line_matcher(
+                    value=LineMatcherNot(symbol.value),
+                    references=asrt.matches_sequence([is_line_matcher_reference_to(symbol.name)]),
+                    symbols=symbols
+                ),
+            ))
+
+    def test_and(self):
+        # ARRANGE #
+        symbol_1 = NameAndValue('the_symbol_1_name',
+                                LineMatcherConstant(True))
+
+        symbol_2 = NameAndValue('the_symbol_2_name',
+                                LineMatcherConstant(False))
+
+        symbols = SymbolTable({
+            symbol_1.name: container(LineMatcherConstantResolver(symbol_1.value)),
+            symbol_2.name: container(LineMatcherConstantResolver(symbol_2.value)),
+        })
+
+        # ACT & ASSERT #
+        self._check(
+            remaining_source('{symbol_1} {and_op} {symbol_2}'.format(
+                symbol_1=symbol_1.name,
+                and_op=sut.AND_OPERATOR_NAME,
+                symbol_2=symbol_2.name,
+            )),
+            Expectation(
+                resolver=resolved_value_equals_line_matcher(
+                    value=LineMatcherAnd([symbol_1.value,
+                                          symbol_2.value]),
+                    references=asrt.matches_sequence([
+                        is_line_matcher_reference_to(symbol_1.name),
+                        is_line_matcher_reference_to(symbol_2.name),
+                    ]),
+                    symbols=symbols
+                ),
+            ))
+
+    def test_or(self):
+        # ARRANGE #
+        symbol_1 = NameAndValue('the_symbol_1_name',
+                                LineMatcherConstant(True))
+
+        symbol_2 = NameAndValue('the_symbol_2_name',
+                                LineMatcherConstant(False))
+
+        symbols = SymbolTable({
+            symbol_1.name: container(LineMatcherConstantResolver(symbol_1.value)),
+            symbol_2.name: container(LineMatcherConstantResolver(symbol_2.value)),
+        })
+
+        # ACT & ASSERT #
+        self._check(
+            remaining_source('{symbol_1} {or_op} {symbol_2}'.format(
+                symbol_1=symbol_1.name,
+                or_op=sut.OR_OPERATOR_NAME,
+                symbol_2=symbol_2.name,
+            )),
+            Expectation(
+                resolver=resolved_value_equals_line_matcher(
+                    value=LineMatcherOr([symbol_1.value,
+                                         symbol_2.value]),
+                    references=asrt.matches_sequence([
+                        is_line_matcher_reference_to(symbol_1.name),
+                        is_line_matcher_reference_to(symbol_2.name),
+                    ]),
                     symbols=symbols
                 ),
             ))

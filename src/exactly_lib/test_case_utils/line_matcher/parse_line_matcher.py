@@ -22,6 +22,10 @@ REGEX_MATCHER_NAME = 'regex'
 
 AND_OPERATOR_NAME = '&&'
 
+OR_OPERATOR_NAME = '||'
+
+NOT_OPERATOR_NAME = '!'
+
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
 REPLACE_REPLACEMENT_ARGUMENT = a.Named(type_system.STRING_VALUE)
@@ -87,8 +91,16 @@ def _fnap(s: str) -> list:
 
 _REGEX_MATCHER_SED_DESCRIPTION = """Matches lines that contains a given {_REG_EX_}."""
 
+_NOT_TRANSFORMER_SED_DESCRIPTION = """\
+Matches lines NOT matched by the given matcher.
+"""
+
 _AND_TRANSFORMER_SED_DESCRIPTION = """\
 Matches lines matched by all matchers.
+"""
+
+_OR_TRANSFORMER_SED_DESCRIPTION = """\
+Matches lines matched by any matcher.
 """
 
 _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
@@ -101,6 +113,14 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 
 _AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
     _fnap(_AND_TRANSFORMER_SED_DESCRIPTION)
+)
+
+_OR_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
+    _fnap(_OR_TRANSFORMER_SED_DESCRIPTION)
+)
+
+_NOT_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
+    _fnap(_NOT_TRANSFORMER_SED_DESCRIPTION)
 )
 
 _CONCEPT = grammar.Concept(
@@ -122,6 +142,13 @@ GRAMMAR = grammar.Grammar(
             resolvers.LineMatcherAndResolver,
             _AND_SYNTAX_DESCRIPTION,
         ),
+        OR_OPERATOR_NAME: grammar.ComplexExpression(
+            resolvers.LineMatcherOrResolver,
+            _OR_SYNTAX_DESCRIPTION,
+        ),
     },
-    prefix_expressions={},
+    prefix_expressions={
+        NOT_OPERATOR_NAME: grammar.PrefixExpression(resolvers.LineMatcherNotResolver,
+                                                    _NOT_SYNTAX_DESCRIPTION)
+    },
 )
