@@ -1,7 +1,7 @@
+import re
 import unittest
 
 from exactly_lib.test_case_utils.line_matcher import line_matchers as sut
-from exactly_lib.util.dir_contents_selection import Selectors
 
 
 def suite() -> unittest.TestSuite:
@@ -13,7 +13,7 @@ def suite() -> unittest.TestSuite:
 class TestLineMatcherStructureVisitor(unittest.TestCase):
     def test_visit_regex(self):
         # ARRANGE #
-        instance = sut.LineMatcherRegex(Selectors())
+        instance = sut.LineMatcherRegex(re.compile('regex pattern'))
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
