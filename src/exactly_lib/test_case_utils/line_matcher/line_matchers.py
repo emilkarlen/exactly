@@ -7,8 +7,12 @@ class LineMatcherRegex(LineMatcher):
     def __init__(self, compiled_regular_expression):
         self._compiled_regular_expression = compiled_regular_expression
 
+    @property
+    def regex_pattern_string(self) -> str:
+        return self._compiled_regular_expression.pattern
+
     def matches(self, line: str) -> bool:
-        raise NotImplementedError('todo')
+        return bool(self._compiled_regular_expression.search(line))
 
 
 class LineMatcherStructureVisitor:
