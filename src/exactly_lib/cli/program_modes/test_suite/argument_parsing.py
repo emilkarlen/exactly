@@ -48,7 +48,7 @@ class _Parser:
         return TestSuiteExecutionSettings(self._resolve_reporter_factory(vars(namespace)),
                                           TestCaseHandlingSetup(act_phase_setup,
                                                                 self.default.preprocessor),
-                                          argument_parsing_utils.resolve_path(pathlib.Path(namespace.file)),
+                                          argument_parsing_utils.resolve_existing_path(pathlib.Path(namespace.file)),
                                           )
 
     def _resolve_reporter_factory(self,

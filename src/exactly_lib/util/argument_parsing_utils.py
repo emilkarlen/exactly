@@ -12,9 +12,12 @@ class ArgumentParsingError(Exception):
         self.error_message = error_message
 
 
-def resolve_path(path_to_resolve: pathlib.Path) -> pathlib.Path:
+def resolve_existing_path(path_to_resolve: pathlib.Path) -> pathlib.Path:
+    """
+    raises ArgumentParsingError: path_to_resolve is not an existing file
+    """
     try:
-        return path_to_resolve.resolve()
+        return path_to_resolve.resolve(strict=True)
     except FileNotFoundError as ex:
         raise ArgumentParsingError(str(ex))
 
