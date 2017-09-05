@@ -69,7 +69,7 @@ class LineMatcherOr(LineMatcher):
         return list(self._matchers)
 
     def matches(self, line: str) -> bool:
-        return all([matcher.matches(line)
+        return any([matcher.matches(line)
                     for matcher in self._matchers])
 
 
