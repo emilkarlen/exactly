@@ -7,3 +7,5 @@
 replace-test-case-dirs.case
 
 def-file-transformer.case
+
+select.case
