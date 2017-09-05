@@ -29,6 +29,20 @@ class LineMatcherRegex(LineMatcher):
         return bool(self._compiled_regular_expression.search(line))
 
 
+class LineMatcherNot(LineMatcher):
+    """Matcher that negates a given matcher."""
+
+    def __init__(self, matcher: LineMatcher):
+        self._matcher = matcher
+
+    @property
+    def negated_matcher(self) -> LineMatcher:
+        return self._matcher
+
+    def matches(self, line: str) -> bool:
+        return not self._matcher.matches(line)
+
+
 class LineMatcherStructureVisitor:
     """
     Visits all variants of :class:`LineMatcher`.
@@ -43,6 +57,8 @@ class LineMatcherStructureVisitor:
             return self.visit_regex(line_matcher)
         if isinstance(line_matcher, LineMatcherConstant):
             return self.visit_constant(line_matcher)
+        if isinstance(line_matcher, LineMatcherNot):
+            return self.visit_not(line_matcher)
         else:
             raise TypeError('Unknown {}: {}'.format(LineMatcher,
                                                     str(line_matcher)))
@@ -51,4 +67,7 @@ class LineMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_regex(self, matcher: LineMatcherRegex):
+        raise NotImplementedError('abstract method')
+
+    def visit_not(self, matcher: LineMatcherNot):
         raise NotImplementedError('abstract method')

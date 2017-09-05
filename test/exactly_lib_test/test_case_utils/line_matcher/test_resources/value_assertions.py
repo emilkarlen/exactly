@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherStructureVisitor, LineMatcherConstant, \
-    LineMatcherRegex
+    LineMatcherRegex, LineMatcherNot
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -66,3 +66,10 @@ class _EqualityChecker(LineMatcherStructureVisitor):
         self.put.assertEqual(expected.regex_pattern_string,
                              self.actual.regex_pattern_string,
                              'regex pattern string')
+
+    def visit_not(self, expected: LineMatcherNot):
+        self._common(expected)
+        assert isinstance(self.actual, LineMatcherNot)
+        assertion_on_negated_matcher = equals_line_matcher(expected.negated_matcher)
+        assertion_on_negated_matcher.apply_with_message(self.put, self.actual.negated_matcher,
+                                                        'negated matcher')
