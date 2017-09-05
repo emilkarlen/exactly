@@ -1,7 +1,8 @@
 import re
 import unittest
 
-from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant, LineMatcherRegex, LineMatcherNot
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant, LineMatcherRegex, \
+    LineMatcherNot, LineMatcherAnd
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
@@ -30,6 +31,14 @@ class TestEquals(unittest.TestCase):
                 LineMatcherNot(LineMatcherConstant(True)),
                 LineMatcherNot(LineMatcherConstant(True)),
             ),
+            (
+                LineMatcherAnd([]),
+                LineMatcherAnd([]),
+            ),
+            (
+                LineMatcherAnd([LineMatcherConstant(True)]),
+                LineMatcherAnd([LineMatcherConstant(True)]),
+            ),
         ]
         for expected, actual in cases:
             with self.subTest(transformer=expected.__class__.__name__):
@@ -46,6 +55,7 @@ class TestEquals(unittest.TestCase):
                 LineMatcherConstant(not constant_result),
                 LineMatcherRegex(re.compile('pattern')),
                 LineMatcherNot(LineMatcherConstant(not constant_result)),
+                LineMatcherAnd([]),
             ]
             for actual in different_transformers:
                 assertion_to_check = sut.equals_line_matcher(expected)
@@ -68,6 +78,7 @@ class TestEquals(unittest.TestCase):
             LineMatcherConstant(True),
             LineMatcherRegex(unexpected_regex),
             LineMatcherNot(LineMatcherRegex(unexpected_regex)),
+            LineMatcherAnd([]),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_line_matcher(expected)
@@ -86,6 +97,27 @@ class TestEquals(unittest.TestCase):
             LineMatcherConstant(True),
             LineMatcherRegex(re.compile('regex pattern')),
             LineMatcherNot(LineMatcherConstant(False)),
+            LineMatcherAnd([]),
+        ]
+        for actual in different_transformers:
+            assertion_to_check = sut.equals_line_matcher(expected)
+            with self.subTest(actual=str(actual)):
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion_to_check,
+                                            actual)
+
+    def test_not_equals__and(self):
+        # ARRANGE #
+
+        expected = LineMatcherAnd([LineMatcherConstant(True)])
+
+        different_transformers = [
+            LineMatcherConstant(False),
+            LineMatcherConstant(True),
+            LineMatcherRegex(re.compile('regex pattern')),
+            LineMatcherNot(LineMatcherConstant(False)),
+            LineMatcherAnd([]),
+            LineMatcherAnd([LineMatcherConstant(False)]),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_line_matcher(expected)

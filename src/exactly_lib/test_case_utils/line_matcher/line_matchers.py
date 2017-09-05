@@ -43,6 +43,21 @@ class LineMatcherNot(LineMatcher):
         return not self._matcher.matches(line)
 
 
+class LineMatcherAnd(LineMatcher):
+    """Matcher that ands a list of matchers."""
+
+    def __init__(self, matchers: list):
+        self._matchers = tuple(matchers)
+
+    @property
+    def matchers(self) -> list:
+        return self._matchers
+
+    def matches(self, line: str) -> bool:
+        return all([matcher.matches(line)
+                    for matcher in self._matchers])
+
+
 class LineMatcherStructureVisitor:
     """
     Visits all variants of :class:`LineMatcher`.
@@ -59,6 +74,8 @@ class LineMatcherStructureVisitor:
             return self.visit_constant(line_matcher)
         if isinstance(line_matcher, LineMatcherNot):
             return self.visit_not(line_matcher)
+        if isinstance(line_matcher, LineMatcherAnd):
+            return self.visit_and(line_matcher)
         else:
             raise TypeError('Unknown {}: {}'.format(LineMatcher,
                                                     str(line_matcher)))
@@ -70,4 +87,7 @@ class LineMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_not(self, matcher: LineMatcherNot):
+        raise NotImplementedError('abstract method')
+
+    def visit_and(self, matcher: LineMatcherAnd):
         raise NotImplementedError('abstract method')
