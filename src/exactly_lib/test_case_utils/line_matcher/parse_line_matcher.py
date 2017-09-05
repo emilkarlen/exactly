@@ -92,7 +92,7 @@ def _fnap(s: str) -> list:
 _REGEX_MATCHER_SED_DESCRIPTION = """Matches lines that contains a given {_REG_EX_}."""
 
 _NOT_TRANSFORMER_SED_DESCRIPTION = """\
-Matches lines NOT matched by the given matcher.
+Matches lines not matched by the given matcher.
 """
 
 _AND_TRANSFORMER_SED_DESCRIPTION = """\
