@@ -45,8 +45,7 @@ class _EqualityChecker(LineMatcherStructureVisitor):
                  description: str):
         self.put = put
         self.actual = actual
-        self.description = description
-        self.message_builder = message_builder.with_description(self.description)
+        self.message_builder = message_builder.with_description(description)
 
     def _common(self, expected: LineMatcher):
         self.put.assertIsInstance(self.actual,

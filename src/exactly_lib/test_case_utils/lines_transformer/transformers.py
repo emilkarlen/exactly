@@ -1,6 +1,7 @@
 import functools
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.functional import compose_first_and_second
 
@@ -59,6 +60,31 @@ class ReplaceLinesTransformer(LinesTransformer):
                                str(self._compiled_regular_expression))
 
 
+class SelectLinesTransformer(LinesTransformer):
+    """
+    Keeps lines matched by a given :class:`LineMatcher`,
+    and discards lines not matched.
+    """
+
+    def __init__(self, line_matcher: LineMatcher):
+        self._line_matcher = line_matcher
+
+    @property
+    def line_matcher(self) -> LineMatcher:
+        return self._line_matcher
+
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        return (
+            line
+            for line in lines
+            if self._line_matcher.matches(line)
+        )
+
+    def __str__(self):
+        return '{}({})'.format(type(self).__name__,
+                               str(self._line_matcher))
+
+
 class CustomLinesTransformer(LinesTransformer):
     """
     Base class for built in custom transformers.
@@ -90,6 +116,8 @@ class LinesTransformerStructureVisitor:
     def visit(self, transformer: LinesTransformer):
         if isinstance(transformer, ReplaceLinesTransformer):
             return self.visit_replace(transformer)
+        if isinstance(transformer, SelectLinesTransformer):
+            return self.visit_select(transformer)
         if isinstance(transformer, CustomLinesTransformer):
             return self.visit_custom(transformer)
         if isinstance(transformer, SequenceLinesTransformer):
@@ -107,6 +135,9 @@ class LinesTransformerStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_replace(self, transformer: ReplaceLinesTransformer):
+        raise NotImplementedError('abstract method')
+
+    def visit_select(self, transformer: SelectLinesTransformer):
         raise NotImplementedError('abstract method')
 
     def visit_custom(self, transformer: CustomLinesTransformer):
