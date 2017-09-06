@@ -21,14 +21,7 @@ class IndividualTypeRenderer(SectionContentsRenderer):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         self.rendering_environment = environment
         initial_paragraphs = [docs.para(self.doc.single_line_description())]
-        # initial_paragraphs.extend(self._default_reporter_info())
-        # initial_paragraphs.extend(self.type.main_description_rest())
         sub_sections = []
-        # append_sections_if_contents_is_non_empty(
-        #     sub_sections,
-        #     [(self._parser.format('{act_phase} phase contents'), self.type.act_phase_contents()),
-        #      (self._parser.format('Syntax of {act_phase} phase contents'), self.type.act_phase_contents_syntax())])
-        # sub_sections.extend(see_also_sections(self.type.see_also_items(), environment))
 
         if self.doc.invokation_variants():
             sub_sections.append(synopsis_section(
