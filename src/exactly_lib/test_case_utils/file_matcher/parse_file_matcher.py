@@ -15,14 +15,14 @@ from exactly_lib.test_case_utils.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import SELECT_ALL_FILES, FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
-SELECTION_OF_ALL_FILES = FileMatcherConstant(SELECT_ALL_FILES)
+SELECTION_OF_ALL_FILES = FileMatcherConstantResolver(SELECT_ALL_FILES)
 
 NAME_MATCHER_NAME = 'name'
 
@@ -111,7 +111,7 @@ def _parse_type_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
 
 
 def _constant(selectors: dcs.Selectors) -> FileMatcherResolver:
-    return FileMatcherConstant(FileMatcherFromSelectors(selectors))
+    return FileMatcherConstantResolver(FileMatcherFromSelectors(selectors))
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
@@ -192,7 +192,7 @@ GRAMMAR = grammar.Grammar(
         type_system_type_name=FILE_MATCHER_TYPE,
         syntax_element_name=MATCHER_ARGUMENT,
     ),
-    mk_reference=resolvers.FileMatcherReference,
+    mk_reference=resolvers.FileMatcherReferenceResolver,
     simple_expressions={
         NAME_MATCHER_NAME: grammar.SimpleExpression(_parse_name_matcher,
                                                     NAME_SYNTAX_DESCRIPTION),
@@ -200,7 +200,7 @@ GRAMMAR = grammar.Grammar(
                                                     TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        AND_OPERATOR: grammar.ComplexExpression(resolvers.FileMatcherAnd,
+        AND_OPERATOR: grammar.ComplexExpression(resolvers.FileMatcherAndResolver,
                                                 AND_SYNTAX_DESCRIPTION),
     }
 )

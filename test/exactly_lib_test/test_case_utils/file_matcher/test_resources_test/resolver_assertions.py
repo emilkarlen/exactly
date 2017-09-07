@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
@@ -36,7 +36,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
         name_patterns = frozenset(['first name pattern',
                                    'second name pattern'])
         actual_and_expected = FileMatcherFromSelectors(Selectors(name_patterns=name_patterns))
-        resolver = FileMatcherConstant(actual_and_expected)
+        resolver = FileMatcherConstantResolver(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_value_equals_file_matcher(actual_and_expected,
@@ -61,7 +61,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
         expected = FileMatcherFromSelectors(Selectors(name_patterns=common_name_patterns,
                                                       file_types=frozenset([FileType.REGULAR])))
 
-        resolver_of_actual = FileMatcherConstant(actual)
+        resolver_of_actual = FileMatcherConstantResolver(actual)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_equals_file_matcher(expected,

@@ -9,7 +9,7 @@ from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class FileMatcherConstant(FileMatcherResolver):
+class FileMatcherConstantResolver(FileMatcherResolver):
     """
     A :class:`FileMatcherResolver` that is a constant :class:`FileMatcher`
     """
@@ -28,7 +28,7 @@ class FileMatcherConstant(FileMatcherResolver):
         return str(type(self)) + '\'' + str(self._value) + '\''
 
 
-class FileMatcherReference(FileMatcherResolver):
+class FileMatcherReferenceResolver(FileMatcherResolver):
     """
     A :class:`FileMatcherResolver` that is a reference to a symbol
     """
@@ -52,7 +52,7 @@ class FileMatcherReference(FileMatcherResolver):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
 
 
-class FileMatcherAnd(FileMatcherResolver):
+class FileMatcherAndResolver(FileMatcherResolver):
     """
     A :class:`FileMatcherResolver` that combines selectors using AND.
     """
