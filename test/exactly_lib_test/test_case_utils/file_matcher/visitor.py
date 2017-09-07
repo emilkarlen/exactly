@@ -19,9 +19,9 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([Selectors],
+        self.assertEqual([sut.FileMatcherFromSelectors],
                          visitor.visited_types)
-        self.assertIs(instance.selectors,
+        self.assertIs(instance,
                       ret_val)
 
     def test_visit_constant(self):
@@ -58,9 +58,9 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
         self.visited_types.append(sut.FileMatcherConstant)
         return matcher
 
-    def visit_selectors(self, selectors: Selectors):
-        self.visited_types.append(Selectors)
-        return selectors
+    def visit_selectors(self, matcher: sut.FileMatcherFromSelectors):
+        self.visited_types.append(sut.FileMatcherFromSelectors)
+        return matcher
 
 
 class UnknownFileMatcher(FileMatcher):

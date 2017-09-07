@@ -57,7 +57,7 @@ class FileMatcherStructureVisitor:
 
     def visit(self, matcher: FileMatcher):
         if isinstance(matcher, FileMatcherFromSelectors):
-            return self.visit_selectors(matcher.selectors)
+            return self.visit_selectors(matcher)
         if isinstance(matcher, FileMatcherConstant):
             return self.visit_constant(matcher)
         else:
@@ -67,5 +67,5 @@ class FileMatcherStructureVisitor:
     def visit_constant(self, matcher: FileMatcherConstant):
         raise NotImplementedError('abstract method')
 
-    def visit_selectors(self, selectors: dir_contents_selection.Selectors):
+    def visit_selectors(self, matcher: FileMatcherFromSelectors):
         raise NotImplementedError('abstract method')

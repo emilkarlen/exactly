@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor, \
     FileMatcherFromSelectors
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.util import dir_contents_selection
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -52,10 +51,10 @@ class _StructureChecker(FileMatcherStructureVisitor):
         self.expected = expected
         self.description = description
 
-    def visit_selectors(self, actual: dir_contents_selection.Selectors):
+    def visit_selectors(self, actual: FileMatcherFromSelectors):
         self.put.assertEqual(self.expected.selectors.name_patterns,
-                             actual.name_patterns,
+                             actual.selectors.name_patterns,
                              'name patterns')
         self.put.assertEqual(self.expected.selectors.file_types,
-                             actual.file_types,
+                             actual.selectors.file_types,
                              'file types')
