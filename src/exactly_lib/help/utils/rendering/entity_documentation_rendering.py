@@ -1,6 +1,6 @@
+from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc, lists, structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import SEPARATION_OF_HEADER_AND_CONTENTS
 
 
@@ -9,8 +9,12 @@ def sorted_entity_list(entities: list) -> list:
 
 
 def entity_doc_list_renderer_as_single_line_description(entity_doc_list: list) -> SectionContentsRenderer:
-    return AllEntitiesListRenderer(lambda entity_doc: docs.paras(entity_doc.single_line_description()),
+    return AllEntitiesListRenderer(single_line_description_as_summary_paragraphs,
                                    entity_doc_list)
+
+
+def single_line_description_as_summary_paragraphs(entity_doc: EntityDocumentation) -> list:
+    return docs.paras(entity_doc.single_line_description())
 
 
 class AllEntitiesListRenderer(SectionContentsRenderer):
@@ -26,7 +30,7 @@ class AllEntitiesListRenderer(SectionContentsRenderer):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         return doc.SectionContents([self._sorted_entities_list(self.all_entities)], [])
 
-    def _sorted_entities_list(self, entities: iter) -> ParagraphItem:
+    def _sorted_entities_list(self, entities: iter) -> lists.HeaderContentList:
         items = [lists.HeaderContentListItem(docs.text(entity.singular_name()),
                                              self.entity_2_summary_paragraphs(entity))
                  for entity in (sorted_entity_list(entities))]
