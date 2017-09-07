@@ -1,10 +1,9 @@
 import unittest
 
+from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor, \
     FileMatcherFromSelectors
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.test_case_utils.file_matcher import file_matchers
-from exactly_lib.util import dir_contents_selection
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -56,6 +55,13 @@ class _StructureChecker(FileMatcherStructureVisitor):
         self.put.assertEqual(actual.option_description,
                              self.expected.option_description,
                              'option_description')
+
+    def visit_base_name_glob_pattern(self, actual: file_matchers.FileMatcherNameGlobPattern):
+        self._common(actual)
+        assert isinstance(self.expected, file_matchers.FileMatcherNameGlobPattern)  # Type info for IDE
+        self.put.assertEqual(self.expected.glob_pattern,
+                             actual.glob_pattern,
+                             'glob_pattern')
 
     def visit_constant(self, actual: file_matchers.FileMatcherConstant):
         self._common(actual)
