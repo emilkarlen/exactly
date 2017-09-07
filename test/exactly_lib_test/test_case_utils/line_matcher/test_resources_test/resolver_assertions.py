@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
-from exactly_lib.util.symbol_table import singleton_symbol_table_2
+from exactly_lib.util.symbol_table import singleton_symbol_table_2, empty_symbol_table
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.test_resources import named_elem_utils
 from exactly_lib_test.named_element.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
