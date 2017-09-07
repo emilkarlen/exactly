@@ -103,6 +103,6 @@ class Syntax:
 
 
 _SYMBOL_REF_DESCRIPTION = """\
-Reference to a {concept_name} symbol,
-that must be defined as a {concept_type_name}.
+Reference to a symbol,
+that must have been defined as a {concept_name}.
 """
