@@ -1,8 +1,10 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors, FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
+from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
@@ -21,6 +23,29 @@ def suite() -> unittest.TestSuite:
 
 
 class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
+    def test_SHOULD_not_equal_WHEN_actual_is_line_matcher(self):
+        # ARRANGE #
+        cases = [
+            NameAndValue('without symbol table',
+                         None),
+            NameAndValue('with symbol table',
+                         singleton_symbol_table_2(
+                             'the symbol name',
+                             named_elem_utils.container(ARBITRARY_FILE_MATCHER_RESOLVER),
+                         )),
+
+        ]
+        actual = LineMatcherConstant(False)
+        expected = FileMatcherConstant(False)
+
+        resolver_of_actual = LineMatcherConstantResolver(actual)
+        for case in cases:
+            with self.subTest(name=case.name):
+                assertion_equals_expected = sut.resolved_value_equals_file_matcher(expected,
+                                                                                   symbols=case.value)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
+
     def test_equals_file_matcher(self):
         # ARRANGE #
         cases = [
@@ -33,14 +58,12 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
                          )),
 
         ]
-        name_patterns = frozenset(['first name pattern',
-                                   'second name pattern'])
-        actual_and_expected = FileMatcherFromSelectors(Selectors(name_patterns=name_patterns))
+        actual_and_expected = FileMatcherConstant(True)
         resolver = FileMatcherConstantResolver(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_to_check = sut.resolved_value_equals_file_matcher(actual_and_expected,
-                                                                            environment=case.value)
+                                                                            symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
@@ -65,7 +88,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_equals_file_matcher(expected,
-                                                                                   environment=case.value)
+                                                                                   symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
@@ -113,6 +136,8 @@ def fake(selectors: Selectors = Selectors(),
     return FileMatcherResolverConstantTestImpl(FileMatcherFromSelectors(selectors),
                                                references if references else [])
 
+
+ARBITRARY_FILE_MATCHER_RESOLVER = FileMatcherResolverConstantTestImpl(FileMatcherConstant(False), [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
