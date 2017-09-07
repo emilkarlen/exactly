@@ -51,6 +51,27 @@ class FileMatcherConstant(FileMatcher):
         return self._result
 
 
+class FileMatcherNameGlobPattern(FileMatcher):
+    """Matches the name (whole path, not just base name) of a path on a shell glob pattern."""
+
+    def __init__(self, glob_pattern: str):
+        self._glob_pattern = glob_pattern
+
+    @property
+    def glob_pattern(self) -> str:
+        return self._glob_pattern
+
+    @property
+    def option_description(self) -> str:
+        return 'name matches glob pattern ' + self._glob_pattern
+
+    def select_from(self, directory: pathlib.Path) -> iter:
+        raise NotImplementedError('this method should never be used, since this method should be refactored away')
+
+    def matches(self, path: pathlib.Path) -> bool:
+        return path.match(self._glob_pattern)
+
+
 SELECT_ALL_FILES = FileMatcherFromSelectors(dir_contents_selection.Selectors())
 
 
@@ -66,6 +87,8 @@ class FileMatcherStructureVisitor:
     def visit(self, matcher: FileMatcher):
         if isinstance(matcher, FileMatcherFromSelectors):
             return self.visit_selectors(matcher)
+        if isinstance(matcher, FileMatcherNameGlobPattern):
+            return self.visit_base_name_glob_pattern(matcher)
         if isinstance(matcher, FileMatcherConstant):
             return self.visit_constant(matcher)
         else:
@@ -73,6 +96,9 @@ class FileMatcherStructureVisitor:
                                                     str(matcher)))
 
     def visit_constant(self, matcher: FileMatcherConstant):
+        raise NotImplementedError('abstract method')
+
+    def visit_base_name_glob_pattern(self, matcher: FileMatcherNameGlobPattern):
         raise NotImplementedError('abstract method')
 
     def visit_selectors(self, matcher: FileMatcherFromSelectors):

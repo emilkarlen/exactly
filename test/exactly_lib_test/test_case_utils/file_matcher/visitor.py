@@ -36,6 +36,18 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
         self.assertIs(instance,
                       ret_val)
 
+    def test_visit_base_name_glob_pattern(self):
+        # ARRANGE #
+        instance = sut.FileMatcherNameGlobPattern('glob pattern')
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.FileMatcherNameGlobPattern],
+                         visitor.visited_types)
+        self.assertIs(instance,
+                      ret_val)
+
     def test_raise_type_error_WHEN_visited_object_is_of_unknown_class(self):
         # ARRANGE #
         instance = UnknownFileMatcher()
@@ -56,6 +68,10 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
 
     def visit_constant(self, matcher: sut.FileMatcherConstant):
         self.visited_types.append(sut.FileMatcherConstant)
+        return matcher
+
+    def visit_base_name_glob_pattern(self, matcher: sut.FileMatcherNameGlobPattern):
+        self.visited_types.append(sut.FileMatcherNameGlobPattern)
         return matcher
 
     def visit_selectors(self, matcher: sut.FileMatcherFromSelectors):
