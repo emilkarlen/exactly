@@ -13,13 +13,13 @@ def suite() -> unittest.TestSuite:
 class TestConstant(unittest.TestCase):
     def runTest(self):
         cases = [
-            NameAndValue('constant true should match any file',
+            NameAndValue('constant true should match any file (even if it does not exist)',
                          (
                              True,
                              pathlib.Path('file'),
                              True,
                          )),
-            NameAndValue('constant false should not match any file',
+            NameAndValue('constant false should not match any file (even if it does not exist)',
                          (
                              False,
                              pathlib.Path('file'),
