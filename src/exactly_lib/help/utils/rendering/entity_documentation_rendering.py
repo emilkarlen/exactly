@@ -2,6 +2,7 @@ from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc, lists, structures as docs
 from exactly_lib.util.textformat.structure.structures import SEPARATION_OF_HEADER_AND_CONTENTS
+from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 def sorted_entity_list(entities: list) -> list:
@@ -28,7 +29,7 @@ class AllEntitiesListRenderer(SectionContentsRenderer):
         self.all_entities = all_entities
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents([self._sorted_entities_list(self.all_entities)], [])
+        return doc.SectionContents([transform_list_to_table(self._sorted_entities_list(self.all_entities))], [])
 
     def _sorted_entities_list(self, entities: iter) -> lists.HeaderContentList:
         items = [lists.HeaderContentListItem(docs.text(entity.singular_name()),
