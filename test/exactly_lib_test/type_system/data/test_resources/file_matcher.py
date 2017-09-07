@@ -4,5 +4,12 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcher
 
 
 class FileMatcherThatSelectsAllFilesTestImpl(FileMatcher):
+    @property
+    def option_description(self) -> str:
+        return str(type(self))
+
+    def matches(self, path: pathlib.Path) -> bool:
+        return True
+
     def select_from(self, directory: pathlib.Path) -> iter:
         return directory.iterdir()

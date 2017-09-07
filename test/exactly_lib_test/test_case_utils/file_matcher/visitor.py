@@ -64,6 +64,10 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
 
 
 class UnknownFileMatcher(FileMatcher):
+    @property
+    def option_description(self) -> str:
+        return str(type(self))
+
     def select_from(self, directory: pathlib.Path) -> iter:
         raise NotImplementedError('this method should never be called')
 

@@ -1,7 +1,15 @@
 import pathlib
 
 
-class FileMatcher:
+class WithOptionDescription:
+    """Describes the option/config of an object"""
+
+    @property
+    def option_description(self) -> str:
+        raise NotImplementedError('abstract method')
+
+
+class FileMatcher(WithOptionDescription):
     """Matches a path of an existing file."""
 
     def select_from(self, directory: pathlib.Path) -> iter:
