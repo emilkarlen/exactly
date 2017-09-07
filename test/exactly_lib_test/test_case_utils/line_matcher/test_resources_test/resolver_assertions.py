@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
@@ -55,7 +55,7 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
         actual = FileMatcherTestImpl()
         expected = LineMatcherConstant(False)
 
-        resolver_of_actual = FileMatcherConstant(actual)
+        resolver_of_actual = FileMatcherConstantResolver(actual)
         for case in cases:
             with self.subTest(name=case.name):
                 assertion_equals_expected = sut.resolved_value_equals_line_matcher(expected,

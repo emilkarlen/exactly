@@ -7,7 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
-from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
@@ -305,7 +305,7 @@ class TestReference(TestCaseBase):
             is_file_matcher_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
-                                                  container(FileMatcherConstant(reffed_selector.value)))
+                                                  container(FileMatcherConstantResolver(reffed_selector.value)))
         space = '   '
         cases = [
             SourceCase('single name argument followed by space, and following lines',
@@ -341,7 +341,7 @@ class TestReference(TestCaseBase):
             is_file_matcher_reference_to(reffed_selector.name)
         ])
         named_elements = singleton_symbol_table_2(reffed_selector.name,
-                                                  container(FileMatcherConstant(reffed_selector.value)))
+                                                  container(FileMatcherConstantResolver(reffed_selector.value)))
         space = '   '
         instruction_arguments = '{concrete_selector} {and_} {selector_reference}'.format(
             and_=sut.AND_OPERATOR,
