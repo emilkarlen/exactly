@@ -56,7 +56,7 @@ class _StructureChecker(FileMatcherStructureVisitor):
                              self.expected.option_description,
                              'option_description')
 
-    def visit_base_name_glob_pattern(self, actual: file_matchers.FileMatcherNameGlobPattern):
+    def visit_name_glob_pattern(self, actual: file_matchers.FileMatcherNameGlobPattern):
         self._common(actual)
         assert isinstance(self.expected, file_matchers.FileMatcherNameGlobPattern)  # Type info for IDE
         self.put.assertEqual(self.expected.glob_pattern,
