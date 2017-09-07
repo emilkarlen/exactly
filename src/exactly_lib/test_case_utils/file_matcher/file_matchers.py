@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.test_case_utils import file_properties
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util import dir_contents_selection
 
@@ -72,6 +73,28 @@ class FileMatcherNameGlobPattern(FileMatcher):
         return path.match(self._glob_pattern)
 
 
+class FileMatcherType(FileMatcher):
+    """Matches the type of file."""
+
+    def __init__(self, file_type: file_properties.FileType):
+        self._file_type = file_type
+        self._pathlib_predicate = file_properties.TYPE_INFO[self._file_type].pathlib_path_predicate
+
+    @property
+    def file_type(self) -> file_properties.FileType:
+        return self._file_type
+
+    @property
+    def option_description(self) -> str:
+        return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
+
+    def select_from(self, directory: pathlib.Path) -> iter:
+        raise NotImplementedError('this method should never be used, since this method should be refactored away')
+
+    def matches(self, path: pathlib.Path) -> bool:
+        return self._pathlib_predicate(path)
+
+
 SELECT_ALL_FILES = FileMatcherFromSelectors(dir_contents_selection.Selectors())
 
 
@@ -89,6 +112,8 @@ class FileMatcherStructureVisitor:
             return self.visit_selectors(matcher)
         if isinstance(matcher, FileMatcherNameGlobPattern):
             return self.visit_base_name_glob_pattern(matcher)
+        if isinstance(matcher, FileMatcherType):
+            return self.visit_type(matcher)
         if isinstance(matcher, FileMatcherConstant):
             return self.visit_constant(matcher)
         else:
@@ -99,6 +124,9 @@ class FileMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_base_name_glob_pattern(self, matcher: FileMatcherNameGlobPattern):
+        raise NotImplementedError('abstract method')
+
+    def visit_type(self, matcher: FileMatcherType):
         raise NotImplementedError('abstract method')
 
     def visit_selectors(self, matcher: FileMatcherFromSelectors):

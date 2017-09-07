@@ -1,8 +1,8 @@
+import pathlib
 import unittest
 
-import pathlib
-
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.dir_contents_selection import Selectors
 
@@ -48,6 +48,18 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
         self.assertIs(instance,
                       ret_val)
 
+    def test_visit_type(self):
+        # ARRANGE #
+        instance = sut.FileMatcherType(FileType.REGULAR)
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.FileMatcherType],
+                         visitor.visited_types)
+        self.assertIs(instance,
+                      ret_val)
+
     def test_raise_type_error_WHEN_visited_object_is_of_unknown_class(self):
         # ARRANGE #
         instance = UnknownFileMatcher()
@@ -58,8 +70,6 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
         # ASSERT #
         self.assertIsNot(visitor.visited_types,
                          'No visit method should have been executed.')
-
-    pass
 
 
 class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
@@ -72,6 +82,10 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
 
     def visit_base_name_glob_pattern(self, matcher: sut.FileMatcherNameGlobPattern):
         self.visited_types.append(sut.FileMatcherNameGlobPattern)
+        return matcher
+
+    def visit_type(self, matcher: sut.FileMatcherType):
+        self.visited_types.append(sut.FileMatcherType)
         return matcher
 
     def visit_selectors(self, matcher: sut.FileMatcherFromSelectors):
