@@ -59,7 +59,7 @@ class TestEquals(unittest.TestCase):
 
 
 class TestNotEquals(unittest.TestCase):
-    def test_base_name_glob_pattern(self):
+    def test_name_glob_pattern(self):
         # ARRANGE #
         expected = file_matchers.FileMatcherNameGlobPattern('expected glob pattern')
         cases = [

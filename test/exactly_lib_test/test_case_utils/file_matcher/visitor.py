@@ -36,7 +36,7 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
         self.assertIs(instance,
                       ret_val)
 
-    def test_visit_base_name_glob_pattern(self):
+    def test_visit_name_glob_pattern(self):
         # ARRANGE #
         instance = sut.FileMatcherNameGlobPattern('glob pattern')
         visitor = AVisitorThatRecordsVisitedMethods()
@@ -80,7 +80,7 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
         self.visited_types.append(sut.FileMatcherConstant)
         return matcher
 
-    def visit_base_name_glob_pattern(self, matcher: sut.FileMatcherNameGlobPattern):
+    def visit_name_glob_pattern(self, matcher: sut.FileMatcherNameGlobPattern):
         self.visited_types.append(sut.FileMatcherNameGlobPattern)
         return matcher
 
