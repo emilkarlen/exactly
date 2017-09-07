@@ -22,6 +22,26 @@ class FileMatcherFromSelectors(FileMatcher):
         return dir_contents_selection.get_selection(directory,
                                                     self._selectors)
 
+    def matches(self, path: pathlib.Path) -> bool:
+        raise NotImplementedError('this method should never be used, since this class should be refactored away')
+
+
+class FileMatcherConstant(FileMatcher):
+    """Selects files from a directory according the a file condition."""
+
+    def __init__(self, result: bool):
+        self._result = result
+
+    @property
+    def result_constant(self) -> bool:
+        return self._result
+
+    def select_from(self, directory: pathlib.Path) -> iter:
+        raise NotImplementedError('this method should never be used, since this method should be refactored away')
+
+    def matches(self, path: pathlib.Path) -> bool:
+        return self._result
+
 
 SELECT_ALL_FILES = FileMatcherFromSelectors(dir_contents_selection.Selectors())
 
@@ -35,12 +55,17 @@ class FileMatcherStructureVisitor:
     of selectors.
     """
 
-    def visit(self, file_matcher: FileMatcher):
-        if isinstance(file_matcher, FileMatcherFromSelectors):
-            return self.visit_selectors(file_matcher.selectors)
+    def visit(self, matcher: FileMatcher):
+        if isinstance(matcher, FileMatcherFromSelectors):
+            return self.visit_selectors(matcher.selectors)
+        if isinstance(matcher, FileMatcherConstant):
+            return self.visit_constant(matcher)
         else:
             raise TypeError('Unknown {}: {}'.format(FileMatcher,
-                                                    str(file_matcher)))
+                                                    str(matcher)))
+
+    def visit_constant(self, matcher: FileMatcherConstant):
+        raise NotImplementedError('abstract method')
 
     def visit_selectors(self, selectors: dir_contents_selection.Selectors):
         raise NotImplementedError('abstract method')

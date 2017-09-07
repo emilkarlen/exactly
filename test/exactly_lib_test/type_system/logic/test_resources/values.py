@@ -15,6 +15,9 @@ class FakeLinesTransformer(sut.LinesTransformer):
 
 
 class FileMatcherTestImpl(FileMatcher):
+    def matches(self, path: pathlib.Path) -> bool:
+        raise NotImplementedError('should never be used')
+
     def select_from(self, directory: pathlib.Path) -> iter:
         raise NotImplementedError('should never be used')
 
