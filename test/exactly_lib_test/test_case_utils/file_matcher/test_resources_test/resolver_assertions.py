@@ -77,8 +77,8 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
                         references=actual_references)
         assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
                                                                     expected_references=asrt.matches_sequence([
-                                                                         asrt.is_(actual_reference)
-                                                                     ]),
+                                                                        asrt.is_(actual_reference)
+                                                                    ]),
                                                                     )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, resolver)
