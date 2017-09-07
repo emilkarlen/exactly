@@ -55,6 +55,10 @@ class TestGlobPattern(unittest.TestCase):
 
                 # ASSERT #
 
+                self.assertIsInstance(matcher.option_description,
+                                      str,
+                                      'option_description')
+
                 self.assertEqual(glob_pattern,
                                  actual_glob_pattern,
                                  'result constant')

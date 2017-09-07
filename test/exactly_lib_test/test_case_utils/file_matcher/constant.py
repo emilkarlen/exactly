@@ -1,6 +1,5 @@
-import unittest
-
 import pathlib
+import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -36,6 +35,10 @@ class TestConstant(unittest.TestCase):
                 actual_result = matcher.matches(line)
 
                 # ASSERT #
+
+                self.assertIsInstance(matcher.option_description,
+                                      str,
+                                      'option_description')
 
                 self.assertEqual(constant_result,
                                  actual_result_constant,
