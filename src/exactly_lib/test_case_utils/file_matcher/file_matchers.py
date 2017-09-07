@@ -11,6 +11,10 @@ class FileMatcherFromSelectors(FileMatcher):
         self._selectors = selectors
 
     @property
+    def option_description(self) -> str:
+        return 'selectors - this class should be removes'
+
+    @property
     def selectors(self) -> dir_contents_selection.Selectors:
         return self._selectors
 
@@ -35,6 +39,10 @@ class FileMatcherConstant(FileMatcher):
     @property
     def result_constant(self) -> bool:
         return self._result
+
+    @property
+    def option_description(self) -> str:
+        return 'any file' if self._result else 'no file'
 
     def select_from(self, directory: pathlib.Path) -> iter:
         raise NotImplementedError('this method should never be used, since this method should be refactored away')

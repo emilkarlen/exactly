@@ -15,6 +15,10 @@ class FakeLinesTransformer(sut.LinesTransformer):
 
 
 class FileMatcherTestImpl(FileMatcher):
+    @property
+    def option_description(self) -> str:
+        return str(type(self))
+
     def matches(self, path: pathlib.Path) -> bool:
         raise NotImplementedError('should never be used')
 

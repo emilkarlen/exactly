@@ -3,10 +3,12 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor, \
     FileMatcherFromSelectors
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.test_case_utils.file_matcher import file_matchers
+from exactly_lib.util import dir_contents_selection
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def equals_file_matcher(expected: FileMatcherFromSelectors,
+def equals_file_matcher(expected: FileMatcher,
                         description: str = '') -> asrt.ValueAssertion:
     """
     :return: A assertion on a :class:`FileMatcher`
@@ -16,7 +18,7 @@ def equals_file_matcher(expected: FileMatcherFromSelectors,
 
 class _EqualsAssertion(asrt.ValueAssertion):
     def __init__(self,
-                 expected: FileMatcherFromSelectors,
+                 expected: FileMatcher,
                  description: str):
         self.expected = expected
         self.description = description
@@ -28,15 +30,11 @@ class _EqualsAssertion(asrt.ValueAssertion):
         assert_is_file_selector_type = asrt.is_instance(FileMatcher, self.description)
         assert_is_file_selector_type.apply_with_message(put, value,
                                                         'Value must be a ' + str(FileMatcher))
-        assert_is_concrete_file_selector_type = asrt.is_instance(FileMatcherFromSelectors, self.description)
-        assert_is_concrete_file_selector_type.apply_with_message(put, value,
-                                                                 'Value must be a ' + str(FileMatcherFromSelectors))
         checker = _StructureChecker(put,
                                     message_builder,
                                     self.expected,
                                     self.description
                                     )
-        assert isinstance(value, FileMatcherFromSelectors)  # Type info for IDE
         checker.visit(value)
 
 
@@ -44,14 +42,31 @@ class _StructureChecker(FileMatcherStructureVisitor):
     def __init__(self,
                  put: unittest.TestCase,
                  message_builder: asrt.MessageBuilder,
-                 expected: FileMatcherFromSelectors,
+                 expected: FileMatcher,
                  description: str):
         self.put = put
         self.message_builder = message_builder
         self.expected = expected
         self.description = description
 
+    def _common(self, actual: file_matchers.FileMatcher):
+        self.put.assertIsInstance(actual,
+                                  type(self.expected),
+                                  'class')
+        self.put.assertEqual(actual.option_description,
+                             self.expected.option_description,
+                             'option_description')
+
+    def visit_constant(self, actual: file_matchers.FileMatcherConstant):
+        self._common(actual)
+        assert isinstance(self.expected, file_matchers.FileMatcherConstant)  # Type info for IDE
+        self.put.assertEqual(self.expected.result_constant,
+                             actual.result_constant,
+                             'result_constant')
+
     def visit_selectors(self, actual: FileMatcherFromSelectors):
+        self._common(actual)
+        assert isinstance(self.expected, FileMatcherFromSelectors)  # Type info for IDE
         self.put.assertEqual(self.expected.selectors.name_patterns,
                              actual.selectors.name_patterns,
                              'name patterns')
