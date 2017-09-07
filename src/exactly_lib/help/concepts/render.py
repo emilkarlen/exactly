@@ -59,10 +59,10 @@ class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVis
 
 
 class _SummaryConstructor(ConceptDocumentationVisitor):
-    def visit_plain_concept(self, x: PlainConceptDocumentation):
+    def visit_plain_concept(self, x: PlainConceptDocumentation) -> list:
         return x.summary_paragraphs()
 
-    def visit_configuration_parameter(self, x: ConfigurationParameterDocumentation):
+    def visit_configuration_parameter(self, x: ConfigurationParameterDocumentation) -> list:
         header = x.summary_paragraphs()
         footer = paras('This is a {cp} that can be set in the {phase[conf]} phase.'
                        .format(cp=formatting.concept(CONFIGURATION_PARAMETER_CONCEPT.name().singular),

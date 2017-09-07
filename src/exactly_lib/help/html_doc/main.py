@@ -5,6 +5,7 @@ from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
 from exactly_lib.help.html_doc.parts.utils import entities_list_renderer
+from exactly_lib.help.types.render import HtmlDocHierarchyGeneratorForTypesHelp
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
@@ -71,9 +72,9 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
             ),
             (
                 'types',
-                entities_list_renderer.hierarchy_generator(
+                HtmlDocHierarchyGeneratorForTypesHelp(
                     'Symbol types',
-                    application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME)),
+                    application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).entities_help.all_entities),
             ),
             (
                 'help',
