@@ -116,7 +116,7 @@ All phases except the {phase[act]} phase consist of a sequence of "instructions"
 
 The contents of the {phase[act]} phase depends on which {actor} is used.
 
-By default, it consists of a single command line.
+By default, it is expected to contain a single command line.
 """
 
 INSTRUCTIONS_DOC = """\
