@@ -11,13 +11,14 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request im
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp, EntityConfiguration
+from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
-    entity_doc_list_renderer_as_flat_list_of_single_line_description
+    FlatListRendererWithSingleLineDescriptionGetter
 from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.names import formatting
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
@@ -441,7 +442,8 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
                                                 EntitiesHelp(ACTOR_ENTITY_TYPE_NAME,
                                                              entities),
                                                 IndividualActorRenderer,
-                                                entity_doc_list_renderer_as_flat_list_of_single_line_description,
+                                                FlatListRendererWithSingleLineDescriptionGetter(),
+                                                FlatEntityListHierarchyGeneratorGetter(IndividualActorRenderer),
 
                                             )
                                     })
