@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.cli import main_program
+from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor, \
@@ -38,7 +38,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
         return ['--invalid-option-that-should-cause-failure']
 
     def expected_result(self) -> asrt.ValueAssertion:
-        return is_process_result_for_exit_code(main_program.EXIT_INVALID_USAGE)
+        return is_process_result_for_exit_code(exit_codes.EXIT_INVALID_USAGE)
 
     def test_case(self) -> str:
         return ''
@@ -51,7 +51,7 @@ class TestCaseFileDoesNotExistShouldExitWithInvalidUsageStatus(SetupWithJustMain
     def check(self,
               put: unittest.TestCase,
               actual_result: SubProcessResult):
-        expectation = is_result_for_exit_code(main_program.EXIT_INVALID_USAGE)
+        expectation = is_result_for_exit_code(exit_codes.EXIT_INVALID_USAGE)
         expectation.apply_without_message(put, actual_result)
 
 

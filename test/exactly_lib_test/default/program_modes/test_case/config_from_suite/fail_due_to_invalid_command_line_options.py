@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib.cli import main_program
-from exactly_lib.cli.main_program import EXIT_INVALID_USAGE
+from exactly_lib.cli.cli_environment import exit_codes
+from exactly_lib.cli.cli_environment.exit_codes import EXIT_INVALID_USAGE
 from exactly_lib_test.default.program_modes.test_case.config_from_suite.test_resources import cli_args_for
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
@@ -48,7 +48,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
         return ['--invalid-option-that-should-cause-failure']
 
     def expected_result(self) -> asrt.ValueAssertion:
-        return is_process_result_for_exit_code(main_program.EXIT_INVALID_USAGE)
+        return is_process_result_for_exit_code(exit_codes.EXIT_INVALID_USAGE)
 
     def test_case(self) -> str:
         return ''
