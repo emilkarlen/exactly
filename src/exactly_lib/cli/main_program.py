@@ -1,6 +1,7 @@
 import os
 
 import exactly_lib.cli.program_modes.help.error
+from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
@@ -9,8 +10,6 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
-
-EXIT_INVALID_USAGE = 2
 
 COMMAND_DESCRIPTIONS = {
     HELP_COMMAND: 'Help system (use "help help" for help on help.)',
@@ -82,7 +81,7 @@ class MainProgram:
                                                   help_command_arguments)
         except exactly_lib.cli.program_modes.help.error.HelpError as ex:
             self._output.err.write(ex.msg + os.linesep)
-            return EXIT_INVALID_USAGE
+            return exit_codes.EXIT_INVALID_USAGE
         handle_help_request(self._output, application_help, help_request)
         return 0
 
@@ -92,4 +91,4 @@ class MainProgram:
         except argument_parsing_utils.ArgumentParsingError as ex:
             self._std.err.write(ex.error_message)
             self._std.err.write(os.linesep)
-            return EXIT_INVALID_USAGE
+            return exit_codes.EXIT_INVALID_USAGE

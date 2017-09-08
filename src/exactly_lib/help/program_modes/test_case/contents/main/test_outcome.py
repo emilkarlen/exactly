@@ -1,5 +1,6 @@
 import exactly_lib.test_case.execution_mode
 from exactly_lib import program_info
+from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.result import PartialResultStatus, FullResultStatus
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
@@ -13,9 +14,6 @@ from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import *
-
-EXIT_CODE_FROM_ARGUMENT_PARSER = 2
-
 
 class TestOutcomeDocumentation(SectionContentsRendererWithSetup):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
@@ -240,7 +238,7 @@ OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = (
 def _other_errors(setup: Setup) -> list:
     ret_val = []
     ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(program_name=_program_name(),
-                                                                 EXIT_CODE=EXIT_CODE_FROM_ARGUMENT_PARSER)))
+                                                                 EXIT_CODE=exit_codes.EXIT_INVALID_USAGE)))
     ret_val.extend(normalize_and_parse(_OTHER_NON_CLI_ERRORS))
     ret_val.append(_other_non_cli_errors(setup))
     return ret_val

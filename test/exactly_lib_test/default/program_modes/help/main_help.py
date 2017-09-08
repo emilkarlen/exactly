@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.cli import main_program
+from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
@@ -24,7 +24,7 @@ def _main_program_test_cases() -> list:
                         ' AND stdout SHOULD be empty',
                         HelpInvokation(['too', 'many', 'arguments', ',', 'indeed']),
                         asrt.And([
-                            pr.is_result_for_exit_code(main_program.EXIT_INVALID_USAGE),
+                            pr.is_result_for_exit_code(exit_codes.EXIT_INVALID_USAGE),
                             pr.stdout(is_empty())
                         ])),
         ProcessTestCase('help for "program" SHOULD be successful',

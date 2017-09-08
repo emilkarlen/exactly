@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.cli import main_program
+from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
@@ -47,7 +47,7 @@ class InvalidOptions(SetupWithReplacementOfVariableOutputWithPlaceholders):
         return []
 
     def expected_exit_code(self) -> int:
-        return main_program.EXIT_INVALID_USAGE
+        return exit_codes.EXIT_INVALID_USAGE
 
 
 class TestSuiteFileDoesNotExistShouldExitWithInvalidUsageStatus(SetupWithJustMainProgramRunner):
@@ -58,7 +58,7 @@ class TestSuiteFileDoesNotExistShouldExitWithInvalidUsageStatus(SetupWithJustMai
               put: unittest.TestCase,
               actual_result: SubProcessResult):
         expectation = asrt_process_result.sub_process_result(
-            exitcode=asrt.equals(main_program.EXIT_INVALID_USAGE))
+            exitcode=asrt.equals(exit_codes.EXIT_INVALID_USAGE))
 
         expectation.apply_without_message(put, actual_result)
 
