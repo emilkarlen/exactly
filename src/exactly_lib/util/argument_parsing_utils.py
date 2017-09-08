@@ -17,7 +17,10 @@ def resolve_existing_path(path_to_resolve: pathlib.Path) -> pathlib.Path:
     raises ArgumentParsingError: path_to_resolve is not an existing file
     """
     try:
-        return path_to_resolve.resolve(strict=True)
+        resolved = path_to_resolve.resolve()
+        if not resolved.exists():
+            raise ArgumentParsingError('File does not exist: ' + str(resolved))
+        return resolved
     except FileNotFoundError as ex:
         raise ArgumentParsingError(str(ex))
 
