@@ -27,6 +27,10 @@ class ConceptDocumentation(EntityDocumentation):
     def cross_reference_target(self) -> CrossReferenceId:
         return self._info.cross_reference_target
 
+    @property
+    def is_configuration_parameter(self) -> bool:
+        raise NotImplementedError('abstract method')
+
     def purpose(self) -> DescriptionWithSubSections:
         raise NotImplementedError()
 
@@ -50,10 +54,16 @@ class ConceptDocumentation(EntityDocumentation):
 
 
 class PlainConceptDocumentation(ConceptDocumentation):
-    pass
+    @property
+    def is_configuration_parameter(self) -> bool:
+        return False
 
 
 class ConfigurationParameterDocumentation(ConceptDocumentation):
+    @property
+    def is_configuration_parameter(self) -> bool:
+        return True
+
     def default_value_str(self) -> str:
         raise NotImplementedError()
 

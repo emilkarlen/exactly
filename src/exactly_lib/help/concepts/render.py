@@ -1,10 +1,12 @@
+import functools
+
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
     PlainConceptDocumentation, ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
-from exactly_lib.help.contents_structure import CliListRendererGetter
+from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering import see_also_section as render_utils
-from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help_texts.entity.concepts import CONFIGURATION_PARAMETER_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -12,15 +14,32 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para, section, paras
 
 
-def all_concepts_list_renderer(all_concepts: list) -> SectionContentsRenderer:
-    summary_constructor = _SummaryConstructor()
-    return AllEntitiesListRenderer(summary_constructor.visit, all_concepts)
+def _configuration_parameter_or_not(get_configuration_parameters: bool, type_doc_list: list) -> list:
+    return list(filter(lambda concept_doc: concept_doc.is_configuration_parameter is get_configuration_parameters,
+                       type_doc_list))
 
 
-class AllConceptsRendererGetter(CliListRendererGetter):
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsRenderer:
-        summary_constructor = _SummaryConstructor()
-        return AllEntitiesListRenderer(summary_constructor.visit, all_entity_doc_list)
+_PARTITIONS_SETUP = [
+    pes.PartitionSetup(pes.PartitionNamesSetup('configuration-parameter-concept',
+                                               CONFIGURATION_PARAMETER_CONCEPT_INFO.name.plural.capitalize()),
+                       functools.partial(_configuration_parameter_or_not, True)
+                       ),
+    pes.PartitionSetup(pes.PartitionNamesSetup('other-concept',
+                                               'Other concepts'),
+                       functools.partial(_configuration_parameter_or_not, False)
+                       ),
+]
+
+
+def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
+    return pes.PartitionedHierarchyGeneratorGetter(_PARTITIONS_SETUP,
+                                                   IndividualConceptRenderer)
+
+
+def list_renderer_getter() -> pes.CliListRendererGetter:
+    return pes.PartitionedCliListRendererGetter(
+        _PARTITIONS_SETUP,
+        lambda concept_doc: _SummaryConstructor().visit(concept_doc))
 
 
 class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVisitor):
