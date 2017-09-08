@@ -5,7 +5,7 @@ Makes it possible to reuse some code for generating documentation.
 """
 import types
 
-from exactly_lib.help.contents_structure import EntityConfiguration
+from exactly_lib.help.contents_structure import EntityConfiguration, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import sorted_entity_list
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator
@@ -23,6 +23,18 @@ def hierarchy_generator(header: str,
     return HtmlDocHierarchyGeneratorForEntitiesHelp(header,
                                                     entity_conf.entity_doc_2_section_contents_renderer,
                                                     entity_conf.entities_help.all_entities)
+
+
+class FlatEntityListHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
+    def __init__(self, entity_doc_2_section_contents_renderer):
+        self._entity_doc_2_section_contents_renderer = entity_doc_2_section_contents_renderer
+
+    def get_hierarchy_generator(self,
+                                header: str,
+                                all_entity_doc_list: list) -> SectionHierarchyGenerator:
+        return HtmlDocHierarchyGeneratorForEntitiesHelp(header,
+                                                        self._entity_doc_2_section_contents_renderer,
+                                                        all_entity_doc_list)
 
 
 class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
