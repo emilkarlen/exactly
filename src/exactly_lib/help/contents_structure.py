@@ -46,7 +46,10 @@ class EntityConfiguration(tuple):
 
     @property
     def html_doc_generator_getter(self) -> HtmlDocHierarchyGeneratorGetter:
-        return self[2]
+        return self[3]
+
+    def get_hierarchy_generator(self, header: str) -> SectionHierarchyGenerator:
+        return self.html_doc_generator_getter.get_hierarchy_generator(header, self.entities_help.all_entities)
 
 
 class ApplicationHelp(tuple):

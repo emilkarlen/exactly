@@ -4,8 +4,6 @@ from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRender
 from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
-from exactly_lib.help.html_doc.parts.utils import entities_list_renderer
-from exactly_lib.help.types import render as render_type
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
@@ -60,29 +58,22 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
             ),
             (
                 'concepts',
-                entities_list_renderer.hierarchy_generator(
-                    'Concepts',
-                    application_help.entity_conf_for(entity_names.CONCEPT_ENTITY_TYPE_NAME)),
+                application_help.entity_conf_for(entity_names.CONCEPT_ENTITY_TYPE_NAME).get_hierarchy_generator(
+                    'Concepts'),
             ),
             (
                 'actors',
-                entities_list_renderer.hierarchy_generator(
-                    'Actors',
-                    application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME)),
+                application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME).get_hierarchy_generator('Actors'),
             ),
             (
                 'types',
-                render_type.hierarchy_generator_getter().get_hierarchy_generator(
-                    'Symbol types',
-                    application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).entities_help.all_entities
-                ),
+                application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).get_hierarchy_generator(
+                    'Symbol types'),
             ),
             (
                 'builtin',
-                entities_list_renderer.hierarchy_generator(
-                    'Builtin symbols',
-                    application_help.entity_conf_for(entity_names.BUILTIN_ENTITY_TYPE_NAME),
-                ),
+                application_help.entity_conf_for(entity_names.BUILTIN_ENTITY_TYPE_NAME).get_hierarchy_generator(
+                    'Builtin symbols'),
             ),
             (
                 'help',
