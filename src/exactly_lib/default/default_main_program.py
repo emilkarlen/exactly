@@ -13,13 +13,14 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class BuiltinSymbol:
     def __init__(self,
                  name: str,
                  resolver: NamedElementResolver,
-                 documentation: BuiltinSymbolDocumentation,
+                 documentation: SectionContents,
                  ):
         self._name = name
         self._resolver = resolver
@@ -34,8 +35,12 @@ class BuiltinSymbol:
         return self._name, container_of_builtin(self._resolver)
 
     @property
+    def resolver(self) -> NamedElementResolver:
+        return self._resolver
+
+    @property
     def documentation(self) -> BuiltinSymbolDocumentation:
-        return self._documentation
+        return BuiltinSymbolDocumentation(self._resolver.value_type, self.name, self._documentation)
 
 
 class TestCaseDefinitionForMainProgram:
@@ -69,8 +74,10 @@ class MainProgram(main_program.MainProgram):
                          test_case_definition.instruction_setup,
                          test_suite_definition.configuration_section_instructions,
                          default,
-                         list(map(BuiltinSymbol.documentation.fget,
-                                  test_case_definition.builtin_symbols)))
+                         [builtin_symbol.documentation
+                          for builtin_symbol in test_case_definition.builtin_symbols
+                          ]
+                         )
         self._test_case_definition = TestCaseDefinition(
             test_case_definition.instruction_name_extractor_function,
             test_case_definition.instruction_setup,

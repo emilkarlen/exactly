@@ -42,3 +42,9 @@ class TextParser:
         if not isinstance(header_or_text, docs.Text):
             header = docs.text(self.format(header_or_text, extra))
         return docs.section(header, self.fnap(paragraphs_text, extra))
+
+    def section_contents(self, paragraphs_text: str, extra: dict = None) -> docs.SectionContents:
+        """
+        :param paragraphs_text: Parsed using `self.fnap`.
+        """
+        return docs.section_contents(self.fnap(paragraphs_text, extra))

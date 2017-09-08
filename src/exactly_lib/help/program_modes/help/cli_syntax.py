@@ -3,6 +3,7 @@ from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
+from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -46,6 +47,11 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                       'Lists all concepts; or describes a given concept.'),
             _entity_list_and_describe(clo.SUITE_REPORTER, 'REPORTER',
                                       'Lists all suite reporters; or describes a given suite reporter.'),
+            _entity_list_and_describe(clo.BUILTIN, 'SYMBOL',
+                                      'Lists all builtin {symbols}; or describes a given builtin {symbol}.'.format(
+                                          symbols=SYMBOL_CONCEPT_INFO.name.plural,
+                                          symbol=SYMBOL_CONCEPT_INFO.name.singular,
+                                      )),
         ]
 
     def argument_descriptions(self) -> list:

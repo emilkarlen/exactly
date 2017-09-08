@@ -77,6 +77,13 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                     application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).entities_help.all_entities),
             ),
             (
+                'builtin',
+                entities_list_renderer.hierarchy_generator(
+                    'Builtin symbols',
+                    application_help.entity_conf_for(entity_names.BUILTIN_ENTITY_TYPE_NAME),
+                ),
+            ),
+            (
                 'help',
                 help.generator('Getting Help')
             ),

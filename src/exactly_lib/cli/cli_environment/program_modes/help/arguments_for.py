@@ -1,11 +1,10 @@
-from exactly_lib.cli.cli_environment.program_modes.help.command_line_options import \
-    INSTRUCTIONS, TEST_SUITE, TEST_CASE, CONCEPT, HTML_DOCUMENTATION, SPECIFICATION, ACTOR, SUITE_REPORTER, HELP
+from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_case import phase_identifier
 
 
 def complete_help_for(help_arguments: list) -> list:
-    return [HELP] + help_arguments
+    return [clo.HELP] + help_arguments
 
 
 def program() -> list:
@@ -13,23 +12,23 @@ def program() -> list:
 
 
 def html_doc() -> list:
-    return [HTML_DOCUMENTATION]
+    return [clo.HTML_DOCUMENTATION]
 
 
 def help_help() -> list:
-    return [HELP]
+    return [clo.HELP]
 
 
 def case_cli_syntax() -> list:
-    return [TEST_CASE]
+    return [clo.TEST_CASE]
 
 
 def case_specification() -> list:
-    return [TEST_CASE, SPECIFICATION]
+    return [clo.TEST_CASE, clo.SPECIFICATION]
 
 
 def case_instructions() -> list:
-    return [INSTRUCTIONS]
+    return [clo.INSTRUCTIONS]
 
 
 def case_phase(ph: phase_identifier.Phase) -> list:
@@ -50,20 +49,20 @@ def case_instruction_search(instruction_name: str) -> list:
 
 
 def suite_cli_syntax() -> list:
-    return [TEST_SUITE]
+    return [clo.TEST_SUITE]
 
 
 def suite_specification() -> list:
-    return [TEST_SUITE, SPECIFICATION]
+    return [clo.TEST_SUITE, clo.SPECIFICATION]
 
 
 def suite_section_for_name(section_name: str) -> list:
-    return [TEST_SUITE, section_name]
+    return [clo.TEST_SUITE, section_name]
 
 
 def suite_instruction_in_section(section_name: str,
                                  instruction_name: str) -> list:
-    return [TEST_SUITE, section_name, instruction_name]
+    return [clo.TEST_SUITE, section_name, instruction_name]
 
 
 def entity_single(entity_type_name: str,
@@ -72,24 +71,38 @@ def entity_single(entity_type_name: str,
 
 
 def concept_list() -> list:
-    return [CONCEPT]
+    return [clo.CONCEPT]
 
 
 def concept_single(concept_name: str) -> list:
-    return [CONCEPT] + concept_name.split()
+    return [clo.CONCEPT] + concept_name.split()
+
+
+def builtin(symbol_name: str = '') -> list:
+    if symbol_name:
+        return [clo.BUILTIN, symbol_name]
+    else:
+        return [clo.BUILTIN]
+
+
+def symbol_type(type_name: str = '') -> list:
+    if type_name:
+        return [clo.TYPE, type_name]
+    else:
+        return [clo.TYPE]
 
 
 def actor_list() -> list:
-    return [ACTOR]
+    return [clo.ACTOR]
 
 
 def actor_single(actor_name: str) -> list:
-    return [ACTOR] + actor_name.split()
+    return [clo.ACTOR] + actor_name.split()
 
 
 def suite_reporter_list() -> list:
-    return [SUITE_REPORTER]
+    return [clo.SUITE_REPORTER]
 
 
 def suite_reporter_single(suite_reporter_name: str) -> list:
-    return [SUITE_REPORTER] + suite_reporter_name.split()
+    return [clo.SUITE_REPORTER] + suite_reporter_name.split()

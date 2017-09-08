@@ -1,13 +1,32 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.entity.builtin import name_and_ref_target
+from exactly_lib.type_system.value_type import ValueType, ElementType, VALUE_TYPE_2_ELEMENT_TYPE
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class BuiltinSymbolDocumentation(EntityDocumentationBase):
-    def __init__(self, symbol_name: str):
+    def __init__(self,
+                 value_type: ValueType,
+                 symbol_name: str,
+                 description: SectionContents):
         super().__init__(
             name_and_ref_target(symbol_name, symbol_name)
         )
+        self._value_type = value_type
+        self._description = description
+
+    @property
+    def type_category(self) -> ElementType:
+        return VALUE_TYPE_2_ELEMENT_TYPE[self.value_type]
+
+    @property
+    def value_type(self) -> ValueType:
+        return self._value_type
+
+    @property
+    def description(self) -> SectionContents:
+        return self._description
 
 
 def builtin_symbols_help(builtin_documentations: iter) -> EntitiesHelp:
