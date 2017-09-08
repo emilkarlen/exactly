@@ -70,12 +70,19 @@ class _StructureChecker(FileMatcherStructureVisitor):
                              actual.result_constant,
                              'result_constant')
 
-    def visit_type(self, actual: file_matchers.FileMatcherType):
+    def visit_type(self, actual: file_matchers.FileMatcherAnd):
         self._common(actual)
         assert isinstance(self.expected, file_matchers.FileMatcherType)  # Type info for IDE
         self.put.assertEqual(self.expected.file_type,
                              actual.file_type,
                              'file_type')
+
+    def visit_and(self, actual: file_matchers.FileMatcherAnd):
+        self._common(actual)
+        assert isinstance(self.expected, file_matchers.FileMatcherAnd)  # Type info for IDE
+        assertion_on_sub_matchers = asrt.matches_sequence(list(map(equals_file_matcher, self.expected.matchers)))
+        assertion_on_sub_matchers.apply_with_message(self.put, actual.matchers,
+                                                     'sub matchers')
 
     def visit_selectors(self, actual: FileMatcherFromSelectors):
         self._common(actual)

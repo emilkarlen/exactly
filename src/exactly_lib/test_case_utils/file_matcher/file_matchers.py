@@ -95,6 +95,28 @@ class FileMatcherType(FileMatcher):
         return self._pathlib_predicate(path)
 
 
+class FileMatcherAnd(FileMatcher):
+    """Matcher that and:s a list of matchers."""
+
+    def __init__(self, matchers: list):
+        self._matchers = tuple(matchers)
+
+    @property
+    def matchers(self) -> list:
+        return list(self._matchers)
+
+    @property
+    def option_description(self) -> str:
+        return 'and[{}]'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+
+    def select_from(self, directory: pathlib.Path) -> iter:
+        raise NotImplementedError('this method should never be used, since this method should be refactored away')
+
+    def matches(self, line: str) -> bool:
+        return all([matcher.matches(line)
+                    for matcher in self._matchers])
+
+
 SELECT_ALL_FILES = FileMatcherFromSelectors(dir_contents_selection.Selectors())
 
 
@@ -114,6 +136,8 @@ class FileMatcherStructureVisitor:
             return self.visit_name_glob_pattern(matcher)
         if isinstance(matcher, FileMatcherType):
             return self.visit_type(matcher)
+        if isinstance(matcher, FileMatcherAnd):
+            return self.visit_and(matcher)
         if isinstance(matcher, FileMatcherConstant):
             return self.visit_constant(matcher)
         else:
@@ -127,6 +151,9 @@ class FileMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_type(self, matcher: FileMatcherType):
+        raise NotImplementedError('abstract method')
+
+    def visit_and(self, matcher: FileMatcherAnd):
         raise NotImplementedError('abstract method')
 
     def visit_selectors(self, matcher: FileMatcherFromSelectors):
