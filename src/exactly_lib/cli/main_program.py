@@ -25,6 +25,7 @@ class MainProgram:
                  default: TestCaseHandlingSetup,
                  builtin_symbol_documentation_list: list):
         """
+        :type builtin_symbol_list: list of `BuiltinSymbol`
         :param configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
         """
 
@@ -76,7 +77,8 @@ class MainProgram:
         try:
             application_help = new_application_help(self._instruction_set,
                                                     self._configuration_section_instructions,
-                                                    self._builtin_symbol_documentation_list)
+                                                    self._builtin_symbol_documentation_list,
+                                                    )
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
         except exactly_lib.cli.program_modes.help.error.HelpError as ex:
