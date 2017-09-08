@@ -69,7 +69,7 @@ E.g.
  * populating the current directory with files and directories
  * setting the contents of stdin
  * setting environment variables
- * sets up external resources such as databases.
+ * setting up external resources, such as databases.
 """
 
 INSTRUCTION_PURPOSE_DESCRIPTION = """\

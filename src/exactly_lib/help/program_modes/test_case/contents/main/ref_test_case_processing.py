@@ -130,7 +130,7 @@ FAILURE_CONDITION_OF_VALIDATION = """\
 Fails if a reference to a {symbol}
 that has not been defined or has invalid type,
 is found,
-or a reference to a non-existing file is found, e.g.
+or if a reference to a non-existing file is found, e.g.
 """
 
 EXECUTION_DESCRIPTION = """\
@@ -142,7 +142,7 @@ One validation step is embedded in the execution:"""
 OUTCOME_OF_EXECUTION = """\
 If the "post {phase[setup]:syntax} validation" fails,
 then the outcome of the test will be the same as a failure in
-the validation step before execution (se above).
+the validation step before execution (see above).
 
 Otherwise, the outcome depends on the outcome of the {phase[assert]} phase.
 """
