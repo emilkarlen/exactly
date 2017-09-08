@@ -3,8 +3,8 @@ from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_
 from exactly_lib.help.suite_reporters.render import IndividualSuiteReporterRenderer
 from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
-    entity_doc_list_renderer_as_flat_list_of_single_line_description
+    FlatListRendererWithSingleLineDescriptionGetter
 
 SUITE_REPORTER_ENTITY_CONFIGURATION = EntityConfiguration(suite_reporters_help(ALL_SUITE_REPORTERS),
                                                           IndividualSuiteReporterRenderer,
-                                                          entity_doc_list_renderer_as_flat_list_of_single_line_description)
+                                                          FlatListRendererWithSingleLineDescriptionGetter())

@@ -23,7 +23,7 @@ RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestIm
 class TestAllActorsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = ACTOR_ENTITY_CONFIGURATION.entities_doc_2_summary_list_section_contents_renderer(
+        renderer = ACTOR_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
             [ActorTestImpl('actor 1'),
              ActorTestImpl('actor 2')])
         # ACT #

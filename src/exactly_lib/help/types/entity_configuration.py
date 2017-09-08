@@ -6,4 +6,4 @@ from exactly_lib.help.types.contents_structure import types_help
 TYPE_ENTITY_CONFIGURATION = EntityConfiguration(
     types_help(all_types()),
     render.IndividualTypeRenderer,
-    lambda all_type_docs: render.type_list_render_getter().get_render(all_type_docs))
+    render.type_list_render_getter())

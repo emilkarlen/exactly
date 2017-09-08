@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
 class TestAllSuiteReportersList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = SUITE_REPORTER_ENTITY_CONFIGURATION.entities_doc_2_summary_list_section_contents_renderer(
+        renderer = SUITE_REPORTER_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
             [SuiteReporterDocTestImpl('reporter 1'),
              SuiteReporterDocTestImpl('reporter 2')])
         # ACT #
