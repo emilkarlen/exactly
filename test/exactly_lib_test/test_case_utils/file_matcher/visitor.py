@@ -60,6 +60,18 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
         self.assertIs(instance,
                       ret_val)
 
+    def test_visit_and(self):
+        # ARRANGE #
+        instance = sut.FileMatcherAnd([])
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.FileMatcherAnd],
+                         visitor.visited_types)
+        self.assertIs(instance,
+                      ret_val)
+
     def test_raise_type_error_WHEN_visited_object_is_of_unknown_class(self):
         # ARRANGE #
         instance = UnknownFileMatcher()
@@ -86,6 +98,10 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
 
     def visit_type(self, matcher: sut.FileMatcherType):
         self.visited_types.append(sut.FileMatcherType)
+        return matcher
+
+    def visit_and(self, matcher: sut.FileMatcherAnd):
+        self.visited_types.append(sut.FileMatcherAnd)
         return matcher
 
     def visit_selectors(self, matcher: sut.FileMatcherFromSelectors):

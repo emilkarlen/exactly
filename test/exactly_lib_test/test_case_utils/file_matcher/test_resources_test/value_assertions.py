@@ -39,6 +39,14 @@ class TestEquals(unittest.TestCase):
                 file_matchers.FileMatcherFromSelectors(Selectors()),
             ),
             (
+                file_matchers.FileMatcherAnd([]),
+                file_matchers.FileMatcherAnd([]),
+            ),
+            (
+                file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
+                file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
+            ),
+            (
                 file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern']))),
                 file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern']))),
             ),
@@ -66,6 +74,7 @@ class TestNotEquals(unittest.TestCase):
             file_matchers.FileMatcherNameGlobPattern('actual glob pattern'),
             file_matchers.FileMatcherConstant(False),
             file_matchers.FileMatcherType(FileType.REGULAR),
+            file_matchers.FileMatcherAnd([]),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern']))),
             file_matchers.FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.REGULAR]))),
         ]
@@ -83,6 +92,7 @@ class TestNotEquals(unittest.TestCase):
             file_matchers.FileMatcherConstant(False),
             file_matchers.FileMatcherNameGlobPattern('glob pattern'),
             file_matchers.FileMatcherType(FileType.REGULAR),
+            file_matchers.FileMatcherAnd([]),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern']))),
             file_matchers.FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.REGULAR]))),
         ]
@@ -100,6 +110,7 @@ class TestNotEquals(unittest.TestCase):
             file_matchers.FileMatcherConstant(True),
             file_matchers.FileMatcherNameGlobPattern('glob pattern'),
             file_matchers.FileMatcherType(FileType.REGULAR),
+            file_matchers.FileMatcherAnd([]),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['pattern']))),
             file_matchers.FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.REGULAR]))),
         ]
@@ -118,6 +129,7 @@ class TestNotEquals(unittest.TestCase):
             file_matchers.FileMatcherType(FileType.REGULAR),
             file_matchers.FileMatcherNameGlobPattern('glob pattern'),
             file_matchers.FileMatcherConstant(True),
+            file_matchers.FileMatcherAnd([]),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['actual pattern']))),
             file_matchers.FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.DIRECTORY]))),
             file_matchers.FileMatcherFromSelectors(Selectors()),
@@ -137,6 +149,7 @@ class TestNotEquals(unittest.TestCase):
             file_matchers.FileMatcherConstant(True),
             file_matchers.FileMatcherNameGlobPattern('glob pattern'),
             file_matchers.FileMatcherType(FileType.REGULAR),
+            file_matchers.FileMatcherAnd([]),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['actual pattern']))),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['expected pattern',
                                                                                       'actual pattern']))),
@@ -159,6 +172,32 @@ class TestNotEquals(unittest.TestCase):
             file_matchers.FileMatcherConstant(True),
             file_matchers.FileMatcherNameGlobPattern('glob pattern'),
             file_matchers.FileMatcherType(FileType.REGULAR),
+            file_matchers.FileMatcherAnd([]),
+            file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['actual pattern']))),
+            file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['expected pattern',
+                                                                                      'actual pattern']))),
+            file_matchers.FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.DIRECTORY]))),
+            file_matchers.FileMatcherFromSelectors(Selectors(file_types=frozenset([FileType.REGULAR,
+                                                                                   FileType.DIRECTORY]))),
+            file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['actual pattern']))),
+            file_matchers.FileMatcherFromSelectors(Selectors()),
+        ]
+        for actual in actual_matchers:
+            with self.subTest(name=actual.option_description):
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion_to_check,
+                                            actual)
+
+    def test_selectors__and(self):
+        # ARRANGE #
+        assertion_to_check = sut.equals_file_matcher(
+            file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(True)]))
+        actual_matchers = [
+            file_matchers.FileMatcherConstant(True),
+            file_matchers.FileMatcherNameGlobPattern('glob pattern'),
+            file_matchers.FileMatcherType(FileType.REGULAR),
+            file_matchers.FileMatcherAnd([]),
+            file_matchers.FileMatcherAnd([file_matchers.FileMatcherConstant(False)]),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['actual pattern']))),
             file_matchers.FileMatcherFromSelectors(Selectors(name_patterns=frozenset(['expected pattern',
                                                                                       'actual pattern']))),
