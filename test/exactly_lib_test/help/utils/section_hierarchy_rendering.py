@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as sut
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment, \
+    ConstantSectionContentsRenderer
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfo, \
     TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
@@ -156,14 +157,6 @@ def assert_section(header: asrt.ValueAssertion,
 
 def section_contents(x: docs.SectionContents) -> SectionContentsRenderer:
     return ConstantSectionContentsRenderer(x)
-
-
-class ConstantSectionContentsRenderer(SectionContentsRenderer):
-    def __init__(self, section_contents: docs.SectionContents):
-        self.section_contents = section_contents
-
-    def apply(self, environment: RenderingEnvironment) -> docs.SectionContents:
-        return self.section_contents
 
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())

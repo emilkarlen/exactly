@@ -18,9 +18,9 @@ def generator(header: str, test_case_help: TestCaseHelp) -> hierarchy_rendering.
         [],
         [
             ('overview', overview.generator('Overview', setup)),
-            ('outcome', hierarchy_rendering.leaf('Test outcome', test_outcome.TestOutcomeDocumentation(setup))),
-            ('file-syntax', tc.generator('Test case file syntax', setup)),
             ('processing', hierarchy_rendering.leaf('Test case processing', processing.ContentsRenderer(setup))),
+            ('outcome', test_outcome.hierarchy_generator('Test outcome', setup)),
+            ('file-syntax', tc.generator('Test case file syntax', setup)),
         ])
 
 
