@@ -33,6 +33,9 @@ class TextParser:
         """
         return normalize_and_parse(self.format(s, extra))
 
+    def paragraph_items(self, s: str, extra: dict = None) -> list:
+        return self.fnap(self.format(s, extra))
+
     def section(self, header_or_text, paragraphs_text: str, extra: dict = None) -> docs.Section:
         """
         :param header_or_text: If a `str` it is formatted using `self.format`.
