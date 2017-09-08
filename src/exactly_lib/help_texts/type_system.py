@@ -1,3 +1,5 @@
+from exactly_lib.help_texts.entity import types
+from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.type_system.value_type import ValueType, SymbolValueType, ElementType, LogicValueType
 
 SYMBOL_ELEMENT_TYPE = 'data'
@@ -25,15 +27,20 @@ LIST_ELEMENT = 'ELEMENT'
 class TypeInfo:
     def __init__(self,
                  type_name: str,
-                 value_name: str):
+                 value_name: str,
+                 concept_info: SingularAndPluralNameAndCrossReferenceId):
         self.type_name = type_name
         self.value_name = value_name
+        self.concept_info = concept_info
 
 
 SYMBOL_TYPE_INFO_DICT = {
-    SymbolValueType.STRING: TypeInfo(STRING_TYPE, STRING_VALUE),
-    SymbolValueType.PATH: TypeInfo(PATH_TYPE, PATH_VALUE),
-    SymbolValueType.LIST: TypeInfo(LIST_TYPE, LIST_VALUE),
+    SymbolValueType.STRING: TypeInfo(STRING_TYPE, STRING_VALUE,
+                                     types.STRING_CONCEPT_INFO),
+    SymbolValueType.PATH: TypeInfo(PATH_TYPE, PATH_VALUE,
+                                   types.PATH_CONCEPT_INFO),
+    SymbolValueType.LIST: TypeInfo(LIST_TYPE, LIST_VALUE,
+                                   types.LIST_CONCEPT_INFO),
 }
 
 SYMBOL_TYPE_2_VALUE_TYPE = {
@@ -49,9 +56,12 @@ SYMBOL_TYPE_LIST_ORDER = [
 ]
 
 LOGIC_TYPE_INFO_DICT = {
-    LogicValueType.LINE_MATCHER: TypeInfo(LINE_MATCHER_TYPE, LINE_MATCHER_VALUE),
-    LogicValueType.FILE_MATCHER: TypeInfo(FILE_MATCHER_TYPE, FILE_MATCHER_VALUE),
-    LogicValueType.LINES_TRANSFORMER: TypeInfo(LINES_TRANSFORMER_TYPE, LINES_TRANSFORMER_VALUE),
+    LogicValueType.LINE_MATCHER: TypeInfo(LINE_MATCHER_TYPE, LINE_MATCHER_VALUE,
+                                          types.LINE_MATCHER_CONCEPT_INFO),
+    LogicValueType.FILE_MATCHER: TypeInfo(FILE_MATCHER_TYPE, FILE_MATCHER_VALUE,
+                                          types.FILE_MATCHER_CONCEPT_INFO),
+    LogicValueType.LINES_TRANSFORMER: TypeInfo(LINES_TRANSFORMER_TYPE, LINES_TRANSFORMER_VALUE,
+                                               types.LINES_TRANSFORMER_CONCEPT_INFO),
 }
 
 LOGIC_TYPE_2_VALUE_TYPE = {
@@ -60,15 +70,15 @@ LOGIC_TYPE_2_VALUE_TYPE = {
     LogicValueType.LINES_TRANSFORMER: ValueType.LINES_TRANSFORMER,
 }
 
-TYPE_INFO_DICT = {
-    ValueType.STRING: SYMBOL_TYPE_INFO_DICT[SymbolValueType.STRING],
-    ValueType.PATH: SYMBOL_TYPE_INFO_DICT[SymbolValueType.PATH],
-    ValueType.LIST: SYMBOL_TYPE_INFO_DICT[SymbolValueType.LIST],
-
-    ValueType.LINE_MATCHER: LOGIC_TYPE_INFO_DICT[LogicValueType.LINE_MATCHER],
-    ValueType.FILE_MATCHER: LOGIC_TYPE_INFO_DICT[LogicValueType.FILE_MATCHER],
-    ValueType.LINES_TRANSFORMER: LOGIC_TYPE_INFO_DICT[LogicValueType.LINES_TRANSFORMER],
-}
+TYPE_INFO_DICT = dict([
+                          (SYMBOL_TYPE_2_VALUE_TYPE[data_type], SYMBOL_TYPE_INFO_DICT[data_type])
+                          for data_type in SymbolValueType
+                      ] +
+                      [
+                          (LOGIC_TYPE_2_VALUE_TYPE[logic_type], LOGIC_TYPE_INFO_DICT[logic_type])
+                          for logic_type in LogicValueType
+                      ]
+                      )
 
 ELEMENT_TYPE_NAME = {
     ElementType.SYMBOL: SYMBOL_ELEMENT_TYPE,
