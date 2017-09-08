@@ -17,7 +17,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
-    entity_doc_list_renderer_as_single_line_description
+    entity_doc_list_renderer_as_flat_list_of_single_line_description
 from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.names import formatting
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
@@ -441,7 +441,7 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
                                                 EntitiesHelp(ACTOR_ENTITY_TYPE_NAME,
                                                              entities),
                                                 IndividualActorRenderer,
-                                                entity_doc_list_renderer_as_single_line_description,
+                                                entity_doc_list_renderer_as_flat_list_of_single_line_description,
 
                                             )
                                     })

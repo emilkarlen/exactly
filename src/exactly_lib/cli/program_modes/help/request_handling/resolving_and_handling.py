@@ -59,5 +59,5 @@ def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp
     except KeyError:
         raise ValueError('Entity is not found in application help: ' + request.entity_type)
     return EntityHelpRequestRendererResolver(entity_conf.entity_doc_2_section_contents_renderer,
-                                             entity_conf.entities_doc_2_section_contents_renderer,
+                                             entity_conf.entities_doc_2_summary_list_section_contents_renderer,
                                              entity_conf.entities_help.all_entities)

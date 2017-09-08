@@ -58,7 +58,7 @@ class TestHelpRequestRendererResolver(unittest.TestCase):
 def help_request_renderer_resolver(entities: list) -> sut.EntityHelpRequestRendererResolver:
     return sut.EntityHelpRequestRendererResolver(
         ACTOR_ENTITY_CONFIGURATION.entity_doc_2_section_contents_renderer,
-        ACTOR_ENTITY_CONFIGURATION.entities_doc_2_section_contents_renderer,
+        ACTOR_ENTITY_CONFIGURATION.entities_doc_2_summary_list_section_contents_renderer,
         entities)
 
 
