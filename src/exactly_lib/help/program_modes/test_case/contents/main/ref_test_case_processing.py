@@ -4,6 +4,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, 
     step_with_single_exit_value
 from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsRendererWithSetup
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
+from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.names.formatting import cli_option, program_name
 from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -17,6 +18,8 @@ class ContentsRenderer(SectionContentsRendererWithSetup):
         super().__init__(setup, {
             'phase': setup.phase_names,
             'program_name': program_name(program_info.PROGRAM_NAME),
+            'symbol': SYMBOL_CONCEPT_INFO.name.singular,
+            'symbols': SYMBOL_CONCEPT_INFO.name.plural,
             'cli_option_for_preprocessor': cli_option(OPTION_FOR_PREPROCESSOR),
         })
 
@@ -48,7 +51,7 @@ class ContentsRenderer(SectionContentsRendererWithSetup):
             docs.list_item('validation',
                            step_with_single_exit_value(
                                self.fnap(PURPOSE_OF_VALIDATION),
-                               FAILURE_CONDITION_OF_VALIDATION,
+                               self.text_parser.para(FAILURE_CONDITION_OF_VALIDATION),
                                exit_values.EXECUTION__VALIDATE)
                            ),
             docs.list_item('execution',
@@ -110,7 +113,7 @@ PURPOSE_OF_SYNTAX_CHECKING = 'Checks the syntax of all elements in the test case
 FAILURE_CONDITION_OF_SYNTAX_CHECKING = docs.para('Fails if a syntax error is found.')
 
 PURPOSE_OF_VALIDATION = """\
-Checks references to external resources, files etc.
+Checks references to {symbols} and external resources (files etc).
 
 
 Validation is actually done in two steps.
@@ -119,11 +122,16 @@ Fist this step, and then one step directly after the {phase[setup]} phase has ex
 This second step validates the effect of the {phase[setup]} phase.
 
 
-The reason for having this second step is to avoid errors caused by errors
+The reason for having this second step is to make it easier to find errors caused by errors
 in the setup, rather than errors in the tested program.
 """
 
-FAILURE_CONDITION_OF_VALIDATION = docs.para('Fails if an unresolved file reference is found, e.g.')
+FAILURE_CONDITION_OF_VALIDATION = """\
+Fails if a reference to a {symbol}
+that has not been defined or has invalid type,
+is found,
+or a reference to a non-existing file is found, e.g.
+"""
 
 EXECUTION_DESCRIPTION = """\
 Executes the actual test.
