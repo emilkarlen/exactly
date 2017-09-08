@@ -72,9 +72,10 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
             ),
             (
                 'types',
-                render_type.hierarchy_generator(
+                render_type.hierarchy_generator_getter().get_hierarchy_generator(
                     'Symbol types',
-                    application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).entities_help.all_entities),
+                    application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).entities_help.all_entities
+                ),
             ),
             (
                 'builtin',

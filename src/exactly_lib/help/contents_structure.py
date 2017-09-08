@@ -2,16 +2,30 @@ from exactly_lib.help.program_modes.main_program.contents_structure import MainP
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
+from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator
+
+
+class HtmlDocHierarchyGeneratorGetter:
+    def get_hierarchy_generator(self,
+                                header: str,
+                                all_entity_doc_list: list) -> SectionHierarchyGenerator:
+        raise NotImplementedError('abstract method')
+
+
+class CliListRendererGetter:
+    def get_render(self, all_entity_doc_list: list) -> SectionContentsRenderer:
+        raise NotImplementedError('abstract method')
 
 
 class EntityConfiguration(tuple):
     def __new__(cls,
                 entities_help: EntitiesHelp,
                 entity_doc_2_section_contents_renderer,
-                entities_doc_2_section_contents_renderer):
+                entities_doc_2_summary_list_section_contents_renderer):
         return tuple.__new__(cls, (entities_help,
                                    entity_doc_2_section_contents_renderer,
-                                   entities_doc_2_section_contents_renderer))
+                                   entities_doc_2_summary_list_section_contents_renderer))
 
     @property
     def entities_help(self) -> EntitiesHelp:
@@ -25,7 +39,7 @@ class EntityConfiguration(tuple):
         return self[1]
 
     @property
-    def entities_doc_2_section_contents_renderer(self):
+    def entities_doc_2_summary_list_section_contents_renderer(self):
         """
         :rtype: iterable -> `SectionContentsRenderer`
         """

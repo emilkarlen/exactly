@@ -9,7 +9,7 @@ def sorted_entity_list(entities: list) -> list:
     return sorted(entities, key=lambda ed: ed.singular_name())
 
 
-def entity_doc_list_renderer_as_single_line_description(entity_doc_list: list) -> SectionContentsRenderer:
+def entity_doc_list_renderer_as_flat_list_of_single_line_description(entity_doc_list: list) -> SectionContentsRenderer:
     return AllEntitiesListRenderer(single_line_description_as_summary_paragraphs,
                                    entity_doc_list)
 
