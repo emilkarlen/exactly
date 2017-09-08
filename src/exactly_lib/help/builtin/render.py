@@ -1,12 +1,12 @@
 import functools
 
 from exactly_lib.help.builtin.contents_structure import BuiltinSymbolDocumentation
+from exactly_lib.help.utils.doc_utils import description_section_if_non_empty
 from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.parttioned_entity_set import PartitionNamesSetup
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.type_system import TYPE_INFO_DICT
 from exactly_lib.type_system.value_type import ValueType
@@ -19,16 +19,6 @@ def _builtin_docs_of_value_type(value_type: ValueType, builtin_doc_list: list) -
                        builtin_doc_list))
 
 
-# _PARTITIONS_SETUP_tmpl = [
-#     pes.PartitionSetup(pes.PartitionNamesSetup('data-type',
-#                                                'Data types'),
-#                        functools.partial(_type_docs_of_type_category, ElementType.SYMBOL)
-#                        ),
-#     pes.PartitionSetup(pes.PartitionNamesSetup('logic-type',
-#                                                'Logic types'),
-#                        functools.partial(_type_docs_of_type_category, ElementType.LOGIC)
-#                        ),
-# ]
 # TODO Sortering av typerna
 def _header(value_type: ValueType) -> str:
     return '{type_name} {symbols}'.format(
@@ -39,7 +29,7 @@ def _header(value_type: ValueType) -> str:
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(PartitionNamesSetup(
         str(value_type).lower(),
-        _header(value_type),  # TODO
+        _header(value_type),
     ),
         functools.partial(_builtin_docs_of_value_type, value_type))
     for value_type in ValueType
@@ -49,15 +39,17 @@ _PARTITIONS_SETUP = [
 class IndividualBuiltinSymbolRenderer(SectionContentsRenderer):
     def __init__(self, builtin_doc: BuiltinSymbolDocumentation):
         self.builtin_doc = builtin_doc
-        format_map = {
-            # 'type_concept': formatting.concept(TYPE_CONCEPT_INFO.name().singular),
-        }
-        self._parser = TextParser(format_map)
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        initial_paragraphs = [docs.para(self.builtin_doc.single_line_description())]
-        initial_paragraphs.extend(self.builtin_doc.description.initial_paragraphs)
-        return doc.SectionContents(initial_paragraphs, self.builtin_doc.description.sections)
+        initial_paragraphs = [
+            docs.para(self.builtin_doc.single_line_description()),
+            self._type_paragraph(),
+        ]
+        sub_sections = description_section_if_non_empty(self.builtin_doc.description)
+        return doc.SectionContents(initial_paragraphs, sub_sections)
+
+    def _type_paragraph(self) -> docs.ParagraphItem:
+        return docs.para('Type: ' + TYPE_INFO_DICT[self.builtin_doc.value_type].concept_info.name.singular)
 
 
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:

@@ -8,3 +8,10 @@ def synopsis_section(contents: doc.SectionContents) -> doc.Section:
 
 def description_section(contents: doc.SectionContents) -> doc.Section:
     return doc.Section(text('DESCRIPTION'), contents)
+
+
+def description_section_if_non_empty(contents: doc.SectionContents) -> list:
+    if contents.is_empty:
+        return []
+    else:
+        return [doc.Section(text('DESCRIPTION'), contents)]

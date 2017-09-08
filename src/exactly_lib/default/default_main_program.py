@@ -20,10 +20,12 @@ class BuiltinSymbol:
     def __init__(self,
                  name: str,
                  resolver: NamedElementResolver,
+                 single_line_description: str,
                  documentation: SectionContents,
                  ):
         self._name = name
         self._resolver = resolver
+        self._single_line_description = single_line_description
         self._documentation = documentation
 
     @property
@@ -40,7 +42,9 @@ class BuiltinSymbol:
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
-        return BuiltinSymbolDocumentation(self._resolver.value_type, self.name, self._documentation)
+        return BuiltinSymbolDocumentation(self._resolver.value_type, self.name,
+                                          self._single_line_description,
+                                          self._documentation)
 
 
 class TestCaseDefinitionForMainProgram:

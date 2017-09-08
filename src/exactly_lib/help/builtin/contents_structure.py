@@ -9,9 +9,10 @@ class BuiltinSymbolDocumentation(EntityDocumentationBase):
     def __init__(self,
                  value_type: ValueType,
                  symbol_name: str,
+                 single_line_description_str: str,
                  description: SectionContents):
         super().__init__(
-            name_and_ref_target(symbol_name, symbol_name)
+            name_and_ref_target(symbol_name, single_line_description_str)
         )
         self._value_type = value_type
         self._description = description
