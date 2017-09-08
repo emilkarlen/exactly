@@ -1,5 +1,5 @@
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure import document as doc, structures as docs
 from exactly_lib.util.textformat.structure.core import Text
 
 
@@ -70,4 +70,12 @@ class SectionContentsRendererForConstantContents(SectionContentsRenderer):
         self.section_contents = section_contents
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        return self.section_contents
+
+
+class ConstantSectionContentsRenderer(SectionContentsRenderer):
+    def __init__(self, section_contents: docs.SectionContents):
+        self.section_contents = section_contents
+
+    def apply(self, environment: RenderingEnvironment) -> docs.SectionContents:
         return self.section_contents
