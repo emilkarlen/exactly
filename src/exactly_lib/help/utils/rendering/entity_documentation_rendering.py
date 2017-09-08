@@ -1,3 +1,4 @@
+from exactly_lib.help.contents_structure import CliListRendererGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc, lists, structures as docs
@@ -12,6 +13,12 @@ def sorted_entity_list(entities: list) -> list:
 def entity_doc_list_renderer_as_flat_list_of_single_line_description(entity_doc_list: list) -> SectionContentsRenderer:
     return AllEntitiesListRenderer(single_line_description_as_summary_paragraphs,
                                    entity_doc_list)
+
+
+class FlatListRendererWithSingleLineDescriptionGetter(CliListRendererGetter):
+    def get_render(self, all_entity_doc_list: list) -> SectionContentsRenderer:
+        return AllEntitiesListRenderer(single_line_description_as_summary_paragraphs,
+                                       all_entity_doc_list)
 
 
 def single_line_description_as_summary_paragraphs(entity_doc: EntityDocumentation) -> list:

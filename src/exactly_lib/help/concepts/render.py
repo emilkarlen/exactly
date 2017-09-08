@@ -1,6 +1,7 @@
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
     PlainConceptDocumentation, ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
+from exactly_lib.help.contents_structure import CliListRendererGetter
 from exactly_lib.help.utils.rendering import see_also_section as render_utils
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
@@ -14,6 +15,12 @@ from exactly_lib.util.textformat.structure.structures import para, section, para
 def all_concepts_list_renderer(all_concepts: list) -> SectionContentsRenderer:
     summary_constructor = _SummaryConstructor()
     return AllEntitiesListRenderer(summary_constructor.visit, all_concepts)
+
+
+class AllConceptsRendererGetter(CliListRendererGetter):
+    def get_render(self, all_entity_doc_list: list) -> SectionContentsRenderer:
+        summary_constructor = _SummaryConstructor()
+        return AllEntitiesListRenderer(summary_constructor.visit, all_entity_doc_list)
 
 
 class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVisitor):

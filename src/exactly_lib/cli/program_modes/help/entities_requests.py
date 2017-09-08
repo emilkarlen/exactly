@@ -2,6 +2,7 @@ from enum import Enum
 
 from exactly_lib.cli.program_modes.help.program_modes.help_request import HelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
+from exactly_lib.help.contents_structure import CliListRendererGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
 
@@ -42,16 +43,16 @@ class EntityHelpRequest(HelpRequest):
 class EntityHelpRequestRendererResolver:
     def __init__(self,
                  individual_entity_renderer_constructor,
-                 all_entities_list_renderer_constructor,
+                 cli_list_renderer_getter: CliListRendererGetter,
                  all_entities: list):
         self.individual_entity_renderer_constructor = individual_entity_renderer_constructor
-        self.all_entities_list_renderer_constructor = all_entities_list_renderer_constructor
+        self.cli_list_renderer_getter = cli_list_renderer_getter
         self.all_entities = all_entities
 
     def renderer_for(self, request: EntityHelpRequest) -> SectionContentsRenderer:
         item = request.item
         if item is EntityHelpItem.ALL_ENTITIES_LIST:
-            return self.all_entities_list_renderer_constructor(self.all_entities)
+            return self.cli_list_renderer_getter.get_render(self.all_entities)
         if item is EntityHelpItem.INDIVIDUAL_ENTITY:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.individual_entity.singular_name(),

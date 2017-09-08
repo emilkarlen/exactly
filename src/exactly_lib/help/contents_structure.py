@@ -22,10 +22,10 @@ class EntityConfiguration(tuple):
     def __new__(cls,
                 entities_help: EntitiesHelp,
                 entity_doc_2_section_contents_renderer,
-                entities_doc_2_summary_list_section_contents_renderer):
+                cli_list_renderer_getter: CliListRendererGetter):
         return tuple.__new__(cls, (entities_help,
                                    entity_doc_2_section_contents_renderer,
-                                   entities_doc_2_summary_list_section_contents_renderer))
+                                   cli_list_renderer_getter))
 
     @property
     def entities_help(self) -> EntitiesHelp:
@@ -39,9 +39,9 @@ class EntityConfiguration(tuple):
         return self[1]
 
     @property
-    def entities_doc_2_summary_list_section_contents_renderer(self):
+    def cli_list_renderer_getter(self) -> CliListRendererGetter:
         """
-        :rtype: iterable -> `SectionContentsRenderer`
+        :rtype: Iterable[ElementDocumentation] -> :class:`CliListRendererGetter`
         """
         return self[2]
 
@@ -53,7 +53,6 @@ class ApplicationHelp(tuple):
                 test_suite_help: TestSuiteHelp,
                 entity_name_2_entity_configuration: dict = ()):
         """
-        :type entity_helps: list of `EntitiesHelp`
         :param entity_name_2_entity_configuration:
         """
         return tuple.__new__(cls, (main_program_help,

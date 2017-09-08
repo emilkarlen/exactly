@@ -29,7 +29,7 @@ if __name__ == '__main__':
 class TestAllConceptsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = CONCEPT_ENTITY_CONFIGURATION.entities_doc_2_summary_list_section_contents_renderer(all_concepts())
+        renderer = CONCEPT_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(all_concepts())
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
