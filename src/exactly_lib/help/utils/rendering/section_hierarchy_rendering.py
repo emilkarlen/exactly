@@ -193,5 +193,5 @@ class SectionFromGeneratorAsSectionContentsRenderer(SectionContentsRenderer):
         self.generator = generator
 
     def apply(self, environment: RenderingEnvironment) -> SectionContents:
-        target_factory = CustomTargetInfoFactory('arbitrary')
+        target_factory = CustomTargetInfoFactory('ignored')
         return self.generator.section_renderer_node(target_factory).section(environment).contents
