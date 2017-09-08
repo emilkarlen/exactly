@@ -62,13 +62,13 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                     'Concepts'),
             ),
             (
-                'actors',
-                application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME).get_hierarchy_generator('Actors'),
-            ),
-            (
                 'types',
                 application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).get_hierarchy_generator(
                     'Symbol types'),
+            ),
+            (
+                'actors',
+                application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME).get_hierarchy_generator('Actors'),
             ),
             (
                 'builtin',
