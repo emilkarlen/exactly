@@ -31,10 +31,18 @@ FILE_INTERPRETER_ACTOR = name_and_ref_target(
     'Executes a source code file using an interpreter'
 )
 
+NULL_ACTOR = name_and_ref_target(
+    'null',
+    'Ignores the contents of the {act_phase} phase. '
+    'Exit code is unconditionally 0, and there is no output on neither stdout nor stderr'.format(
+        act_phase=ACT_PHASE_NAME.syntax)
+)
+
 ALL_ACTORS = [
     COMMAND_LINE_ACTOR,
     FILE_INTERPRETER_ACTOR,
     SOURCE_INTERPRETER_ACTOR,
+    NULL_ACTOR,
 ]
 
 # Bad to have definition of default value in help package.
