@@ -1,9 +1,11 @@
 from exactly_lib.default.default_main_program import BuiltinSymbol
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.environment_variables import ENVIRONMENT_VARIABLE_DESCRIPTION
 from exactly_lib.named_element import resolver_structure
 from exactly_lib.named_element.symbol.value_resolvers import file_ref_resolvers
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 def __resolver_of(rel_option_type: RelOptionType) -> resolver_structure.NamedElementResolver:
@@ -12,25 +14,28 @@ def __resolver_of(rel_option_type: RelOptionType) -> resolver_structure.NamedEle
 
 _TEXT_PARSER = TextParser()
 
-SYMBOL_HOME_CASE = BuiltinSymbol(environment_variables.ENV_VAR_HOME_CASE,
-                                 __resolver_of(RelOptionType.REL_HOME_CASE),
-                                 _TEXT_PARSER.section_contents(environment_variables.ENV_VAR_HOME_CASE))
 
-SYMBOL_HOME_ACT = BuiltinSymbol(environment_variables.ENV_VAR_HOME_ACT,
-                                __resolver_of(RelOptionType.REL_HOME_ACT),
-                                _TEXT_PARSER.section_contents(environment_variables.ENV_VAR_HOME_ACT))
+def _builtin(variable_name: str, relativity: RelOptionType) -> BuiltinSymbol:
+    return BuiltinSymbol(variable_name,
+                         __resolver_of(relativity),
+                         ENVIRONMENT_VARIABLE_DESCRIPTION.as_single_line_description_str(variable_name),
+                         SectionContents([]))
 
-SYMBOL_ACT = BuiltinSymbol(environment_variables.ENV_VAR_ACT,
-                           __resolver_of(RelOptionType.REL_ACT),
-                           _TEXT_PARSER.section_contents(environment_variables.ENV_VAR_ACT))
 
-SYMBOL_TMP = BuiltinSymbol(environment_variables.ENV_VAR_TMP,
-                           __resolver_of(RelOptionType.REL_TMP),
-                           _TEXT_PARSER.section_contents(environment_variables.ENV_VAR_TMP))
+SYMBOL_HOME_CASE = _builtin(environment_variables.ENV_VAR_HOME_CASE,
+                            RelOptionType.REL_HOME_CASE)
 
-SYMBOL_RESULT = BuiltinSymbol(environment_variables.ENV_VAR_RESULT,
-                              __resolver_of(RelOptionType.REL_RESULT),
-                              _TEXT_PARSER.section_contents(environment_variables.ENV_VAR_RESULT))
+SYMBOL_HOME_ACT = _builtin(environment_variables.ENV_VAR_HOME_ACT,
+                           RelOptionType.REL_HOME_ACT)
+
+SYMBOL_ACT = _builtin(environment_variables.ENV_VAR_ACT,
+                      RelOptionType.REL_ACT)
+
+SYMBOL_TMP = _builtin(environment_variables.ENV_VAR_TMP,
+                      RelOptionType.REL_TMP)
+
+SYMBOL_RESULT = _builtin(environment_variables.ENV_VAR_RESULT,
+                         RelOptionType.REL_RESULT)
 
 ALL = (
     SYMBOL_HOME_CASE,

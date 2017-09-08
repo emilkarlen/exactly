@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib import program_info
+from exactly_lib.help_texts.names.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.file_transformer.env_vars_replacement import HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE
@@ -65,10 +66,13 @@ def with_replaced_env_vars_help() -> SectionContents:
     return SectionContents(prologue + variables_list)
 
 
+SINGLE_LINE_DESCRIPTION = """\
+Every occurrence of a string that matches the value of an {program_name} environment variable
+is replaced with the name of the matching variable.
+""".format(program_name=program_name(program_info.PROGRAM_NAME))
+
 _WITH_REPLACED_ENV_VARS_PROLOGUE = """\
-Every occurrence of a path that matches an {program_name} environment variable
-in contents of {checked_file} is replaced with the name of the matching variable.
-(Variable values are replaced with variable names.)
+Variable values are replaced with variable names.
 
 
 If {home_case_env_var} and {home_act_env_var} are equal, then paths will be replaced with
