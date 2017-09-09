@@ -18,7 +18,6 @@ def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.
     return unittest.TestSuite([
         parse_invalid_syntax.suite_for(configuration),
         empty.suite_for(configuration),
-        empty.suite_for(configuration),
         equals.suite_for(configuration),
         contains.suite_for(configuration),
 
