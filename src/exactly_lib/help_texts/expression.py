@@ -1,0 +1,5 @@
+AND_OPERATOR_NAME = '&&'
+
+OR_OPERATOR_NAME = '||'
+
+NOT_OPERATOR_NAME = '!'
