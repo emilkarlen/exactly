@@ -14,3 +14,7 @@ class FileMatcher(Matcher):
         :param path: The path of an existing file (but may be a broken symbolic link).
         """
         raise NotImplementedError('abstract method')
+
+
+def matching_files_in_dir(matcher: FileMatcher, dir_path: pathlib.Path) -> iter:
+    return filter(matcher.matches, dir_path.iterdir())
