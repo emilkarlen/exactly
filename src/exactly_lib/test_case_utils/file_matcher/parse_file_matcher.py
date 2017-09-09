@@ -16,13 +16,13 @@ from exactly_lib.test_case_utils.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import resolvers
-from exactly_lib.test_case_utils.file_matcher.file_matchers import SELECT_ALL_FILES
+from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
-SELECTION_OF_ALL_FILES = FileMatcherConstantResolver(SELECT_ALL_FILES)
+SELECTION_OF_ALL_FILES = FileMatcherConstantResolver(MATCH_EVERY_FILE)
 
 NAME_MATCHER_NAME = 'name'
 

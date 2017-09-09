@@ -3,10 +3,9 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import assign_symbol as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.parse_file_matcher import NAME_MATCHER_NAME
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.util.dir_contents_selection import Selectors, all_files
 from exactly_lib_test.instructions.multi_phase_instructions.define_named_elem.test_resources import *
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
@@ -44,20 +43,20 @@ class TestSuccessfulScenarios(TestCaseBase):
         cases = [
             ('empty RHS SHOULD give selection of all files',
              '',
-             all_files(),
+             file_matchers.FileMatcherConstant(True),
              ),
             ('name pattern in RHS SHOULD give selection of name pattern',
              selectors_arguments(name_pattern=name_pattern),
-             Selectors(name_patterns=frozenset([name_pattern])),
+             file_matchers.FileMatcherNameGlobPattern(name_pattern),
              ),
             ('file type in RHS SHOULD give selection of name pattern',
              selectors_arguments(type_selection=FileType.REGULAR),
-             Selectors(file_types=frozenset([FileType.REGULAR])),
+             file_matchers.FileMatcherType(FileType.REGULAR),
              ),
         ]
         # ARRANGE #
         defined_name = 'defined_name'
-        for name, rhs_source, expected_selectors in cases:
+        for name, rhs_source, expected_file_matcher in cases:
             with self.subTest(name=name):
                 source = single_line_source(
                     src('{file_sel_type} {defined_name} = {selector_argument}',
@@ -66,7 +65,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                 )
 
                 expected_container = matches_container(
-                    resolved_value_equals_file_matcher(FileMatcherFromSelectors(expected_selectors))
+                    resolved_value_equals_file_matcher(expected_file_matcher)
                 )
 
                 expectation = Expectation(
