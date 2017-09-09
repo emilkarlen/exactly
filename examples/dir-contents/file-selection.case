@@ -17,3 +17,5 @@ dir-contents my-dir --selection type file && name '*A.txt' num-files = 1
 # readability might be improved by ( )
 
 dir-contents my-dir --selection ( type file && name '*A.txt' ) num-files = 1
+
+dir-contents my-dir --selection ! name '*A.txt' num-files = 1
