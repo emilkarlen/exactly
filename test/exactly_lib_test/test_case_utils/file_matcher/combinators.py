@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
-from exactly_lib_test.test_case_utils.test_resources import combinator_matcher_check
+from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
 
 def suite() -> unittest.TestSuite:
@@ -13,7 +13,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class FileMatcherConfiguration(combinator_matcher_check.MatcherConfiguration):
+class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def irrelevant_model(self):
         return pathlib.Path('irrelevant path')
 
@@ -22,37 +22,37 @@ class FileMatcherConfiguration(combinator_matcher_check.MatcherConfiguration):
 
     def matcher_that_registers_model_argument_and_returns_constant(
             self, result: bool
-    ) -> combinator_matcher_check.MatcherThatRegistersModelArgument:
+    ) -> matcher_combinators_check.MatcherThatRegistersModelArgument:
         return FileMatcherThatRegistersModelArgument(result)
 
 
-class TestAnd(combinator_matcher_check.TestAndBase):
+class TestAnd(matcher_combinators_check.TestAndBase):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     @property
-    def configuration(self) -> combinator_matcher_check.MatcherConfiguration:
+    def configuration(self) -> matcher_combinators_check.MatcherConfiguration:
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
         return sut.FileMatcherAnd(constructor_argument)
 
 
-class TestOr(combinator_matcher_check.TestOrBase):
+class TestOr(matcher_combinators_check.TestOrBase):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     @property
-    def configuration(self) -> combinator_matcher_check.MatcherConfiguration:
+    def configuration(self) -> matcher_combinators_check.MatcherConfiguration:
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
         return sut.FileMatcherOr(constructor_argument)
 
 
-class TestNot(combinator_matcher_check.TestNotBase):
+class TestNot(matcher_combinators_check.TestNotBase):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     @property
-    def configuration(self) -> combinator_matcher_check.MatcherConfiguration:
+    def configuration(self) -> matcher_combinators_check.MatcherConfiguration:
         return FileMatcherConfiguration()
 
     def new_combinator_to_check(self, constructor_argument):
@@ -60,7 +60,7 @@ class TestNot(combinator_matcher_check.TestNotBase):
 
 
 class FileMatcherThatRegistersModelArgument(sut.FileMatcher,
-                                            combinator_matcher_check.MatcherThatRegistersModelArgument):
+                                            matcher_combinators_check.MatcherThatRegistersModelArgument):
     @property
     def option_description(self) -> str:
         raise NotImplementedError('this method should not be used')
