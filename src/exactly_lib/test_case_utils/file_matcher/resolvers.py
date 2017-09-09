@@ -2,10 +2,9 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -52,22 +51,57 @@ class FileMatcherReferenceResolver(FileMatcherResolver):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
 
 
-class FileMatcherAndResolver(FileMatcherResolver):
+class FileMatcherNotResolver(FileMatcherResolver):
     """
-    A :class:`FileMatcherResolver` that combines selectors using AND.
+    Resolver of :class:`FileMatcherNot`
     """
 
-    def __init__(self, resolvers: list):
-        self._resolvers = tuple(resolvers)
-        self._references = references_from_objects_with_symbol_references(resolvers)
+    def __init__(self, file_matcher_resolver: FileMatcherResolver):
+        self._resolver = file_matcher_resolver
 
     def resolve(self, symbols: SymbolTable) -> FileMatcher:
-        selectors = dcs.and_all([resolver.resolve(symbols).selectors for resolver in self._resolvers])
-        return FileMatcherFromSelectors(selectors)
+        return file_matchers.FileMatcherNot(self._resolver.resolve(symbols))
+
+    @property
+    def references(self) -> list:
+        return self._resolver.references
+
+
+class FileMatcherAndResolver(FileMatcherResolver):
+    """
+    Resolver of :class:`FileMatcherAnd`
+    """
+
+    def __init__(self, file_matcher_resolver_list: list):
+        self._resolvers = file_matcher_resolver_list
+        self._references = references_from_objects_with_symbol_references(file_matcher_resolver_list)
+
+    def resolve(self, symbols: SymbolTable) -> FileMatcher:
+        return file_matchers.FileMatcherAnd([
+            resolver.resolve(symbols)
+            for resolver in self._resolvers
+        ])
 
     @property
     def references(self) -> list:
         return self._references
 
-    def __str__(self):
-        return str(type(self)) + '\'' + 'num resolvers = ' + str(len(self._resolvers)) + '\''
+
+class FileMatcherOrResolver(FileMatcherResolver):
+    """
+    Resolver of :class:`FileMatcherOr`
+    """
+
+    def __init__(self, file_matcher_resolver_list: list):
+        self._resolvers = file_matcher_resolver_list
+        self._references = references_from_objects_with_symbol_references(file_matcher_resolver_list)
+
+    def resolve(self, symbols: SymbolTable) -> FileMatcher:
+        return file_matchers.FileMatcherOr([
+            resolver.resolve(symbols)
+            for resolver in self._resolvers
+        ])
+
+    @property
+    def references(self) -> list:
+        return self._references

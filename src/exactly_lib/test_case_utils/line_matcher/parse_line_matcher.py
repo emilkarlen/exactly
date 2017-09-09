@@ -86,15 +86,15 @@ def _fnap(s: str) -> list:
 
 _REGEX_MATCHER_SED_DESCRIPTION = """Matches lines that contains a given {_REG_EX_}."""
 
-_NOT_TRANSFORMER_SED_DESCRIPTION = """\
+_NOT_SED_DESCRIPTION = """\
 Matches lines not matched by the given matcher.
 """
 
-_AND_TRANSFORMER_SED_DESCRIPTION = """\
+_AND_SED_DESCRIPTION = """\
 Matches lines matched by all matchers.
 """
 
-_OR_TRANSFORMER_SED_DESCRIPTION = """\
+_OR_SED_DESCRIPTION = """\
 Matches lines matched by any matcher.
 """
 
@@ -104,18 +104,6 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  REPLACE_REGEX_ARGUMENT),
     ],
     description_rest=_fnap(_REGEX_MATCHER_SED_DESCRIPTION)
-)
-
-_AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    _fnap(_AND_TRANSFORMER_SED_DESCRIPTION)
-)
-
-_OR_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    _fnap(_OR_TRANSFORMER_SED_DESCRIPTION)
-)
-
-_NOT_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    _fnap(_NOT_TRANSFORMER_SED_DESCRIPTION)
 )
 
 _CONCEPT = grammar.Concept(
@@ -133,17 +121,22 @@ GRAMMAR = grammar.Grammar(
                                      _REGEX_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        expression.AND_OPERATOR_NAME: grammar.ComplexExpression(
-            resolvers.LineMatcherAndResolver,
-            _AND_SYNTAX_DESCRIPTION,
-        ),
-        expression.OR_OPERATOR_NAME: grammar.ComplexExpression(
-            resolvers.LineMatcherOrResolver,
-            _OR_SYNTAX_DESCRIPTION,
-        ),
+        expression.AND_OPERATOR_NAME:
+            grammar.ComplexExpression(resolvers.LineMatcherAndResolver,
+                                      grammar.OperatorExpressionDescription(
+                                          _fnap(_AND_SED_DESCRIPTION)
+                                      )),
+        expression.OR_OPERATOR_NAME:
+            grammar.ComplexExpression(resolvers.LineMatcherOrResolver,
+                                      grammar.OperatorExpressionDescription(
+                                          _fnap(_OR_SED_DESCRIPTION)
+                                      )),
     },
     prefix_expressions={
-        expression.NOT_OPERATOR_NAME: grammar.PrefixExpression(resolvers.LineMatcherNotResolver,
-                                                               _NOT_SYNTAX_DESCRIPTION)
+        expression.NOT_OPERATOR_NAME:
+            grammar.PrefixExpression(resolvers.LineMatcherNotResolver,
+                                     grammar.OperatorExpressionDescription(
+                                         _fnap(_NOT_SED_DESCRIPTION)
+                                     ))
     },
 )

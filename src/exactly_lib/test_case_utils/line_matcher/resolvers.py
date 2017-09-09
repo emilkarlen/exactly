@@ -53,7 +53,7 @@ class LineMatcherReferenceResolver(LineMatcherResolver):
 
 class LineMatcherNotResolver(LineMatcherResolver):
     """
-    Resolver of :class:`LineMatcherAnd`
+    Resolver of :class:`LineMatcherNot`
     """
 
     def __init__(self, line_matcher_resolver: LineMatcherResolver):
