@@ -18,6 +18,7 @@ from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
@@ -109,6 +110,7 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_TYPE_MATCHER_': TYPE_MATCHER_NAME,
     '_PATTERN_': NAME_MATCHER_ARGUMENT.name,
     '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
+    '_SYMLINK_TYPE_': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
     '_GLOB_PATTERN_': 'Unix glob pattern',
 }
 
@@ -120,7 +122,7 @@ Selects a sub set of files in the directory that the test applies to
 """
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
-Selects files who's name matches the given {_GLOB_PATTERN_}.
+Matches files who's name matches the given {_GLOB_PATTERN_}.
 """
 
 
@@ -129,7 +131,7 @@ def _type_matcher_sed_description() -> list:
 
 
 _TYPE_MATCHER_SED_DESCRIPTION = """\
-Selects files with the given type. Symbolic links are followed.
+Matches files with the given type. Symbolic links are followed (unless matched type is {_SYMLINK_TYPE_}).
 {_TYPE_} is one of:
 """
 
