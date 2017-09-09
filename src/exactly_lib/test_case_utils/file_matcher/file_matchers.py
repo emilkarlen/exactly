@@ -160,7 +160,7 @@ class FileMatcherOr(FileMatcher):
                     for matcher in self._matchers])
 
 
-SELECT_ALL_FILES = FileMatcherFromSelectors(dir_contents_selection.Selectors())
+MATCH_EVERY_FILE = FileMatcherConstant(True)
 
 
 class FileMatcherStructureVisitor:

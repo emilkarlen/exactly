@@ -18,6 +18,7 @@ from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -36,6 +37,7 @@ from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValueDescriptor
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
+from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.expectation_type import ExpectationType
 
@@ -294,6 +296,10 @@ class _EmptinessChecker:
         self.environment = environment
         self.path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         self.settings = settings
+        self.error_message_resolver = _ErrorMessageResolver(settings.path_to_check,
+                                                            property_descriptor,
+                                                            settings.expectation_type,
+                                                            EMPTINESS_CHECK_EXPECTED_VALUE)
 
     def main(self):
         files_in_dir = self._files_in_dir_to_check()
@@ -304,47 +310,73 @@ class _EmptinessChecker:
             self._fail_if_path_dir_is_empty(files_in_dir)
 
     def _files_in_dir_to_check(self) -> list:
-        path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
-        assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
+        dir_path_to_check = self.settings.path_to_check.resolve_value_of_any_dependency(self.path_resolving_env)
+        assert isinstance(dir_path_to_check, pathlib.Path), 'Resolved value should be a path'
         file_matcher = self.settings.file_matcher.resolve(self.path_resolving_env.symbols)
-        return list(file_matcher.select_from(path_to_check))
+        selected_files = file_matcher_type.matching_files_in_dir(file_matcher, dir_path_to_check)
+        return list(selected_files)
 
     def _fail_if_path_dir_is_not_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir != 0:
-            self._fail_with_err_msg(
-                diff_msg.actual_with_single_line_value(str(num_files_in_dir) + ' files',
-                                                       self._get_description_of_actual(
-                                                           files_in_dir)))
+            self._fail_with_err_msg(files_in_dir)
 
     def _fail_if_path_dir_is_empty(self, files_in_dir: list):
         num_files_in_dir = len(files_in_dir)
         if num_files_in_dir == 0:
-            self._fail_with_err_msg(diff_msg.actual_with_single_line_value(EMPTINESS_CHECK_EXPECTED_VALUE))
+            self._fail_with_err_msg(files_in_dir)
 
     def _fail_with_err_msg(self,
-                           actual: diff_msg.ActualInfo):
-        msg = self._failure(actual).render()
+                           files_in_dir: list):
+        diff_failure_info = self.error_message_resolver.resolve(files_in_dir, self.environment)
+        msg = diff_failure_info.render()
         raise pfh_ex_method.PfhFailException(msg)
 
-    def _failure(self,
-                 actual: diff_msg.ActualInfo,
-                 ) -> diff_msg.DiffFailureInfo:
+
+class _ErrorMessageResolver:
+    def __init__(self,
+                 root_dir_path_resolver: FileRefResolver,
+                 property_descriptor: property_description.PropertyDescriptor,
+                 expectation_type: ExpectationType,
+                 expected_description_str: str,
+                 ):
+        self.expectation_type = expectation_type
+        self.property_descriptor = property_descriptor
+        self.root_dir_path_resolver = root_dir_path_resolver
+        self.expected_description_str = expected_description_str
+
+    def resolve(self,
+                actual_files: list,
+                environment: InstructionEnvironmentForPostSdsStep) -> diff_msg.DiffFailureInfo:
         return diff_msg.DiffFailureInfo(
-            self.property_descriptor.description(self.environment),
-            self.settings.expectation_type,
-            EMPTINESS_CHECK_EXPECTED_VALUE,
-            actual)
+            self.property_descriptor.description(environment),
+            self.expectation_type,
+            self.expected_description_str,
+            self.resolve_actual_info(actual_files, environment.path_resolving_environment_pre_or_post_sds))
 
-    def _get_description_of_actual(self, actual_files_in_dir: list) -> list:
-        return ['Actual contents:'] + self._dir_contents_err_msg_lines(actual_files_in_dir)
+    def resolve_actual_info(self, actual_files: list,
+                            environment: PathResolvingEnvironmentPreOrPostSds) -> diff_msg.ActualInfo:
+        num_files_in_dir = len(actual_files)
+        single_line_value = str(num_files_in_dir) + ' files'
+        return diff_msg.ActualInfo(single_line_value,
+                                   self._resolve_description_lines(actual_files, environment))
 
-    @staticmethod
-    def _dir_contents_err_msg_lines(actual_files_in_dir: list) -> list:
+    def _resolve_description_lines(self,
+                                   actual_files: list,
+                                   environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+        return ['Actual contents:'] + self._dir_contents_err_msg_lines(actual_files, environment)
+
+    def _dir_contents_err_msg_lines(self,
+                                    actual_files_in_dir: list,
+                                    environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+        root_dir_path = self.root_dir_path_resolver.resolve_value_of_any_dependency(environment)
         if len(actual_files_in_dir) < 50:
             actual_files_in_dir.sort()
         num_files_to_display = 5
-        ret_val = actual_files_in_dir[:num_files_to_display]
+        ret_val = [
+            str(p.relative_to(root_dir_path))
+            for p in actual_files_in_dir[:num_files_to_display]
+        ]
         if len(actual_files_in_dir) > num_files_to_display:
             ret_val.append('...')
         return ret_val
@@ -367,7 +399,7 @@ class NumFilesResolver(comparison_structures.OperandResolver):
         path_to_check = self.path_to_check.resolve_value_of_any_dependency(path_resolving_env)
         assert isinstance(path_to_check, pathlib.Path), 'Resolved value should be a path'
         file_matcher = self.file_matcher.resolve(environment.symbols)
-        selected_files = file_matcher.select_from(path_to_check)
+        selected_files = file_matcher_type.matching_files_in_dir(file_matcher, path_to_check)
         return len(list(selected_files))
 
 
