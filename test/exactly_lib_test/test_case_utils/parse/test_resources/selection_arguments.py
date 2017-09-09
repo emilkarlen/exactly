@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import expression
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -48,7 +49,7 @@ def selectors_arguments(name_pattern: str = '',
     if named_selector:
         selectors.append(named_selector)
 
-    and_combinator = ' ' + parse_file_matcher.AND_OPERATOR + ' '
+    and_combinator = ' ' + expression.AND_OPERATOR_NAME + ' '
     return and_combinator.join(selectors)
 
 
