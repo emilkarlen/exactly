@@ -14,12 +14,11 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.expression import grammar, syntax_documentation
 from exactly_lib.test_case_utils.expression import parser as ep
+from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import resolvers
-from exactly_lib.test_case_utils.file_matcher.file_matchers import SELECT_ALL_FILES, FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher.file_matchers import SELECT_ALL_FILES
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
-from exactly_lib.util import dir_contents_selection as dcs
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -53,18 +52,9 @@ class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
         self.resolver = resolver
 
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
-        selectors = self.resolver.resolve(environment.symbols).selectors
-        descriptions = selectors.selection_descriptions
-        if not descriptions:
-            return []
-        separator = ' ' + expression.AND_OPERATOR_NAME + ' '
-        description = separator.join(selectors.selection_descriptions)
-        line = SELECTION.name.capitalize() + ' : ' + description
+        matcher = self.resolver.resolve(environment.symbols)
+        line = SELECTION.name.capitalize() + ' : ' + matcher.option_description
         return [line]
-
-
-def every_file_in_dir() -> Selectors:
-    return dcs.all_files()
 
 
 def parse_resolver_from_parse_source(source: ParseSource) -> FileMatcherResolver:
@@ -98,7 +88,7 @@ def _parse(parser: TokenParserPrime) -> FileMatcherResolver:
 def _parse_name_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
     pattern = parser.consume_mandatory_string_argument(
         _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME)
-    return _constant(dcs.name_matches_pattern(pattern))
+    return _constant(file_matchers.FileMatcherNameGlobPattern(pattern))
 
 
 def _parse_type_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
@@ -106,11 +96,11 @@ def _parse_type_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
         '{_TYPE_}')
-    return _constant(dcs.file_type_is(file_type))
+    return _constant(file_matchers.FileMatcherType(file_type))
 
 
-def _constant(selectors: dcs.Selectors) -> FileMatcherResolver:
-    return FileMatcherConstantResolver(FileMatcherFromSelectors(selectors))
+def _constant(matcher: file_matchers.FileMatcher) -> FileMatcherResolver:
+    return FileMatcherConstantResolver(matcher)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
