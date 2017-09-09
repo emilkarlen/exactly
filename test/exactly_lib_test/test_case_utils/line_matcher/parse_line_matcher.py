@@ -1,6 +1,7 @@
 import re
 import unittest
 
+from exactly_lib.named_element.resolver_structure import NamedElementResolver
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
@@ -8,20 +9,19 @@ from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant, \
     LineMatcherNot, LineMatcherAnd, LineMatcherOr
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
-from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
+from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.util import symbol_table
 from exactly_lib_test.named_element.test_resources.line_matcher import is_line_matcher_reference_to
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_parser_prime \
     import remaining_source
-from exactly_lib_test.test_case_utils.expression.test_resources import \
-    NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_line_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
+from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 
@@ -33,12 +33,37 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class Expectation:
-    def __init__(self,
-                 resolver: asrt.ValueAssertion,
-                 token_stream: asrt.ValueAssertion = asrt.anything_goes()):
-        self.resolver = resolver
-        self.token_stream = token_stream
+class Configuration(matcher_parse_check.Configuration):
+    def parse(self, parser: TokenParserPrime) -> NamedElementResolver:
+        return sut.parse_line_matcher_from_token_parser(parser)
+
+    def resolved_value_equals(self,
+                              value: LineMatcher,
+                              references: asrt.ValueAssertion = asrt.is_empty_list,
+                              symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
+        return resolved_value_equals_line_matcher(
+            value,
+            references,
+            symbols
+        )
+
+    def is_reference_to(self, symbol_name: str) -> asrt.ValueAssertion:
+        return is_line_matcher_reference_to(symbol_name)
+
+    def resolver_of_constant_matcher(self, matcher: LineMatcher) -> NamedElementResolver:
+        return LineMatcherConstantResolver(matcher)
+
+    def constant_matcher(self, result: bool) -> LineMatcher:
+        return LineMatcherConstant(result)
+
+    def not_matcher(self, matcher: LineMatcher) -> LineMatcher:
+        return LineMatcherNot(matcher)
+
+    def and_matcher(self, matchers: list) -> LineMatcher:
+        return LineMatcherAnd(matchers)
+
+    def or_matcher(self, matchers: list) -> LineMatcher:
+        return LineMatcherOr(matchers)
 
 
 class TestRegexParser(unittest.TestCase):
@@ -162,134 +187,12 @@ class TestRegexParser(unittest.TestCase):
                                         case.source_assertion))
 
 
-class TestParseLineMatcher(unittest.TestCase):
-    def _check(self,
-               source: TokenParserPrime,
-               expectation: Expectation):
-        # ACT #
-        actual_resolver = sut.parse_line_matcher_from_token_parser(source)
-        # ASSERT #
-        expectation.resolver.apply_with_message(self,
-                                                actual_resolver,
-                                                'resolver')
-        expectation.token_stream.apply_with_message(self,
-                                                    source.token_stream,
-                                                    'token stream')
+class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase):
+    _conf = Configuration()
 
-    def test_failing_parse(self):
-        cases = [
-            (
-                'neither a symbol, nor a matcher',
-                remaining_source(NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME),
-            ),
-        ]
-        for name, source in cases:
-            with self.subTest(case_name=name):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_line_matcher_from_token_parser(source)
-
-    def test_reference(self):
-        # ARRANGE #
-        symbol = NameAndValue('the_symbol_name',
-                              LineMatcherConstant(True))
-
-        symbols = singleton_symbol_table_2(symbol.name,
-                                           container(LineMatcherConstantResolver(symbol.value)))
-
-        # ACT & ASSERT #
-        self._check(
-            remaining_source(symbol.name),
-            Expectation(
-                resolver=resolved_value_equals_line_matcher(
-                    value=symbol.value,
-                    references=asrt.matches_sequence([is_line_matcher_reference_to(symbol.name)]),
-                    symbols=symbols
-                ),
-            ))
-
-    def test_not(self):
-        # ARRANGE #
-        symbol = NameAndValue('the_symbol_name',
-                              LineMatcherConstant(True))
-
-        symbols = singleton_symbol_table_2(symbol.name,
-                                           container(LineMatcherConstantResolver(symbol.value)))
-
-        # ACT & ASSERT #
-        self._check(
-            remaining_source('{not_} {symbol}'.format(not_=sut.NOT_OPERATOR_NAME,
-                                                      symbol=symbol.name)),
-            Expectation(
-                resolver=resolved_value_equals_line_matcher(
-                    value=LineMatcherNot(symbol.value),
-                    references=asrt.matches_sequence([is_line_matcher_reference_to(symbol.name)]),
-                    symbols=symbols
-                ),
-            ))
-
-    def test_and(self):
-        # ARRANGE #
-        symbol_1 = NameAndValue('the_symbol_1_name',
-                                LineMatcherConstant(True))
-
-        symbol_2 = NameAndValue('the_symbol_2_name',
-                                LineMatcherConstant(False))
-
-        symbols = SymbolTable({
-            symbol_1.name: container(LineMatcherConstantResolver(symbol_1.value)),
-            symbol_2.name: container(LineMatcherConstantResolver(symbol_2.value)),
-        })
-
-        # ACT & ASSERT #
-        self._check(
-            remaining_source('{symbol_1} {and_op} {symbol_2}'.format(
-                symbol_1=symbol_1.name,
-                and_op=sut.AND_OPERATOR_NAME,
-                symbol_2=symbol_2.name,
-            )),
-            Expectation(
-                resolver=resolved_value_equals_line_matcher(
-                    value=LineMatcherAnd([symbol_1.value,
-                                          symbol_2.value]),
-                    references=asrt.matches_sequence([
-                        is_line_matcher_reference_to(symbol_1.name),
-                        is_line_matcher_reference_to(symbol_2.name),
-                    ]),
-                    symbols=symbols
-                ),
-            ))
-
-    def test_or(self):
-        # ARRANGE #
-        symbol_1 = NameAndValue('the_symbol_1_name',
-                                LineMatcherConstant(True))
-
-        symbol_2 = NameAndValue('the_symbol_2_name',
-                                LineMatcherConstant(False))
-
-        symbols = SymbolTable({
-            symbol_1.name: container(LineMatcherConstantResolver(symbol_1.value)),
-            symbol_2.name: container(LineMatcherConstantResolver(symbol_2.value)),
-        })
-
-        # ACT & ASSERT #
-        self._check(
-            remaining_source('{symbol_1} {or_op} {symbol_2}'.format(
-                symbol_1=symbol_1.name,
-                or_op=sut.OR_OPERATOR_NAME,
-                symbol_2=symbol_2.name,
-            )),
-            Expectation(
-                resolver=resolved_value_equals_line_matcher(
-                    value=LineMatcherOr([symbol_1.value,
-                                         symbol_2.value]),
-                    references=asrt.matches_sequence([
-                        is_line_matcher_reference_to(symbol_1.name),
-                        is_line_matcher_reference_to(symbol_2.name),
-                    ]),
-                    symbols=symbols
-                ),
-            ))
+    @property
+    def conf(self) -> Configuration:
+        return self._conf
 
     def test_regex(self):
         # ARRANGE #

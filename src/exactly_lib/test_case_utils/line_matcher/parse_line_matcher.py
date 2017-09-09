@@ -1,4 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
+from exactly_lib.help_texts import expression
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax
@@ -19,12 +20,6 @@ from exactly_lib.util.textformat.structure import structures as docs
 CONSTANT_TRUE_MATCHER_RESOLVER = resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherConstant(True))
 
 REGEX_MATCHER_NAME = 'regex'
-
-AND_OPERATOR_NAME = '&&'
-
-OR_OPERATOR_NAME = '||'
-
-NOT_OPERATOR_NAME = '!'
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
@@ -138,17 +133,17 @@ GRAMMAR = grammar.Grammar(
                                      _REGEX_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        AND_OPERATOR_NAME: grammar.ComplexExpression(
+        expression.AND_OPERATOR_NAME: grammar.ComplexExpression(
             resolvers.LineMatcherAndResolver,
             _AND_SYNTAX_DESCRIPTION,
         ),
-        OR_OPERATOR_NAME: grammar.ComplexExpression(
+        expression.OR_OPERATOR_NAME: grammar.ComplexExpression(
             resolvers.LineMatcherOrResolver,
             _OR_SYNTAX_DESCRIPTION,
         ),
     },
     prefix_expressions={
-        NOT_OPERATOR_NAME: grammar.PrefixExpression(resolvers.LineMatcherNotResolver,
-                                                    _NOT_SYNTAX_DESCRIPTION)
+        expression.NOT_OPERATOR_NAME: grammar.PrefixExpression(resolvers.LineMatcherNotResolver,
+                                                               _NOT_SYNTAX_DESCRIPTION)
     },
 )
