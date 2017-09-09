@@ -147,8 +147,6 @@ class FileMatcherStructureVisitor:
     """
 
     def visit(self, matcher: FileMatcher):
-        if isinstance(matcher, FileMatcherFromSelectors):
-            return self.visit_selectors(matcher)
         if isinstance(matcher, FileMatcherNameGlobPattern):
             return self.visit_name_glob_pattern(matcher)
         if isinstance(matcher, FileMatcherType):
@@ -181,7 +179,4 @@ class FileMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_or(self, matcher: FileMatcherOr):
-        raise NotImplementedError('abstract method')
-
-    def visit_selectors(self, matcher: FileMatcherFromSelectors):
         raise NotImplementedError('abstract method')
