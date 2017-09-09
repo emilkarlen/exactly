@@ -1,8 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor, \
-    FileMatcherFromSelectors
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherStructureVisitor
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -97,13 +96,3 @@ class _StructureChecker(FileMatcherStructureVisitor):
         assertion_on_sub_matchers = asrt.matches_sequence(list(map(equals_file_matcher, self.expected.matchers)))
         assertion_on_sub_matchers.apply_with_message(self.put, actual.matchers,
                                                      'sub matchers')
-
-    def visit_selectors(self, actual: FileMatcherFromSelectors):
-        self._common(actual)
-        assert isinstance(self.expected, FileMatcherFromSelectors)  # Type info for IDE
-        self.put.assertEqual(self.expected.selectors.name_patterns,
-                             actual.selectors.name_patterns,
-                             'name patterns')
-        self.put.assertEqual(self.expected.selectors.file_types,
-                             actual.selectors.file_types,
-                             'file types')

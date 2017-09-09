@@ -4,7 +4,6 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.util.dir_contents_selection import Selectors
 
 
 def suite() -> unittest.TestSuite:
@@ -12,18 +11,6 @@ def suite() -> unittest.TestSuite:
 
 
 class TestFileMatcherStructureVisitor(unittest.TestCase):
-    def test_visit_selectors(self):
-        # ARRANGE #
-        instance = sut.FileMatcherFromSelectors(Selectors())
-        visitor = AVisitorThatRecordsVisitedMethods()
-        # ACT #
-        ret_val = visitor.visit(instance)
-        # ASSERT #
-        self.assertEqual([sut.FileMatcherFromSelectors],
-                         visitor.visited_types)
-        self.assertIs(instance,
-                      ret_val)
-
     def test_visit_constant(self):
         # ARRANGE #
         instance = sut.FileMatcherConstant(False)
@@ -134,10 +121,6 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
 
     def visit_or(self, matcher: sut.FileMatcherOr):
         self.visited_types.append(sut.FileMatcherOr)
-        return matcher
-
-    def visit_selectors(self, matcher: sut.FileMatcherFromSelectors):
-        self.visited_types.append(sut.FileMatcherFromSelectors)
         return matcher
 
 

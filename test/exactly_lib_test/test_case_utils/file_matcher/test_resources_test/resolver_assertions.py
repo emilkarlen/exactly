@@ -1,11 +1,9 @@
 import unittest
 
-from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherFromSelectors, FileMatcherConstant
+from exactly_lib.test_case_utils.file_matcher.file_matchers import FileMatcherConstant
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
-from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
-from exactly_lib.util.dir_contents_selection import Selectors
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.test_resources import named_elem_utils
@@ -17,9 +15,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestResolvedValueEqualsFileMatcher),
-    ])
+    return unittest.makeSuite(TestResolvedValueEqualsFileMatcher)
 
 
 class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
@@ -79,10 +75,8 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
                          )),
 
         ]
-        common_name_patterns = frozenset(['first name pattern'])
-        actual = FileMatcherFromSelectors(Selectors(name_patterns=common_name_patterns))
-        expected = FileMatcherFromSelectors(Selectors(name_patterns=common_name_patterns,
-                                                      file_types=frozenset([FileType.REGULAR])))
+        actual = FileMatcherConstant(False)
+        expected = FileMatcherConstant(True)
 
         resolver_of_actual = FileMatcherConstantResolver(actual)
         for case in cases:
@@ -96,8 +90,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
         # ARRANGE #
         actual_reference = symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
-        resolver = fake(Selectors(),
-                        references=actual_references)
+        resolver = fake(references=actual_references)
         assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
                                                                     expected_references=asrt.matches_sequence([
                                                                         asrt.is_(actual_reference)
@@ -110,8 +103,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
         # ARRANGE #
         actual_reference = symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
-        resolver = fake(Selectors(),
-                        references=actual_references)
+        resolver = fake(references=actual_references)
 
         cases = [
             NameAndValue('assert no references',
@@ -131,9 +123,8 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
                 assert_that_assertion_fails(assertion_to_check, resolver)
 
 
-def fake(selectors: Selectors = Selectors(),
-         references: list = None) -> FileMatcherResolverConstantTestImpl:
-    return FileMatcherResolverConstantTestImpl(FileMatcherFromSelectors(selectors),
+def fake(references: list = None) -> FileMatcherResolverConstantTestImpl:
+    return FileMatcherResolverConstantTestImpl(FileMatcherConstant(False),
                                                references if references else [])
 
 
