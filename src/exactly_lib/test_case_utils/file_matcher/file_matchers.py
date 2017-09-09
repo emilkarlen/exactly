@@ -95,6 +95,27 @@ class FileMatcherType(FileMatcher):
         return self._pathlib_predicate(path)
 
 
+class FileMatcherNot(FileMatcher):
+    """Matcher that negates a given matcher."""
+
+    def __init__(self, matcher: FileMatcher):
+        self._matcher = matcher
+
+    @property
+    def negated_matcher(self) -> FileMatcher:
+        return self._matcher
+
+    @property
+    def option_description(self) -> str:
+        return 'not({})'.format(self._matcher.option_description)
+
+    def select_from(self, directory: pathlib.Path) -> iter:
+        raise NotImplementedError('this method should never be used, since this method should be refactored away')
+
+    def matches(self, path: pathlib.Path) -> bool:
+        return not self._matcher.matches(path)
+
+
 class FileMatcherAnd(FileMatcher):
     """Matcher that and:s a list of matchers."""
 
@@ -107,13 +128,35 @@ class FileMatcherAnd(FileMatcher):
 
     @property
     def option_description(self) -> str:
-        return 'and[{}]'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+        return 'and({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
 
     def select_from(self, directory: pathlib.Path) -> iter:
         raise NotImplementedError('this method should never be used, since this method should be refactored away')
 
-    def matches(self, line: str) -> bool:
-        return all([matcher.matches(line)
+    def matches(self, path: pathlib.Path) -> bool:
+        return all([matcher.matches(path)
+                    for matcher in self._matchers])
+
+
+class FileMatcherOr(FileMatcher):
+    """Matcher that or:s a list of matchers."""
+
+    def __init__(self, matchers: list):
+        self._matchers = tuple(matchers)
+
+    @property
+    def option_description(self) -> str:
+        return 'or({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+
+    @property
+    def matchers(self) -> list:
+        return list(self._matchers)
+
+    def select_from(self, directory: pathlib.Path) -> iter:
+        raise NotImplementedError('this method should never be used, since this method should be refactored away')
+
+    def matches(self, path: pathlib.Path) -> bool:
+        return any([matcher.matches(path)
                     for matcher in self._matchers])
 
 
@@ -136,8 +179,12 @@ class FileMatcherStructureVisitor:
             return self.visit_name_glob_pattern(matcher)
         if isinstance(matcher, FileMatcherType):
             return self.visit_type(matcher)
+        if isinstance(matcher, FileMatcherNot):
+            return self.visit_not(matcher)
         if isinstance(matcher, FileMatcherAnd):
             return self.visit_and(matcher)
+        if isinstance(matcher, FileMatcherOr):
+            return self.visit_or(matcher)
         if isinstance(matcher, FileMatcherConstant):
             return self.visit_constant(matcher)
         else:
@@ -153,7 +200,13 @@ class FileMatcherStructureVisitor:
     def visit_type(self, matcher: FileMatcherType):
         raise NotImplementedError('abstract method')
 
+    def visit_not(self, matcher: FileMatcherNot):
+        raise NotImplementedError('abstract method')
+
     def visit_and(self, matcher: FileMatcherAnd):
+        raise NotImplementedError('abstract method')
+
+    def visit_or(self, matcher: FileMatcherOr):
         raise NotImplementedError('abstract method')
 
     def visit_selectors(self, matcher: FileMatcherFromSelectors):
