@@ -1,5 +1,6 @@
 """Functionality for accessing a subset of the files in a directory."""
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
+from exactly_lib.help_texts import expression
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
@@ -32,8 +33,6 @@ NAME_MATCHER_ARGUMENT = a.Named('PATTERN')
 
 TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
 
-AND_OPERATOR = '&&'
-
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
     return cl_syntax.cli_argument_syntax_element_description(
@@ -58,7 +57,7 @@ class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
         descriptions = selectors.selection_descriptions
         if not descriptions:
             return []
-        separator = ' ' + AND_OPERATOR + ' '
+        separator = ' ' + expression.AND_OPERATOR_NAME + ' '
         description = separator.join(selectors.selection_descriptions)
         line = SELECTION.name.capitalize() + ' : ' + description
         return [line]
@@ -144,8 +143,16 @@ Selects files with the given type. Symbolic links are followed.
 {_TYPE_} is one of:
 """
 
-_AND_MATCHER_SED_DESCRIPTION = """\
-Selects files selected by both {_MATCHER_}s.
+_NOT_SED_DESCRIPTION = """\
+Matches files not matched by the given matcher.
+"""
+
+_AND_SED_DESCRIPTION = """\
+Matches files matched by all matchers.
+"""
+
+_OR_SED_DESCRIPTION = """\
+Matches files matched by any matcher.
 """
 
 
@@ -182,10 +189,6 @@ TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     description_rest=_type_matcher_sed_description()
 )
 
-AND_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    description_rest=_fnap(_AND_MATCHER_SED_DESCRIPTION)
-)
-
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
         name=FILE_MATCHER_CONCEPT_INFO.name,
@@ -200,7 +203,22 @@ GRAMMAR = grammar.Grammar(
                                                     TYPE_SYNTAX_DESCRIPTION),
     },
     complex_expressions={
-        AND_OPERATOR: grammar.ComplexExpression(resolvers.FileMatcherAndResolver,
-                                                AND_SYNTAX_DESCRIPTION),
-    }
+        expression.AND_OPERATOR_NAME:
+            grammar.ComplexExpression(resolvers.FileMatcherAndResolver,
+                                      grammar.OperatorExpressionDescription(
+                                          _fnap(_AND_SED_DESCRIPTION)
+                                      )),
+        expression.OR_OPERATOR_NAME:
+            grammar.ComplexExpression(resolvers.FileMatcherOrResolver,
+                                      grammar.OperatorExpressionDescription(
+                                          _fnap(_OR_SED_DESCRIPTION)
+                                      )),
+    },
+    prefix_expressions={
+        expression.NOT_OPERATOR_NAME:
+            grammar.PrefixExpression(resolvers.FileMatcherNotResolver,
+                                     grammar.OperatorExpressionDescription(
+                                         _fnap(_NOT_SED_DESCRIPTION)
+                                     ))
+    },
 )
