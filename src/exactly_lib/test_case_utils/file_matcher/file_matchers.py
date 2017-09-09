@@ -107,7 +107,7 @@ class FileMatcherNot(FileMatcher):
 
     @property
     def option_description(self) -> str:
-        return 'not({})'.format(self._matcher.option_description)
+        return self._matcher.option_description
 
     def select_from(self, directory: pathlib.Path) -> iter:
         raise NotImplementedError('this method should never be used, since this method should be refactored away')
@@ -128,7 +128,7 @@ class FileMatcherAnd(FileMatcher):
 
     @property
     def option_description(self) -> str:
-        return 'and({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
 
     def select_from(self, directory: pathlib.Path) -> iter:
         raise NotImplementedError('this method should never be used, since this method should be refactored away')
@@ -146,7 +146,7 @@ class FileMatcherOr(FileMatcher):
 
     @property
     def option_description(self) -> str:
-        return 'or({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
     def matchers(self) -> list:
