@@ -5,14 +5,18 @@ from exactly_lib_test.test_case_utils.test_resources import combinator_matcher_c
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestAnd)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestAnd),
+        unittest.makeSuite(TestOr),
+        unittest.makeSuite(TestNot),
+    ])
 
 
 class LineMatcherConfiguration(combinator_matcher_check.MatcherConfiguration):
     def irrelevant_model(self):
         return 'irrelevant line model'
 
-    def constant(self, result: bool):
+    def matcher_with_constant_result(self, result: bool):
         return sut.LineMatcherConstant(result)
 
     def apply(self, matcher_to_check, model) -> bool:
@@ -25,12 +29,36 @@ class LineMatcherConfiguration(combinator_matcher_check.MatcherConfiguration):
 
 
 class TestAnd(combinator_matcher_check.TestAndBase):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
     @property
     def configuration(self) -> combinator_matcher_check.MatcherConfiguration:
         return LineMatcherConfiguration()
 
-    def mk_and(self, sub_matchers: list):
-        return sut.LineMatcherAnd(sub_matchers)
+    def new_combinator_to_check(self, constructor_argument):
+        return sut.LineMatcherAnd(constructor_argument)
+
+
+class TestOr(combinator_matcher_check.TestOrBase):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    @property
+    def configuration(self) -> combinator_matcher_check.MatcherConfiguration:
+        return LineMatcherConfiguration()
+
+    def new_combinator_to_check(self, constructor_argument):
+        return sut.LineMatcherOr(constructor_argument)
+
+
+class TestNot(combinator_matcher_check.TestNotBase):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    @property
+    def configuration(self) -> combinator_matcher_check.MatcherConfiguration:
+        return LineMatcherConfiguration()
+
+    def new_combinator_to_check(self, constructor_argument):
+        return sut.LineMatcherNot(constructor_argument)
 
 
 class LineMatcherThatRegistersModelArgument(sut.LineMatcher,

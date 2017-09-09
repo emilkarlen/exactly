@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.line_matcher import constant, regex, not_, and_, or_, visitor
+from exactly_lib_test.test_case_utils.line_matcher import constant, regex, combinators, visitor
 from exactly_lib_test.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib_test.test_case_utils.line_matcher import test_resources_test
 
@@ -12,9 +12,7 @@ def suite() -> unittest.TestSuite:
         test_resources_test.suite(),
         constant.suite(),
         regex.suite(),
-        not_.suite(),
-        and_.suite(),
-        or_.suite(),
+        combinators.suite(),
         parse_line_matcher.suite(),
     ])
 

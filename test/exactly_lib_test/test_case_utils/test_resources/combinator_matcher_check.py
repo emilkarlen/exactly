@@ -21,7 +21,7 @@ class MatcherThatRegistersModelArgument:
 
 
 class MatcherConfiguration:
-    def constant(self, result: bool):
+    def matcher_with_constant_result(self, result: bool):
         raise NotImplementedError('abstract method')
 
     def irrelevant_model(self):
@@ -40,21 +40,27 @@ class TestCaseBase(unittest.TestCase):
     def configuration(self) -> MatcherConfiguration:
         raise NotImplementedError('abstract method')
 
-
-class TestAndBase(TestCaseBase):
-    def mk_and(self, sub_matchers: list):
+    def new_combinator_to_check(self, constructor_argument):
+        """
+        Constructs the matcher that is tested ("and", "or", or "not").
+        :param constructor_argument: Either a list of matchers (if "and", or "or" is tested),
+        or a single matcher (if "not" is tested)
+        """
         raise NotImplementedError('abstract method')
 
     def _check(self,
                case_name: str,
-               sub_matchers: list,
+               constructor_argument,
                expected_result: bool):
         # ARRANGE #
+
         conf = self.configuration
         with self.subTest(case_name=case_name):
-            matcher_to_check = self.mk_and(sub_matchers)
+            matcher_to_check = self.new_combinator_to_check(constructor_argument)
             model = conf.irrelevant_model()
+
             # ACT #
+
             actual_result = conf.apply(matcher_to_check, model)
 
             # ASSERT #
@@ -63,6 +69,8 @@ class TestAndBase(TestCaseBase):
                              actual_result,
                              'result')
 
+
+class TestAndBase(TestCaseBase):
     def test_empty_list_of_matchers_SHOULD_evaluate_to_True(self):
         self._check('',
                     [],
@@ -72,12 +80,12 @@ class TestAndBase(TestCaseBase):
         cases = [
             NameAndValue('false',
                          (
-                             [self.configuration.constant(False)],
+                             [self.configuration.matcher_with_constant_result(False)],
                              False,
                          )),
             NameAndValue('true',
                          (
-                             [self.configuration.constant(True)],
+                             [self.configuration.matcher_with_constant_result(True)],
                              True,
                          )),
         ]
@@ -90,13 +98,13 @@ class TestAndBase(TestCaseBase):
     def test_more_than_one_matcher_SHOULD_evaluate_to_True_WHEN_all_matchers_evaluate_to_True(self):
         cases = [
             NameAndValue('two matchers',
-                         [self.configuration.constant(True),
-                          self.configuration.constant(True)],
+                         [self.configuration.matcher_with_constant_result(True),
+                          self.configuration.matcher_with_constant_result(True)],
                          ),
             NameAndValue('three matchers',
-                         [self.configuration.constant(True),
-                          self.configuration.constant(True),
-                          self.configuration.constant(True)],
+                         [self.configuration.matcher_with_constant_result(True),
+                          self.configuration.matcher_with_constant_result(True),
+                          self.configuration.matcher_with_constant_result(True)],
                          ),
         ]
         for case in cases:
@@ -108,17 +116,17 @@ class TestAndBase(TestCaseBase):
     def test_more_than_one_matcher_SHOULD_evaluate_to_False_WHEN_any_matcher_evaluates_to_False(self):
         cases = [
             NameAndValue('two matchers/first is false',
-                         [self.configuration.constant(False),
-                          self.configuration.constant(True)],
+                         [self.configuration.matcher_with_constant_result(False),
+                          self.configuration.matcher_with_constant_result(True)],
                          ),
             NameAndValue('two matchers/second is false',
-                         [self.configuration.constant(True),
-                          self.configuration.constant(False)],
+                         [self.configuration.matcher_with_constant_result(True),
+                          self.configuration.matcher_with_constant_result(False)],
                          ),
             NameAndValue('three matchers',
-                         [self.configuration.constant(True),
-                          self.configuration.constant(False),
-                          self.configuration.constant(True)],
+                         [self.configuration.matcher_with_constant_result(True),
+                          self.configuration.matcher_with_constant_result(False),
+                          self.configuration.matcher_with_constant_result(True)],
                          ),
         ]
         for case in cases:
@@ -132,13 +140,140 @@ class TestAndBase(TestCaseBase):
         model_that_should_be_registered = conf.irrelevant_model()
         first = conf.matcher_that_registers_model_argument_and_returns_constant(True)
         second = conf.matcher_that_registers_model_argument_and_returns_constant(True)
-        matcher_to_check = self.mk_and([first, second])
+
+        matcher_to_check = self.new_combinator_to_check([first, second])
+
         # ACT #
+
         conf.apply(matcher_to_check, model_that_should_be_registered)
+
         # ASSERT #
+
         self.assertIs(model_that_should_be_registered,
                       first.registered_argument,
                       'first matcher should have received the argument')
         self.assertIs(model_that_should_be_registered,
                       second.registered_argument,
                       'second matcher should have received the argument')
+
+
+class TestOrBase(TestCaseBase):
+    def test_empty_list_of_matchers_SHOULD_evaluate_to_False(self):
+        self._check('',
+                    [],
+                    False)
+
+    def test_single_matcher_SHOULD_evaluate_to_value_of_the_single_matcher(self):
+        cases = [
+            NameAndValue('false',
+                         (
+                             [self.configuration.matcher_with_constant_result(False)],
+                             False,
+                         )),
+            NameAndValue('true',
+                         (
+                             [self.configuration.matcher_with_constant_result(True)],
+                             True,
+                         )),
+        ]
+        for case in cases:
+            ored_matchers, expected_result = case.value
+            self._check(case.name,
+                        ored_matchers,
+                        expected_result)
+
+    def test_more_than_one_matcher_SHOULD_evaluate_to_True_WHEN_any_matchers_evaluate_to_True(self):
+        cases = [
+            NameAndValue('two matchers',
+                         [self.configuration.matcher_with_constant_result(False),
+                          self.configuration.matcher_with_constant_result(True)],
+                         ),
+            NameAndValue('three matchers',
+                         [self.configuration.matcher_with_constant_result(False),
+                          self.configuration.matcher_with_constant_result(True),
+                          self.configuration.matcher_with_constant_result(False)],
+                         ),
+        ]
+        for case in cases:
+            ored_matchers = case.value
+            self._check(case.name,
+                        ored_matchers,
+                        True)
+
+    def test_more_than_one_matcher_SHOULD_evaluate_to_False_WHEN_all_matcher_evaluates_to_False(self):
+        cases = [
+            NameAndValue('two matchers',
+                         [self.configuration.matcher_with_constant_result(False),
+                          self.configuration.matcher_with_constant_result(False)],
+                         ),
+            NameAndValue('three matchers',
+                         [self.configuration.matcher_with_constant_result(False),
+                          self.configuration.matcher_with_constant_result(False),
+                          self.configuration.matcher_with_constant_result(False)],
+                         ),
+        ]
+        for case in cases:
+            self._check(case.name,
+                        case.value,
+                        False)
+
+    def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
+        # ARRANGE #
+        conf = self.configuration
+        model_that_should_be_registered = conf.irrelevant_model()
+        first = conf.matcher_that_registers_model_argument_and_returns_constant(False)
+        second = conf.matcher_that_registers_model_argument_and_returns_constant(False)
+
+        matcher_to_check = self.new_combinator_to_check([first, second])
+
+        # ACT #
+
+        conf.apply(matcher_to_check, model_that_should_be_registered)
+
+        # ASSERT #
+
+        self.assertIs(model_that_should_be_registered,
+                      first.registered_argument,
+                      'first matcher should have received the argument')
+        self.assertIs(model_that_should_be_registered,
+                      second.registered_argument,
+                      'second matcher should have received the argument')
+
+
+class TestNotBase(TestCaseBase):
+    def runTest(self):
+        cases = [
+            NameAndValue('negate to make negated matcher match',
+                         (
+                             self.configuration.matcher_with_constant_result(False),
+                             True,
+                         )),
+            NameAndValue('negate to make negated matcher not match',
+                         (
+                             self.configuration.matcher_with_constant_result(True),
+                             False,
+                         )),
+        ]
+        for case in cases:
+            matcher_to_negate, expected_result = case.value
+            self._check(case.name,
+                        matcher_to_negate,
+                        expected_result)
+
+    def test_model_argument_SHOULD_be_given_as_argument_to_every_sub_matcher(self):
+        # ARRANGE #
+        conf = self.configuration
+        model_that_should_be_registered = conf.irrelevant_model()
+        sub_matcher = conf.matcher_that_registers_model_argument_and_returns_constant(False)
+
+        matcher_to_check = self.new_combinator_to_check(sub_matcher)
+
+        # ACT #
+
+        conf.apply(matcher_to_check, model_that_should_be_registered)
+
+        # ASSERT #
+
+        self.assertIs(model_that_should_be_registered,
+                      sub_matcher.registered_argument,
+                      'sub_matcher matcher should have received the argument')
