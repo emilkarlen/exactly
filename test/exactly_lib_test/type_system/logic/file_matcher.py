@@ -57,9 +57,6 @@ class BaseNameMatcher(sut.FileMatcher):
     def option_description(self) -> str:
         return 'option description'
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used')
-
 
 class ConstantResultMatcher(sut.FileMatcher):
     def __init__(self, result: bool):
@@ -71,6 +68,3 @@ class ConstantResultMatcher(sut.FileMatcher):
     @property
     def option_description(self) -> str:
         return 'option description'
-
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used')

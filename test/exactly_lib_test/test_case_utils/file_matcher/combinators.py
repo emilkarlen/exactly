@@ -65,9 +65,6 @@ class FileMatcherThatRegistersModelArgument(sut.FileMatcher,
     def option_description(self) -> str:
         raise NotImplementedError('this method should not be used')
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should not be used')
-
     def matches(self, line: str) -> bool:
         self.register_argument(line)
         return self._constant_result

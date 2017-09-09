@@ -10,6 +10,3 @@ class FileMatcherThatSelectsAllFilesTestImpl(FileMatcher):
 
     def matches(self, path: pathlib.Path) -> bool:
         return True
-
-    def select_from(self, directory: pathlib.Path) -> iter:
-        return directory.iterdir()

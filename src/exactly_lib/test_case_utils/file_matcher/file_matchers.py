@@ -19,14 +19,6 @@ class FileMatcherFromSelectors(FileMatcher):
     def selectors(self) -> dir_contents_selection.Selectors:
         return self._selectors
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        """
-        :param directory: An existing directory
-        :return: Name of files in the given directory
-        """
-        return dir_contents_selection.get_selection(directory,
-                                                    self._selectors)
-
     def matches(self, path: pathlib.Path) -> bool:
         raise NotImplementedError('this method should never be used, since this class should be refactored away')
 
@@ -45,9 +37,6 @@ class FileMatcherConstant(FileMatcher):
     def option_description(self) -> str:
         return 'any file' if self._result else 'no file'
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used, since this method should be refactored away')
-
     def matches(self, path: pathlib.Path) -> bool:
         return self._result
 
@@ -65,9 +54,6 @@ class FileMatcherNameGlobPattern(FileMatcher):
     @property
     def option_description(self) -> str:
         return 'name matches glob pattern ' + self._glob_pattern
-
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used, since this method should be refactored away')
 
     def matches(self, path: pathlib.Path) -> bool:
         return path.match(self._glob_pattern)
@@ -88,9 +74,6 @@ class FileMatcherType(FileMatcher):
     def option_description(self) -> str:
         return 'type is ' + file_properties.TYPE_INFO[self._file_type].description
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used, since this method should be refactored away')
-
     def matches(self, path: pathlib.Path) -> bool:
         return self._pathlib_predicate(path)
 
@@ -108,9 +91,6 @@ class FileMatcherNot(FileMatcher):
     @property
     def option_description(self) -> str:
         return self._matcher.option_description
-
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used, since this method should be refactored away')
 
     def matches(self, path: pathlib.Path) -> bool:
         return not self._matcher.matches(path)
@@ -130,9 +110,6 @@ class FileMatcherAnd(FileMatcher):
     def option_description(self) -> str:
         return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used, since this method should be refactored away')
-
     def matches(self, path: pathlib.Path) -> bool:
         return all([matcher.matches(path)
                     for matcher in self._matchers])
@@ -151,9 +128,6 @@ class FileMatcherOr(FileMatcher):
     @property
     def matchers(self) -> list:
         return list(self._matchers)
-
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be used, since this method should be refactored away')
 
     def matches(self, path: pathlib.Path) -> bool:
         return any([matcher.matches(path)
