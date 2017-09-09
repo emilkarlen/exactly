@@ -146,8 +146,5 @@ class UnknownFileMatcher(FileMatcher):
     def option_description(self) -> str:
         return str(type(self))
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('this method should never be called')
-
     def matches(self, path: pathlib.Path) -> bool:
         raise NotImplementedError('this method should never be called')

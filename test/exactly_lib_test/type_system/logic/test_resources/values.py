@@ -22,10 +22,11 @@ class FileMatcherTestImpl(FileMatcher):
     def matches(self, path: pathlib.Path) -> bool:
         raise NotImplementedError('should never be used')
 
-    def select_from(self, directory: pathlib.Path) -> iter:
-        raise NotImplementedError('should never be used')
-
 
 class LineMatcherNotImplementedTestImpl(LineMatcher):
+    @property
+    def option_description(self) -> str:
+        return str(type(self))
+
     def matches(self, line: str) -> bool:
         raise NotImplementedError('should never be used')
