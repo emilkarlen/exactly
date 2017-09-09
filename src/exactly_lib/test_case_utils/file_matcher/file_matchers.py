@@ -2,25 +2,6 @@ import pathlib
 
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.util import dir_contents_selection
-
-
-class FileMatcherFromSelectors(FileMatcher):
-    """Selects files from a directory according the a file condition."""
-
-    def __init__(self, selectors: dir_contents_selection.Selectors):
-        self._selectors = selectors
-
-    @property
-    def option_description(self) -> str:
-        return 'selectors - this class should be removes'
-
-    @property
-    def selectors(self) -> dir_contents_selection.Selectors:
-        return self._selectors
-
-    def matches(self, path: pathlib.Path) -> bool:
-        raise NotImplementedError('this method should never be used, since this class should be refactored away')
 
 
 class FileMatcherConstant(FileMatcher):

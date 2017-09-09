@@ -9,6 +9,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def matches_resolver_of_logic_type(resolver_type: type,
                                    logic_value_type: LogicValueType,
+                                   value_type: ValueType,
                                    resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
                                    references: asrt.ValueAssertion = asrt.is_empty_list,
                                    symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
@@ -23,7 +24,7 @@ def matches_resolver_of_logic_type(resolver_type: type,
     return asrt.is_instance_with(resolver_type,
                                  asrt.and_([
                                      is_resolver_of_logic_type(logic_value_type,
-                                                               ValueType.LINE_MATCHER),
+                                                               value_type),
 
                                      asrt.on_transformed(resolve_value,
                                                          resolved_value),
