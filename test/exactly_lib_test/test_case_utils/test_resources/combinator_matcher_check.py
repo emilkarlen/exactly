@@ -1,16 +1,13 @@
 import unittest
 
+from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
-class MatcherThatRegistersModelArgument:
+class MatcherThatRegistersModelArgument(Matcher):
     def __init__(self, constant_result: bool):
         self._constant_result = constant_result
         self._registered_argument = None
-
-    def matches(self, line: str) -> bool:
-        self._registered_argument = line
-        return self._constant_result
 
     def register_argument(self, argument):
         self._registered_argument = argument
@@ -21,13 +18,13 @@ class MatcherThatRegistersModelArgument:
 
 
 class MatcherConfiguration:
-    def matcher_with_constant_result(self, result: bool):
+    def matcher_with_constant_result(self, result: bool) -> Matcher:
         raise NotImplementedError('abstract method')
 
     def irrelevant_model(self):
         raise NotImplementedError('abstract method')
 
-    def apply(self, matcher_to_check, model):
+    def apply(self, matcher_to_check, model) -> bool:
         raise NotImplementedError('abstract method')
 
     def matcher_that_registers_model_argument_and_returns_constant(self,
@@ -40,7 +37,7 @@ class TestCaseBase(unittest.TestCase):
     def configuration(self) -> MatcherConfiguration:
         raise NotImplementedError('abstract method')
 
-    def new_combinator_to_check(self, constructor_argument):
+    def new_combinator_to_check(self, constructor_argument) -> Matcher:
         """
         Constructs the matcher that is tested ("and", "or", or "not").
         :param constructor_argument: Either a list of matchers (if "and", or "or" is tested),
@@ -68,6 +65,10 @@ class TestCaseBase(unittest.TestCase):
             self.assertEqual(expected_result,
                              actual_result,
                              'result')
+
+            self.assertIsInstance(matcher_to_check.option_description,
+                                  str,
+                                  'option_description')
 
 
 class TestAndBase(TestCaseBase):

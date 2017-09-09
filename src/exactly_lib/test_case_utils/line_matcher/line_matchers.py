@@ -8,6 +8,10 @@ class LineMatcherConstant(LineMatcher):
         self._result = result
 
     @property
+    def option_description(self) -> str:
+        return 'any file' if self._result else 'no file'
+
+    @property
     def result_constant(self) -> bool:
         return self._result
 
@@ -20,6 +24,10 @@ class LineMatcherRegex(LineMatcher):
 
     def __init__(self, compiled_regular_expression):
         self._compiled_regular_expression = compiled_regular_expression
+
+    @property
+    def option_description(self) -> str:
+        return 'name matches regex ' + self.regex_pattern_string
 
     @property
     def regex_pattern_string(self) -> str:
@@ -36,6 +44,10 @@ class LineMatcherNot(LineMatcher):
         self._matcher = matcher
 
     @property
+    def option_description(self) -> str:
+        return self._matcher.option_description
+
+    @property
     def negated_matcher(self) -> LineMatcher:
         return self._matcher
 
@@ -48,6 +60,10 @@ class LineMatcherAnd(LineMatcher):
 
     def __init__(self, matchers: list):
         self._matchers = tuple(matchers)
+
+    @property
+    def option_description(self) -> str:
+        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
     def matchers(self) -> list:
@@ -63,6 +79,10 @@ class LineMatcherOr(LineMatcher):
 
     def __init__(self, matchers: list):
         self._matchers = tuple(matchers)
+
+    @property
+    def option_description(self) -> str:
+        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
     def matchers(self) -> list:
