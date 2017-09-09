@@ -19,10 +19,6 @@ class LineMatcherConfiguration(combinator_matcher_check.MatcherConfiguration):
     def matcher_with_constant_result(self, result: bool):
         return sut.LineMatcherConstant(result)
 
-    def apply(self, matcher_to_check, model) -> bool:
-        assert isinstance(matcher_to_check, sut.LineMatcher)  # Sanity check
-        return matcher_to_check.matches(model)
-
     def matcher_that_registers_model_argument_and_returns_constant(self, result: bool
                                                                    ) -> combinator_matcher_check.MatcherThatRegistersModelArgument:
         return LineMatcherThatRegistersModelArgument(result)

@@ -24,9 +24,6 @@ class MatcherConfiguration:
     def irrelevant_model(self):
         raise NotImplementedError('abstract method')
 
-    def apply(self, matcher_to_check, model) -> bool:
-        raise NotImplementedError('abstract method')
-
     def matcher_that_registers_model_argument_and_returns_constant(self,
                                                                    result: bool) -> MatcherThatRegistersModelArgument:
         raise NotImplementedError('abstract method')
@@ -58,7 +55,7 @@ class TestCaseBase(unittest.TestCase):
 
             # ACT #
 
-            actual_result = conf.apply(matcher_to_check, model)
+            actual_result = matcher_to_check.matches(model)
 
             # ASSERT #
 
@@ -146,7 +143,7 @@ class TestAndBase(TestCaseBase):
 
         # ACT #
 
-        conf.apply(matcher_to_check, model_that_should_be_registered)
+        matcher_to_check.matches(model_that_should_be_registered)
 
         # ASSERT #
 
@@ -229,7 +226,7 @@ class TestOrBase(TestCaseBase):
 
         # ACT #
 
-        conf.apply(matcher_to_check, model_that_should_be_registered)
+        matcher_to_check.matches(model_that_should_be_registered)
 
         # ASSERT #
 
@@ -271,7 +268,7 @@ class TestNotBase(TestCaseBase):
 
         # ACT #
 
-        conf.apply(matcher_to_check, model_that_should_be_registered)
+        matcher_to_check.matches(model_that_should_be_registered)
 
         # ASSERT #
 
