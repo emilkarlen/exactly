@@ -11,8 +11,6 @@ from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_ins
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -23,7 +21,7 @@ ACTUAL_PATH_ARGUMENT = a.Named('ACTUAL-PATH')
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(ParserUsingTokenParser(),
+    return SingleInstructionSetup(Parser(),
                                   TheInstructionDocumentation(instruction_name))
 
 
@@ -90,18 +88,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> AssertPhaseInstruction:
-        source.consume_initial_space_on_current_line()
-        if source.is_at_eol:
-            raise SingleInstructionInvalidArgumentException('At least one argument expected (FILE)')
-        comparison_target = parse_actual_file_argument(source)
-        source.consume_initial_space_on_current_line()
-        instruction = parsing.parse_comparison_operation(comparison_target,
-                                                         source)
-        return instruction
-
-
-class ParserUsingTokenParser(InstructionParser):
-    def parse(self, source: ParseSource) -> AssertPhaseInstruction:
         with token_stream_parse_prime.from_parse_source(
                 source,
                 consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
@@ -112,8 +98,8 @@ class ParserUsingTokenParser(InstructionParser):
 
             comparison_target = parse_actual_file_argument_from_token_parser(token_parser)
             token_parser.require_is_not_at_eol('Missing file comparison argument')
-            return parsing.parse_comparison_operation_from_token_parser(comparison_target,
-                                                                        token_parser)
+            return parsing.parse_comparison_operation(comparison_target,
+                                                      token_parser)
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
