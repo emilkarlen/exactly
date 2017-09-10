@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, LookAheadState
 from exactly_lib.util.parse.token import Token
 from exactly_lib_test.section_document.parser_implementations.test_resources import token_stream_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -8,7 +8,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(Test)
+    return unittest.TestSuite([
+        unittest.makeSuite(Test),
+        unittest.makeSuite(TestLookAheadState),
+    ])
 
 
 class Test(unittest.TestCase):
@@ -128,4 +131,26 @@ class Test(unittest.TestCase):
         token_stream = TokenStream('a_token')
         assertion = sut.assert_token_stream(position=asrt.equals(0))
         # ACT & ASSERT #
+        assertion.apply_without_message(self, token_stream)
+
+
+class TestLookAheadState(unittest.TestCase):
+    def test_fail(self):
+        # ARRANGE #
+        assertion = sut.assert_token_stream(look_ahead_state=asrt.is_(LookAheadState.NULL))
+        # ACT & ASSERT #
+        token_stream = TokenStream('a_token')
+        self.assertTrue(token_stream.look_ahead_state is LookAheadState.HAS_TOKEN,
+                        'sanity check: this test assumes that the constructor of the token parser '
+                        'sets correct look-ahead state')
+        assert_that_assertion_fails(assertion, token_stream)
+
+    def test_look_ahead_state_pass(self):
+        # ARRANGE #
+        assertion = sut.assert_token_stream(look_ahead_state=asrt.is_(LookAheadState.NULL))
+        # ACT & ASSERT #
+        token_stream = TokenStream('')
+        self.assertTrue(token_stream.look_ahead_state is LookAheadState.NULL,
+                        'sanity check: this test assumes that the constructor of the token parser '
+                        'sets correct look-ahead state')
         assertion.apply_without_message(self, token_stream)
