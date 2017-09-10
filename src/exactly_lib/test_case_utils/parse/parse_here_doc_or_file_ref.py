@@ -23,6 +23,10 @@ CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
 FILE_ARGUMENT_OPTION = a.OptionName(long_name='file')
 
+MISSING_SOURCE = 'Missing argument ({string}, {file_ref} or {here_doc})'.format(
+    string=instruction_arguments.STRING.name, file_ref=option_syntax(FILE_ARGUMENT_OPTION),
+    here_doc=instruction_arguments.HERE_DOCUMENT.name, )
+
 
 class SourceType(enum.Enum):
     STRING = 1
@@ -86,11 +90,7 @@ def parse_from_parse_source(source: ParseSource,
 
 def parse_from_token_parser(token_parser: TokenParserPrime,
                             conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringResolverOrFileRef:
-    token_parser.require_is_not_at_eol('Missing argument ({string}, {file_ref} or {here_doc})'.format(
-        string=instruction_arguments.STRING.name,
-        file_ref=option_syntax(FILE_ARGUMENT_OPTION),
-        here_doc=instruction_arguments.HERE_DOCUMENT.name,
-    ))
+    token_parser.require_is_not_at_eol(MISSING_SOURCE)
     token_parser.require_head_token_has_valid_syntax()
     file_ref = token_parser.consume_and_handle_optional_option(
         None,

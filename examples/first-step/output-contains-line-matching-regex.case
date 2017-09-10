@@ -4,4 +4,4 @@ hello-world
 
 [assert]
 
-stdout contains H.*W
+stdout any line matches H.*W
