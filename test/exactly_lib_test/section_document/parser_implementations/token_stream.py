@@ -120,15 +120,21 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
 class TestConsume(unittest.TestCase):
     def test_single_token(self):
         test_cases = [
-            'a',
-            'b ',
-            'c  ',
+            ('a', assert_plain('a'), ''),
+            ('b ', assert_plain('b'), ''),
+            ('c  ', assert_plain('c'), ' '),
+            ('x \n', assert_plain('x'), '\n'),
         ]
-        for source in test_cases:
+        for source, expected_token, remaining_source in test_cases:
             with self.subTest(msg=repr(source)):
                 ts = sut.TokenStream(source)
-                ts.consume()
+                # ACT #
+                consumed_token = ts.consume()
+                # ASSERT #
+                expected_token.apply_with_message(self, consumed_token, 'token')
                 self.assertTrue(ts.is_null)
+                self.assertEqual(remaining_source, ts.remaining_source,
+                                 'remaining_source')
 
     def test_multiple_tokens(self):
         test_cases = [
