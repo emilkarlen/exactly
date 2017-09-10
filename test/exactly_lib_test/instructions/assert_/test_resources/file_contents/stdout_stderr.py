@@ -2,7 +2,8 @@ import unittest
 
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, any_line_matches
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import line_matches
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import parse_invalid_syntax
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
@@ -19,7 +20,7 @@ def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.
         parse_invalid_syntax.suite_for(configuration),
         empty.suite_for(configuration),
         equals.suite_for(configuration),
-        any_line_matches.suite_for(configuration),
+        line_matches.suite_for(configuration),
 
     ])
 
@@ -57,3 +58,8 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def _act_result_producer(self, contents_of_tested_file: str) -> ActResultProducer:
         act_result = self.act_result(contents_of_tested_file)
         return ActResultProducerFromActResult(act_result)
+
+
+class ActResultProducerFromHomeAndSds2Str(ActResultProducer):
+    def __init__(self, home_and_sds_2_str):
+        self.home_and_sds_2_str = home_and_sds_2_str

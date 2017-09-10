@@ -3,10 +3,9 @@ from exactly_lib.section_document.parser_implementations.section_element_parsers
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import any_line_matches as test_resources
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
+from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment, ActResultProducer
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
@@ -72,7 +71,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
                                          ]))
 
 
-class _ActResultProducer(test_resources.ActResultProducer):
+class _ActResultProducer(ActResultProducer):
     def __init__(self, home_and_sds_2_str, file_name: str):
         self.home_and_sds_2_str = home_and_sds_2_str
         self.file_name = file_name
