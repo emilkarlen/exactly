@@ -344,7 +344,9 @@ def token_parser_with_additional_error_message_format_map(parser: TokenParserPri
 
 
 @contextmanager
-def from_parse_source(source: ParseSource, consume_last_line_if_is_at_eol_after_parse: bool = False):
+def from_parse_source(source: ParseSource,
+                      consume_last_line_if_is_at_eol_after_parse: bool = False,
+                      consume_last_line_if_is_at_eof_after_parse: bool = False):
     """
     Gives a :class:`TokenParserPrime` backed by the given :class:`ParseSource`.
 
@@ -354,6 +356,8 @@ def from_parse_source(source: ParseSource, consume_last_line_if_is_at_eol_after_
     yield tp
     source.consume(tp.token_stream.position)
     if consume_last_line_if_is_at_eol_after_parse and source.is_at_eol:
+        source.consume_current_line()
+    elif consume_last_line_if_is_at_eof_after_parse and source.is_at_eof:
         source.consume_current_line()
 
 
