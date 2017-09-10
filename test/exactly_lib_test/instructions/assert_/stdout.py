@@ -5,9 +5,8 @@ from exactly_lib.instructions.assert_ import stdout as sut
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.any_line_matches import \
-    ActResultProducerFromHomeAndSds2Str
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr import TestConfigurationForStdFile
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr import \
+    TestConfigurationForStdFile, ActResultProducerFromHomeAndSds2Str
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
