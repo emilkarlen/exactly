@@ -23,21 +23,21 @@ class TestNewTokenStream(unittest.TestCase):
                          actual.head.source_string,
                          'source string')
 
-    def test_raise_invalid_argument_exception_WHEN_first_token_is_invalid(self):
-        cases = [
-            (
-                'start of first token is invalid',
-                '"token1 token2'
-            ),
-            (
-                'end of first token is invalid',
-                'token1" token2'
-            ),
-        ]
-        for name, source in cases:
-            with self.subTest(name=name):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.new_token_stream(source)
+        # def test_raise_invalid_argument_exception_WHEN_first_token_is_invalid(self):
+        #     cases = [
+        #         (
+        #             'start of first token is invalid',
+        #             '"token1 token2'
+        #         ),
+        #         (
+        #             'end of first token is invalid',
+        #             'token1" token2'
+        #         ),
+        #     ]
+        #     for name, source in cases:
+        #         with self.subTest(name=name):
+        #             with self.assertRaises(SingleInstructionInvalidArgumentException):
+        #                 sut.new_token_stream(source)
 
 
 class TestCases(unittest.TestCase):

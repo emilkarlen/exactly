@@ -17,7 +17,8 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.misc_utils import std_error_message_text_for_token_syntax_error
+from exactly_lib.section_document.parser_implementations.misc_utils import \
+    std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.parser_implementations.token_stream import TokenSyntaxError
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -106,7 +107,8 @@ class _Parser(Parser):
             else:
                 return self._executable_file(source_file_resolver, source)
         except TokenSyntaxError as ex:
-            raise ParseException(svh.new_svh_validation_error(std_error_message_text_for_token_syntax_error(ex)))
+            raise ParseException(
+                svh.new_svh_validation_error(std_error_message_text_for_token_syntax_error_from_exception(ex)))
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))
 
