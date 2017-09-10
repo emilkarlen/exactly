@@ -32,7 +32,7 @@ class ActResultProducerForStdout(ActResultProducerFromHomeAndSds2Str):
 
 class TestConfigurationForStdout(TestConfigurationForStdFile):
     def new_parser(self) -> InstructionParser:
-        return sut.ParserForContentsForStdout()
+        return sut.parser()
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
