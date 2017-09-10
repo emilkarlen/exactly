@@ -87,5 +87,5 @@ class TokenStream:
 
     def _revert_reading_of_newline(self):
         pos = self._source_io.tell()
-        if pos != len(self._source) and self._source[pos - 1] == '\n':
+        if self._source[pos - 1] == '\n':
             self._source_io.seek(pos - 1)
