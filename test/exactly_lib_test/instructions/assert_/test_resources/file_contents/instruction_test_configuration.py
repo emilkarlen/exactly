@@ -10,9 +10,9 @@ from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.assert_.test_resources.instruction_with_negation_argument import \
+from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
