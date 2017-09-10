@@ -308,7 +308,14 @@ class TokenParserPrime:
         """
         command = self.parse_optional_command(command_name_2_parser)
         if command is None:
-            raise SingleInstructionInvalidArgumentException(self.error(error_message_format_string))
+            if self.token_stream.is_null:
+                err_msg = self.error(error_message_format_string)
+            else:
+                err_msg = expected_found.unexpected_lines(
+                    expected=self.error(error_message_format_string),
+                    found=self.token_stream.head.source_string)
+            raise SingleInstructionInvalidArgumentException(err_msg)
+
         return command
 
     def consume_optional_option_with_mandatory_argument(self, option_with_arg: Option) -> Token:
