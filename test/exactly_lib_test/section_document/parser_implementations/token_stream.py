@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.parser_implementations import token_stream as sut
-from exactly_lib.section_document.parser_implementations.token_stream import TokenSyntaxError
+from exactly_lib.section_document.parser_implementations.token_stream import TokenSyntaxError, LookAheadState
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_quoted, assert_plain, assert_token_stream
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -17,6 +17,22 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+def assert_is_null(put: unittest.TestCase, actual: sut.TokenStream):
+    put.assertTrue(actual.is_null,
+                   'is null')
+    put.assertIs(LookAheadState.NULL,
+                 actual.look_ahead_state,
+                 'look ahead state')
+
+
+def assert_is_not_null(put: unittest.TestCase, actual: sut.TokenStream):
+    put.assertFalse(actual.is_null,
+                    'is null')
+    put.assertIsNot(LookAheadState.NULL,
+                    actual.look_ahead_state,
+                    'look ahead state')
+
+
 class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
     def test_no_token_on_remaining_part_of_current_line(self):
         test_cases = [
@@ -26,7 +42,7 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
         for first_line in test_cases:
             with self.subTest(msg=repr(first_line)):
                 ts = sut.TokenStream(first_line)
-                self.assertTrue(ts.is_null)
+                assert_is_null(self, ts)
 
     def test_invalid_token(self):
         test_cases = [
@@ -116,7 +132,7 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
                 self.assertEqual(first_line,
                                  ts.remaining_source,
                                  'remaining source')
-                self.assertFalse(ts.is_null)
+                assert_is_not_null(self, ts)
 
 
 class TestConsume(unittest.TestCase):
@@ -135,7 +151,7 @@ class TestConsume(unittest.TestCase):
                 consumed_token = ts.consume()
                 # ASSERT #
                 expected_token.apply_with_message(self, consumed_token, 'token')
-                self.assertTrue(ts.is_null)
+                assert_is_null(self, ts)
                 self.assertEqual(remaining_source, ts.remaining_source,
                                  'remaining_source')
 
@@ -151,7 +167,7 @@ class TestConsume(unittest.TestCase):
             with self.subTest(msg=repr(source)):
                 ts = sut.TokenStream(source)
                 ts.consume()
-                self.assertFalse(ts.is_null)
+                assert_is_not_null(self, ts)
                 self.assertEqual(second_token, ts.head.string,
                                  'second token')
                 self.assertEqual(remaining_source, ts.remaining_source,
@@ -164,56 +180,67 @@ class TestConsumeRemainingPartOfCurrentLineAsPlainString(unittest.TestCase):
             # Single token
             ('a', 'a',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(1),
                                  remaining_source=asrt.equals(''))),
             ('b ', 'b ',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(2),
                                  remaining_source=asrt.equals(''))),
             ('x \n', 'x ',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(3),
                                  remaining_source=asrt.equals(''))
              ),
             ('x\ny', 'x',
              assert_token_stream(head_token=assert_plain('y'),
+                                 look_ahead_state=asrt.is_not(LookAheadState.NULL),
                                  position=asrt.equals(2),
                                  remaining_source=asrt.equals('y'))
              ),
             ('x\n y', 'x',
              assert_token_stream(head_token=assert_plain('y'),
+                                 look_ahead_state=asrt.is_not(LookAheadState.NULL),
                                  position=asrt.equals(2),
                                  remaining_source=asrt.equals(' y'))
              ),
             # Multiple tokens
             ('a A', 'a A',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(3),
                                  remaining_source=asrt.equals(''))
              ),
             ('a A\nb B', 'a A',
              assert_token_stream(head_token=assert_plain('b'),
+                                 look_ahead_state=asrt.is_not(LookAheadState.NULL),
                                  position=asrt.equals(4),
                                  remaining_source=asrt.equals('b B'))
              ),
             # No tokens
             ('', '',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(0),
                                  remaining_source=asrt.equals(''))
              ),
             (' ', ' ',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(1),
                                  remaining_source=asrt.equals(''))
              ),
             (' \n', ' ',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(2),
                                  remaining_source=asrt.equals(''))
              ),
             (' \n ', ' ',
              assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(2),
                                  remaining_source=asrt.equals(' '))
              ),

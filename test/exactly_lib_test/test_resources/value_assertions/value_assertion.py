@@ -556,6 +556,10 @@ def matches_sequence(element_assertions: list) -> ValueAssertion:
     return _MatchesSequence(element_assertions)
 
 
+def is_not(value) -> ValueAssertion:
+    return not_(is_(value))
+
+
 def and_(assertions: list) -> ValueAssertion:
     if not assertions:
         return Constant(True)

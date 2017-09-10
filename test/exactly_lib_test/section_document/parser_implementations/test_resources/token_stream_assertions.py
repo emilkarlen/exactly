@@ -10,6 +10,7 @@ def assert_token_stream(
         remaining_source_after_head: asrt.ValueAssertion = asrt.anything_goes(),
         is_null: asrt.ValueAssertion = asrt.anything_goes(),
         head_token: asrt.ValueAssertion = asrt.anything_goes(),
+        look_ahead_state: asrt.ValueAssertion = asrt.anything_goes(),
         position: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
     return asrt.is_instance_with(
         TokenStream,
@@ -22,6 +23,7 @@ def assert_token_stream(
                                TokenStream.remaining_part_of_current_line.fget,
                                remaining_part_of_current_line),
             asrt.sub_component('position', TokenStream.position.fget, position),
+            asrt.sub_component('look_ahead_state', TokenStream.look_ahead_state.fget, look_ahead_state),
             asrt.sub_component('is_null', TokenStream.is_null.fget, is_null),
             asrt.or_([
                 asrt.sub_component('is_null', TokenStream.is_null.fget, asrt.is_true),

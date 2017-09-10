@@ -1,11 +1,17 @@
 import io
 import shlex
+from enum import Enum
 
 from exactly_lib.util.parse.token import Token, TokenType
 
 
 class TokenSyntaxError(Exception):
     pass
+
+
+class LookAheadState(Enum):
+    HAS_TOKEN = 0
+    NULL = 1
 
 
 class TokenStream:
@@ -29,6 +35,10 @@ class TokenStream:
     @property
     def is_null(self) -> bool:
         return self._head_token is None
+
+    @property
+    def look_ahead_state(self) -> LookAheadState:
+        return LookAheadState.HAS_TOKEN if self._head_token else LookAheadState.NULL
 
     @property
     def head(self) -> Token:
