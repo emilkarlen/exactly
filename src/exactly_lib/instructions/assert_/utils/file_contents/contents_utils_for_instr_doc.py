@@ -53,11 +53,6 @@ class FileContentsHelpParts:
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(
                                   instruction_options.EQUALS_ARGUMENT))
-        contains_arg = a.Single(a.Multiplicity.MANDATORY,
-                                a.Constant(
-                                    instruction_options.CONTAINS_ARGUMENT))
-        reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
-                              instruction_arguments.REG_EX)
         expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
                                      self.expected_file_arg)
         optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
@@ -81,13 +76,32 @@ class FileContentsHelpParts:
                                          expected_file_arg,
                                          ]),
                               self._paragraphs(_DESCRIPTION_OF_EQUALS_FILE)),
-            InvokationVariant(self._cls([optional_transformation_option,
-                                         optional_not_arg,
-                                         contains_arg,
-                                         reg_ex_arg,
-                                         ]),
-                              self._paragraphs(_DESCRIPTION_OF_CONTAINS)),
+            self._any_line_matches_invokation_variant(optional_transformation_option,
+                                                      optional_not_arg),
         ]
+
+    def _any_line_matches_invokation_variant(self,
+                                             optional_transformation_option: a.ArgumentUsage,
+                                             optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
+        any_arg = a.Single(a.Multiplicity.MANDATORY,
+                           a.Constant(instruction_options.ANY_LINE_ARGUMENT))
+
+        line_arg = a.Single(a.Multiplicity.MANDATORY,
+                            a.Constant(instruction_options.LINE_ARGUMENT))
+
+        matches_arg = a.Single(a.Multiplicity.MANDATORY,
+                               a.Constant(instruction_options.MATCHES_ARGUMENT))
+
+        reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
+                              instruction_arguments.REG_EX)
+        return InvokationVariant(self._cls([optional_transformation_option,
+                                            optional_not_arg,
+                                            any_arg,
+                                            line_arg,
+                                            matches_arg,
+                                            reg_ex_arg,
+                                            ]),
+                                 self._paragraphs(_DESCRIPTION_OF_CONTAINS))
 
     def syntax_element_descriptions_at_top(self) -> list:
         return [negation_of_predicate.syntax_element_description()]
