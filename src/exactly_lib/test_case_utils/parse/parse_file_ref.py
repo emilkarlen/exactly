@@ -28,6 +28,7 @@ from exactly_lib.section_document.parser_implementations.parser_combinations imp
     token_stream_from_remaining_part_of_current_line_of_parse_source
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError, \
     LookAheadState
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
@@ -114,6 +115,15 @@ def parse_file_ref(tokens: TokenStream,
     except TokenSyntaxError as ex:
         raise SingleInstructionInvalidArgumentException(
             std_error_message_text_for_token_syntax_error_from_exception(ex))
+
+
+def parse_file_ref_from_token_parser(conf: RelOptionArgumentConfiguration,
+                                     token_parser: TokenParserPrime
+                                     ) -> FileRefResolver:
+    """
+    :raises SingleInstructionInvalidArgumentException: Invalid arguments
+    """
+    return parse_file_ref(token_parser.token_stream, conf)
 
 
 def _parse_with_non_empty_token_stream(tokens: TokenStream,
