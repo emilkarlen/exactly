@@ -10,6 +10,7 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.util import expectation_type
 from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option
 from exactly_lib.util.cli_syntax.option_parsing import matches
+from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 
 
@@ -169,6 +170,25 @@ class TokenParserPrime:
 
         self.token_stream.consume()
         return head.string
+
+    def consume_mandatory_constant_unquoted_string(self,
+                                                   expected_string: str,
+                                                   must_be_on_current_line: bool,
+                                                   ):
+        """
+        Consumes the first token if it is an unquoted string.
+
+        :type must_be_on_current_line: Tells if the string must be found on the current line.
+        :return: The unquoted string
+
+        :raises :class:`SingleInstructionInvalidArgumentException' The parser is at end of file,
+        or if the must_be_on_current_line is True but the current line is empty.
+        """
+        actual_string = self.consume_mandatory_unquoted_string(expected_string, must_be_on_current_line)
+        if actual_string != expected_string:
+            raise SingleInstructionInvalidArgumentException(expected_found.unexpected_lines(
+                expected_string,
+                actual_string))
 
     def consume_optional_constant_string_that_must_be_unquoted_and_equal(self, expected_constants) -> str:
         """

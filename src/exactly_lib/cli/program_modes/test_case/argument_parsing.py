@@ -16,6 +16,7 @@ from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import short_option_syntax
+from exactly_lib.util.messages import grammar_options_syntax
 
 
 def parse(default: TestCaseHandlingSetup,
@@ -69,7 +70,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          type=str,
                          help="""A test case file, or one of the commands {commands}.
                          {command_descriptions}
-                         """.format(commands='|'.join(commands.keys()),
+                         """.format(commands=grammar_options_syntax.alternatives_list(commands.keys()),
                                     command_descriptions=command_descriptions))
     ret_val.add_argument(short_option_syntax(opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT),
                          long_option_syntax(opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG),

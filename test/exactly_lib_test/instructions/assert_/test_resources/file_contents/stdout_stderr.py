@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, contains
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, any_line_matches
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import parse_invalid_syntax
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
@@ -19,7 +19,7 @@ def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.
         parse_invalid_syntax.suite_for(configuration),
         empty.suite_for(configuration),
         equals.suite_for(configuration),
-        contains.suite_for(configuration),
+        any_line_matches.suite_for(configuration),
 
     ])
 

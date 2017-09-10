@@ -29,7 +29,7 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
 class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {contains} REG.*EX',
+            args('{relativity_option} actual.txt {maybe_not} {any} {line_matches} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
@@ -43,7 +43,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
 class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual-dir {maybe_not} {contains} REG.*EX',
+            args('{relativity_option} actual-dir {maybe_not} {any} {line_matches} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
@@ -59,7 +59,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
 class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {contains} REG.*EX',
+            args('{relativity_option} actual.txt {maybe_not} {any} {line_matches} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
@@ -78,7 +78,7 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
 class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
-            args('{relativity_option} actual.txt {maybe_not} {contains} REG.*EX',
+            args('{relativity_option} actual.txt {maybe_not} {any} {line_matches} REG.*EX',
                  relativity_option=self.rel_opt.option_string,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(

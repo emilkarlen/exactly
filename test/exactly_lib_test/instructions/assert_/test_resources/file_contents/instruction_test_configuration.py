@@ -102,7 +102,9 @@ def args(arg_str: str, **kwargs) -> str:
 
 
 _FORMAT_MAP = {
-    'contains': instruction_options.CONTAINS_ARGUMENT,
+    'any': instruction_options.ANY_LINE_ARGUMENT,
+    'every': instruction_options.EVERY_LINE_ARGUMENT,
+    'line_matches': instruction_options.LINE_ARGUMENT + ' ' + instruction_options.MATCHES_ARGUMENT,
     'empty': instruction_options.EMPTY_ARGUMENT,
     'equals': instruction_options.EQUALS_ARGUMENT,
     'file_option': option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),

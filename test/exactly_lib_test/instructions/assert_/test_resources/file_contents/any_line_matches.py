@@ -44,7 +44,7 @@ class _ParseWithMissingRegExArgument(TestWithConfigurationAndNegationArgumentBas
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().parse(
                 self.configuration.source_for(
-                    args('{maybe_not} {contains}',
+                    args('{maybe_not} {any} {line_matches}',
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)))
 
 
@@ -53,7 +53,7 @@ class _ParseWithSuperfluousArgument(TestWithConfigurationAndNegationArgumentBase
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().parse(
                 self.configuration.source_for(
-                    args('{maybe_not} {contains} abc superfluous',
+                    args('{maybe_not} {any} {line_matches} abc superfluous',
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)))
 
 
@@ -62,7 +62,7 @@ class _ParseWithInvalidRegEx(TestWithConfigurationAndNegationArgumentBase):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.new_parser().parse(
                 self.configuration.source_for(
-                    args('{maybe_not} {contains} **',
+                    args('{maybe_not} {any} {line_matches} **',
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)))
 
 
@@ -74,7 +74,7 @@ class _NoLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
         reg_ex = '123'
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args("{maybe_not} {contains} '{reg_ex}'",
+                args("{maybe_not} {any} {line_matches} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
@@ -92,7 +92,7 @@ class _ALineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
         reg_ex = 'ATC'
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args("{maybe_not} {contains} '{reg_ex}'",
+                args("{maybe_not} {any} {line_matches} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
@@ -110,7 +110,7 @@ class _AWholeLineMatchesRegEx(TestWithConfigurationAndNegationArgumentBase):
         reg_ex = '^MATCH$'
         self._check_single_instruction_line_with_source_variants(
             self.configuration.first_line_argument(
-                args("{maybe_not} {contains} '{reg_ex}'",
+                args("{maybe_not} {any} {line_matches} '{reg_ex}'",
                      reg_ex=reg_ex,
                      maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
             self.configuration.arrangement_for_contents(
@@ -148,7 +148,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         self._check_single_instruction_line_with_source_variants(
             instruction_argument=
             self.configuration.first_line_argument(
-                args("{transform_option} {transformer} {maybe_not} {contains} '{reg_ex}'",
+                args("{transform_option} {transformer} {maybe_not} {any} {line_matches} '{reg_ex}'",
                      transformer=named_transformer.name,
                      maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative,
                      reg_ex=reg_ex_that_matches_uppercase_character,
