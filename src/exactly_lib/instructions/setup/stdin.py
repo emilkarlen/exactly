@@ -10,10 +10,9 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
+    TokenParserPrime
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -81,19 +80,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> SetupPhaseInstruction:
-        first_line_arguments = split_arguments_list_string(source.remaining_part_of_current_line)
-        if not first_line_arguments:
-            raise SingleInstructionInvalidArgumentException('Missing arguments: no arguments')
-        here_doc_or_file_ref = parse_here_doc_or_file_ref.parse_from_parse_source(source,
-                                                                                  RELATIVITY_OPTIONS_CONFIGURATION)
-        if not here_doc_or_file_ref.source_type is SourceType.HERE_DOC:
-            if not source.is_at_eol__except_for_space:
-                raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' +
-                                                                str(source.remaining_part_of_current_line))
-            source.consume_current_line()
-        if not here_doc_or_file_ref.is_file_ref:
-            return _InstructionForStringResolver(here_doc_or_file_ref.string_resolver)
-        return _InstructionForFileRef(here_doc_or_file_ref.file_reference_resolver)
+        with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
+            assert isinstance(token_parser, TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
+            token_parser.require_is_not_at_eol('Missing file comparison argument')
+
+            string_or_file_ref = parse_here_doc_or_file_ref.parse_from_token_parser(token_parser,
+                                                                                    RELATIVITY_OPTIONS_CONFIGURATION)
+            if string_or_file_ref.source_type is not SourceType.HERE_DOC:
+                token_parser.report_superfluous_arguments_if_not_at_eol()
+                token_parser.consume_current_line_as_plain_string()
+            if not string_or_file_ref.is_file_ref:
+                return _InstructionForStringResolver(string_or_file_ref.string_resolver)
+            return _InstructionForFileRef(string_or_file_ref.file_reference_resolver)
 
 
 class _InstructionForStringResolver(SetupPhaseInstruction):
