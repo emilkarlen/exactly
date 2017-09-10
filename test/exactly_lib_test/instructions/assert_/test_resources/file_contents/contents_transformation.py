@@ -9,7 +9,7 @@ class ToUppercaseLinesTransformer(LinesTransformer):
         return map(str.upper, lines)
 
 
-class TransformedContentsSetup:
+class TransformedContentsSetupWithDependenceOnHomeAndSds:
     def __init__(self,
                  original: str,
                  transformed: str):
@@ -21,3 +21,11 @@ class TransformedContentsSetup:
 
     def expected_contents_after_replacement(self, home_and_sds: HomeAndSds) -> str:
         return self.transformed
+
+
+class TransformedContentsSetup:
+    def __init__(self,
+                 original: str,
+                 transformed: str):
+        self.original = original
+        self.transformed = transformed
