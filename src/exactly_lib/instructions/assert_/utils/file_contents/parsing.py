@@ -24,17 +24,29 @@ EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
 
 
-def parse_checker(description_of_actual_file: PropertyDescriptor,
-                  expectation_type: ExpectationType,
-                  _token_parser: TokenParserPrime) -> ActualFileChecker:
-    def parse_emptiness_checker(token_parser: TokenParserPrime) -> ActualFileChecker:
+class CheckerParser:
+    def __init__(self,
+                 description_of_actual_file: PropertyDescriptor,
+                 expectation_type: ExpectationType):
+        self.description_of_actual_file = description_of_actual_file
+        self.expectation_type = expectation_type
+        self.parsers = {
+            EMPTY_ARGUMENT: self._parse_emptiness_checker,
+            EQUALS_ARGUMENT: self._parse_equals_checker,
+            CONTAINS_ARGUMENT: self._parse_contains_checker,
+        }
+
+    def parse(self, _token_parser: TokenParserPrime) -> ActualFileChecker:
+        return _token_parser.parse_mandatory_command(self.parsers, 'Missing contents check argument')
+
+    def _parse_emptiness_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_emptieness
-        return instruction_for_emptieness.EmptinessChecker(expectation_type,
-                                                           description_of_actual_file)
+        return instruction_for_emptieness.EmptinessChecker(self.expectation_type,
+                                                           self.description_of_actual_file)
 
-    def parse_equals_checker(token_parser: TokenParserPrime) -> ActualFileChecker:
+    def _parse_equals_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
         token_parser.require_is_not_at_eol('Missing ' + instruction_arguments.REG_EX.name)
         expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
             token_parser,
@@ -44,11 +56,11 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
             token_parser.consume_current_line_as_plain_string()
 
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_equality
-        return instruction_for_equality.EqualityChecker(expectation_type,
+        return instruction_for_equality.EqualityChecker(self.expectation_type,
                                                         expected_contents,
-                                                        description_of_actual_file)
+                                                        self.description_of_actual_file)
 
-    def parse_contains_checker(token_parser: TokenParserPrime) -> ActualFileChecker:
+    def _parse_contains_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
         token_parser.require_is_not_at_eol('Missing ' + instruction_arguments.REG_EX.name)
         reg_ex_arg = token_parser.consume_mandatory_token('Missing ' + instruction_arguments.REG_EX.name)
         token_parser.report_superfluous_arguments_if_not_at_eol()
@@ -57,30 +69,21 @@ def parse_checker(description_of_actual_file: PropertyDescriptor,
         reg_ex = compile_regex(reg_ex_arg.string)
 
         failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
-            description_of_actual_file,
-            expectation_type,
+            self.description_of_actual_file,
+            self.expectation_type,
             diff_msg_utils.expected_constant('any line matches {} {}'.format(
                 instruction_arguments.REG_EX.name,
                 reg_ex_arg.source_string))
         )
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
-        return instruction_for_contains.checker_for(expectation_type, failure_resolver, reg_ex)
-
-    parsers = {
-        EMPTY_ARGUMENT: parse_emptiness_checker,
-        EQUALS_ARGUMENT: parse_equals_checker,
-        CONTAINS_ARGUMENT: parse_contains_checker,
-    }
-    return _token_parser.parse_mandatory_command(parsers, 'Missing contents check argument')
+        return instruction_for_contains.checker_for(self.expectation_type, failure_resolver, reg_ex)
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
                                token_parser: TokenParserPrime) -> AssertPhaseInstruction:
     actual_file_transformer = parse_file_transformer.parse_optional_from_token_parser(token_parser)
     expectation_type = token_parser.consume_optional_negation_operator()
-    checker = parse_checker(actual_file.property_descriptor(),
-                            expectation_type,
-                            token_parser)
+    checker = CheckerParser(actual_file.property_descriptor(), expectation_type).parse(token_parser)
     return instruction_with_exist_trans_and_checker(actual_file,
                                                     actual_file_transformer,
                                                     checker)
