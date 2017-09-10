@@ -29,13 +29,13 @@ def parse_as_last_argument(here_document_is_mandatory: bool,
     :return: list of lines in the here-document, None if doc is not mandatory and not present
     """
     with from_parse_source(source) as token_parser:
-        ret_val = parse_as_last_argument_from_token_stream(here_document_is_mandatory, token_parser)
+        ret_val = parse_as_last_argument_from_token_parser(here_document_is_mandatory, token_parser)
     if source.is_at_eol:
         source.consume_current_line()
     return ret_val
 
 
-def parse_as_last_argument_from_token_stream(here_document_is_mandatory: bool,
+def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
                                              token_parser: TokenParserPrime) -> StringResolver:
     """
     Expects the here-document marker to be the ane and only token remaining on the current line.
