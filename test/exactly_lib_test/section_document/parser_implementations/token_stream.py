@@ -124,6 +124,7 @@ class TestConsume(unittest.TestCase):
             ('b ', assert_plain('b'), ''),
             ('c  ', assert_plain('c'), ' '),
             ('x \n', assert_plain('x'), '\n'),
+            ('x\n', assert_plain('x'), '\n'),
         ]
         for source, expected_token, remaining_source in test_cases:
             with self.subTest(msg=repr(source)):
