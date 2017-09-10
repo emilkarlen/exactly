@@ -227,14 +227,14 @@ class TokenParserPrime:
         Looks at the current argument and checks if it is the given option,
         and, if it is, returns the value from the given parser.
 
-        A default value is returned if the the current argument is not the given option,
-        or if there are no arguments.
+        A default value is returned if the the current token is not the given option,
+        or if there are no tokens.
 
-        :param key_and_option_name_list: [(key, `OptionName`)]
+        :param option_name: Option to match
         :param return_value_if_no_match: Value to return if next token does not match any of the given
          `OptionName`:s.
-         :param key_handler: Gives the return value from a key corresponding to
-         the `OptionType` that matches the next token.
+         :param argument_parser: Is given this parser object as argument, after the option token has been consumed.
+         The return value from this function is returned if the option matches the head token
         """
         if self.token_stream.is_null:
             return return_value_if_no_match
