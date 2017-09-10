@@ -43,6 +43,10 @@ class TokenStream:
         return self._head_token is None
 
     @property
+    def is_at_end(self) -> bool:
+        return self._start_pos == len(self._source)
+
+    @property
     def look_ahead_state(self) -> LookAheadState:
         if self._head_token:
             return LookAheadState.HAS_TOKEN

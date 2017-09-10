@@ -41,6 +41,10 @@ class TokenParserPrime:
         remaining_part_of_current_line = self.token_stream.remaining_part_of_current_line
         return not remaining_part_of_current_line or remaining_part_of_current_line.isspace()
 
+    @property
+    def has_current_line(self) -> bool:
+        return not self.token_stream.is_at_end
+
     def require_is_at_eol(self, error_message_format_string: str):
         if not self.is_at_eol:
             self.error(error_message_format_string)
@@ -53,6 +57,13 @@ class TokenParserPrime:
         remaining = self.token_stream.remaining_part_of_current_line.strip()
         if len(remaining) != 0:
             self.error('Superfluous arguments: `{}`'.format(remaining))
+
+    @property
+    def remaining_part_of_current_line(self) -> str:
+        return self.token_stream.remaining_part_of_current_line
+
+    def consume_current_line_as_plain_string(self) -> str:
+        return self.token_stream.consume_remaining_part_of_current_line_as_plain_string()
 
     def consume_mandatory_token(self, error_message_format_string: str) -> Token:
         if self._token_stream.is_null:
@@ -325,15 +336,17 @@ def token_parser_with_additional_error_message_format_map(parser: TokenParserPri
 
 
 @contextmanager
-def from_parse_source(parse_source: ParseSource):
+def from_parse_source(source: ParseSource, consume_last_line_if_is_at_eol_after_parse: bool = False):
     """
     Gives a :class:`TokenParserPrime` backed by the given :class:`ParseSource`.
 
     The source of the :class:`TokenParserPrime` is the remaining sources of the :class:`ParseSource`
     """
-    tp = new_token_parser(parse_source.remaining_source)
+    tp = new_token_parser(source.remaining_source)
     yield tp
-    parse_source.consume(tp.token_stream.position)
+    source.consume(tp.token_stream.position)
+    if consume_last_line_if_is_at_eol_after_parse and source.is_at_eol:
+        source.consume_current_line()
 
 
 @contextmanager
