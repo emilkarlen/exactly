@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.section_document.parser_implementations import token_stream as sut
 from exactly_lib.section_document.parser_implementations.token_stream import TokenSyntaxError
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
-    assert_quoted, assert_plain
+    assert_quoted, assert_plain, assert_token_stream
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -11,6 +12,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseTokenOnCurrentLine),
         unittest.makeSuite(TestParseTokenOrNoneOnCurrentLine),
         unittest.makeSuite(TestConsume),
+        unittest.makeSuite(TestConsumeRemainingPartOfCurrentLineAsPlainString),
         unittest.makeSuite(TestMisc),
     ])
 
@@ -154,6 +156,79 @@ class TestConsume(unittest.TestCase):
                                  'second token')
                 self.assertEqual(remaining_source, ts.remaining_source,
                                  'remaining_source')
+
+
+class TestConsumeRemainingPartOfCurrentLineAsPlainString(unittest.TestCase):
+    def test(self):
+        test_cases = [
+            # Single token
+            ('a', 'a',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals(''))),
+            ('b ', 'b ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals(''))),
+            ('x \n', 'x ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(3),
+                                 remaining_source=asrt.equals(''))
+             ),
+            ('x\ny', 'x',
+             assert_token_stream(head_token=assert_plain('y'),
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals('y'))
+             ),
+            ('x\n y', 'x',
+             assert_token_stream(head_token=assert_plain('y'),
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals(' y'))
+             ),
+            # Multiple tokens
+            ('a A', 'a A',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(3),
+                                 remaining_source=asrt.equals(''))
+             ),
+            ('a A\nb B', 'a A',
+             assert_token_stream(head_token=assert_plain('b'),
+                                 position=asrt.equals(4),
+                                 remaining_source=asrt.equals('b B'))
+             ),
+            # No tokens
+            ('', '',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(0),
+                                 remaining_source=asrt.equals(''))
+             ),
+            (' ', ' ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals(''))
+             ),
+            (' \n', ' ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals(''))
+             ),
+            (' \n ', ' ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals(' '))
+             ),
+
+        ]
+        for source, expected_consumed_string, token_stream_assertion in test_cases:
+            with self.subTest(msg=repr(source)):
+                ts = sut.TokenStream(source)
+                # ACT #
+                actual_consumed_string = ts.consume_remaining_part_of_current_line_as_plain_string()
+                # ASSERT #
+                self.assertEqual(expected_consumed_string,
+                                 actual_consumed_string,
+                                 'consumed string')
+                token_stream_assertion.apply_with_message(self, ts, 'token stream after parse')
 
 
 class TestMisc(unittest.TestCase):

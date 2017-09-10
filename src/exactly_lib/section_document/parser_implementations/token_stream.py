@@ -58,6 +58,28 @@ class TokenStream:
             else:
                 return self._source[self._start_pos:new_line_pos]
 
+    def consume_remaining_part_of_current_line_as_plain_string(self) -> str:
+        """
+        Returns the remaining part of the current line, and advances the
+        position to the following line (if there is one).
+
+        :return: The string given by remaining_part_of_current_line
+        """
+        if self._start_pos == len(self._source):
+            return ''
+        else:
+            new_line_pos = self._source.find('\n', self._start_pos)
+            if new_line_pos == -1:
+                ret_val = self._source[self._start_pos:]
+                self._head_token = None
+                self._start_pos = len(self._source)
+                return ret_val
+            else:
+                ret_val = self._source[self._start_pos:new_line_pos]
+                self._source_io.seek(new_line_pos + 1)
+                self.consume()
+                return ret_val
+
     @property
     def remaining_source_after_head(self) -> str:
         """Source, not including for head, that remains."""
