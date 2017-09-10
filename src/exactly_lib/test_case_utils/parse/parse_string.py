@@ -10,6 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.util.parse.token import Token
 
@@ -33,6 +34,14 @@ def parse_string_resolver_from_parse_source(source: ParseSource,
     ret_val = parse_string_resolver(ts, conf)
     source.consume(ts.position)
     return ret_val
+
+
+def parse_string_from_token_parser(token_parser: TokenParserPrime,
+                                   conf: Configuration = DEFAULT_CONFIGURATION) -> StringResolver:
+    """
+    :raises SingleInstructionInvalidArgumentException: Invalid arguments
+    """
+    return parse_string_resolver(token_parser.token_stream, conf)
 
 
 def parse_string_resolver(tokens: TokenStream,
