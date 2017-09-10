@@ -31,7 +31,7 @@ class ActResultProducerForStderr(ActResultProducerFromHomeAndSds2Str):
 
 class TestConfigurationForStderr(TestConfigurationForStdFile):
     def new_parser(self) -> InstructionParser:
-        return sut.ParserForContentsForStderr()
+        return sut.parser()
 
     def arrangement_for_contents_from_fun(self,
                                           home_and_sds_2_str,

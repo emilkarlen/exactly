@@ -5,10 +5,9 @@ from exactly_lib.instructions.assert_.utils.file_contents import stdout_stderr a
 
 def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        ParserForContentsForStdout(),
+        parser(),
         utils.TheInstructionDocumentation(instruction_name, 'stdout'))
 
 
-class ParserForContentsForStdout(utils.ParserForContentsForActualValue):
-    def __init__(self):
-        super().__init__(actual_files.StdoutComparisonActualFile())
+def parser() -> utils.ParserForContentsForActualValue:
+    return utils.ParserForContentsForActualValue(actual_files.StdoutComparisonActualFile())
