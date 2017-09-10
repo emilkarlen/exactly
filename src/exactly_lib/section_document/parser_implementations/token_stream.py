@@ -12,6 +12,7 @@ class TokenSyntaxError(Exception):
 class LookAheadState(Enum):
     HAS_TOKEN = 0
     NULL = 1
+    SYNTAX_ERROR = 2
 
 
 class TokenStream:
@@ -22,11 +23,16 @@ class TokenStream:
     def __init__(self, source: str):
         self._source = source
         self._source_io = io.StringIO(source)
-        self._lexer = shlex.shlex(self._source_io, posix=True)
-        self._lexer.whitespace_split = True
+        self._lexer = self._new_lexer()
         self._start_pos = 0
+        self._head_syntax_error_description = None
         self._head_token = None
         self.consume()
+
+    def _new_lexer(self) -> shlex.shlex:
+        lexer = shlex.shlex(self._source_io, posix=True)
+        lexer.whitespace_split = True
+        return lexer
 
     @property
     def source(self) -> str:
@@ -38,7 +44,19 @@ class TokenStream:
 
     @property
     def look_ahead_state(self) -> LookAheadState:
-        return LookAheadState.HAS_TOKEN if self._head_token else LookAheadState.NULL
+        if self._head_token:
+            return LookAheadState.HAS_TOKEN
+        elif not self._head_syntax_error_description:
+            return LookAheadState.NULL
+        else:
+            return LookAheadState.SYNTAX_ERROR
+
+    @property
+    def head_syntax_error_description(self) -> str:
+        """
+        :return: None if look ahead state is not SYNTAX_ERROR
+        """
+        return self._head_syntax_error_description
 
     @property
     def head(self) -> Token:
@@ -82,11 +100,13 @@ class TokenStream:
             if new_line_pos == -1:
                 ret_val = self._source[self._start_pos:]
                 self._head_token = None
+                self._head_syntax_error_description = None
                 self._start_pos = len(self._source)
                 return ret_val
             else:
                 ret_val = self._source[self._start_pos:new_line_pos]
                 self._source_io.seek(new_line_pos + 1)
+                self._head_syntax_error_description = None
                 self.consume()
                 return ret_val
 
@@ -99,15 +119,22 @@ class TokenStream:
         """
         Precondition: not is_null
 
-        Consumes current token and makes following token the head,
-        or makes `is_null` become True if there is no following token.
+        Consumes current token and makes the state reflect the following token.
+
+        :raises TokenSyntaxError: The head token has invalid syntax
         """
+        if self._head_syntax_error_description:
+            raise TokenSyntaxError(self._head_syntax_error_description)
+
         ret_val = self._head_token
         self._start_pos = self._source_io.tell()
         try:
             s = self._lexer.get_token()
         except ValueError as ex:
-            raise TokenSyntaxError(str(ex))
+            self._head_token = None
+            self._head_syntax_error_description = str(ex)
+            self._lexer = self._new_lexer()
+            return ret_val
         if s is None:
             self._head_token = None
         else:

@@ -215,6 +215,21 @@ class Is(ValueAssertion):
                      message_builder.apply(self.message))
 
 
+class IsNot(ValueAssertion):
+    def __init__(self,
+                 expected,
+                 message: str = None):
+        self.expected = expected
+        self.message = message
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIsNot(self.expected, value,
+                        message_builder.apply(self.message))
+
+
 class ValueIsNone(ValueAssertion):
     def __init__(self,
                  message: str = None):
@@ -557,7 +572,7 @@ def matches_sequence(element_assertions: list) -> ValueAssertion:
 
 
 def is_not(value) -> ValueAssertion:
-    return not_(is_(value))
+    return IsNot(value)
 
 
 def and_(assertions: list) -> ValueAssertion:

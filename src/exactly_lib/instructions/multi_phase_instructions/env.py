@@ -13,7 +13,7 @@ from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream, \
-    std_error_message_text_for_token_syntax_error
+    std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -116,7 +116,8 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
             else:
                 raise SingleInstructionInvalidArgumentException('Invalid syntax')
         except TokenSyntaxError as ex:
-            raise SingleInstructionInvalidArgumentException(std_error_message_text_for_token_syntax_error(ex))
+            raise SingleInstructionInvalidArgumentException(
+                std_error_message_text_for_token_syntax_error_from_exception(ex))
 
     def _parse_unset(self, variable_name: str, remaining_tokens: TokenStream) -> TheInstructionEmbryo:
         if not remaining_tokens.is_null:

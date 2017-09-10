@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseTokenOnCurrentLine),
-        unittest.makeSuite(TestParseTokenOrNoneOnCurrentLine),
+        unittest.makeSuite(TestConstruction),
         unittest.makeSuite(TestConsume),
         unittest.makeSuite(TestConsumeRemainingPartOfCurrentLineAsPlainString),
         unittest.makeSuite(TestMisc),
@@ -33,7 +33,7 @@ def assert_is_not_null(put: unittest.TestCase, actual: sut.TokenStream):
                     'look ahead state')
 
 
-class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
+class TestConstruction(unittest.TestCase):
     def test_no_token_on_remaining_part_of_current_line(self):
         test_cases = [
             '',
@@ -50,8 +50,12 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
         ]
         for first_line in test_cases:
             with self.subTest(msg=repr(first_line)):
-                with self.assertRaises(TokenSyntaxError):
-                    sut.TokenStream(first_line)
+                ts = sut.TokenStream(first_line)
+                self.assertTrue(ts.is_null,
+                                'is_null')
+                self.assertIs(LookAheadState.SYNTAX_ERROR,
+                              ts.look_ahead_state,
+                              'look_ahead_state')
 
     def test_valid_token(self):
         test_cases = [
@@ -66,10 +70,11 @@ class TestParseTokenOrNoneOnCurrentLine(unittest.TestCase):
             with self.subTest(msg=repr(first_line)):
                 ts = sut.TokenStream(first_line)
                 token_assertion.apply_with_message(self, ts.head, 'token')
+                assert_is_not_null(self, ts)
                 actual_remaining_source = first_line[ts.position:]
                 self.assertEqual(first_line,
                                  actual_remaining_source,
-                                 'remaining source')
+                                 'remaining source according to the "position" attribute')
 
 
 class TestParseTokenOnCurrentLine(unittest.TestCase):
@@ -82,8 +87,12 @@ class TestParseTokenOnCurrentLine(unittest.TestCase):
         ]
         for first_line in test_cases:
             with self.subTest(msg=repr(first_line)):
+                token_stream = sut.TokenStream(first_line)
+                self.assertIs(LookAheadState.SYNTAX_ERROR,
+                              token_stream.look_ahead_state,
+                              'look_ahead_state')
                 with self.assertRaises(TokenSyntaxError):
-                    sut.TokenStream(first_line)
+                    token_stream.consume()
 
     def test_valid_token(self):
         test_cases = [
@@ -157,21 +166,53 @@ class TestConsume(unittest.TestCase):
 
     def test_multiple_tokens(self):
         test_cases = [
-            ('a A', 'A', 'A'),
-            ('b  B', 'B', ' B'),
-            ('c  C ', 'C', ' C '),
-            ('d  D  ', 'D', ' D  '),
-            ('a A\n_', 'A', 'A\n_'),
+            ('a A', assert_plain('a'), 'A', 'A'),
+            ('b  B', assert_plain('b'), 'B', ' B'),
+            ('c  C ', assert_plain('c'), 'C', ' C '),
+            ('d  D  ', assert_plain('d'), 'D', ' D  '),
+            ('a A\n_', assert_plain('a'), 'A', 'A\n_'),
         ]
-        for source, second_token, remaining_source in test_cases:
+        for source, expected_token, second_token, remaining_source in test_cases:
             with self.subTest(msg=repr(source)):
+                # ACT #
                 ts = sut.TokenStream(source)
-                ts.consume()
+                consumed_token = ts.consume()
+                # ASSERT #
                 assert_is_not_null(self, ts)
+                expected_token.apply_with_message(self, consumed_token,
+                                                  'consumed token')
                 self.assertEqual(second_token, ts.head.string,
                                  'second token')
                 self.assertEqual(remaining_source, ts.remaining_source,
                                  'remaining_source')
+
+    def test_syntax_error_of_look_ahead_token(self):
+        test_cases = [
+            ('a "A', assert_plain('a'), '"A'),
+        ]
+        for source, expected_token, remaining_source in test_cases:
+            with self.subTest(msg=repr(source)):
+                # ACT #
+                ts = sut.TokenStream(source)
+                consumed_token = ts.consume()
+                # ASSERT #
+                self.assertTrue(ts.is_null,
+                                'is_null')
+                self.assertIs(LookAheadState.SYNTAX_ERROR,
+                              ts.look_ahead_state,
+                              'look_ahead_state')
+                expected_token.apply_with_message(self, consumed_token,
+                                                  'consumed token')
+                self.assertEqual(remaining_source, ts.remaining_source,
+                                 'remaining_source')
+
+    def test_syntax_error_exception_SHOULD_be_raised_WHEN_look_ahead_token_has_invalid_syntax(self):
+        source = '"A'
+
+        # ACT #
+        ts = sut.TokenStream(source)
+        with self.assertRaises(TokenSyntaxError):
+            ts.consume()
 
 
 class TestConsumeRemainingPartOfCurrentLineAsPlainString(unittest.TestCase):
@@ -219,6 +260,12 @@ class TestConsumeRemainingPartOfCurrentLineAsPlainString(unittest.TestCase):
                                  position=asrt.equals(4),
                                  remaining_source=asrt.equals('b B'))
              ),
+            ('a A\ninvalid_token"', 'a A',
+             assert_token_stream(look_ahead_state=asrt.is_(LookAheadState.SYNTAX_ERROR),
+                                 is_null=asrt.is_true,
+                                 position=asrt.equals(4),
+                                 remaining_source=asrt.equals('invalid_token"'))
+             ),
             # No tokens
             ('', '',
              assert_token_stream(is_null=asrt.is_true,
@@ -243,6 +290,11 @@ class TestConsumeRemainingPartOfCurrentLineAsPlainString(unittest.TestCase):
                                  look_ahead_state=asrt.is_(LookAheadState.NULL),
                                  position=asrt.equals(2),
                                  remaining_source=asrt.equals(' '))
+             ),
+            (' \n"invalid quoting', ' ',
+             assert_token_stream(look_ahead_state=asrt.is_(LookAheadState.SYNTAX_ERROR),
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals('"invalid quoting'))
              ),
 
         ]

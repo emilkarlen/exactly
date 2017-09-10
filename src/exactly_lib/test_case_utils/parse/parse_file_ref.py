@@ -23,10 +23,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import ensure_is_not_option_argument, \
-    std_error_message_text_for_token_syntax_error
+    std_error_message_text_for_token_syntax_error_from_exception, std_error_message_text_for_token_syntax_error
 from exactly_lib.section_document.parser_implementations.parser_combinations import \
     token_stream_from_remaining_part_of_current_line_of_parse_source
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
+from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError, \
+    LookAheadState
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
@@ -111,14 +112,15 @@ def parse_file_ref(tokens: TokenStream,
     try:
         return _parse_with_non_empty_token_stream(tokens, conf)
     except TokenSyntaxError as ex:
-        raise SingleInstructionInvalidArgumentException(std_error_message_text_for_token_syntax_error(ex))
+        raise SingleInstructionInvalidArgumentException(
+            std_error_message_text_for_token_syntax_error_from_exception(ex))
 
 
 def _parse_with_non_empty_token_stream(tokens: TokenStream,
                                        conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     initial_argument_string = tokens.remaining_part_of_current_line
     relativity_info = parse_explicit_relativity_info(conf.options, tokens)
-    if tokens.is_null:
+    if tokens.look_ahead_state is LookAheadState.NULL:
         if conf.path_suffix_is_required:
             raise SingleInstructionInvalidArgumentException(
                 'Missing {} argument: {}'.format(conf.argument_syntax_name,
@@ -129,6 +131,9 @@ def _parse_with_non_empty_token_stream(tokens: TokenStream,
             else:
                 path_part_resolver2_file_ref_resolver = _file_ref_constructor(relativity_info)
                 return path_part_resolver2_file_ref_resolver(PathPartResolverAsNothing())
+    elif tokens.look_ahead_state is LookAheadState.SYNTAX_ERROR:
+        SingleInstructionInvalidArgumentException(
+            std_error_message_text_for_token_syntax_error(tokens.head_syntax_error_description))
 
     token = tokens.consume()
     if token.type is TokenType.PLAIN:
