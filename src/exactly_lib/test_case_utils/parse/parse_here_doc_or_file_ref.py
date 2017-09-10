@@ -1,4 +1,5 @@
 import enum
+import functools
 import pathlib
 import shlex
 
@@ -7,16 +8,16 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
+    from_parse_source
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
 CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
@@ -74,27 +75,35 @@ class StringResolverOrFileRef(tuple):
 
 def parse_from_parse_source(source: ParseSource,
                             conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringResolverOrFileRef:
-    source.consume_initial_space_on_current_line()
-    if source.is_at_eol:
-        return _raise_ex(source)
-    remaining_part_of_current_line = source.remaining_part_of_current_line
-    first_argument = remaining_part_of_current_line.split(maxsplit=1)[0]
-    if option_parsing.matches(FILE_ARGUMENT_OPTION, first_argument):
-        source.consume(len(first_argument))
-        source.consume_initial_space_on_current_line()
-        file_reference = parse_file_ref.parse_file_ref_from_parse_source(source, conf)
-        return StringResolverOrFileRef(SourceType.PATH, None, file_reference)
-    elif first_argument.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
-        here_doc = parse_here_document.parse_as_last_argument(False, source)
+    with from_parse_source(source,
+                           consume_last_line_if_is_at_eol_after_parse=False) as token_parser:
+        ret_val = parse_from_token_parser(token_parser, conf)
+    if ret_val.source_type is SourceType.HERE_DOC:
+        if source.is_at_eol:
+            source.consume_current_line()
+    return ret_val
+
+
+def parse_from_token_parser(token_parser: TokenParserPrime,
+                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringResolverOrFileRef:
+    token_parser.require_is_not_at_eol('Missing argument ({string}, {file_ref} or {here_doc})'.format(
+        string=instruction_arguments.STRING.name,
+        file_ref=option_syntax(FILE_ARGUMENT_OPTION),
+        here_doc=instruction_arguments.HERE_DOCUMENT.name,
+    ))
+    token_parser.require_head_token_has_valid_syntax()
+    file_ref = token_parser.consume_and_handle_optional_option(
+        None,
+        functools.partial(parse_file_ref.parse_file_ref_from_token_parser, conf),
+        FILE_ARGUMENT_OPTION)
+    if file_ref:
+        return StringResolverOrFileRef(SourceType.PATH, None, file_ref)
+    elif token_parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+        here_doc = parse_here_document.parse_as_last_argument_from_token_parser(False, token_parser)
         return StringResolverOrFileRef(SourceType.HERE_DOC, here_doc, None)
     else:
-        string_resolver = parse_string.parse_string_resolver_from_parse_source(source)
+        string_resolver = parse_string.parse_string_from_token_parser(token_parser)
         return StringResolverOrFileRef(SourceType.STRING, string_resolver, None)
-
-
-def _raise_ex(source: ParseSource) -> StringResolverOrFileRef:
-    msg = 'Neither a "here document" nor a file reference: {}'.format(source.remaining_part_of_current_line)
-    raise SingleInstructionInvalidArgumentException(msg)
 
 
 class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
