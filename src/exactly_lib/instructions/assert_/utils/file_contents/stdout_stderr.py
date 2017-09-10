@@ -4,9 +4,9 @@ from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parsing
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
+    TokenParserPrime
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -52,10 +52,8 @@ class ParserForContentsForActualValue(InstructionParser):
         self.comparison_actual_value = comparison_actual_value
 
     def parse(self, source: ParseSource) -> AssertPhaseInstruction:
-        source.consume_initial_space_on_current_line()
-        first_line = source.remaining_part_of_current_line
-        content_instruction = parsing.parse_comparison_operation(self.comparison_actual_value,
-                                                                 source)
-        if content_instruction is None:
-            raise SingleInstructionInvalidArgumentException(first_line)
-        return content_instruction
+        with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
+            assert isinstance(token_parser, TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
+            token_parser.require_is_not_at_eol('Missing file comparison argument')
+            return parsing.parse_comparison_operation_from_token_parser(self.comparison_actual_value,
+                                                                        token_parser)
