@@ -43,9 +43,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._help_parts.see_also_items()
 
 
-_WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
-
-
 class ParserForContentsForActualValue(InstructionParser):
     def __init__(self,
                  comparison_actual_value: actual_files.ComparisonActualFile):
