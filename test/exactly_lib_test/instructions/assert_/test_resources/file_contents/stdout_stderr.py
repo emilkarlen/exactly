@@ -2,9 +2,7 @@ import unittest
 
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import line_matches
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import parse_invalid_syntax
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import common_tests
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
 from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult, ActResultProducer
@@ -16,13 +14,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 
 
 def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
-    return unittest.TestSuite([
-        parse_invalid_syntax.suite_for(configuration),
-        empty.suite_for(configuration),
-        equals.suite_for(configuration),
-        line_matches.suite_for(configuration),
-
-    ])
+    return common_tests.suite_for(configuration)
 
 
 class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
