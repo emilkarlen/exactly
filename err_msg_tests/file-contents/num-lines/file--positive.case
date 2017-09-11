@@ -1,0 +1,15 @@
+[setup]
+
+
+file a-file.txt <<EOF
+first
+second
+third
+EOF
+
+
+[assert]
+
+
+contents a-file.txt num-lines = 2
+

@@ -1,0 +1,14 @@
+[setup]
+
+
+file a-file.txt <<EOF
+first
+second
+third
+EOF
+
+
+[assert]
+
+
+contents a-file.txt --transformation select regex 'second' num-lines = 3

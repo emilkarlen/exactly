@@ -11,16 +11,16 @@ from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 
-_PROPERTY_NAME_PREFIX = 'contents of '
+_CONTENTS_PROPERTY = 'contents'
 
 
 class ComparisonActualFile:
-    def property_descriptor(self) -> PropertyDescriptor:
-        return path_value_description(self.property_name(),
+    def property_descriptor(self, file_property: str = _CONTENTS_PROPERTY) -> PropertyDescriptor:
+        return path_value_description(self.property_name(file_property),
                                       self.file_ref_resolver())
 
-    def property_name(self) -> str:
-        return _PROPERTY_NAME_PREFIX + self.object_name()
+    def property_name(self, file_property: str = _CONTENTS_PROPERTY) -> str:
+        return file_property + ' of ' + self.object_name()
 
     def object_name(self) -> str:
         raise NotImplementedError('abstract method')
