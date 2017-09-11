@@ -22,7 +22,8 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     ])
 
 
-ANY_OR_EVERY_KEYWORDS = (instruction_options.ANY_LINE_ARGUMENT,)
+ANY_OR_EVERY_KEYWORDS = (instruction_options.ANY_LINE_ARGUMENT,
+                         instruction_options.EVERY_LINE_ARGUMENT)
 
 
 class _TestCaseBase(unittest.TestCase):

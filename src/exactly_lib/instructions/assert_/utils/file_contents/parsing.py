@@ -38,6 +38,7 @@ class CheckerParser:
             instruction_options.EMPTY_ARGUMENT: self._parse_emptiness_checker,
             instruction_options.EQUALS_ARGUMENT: self._parse_equals_checker,
             instruction_options.ANY_LINE_ARGUMENT: self._parse_any_line_matches_checker,
+            instruction_options.EVERY_LINE_ARGUMENT: self._parse_every_line_matches_checker,
         }
 
     def parse(self, token_parser: TokenParserPrime) -> ActualFileChecker:
@@ -68,15 +69,18 @@ class CheckerParser:
     def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
 
-        failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
-            self.description_of_actual_file,
-            self.expectation_type,
-            diff_msg_utils.expected_constant('any line matches {} {}'.format(
-                instruction_arguments.REG_EX.name,
-                reg_ex_arg.source_string))
-        )
+        failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.ANY_LINE_ARGUMENT,
+                                                                             reg_ex_arg.source_string)
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
-        return instruction_for_contains.checker_for(self.expectation_type, failure_resolver, reg_ex)
+        return instruction_for_contains.checker_for_any_line_matches(self.expectation_type, failure_resolver, reg_ex)
+
+    def _parse_every_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
+        reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
+
+        failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.EVERY_LINE_ARGUMENT,
+                                                                             reg_ex_arg.source_string)
+        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
+        return instruction_for_contains.checker_for_every_line_matches(self.expectation_type, failure_resolver, reg_ex)
 
     @staticmethod
     def _parse_line_matches_tokens_and_regex(token_parser: TokenParserPrime):
@@ -90,6 +94,20 @@ class CheckerParser:
         token_parser.consume_current_line_as_plain_string()
 
         return reg_ex_arg, compile_regex(reg_ex_arg.string)
+
+    def _diff_failure_info_resolver_for_line_matches(self,
+                                                     any_or_every_keyword: str,
+                                                     reg_ex_arg: str) -> diff_msg_utils.DiffFailureInfoResolver:
+        return diff_msg_utils.DiffFailureInfoResolver(
+            self.description_of_actual_file,
+            self.expectation_type,
+            diff_msg_utils.expected_constant('{any_or_every} {line} {matches} {REG_EX} {regex}'.format(
+                any_or_every=any_or_every_keyword,
+                line=instruction_options.LINE_ARGUMENT,
+                matches=instruction_options.MATCHES_ARGUMENT,
+                REG_EX=instruction_arguments.REG_EX.name,
+                regex=reg_ex_arg))
+        )
 
 
 def parse_comparison_operation(actual_file: ComparisonActualFile,
