@@ -8,8 +8,6 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
     token_parser_with_additional_error_message_format_map
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_transformer import parse_file_transformer
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
@@ -24,7 +22,7 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                                token_parser: TokenParserPrime) -> AssertPhaseInstruction:
     actual_file_transformer = parse_file_transformer.parse_optional_from_token_parser(token_parser)
     expectation_type = token_parser.consume_optional_negation_operator()
-    checker = CheckerParser(actual_file.property_descriptor(), expectation_type, actual_file_transformer).parse(
+    checker = CheckerParser(actual_file, expectation_type, actual_file_transformer).parse(
         token_parser)
     return instruction_with_exist_trans_and_checker(actual_file,
                                                     actual_file_transformer,
@@ -48,11 +46,11 @@ _FORMAT_MAP = {
 
 class CheckerParser:
     def __init__(self,
-                 description_of_actual_file: PropertyDescriptor,
+                 actual_file: ComparisonActualFile,
                  expectation_type: ExpectationType,
                  actual_file_transformer_resolver: FileTransformerResolver):
         self.expectation_type = expectation_type
-        self.description_of_actual_file = description_of_actual_file
+        self.actual_file = actual_file
         self.file_transformer_resolver = actual_file_transformer_resolver
         self.parsers = {
             instruction_options.EMPTY_ARGUMENT: self._parse_emptiness_checker,
@@ -71,7 +69,7 @@ class CheckerParser:
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_emptieness
         return instruction_for_emptieness.EmptinessChecker(self.expectation_type,
-                                                           self.description_of_actual_file)
+                                                           self.actual_file.property_descriptor())
 
     def _parse_equals_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
         token_parser.require_is_not_at_eol(parse_here_doc_or_file_ref.MISSING_SOURCE)
@@ -85,7 +83,7 @@ class CheckerParser:
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_equality
         return instruction_for_equality.EqualityChecker(self.expectation_type,
                                                         expected_contents,
-                                                        self.description_of_actual_file)
+                                                        self.actual_file.property_descriptor())
 
     def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
@@ -111,8 +109,7 @@ class CheckerParser:
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_num_lines import checker_for_num_lines
         return checker_for_num_lines(self.expectation_type,
                                      cmp_op_and_rhs,
-                                     self.description_of_actual_file,
-                                     # self._actual_file_property_descriptor(instruction_options.NUM_LINES_DESCRIPTION),
+                                     self.actual_file.property_descriptor(instruction_options.NUM_LINES_DESCRIPTION),
                                      )
 
     @staticmethod
@@ -132,7 +129,7 @@ class CheckerParser:
                                                      any_or_every_keyword: str,
                                                      reg_ex_arg: str) -> diff_msg_utils.DiffFailureInfoResolver:
         return diff_msg_utils.DiffFailureInfoResolver(
-            self.description_of_actual_file,
+            self.actual_file.property_descriptor(),
             self.expectation_type,
             diff_msg_utils.expected_constant(' '.join([
                 any_or_every_keyword,
@@ -141,15 +138,6 @@ class CheckerParser:
                 instruction_arguments.REG_EX.name,
                 reg_ex_arg])
             ))
-
-    def _actual_file_property_descriptor(self, property_name: str) -> property_description.PropertyDescriptor:
-        return property_description.PropertyDescriptorWithConstantPropertyName(
-            property_name,
-            property_description.multiple_object_descriptors([
-                self.description_of_actual_file,
-                parse_file_transformer.FileTransformerDescriptor(self.file_transformer_resolver),
-            ])
-        )
 
 
 def _must_be_non_negative_integer(actual: int) -> str:
