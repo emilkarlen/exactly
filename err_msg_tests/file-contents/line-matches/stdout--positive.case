@@ -7,4 +7,4 @@ $ echo 'actual line'
 [assert]
 
 
-stdout contains 'expected line'
+stdout any line matches 'expected line'
