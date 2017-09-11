@@ -2,7 +2,6 @@ import itertools
 import unittest
 
 from exactly_lib.instructions.assert_.utils.expression import comparators
-from exactly_lib.named_element.symbol.string_resolver import string_constant
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
@@ -16,7 +15,6 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     PassOrFail
 from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.named_element.test_resources.string import is_string_made_up_of_just_strings_reference_to
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -28,9 +26,6 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
         _NumberOfLinesShouldBe0WhenFileIsEmpty,
 
         _NumLinesDoesNotMatch,
-
-        _NumLinesMatchesWithOperandAsSymbolReference,
-        _NumLinesMatchesWithOperandAsPythonExpression,
 
         _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents,
     ]
@@ -110,50 +105,6 @@ class _NumLinesDoesNotMatch(TestCaseBase):
                     expected_result_of_positive_test=PassOrFail.FAIL,
                     actual_file_contents=actual_contents,
                 )
-
-
-class _NumLinesMatchesWithOperandAsSymbolReference(TestCaseBase):
-    def runTest(self):
-        actual_contents = line_separated(['1',
-                                          '2',
-                                          '3',
-                                          '4'])
-        actual_number_of_lines = '4'
-        operand_symbol = NameAndValue('operand_symbol',
-                                      string_constant(actual_number_of_lines))
-
-        symbol_table_with_operand_symbol = SymbolTable({
-            operand_symbol.name: container(operand_symbol.value)
-        })
-
-        expected_symbol_usages = asrt.matches_sequence([
-            is_string_made_up_of_just_strings_reference_to(operand_symbol.name)
-        ])
-
-        self._check_variants_with_expectation_type(
-            InstructionArgumentsVariantConstructor(operator=comparators.GTE.name,
-                                                   operand=actual_number_of_lines),
-            expected_result_of_positive_test=PassOrFail.PASS,
-            actual_file_contents=actual_contents,
-            symbols=symbol_table_with_operand_symbol,
-            expected_symbol_usages=expected_symbol_usages,
-        )
-
-
-class _NumLinesMatchesWithOperandAsPythonExpression(TestCaseBase):
-    def runTest(self):
-        actual_contents = line_separated(['1',
-                                          '2',
-                                          '3',
-                                          '4'])
-        actual_number_of_lines_expression = '2*2'
-
-        self._check_variants_with_expectation_type(
-            InstructionArgumentsVariantConstructor(operator=comparators.EQ.name,
-                                                   operand=actual_number_of_lines_expression),
-            expected_result_of_positive_test=PassOrFail.PASS,
-            actual_file_contents=actual_contents,
-        )
 
 
 class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(TestCaseBase):

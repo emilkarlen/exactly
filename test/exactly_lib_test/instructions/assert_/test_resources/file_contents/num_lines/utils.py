@@ -58,6 +58,25 @@ class TestCaseBase(unittest.TestCase):
     def shortDescription(self):
         return str(type(self.configuration))
 
+    def _check_single_expression_type(
+            self,
+            args_variant_constructor: InstructionArgumentsVariantConstructor,
+            expectation_type: ExpectationType,
+            arrangement: instruction_check.ArrangementPostAct,
+            expectation: Expectation):
+
+        args_variant = args_variant_constructor.construct(expectation_type)
+        complete_instruction_arguments = self.configuration.first_line_argument(args_variant)
+
+        for source in equivalent_source_variants__with_source_check(self, complete_instruction_arguments):
+            instruction_check.check(
+                self,
+                self.configuration.new_parser(),
+                source,
+                arrangement=arrangement,
+                expectation=expectation,
+            )
+
     def _check_variants_with_expectation_type(
             self,
             args_variant_constructor: InstructionArgumentsVariantConstructor,
