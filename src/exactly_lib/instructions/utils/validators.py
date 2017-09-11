@@ -15,7 +15,24 @@ class SvhValidatorViaReturnValues:
         return svh.new_svh_success()
 
 
-class SvhValidatorViaExceptions:
+class SvhPreSdsValidatorViaExceptions:
+    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
+        """
+        :raises SvhException: Validation fails
+        """
+        pass
+
+
+class SvhPostSetupValidatorViaExceptions:
+    def validate_post_setup(self, environment: PathResolvingEnvironmentPostSds):
+        """
+        :raises SvhException: Validation fails
+        """
+        pass
+
+
+class SvhValidatorViaExceptions(SvhPreSdsValidatorViaExceptions,
+                                SvhPostSetupValidatorViaExceptions):
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         """
         :raises SvhException: Validation fails
