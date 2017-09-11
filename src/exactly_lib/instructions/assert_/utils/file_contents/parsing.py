@@ -3,9 +3,6 @@ from exactly_lib.instructions.assert_.utils.file_contents import instruction_opt
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
     instruction_with_exist_trans_and_checker, ActualFileChecker
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -103,17 +100,3 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
     return instruction_with_exist_trans_and_checker(actual_file,
                                                     actual_file_transformer,
                                                     checker)
-
-
-def _missing_operator(operators: list):
-    msg = 'Missing {}: {}'.format(_OPERATION, '|'.join(operators))
-    raise SingleInstructionInvalidArgumentException(msg)
-
-
-def _ensure_no_more_arguments(source: ParseSource):
-    if not source.is_at_eol__except_for_space:
-        raise _parse_exception('Superfluous arguments: {}'.format(source.remaining_part_of_current_line))
-
-
-def _parse_exception(single_line_msg: str) -> SingleInstructionInvalidArgumentException:
-    return SingleInstructionInvalidArgumentException(single_line_msg)
