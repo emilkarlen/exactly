@@ -150,8 +150,7 @@ class FileContentsHelpParts:
         reg_ex_url = see_also_url('Python regular expressions',
                                   'https://docs.python.org/3/library/re.html#regular-expression-syntax')
         from exactly_lib.help_texts.entity import types
-        types = [CrossReferenceIdSeeAlsoItem(types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target),
-                 CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target)]
+        types = [CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target)]
         return cross_refs + types + [reg_ex_url]
 
     @staticmethod
