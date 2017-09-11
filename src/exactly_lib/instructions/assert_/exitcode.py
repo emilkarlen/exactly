@@ -15,6 +15,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
+from exactly_lib.util.messages import expected_found
+
+_OPERAND_DESCRIPTION = 'An integer in the interval [0, 255]'
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -54,8 +57,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return parse.syntax_element_descriptions_with_negation_operator(
-            'An integer in the interval [0, 255].')
+        return parse.syntax_element_descriptions_with_negation_operator(_OPERAND_DESCRIPTION + '.')
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
@@ -90,23 +92,26 @@ class ExitCodeResolver(comparison_structures.OperandResolver):
                     file=str(rel_path)))
         try:
             contents = f.read()
-            return int(contents)
         except IOError:
             raise return_pfh_via_exceptions.PfhHardErrorException(
-                'Failed to read contents from %s' % str(sds.result.exitcode_file))
+                'Failed to read contents from ' + str(sds.result.exitcode_file))
+        finally:
+            f.close()
+
+        try:
+            return int(contents)
         except ValueError:
             msg = 'The contents of the file for {exit_code} ("{file}") is not an integer: "{contents}"'.format(
                 exit_code=_PROPERTY_NAME,
                 file=str(sds.result.exitcode_file),
                 contents=contents)
             raise return_pfh_via_exceptions.PfhHardErrorException(msg)
-        finally:
-            f.close()
 
 
 def must_be_within_byte_range(actual: int) -> str:
     if actual < 0 or actual > 255:
-        return 'Argument must be an integer in the interval [0, 255]\n\nFound : ' + str(actual)
+        return expected_found.unexpected_lines(_OPERAND_DESCRIPTION,
+                                               str(actual))
     return None
 
 
