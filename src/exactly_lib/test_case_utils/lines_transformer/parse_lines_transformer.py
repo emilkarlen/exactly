@@ -8,6 +8,8 @@ from exactly_lib.named_element.resolver_structure import LinesTransformerResolve
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression, syntax_documentation
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers
@@ -49,6 +51,16 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
 
 def transformer_syntax_element_description() -> SyntaxElementDescription:
     return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
+
+
+class LinesTransformerDescriptor(property_description.ErrorMessagePartConstructor):
+    def __init__(self, resolver: LinesTransformerResolver):
+        self.resolver = resolver
+
+    def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
+        transformer = self.resolver.resolve(environment.symbols)
+        line = instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name.capitalize() + ' : (TODO) ' + str(transformer)
+        return [line]
 
 
 _TRANSFORMATION_DESCRIPTION = """\

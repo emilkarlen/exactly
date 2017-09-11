@@ -11,7 +11,7 @@ from exactly_lib.type_system.data.file_ref import FileRef
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
 
 
-class PathValueDescriptor(property_description.ErrorMessagePartConstructor):
+class PathValuePartConstructor(property_description.ErrorMessagePartConstructor):
     def __init__(self, path_resolver: FileRefResolver):
         self.path_resolver = path_resolver
 
@@ -116,5 +116,5 @@ def path_value_description(property_name: str,
                            path_resolver: FileRefResolver) -> property_description.PropertyDescriptor:
     return property_description.PropertyDescriptorWithConstantPropertyName(
         property_name,
-        PathValueDescriptor(path_resolver),
+        PathValuePartConstructor(path_resolver),
     )
