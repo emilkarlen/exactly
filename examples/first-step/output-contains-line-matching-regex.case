@@ -1,3 +1,11 @@
+[setup]
+
+file output.txt <<EOF
+kiwi
+orange
+apple
+EOF
+
 [act]
 
 hello-world
@@ -5,3 +13,5 @@ hello-world
 [assert]
 
 stdout any line matches H.*W
+
+contents output.txt ! every line matches 'kiwi'

@@ -38,6 +38,8 @@ class FileContentsHelpParts:
             'home_act_env_var': environment_variables.ENV_VAR_HOME_ACT,
             'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,
             'transformation': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
+            'any': instruction_options.ANY_LINE_ARGUMENT,
+            'every': instruction_options.EVERY_LINE_ARGUMENT,
         }
         self._parser = TextParser(format_map)
 
@@ -83,8 +85,11 @@ class FileContentsHelpParts:
     def _any_line_matches_invokation_variant(self,
                                              optional_transformation_option: a.ArgumentUsage,
                                              optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
-        any_arg = a.Single(a.Multiplicity.MANDATORY,
-                           a.Constant(instruction_options.ANY_LINE_ARGUMENT))
+        any_or_every_arg = a.Choice(a.Multiplicity.MANDATORY,
+                                    [
+                                        a.Constant(instruction_options.ANY_LINE_ARGUMENT),
+                                        a.Constant(instruction_options.EVERY_LINE_ARGUMENT),
+                                    ])
 
         line_arg = a.Single(a.Multiplicity.MANDATORY,
                             a.Constant(instruction_options.LINE_ARGUMENT))
@@ -96,12 +101,12 @@ class FileContentsHelpParts:
                               instruction_arguments.REG_EX)
         return InvokationVariant(self._cls([optional_transformation_option,
                                             optional_not_arg,
-                                            any_arg,
+                                            any_or_every_arg,
                                             line_arg,
                                             matches_arg,
                                             reg_ex_arg,
                                             ]),
-                                 self._paragraphs(_DESCRIPTION_OF_CONTAINS))
+                                 self._paragraphs(_DESCRIPTION_OF_LINE_MATCHES))
 
     def syntax_element_descriptions_at_top(self) -> list:
         return [negation_of_predicate.syntax_element_description()]
@@ -177,6 +182,6 @@ _DESCRIPTION_OF_EQUALS_FILE = """\
 Asserts that the contents of {checked_file} is equal to the contents of file {expected_file_arg}.
 """
 
-_DESCRIPTION_OF_CONTAINS = """\
-Asserts that the contents of {checked_file} contains a line matching a regular expression.
+_DESCRIPTION_OF_LINE_MATCHES = """\
+Asserts that {any}/{every} line of {checked_file} matches a regular expression.
 """
