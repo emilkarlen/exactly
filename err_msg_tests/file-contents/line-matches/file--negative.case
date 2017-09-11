@@ -9,7 +9,7 @@ EOF
 [assert]
 
 
-contents checked-file ! contains 'expected line'
+contents checked-file ! any line matches 'expected line'
 
 
 [act]
