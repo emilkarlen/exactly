@@ -109,7 +109,9 @@ class CheckerParser:
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_num_lines import checker_for_num_lines
         return checker_for_num_lines(self.expectation_type,
                                      cmp_op_and_rhs,
-                                     self._actual_file_property_descriptor(instruction_options.NUM_LINES_DESCRIPTION))
+                                     self.description_of_actual_file,
+                                     # self._actual_file_property_descriptor(instruction_options.NUM_LINES_DESCRIPTION),
+                                     )
 
     @staticmethod
     def _parse_line_matches_tokens_and_regex(token_parser: TokenParserPrime):

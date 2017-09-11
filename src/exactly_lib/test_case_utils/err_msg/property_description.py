@@ -22,6 +22,8 @@ class MultipleErrorMessagePartConstructor(ErrorMessagePartConstructor):
     def __init__(self,
                  separator_lines: list,
                  constructors: list):
+        for c in constructors:
+            pass
         self.separator_lines = tuple(separator_lines)
         self.constructors = tuple(constructors)
 

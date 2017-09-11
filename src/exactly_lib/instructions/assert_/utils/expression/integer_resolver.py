@@ -78,6 +78,10 @@ class IntegerResolver(OperandResolver):
     def references(self) -> list:
         return self.value_resolver.references
 
+    @property
+    def validator(self) -> SvhPreSdsValidatorViaExceptions:
+        return self._validator
+
     def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
         self._validator.validate_pre_sds(environment.path_resolving_environment)
 

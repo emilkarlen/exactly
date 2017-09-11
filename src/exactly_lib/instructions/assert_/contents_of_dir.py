@@ -34,7 +34,7 @@ from exactly_lib.test_case_utils import file_properties, negation_of_predicate
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.err_msg.path_description import PathValueDescriptor
+from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
@@ -226,7 +226,7 @@ class _InstructionBase(AssertPhaseInstruction):
         return property_description.PropertyDescriptorWithConstantPropertyName(
             property_name,
             property_description.multiple_object_descriptors([
-                PathValueDescriptor(self.settings.path_to_check),
+                PathValuePartConstructor(self.settings.path_to_check),
                 parse_file_matcher.SelectorsDescriptor(self.settings.file_matcher),
             ])
         )
