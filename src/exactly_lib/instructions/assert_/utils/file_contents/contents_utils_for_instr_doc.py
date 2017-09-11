@@ -108,13 +108,12 @@ class FileContentsHelpParts:
                                             ]),
                                  self._paragraphs(_DESCRIPTION_OF_LINE_MATCHES))
 
-    def syntax_element_descriptions_at_top(self) -> list:
+    @staticmethod
+    def syntax_element_descriptions_at_top() -> list:
         return [negation_of_predicate.syntax_element_description()]
 
     def syntax_element_descriptions_at_bottom(self) -> list:
         transformation = parse_lines_transformer.selection_syntax_element_description()
-
-        transformer = parse_lines_transformer.transformer_syntax_element_description()
 
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                               instruction_arguments.PATH_ARGUMENT)
@@ -124,7 +123,6 @@ class FileContentsHelpParts:
                                                    relativity_of_expected_arg)
         return [
                    transformation,
-                   transformer,
                    SyntaxElementDescription(self.expected_file_arg.name,
                                             self._paragraphs("The file that contains the expected contents."),
                                             [InvokationVariant(cl_syntax.cl_syntax_for_args(
