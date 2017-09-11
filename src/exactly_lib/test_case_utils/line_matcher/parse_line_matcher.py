@@ -1,21 +1,18 @@
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import expression
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
-from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity.types import LINE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.named_element.resolver_structure import LineMatcherResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression, syntax_documentation
+from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure import structures as docs
 
 CONSTANT_TRUE_MATCHER_RESOLVER = resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherConstant(True))
 
@@ -30,25 +27,6 @@ _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
 LINE_MATCHER_ARGUMENT = a.Named(type_system.LINE_MATCHER_VALUE)
-
-
-def selection_syntax_element_description() -> SyntaxElementDescription:
-    return cl_syntax.cli_argument_syntax_element_description(
-        instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
-        docs.paras(_TRANSFORMATION_DESCRIPTION),
-        [
-            InvokationVariant(cl_syntax.arg_syntax(instruction_arguments.TRANSFORMATION_OPTION)),
-        ]
-    )
-
-
-def transformer_syntax_element_description() -> SyntaxElementDescription:
-    return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
-
-
-_TRANSFORMATION_DESCRIPTION = """\
-Transforms the contents of the tested file before it is tested.
-"""
 
 
 def parse_line_matcher(source: ParseSource) -> LineMatcherResolver:
