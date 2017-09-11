@@ -8,9 +8,11 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names.formatting import InstructionName
+from exactly_lib.instructions.assert_.utils.expression import parse
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG, \
+    INTEGER_ARGUMENT_DESCRIPTION
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_file_structure import environment_variables
@@ -78,13 +80,15 @@ class FileContentsHelpParts:
                                          expected_file_arg,
                                          ]),
                               self._paragraphs(_DESCRIPTION_OF_EQUALS_FILE)),
-            self._any_line_matches_invokation_variant(optional_transformation_option,
-                                                      optional_not_arg),
+            self._line_matches_invokation_variant(optional_transformation_option,
+                                                  optional_not_arg),
+            self._num_lines_invokation_variant(optional_transformation_option,
+                                               optional_not_arg),
         ]
 
-    def _any_line_matches_invokation_variant(self,
-                                             optional_transformation_option: a.ArgumentUsage,
-                                             optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
+    def _line_matches_invokation_variant(self,
+                                         optional_transformation_option: a.ArgumentUsage,
+                                         optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
         any_or_every_arg = a.Choice(a.Multiplicity.MANDATORY,
                                     [
                                         a.Constant(instruction_options.ANY_LINE_ARGUMENT),
@@ -108,6 +112,19 @@ class FileContentsHelpParts:
                                             ]),
                                  self._paragraphs(_DESCRIPTION_OF_LINE_MATCHES))
 
+    def _num_lines_invokation_variant(self,
+                                      optional_transformation_option: a.ArgumentUsage,
+                                      optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
+        num_lines_arg = a.Single(a.Multiplicity.MANDATORY,
+                                 a.Constant(instruction_options.NUM_LINES_ARGUMENT))
+        return InvokationVariant(self._cls([optional_transformation_option,
+                                            optional_not_arg,
+                                            num_lines_arg,
+                                            parse.MANDATORY_OPERATOR_ARGUMENT,
+                                            parse.MANDATORY_INTEGER_ARGUMENT,
+                                            ]),
+                                 self._paragraphs(_DESCRIPTION_OF_NUM_LINES))
+
     @staticmethod
     def syntax_element_descriptions_at_top() -> list:
         return [negation_of_predicate.syntax_element_description()]
@@ -121,29 +138,31 @@ class FileContentsHelpParts:
         relativity_of_expected_arg = a.Named('RELATIVITY-OF-EXPECTED-PATH')
         optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
                                                    relativity_of_expected_arg)
-        return [
-                   transformation,
-                   SyntaxElementDescription(self.expected_file_arg.name,
-                                            self._paragraphs("The file that contains the expected contents."),
-                                            [InvokationVariant(cl_syntax.cl_syntax_for_args(
-                                                [optional_relativity_of_expected,
-                                                 mandatory_path]),
-                                                rel_opts.default_relativity_for_rel_opt_type(
-                                                    EXPECTED_FILE_REL_OPT_ARG_CONFIG.argument_syntax_name,
-                                                    EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.default_option)
-                                            )]
-                                            ),
-               ] + \
-               rel_opts.relativity_syntax_element_descriptions(
-                   instruction_arguments.PATH_ARGUMENT,
-                   EXPECTED_FILE_REL_OPT_ARG_CONFIG.options,
-                   relativity_of_expected_arg) + \
-               [
-                   SyntaxElementDescription(instruction_arguments.REG_EX.name,
-                                            self._parser.fnap('A Python regular expression.')),
-                   dt.here_document_syntax_element_description(self.instruction_name,
-                                                               instruction_arguments.HERE_DOCUMENT),
-               ]
+        return ([
+                    transformation,
+                    SyntaxElementDescription(self.expected_file_arg.name,
+                                             self._paragraphs("The file that contains the expected contents."),
+                                             [InvokationVariant(cl_syntax.cl_syntax_for_args(
+                                                 [optional_relativity_of_expected,
+                                                  mandatory_path]),
+                                                 rel_opts.default_relativity_for_rel_opt_type(
+                                                     EXPECTED_FILE_REL_OPT_ARG_CONFIG.argument_syntax_name,
+                                                     EXPECTED_FILE_REL_OPT_ARG_CONFIG.options.default_option)
+                                             )]
+                                             ),
+                ] +
+                rel_opts.relativity_syntax_element_descriptions(
+                    instruction_arguments.PATH_ARGUMENT,
+                    EXPECTED_FILE_REL_OPT_ARG_CONFIG.options,
+                    relativity_of_expected_arg) +
+                [
+                    SyntaxElementDescription(instruction_arguments.REG_EX.name,
+                                             self._parser.fnap('A Python regular expression.')),
+                    dt.here_document_syntax_element_description(self.instruction_name,
+                                                                instruction_arguments.HERE_DOCUMENT),
+                ] +
+                parse.syntax_element_descriptions(INTEGER_ARGUMENT_DESCRIPTION)
+                )
 
     def see_also_items(self) -> list:
         cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
@@ -181,4 +200,8 @@ Asserts that the contents of {checked_file} is equal to the contents of file {ex
 
 _DESCRIPTION_OF_LINE_MATCHES = """\
 Asserts that {any}/{every} line of {checked_file} matches a regular expression.
+"""
+
+_DESCRIPTION_OF_NUM_LINES = """\
+Asserts that the number of lines of {checked_file} matches a given comparison expression.
 """

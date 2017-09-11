@@ -31,6 +31,8 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
                                                     checker)
 
 
+INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
+
 _OPERATION = 'OPERATION'
 
 EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
@@ -152,6 +154,6 @@ class CheckerParser:
 
 def _must_be_non_negative_integer(actual: int) -> str:
     if actual < 0:
-        return expected_found.unexpected_lines('an integer >= 0',
+        return expected_found.unexpected_lines(INTEGER_ARGUMENT_DESCRIPTION,
                                                str(actual))
     return None
