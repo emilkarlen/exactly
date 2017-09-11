@@ -3,6 +3,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import types
+from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_CONCEPT_INFO
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -51,8 +52,8 @@ def transformer_syntax_element_description() -> SyntaxElementDescription:
 
 
 _TRANSFORMATION_DESCRIPTION = """\
-Transforms the contents of the tested file before it is tested.
-"""
+Transforms the contents of the tested file using a {transformer} before it is tested.
+""".format(transformer=LINES_TRANSFORMER_CONCEPT_INFO.name.singular)
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
