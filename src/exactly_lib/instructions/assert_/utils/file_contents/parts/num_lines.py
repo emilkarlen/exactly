@@ -1,5 +1,3 @@
-import pathlib
-
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
@@ -40,7 +38,7 @@ class FileAssertionPart(ActualFileAssertionPart):
         comparison_handler = comparison_structures.ComparisonHandler(
             self.property_to_check,
             self.expectation_type,
-            NumLinesResolver(file_to_check.path),
+            NumLinesResolver(file_to_check),
             self.cmp_op_and_rhs.operator,
             self.cmp_op_and_rhs.right_operand)
 
@@ -53,7 +51,7 @@ class FileAssertionPart(ActualFileAssertionPart):
 
 class NumLinesResolver(comparison_structures.OperandResolver):
     def __init__(self,
-                 file_to_check: pathlib.Path):
+                 file_to_check: FileToCheck):
         super().__init__(instruction_options.NUM_LINES_DESCRIPTION)
         self.file_to_check = file_to_check
 
@@ -63,8 +61,9 @@ class NumLinesResolver(comparison_structures.OperandResolver):
 
     def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
         ret_val = 0
-        for line in self.file_to_check.open():
-            ret_val += 1
+        with self.file_to_check.lines(environment.home_and_sds) as lines:
+            for line in lines:
+                ret_val += 1
         return ret_val
 
 

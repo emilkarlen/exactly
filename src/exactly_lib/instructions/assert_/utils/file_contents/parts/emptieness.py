@@ -33,7 +33,7 @@ class EmptinessAssertionPart(ActualFileAssertionPart):
         """
         :return: processed_actual_file_path
         """
-        size = file_to_check.path.stat().st_size
+        size = file_to_check.transformed_file_path.stat().st_size
         if self.expectation_type is ExpectationType.POSITIVE:
             if size != 0:
                 actual = str(size) + ' bytes'

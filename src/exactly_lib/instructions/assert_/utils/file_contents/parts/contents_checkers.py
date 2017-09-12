@@ -74,4 +74,6 @@ class FileTransformerAsAssertionPart(AssertionPart):
         processed_actual_file_path = actual_file_transformer.transform(environment,
                                                                        os_services,
                                                                        file_to_transform)
-        return FileToCheck(processed_actual_file_path)
+        return FileToCheck(file_to_transform,
+                           processed_actual_file_path,
+                           actual_file_transformer.corresponding_lines_transformer)

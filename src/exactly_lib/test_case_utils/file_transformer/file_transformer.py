@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -16,6 +17,10 @@ class FileTransformer:
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
                   src_file_path: pathlib.Path) -> pathlib.Path:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def corresponding_lines_transformer(self) -> LinesTransformer:
         raise NotImplementedError('abstract method')
 
 
