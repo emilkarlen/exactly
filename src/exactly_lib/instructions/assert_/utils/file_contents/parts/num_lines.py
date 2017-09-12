@@ -61,7 +61,7 @@ class NumLinesResolver(comparison_structures.OperandResolver):
 
     def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
         ret_val = 0
-        with self.file_to_check.lines(environment.home_and_sds) as lines:
+        with self.file_to_check.lines() as lines:
             for line in lines:
                 ret_val += 1
         return ret_val

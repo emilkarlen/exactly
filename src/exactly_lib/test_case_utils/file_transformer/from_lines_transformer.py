@@ -3,22 +3,9 @@ import pathlib
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformer
+from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformer, DestinationFilePathGetter
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
-
-
-class UniqueFileNameInExistingDirGetter:
-    """
-    Gets a file name that can be used for storing intermediate file contents.
-    """
-
-    def get(self,
-            environment: InstructionEnvironmentForPostSdsStep,
-            src_file_path: pathlib.Path) -> pathlib.Path:
-        instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
-        dst_file_base_name = src_file_path.name
-        return instruction_dir / dst_file_base_name
 
 
 class FileTransformerFromLinesTransformer(FileTransformer):
@@ -33,7 +20,7 @@ class FileTransformerFromLinesTransformer(FileTransformer):
     """
 
     def __init__(self,
-                 dst_file_path_getter: UniqueFileNameInExistingDirGetter,
+                 dst_file_path_getter: DestinationFilePathGetter,
                  lines_transformer: LinesTransformer):
         self._dst_file_path_getter = dst_file_path_getter
         self._lines_transformer = lines_transformer
