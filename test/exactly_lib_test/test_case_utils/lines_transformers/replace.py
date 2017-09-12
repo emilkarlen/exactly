@@ -12,6 +12,11 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     tcds = fake_home_and_sds()
 
+    def test_SHOULD_not_be_identity_transformer(self):
+        transformer = sut.ReplaceLinesTransformer(re.compile('object'),
+                                                  'transformer')
+        self.assertFalse(transformer.is_identity_transformer)
+
     def test_every_line_SHOULD_be_transformed(self):
         # ARRANGE #
         input_lines = [

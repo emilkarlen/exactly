@@ -3,6 +3,10 @@ from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 
 
 class ToUppercaseLinesTransformer(LinesTransformer):
+    @property
+    def is_identity_transformer(self) -> bool:
+        return False
+
     def transform(self,
                   tcds: HomeAndSds,
                   lines: iter) -> iter:

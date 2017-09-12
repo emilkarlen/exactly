@@ -35,6 +35,10 @@ class TestMisc(unittest.TestCase):
             self.assertEqual(expected,
                              actual)
 
+    def test_SHOULD_not_be_identity_transformer(self):
+        transformer = sut.EnvVarReplacementLinesTransformer('transformer name')
+        self.assertFalse(transformer.is_identity_transformer)
+
 
 class TestWhenRelHomeCaseIsEqualToRelHomeActThenVariableWithPrecedenceShouldBeUsed(unittest.TestCase):
     def test(self):

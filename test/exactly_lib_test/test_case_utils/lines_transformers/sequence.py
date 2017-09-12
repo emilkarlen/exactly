@@ -12,6 +12,36 @@ def suite() -> unittest.TestSuite:
 
 
 class Test(unittest.TestCase):
+    def test_SHOULD_is_identity_transformer(self):
+        cases = [
+            (
+                'empty list of transformers',
+                SequenceLinesTransformer([]),
+                True,
+            ),
+            (
+                'single identity transformer',
+                SequenceLinesTransformer([IdentityLinesTransformer()]),
+                True,
+            ),
+            (
+                'multiple identity transformers',
+                SequenceLinesTransformer([IdentityLinesTransformer(),
+                                          IdentityLinesTransformer()]),
+                True,
+            ),
+            (
+                'non-identity transformer',
+                SequenceLinesTransformer([MyNonIdentityTransformer()]),
+                False,
+            ),
+        ]
+        for case_name, transformer, expected in cases:
+            with self.subTest(case_name=case_name):
+                self.assertEqual(expected,
+                                 transformer.is_identity_transformer,
+                                 'is_identity_transformation')
+
     def test_construct_and_get_transformers_list(self):
         # ARRANGE #
         t_1 = IdentityLinesTransformer()
@@ -102,6 +132,15 @@ class Test(unittest.TestCase):
 
         self.assertEqual(expected_output_lines,
                          actual_as_list)
+
+
+class MyNonIdentityTransformer(LinesTransformer):
+    @property
+    def is_identity_transformer(self) -> bool:
+        return False
+
+    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+        return map(lambda s: 'not identity', lines)
 
 
 class MyToUppercaseTransformer(LinesTransformer):
