@@ -38,6 +38,10 @@ class FileTransformerFromLinesTransformer(FileTransformer):
         self._dst_file_path_getter = dst_file_path_getter
         self._lines_transformer = lines_transformer
 
+    @property
+    def corresponding_lines_transformer(self) -> LinesTransformer:
+        return self._lines_transformer
+
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,

@@ -64,12 +64,12 @@ class EqualityAssertionPart(ActualFileAssertionPart):
         expected_file_path = self._file_path_for_file_with_expected_contents(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        files_are_equal = self._do_compare(expected_file_path, file_to_check.path)
+        files_are_equal = self._do_compare(expected_file_path, file_to_check.transformed_file_path)
 
         self._do_check_comparison_result(environment,
                                          files_are_equal,
                                          expected_file_path,
-                                         file_to_check.path)
+                                         file_to_check.transformed_file_path)
 
     def _do_check_comparison_result(self,
                                     environment: i.InstructionEnvironmentForPostSdsStep,
