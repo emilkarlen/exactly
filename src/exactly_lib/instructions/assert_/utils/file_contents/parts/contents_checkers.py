@@ -4,9 +4,10 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
+from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
+from exactly_lib.test_case_utils.file_transformer.file_transformer import DestinationFilePathGetter
 
 
 class FileExistenceAssertionPart(AssertionPart):
@@ -50,13 +51,13 @@ class FileTransformerAsAssertionPart(AssertionPart):
     :raises PfhPfhHardErrorException: The transformation fails
     """
 
-    def __init__(self, file_transformer_resolver: FileTransformerResolver):
+    def __init__(self, lines_transformer_resolver: LinesTransformerResolver):
         super().__init__()
-        self._file_transformer_resolver = file_transformer_resolver
+        self._lines_transformer_resolver = lines_transformer_resolver
 
     @property
     def references(self) -> list:
-        return self._file_transformer_resolver.references
+        return self._lines_transformer_resolver.references
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
@@ -70,8 +71,8 @@ class FileTransformerAsAssertionPart(AssertionPart):
         if not file_to_transform.is_file():
             raise PfhHardErrorException('Not an existing regular file: ' + str(file_to_transform))
 
-        actual_file_transformer = self._file_transformer_resolver.resolve(environment.symbols)
+        lines_transformer = self._lines_transformer_resolver.resolve(environment.symbols)
         return FileToCheck(file_to_transform,
                            environment,
-                           actual_file_transformer.corresponding_lines_transformer,
-                           actual_file_transformer.destination_file_path_getter)
+                           lines_transformer,
+                           DestinationFilePathGetter())
