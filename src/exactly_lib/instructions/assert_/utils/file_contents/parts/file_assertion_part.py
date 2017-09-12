@@ -36,15 +36,14 @@ class FileToCheck:
         """
         if self._transformed_file_path is not None:
             return self._transformed_file_path
+        if self._lines_transformer.is_identity_transformer:
+            self._transformed_file_path = self._original_file_path
+            return self._transformed_file_path
         self._transformed_file_path = self._destination_file_path_getter.get(self._environment,
                                                                              self._original_file_path)
         ensure_parent_directory_does_exist(self._transformed_file_path)
         self._write_transformed_contents()
         return self._transformed_file_path
-
-    @property
-    def lines_transformer(self) -> LinesTransformer:
-        return self._lines_transformer
 
     @contextmanager
     def lines(self) -> iter:
@@ -57,7 +56,10 @@ class FileToCheck:
         using transformed_file_path.
         """
         with self._original_file_path.open() as f:
-            yield self._lines_transformer.transform(self._environment.home_and_sds, f)
+            if self._lines_transformer.is_identity_transformer:
+                yield f
+            else:
+                yield self._lines_transformer.transform(self._environment.home_and_sds, f)
 
     def _write_transformed_contents(self):
         with self._transformed_file_path.open('w') as dst_file:
