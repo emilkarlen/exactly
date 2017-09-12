@@ -37,7 +37,7 @@ class FileAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck):
+              file_to_check: FileToCheck) -> FileToCheck:
         raise NotImplementedError()
 
     def _report_fail(self,
@@ -68,11 +68,11 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck):
+              file_to_check: FileToCheck) -> FileToCheck:
         with file_to_check.lines() as lines:
             for line in lines:
                 if self._expected_reg_ex.search(line.rstrip('\n')):
-                    return
+                    return file_to_check
         self._report_fail(environment, 'no line matches')
 
 
@@ -80,7 +80,7 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck):
+              file_to_check: FileToCheck) -> FileToCheck:
         with file_to_check.lines() as lines:
             line_num = 1
             for line in lines:
@@ -88,13 +88,14 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
                 if self._expected_reg_ex.search(plain_line):
                     self._report_fail_with_line(environment, line_num, 'matches', line)
                 line_num += 1
+        return file_to_check
 
 
 class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck):
+              file_to_check: FileToCheck) -> FileToCheck:
         with file_to_check.lines() as lines:
             line_num = 1
             for line in lines:
@@ -104,18 +105,19 @@ class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
                                                 'does not match',
                                                 line)
                 line_num += 1
+        return file_to_check
 
 
 class _EveryLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck):
+              file_to_check: FileToCheck) -> FileToCheck:
         with file_to_check.lines() as lines:
             line_num = 1
             for line in lines:
                 plain_line = line.rstrip('\n')
                 if not self._expected_reg_ex.search(plain_line):
-                    return
+                    return file_to_check
                 line_num += 1
         self._report_fail(environment, 'every line matches')
