@@ -26,7 +26,6 @@ class FileTransformerFromLinesTransformer(FileTransformer):
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
                   src_file_path: pathlib.Path) -> pathlib.Path:
-        src_file_path = src_file_path
         instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
         dst_file_base_name = src_file_path.name
         dst_file_path = instruction_dir / dst_file_base_name
@@ -41,6 +40,5 @@ class FileTransformerFromLinesTransformer(FileTransformer):
         ensure_parent_directory_does_exist(dst_file_path)
         with src_file_path.open() as src_file:
             with dst_file_path.open('w') as dst_file:
-                input_lines = (line for line in src_file)
-                for output_line in self._lines_transformer.transform(home_and_sds, input_lines):
+                for output_line in self._lines_transformer.transform(home_and_sds, src_file):
                     dst_file.write(output_line)
