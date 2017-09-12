@@ -4,9 +4,24 @@ from contextlib import contextmanager
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.file_transformer.file_transformer import DestinationFilePathGetter
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
+
+
+class DestinationFilePathGetter:
+    """
+    Gets a file name that can be used for storing intermediate file contents.
+    """
+
+    def get(self,
+            environment: InstructionEnvironmentForPostSdsStep,
+            src_file_path: pathlib.Path) -> pathlib.Path:
+        """
+        :return: Path of a non-existing file.
+        """
+        instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
+        dst_file_base_name = src_file_path.name
+        return instruction_dir / dst_file_base_name
 
 
 class FileToCheck:
