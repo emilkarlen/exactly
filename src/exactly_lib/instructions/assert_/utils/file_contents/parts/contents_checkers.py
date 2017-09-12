@@ -2,12 +2,12 @@ import pathlib
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck, \
+    DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.file_transformer.file_transformer import DestinationFilePathGetter
 
 
 class FileExistenceAssertionPart(AssertionPart):
