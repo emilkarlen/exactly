@@ -111,8 +111,8 @@ class TestSequence(unittest.TestCase):
         ])
 
         assertion_part_with_references = CheckerWithReference([ref_1])
-        instruction = sut.AssertionInstructionFromChecker(assertion_part_with_references,
-                                                          lambda env: 'not used in this test')
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_with_references,
+                                                                lambda env: 'not used in this test')
 
         # ACT #
         actual = instruction.symbol_usages()
@@ -194,8 +194,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         def argument_getter_that_depends_on_environment(env: InstructionEnvironmentForPostSdsStep) -> int:
             return 1 if env is self.environment else 0
 
-        instruction = sut.AssertionInstructionFromChecker(assertion_part,
-                                                          argument_getter_that_depends_on_environment)
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
+                                                                argument_getter_that_depends_on_environment)
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
@@ -205,8 +205,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_return_pfh_pass_WHEN_no_exception_is_raised(self):
         # ARRANGE #
         assertion_part_that_not_raises = SuccessfulCheckerThatReturnsConstructorArgPlusOne()
-        instruction = sut.AssertionInstructionFromChecker(assertion_part_that_not_raises,
-                                                          lambda env: 0)
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_not_raises,
+                                                                lambda env: 0)
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
@@ -216,8 +216,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_return_pfh_fail_WHEN_PfhFailException_is_raised(self):
         # ARRANGE #
         assertion_part_that_raises = CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne()
-        instruction = sut.AssertionInstructionFromChecker(assertion_part_that_raises,
-                                                          lambda env: 1)
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_raises,
+                                                                lambda env: 1)
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
@@ -228,8 +228,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_WHEN_no_validator_is_given_THEN_validation_SHOULD_succeed(self):
         # ARRANGE #
         assertion_part_without_validation = CheckerForValidation()
-        instruction = sut.AssertionInstructionFromChecker(assertion_part_without_validation,
-                                                          lambda env: 'argument to assertion_part')
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
+                                                                lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
             actual = instruction.validate_pre_sds(self.environment)
@@ -245,8 +245,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_WHEN_a_successful_validator_is_given_THEN_validation_SHOULD_succeed(self):
         # ARRANGE #
         assertion_part_without_validation = CheckerForValidation(ConstantSuccessValidator())
-        instruction = sut.AssertionInstructionFromChecker(assertion_part_without_validation,
-                                                          lambda env: 'argument to assertion_part')
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
+                                                                lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
             actual = instruction.validate_pre_sds(self.environment)
@@ -264,8 +264,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         the_error_message = 'the error message'
         assertion_part = CheckerForValidation(ValidatorThat(
             pre_sds_return_value=the_error_message))
-        instruction = sut.AssertionInstructionFromChecker(assertion_part,
-                                                          lambda env: 'argument to assertion_part')
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
+                                                                lambda env: 'argument to assertion_part')
         # ACT #
         actual = instruction.validate_pre_sds(self.environment)
         # ASSERT #
@@ -277,8 +277,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         the_error_message = 'the error message'
         assertion_part = CheckerForValidation(ValidatorThat(
             post_setup_return_value=the_error_message))
-        instruction = sut.AssertionInstructionFromChecker(assertion_part,
-                                                          lambda env: 'argument to assertion_part')
+        instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
+                                                                lambda env: 'argument to assertion_part')
         # ACT #
         pre_sds_result = instruction.validate_pre_sds(self.environment)
         post_sds_result = instruction.validate_post_setup(self.environment)

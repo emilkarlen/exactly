@@ -3,7 +3,8 @@ from exactly_lib.instructions.assert_.utils.expression import parse as parse_cmp
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker, ActualFileAssertionPart
+    instruction_with_exist_trans_and_assertion_part
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -24,9 +25,9 @@ def parse_comparison_operation(actual_file: ComparisonActualFile,
     expectation_type = token_parser.consume_optional_negation_operator()
     checker = CheckerParser(actual_file, expectation_type, actual_file_transformer).parse(
         token_parser)
-    return instruction_with_exist_trans_and_checker(actual_file,
-                                                    actual_file_transformer,
-                                                    checker)
+    return instruction_with_exist_trans_and_assertion_part(actual_file,
+                                                           actual_file_transformer,
+                                                           checker)
 
 
 INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
@@ -67,9 +68,9 @@ class CheckerParser:
     def _parse_emptiness_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
-        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_emptieness
-        return instruction_for_emptieness.EmptinessChecker(self.expectation_type,
-                                                           self.actual_file.property_descriptor())
+        from exactly_lib.instructions.assert_.utils.file_contents.parts import emptieness
+        return emptieness.EmptinessAssertionPart(self.expectation_type,
+                                                 self.actual_file.property_descriptor())
 
     def _parse_equals_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         token_parser.require_is_not_at_eol(parse_here_doc_or_file_ref.MISSING_SOURCE)
@@ -80,37 +81,41 @@ class CheckerParser:
             token_parser.report_superfluous_arguments_if_not_at_eol()
             token_parser.consume_current_line_as_plain_string()
 
-        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_equality
-        return instruction_for_equality.EqualityChecker(self.expectation_type,
-                                                        expected_contents,
-                                                        self.actual_file.property_descriptor())
+        from exactly_lib.instructions.assert_.utils.file_contents.parts import equality
+        return equality.EqualityAssertionPart(self.expectation_type,
+                                              expected_contents,
+                                              self.actual_file.property_descriptor())
 
     def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
 
         failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.ANY_LINE_ARGUMENT,
                                                                              reg_ex_arg.source_string)
-        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
-        return instruction_for_contains.checker_for_any_line_matches(self.expectation_type, failure_resolver, reg_ex)
+        from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
+        return line_matches.assertion_part_for_any_line_matches(self.expectation_type, failure_resolver,
+                                                                reg_ex)
 
     def _parse_every_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
 
         failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.EVERY_LINE_ARGUMENT,
                                                                              reg_ex_arg.source_string)
-        from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
-        return instruction_for_contains.checker_for_every_line_matches(self.expectation_type, failure_resolver, reg_ex)
+        from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
+        return line_matches.assertion_part_for_every_line_matches(self.expectation_type, failure_resolver,
+                                                                  reg_ex)
 
     def _parse_num_lines_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
                                                                                 _must_be_non_negative_integer)
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
-        from exactly_lib.instructions.assert_.utils.file_contents.instruction_for_num_lines import checker_for_num_lines
-        return checker_for_num_lines(self.expectation_type,
-                                     cmp_op_and_rhs,
-                                     self.actual_file.property_descriptor(instruction_options.NUM_LINES_DESCRIPTION),
-                                     )
+        from exactly_lib.instructions.assert_.utils.file_contents.parts.num_lines import \
+            assertion_part_for_num_lines
+        return assertion_part_for_num_lines(self.expectation_type,
+                                            cmp_op_and_rhs,
+                                            self.actual_file.property_descriptor(
+                                                instruction_options.NUM_LINES_DESCRIPTION),
+                                            )
 
     @staticmethod
     def _parse_line_matches_tokens_and_regex(token_parser: TokenParserPrime):

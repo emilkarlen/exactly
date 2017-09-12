@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents import contents_checkers as sut
+from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.restriction import ValueTypeRestriction
