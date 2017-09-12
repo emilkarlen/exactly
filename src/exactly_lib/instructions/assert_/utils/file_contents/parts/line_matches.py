@@ -69,8 +69,7 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        actual_file_name = str(file_to_check.path)
-        with open(actual_file_name) as f:
+        with file_to_check.path.open() as f:
             for line in f:
                 if self._expected_reg_ex.search(line.rstrip('\n')):
                     return
@@ -82,8 +81,7 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        actual_file_name = str(file_to_check.path)
-        with open(actual_file_name) as f:
+        with file_to_check.path.open() as f:
             line_num = 1
             for line in f:
                 plain_line = line.rstrip('\n')
@@ -97,8 +95,7 @@ class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        actual_file_name = str(file_to_check.path)
-        with open(actual_file_name) as f:
+        with file_to_check.path.open() as f:
             line_num = 1
             for line in f:
                 if not self._expected_reg_ex.search(line.rstrip('\n')):
@@ -114,8 +111,7 @@ class _EveryLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        actual_file_name = str(file_to_check.path)
-        with open(actual_file_name) as f:
+        with file_to_check.path.open() as f:
             line_num = 1
             for line in f:
                 plain_line = line.rstrip('\n')
