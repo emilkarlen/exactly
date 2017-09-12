@@ -86,7 +86,7 @@ class SequenceOfCooperativeAssertionParts(AssertionPart):
         return self._references
 
 
-class AssertionInstructionFromChecker(AssertPhaseInstruction):
+class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
     """ An :class:`AssertPhaseInstruction` in terms of a :class:`AssertionPart`'
     """
 

@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import ActualFileAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -9,25 +9,25 @@ from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoRe
 from exactly_lib.util.expectation_type import ExpectationType
 
 
-def checker_for_any_line_matches(expectation_type: ExpectationType,
-                                 failure_info_resolver: DiffFailureInfoResolver,
-                                 expected_reg_ex) -> ActualFileAssertionPart:
+def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
+                                        failure_info_resolver: DiffFailureInfoResolver,
+                                        expected_reg_ex) -> ActualFileAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
-        return _AnyLineMatchesCheckerForPositiveMatch(failure_info_resolver, expected_reg_ex)
+        return _AnyLineMatchesAssertionPartForPositiveMatch(failure_info_resolver, expected_reg_ex)
     else:
-        return _AnyLineMatchesCheckerForNegativeMatch(failure_info_resolver, expected_reg_ex)
+        return _AnyLineMatchesAssertionPartForNegativeMatch(failure_info_resolver, expected_reg_ex)
 
 
-def checker_for_every_line_matches(expectation_type: ExpectationType,
-                                   failure_info_resolver: DiffFailureInfoResolver,
-                                   expected_reg_ex) -> ActualFileAssertionPart:
+def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
+                                          failure_info_resolver: DiffFailureInfoResolver,
+                                          expected_reg_ex) -> ActualFileAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
-        return _EveryLineMatchesCheckerForPositiveMatch(failure_info_resolver, expected_reg_ex)
+        return _EveryLineMatchesAssertionPartForPositiveMatch(failure_info_resolver, expected_reg_ex)
     else:
-        return _EveryLineMatchesCheckerForNegativeMatch(failure_info_resolver, expected_reg_ex)
+        return _EveryLineMatchesAssertionPartForNegativeMatch(failure_info_resolver, expected_reg_ex)
 
 
-class FileChecker(ActualFileAssertionPart):
+class FileAssertionPart(ActualFileAssertionPart):
     def __init__(self,
                  failure_info_resolver: DiffFailureInfoResolver,
                  expected_reg_ex):
@@ -65,7 +65,7 @@ class FileChecker(ActualFileAssertionPart):
         raise PfhFailException(failure_info.render())
 
 
-class _AnyLineMatchesCheckerForPositiveMatch(FileChecker):
+class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -78,7 +78,7 @@ class _AnyLineMatchesCheckerForPositiveMatch(FileChecker):
         self._report_fail(environment, 'no line matches')
 
 
-class _AnyLineMatchesCheckerForNegativeMatch(FileChecker):
+class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -93,7 +93,7 @@ class _AnyLineMatchesCheckerForNegativeMatch(FileChecker):
                 line_num += 1
 
 
-class _EveryLineMatchesCheckerForPositiveMatch(FileChecker):
+class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -110,7 +110,7 @@ class _EveryLineMatchesCheckerForPositiveMatch(FileChecker):
                 line_num += 1
 
 
-class _EveryLineMatchesCheckerForNegativeMatch(FileChecker):
+class _EveryLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,

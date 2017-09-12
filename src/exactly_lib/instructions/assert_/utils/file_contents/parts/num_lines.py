@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import ActualFileAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPostSds, \
@@ -15,14 +15,14 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
 from exactly_lib.util.expectation_type import ExpectationType
 
 
-def checker_for_num_lines(expectation_type: ExpectationType,
-                          cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
-                          property_to_check: PropertyDescriptor,
-                          ) -> ActualFileAssertionPart:
-    return FileChecker(expectation_type, property_to_check, cmp_op_and_rhs)
+def assertion_part_for_num_lines(expectation_type: ExpectationType,
+                                 cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
+                                 property_to_check: PropertyDescriptor,
+                                 ) -> ActualFileAssertionPart:
+    return FileAssertionPart(expectation_type, property_to_check, cmp_op_and_rhs)
 
 
-class FileChecker(ActualFileAssertionPart):
+class FileAssertionPart(ActualFileAssertionPart):
     def __init__(self,
                  expectation_type: ExpectationType,
                  property_to_check: PropertyDescriptor,
