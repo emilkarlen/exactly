@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import ActualFileChecker
+from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import ActualFileAssertionPart
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -11,7 +11,7 @@ from exactly_lib.util.expectation_type import ExpectationType
 
 def checker_for_any_line_matches(expectation_type: ExpectationType,
                                  failure_info_resolver: DiffFailureInfoResolver,
-                                 expected_reg_ex) -> ActualFileChecker:
+                                 expected_reg_ex) -> ActualFileAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
         return _AnyLineMatchesCheckerForPositiveMatch(failure_info_resolver, expected_reg_ex)
     else:
@@ -20,14 +20,14 @@ def checker_for_any_line_matches(expectation_type: ExpectationType,
 
 def checker_for_every_line_matches(expectation_type: ExpectationType,
                                    failure_info_resolver: DiffFailureInfoResolver,
-                                   expected_reg_ex) -> ActualFileChecker:
+                                   expected_reg_ex) -> ActualFileAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
         return _EveryLineMatchesCheckerForPositiveMatch(failure_info_resolver, expected_reg_ex)
     else:
         return _EveryLineMatchesCheckerForNegativeMatch(failure_info_resolver, expected_reg_ex)
 
 
-class FileChecker(ActualFileChecker):
+class FileChecker(ActualFileAssertionPart):
     def __init__(self,
                  failure_info_resolver: DiffFailureInfoResolver,
                  expected_reg_ex):

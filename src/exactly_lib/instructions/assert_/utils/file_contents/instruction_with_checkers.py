@@ -1,23 +1,24 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.checker import Checker, SequenceOfChecks, AssertionInstructionFromChecker
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, SequenceOfCooperativeAssertionParts, \
+    AssertionInstructionFromChecker
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.contents_checkers import FileExistenceChecker, \
-    FileTransformerAsChecker
+from exactly_lib.instructions.assert_.utils.file_contents.contents_checkers import FileExistenceAssertionPart, \
+    FileTransformerAsAssertionPart
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 
 
-class ActualFileChecker(Checker):
+class ActualFileAssertionPart(AssertionPart):
     """
-    A :class:`Checker` that is given
+    A :class:`AssertionPart` that is given
     the path of a file to operate on.
 
     This class is just a marker for more informative types.
 
-    Behaviour is identical to :class:`Checker`.
+    Behaviour is identical to :class:`AssertionPart`.
     """
 
     def check(self,
@@ -30,7 +31,7 @@ class ActualFileChecker(Checker):
 
 def instruction_with_exist_trans_and_checker(actual_file: ComparisonActualFile,
                                              actual_file_transformer_resolver: FileTransformerResolver,
-                                             checker_of_transformed_file_path: ActualFileChecker
+                                             checker_of_transformed_file_path: ActualFileAssertionPart
                                              ) -> AssertPhaseInstruction:
     """
     An instruction that
@@ -41,9 +42,9 @@ def instruction_with_exist_trans_and_checker(actual_file: ComparisonActualFile,
     """
 
     return AssertionInstructionFromChecker(
-        SequenceOfChecks([
-            FileExistenceChecker(actual_file),
-            FileTransformerAsChecker(actual_file_transformer_resolver),
+        SequenceOfCooperativeAssertionParts([
+            FileExistenceAssertionPart(actual_file),
+            FileTransformerAsAssertionPart(actual_file_transformer_resolver),
             checker_of_transformed_file_path,
         ]),
         lambda env: 'not used'

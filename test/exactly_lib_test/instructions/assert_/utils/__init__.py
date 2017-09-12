@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.instructions.assert_.utils import instruction_from_parts_that_executes_sub_process, \
     instruction_from_parts, return_pfh_via_exceptions, \
-    expression, checker, file_contents
+    expression, assertion_part, file_contents
 
 
 def suite() -> unittest.TestSuite:
@@ -10,7 +10,7 @@ def suite() -> unittest.TestSuite:
         return_pfh_via_exceptions.suite(),
         instruction_from_parts.suite(),
         instruction_from_parts_that_executes_sub_process.suite(),
-        checker.suite(),
+        assertion_part.suite(),
         expression.suite(),
         file_contents.suite(),
     ])

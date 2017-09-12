@@ -3,7 +3,7 @@ from exactly_lib.instructions.assert_.utils.expression import parse as parse_cmp
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_with_checkers import \
-    instruction_with_exist_trans_and_checker, ActualFileChecker
+    instruction_with_exist_trans_and_checker, ActualFileAssertionPart
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -60,18 +60,18 @@ class CheckerParser:
             instruction_options.NUM_LINES_ARGUMENT: self._parse_num_lines_checker,
         }
 
-    def parse(self, token_parser: TokenParserPrime) -> ActualFileChecker:
+    def parse(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         token_parser = token_parser_with_additional_error_message_format_map(token_parser, _FORMAT_MAP)
         return token_parser.parse_mandatory_command(self.parsers, 'Missing {_CHECK_}')
 
-    def _parse_emptiness_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
+    def _parse_emptiness_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_emptieness
         return instruction_for_emptieness.EmptinessChecker(self.expectation_type,
                                                            self.actual_file.property_descriptor())
 
-    def _parse_equals_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
+    def _parse_equals_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         token_parser.require_is_not_at_eol(parse_here_doc_or_file_ref.MISSING_SOURCE)
         expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
             token_parser,
@@ -85,7 +85,7 @@ class CheckerParser:
                                                         expected_contents,
                                                         self.actual_file.property_descriptor())
 
-    def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
+    def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
 
         failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.ANY_LINE_ARGUMENT,
@@ -93,7 +93,7 @@ class CheckerParser:
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
         return instruction_for_contains.checker_for_any_line_matches(self.expectation_type, failure_resolver, reg_ex)
 
-    def _parse_every_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
+    def _parse_every_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
 
         failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.EVERY_LINE_ARGUMENT,
@@ -101,7 +101,7 @@ class CheckerParser:
         from exactly_lib.instructions.assert_.utils.file_contents import instruction_for_contains
         return instruction_for_contains.checker_for_every_line_matches(self.expectation_type, failure_resolver, reg_ex)
 
-    def _parse_num_lines_checker(self, token_parser: TokenParserPrime) -> ActualFileChecker:
+    def _parse_num_lines_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
                                                                                 _must_be_non_negative_integer)
         token_parser.report_superfluous_arguments_if_not_at_eol()
