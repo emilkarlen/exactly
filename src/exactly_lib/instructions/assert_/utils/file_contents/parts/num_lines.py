@@ -3,7 +3,8 @@ import pathlib
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+    FileToCheck
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPostSds, \
@@ -35,11 +36,11 @@ class FileAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path):
+              file_to_check: FileToCheck):
         comparison_handler = comparison_structures.ComparisonHandler(
             self.property_to_check,
             self.expectation_type,
-            NumLinesResolver(file_to_check),
+            NumLinesResolver(file_to_check.path),
             self.cmp_op_and_rhs.operator,
             self.cmp_op_and_rhs.right_operand)
 

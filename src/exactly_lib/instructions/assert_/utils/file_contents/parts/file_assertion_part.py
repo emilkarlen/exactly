@@ -5,6 +5,20 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
 
+class FileToCheck:
+    """
+    Access to the file to check, with functionality designed to
+    help assertions on the contents of the file.
+    """
+
+    def __init__(self, path: pathlib.Path):
+        self._path = path
+
+    @property
+    def path(self) -> pathlib.Path:
+        return self._path
+
+
 class ActualFileAssertionPart(AssertionPart):
     """
     A :class:`AssertionPart` that is given
@@ -18,6 +32,6 @@ class ActualFileAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path
+              file_to_check: FileToCheck
               ):
         return super().check(environment, os_services, file_to_check)

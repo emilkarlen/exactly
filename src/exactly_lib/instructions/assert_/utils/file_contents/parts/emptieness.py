@@ -1,6 +1,7 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+    FileToCheck
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
@@ -27,12 +28,12 @@ class EmptinessAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path
+              file_to_check: FileToCheck
               ) -> pathlib.Path:
         """
         :return: processed_actual_file_path
         """
-        size = file_to_check.stat().st_size
+        size = file_to_check.path.stat().st_size
         if self.expectation_type is ExpectationType.POSITIVE:
             if size != 0:
                 actual = str(size) + ' bytes'
