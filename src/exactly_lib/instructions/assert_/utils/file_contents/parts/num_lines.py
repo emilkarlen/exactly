@@ -34,7 +34,7 @@ class FileAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck):
+              file_to_check: FileToCheck) -> FileToCheck:
         comparison_handler = comparison_structures.ComparisonHandler(
             self.property_to_check,
             self.expectation_type,
@@ -43,6 +43,7 @@ class FileAssertionPart(ActualFileAssertionPart):
             self.cmp_op_and_rhs.right_operand)
 
         comparison_handler.execute(environment)
+        return file_to_check
 
     @property
     def references(self) -> list:
