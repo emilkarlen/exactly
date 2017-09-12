@@ -1,6 +1,5 @@
-import pathlib
-
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+    FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -38,7 +37,7 @@ class FileAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path):
+              file_to_check: FileToCheck):
         raise NotImplementedError()
 
     def _report_fail(self,
@@ -69,8 +68,8 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path):
-        actual_file_name = str(file_to_check)
+              file_to_check: FileToCheck):
+        actual_file_name = str(file_to_check.path)
         with open(actual_file_name) as f:
             for line in f:
                 if self._expected_reg_ex.search(line.rstrip('\n')):
@@ -82,8 +81,8 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path):
-        actual_file_name = str(file_to_check)
+              file_to_check: FileToCheck):
+        actual_file_name = str(file_to_check.path)
         with open(actual_file_name) as f:
             line_num = 1
             for line in f:
@@ -97,8 +96,8 @@ class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path):
-        actual_file_name = str(file_to_check)
+              file_to_check: FileToCheck):
+        actual_file_name = str(file_to_check.path)
         with open(actual_file_name) as f:
             line_num = 1
             for line in f:
@@ -114,8 +113,8 @@ class _EveryLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path):
-        actual_file_name = str(file_to_check)
+              file_to_check: FileToCheck):
+        actual_file_name = str(file_to_check.path)
         with open(actual_file_name) as f:
             line_num = 1
             for line in f:

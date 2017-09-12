@@ -2,7 +2,8 @@ import difflib
 import filecmp
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+    FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
@@ -56,19 +57,19 @@ class EqualityAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: pathlib.Path):
+              file_to_check: FileToCheck):
 
         self._do_post_setup_validation(environment)
 
         expected_file_path = self._file_path_for_file_with_expected_contents(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        files_are_equal = self._do_compare(expected_file_path, file_to_check)
+        files_are_equal = self._do_compare(expected_file_path, file_to_check.path)
 
         self._do_check_comparison_result(environment,
                                          files_are_equal,
                                          expected_file_path,
-                                         file_to_check)
+                                         file_to_check.path)
 
     def _do_check_comparison_result(self,
                                     environment: i.InstructionEnvironmentForPostSdsStep,
@@ -91,7 +92,8 @@ class EqualityAssertionPart(ActualFileAssertionPart):
                 raise PfhFailException(failure_info.render())
 
     @staticmethod
-    def _do_compare(expected_file_path, processed_actual_file_path):
+    def _do_compare(expected_file_path: pathlib.Path,
+                    processed_actual_file_path: pathlib.Path):
         actual_file_name = str(processed_actual_file_path)
         expected_file_name = str(expected_file_path)
         files_are_equal = filecmp.cmp(actual_file_name, expected_file_name, shallow=False)

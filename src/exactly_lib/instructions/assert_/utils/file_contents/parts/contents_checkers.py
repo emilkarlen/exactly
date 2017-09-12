@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -61,7 +62,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_transform: pathlib.Path,
-              ) -> pathlib.Path:
+              ) -> FileToCheck:
         """
         :param file_to_transform: The file that should be transformed
         :return: The path of the transformed file.
@@ -73,4 +74,4 @@ class FileTransformerAsAssertionPart(AssertionPart):
         processed_actual_file_path = actual_file_transformer.transform(environment,
                                                                        os_services,
                                                                        file_to_transform)
-        return processed_actual_file_path
+        return FileToCheck(processed_actual_file_path)
