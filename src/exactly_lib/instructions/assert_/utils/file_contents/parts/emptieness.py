@@ -26,8 +26,7 @@ class EmptinessAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck
-              ):
+              file_to_check: FileToCheck) -> FileToCheck:
         """
         :return: processed_actual_file_path
         """
@@ -39,6 +38,7 @@ class EmptinessAssertionPart(ActualFileAssertionPart):
         else:
             if first_line == '':
                 return self._raise_fail(environment, EMPTINESS_CHECK_EXPECTED_VALUE)
+        return file_to_check
 
     def _raise_fail(self,
                     environment: i.InstructionEnvironmentForPostSdsStep,

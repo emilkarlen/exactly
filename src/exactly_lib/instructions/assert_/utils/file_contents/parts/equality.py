@@ -57,7 +57,7 @@ class EqualityAssertionPart(ActualFileAssertionPart):
     def check(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_check: FileToCheck):
+              file_to_check: FileToCheck) -> FileToCheck:
 
         self._do_post_setup_validation(environment)
 
@@ -71,6 +71,7 @@ class EqualityAssertionPart(ActualFileAssertionPart):
                                          files_are_equal,
                                          expected_file_path,
                                          transformed_file_path)
+        return file_to_check
 
     def _do_check_comparison_result(self,
                                     environment: i.InstructionEnvironmentForPostSdsStep,

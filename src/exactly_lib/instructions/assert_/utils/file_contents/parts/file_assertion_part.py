@@ -80,5 +80,5 @@ class ActualFileAssertionPart(AssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck
-              ):
+              ) -> FileToCheck:
         raise NotImplementedError('abstract method')
