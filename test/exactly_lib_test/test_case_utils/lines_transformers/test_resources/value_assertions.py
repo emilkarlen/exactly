@@ -92,6 +92,3 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
                                   CustomLinesTransformer,
                                   self.message_builder.apply('class'))
         assert isinstance(self.actual, CustomLinesTransformer)  # Type info for IDE
-        self.put.assertEqual(expected.name,
-                             self.actual.name,
-                             self.message_builder.apply('name'))

@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransfo
 EXACTLY_TEST_CASE_DIRS_REPLACEMENT = 'EXACTLY_TEST_CASE_DIRS_REPLACEMENT'
 
 _RESOLVER = LinesTransformerConstant(
-    env_vars_replacement.EnvVarReplacementLinesTransformer(EXACTLY_TEST_CASE_DIRS_REPLACEMENT))
+    env_vars_replacement.EnvVarReplacementLinesTransformer())
 
 _SINGLE_LINE_DESCRIPTION = ''
 

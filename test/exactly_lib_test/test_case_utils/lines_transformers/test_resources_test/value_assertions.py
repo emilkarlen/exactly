@@ -15,15 +15,14 @@ def suite() -> unittest.TestSuite:
 class TestEquals(unittest.TestCase):
     def test_equals(self):
         # ARRANGE #
-        custom_transformer_name = 'name of custom transformer'
         cases = [
             (
                 IdentityLinesTransformer(),
                 IdentityLinesTransformer()
             ),
             (
-                CustomLinesTransformer(custom_transformer_name),
-                CustomLinesTransformer(custom_transformer_name)
+                CustomLinesTransformer(),
+                CustomLinesTransformer()
             ),
             (
                 ReplaceLinesTransformer(re.compile('regex'), 'replacement'),
@@ -53,7 +52,7 @@ class TestEquals(unittest.TestCase):
         expected = IdentityLinesTransformer()
 
         different_transformers = [
-            CustomLinesTransformer('name'),
+            CustomLinesTransformer(),
             SequenceLinesTransformer([]),
             SelectLinesTransformer(LineMatcherConstant(True)),
         ]
@@ -77,7 +76,7 @@ class TestEquals(unittest.TestCase):
 
         different_transformers = [
             IdentityLinesTransformer(),
-            CustomLinesTransformer('custom transformer'),
+            CustomLinesTransformer(),
             SequenceLinesTransformer([]),
             SelectLinesTransformer(LineMatcherConstant(True)),
             ReplaceLinesTransformer(unexpected_regex, expected_replacement),
@@ -99,7 +98,7 @@ class TestEquals(unittest.TestCase):
 
         different_transformers = [
             IdentityLinesTransformer(),
-            CustomLinesTransformer('custom transformer'),
+            CustomLinesTransformer(),
             SequenceLinesTransformer([]),
             ReplaceLinesTransformer(re.compile('regex pattern'), 'replacement'),
             SelectLinesTransformer(unexpected_line_matcher),
@@ -117,10 +116,10 @@ class TestEquals(unittest.TestCase):
 
         different_transformers = [
             IdentityLinesTransformer(),
-            CustomLinesTransformer('custom transformer'),
+            CustomLinesTransformer(),
             SelectLinesTransformer(LineMatcherConstant(False)),
             SequenceLinesTransformer([]),
-            SequenceLinesTransformer([CustomLinesTransformer('custom transformer')]),
+            SequenceLinesTransformer([CustomLinesTransformer()]),
             SequenceLinesTransformer([SelectLinesTransformer(LineMatcherConstant(False))]),
             SequenceLinesTransformer([IdentityLinesTransformer(),
                                       IdentityLinesTransformer()]),
@@ -134,16 +133,11 @@ class TestEquals(unittest.TestCase):
 
     def test_not_equals__custom(self):
         # ARRANGE #
-        expected_transformer_name = 'expected name of custom transformer'
-        actual_transformer_name = 'actual name of custom transformer'
-
-        # ARRANGE #
-        expected = CustomLinesTransformer(expected_transformer_name)
+        expected = CustomLinesTransformer()
 
         different_transformers = [
             IdentityLinesTransformer(),
             SequenceLinesTransformer([]),
-            CustomLinesTransformer(actual_transformer_name),
             SelectLinesTransformer(LineMatcherConstant(False)),
         ]
         for actual in different_transformers:

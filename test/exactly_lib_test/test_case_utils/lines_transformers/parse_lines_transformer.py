@@ -282,7 +282,7 @@ class TestParseLineTransformer(unittest.TestCase):
     def test_reference(self):
         # ARRANGE #
         symbol = NameAndValue('the_symbol_name',
-                              CustomLinesTransformerTestImpl('the referenced transformer'))
+                              CustomLinesTransformerTestImpl())
 
         symbols = singleton_symbol_table_2(symbol.name,
                                            container(LinesTransformerConstant(symbol.value)))
@@ -328,9 +328,9 @@ class TestParseLineTransformer(unittest.TestCase):
     def test_sequence(self):
         # ARRANGE #
         symbol_1 = NameAndValue('symbol_1_name',
-                                CustomLinesTransformerTestImpl('the 1st referenced transformer'))
+                                CustomLinesTransformerTestImpl())
         symbol_2 = NameAndValue('symbol_2_name',
-                                CustomLinesTransformerTestImpl('the 2nd referenced transformer'))
+                                CustomLinesTransformerTestImpl())
 
         regex_str = 'regex'
         replacement_str = 'replacement'

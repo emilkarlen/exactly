@@ -84,7 +84,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         replacement_str = 'the_replacement'
 
         symbol = NameAndValue('the_symbol_name',
-                              parse_lines_transformer.CustomLinesTransformerTestImpl('the referenced transformer'))
+                              parse_lines_transformer.CustomLinesTransformerTestImpl())
 
         replace_transformer_syntax = argument_syntax.syntax_for_replace_transformer(regex_str,
                                                                                     replacement_str)
