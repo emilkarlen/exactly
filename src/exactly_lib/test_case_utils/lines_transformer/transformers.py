@@ -8,7 +8,7 @@ from exactly_lib.util.functional import compose_first_and_second
 
 class IdentityLinesTransformer(LinesTransformer):
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
-        raise NotImplementedError('this method should never be called')
+        return lines
 
 
 class SequenceLinesTransformer(LinesTransformer):
