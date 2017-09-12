@@ -71,9 +71,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
             raise PfhHardErrorException('Not an existing regular file: ' + str(file_to_transform))
 
         actual_file_transformer = self._file_transformer_resolver.resolve(environment.symbols)
-        processed_actual_file_path = actual_file_transformer.transform(environment,
-                                                                       os_services,
-                                                                       file_to_transform)
         return FileToCheck(file_to_transform,
-                           processed_actual_file_path,
-                           actual_file_transformer.corresponding_lines_transformer)
+                           environment,
+                           actual_file_transformer.corresponding_lines_transformer,
+                           actual_file_transformer.destination_file_path_getter)
