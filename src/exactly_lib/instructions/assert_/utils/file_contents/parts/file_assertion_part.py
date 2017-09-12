@@ -30,7 +30,6 @@ class FileToCheck:
     def original_file_path(self) -> pathlib.Path:
         return self._original_file_path
 
-    @property
     def transformed_file_path(self) -> pathlib.Path:
         """
         Gives a path to a file with contents that has been transformed using the transformer.
