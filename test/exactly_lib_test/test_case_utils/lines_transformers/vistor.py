@@ -110,7 +110,7 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
 
 class MyCustomTransformer(sut.CustomLinesTransformer):
     def __init__(self):
-        super().__init__('my custom transformer')
+        super().__init__()
 
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         return iter
