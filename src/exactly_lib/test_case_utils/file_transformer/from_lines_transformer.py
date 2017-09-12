@@ -8,6 +8,19 @@ from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 
+class UniqueFileNameInExistingDirGetter:
+    """
+    Gets a file name that can be used for storing intermediate file contents.
+    """
+
+    def get(self,
+            environment: InstructionEnvironmentForPostSdsStep,
+            src_file_path: pathlib.Path) -> pathlib.Path:
+        instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
+        dst_file_base_name = src_file_path.name
+        return instruction_dir / dst_file_base_name
+
+
 class FileTransformerFromLinesTransformer(FileTransformer):
     """
     Produces a new destination file, if it does not already exist.
@@ -19,16 +32,17 @@ class FileTransformerFromLinesTransformer(FileTransformer):
     (So that kind of optimizations should have been done in another place.)
     """
 
-    def __init__(self, lines_transformer: LinesTransformer):
+    def __init__(self,
+                 dst_file_path_getter: UniqueFileNameInExistingDirGetter,
+                 lines_transformer: LinesTransformer):
+        self._dst_file_path_getter = dst_file_path_getter
         self._lines_transformer = lines_transformer
 
     def transform(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
                   src_file_path: pathlib.Path) -> pathlib.Path:
-        instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
-        dst_file_base_name = src_file_path.name
-        dst_file_path = instruction_dir / dst_file_base_name
+        dst_file_path = self._dst_file_path_getter.get(environment, src_file_path)
         self._produce_new_dst_file(environment.home_and_sds,
                                    src_file_path,
                                    dst_file_path)
