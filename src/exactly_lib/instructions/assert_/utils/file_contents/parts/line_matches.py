@@ -69,8 +69,8 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        with file_to_check.transformed_file_path.open() as f:
-            for line in f:
+        with file_to_check.lines() as lines:
+            for line in lines:
                 if self._expected_reg_ex.search(line.rstrip('\n')):
                     return
         self._report_fail(environment, 'no line matches')
@@ -81,9 +81,9 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        with file_to_check.transformed_file_path.open() as f:
+        with file_to_check.lines() as lines:
             line_num = 1
-            for line in f:
+            for line in lines:
                 plain_line = line.rstrip('\n')
                 if self._expected_reg_ex.search(plain_line):
                     self._report_fail_with_line(environment, line_num, 'matches', line)
@@ -95,9 +95,9 @@ class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        with file_to_check.transformed_file_path.open() as f:
+        with file_to_check.lines() as lines:
             line_num = 1
-            for line in f:
+            for line in lines:
                 if not self._expected_reg_ex.search(line.rstrip('\n')):
                     self._report_fail_with_line(environment,
                                                 line_num,
@@ -111,9 +111,9 @@ class _EveryLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_check: FileToCheck):
-        with file_to_check.transformed_file_path.open() as f:
+        with file_to_check.lines() as lines:
             line_num = 1
-            for line in f:
+            for line in lines:
                 plain_line = line.rstrip('\n')
                 if not self._expected_reg_ex.search(plain_line):
                     return
