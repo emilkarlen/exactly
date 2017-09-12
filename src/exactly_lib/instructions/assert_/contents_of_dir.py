@@ -163,9 +163,6 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         self.format_map = {
             'PATH': _PATH_ARGUMENT.name,
         }
-        self.missing_check_description = 'Missing arguments for check (one of {})'.format(
-            ', '.join(map(lambda x: '"' + x + '"', _CHECKERS))
-        )
 
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         tokens = new_token_parser(rest_of_line,
@@ -177,12 +174,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
                                                                 path_to_check,
                                                                 file_selection))
 
-        command_parsers = {
-            NUM_FILES_CHECK_ARGUMENT: instructions_parser.parse_num_files_check,
-            EMPTINESS_CHECK_ARGUMENT: instructions_parser.parse_empty_check,
-        }
-        instruction = tokens.parse_mandatory_command(command_parsers,
-                                                     self.missing_check_description)
+        instruction = instructions_parser.parse(tokens)
         tokens.report_superfluous_arguments_if_not_at_eol()
         return instruction
 
@@ -198,8 +190,20 @@ class _Settings:
 
 
 class _CheckInstructionParser:
+    missing_check_description = 'Missing arguments for check (one of {})'.format(
+        ', '.join(map(lambda x: '"' + x + '"', _CHECKERS))
+    )
+
     def __init__(self, settings: _Settings):
         self.settings = settings
+        self.command_parsers = {
+            NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
+            EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
+        }
+
+    def parse(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+        return parser.parse_mandatory_command(self.command_parsers,
+                                              self.missing_check_description)
 
     def parse_empty_check(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
         return _InstructionForEmptiness(self.settings)
