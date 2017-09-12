@@ -7,6 +7,10 @@ from exactly_lib.util.functional import compose_first_and_second
 
 
 class IdentityLinesTransformer(LinesTransformer):
+    @property
+    def is_identity_transformer(self) -> bool:
+        return True
+
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         return lines
 
@@ -14,6 +18,10 @@ class IdentityLinesTransformer(LinesTransformer):
 class SequenceLinesTransformer(LinesTransformer):
     def __init__(self, transformers: list):
         self._transformers = tuple(transformers)
+
+    @property
+    def is_identity_transformer(self) -> bool:
+        return all([t.is_identity_transformer for t in self._transformers])
 
     @property
     def transformers(self) -> tuple:

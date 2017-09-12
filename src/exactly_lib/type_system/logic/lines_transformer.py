@@ -6,6 +6,13 @@ class LinesTransformer:
     Transforms a sequence of lines, where each line is a string.
     """
 
+    @property
+    def is_identity_transformer(self) -> bool:
+        """
+        Tells if this transformer is the identity transformer
+        """
+        return False
+
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         raise NotImplementedError('abstract method')
 

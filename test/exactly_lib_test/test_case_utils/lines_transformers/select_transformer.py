@@ -24,6 +24,10 @@ def suite() -> unittest.TestSuite:
 
 
 class TestSelectTransformer(unittest.TestCase):
+    def test_SHOULD_not_be_identity_transformer(self):
+        transformer = sut.SelectLinesTransformer(SubStringLineMatcher('MATCH'))
+        self.assertFalse(transformer.is_identity_transformer)
+
     def test_select(self):
         home_and_sds = fake_home_and_sds()
 
