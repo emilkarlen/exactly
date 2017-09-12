@@ -4,11 +4,12 @@ from exactly_lib import program_info
 from exactly_lib.help_texts.names.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_utils.file_transformer.env_vars_replacement import HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE
 from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
+
+HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CASE
 
 
 class EnvVarReplacementLinesTransformer(CustomLinesTransformer):
