@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.instructions.assert_.utils.checker import Checker
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.test_case.os_services import OsServices
@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.file_transformer.file_transformer import FileTransformerResolver
 
 
-class FileExistenceChecker(Checker):
+class FileExistenceAssertionPart(AssertionPart):
     """
     Checks existence of a :class:`ComparisonActualFile`,
 
@@ -40,7 +40,7 @@ class FileExistenceChecker(Checker):
         return self._actual_file.file_path(environment)
 
 
-class FileTransformerAsChecker(Checker):
+class FileTransformerAsAssertionPart(AssertionPart):
     """
     Transforms a given existing file.
 

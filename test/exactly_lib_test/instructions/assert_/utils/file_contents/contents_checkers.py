@@ -42,7 +42,7 @@ class TestFileTransformerAsChecker(unittest.TestCase):
         ])
 
         ft_with_references = FileTransformerResolverWithReferences([ref_1])
-        checker = sut.FileTransformerAsChecker(ft_with_references)
+        checker = sut.FileTransformerAsAssertionPart(ft_with_references)
 
         # ACT #
         actual = checker.references
@@ -52,7 +52,7 @@ class TestFileTransformerAsChecker(unittest.TestCase):
     def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_not_exist(self):
         # ARRANGE #
         transformer_resolver = ConstantFileTransformerResolver(IdentityFileTransformer())
-        checker = sut.FileTransformerAsChecker(transformer_resolver)
+        checker = sut.FileTransformerAsAssertionPart(transformer_resolver)
         # ACT & ASSERT #
         with self.assertRaises(PfhHardErrorException):
             checker.check(self.environment, self.the_os_services,
@@ -61,7 +61,7 @@ class TestFileTransformerAsChecker(unittest.TestCase):
     def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_exist_but_is_not_a_regular_file(self):
         # ARRANGE #
         transformer_resolver = ConstantFileTransformerResolver(IdentityFileTransformer())
-        checker = sut.FileTransformerAsChecker(transformer_resolver)
+        checker = sut.FileTransformerAsAssertionPart(transformer_resolver)
         # ACT & ASSERT #
         with tmp_dir() as path_of_existing_directory:
             with self.assertRaises(PfhHardErrorException):
