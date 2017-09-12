@@ -21,6 +21,13 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+def _transform_string_to_string(home_and_sds: HomeAndSds, string_input: str) -> str:
+    transformer = sut.EnvVarReplacementLinesTransformer('transformer name')
+    lines = string_input.splitlines(keepends=True)
+    output_lines = transformer.transform(home_and_sds, lines)
+    return ''.join(output_lines)
+
+
 class TestMisc(unittest.TestCase):
     def test_all_variables(self):
         # ARRANGE #
@@ -28,8 +35,8 @@ class TestMisc(unittest.TestCase):
             home_and_sds = path_resolving_env_pre_or_post_sds.home_and_sds
             generator = ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables()
             # ACT #
-            actual = sut.replace(home_and_sds,
-                                 generator.contents_before_replacement(home_and_sds))
+            actual = _transform_string_to_string(home_and_sds,
+                                                 generator.contents_before_replacement(home_and_sds))
             # ASSERT #
             expected = generator.expected_contents_after_replacement(home_and_sds)
             self.assertEqual(expected,
@@ -50,7 +57,7 @@ class TestWhenRelHomeCaseIsEqualToRelHomeActThenVariableWithPrecedenceShouldBeUs
             home_and_sds = HomeAndSds(hds, sds)
             contents_before_replacement = str(the_dir)
             # ACT #
-            actual = sut.replace(home_and_sds, contents_before_replacement)
+            actual = _transform_string_to_string(home_and_sds, contents_before_replacement)
             # ASSERT #
             expected = sut.HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE
             self.assertEqual(expected,
@@ -70,7 +77,7 @@ class TestSubDirRelationshipBetweenHomeActAndHomeCase(unittest.TestCase):
                 name_of_sub_dir__rel_home_env_var=environment_variables.ENV_VAR_HOME_ACT,
             )
             # ACT #
-            actual = sut.replace(home_and_sds, generator.contents_before_replacement(home_and_sds))
+            actual = _transform_string_to_string(home_and_sds, generator.contents_before_replacement(home_and_sds))
             # ASSERT #
             expected = generator.expected_contents_after_replacement(home_and_sds)
             self.assertEqual(expected,
@@ -88,7 +95,7 @@ class TestSubDirRelationshipBetweenHomeActAndHomeCase(unittest.TestCase):
                 name_of_sub_dir__rel_home_env_var=environment_variables.ENV_VAR_HOME_CASE,
             )
             # ACT #
-            actual = sut.replace(home_and_sds, generator.contents_before_replacement(home_and_sds))
+            actual = _transform_string_to_string(home_and_sds, generator.contents_before_replacement(home_and_sds))
             # ASSERT #
             expected = generator.expected_contents_after_replacement(home_and_sds)
             self.assertEqual(expected,
