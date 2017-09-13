@@ -87,7 +87,7 @@ class ParseFileContentsAssertionPart:
         return equality.EqualityAssertionPart(
             self.expectation_type,
             expected_contents,
-            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(CONTENTS_ATTRIBUTE))
+        )
 
     def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
