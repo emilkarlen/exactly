@@ -1,7 +1,8 @@
 import pathlib
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
+    FilePropertyDescriptorConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck, \
     DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
@@ -12,13 +13,19 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 
 class ResolvedComparisonActualFile(tuple):
     def __new__(cls,
-                actual_file: ComparisonActualFile,
-                actual_file_path: pathlib.Path):
-        return tuple.__new__(cls, (actual_file, actual_file_path))
+                actual_file_path: pathlib.Path,
+                checked_file_describer: FilePropertyDescriptorConstructor,
+                ):
+        return tuple.__new__(cls, (actual_file_path, checked_file_describer))
 
     @property
-    def key(self) -> str:
+    def actual_file_path(self) -> pathlib.Path:
         return self[0]
+
+    @property
+    def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
+        return self[0]
+
 
 class FileExistenceAssertionPart(AssertionPart):
     """
@@ -41,7 +48,7 @@ class FileExistenceAssertionPart(AssertionPart):
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               not_used,
-              ) -> pathlib.Path:
+              ) -> ResolvedComparisonActualFile:
         """
         :return: The resolved path
         """
@@ -49,7 +56,8 @@ class FileExistenceAssertionPart(AssertionPart):
         if failure_message:
             raise PfhFailException(failure_message)
 
-        return self._actual_file.file_path(environment)
+        return ResolvedComparisonActualFile(self._actual_file.file_path(environment),
+                                            self._actual_file.property_descriptor_constructor)
 
 
 class FileTransformerAsAssertionPart(AssertionPart):
@@ -72,17 +80,19 @@ class FileTransformerAsAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              file_to_transform: pathlib.Path,
+              file_to_transform: ResolvedComparisonActualFile,
               ) -> FileToCheck:
         """
         :param file_to_transform: The file that should be transformed
         :return: The path of the transformed file.
         """
-        if not file_to_transform.is_file():
-            raise PfhHardErrorException('Not an existing regular file: ' + str(file_to_transform))
+        actual_file_path = file_to_transform.actual_file_path
+        if not actual_file_path.is_file():
+            raise PfhHardErrorException('Not an existing regular file: ' + str(actual_file_path))
 
         lines_transformer = self._lines_transformer_resolver.resolve(environment.symbols)
-        return FileToCheck(file_to_transform,
+        return FileToCheck(actual_file_path,
+                           file_to_transform.checked_file_describer,
                            environment,
                            lines_transformer,
                            DestinationFilePathGetter())
