@@ -117,8 +117,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         selection = parse_file_matcher.selection_syntax_element_description()
 
-        matcher = parse_file_matcher.matcher_syntax_element_description()
-
         mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                                      instruction_arguments.PATH_ARGUMENT)
         actual_file_arg_sed = SyntaxElementDescription(
@@ -142,15 +140,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         return ([negation,
                  selection,
-                 matcher] +
+                 ] +
                 expression_parse.syntax_element_descriptions() +
                 [actual_file_arg_sed,
                  relativity_of_actual_file_sed,
                  ])
 
     def _see_also_cross_refs(self) -> list:
+        from exactly_lib.help_texts.entity import types
+        types = [types.FILE_MATCHER_CONCEPT_INFO.cross_reference_target]
         concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
         refs = rel_path_doc.cross_refs_for_concepts(concepts)
+        refs.extend(types)
         refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
         return refs
 
