@@ -1,7 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
-from exactly_lib.instructions.assert_.utils.file_contents import parsing
+from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
@@ -52,5 +52,5 @@ class ParserForContentsForActualValue(InstructionParser):
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser, TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
             token_parser.require_is_not_at_eol('Missing file comparison argument')
-            return parsing.parse_comparison_operation(self.comparison_actual_value,
-                                                      token_parser)
+            return parse_instruction.parse_instruction(self.comparison_actual_value,
+                                                       token_parser)

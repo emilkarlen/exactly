@@ -1,16 +1,13 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCooperativeAssertionParts, \
-    AssertionInstructionFromAssertionPart
+    AssertionPart
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_cmp_op
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileExistenceAssertionPart, \
-    FileTransformerAsAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
-from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
@@ -21,15 +18,17 @@ from exactly_lib.util.messages import expected_found
 from exactly_lib.util.messages import grammar_options_syntax
 
 
-def parse_comparison_operation(actual_file: ComparisonActualFile,
-                               token_parser: TokenParserPrime) -> AssertPhaseInstruction:
+def parse(actual_file: ComparisonActualFile,
+          token_parser: TokenParserPrime) -> AssertionPart:
+    """
+    :return: A :class:`AssertionPart` that takes an FileToCheck as (last) argument.
+    """
     actual_lines_transformer = parse_lines_transformer.parse_optional_transformer_resolver(token_parser)
     expectation_type = token_parser.consume_optional_negation_operator()
     file_contents_assertion_part = ParseFileContentsAssertionPart(actual_file, expectation_type).parse(
         token_parser)
-    return _instruction_with_exist_trans_and_assertion_part(actual_file,
-                                                            actual_lines_transformer,
-                                                            file_contents_assertion_part)
+    return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),
+                                                file_contents_assertion_part])
 
 
 INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
@@ -150,25 +149,3 @@ def _must_be_non_negative_integer(actual: int) -> str:
         return expected_found.unexpected_lines(INTEGER_ARGUMENT_DESCRIPTION,
                                                str(actual))
     return None
-
-
-def _instruction_with_exist_trans_and_assertion_part(actual_file: ComparisonActualFile,
-                                                     actual_lines_transformer_resolver: LinesTransformerResolver,
-                                                     checker_of_transformed_file_path: ActualFileAssertionPart
-                                                     ) -> AssertPhaseInstruction:
-    """
-    An instruction that
-
-     - checks the existence of a file,
-     - transform it using a given transformer
-     - performs a last custom check on the transformed file
-    """
-
-    return AssertionInstructionFromAssertionPart(
-        SequenceOfCooperativeAssertionParts([
-            FileExistenceAssertionPart(actual_file),
-            FileTransformerAsAssertionPart(actual_lines_transformer_resolver),
-            checker_of_transformed_file_path,
-        ]),
-        lambda env: 'not used'
-    )
