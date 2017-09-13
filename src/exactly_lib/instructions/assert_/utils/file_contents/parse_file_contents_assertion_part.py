@@ -3,7 +3,6 @@ from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCoop
     AssertionPart
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_cmp_op
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
@@ -17,15 +16,13 @@ from exactly_lib.util.messages import expected_found
 from exactly_lib.util.messages import grammar_options_syntax
 
 
-def parse(actual_file: FilePropertyDescriptorConstructor,
-          token_parser: TokenParserPrime) -> AssertionPart:
+def parse(token_parser: TokenParserPrime) -> AssertionPart:
     """
     :return: A :class:`AssertionPart` that takes an FileToCheck as (last) argument.
     """
     actual_lines_transformer = parse_lines_transformer.parse_optional_transformer_resolver(token_parser)
     expectation_type = token_parser.consume_optional_negation_operator()
-    parser_of_contents_assertion_part = ParseFileContentsAssertionPart(actual_file,
-                                                                       expectation_type)
+    parser_of_contents_assertion_part = ParseFileContentsAssertionPart(expectation_type)
     file_contents_assertion_part = parser_of_contents_assertion_part.parse(token_parser)
     return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),
                                                 file_contents_assertion_part])
@@ -47,11 +44,8 @@ _FORMAT_MAP = {
 
 
 class ParseFileContentsAssertionPart:
-    def __init__(self,
-                 actual_file_prop_descriptor_constructor: FilePropertyDescriptorConstructor,
-                 expectation_type: ExpectationType):
+    def __init__(self, expectation_type: ExpectationType):
         self.expectation_type = expectation_type
-        self.actual_file_prop_descriptor_constructor = actual_file_prop_descriptor_constructor
         self.parsers = {
             instruction_options.EMPTY_ARGUMENT: self._parse_emptiness_checker,
             instruction_options.EQUALS_ARGUMENT: self._parse_equals_checker,

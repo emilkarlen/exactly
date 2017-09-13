@@ -16,8 +16,7 @@ def parse_instruction(actual_file: ComparisonActualFile,
      - transform it using a given transformer
      - performs a last custom check on the transformed file
     """
-    actual_file_assertion_part = parse_file_contents_assertion_part.parse(actual_file.property_descriptor_constructor,
-                                                                          token_parser)
+    actual_file_assertion_part = parse_file_contents_assertion_part.parse(token_parser)
 
     return AssertionInstructionFromAssertionPart(
         SequenceOfCooperativeAssertionParts([
