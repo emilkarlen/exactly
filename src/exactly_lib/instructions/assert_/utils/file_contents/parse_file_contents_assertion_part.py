@@ -9,7 +9,6 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
-from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import SourceType
@@ -92,20 +91,18 @@ class ParseFileContentsAssertionPart:
     def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
 
-        failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.ANY_LINE_ARGUMENT,
-                                                                             reg_ex_arg.source_string)
         from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
-        return line_matches.assertion_part_for_any_line_matches(self.expectation_type, failure_resolver,
-                                                                reg_ex)
+        return line_matches.assertion_part_for_any_line_matches(self.expectation_type,
+                                                                reg_ex,
+                                                                reg_ex_arg.source_string)
 
     def _parse_every_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
 
-        failure_resolver = self._diff_failure_info_resolver_for_line_matches(instruction_options.EVERY_LINE_ARGUMENT,
-                                                                             reg_ex_arg.source_string)
         from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
-        return line_matches.assertion_part_for_every_line_matches(self.expectation_type, failure_resolver,
-                                                                  reg_ex)
+        return line_matches.assertion_part_for_every_line_matches(self.expectation_type,
+                                                                  reg_ex,
+                                                                  reg_ex_arg.source_string)
 
     def _parse_num_lines_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
@@ -129,20 +126,6 @@ class ParseFileContentsAssertionPart:
         token_parser.consume_current_line_as_plain_string()
 
         return reg_ex_arg, compile_regex(reg_ex_arg.string)
-
-    def _diff_failure_info_resolver_for_line_matches(self,
-                                                     any_or_every_keyword: str,
-                                                     reg_ex_arg: str) -> diff_msg_utils.DiffFailureInfoResolver:
-        return diff_msg_utils.DiffFailureInfoResolver(
-            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(CONTENTS_ATTRIBUTE),
-            self.expectation_type,
-            diff_msg_utils.expected_constant(' '.join([
-                any_or_every_keyword,
-                instruction_options.LINE_ARGUMENT,
-                instruction_options.MATCHES_ARGUMENT,
-                instruction_arguments.REG_EX.name,
-                reg_ex_arg])
-            ))
 
 
 def _must_be_non_negative_integer(actual: int) -> str:
