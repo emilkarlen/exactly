@@ -2,6 +2,7 @@ import pathlib
 from contextlib import contextmanager
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
@@ -32,14 +33,20 @@ class FileToCheck:
 
     def __init__(self,
                  original_file_path: pathlib.Path,
+                 checked_file_describer: FilePropertyDescriptorConstructor,
                  environment: InstructionEnvironmentForPostSdsStep,
                  lines_transformer: LinesTransformer,
                  destination_file_path_getter: DestinationFilePathGetter):
-        self._environment = environment
         self._original_file_path = original_file_path
+        self._checked_file_describer = checked_file_describer
+        self._environment = environment
         self._transformed_file_path = None
         self._lines_transformer = lines_transformer
         self._destination_file_path_getter = destination_file_path_getter
+
+    @property
+    def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
+        return self._checked_file_describer
 
     @property
     def original_file_path(self) -> pathlib.Path:

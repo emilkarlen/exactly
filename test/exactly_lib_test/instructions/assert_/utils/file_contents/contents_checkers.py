@@ -7,6 +7,8 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.named_element.restriction import ValueTypeRestriction
 from exactly_lib.test_case import os_services as oss
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor, \
+    property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
@@ -55,7 +57,10 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
         # ACT & ASSERT #
         with self.assertRaises(PfhHardErrorException):
             assertion_part.check(self.environment, self.the_os_services,
-                                 pathlib.Path('a file that does not exist'))
+                                 sut.ResolvedComparisonActualFile(
+                                     pathlib.Path('a file that does not exist'),
+                                     FilePropertyDescriptorConstructorTestImpl(),
+                                 ))
 
     def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_exist_but_is_not_a_regular_file(self):
         # ARRANGE #
@@ -65,7 +70,11 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
         with tmp_dir() as path_of_existing_directory:
             with self.assertRaises(PfhHardErrorException):
                 assertion_part.check(self.environment, self.the_os_services,
-                                     path_of_existing_directory)
+                                     sut.ResolvedComparisonActualFile(
+                                         path_of_existing_directory,
+                                         FilePropertyDescriptorConstructorTestImpl(),
+                                     )
+                                     )
 
 
 class LinesTransformerResolverWithReferences(LinesTransformerResolver):
@@ -78,3 +87,11 @@ class LinesTransformerResolverWithReferences(LinesTransformerResolver):
     @property
     def references(self) -> list:
         return self._references
+
+
+class FilePropertyDescriptorConstructorTestImpl(sut.FilePropertyDescriptorConstructor):
+    def __init__(self):
+        pass
+
+    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
+        return property_descriptor_with_just_a_constant_name('constant property name')
