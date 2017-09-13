@@ -3,8 +3,7 @@ from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCoop
     AssertionPart
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_cmp_op
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor, \
-    CONTENTS_ATTRIBUTE
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
@@ -69,9 +68,7 @@ class ParseFileContentsAssertionPart:
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents.parts import emptieness
-        return emptieness.EmptinessAssertionPart(
-            self.expectation_type,
-            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(CONTENTS_ATTRIBUTE))
+        return emptieness.EmptinessAssertionPart(self.expectation_type)
 
     def _parse_equals_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         token_parser.require_is_not_at_eol(parse_here_doc_or_file_ref.MISSING_SOURCE)
