@@ -115,8 +115,7 @@ class ParseFileContentsAssertionPart:
         from exactly_lib.instructions.assert_.utils.file_contents.parts.num_lines import \
             assertion_part_for_num_lines
         return assertion_part_for_num_lines(self.expectation_type,
-                                            cmp_op_and_rhs,
-                                            )
+                                            cmp_op_and_rhs)
 
     @staticmethod
     def _parse_line_matches_tokens_and_regex(token_parser: TokenParserPrime):
