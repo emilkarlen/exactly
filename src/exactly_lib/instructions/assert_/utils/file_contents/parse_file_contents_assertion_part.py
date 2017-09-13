@@ -3,7 +3,8 @@ from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCoop
     AssertionPart
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_cmp_op
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor, \
+    CONTENTS_ATTRIBUTE
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
@@ -18,15 +19,16 @@ from exactly_lib.util.messages import expected_found
 from exactly_lib.util.messages import grammar_options_syntax
 
 
-def parse(actual_file: ComparisonActualFile,
+def parse(actual_file: FilePropertyDescriptorConstructor,
           token_parser: TokenParserPrime) -> AssertionPart:
     """
     :return: A :class:`AssertionPart` that takes an FileToCheck as (last) argument.
     """
     actual_lines_transformer = parse_lines_transformer.parse_optional_transformer_resolver(token_parser)
     expectation_type = token_parser.consume_optional_negation_operator()
-    file_contents_assertion_part = ParseFileContentsAssertionPart(actual_file, expectation_type).parse(
-        token_parser)
+    parser_of_contents_assertion_part = ParseFileContentsAssertionPart(actual_file,
+                                                                       expectation_type)
+    file_contents_assertion_part = parser_of_contents_assertion_part.parse(token_parser)
     return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),
                                                 file_contents_assertion_part])
 
@@ -48,10 +50,10 @@ _FORMAT_MAP = {
 
 class ParseFileContentsAssertionPart:
     def __init__(self,
-                 actual_file: ComparisonActualFile,
+                 actual_file_prop_descriptor_constructor: FilePropertyDescriptorConstructor,
                  expectation_type: ExpectationType):
         self.expectation_type = expectation_type
-        self.actual_file = actual_file
+        self.actual_file_prop_descriptor_constructor = actual_file_prop_descriptor_constructor
         self.parsers = {
             instruction_options.EMPTY_ARGUMENT: self._parse_emptiness_checker,
             instruction_options.EQUALS_ARGUMENT: self._parse_equals_checker,
@@ -68,8 +70,9 @@ class ParseFileContentsAssertionPart:
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents.parts import emptieness
-        return emptieness.EmptinessAssertionPart(self.expectation_type,
-                                                 self.actual_file.property_descriptor())
+        return emptieness.EmptinessAssertionPart(
+            self.expectation_type,
+            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(CONTENTS_ATTRIBUTE))
 
     def _parse_equals_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         token_parser.require_is_not_at_eol(parse_here_doc_or_file_ref.MISSING_SOURCE)
@@ -81,9 +84,10 @@ class ParseFileContentsAssertionPart:
             token_parser.consume_current_line_as_plain_string()
 
         from exactly_lib.instructions.assert_.utils.file_contents.parts import equality
-        return equality.EqualityAssertionPart(self.expectation_type,
-                                              expected_contents,
-                                              self.actual_file.property_descriptor())
+        return equality.EqualityAssertionPart(
+            self.expectation_type,
+            expected_contents,
+            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(CONTENTS_ATTRIBUTE))
 
     def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
@@ -110,11 +114,12 @@ class ParseFileContentsAssertionPart:
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents.parts.num_lines import \
             assertion_part_for_num_lines
-        return assertion_part_for_num_lines(self.expectation_type,
-                                            cmp_op_and_rhs,
-                                            self.actual_file.property_descriptor(
-                                                instruction_options.NUM_LINES_DESCRIPTION),
-                                            )
+        return assertion_part_for_num_lines(
+            self.expectation_type,
+            cmp_op_and_rhs,
+            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(
+                instruction_options.NUM_LINES_DESCRIPTION),
+        )
 
     @staticmethod
     def _parse_line_matches_tokens_and_regex(token_parser: TokenParserPrime):
@@ -133,7 +138,7 @@ class ParseFileContentsAssertionPart:
                                                      any_or_every_keyword: str,
                                                      reg_ex_arg: str) -> diff_msg_utils.DiffFailureInfoResolver:
         return diff_msg_utils.DiffFailureInfoResolver(
-            self.actual_file.property_descriptor(),
+            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(CONTENTS_ATTRIBUTE),
             self.expectation_type,
             diff_msg_utils.expected_constant(' '.join([
                 any_or_every_keyword,

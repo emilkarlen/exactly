@@ -10,6 +10,16 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
 
+class ResolvedComparisonActualFile(tuple):
+    def __new__(cls,
+                actual_file: ComparisonActualFile,
+                actual_file_path: pathlib.Path):
+        return tuple.__new__(cls, (actual_file, actual_file_path))
+
+    @property
+    def key(self) -> str:
+        return self[0]
+
 class FileExistenceAssertionPart(AssertionPart):
     """
     Checks existence of a :class:`ComparisonActualFile`,
