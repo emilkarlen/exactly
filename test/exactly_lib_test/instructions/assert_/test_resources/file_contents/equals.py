@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
+    EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType

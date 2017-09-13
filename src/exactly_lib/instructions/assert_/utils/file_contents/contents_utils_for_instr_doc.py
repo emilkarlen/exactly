@@ -11,7 +11,8 @@ from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.instructions.assert_.utils.expression import parse
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
-from exactly_lib.instructions.assert_.utils.file_contents.parsing import EXPECTED_FILE_REL_OPT_ARG_CONFIG, \
+from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
+    EXPECTED_FILE_REL_OPT_ARG_CONFIG, \
     INTEGER_ARGUMENT_DESCRIPTION
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts

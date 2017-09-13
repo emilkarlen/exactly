@@ -4,9 +4,9 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.instructions.assert_.utils.file_contents import parsing
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
-    ActComparisonActualFileForFileRef
+from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.section_document.parse_source import ParseSource
@@ -98,8 +98,8 @@ class Parser(InstructionParser):
 
             comparison_target = parse_actual_file_argument_from_token_parser(token_parser)
             token_parser.require_is_not_at_eol('Missing file comparison argument')
-            return parsing.parse_comparison_operation(comparison_target,
-                                                      token_parser)
+            return parse_instruction.parse_instruction(comparison_target,
+                                                       token_parser)
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
