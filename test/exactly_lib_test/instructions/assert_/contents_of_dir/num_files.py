@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.expression import comparators
@@ -10,8 +11,11 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import \
-    TheInstructionArgumentsVariantConstructorForNotAndRelOpt, TestCaseBaseForParser, TestCommonFailureConditionsBase
+    TestCaseBaseForParser, TestCommonFailureConditionsBase
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import \
+    TheInstructionArgumentsVariantConstructorForNotAndRelOpt, TestParseInvalidSyntaxBase
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
@@ -22,13 +26,18 @@ from exactly_lib_test.named_element.test_resources.file_matcher import is_file_m
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir
+from exactly_lib_test.test_resources.file_structure import Dir
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestParseInvalidSyntax),
+
         unittest.makeSuite(TestTestCommonFailureConditionsForNumFiles),
+
         unittest.makeSuite(TestDifferentSourceVariantsForNumFiles),
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles),
         unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidationForNumFiles),
@@ -47,6 +56,30 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
         return 'ignored-name-of-dir-to-check {num_files} {condition}'.format(
             num_files=sut.NUM_FILES_CHECK_ARGUMENT,
             condition=condition_str)
+
+
+class TestParseInvalidSyntax(TestParseInvalidSyntaxBase):
+    @property
+    def test_cases_with_negation_operator_place_holder(self) -> list:
+        return [
+            NameAndValue(
+                'missing argument for num-files option ' + sut.SELECTION_OPTION.name.long,
+                'file-name <not_opt> {num_files}'.format(
+                    selection_option=option_syntax.option_syntax(
+                        instruction_arguments.SELECTION_OPTION.name),
+                    num_files=sut.NUM_FILES_CHECK_ARGUMENT
+                )
+            ),
+            NameAndValue(
+                'superfluous argument for num-files option ' + sut.SELECTION_OPTION.name.long,
+                'file-name <not_opt> {num_files} {eq} 10 superfluous'.format(
+                    selection_option=option_syntax.option_syntax(
+                        instruction_arguments.SELECTION_OPTION.name),
+                    num_files=sut.NUM_FILES_CHECK_ARGUMENT,
+                    eq=comparators.EQ.name,
+                )
+            ),
+        ]
 
 
 class TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles(expression.TestFailingValidationPreSdsAbstract):
