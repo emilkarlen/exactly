@@ -11,16 +11,19 @@ from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 
-_CONTENTS_PROPERTY = 'contents'
+CONTENTS_ATTRIBUTE = 'contents'
+
+
+class FilePropertyDescriptorConstructor:
+    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
+        raise NotImplementedError('todo')
 
 
 class ComparisonActualFile:
-    def property_descriptor(self, file_property: str = _CONTENTS_PROPERTY) -> PropertyDescriptor:
-        return path_value_description(self.property_name(file_property),
-                                      self.file_ref_resolver())
-
-    def property_name(self, file_property: str = _CONTENTS_PROPERTY) -> str:
-        return file_property + ' of ' + self.object_name()
+    @property
+    def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
+        return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
+                                                                         self.object_name())
 
     def object_name(self) -> str:
         raise NotImplementedError('abstract method')
@@ -41,6 +44,21 @@ class ComparisonActualFile:
     @property
     def references(self) -> list:
         return []
+
+
+class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
+    def __init__(self,
+                 file_ref: FileRefResolver,
+                 object_name: str):
+        self._file_ref = file_ref
+        self._object_name = object_name
+
+    def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
+        return path_value_description(self._property_name(contents_attribute),
+                                      self._file_ref)
+
+    def _property_name(self, contents_attribute: str) -> str:
+        return contents_attribute + ' of ' + self._object_name
 
 
 class ActComparisonActualFileForFileRef(ComparisonActualFile):
