@@ -114,12 +114,9 @@ class ParseFileContentsAssertionPart:
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents.parts.num_lines import \
             assertion_part_for_num_lines
-        return assertion_part_for_num_lines(
-            self.expectation_type,
-            cmp_op_and_rhs,
-            self.actual_file_prop_descriptor_constructor.construct_for_contents_attribute(
-                instruction_options.NUM_LINES_DESCRIPTION),
-        )
+        return assertion_part_for_num_lines(self.expectation_type,
+                                            cmp_op_and_rhs,
+                                            )
 
     @staticmethod
     def _parse_line_matches_tokens_and_regex(token_parser: TokenParserPrime):
