@@ -24,7 +24,7 @@ class ResolvedComparisonActualFile(tuple):
 
     @property
     def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
-        return self[0]
+        return self[1]
 
 
 class FileExistenceAssertionPart(AssertionPart):

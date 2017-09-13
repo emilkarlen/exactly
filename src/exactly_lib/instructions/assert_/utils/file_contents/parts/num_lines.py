@@ -9,26 +9,22 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
     PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.expectation_type import ExpectationType
 
 
 def assertion_part_for_num_lines(expectation_type: ExpectationType,
                                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
-                                 property_to_check: PropertyDescriptor,
                                  ) -> ActualFileAssertionPart:
-    return FileAssertionPart(expectation_type, property_to_check, cmp_op_and_rhs)
+    return FileAssertionPart(expectation_type, cmp_op_and_rhs)
 
 
 class FileAssertionPart(ActualFileAssertionPart):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 property_to_check: PropertyDescriptor,
                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand):
         super().__init__(_PreOrPostSdsValidator(cmp_op_and_rhs.right_operand.validator))
         self.expectation_type = expectation_type
-        self.property_to_check = property_to_check
         self.cmp_op_and_rhs = cmp_op_and_rhs
 
     def check(self,
@@ -36,7 +32,8 @@ class FileAssertionPart(ActualFileAssertionPart):
               os_services: OsServices,
               file_to_check: FileToCheck) -> FileToCheck:
         comparison_handler = comparison_structures.ComparisonHandler(
-            self.property_to_check,
+            file_to_check.checked_file_describer.construct_for_contents_attribute(
+                instruction_options.NUM_LINES_DESCRIPTION),
             self.expectation_type,
             NumLinesResolver(file_to_check),
             self.cmp_op_and_rhs.operator,
