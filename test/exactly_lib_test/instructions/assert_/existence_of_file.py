@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
-    InstructionArgumentsVariantConstructor, InstructionChecker
+    InstructionArgumentsVariantConstructorWithTemplateStringBase, InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     with_negation_argument, PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
@@ -79,7 +79,7 @@ class TestParseInvalidSyntax(instruction_check.TestCaseBase):
                         parser.parse(source)
 
 
-class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConstructor):
+class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConstructorWithTemplateStringBase):
     """
     Constructs the instruction argument for a given negation-option config
     and rel-opt config.

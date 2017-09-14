@@ -29,6 +29,19 @@ class InstructionArgumentsVariantConstructor:
     and rel-opt config.
     """
 
+    def apply(self,
+              etc: ExpectationTypeConfig,
+              rel_opt_config: RelativityOptionConfiguration,
+              ) -> str:
+        raise NotImplementedError('abstract method')
+
+
+class InstructionArgumentsVariantConstructorWithTemplateStringBase(InstructionArgumentsVariantConstructor):
+    """
+    Constructs the instruction argument for a given negation-option config
+    and rel-opt config.
+    """
+
     def __init__(self, instruction_argument_template: str):
         self.instruction_argument_template = instruction_argument_template
 
