@@ -13,7 +13,8 @@ from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    TheInstructionArgumentsVariantConstructorForNotAndRelOpt
+    arguments_with_selection_options, \
+    CompleteArgumentsConstructor, NumFilesAssertionVariant
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
     TestCaseBaseForParser, TestCommonFailureConditionsBase
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
@@ -236,7 +237,7 @@ class TestDifferentSourceVariantsForNumFiles(TestCaseBaseForParser):
 
 class TestTestCommonFailureConditionsForNumFiles(TestCommonFailureConditionsBase, TestCaseBaseForParser):
     def _arguments_for_valid_syntax(self,
-                                    path_to_check: str) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
+                                    path_to_check: str) -> CompleteArgumentsConstructor:
         return argument_constructor_for_num_files_check(path_to_check,
                                                         _int_condition(comparators.EQ, 1))
 
@@ -249,19 +250,13 @@ def argument_constructor_for_num_files_check(file_name: str,
                                              name_option_pattern: str = '',
                                              type_matcher: FileType = None,
                                              named_matcher: str = '',
-                                             ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
-    selection = selection_arguments(name_option_pattern,
-                                    type_matcher,
-                                    named_matcher)
-
-    return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
-        '<rel_opt> {file_name} {selection} <not_opt> {num_files} {num_files_condition}'.format(
-            file_name=file_name,
-            selection=selection,
-            num_files=sut.NUM_FILES_CHECK_ARGUMENT,
-            num_files_condition=int_condition,
-
-        )
+                                             ) -> CompleteArgumentsConstructor:
+    return arguments_with_selection_options(
+        file_name,
+        NumFilesAssertionVariant(int_condition),
+        name_option_pattern=name_option_pattern,
+        type_matcher=type_matcher,
+        named_matcher=named_matcher,
     )
 
 
