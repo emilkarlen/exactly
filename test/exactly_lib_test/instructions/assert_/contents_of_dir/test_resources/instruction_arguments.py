@@ -114,11 +114,16 @@ def replace_not_op(etc: ExpectationTypeConfig, s: str) -> str:
     return s.replace('<not_opt>', etc.nothing__if_positive__not_option__if_negative)
 
 
+def arguments_constructor_for_variant(path: str,
+                                      variant: AssertionVariantArgumentsConstructor) -> CompleteArgumentsConstructor:
+    return CompleteArgumentsConstructor(
+        CommonArgumentsConstructor(path),
+        variant)
+
+
 def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfiguration,
                                               file_name: str) -> str:
-    complete_args = CompleteArgumentsConstructor(
-        CommonArgumentsConstructor(file_name),
-        EmptyAssertionVariant()
-    )
+    complete_args = arguments_constructor_for_variant(file_name,
+                                                      EmptyAssertionVariant())
     return complete_args.apply(ExpectationTypeConfig(ExpectationType.POSITIVE),
                                rel_opt)
