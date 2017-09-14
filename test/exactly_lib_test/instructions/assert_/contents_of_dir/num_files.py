@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.expression import comparators
@@ -11,14 +10,10 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
     arguments_with_selection_options, \
-    CompleteArgumentsConstructor, NumFilesAssertionVariant
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
-    TestCaseBaseForParser, TestCommonFailureConditionsBase
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
-    TestParseInvalidSyntaxBase
+    CompleteArgumentsConstructor, NumFilesAssertionVariant, AssertionVariantArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
@@ -31,7 +26,6 @@ from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments i
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.file_structure import Dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -45,6 +39,12 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles),
         unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidationForNumFiles),
     ])
+
+
+class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
+    @property
+    def arbitrary_assertion_variant(self) -> AssertionVariantArgumentsConstructor:
+        return NumFilesAssertionVariant(_int_condition(comparators.EQ, 0))
 
 
 class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(
@@ -61,28 +61,14 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
             condition=condition_str)
 
 
-class TestParseInvalidSyntax(TestParseInvalidSyntaxBase):
-    @property
-    def test_cases_with_negation_operator_place_holder(self) -> list:
-        return [
-            NameAndValue(
-                'missing argument for num-files option ' + sut.SELECTION_OPTION.name.long,
-                'file-name <not_opt> {num_files}'.format(
-                    selection_option=option_syntax.option_syntax(
-                        instruction_arguments.SELECTION_OPTION.name),
-                    num_files=sut.NUM_FILES_CHECK_ARGUMENT
-                )
-            ),
-            NameAndValue(
-                'superfluous argument for num-files option ' + sut.SELECTION_OPTION.name.long,
-                'file-name <not_opt> {num_files} {eq} 10 superfluous'.format(
-                    selection_option=option_syntax.option_syntax(
-                        instruction_arguments.SELECTION_OPTION.name),
-                    num_files=sut.NUM_FILES_CHECK_ARGUMENT,
-                    eq=comparators.EQ.name,
-                )
-            ),
-        ]
+class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
+                             TestWithAssertionVariantForEmpty):
+    pass
+
+
+class TestTestCommonFailureConditionsForNumFiles(tr.TestCommonFailureConditionsBase,
+                                                 TestWithAssertionVariantForEmpty):
+    pass
 
 
 class TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles(expression.TestFailingValidationPreSdsAbstract):
@@ -173,7 +159,7 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
         assertion.apply_without_message(self, actual_symbol_references)
 
 
-class TestDifferentSourceVariantsForNumFiles(TestCaseBaseForParser):
+class TestDifferentSourceVariantsForNumFiles(tr.TestCaseBaseForParser):
     def test_file_is_directory_that_has_expected_number_of_files(self):
         directory_with_one_file = Dir('name-of-dir', [empty_file('a-file-in-checked-dir')])
 
@@ -233,16 +219,6 @@ class TestDifferentSourceVariantsForNumFiles(TestCaseBaseForParser):
             main_result_for_positive_expectation=PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root,
         )
-
-
-class TestTestCommonFailureConditionsForNumFiles(TestCommonFailureConditionsBase, TestCaseBaseForParser):
-    def _arguments_for_valid_syntax(self,
-                                    path_to_check: str) -> CompleteArgumentsConstructor:
-        return argument_constructor_for_num_files_check(path_to_check,
-                                                        _int_condition(comparators.EQ, 1))
-
-    def _get_unittest_test_case(self) -> unittest.TestCase:
-        return self
 
 
 def argument_constructor_for_num_files_check(file_name: str,
