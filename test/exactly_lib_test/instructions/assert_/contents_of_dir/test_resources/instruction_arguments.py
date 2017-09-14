@@ -49,7 +49,7 @@ class CommonArgumentsConstructor(InstructionArgumentsVariantConstructor):
 
     def _empty_if_no_file_matcher_otherwise_selection(self) -> str:
         if self._file_matcher:
-            return option_syntax(instruction_arguments.SELECTION_OPTION) + ' ' + self._file_matcher
+            return option_syntax(instruction_arguments.SELECTION_OPTION.name) + ' ' + self._file_matcher
         else:
             return ''
 
