@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import \
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
     TestParseInvalidSyntaxBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
