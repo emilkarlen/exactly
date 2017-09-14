@@ -8,10 +8,12 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import TestCaseBaseForParser, \
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
+    TheInstructionArgumentsVariantConstructorForNotAndRelOpt
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import TestCaseBaseForParser, \
     TestCommonFailureConditionsBase
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import \
-    TheInstructionArgumentsVariantConstructorForNotAndRelOpt, TestParseInvalidSyntaxBase
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
+    TestParseInvalidSyntaxBase
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to

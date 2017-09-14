@@ -12,10 +12,12 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import \
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
+    TheInstructionArgumentsVariantConstructorForNotAndRelOpt
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
     TestCaseBaseForParser, TestCommonFailureConditionsBase
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import \
-    TheInstructionArgumentsVariantConstructorForNotAndRelOpt, TestParseInvalidSyntaxBase
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
+    TestParseInvalidSyntaxBase
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail

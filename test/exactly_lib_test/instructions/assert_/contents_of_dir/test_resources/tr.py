@@ -1,14 +1,15 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
 from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
+    TheInstructionArgumentsVariantConstructorForNotAndRelOpt, replace_not_op, instruction_arguments_for_emptiness_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
-    InstructionChecker, InstructionArgumentsVariantConstructor
+    InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase
@@ -16,30 +17,10 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import equivalent_source_variants
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
-
-
-class TheInstructionArgumentsVariantConstructorForNotAndRelOpt(InstructionArgumentsVariantConstructor):
-    """
-    Constructs the instruction argument for a given negation-option config
-    and rel-opt config.
-    """
-
-    def apply(self,
-              etc: ExpectationTypeConfig,
-              rel_opt_config: RelativityOptionConfiguration,
-              ) -> str:
-        ret_val = self.instruction_argument_template.replace('<rel_opt>', rel_opt_config.option_string)
-        ret_val = replace_not_op(etc, ret_val)
-        return ret_val
-
-
-def replace_not_op(etc: ExpectationTypeConfig, s: str) -> str:
-    return s.replace('<not_opt>', etc.nothing__if_positive__not_option__if_negative)
 
 
 class TestCaseBaseForParser(unittest.TestCase):
@@ -131,14 +112,6 @@ class TestCommonFailureConditionsBase:
             instruction_argument_constructor,
             asrt_pfh.is_fail(),
             contents_of_relativity_option_root=contents_of_relativity_option_root)
-
-
-def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfiguration,
-                                              file_name: str) -> str:
-    return '{relativity_option} {file_name} {emptiness_assertion_argument}'.format(
-        relativity_option=rel_opt.option_string,
-        file_name=file_name,
-        emptiness_assertion_argument=EMPTINESS_CHECK_ARGUMENT)
 
 
 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
