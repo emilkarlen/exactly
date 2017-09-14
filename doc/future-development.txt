@@ -1,5 +1,53 @@
 -*- org -*-
 
+* dir-contents file check
+<2017-09-14 tor>
+** Syntax
+dir-contents DIR every file ! empty
+
+dir-contents DIR ! every file ! empty
+
+dir-contents DIR any file empty
+
+dir-contents DIR any file empty
+dir-contents DIR any file equals ...
+dir-contents DIR any file num-lines > 2
+dir-contents DIR any file --transformation FT any line matches
+
+dir-contents DIR (any|every) file contents CONTENTS-ASSERTION
+
+* file-contents: extensions to "line matches"
+<2017-09-14 tor>
+Make matching use "line matcher"
+
+(any|every) line matches LINE-MATCHER
+* new concept "syntax" for "global" syntax element descriptions?
+<2017-09-14 tor>
+
+exactly help syntax SYNTAX
+
+SYNTAX ::= regex
+         = here document
+         = shell syntax
+	 = contents assertion
+	 = symbol reference
+	 = file reference / path
+	 = SYMBOL TYPE ??
+
+Syntax for symbol types is now described under the type doc.
+They could be included in the "syntax" set, as an alternative
+way to get syntax; or the "syntax" description could be the
+definition of the syntax, whereas the "type" element describes
+the meaning of the type.
+Having it under "syntax" could make it easier to find syntax
+description by putting all syntax descriptions in the same place
+so that the user does not need to care about wheter the thing to
+find syntax for is a type or a "plain" "syntax" element.
+* new line-matcher for line numbers: range INT|INT:[INT]|:INT
+* transform instruction
+<2017-09-14 tor>
+
+transform PATH PATH [TRANSFORMER]
 * Make suites run in a hierarchical way, à la make
 <2016-12-22 tor>
 * Specify python actor executable via --python
@@ -7,18 +55,13 @@
 same functionality as for the "run" instruction.
 
 Is this useful?
+It might be useful when the test tests properties of the os-environment,
+rather than a program under development.
+In such cases, the "python actor" may be used to implement a tool that
+gathers the information to check.
 * env: Assign the output from a shell command to an env var
 <2016-12-22 tor>
 A way to allow more complex expressions.
-* Use other dir than "home" for referencing the SUT
-<2016-12-17 lör>
-Currently, "home" dir is used both for referencing test resources and the
-executable sut file.
-But test resources are related to test cases, but the sut is the same for many
-test cases.  Thus it is probable that these will be located in different
-places.
-This means that a new configuration parameter for the path of the sut, should
-be introduced.
 * "fixture" as an alternative to "setup" + "cleanup"
 <2016-03-22 tis>
 Ett "fixture" består av en setup-action och en cleanup-action.
@@ -112,21 +155,19 @@ katalog är identiskt (el innehåller som minst) en sådan hårdkodad filstruktu
 * Have setup in test suites
 <2016-12-22 tor>
 Both variants are usefull:
-  - setup that is executed once for each test case (thus included in each tc)
-  - setup that is executed once for the whole suite:
+  1 setup that is executed once for each test case (thus included in each tc)
+  2 setup that is executed once for the whole suite:
     [setup] and [cleanup] of the suite
+
+Option (1) may be difficult to implement, since each test is run in its
+own sandbox.
+
+** Implementation
+Setup instructions should be parsed and prepended to instructions from
+the test case file.
+This constitutes a kind of file inclusion.  Perhaps the easiest way to
+get some file inclusion mechanism.
 * suite: default values for configuration parameters
 <2016-12-22 tor>
 Any instruction in the test case "conf" phase could be possible to use in test
 suites, and would provide defaults to test cases.
-* run a test case with setup/conf from a suite
-<2016-12-22 tor>
-Since it is possible to configure how a test case is executed in a test suite,
-there is a problem of executing the test case on it's own, since the conf from
-the suite will not be used.
-
-A solution is to reference a suite on the command line:
-
-> exactly --suite the.suite the.case
-
-This would make all conf from the suite used.
