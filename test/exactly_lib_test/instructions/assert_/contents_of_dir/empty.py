@@ -2,14 +2,14 @@ import unittest
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    TheInstructionArgumentsVariantConstructorForNotAndRelOpt
+    CompleteArgumentsConstructor, CommonArgumentsConstructor, \
+    EmptyAssertionVariant
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import TestCaseBaseForParser, \
     TestCommonFailureConditionsBase
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
@@ -18,7 +18,8 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     PassOrFail
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments, \
+    selectors_arguments
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, sym_link
 from exactly_lib_test.test_resources.file_structure import empty_dir, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -111,7 +112,7 @@ class TestDifferentSourceVariantsForEmpty(TestCaseBaseForParser):
 
 class TestTestCommonFailureConditionsForEmpty(TestCommonFailureConditionsBase, TestCaseBaseForParser):
     def _arguments_for_valid_syntax(self,
-                                    path_to_check: str) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
+                                    path_to_check: str) -> CompleteArgumentsConstructor:
         return argument_constructor_for_emptiness_check(path_to_check)
 
     def _get_unittest_test_case(self) -> unittest.TestCase:
@@ -234,18 +235,15 @@ def argument_constructor_for_emptiness_check(file_name: str,
                                              name_option_pattern: str = '',
                                              type_matcher: FileType = None,
                                              named_matcher: str = '',
-                                             ) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
-    selection = selection_arguments(name_option_pattern,
-                                    type_matcher,
-                                    named_matcher)
+                                             ) -> CompleteArgumentsConstructor:
+    file_matcher = selectors_arguments(name_option_pattern,
+                                       type_matcher,
+                                       named_matcher)
 
-    return TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
-        '<rel_opt> {file_name} {selection} <not_opt> {empty}'.format(
-            file_name=file_name,
-            empty=EMPTINESS_CHECK_ARGUMENT,
-            selection=selection
-        )
-    )
+    return CompleteArgumentsConstructor(
+        CommonArgumentsConstructor(file_name,
+                                   file_matcher=file_matcher),
+        EmptyAssertionVariant())
 
 
 if __name__ == '__main__':
