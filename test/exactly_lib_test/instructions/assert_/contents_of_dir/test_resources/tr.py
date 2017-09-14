@@ -7,7 +7,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
     PathRelativityVariants, RelOptionType
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    TheInstructionArgumentsVariantConstructorForNotAndRelOpt, replace_not_op, instruction_arguments_for_emptiness_check
+    replace_not_op, instruction_arguments_for_emptiness_check, \
+    CompleteArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -81,7 +82,7 @@ class TestCommonFailureConditionsBase:
         raise NotImplementedError('abstract method')
 
     def _arguments_for_valid_syntax(
-            self, path_to_check: str) -> TheInstructionArgumentsVariantConstructorForNotAndRelOpt:
+            self, path_to_check: str) -> CompleteArgumentsConstructor:
         raise NotImplementedError('abstract method')
 
     def test_fail_WHEN_file_does_not_exist(self):

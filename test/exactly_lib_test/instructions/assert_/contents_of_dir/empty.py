@@ -8,8 +8,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    CompleteArgumentsConstructor, CommonArgumentsConstructor, \
-    EmptyAssertionVariant
+    CompleteArgumentsConstructor, EmptyAssertionVariant, arguments_with_selection_options
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import TestCaseBaseForParser, \
     TestCommonFailureConditionsBase
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
@@ -18,8 +17,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     PassOrFail
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments, \
-    selectors_arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, sym_link
 from exactly_lib_test.test_resources.file_structure import empty_dir, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -236,14 +234,13 @@ def argument_constructor_for_emptiness_check(file_name: str,
                                              type_matcher: FileType = None,
                                              named_matcher: str = '',
                                              ) -> CompleteArgumentsConstructor:
-    file_matcher = selectors_arguments(name_option_pattern,
-                                       type_matcher,
-                                       named_matcher)
-
-    return CompleteArgumentsConstructor(
-        CommonArgumentsConstructor(file_name,
-                                   file_matcher=file_matcher),
-        EmptyAssertionVariant())
+    return arguments_with_selection_options(
+        file_name,
+        EmptyAssertionVariant(),
+        name_option_pattern=name_option_pattern,
+        type_matcher=type_matcher,
+        named_matcher=named_matcher,
+    )
 
 
 if __name__ == '__main__':

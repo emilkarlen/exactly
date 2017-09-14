@@ -1,12 +1,14 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
-    InstructionArgumentsVariantConstructor, InstructionArgumentsVariantConstructorWithTemplateStringBase
+    InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selectors_arguments
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 
@@ -82,32 +84,13 @@ class EmptyAssertionVariant(AssertionVariantArgumentsConstructor):
 
 class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
     def __init__(self,
-                 comparator: str,
-                 right_operand: str):
-        self._comparator = comparator
-        self._right_operand = right_operand
+                 condition: str):
+        self._condition = condition
 
     def __str__(self):
-        return '{num_files} {operator} {right_operand}'.format(
+        return '{num_files} {condition}'.format(
             num_files=sut.NUM_FILES_CHECK_ARGUMENT,
-            operator=self._comparator,
-            right_operand=self._right_operand)
-
-
-class TheInstructionArgumentsVariantConstructorForNotAndRelOpt(
-    InstructionArgumentsVariantConstructorWithTemplateStringBase):
-    """
-    Constructs the instruction argument for a given expectation type config
-    and rel-opt config.
-    """
-
-    def apply(self,
-              etc: ExpectationTypeConfig,
-              rel_opt_config: RelativityOptionConfiguration,
-              ) -> str:
-        ret_val = self.instruction_argument_template.replace('<rel_opt>', rel_opt_config.option_string)
-        ret_val = replace_not_op(etc, ret_val)
-        return ret_val
+            condition=self._condition)
 
 
 def replace_not_op(etc: ExpectationTypeConfig, s: str) -> str:
@@ -127,3 +110,19 @@ def instruction_arguments_for_emptiness_check(rel_opt: RelativityOptionConfigura
                                                       EmptyAssertionVariant())
     return complete_args.apply(ExpectationTypeConfig(ExpectationType.POSITIVE),
                                rel_opt)
+
+
+def arguments_with_selection_options(file_name: str,
+                                     assertion_variant: AssertionVariantArgumentsConstructor,
+                                     name_option_pattern: str = '',
+                                     type_matcher: FileType = None,
+                                     named_matcher: str = '',
+                                     ) -> CompleteArgumentsConstructor:
+    file_matcher = selectors_arguments(name_option_pattern,
+                                       type_matcher,
+                                       named_matcher)
+
+    return CompleteArgumentsConstructor(
+        CommonArgumentsConstructor(file_name,
+                                   file_matcher=file_matcher),
+        assertion_variant)
