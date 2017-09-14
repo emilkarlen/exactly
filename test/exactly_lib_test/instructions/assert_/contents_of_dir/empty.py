@@ -1,18 +1,13 @@
 import unittest
 
-from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
-    CompleteArgumentsConstructor, EmptyAssertionVariant, arguments_with_selection_options
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import TestCaseBaseForParser, \
-    TestCommonFailureConditionsBase
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.tr import \
-    TestParseInvalidSyntaxBase
+    CompleteArgumentsConstructor, EmptyAssertionVariant, arguments_with_selection_options, \
+    AssertionVariantArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
@@ -20,7 +15,6 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, sym_link
 from exactly_lib_test.test_resources.file_structure import empty_dir, Dir
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -33,32 +27,26 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestEmpty),
         unittest.makeSuite(TestDifferentSourceVariantsForEmpty),
         unittest.makeSuite(TestEmptyWithFileSelection),
-
     ])
 
 
-class TestParseInvalidSyntax(TestParseInvalidSyntaxBase):
+class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
     @property
-    def test_cases_with_negation_operator_place_holder(self) -> list:
-        return [
-            NameAndValue(
-                'invalid option before file argument',
-                '{invalid_option} file-name <not_opt> {empty}'.format(
-                    invalid_option=long_option_syntax('invalidOption'),
-                    empty=sut.EMPTINESS_CHECK_ARGUMENT)
-            ),
-            NameAndValue(
-                'missing argument for matcher option ' + sut.SELECTION_OPTION.name.long,
-                'file-name {selection_option} <not_opt> {empty}'.format(
-                    selection_option=option_syntax.option_syntax(
-                        instruction_arguments.SELECTION_OPTION.name),
-                    empty=sut.EMPTINESS_CHECK_ARGUMENT
-                )
-            ),
-        ]
+    def arbitrary_assertion_variant(self) -> AssertionVariantArgumentsConstructor:
+        return EmptyAssertionVariant()
 
 
-class TestDifferentSourceVariantsForEmpty(TestCaseBaseForParser):
+class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
+                             TestWithAssertionVariantForEmpty):
+    pass
+
+
+class TestTestCommonFailureConditionsForEmpty(tr.TestCommonFailureConditionsBase,
+                                              TestWithAssertionVariantForEmpty):
+    pass
+
+
+class TestDifferentSourceVariantsForEmpty(tr.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
         empty_directory = empty_dir('name-of-empty-dir')
 
@@ -108,16 +96,7 @@ class TestDifferentSourceVariantsForEmpty(TestCaseBaseForParser):
         )
 
 
-class TestTestCommonFailureConditionsForEmpty(TestCommonFailureConditionsBase, TestCaseBaseForParser):
-    def _arguments_for_valid_syntax(self,
-                                    path_to_check: str) -> CompleteArgumentsConstructor:
-        return argument_constructor_for_emptiness_check(path_to_check)
-
-    def _get_unittest_test_case(self) -> unittest.TestCase:
-        return self
-
-
-class TestEmpty(TestCaseBaseForParser):
+class TestEmpty(tr.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
         name_of_empty_directory = 'name-of-empty_directory'
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_empty_directory)
@@ -158,7 +137,7 @@ class TestEmpty(TestCaseBaseForParser):
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
 
-class TestEmptyWithFileSelection(TestCaseBaseForParser):
+class TestEmptyWithFileSelection(tr.TestCaseBaseForParser):
     def test_file_matcher_reference_is_reported(self):
         name_of_file_matcher = 'a_file_matcher'
 
