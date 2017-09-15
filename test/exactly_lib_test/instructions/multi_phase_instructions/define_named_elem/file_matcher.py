@@ -17,7 +17,7 @@ from exactly_lib_test.named_element.test_resources.symbol_syntax import NOT_A_VA
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_matcher
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selectors_arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import file_matcher_arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
@@ -46,11 +46,11 @@ class TestSuccessfulScenarios(TestCaseBase):
              file_matchers.FileMatcherConstant(True),
              ),
             ('name pattern in RHS SHOULD give selection of name pattern',
-             selectors_arguments(name_pattern=name_pattern),
+             file_matcher_arguments(name_pattern=name_pattern),
              file_matchers.FileMatcherNameGlobPattern(name_pattern),
              ),
             ('file type in RHS SHOULD give selection of name pattern',
-             selectors_arguments(type_selection=FileType.REGULAR),
+             file_matcher_arguments(type_match=FileType.REGULAR),
              file_matchers.FileMatcherType(FileType.REGULAR),
              ),
         ]

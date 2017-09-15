@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selectors_arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import file_matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 
@@ -118,9 +118,9 @@ def arguments_with_selection_options(file_name: str,
                                      type_matcher: FileType = None,
                                      named_matcher: str = '',
                                      ) -> CompleteArgumentsConstructor:
-    file_matcher = selectors_arguments(name_option_pattern,
-                                       type_matcher,
-                                       named_matcher)
+    file_matcher = file_matcher_arguments(name_option_pattern,
+                                          type_matcher,
+                                          named_matcher)
 
     return CompleteArgumentsConstructor(
         CommonArgumentsConstructor(file_name,
