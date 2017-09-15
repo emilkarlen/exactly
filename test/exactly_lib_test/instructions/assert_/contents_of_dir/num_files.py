@@ -43,7 +43,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
+class TestWithAssertionVariantForNumFiles(tr.TestWithAssertionVariantBase):
     @property
     def arbitrary_assertion_variant(self) -> AssertionVariantArgumentsConstructor:
         return NumFilesAssertionVariant(_int_condition(comparators.EQ, 0))
@@ -64,12 +64,12 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
 
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
-                             TestWithAssertionVariantForEmpty):
+                             TestWithAssertionVariantForNumFiles):
     pass
 
 
 class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
-                                  TestWithAssertionVariantForEmpty):
+                                  TestWithAssertionVariantForNumFiles):
     pass
 
 
