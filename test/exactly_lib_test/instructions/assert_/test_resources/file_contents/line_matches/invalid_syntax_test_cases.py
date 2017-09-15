@@ -22,8 +22,8 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     ])
 
 
-ANY_OR_EVERY_KEYWORDS = (instruction_options.ANY_LINE_ARGUMENT,
-                         instruction_options.EVERY_LINE_ARGUMENT)
+QUANTIFIER_KEYWORDS = (instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
+                       instruction_options.ALL_QUANTIFIER_ARGUMENT)
 
 
 class _TestCaseBase(unittest.TestCase):
@@ -36,11 +36,11 @@ class _TestCaseBase(unittest.TestCase):
             self,
             args_variant_constructor: InstructionArgumentsVariantConstructor):
         for expectation_type in ExpectationType:
-            for any_or_every_keyword in ANY_OR_EVERY_KEYWORDS:
+            for quantifier_keyword in QUANTIFIER_KEYWORDS:
                 with self.subTest(expectation_type=expectation_type,
-                                  any_or_every_keyword=any_or_every_keyword):
+                                  any_or_every_keyword=quantifier_keyword):
                     args_variant = args_variant_constructor.construct(expectation_type,
-                                                                      any_or_every_keyword)
+                                                                      quantifier_keyword)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         self.configuration.new_parser().parse(
                             self.configuration.source_for(args_variant))
