@@ -22,7 +22,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
 
-        unittest.makeSuite(TestTestCommonFailureConditions),
+        unittest.makeSuite(TestCommonFailureConditions),
 
         unittest.makeSuite(TestPassingAndFailingScenarios),
         unittest.makeSuite(TestDifferentSourceVariants),
@@ -41,8 +41,8 @@ class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
     pass
 
 
-class TestTestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
-                                      TestWithAssertionVariantForEmpty):
+class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
+                                  TestWithAssertionVariantForEmpty):
     pass
 
 
