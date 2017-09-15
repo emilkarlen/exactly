@@ -26,6 +26,67 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     HomeAndSdsAction
 
 
+class AssertionVariantArgumentsConstructor:
+    """"
+    Constructs a string for the arguments that are specific for one of the assertion variants:
+    - empty
+    - num-lines
+    - ...
+
+    Argument string is constructed by __str__
+    """
+
+    def __str__(self):
+        raise NotImplementedError('abstract method')
+
+
+class CommonArgumentsConstructor:
+    """
+    Constructs a string for the common arguments used by all assertion variants:
+    - [TRANSFORMATION]
+    - [NEGATION]
+    """
+
+    def __init__(self,
+                 file_transformer: str = ''):
+        self._file_transformer = file_transformer
+
+    def apply(self, etc: ExpectationTypeConfig) -> str:
+        return '{transformation} {negation}'.format(
+            transformation=self._empty_if_no_file_transformer_otherwise_selection(),
+            negation=etc.nothing__if_positive__not_option__if_negative)
+
+    def _empty_if_no_file_transformer_otherwise_selection(self) -> str:
+        if self._file_transformer:
+            return option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME) + ' ' + self._file_transformer
+        else:
+            return ''
+
+
+class ContentsArgumentsConstructor:
+    """
+    Constructs a string for arguments of a contents instruction - common arguments
+    followed by arguments for an assertion variant.
+    """
+
+    def __init__(self,
+                 common_arguments: CommonArgumentsConstructor,
+                 assertion_variant: AssertionVariantArgumentsConstructor,
+                 ):
+        self._common_arguments = common_arguments
+        self._assertion_variant = assertion_variant
+
+    def apply(self, etc: ExpectationTypeConfig) -> str:
+        return '{common} {assertion_variant}'.format(
+            common=self._common_arguments.apply(etc),
+            assertion_variant=str(self._assertion_variant))
+
+
+class EmptyAssertionArgumentsConstructor(AssertionVariantArgumentsConstructor):
+    def __str__(self):
+        return instruction_options.EMPTY_ARGUMENT
+
+
 class InstructionTestConfiguration:
     def new_parser(self) -> InstructionParser:
         raise NotImplementedError()
