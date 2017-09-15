@@ -20,7 +20,6 @@ from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
@@ -30,7 +29,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParse),
 
         unittest.makeSuite(TestFailingValidationPreSds),
-        unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidation),
         unittest.makeSuite(TestConstantArguments),
         unittest.makeSuite(TestArgumentWithSymbolReferences),
 
@@ -80,26 +78,10 @@ class TheInstructionArgumentsVariantConstructor(expression.InstructionArgumentsV
 
 class TestFailingValidationPreSds(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
-        return expression.Configuration(sut.Parser(),
-                                        TheInstructionArgumentsVariantConstructor())
-
-
-class TestFailingValidationPreSdsCausedByCustomValidation(TestBase):
-    def test_fail_WHEN_integer_operand_is_not_a_byte(self):
-        cases = [
-            '-1',
-            '256',
-        ]
-        for invalid_value in cases:
-            with self.subTest(invalid_value=invalid_value):
-                self._run(
-                    remaining_source(invalid_value,
-                                     ['following line']),
-                    ArrangementPostAct(),
-                    Expectation(
-                        validation_pre_sds=svh_assertions.is_validation_error(),
-                    ),
-                )
+        return expression.Configuration(
+            sut.Parser(),
+            TheInstructionArgumentsVariantConstructor(),
+            invalid_integers_according_to_custom_validation=[-1, 256])
 
 
 class TestArgumentWithSymbolReferences(TestBase):
