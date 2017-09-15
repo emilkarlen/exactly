@@ -19,12 +19,9 @@ from exactly_lib_test.instructions.assert_.test_resources.expression import int_
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_resources.file_structure import Dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -42,7 +39,7 @@ def suite() -> unittest.TestSuite:
 
 class TestWithAssertionVariantForNumFiles(tr.TestWithAssertionVariantBase):
     @property
-    def arbitrary_assertion_variant(self) -> AssertionVariantArgumentsConstructor:
+    def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
         return NumFilesAssertionVariant(int_condition(comparators.EQ, 0))
 
 
@@ -77,26 +74,8 @@ class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFail
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
 
-class TestSymbolReferences(unittest.TestCase):
-    def test_file_matcher_reference_is_reported(self):
-        name_of_file_matcher = 'a_file_matcher'
-
-        arguments = 'dir-name {selection} {num_files} {cmp_op} 0'.format(
-            selection=selection_arguments(named_matcher=name_of_file_matcher),
-            num_files=sut.NUM_FILES_CHECK_ARGUMENT,
-            cmp_op=comparators.EQ.name)
-
-        source = remaining_source(arguments)
-        # ACT #
-        instruction = sut.Parser().parse(source)
-        assert isinstance(instruction, AssertPhaseInstruction)
-        actual = instruction.symbol_usages()
-        # ASSERT #
-        expected_references = asrt.matches_sequence([
-            is_file_matcher_reference_to(name_of_file_matcher)
-        ])
-        expected_references.apply_without_message(self, actual)
-
+class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
+                           TestWithAssertionVariantForNumFiles):
     def test_both_symbols_from_path_and_comparison_SHOULD_be_reported(self):
         # ARRANGE #
 
