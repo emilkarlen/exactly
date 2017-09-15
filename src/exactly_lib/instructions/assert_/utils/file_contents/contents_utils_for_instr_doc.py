@@ -41,8 +41,8 @@ class FileContentsHelpParts:
             'home_act_env_var': environment_variables.ENV_VAR_HOME_ACT,
             'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,
             'transformation': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
-            'any': instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
-            'every': instruction_options.ALL_QUANTIFIER_ARGUMENT,
+            'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+            'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
         }
         self._parser = TextParser(format_map)
 
@@ -92,8 +92,10 @@ class FileContentsHelpParts:
                                          optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
         any_or_every_arg = a.Choice(a.Multiplicity.MANDATORY,
                                     [
-                                        a.Constant(instruction_options.EXISTS_QUANTIFIER_ARGUMENT),
-                                        a.Constant(instruction_options.ALL_QUANTIFIER_ARGUMENT),
+                                        a.Constant(
+                                            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT),
+                                        a.Constant(
+                                            instruction_arguments.ALL_QUANTIFIER_ARGUMENT),
                                     ])
 
         line_arg = a.Single(a.Multiplicity.MANDATORY,

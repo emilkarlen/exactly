@@ -17,30 +17,34 @@ def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
                                         expected_reg_ex,
                                         reg_ex_arg_source_string: str) -> ActualFileAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
-        return _AnyLineMatchesAssertionPartForPositiveMatch(instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
-                                                            expectation_type,
-                                                            expected_reg_ex,
-                                                            reg_ex_arg_source_string)
+        return _AnyLineMatchesAssertionPartForPositiveMatch(
+            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+            expectation_type,
+            expected_reg_ex,
+            reg_ex_arg_source_string)
     else:
-        return _AnyLineMatchesAssertionPartForNegativeMatch(instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
-                                                            expectation_type,
-                                                            expected_reg_ex,
-                                                            reg_ex_arg_source_string)
+        return _AnyLineMatchesAssertionPartForNegativeMatch(
+            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+            expectation_type,
+            expected_reg_ex,
+            reg_ex_arg_source_string)
 
 
 def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
                                           expected_reg_ex,
                                           reg_ex_arg_source_string: str) -> ActualFileAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
-        return _EveryLineMatchesAssertionPartForPositiveMatch(instruction_options.ALL_QUANTIFIER_ARGUMENT,
-                                                              expectation_type,
-                                                              expected_reg_ex,
-                                                              reg_ex_arg_source_string)
+        return _EveryLineMatchesAssertionPartForPositiveMatch(
+            instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
+            expectation_type,
+            expected_reg_ex,
+            reg_ex_arg_source_string)
     else:
-        return _EveryLineMatchesAssertionPartForNegativeMatch(instruction_options.ALL_QUANTIFIER_ARGUMENT,
-                                                              expectation_type,
-                                                              expected_reg_ex,
-                                                              reg_ex_arg_source_string)
+        return _EveryLineMatchesAssertionPartForNegativeMatch(
+            instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
+            expectation_type,
+            expected_reg_ex,
+            reg_ex_arg_source_string)
 
 
 class FileAssertionPart(ActualFileAssertionPart):

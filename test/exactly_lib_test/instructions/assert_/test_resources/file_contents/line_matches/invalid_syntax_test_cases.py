@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.expectation_type import ExpectationType
@@ -22,8 +22,8 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     ])
 
 
-QUANTIFIER_KEYWORDS = (instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
-                       instruction_options.ALL_QUANTIFIER_ARGUMENT)
+QUANTIFIER_KEYWORDS = (instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+                       instruction_arguments.ALL_QUANTIFIER_ARGUMENT)
 
 
 class _TestCaseBase(unittest.TestCase):
