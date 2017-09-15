@@ -39,7 +39,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

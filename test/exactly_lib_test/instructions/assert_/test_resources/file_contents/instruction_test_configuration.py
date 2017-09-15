@@ -8,7 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
-from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \

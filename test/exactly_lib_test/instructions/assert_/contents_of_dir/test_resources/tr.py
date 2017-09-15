@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
     CompleteArgumentsConstructor, AssertionVariantArgumentsConstructor, CommonArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \

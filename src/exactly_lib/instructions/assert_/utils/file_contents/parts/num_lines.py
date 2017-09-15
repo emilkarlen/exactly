@@ -10,7 +10,7 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType
 
 
 def assertion_part_for_num_lines(expectation_type: ExpectationType,

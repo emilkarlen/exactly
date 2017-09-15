@@ -7,7 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, LookAheadState
-from exactly_lib.util import expectation_type
+from exactly_lib.util import logic_types
 from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.messages import expected_found
@@ -83,9 +83,9 @@ class TokenParserPrime:
         token = self.consume_mandatory_token(error_message_format_string)
         return token.string
 
-    def consume_optional_negation_operator(self) -> expectation_type.ExpectationType:
+    def consume_optional_negation_operator(self) -> logic_types.ExpectationType:
         is_negated = self.consume_and_return_true_if_first_argument_is_unquoted_and_equals(NEGATION_ARGUMENT_STR)
-        return expectation_type.from_is_negated(is_negated)
+        return logic_types.from_is_negated(is_negated)
 
     def consume_and_return_true_if_first_argument_is_unquoted_and_equals(self, expected: str) -> bool:
         if self.token_stream.is_null:

@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
-from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType
 
 
 class EmptinessAssertionPart(ActualFileAssertionPart):
