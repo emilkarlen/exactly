@@ -35,6 +35,8 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestCommonFailureConditions),
 
+        unittest.makeSuite(TestSymbolReferencesForNumFiles),
+
         unittest.makeSuite(TestDifferentSourceVariants),
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgument),
         unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidation),
