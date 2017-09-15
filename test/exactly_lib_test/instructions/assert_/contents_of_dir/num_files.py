@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.named_element.named_element_usage import NamedElementReference
@@ -8,16 +7,17 @@ from exactly_lib.named_element.symbol.restrictions.reference_restrictions import
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.parse import parse_relativity
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
     arguments_with_selection_options, \
-    CompleteArgumentsConstructor, NumFilesAssertionVariant, AssertionVariantArgumentsConstructor
+    CompleteArgumentsConstructor, NumFilesAssertionVariant, AssertionVariantArgumentsConstructor, \
+    CommonArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
-    PassOrFail
+    PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.file_structure import Dir
@@ -76,23 +76,22 @@ class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFail
 
 class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
                            TestWithAssertionVariantForNumFiles):
-    def test_both_symbols_from_path_and_comparison_SHOULD_be_reported(self):
+    def test_symbols_from_comparison_SHOULD_be_reported(self):
         # ARRANGE #
-
-        path_sym_ref = NamedElementReference(
-            'path_symbol_name',
-            parse_relativity.reference_restrictions_for_path_symbol(
-                sut.ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants))
 
         operand_sym_ref = NamedElementReference('operand_symbol_name',
                                                 string_made_up_by_just_strings())
 
-        argument = '{rel_sym_opt} {path_sym} file-name {num_files} {cmp_op} {operand_sym_ref}'.format(
-            rel_sym_opt=REL_symbol_OPTION,
-            path_sym=path_sym_ref.name,
-            num_files=sut.NUM_FILES_CHECK_ARGUMENT,
-            cmp_op=comparators.EQ.name,
-            operand_sym_ref=symbol_reference_syntax_for_name(operand_sym_ref.name))
+        condition_str = '{operator} {symbol_reference}'.format(
+            operator=comparators.EQ.name,
+            symbol_reference=symbol_reference_syntax_for_name(operand_sym_ref.name)
+        )
+        arguments_constructor = CompleteArgumentsConstructor(
+            CommonArgumentsConstructor('ignored-dir-path'),
+            NumFilesAssertionVariant(condition_str))
+
+        argument = arguments_constructor.apply(ExpectationTypeConfig(ExpectationType.NEGATIVE),
+                                               tr.DEFAULT_REL_OPT_CONFIG)
 
         source = remaining_source(argument)
 
@@ -107,7 +106,6 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
         # ASSERT #
 
         expected_symbol_references = [
-            path_sym_ref,
             operand_sym_ref,
         ]
         assertion = equals_symbol_references(expected_symbol_references)
