@@ -10,8 +10,7 @@ from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_S
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
-from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand, \
-    ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
+from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
     EMPTY_ARGUMENT_CONSTANT, EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils import return_svh_via_exceptions
@@ -104,7 +103,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                          selection_arg,
                                          negation_argument,
                                          mandatory_num_files_arg,
-                                         ] + ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
+                                         ] + parse_expr.ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
 
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments_for_empty_check),
@@ -143,7 +142,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return ([negation,
                  selection,
                  ] +
-                expression_parse.syntax_element_descriptions() +
+                expression_parse.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION) +
                 [actual_file_arg_sed,
                  relativity_of_actual_file_sed,
                  ])
@@ -261,7 +260,7 @@ class _InstructionBase(AssertPhaseInstruction):
 class _InstructionForNumFiles(_InstructionBase):
     def __init__(self,
                  settings: _Settings,
-                 operator_and_r_operand: IntegerComparisonOperatorAndRightOperand):
+                 operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
         super().__init__(settings)
         self.comparison_handler = comparison_structures.ComparisonHandler(
             self._property_descriptor(_NUM_FILES_PROPERTY_NAME),
