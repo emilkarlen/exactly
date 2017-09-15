@@ -15,7 +15,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_matcher
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_selector_of, type_selector_of
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_matcher_of, type_matcher_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -104,17 +104,17 @@ class TestNamePattern(TestCaseBase):
         space = '   '
         cases = [
             SourceCase('single name argument',
-                       remaining_source(name_selector_of(pattern)),
+                       remaining_source(name_matcher_of(pattern)),
                        assert_source(is_at_eof=asrt.is_true),
                        ),
             SourceCase('single name argument followed by space, and following lines',
-                       remaining_source(name_selector_of(pattern) + space,
+                       remaining_source(name_matcher_of(pattern) + space,
                                         ['following line']),
                        assert_source(current_line_number=asrt.equals(1),
                                      remaining_part_of_current_line=asrt.equals(space[1:])),
                        ),
             SourceCase('single name argument followed by arguments',
-                       remaining_source(name_selector_of(pattern) + space + 'following argument',
+                       remaining_source(name_matcher_of(pattern) + space + 'following argument',
                                         ['following line']),
                        assert_source(current_line_number=asrt.equals(1),
                                      remaining_part_of_current_line=asrt.equals(space[1:] + 'following argument')),
@@ -139,21 +139,21 @@ class TestFileType(TestCaseBase):
 
             return [
                 SourceCase('single name argument',
-                           remaining_source(type_selector_of(file_type)),
+                           remaining_source(type_matcher_of(file_type)),
                            assert_source(is_at_eof=asrt.is_true),
                            ),
                 SourceCase('single name argument followed by space, and following lines',
-                           remaining_source(type_selector_of(file_type) + space,
+                           remaining_source(type_matcher_of(file_type) + space,
                                             ['following line']),
                            assert_source(current_line_number=asrt.equals(1),
                                          remaining_part_of_current_line=asrt.equals(space[1:])),
                            ),
                 SourceCase('single name argument followed by arguments',
-                           remaining_source(type_selector_of(file_type) + space + name_selector_of('no-matching-file'),
+                           remaining_source(type_matcher_of(file_type) + space + name_matcher_of('no-matching-file'),
                                             ['following line']),
                            assert_source(current_line_number=asrt.equals(1),
                                          remaining_part_of_current_line=asrt.equals(
-                                             space[1:] + name_selector_of('no-matching-file'))),
+                                             space[1:] + name_matcher_of('no-matching-file'))),
                            ),
             ]
 
