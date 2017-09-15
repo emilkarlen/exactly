@@ -87,6 +87,14 @@ class EmptyAssertionArgumentsConstructor(AssertionVariantArgumentsConstructor):
         return instruction_options.EMPTY_ARGUMENT
 
 
+class NumLinesAssertionArgumentsConstructor(AssertionVariantArgumentsConstructor):
+    def __init__(self, condition: str):
+        self._condition = condition
+
+    def __str__(self):
+        return instruction_options.NUM_LINES_ARGUMENT + ' ' + self._condition
+
+
 class InstructionTestConfiguration:
     def new_parser(self) -> InstructionParser:
         raise NotImplementedError()

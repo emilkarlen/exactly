@@ -1,7 +1,5 @@
 import unittest
 
-from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
@@ -10,12 +8,8 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instru
     AssertionVariantArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, sym_link
 from exactly_lib_test.test_resources.file_structure import empty_dir, Dir
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -23,6 +17,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseInvalidSyntax),
 
         unittest.makeSuite(TestCommonFailureConditions),
+
+        unittest.makeSuite(TestSymbolReferences),
 
         unittest.makeSuite(TestPassingAndFailingScenarios),
         unittest.makeSuite(TestDifferentSourceVariants),
@@ -32,7 +28,7 @@ def suite() -> unittest.TestSuite:
 
 class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
     @property
-    def arbitrary_assertion_variant(self) -> AssertionVariantArgumentsConstructor:
+    def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
         return EmptyAssertionVariant()
 
 
@@ -43,6 +39,11 @@ class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
 
 class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
                                   TestWithAssertionVariantForEmpty):
+    pass
+
+
+class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
+                           TestWithAssertionVariantForEmpty):
     pass
 
 
@@ -138,24 +139,6 @@ class TestPassingAndFailingScenarios(tr.TestCaseBaseForParser):
 
 
 class TestWithFileSelection(tr.TestCaseBaseForParser):
-    def test_file_matcher_reference_is_reported(self):
-        name_of_file_matcher = 'a_file_matcher'
-
-        arguments = 'dir-name {selection} {empty}'.format(
-            selection=selection_arguments(named_matcher=name_of_file_matcher),
-            empty=sut.EMPTINESS_CHECK_ARGUMENT)
-
-        source = remaining_source(arguments)
-        # ACT #
-        instruction = sut.Parser().parse(source)
-        assert isinstance(instruction, AssertPhaseInstruction)
-        actual = instruction.symbol_usages()
-        # ASSERT #
-        expected_references = asrt.matches_sequence([
-            is_file_matcher_reference_to(name_of_file_matcher)
-        ])
-        expected_references.apply_without_message(self, actual)
-
     def test_file_is_directory_that_contain_files_but_non_matching_given_name_pattern(self):
         name_of_directory = 'name-of-directory'
         pattern = 'a*'
