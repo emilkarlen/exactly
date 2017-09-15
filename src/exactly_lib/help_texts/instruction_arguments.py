@@ -1,6 +1,7 @@
 from exactly_lib.help_texts import type_system
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.logic_types import Quantifier
 
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 
@@ -34,5 +35,10 @@ WITH_TRANSFORMED_CONTENTS_OPTION = option_syntax.option_syntax(WITH_TRANSFORMED_
 TRANSFORMATION_OPTION = a.Option(WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
                                  argument=type_system.LINES_TRANSFORMER_VALUE)
 
-EXISTS_QUANTIFIER_ARGUMENT = 'any'
 ALL_QUANTIFIER_ARGUMENT = 'every'
+EXISTS_QUANTIFIER_ARGUMENT = 'any'
+
+QUANTIFIER_ARGUMENTS = {
+    Quantifier.ALL: ALL_QUANTIFIER_ARGUMENT,
+    Quantifier.EXISTS: EXISTS_QUANTIFIER_ARGUMENT,
+}

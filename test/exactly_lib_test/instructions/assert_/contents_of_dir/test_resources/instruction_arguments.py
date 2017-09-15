@@ -3,7 +3,9 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
-from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType, Quantifier
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import \
+    instruction_test_configuration as file_contents_tr
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -91,6 +93,20 @@ class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
         return '{num_files} {condition}'.format(
             num_files=sut.NUM_FILES_CHECK_ARGUMENT,
             condition=self._condition)
+
+
+class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
+    def __init__(self,
+                 quantifier: Quantifier,
+                 file_contents_assertion: file_contents_tr.AssertionVariantArgumentsConstructor):
+        self._quantifier = quantifier
+        self._file_contents_assertion = file_contents_assertion
+
+    def __str__(self):
+        return '{quantifier} {file} {contents_assertion}'.format(
+            quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
+            file=sut.FILE_ARGUMENT,
+            contents_assertion=str(self._file_contents_assertion))
 
 
 def replace_not_op(etc: ExpectationTypeConfig, s: str) -> str:
