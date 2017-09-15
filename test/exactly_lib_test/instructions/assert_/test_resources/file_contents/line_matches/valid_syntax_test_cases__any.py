@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -40,7 +40,7 @@ class _NoLineMatchesRegEx(TestCaseBase):
         self._check_variants_with_expectation_type(
             InstructionArgumentsVariantConstructor(regex_arg_str=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.FAIL,
-            any_or_every_keyword=instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
+            any_or_every_keyword=instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_contents,
         )
 
@@ -54,7 +54,7 @@ class _ALineMatchesRegEx(TestCaseBase):
         self._check_variants_with_expectation_type(
             InstructionArgumentsVariantConstructor(regex_arg_str=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.PASS,
-            any_or_every_keyword=instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
+            any_or_every_keyword=instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_contents,
         )
 
@@ -68,7 +68,7 @@ class _AWholeLineMatchesRegEx(TestCaseBase):
         self._check_variants_with_expectation_type(
             InstructionArgumentsVariantConstructor(regex_arg_str=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.PASS,
-            any_or_every_keyword=instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
+            any_or_every_keyword=instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_contents,
         )
 
@@ -101,7 +101,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
                 regex_arg_str=reg_ex_that_matches_uppercase_character,
                 transformer=named_transformer.name),
             expected_result_of_positive_test=PassOrFail.PASS,
-            any_or_every_keyword=instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
+            any_or_every_keyword=instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_original_contents,
             symbols=symbol_table_with_transformer,
             expected_symbol_usages=expected_symbol_usages,

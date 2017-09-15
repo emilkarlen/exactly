@@ -1,4 +1,5 @@
-from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
+from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR, EXISTS_QUANTIFIER_ARGUMENT, \
+    ALL_QUANTIFIER_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 
 NOT_ARGUMENT = NEGATION_ARGUMENT_STR
@@ -8,9 +9,6 @@ NUM_LINES_ARGUMENT = 'num-lines'
 
 LINE_ARGUMENT = 'line'
 MATCHES_ARGUMENT = 'matches'
-
-EXISTS_QUANTIFIER_ARGUMENT = 'any'
-ALL_QUANTIFIER_ARGUMENT = 'every'
 
 ALL_CHECKS = (
     EQUALS_ARGUMENT,

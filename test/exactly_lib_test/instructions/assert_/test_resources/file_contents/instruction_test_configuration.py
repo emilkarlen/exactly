@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.section_document.parse_source import ParseSource
@@ -102,8 +103,8 @@ def args(arg_str: str, **kwargs) -> str:
 
 
 _FORMAT_MAP = {
-    'any': instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
-    'every': instruction_options.ALL_QUANTIFIER_ARGUMENT,
+    'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+    'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
     'line_matches': instruction_options.LINE_ARGUMENT + ' ' + instruction_options.MATCHES_ARGUMENT,
     'empty': instruction_options.EMPTY_ARGUMENT,
     'equals': instruction_options.EQUALS_ARGUMENT,
