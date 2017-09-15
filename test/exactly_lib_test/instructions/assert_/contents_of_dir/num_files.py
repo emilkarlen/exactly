@@ -33,7 +33,7 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestCommonFailureConditions),
 
-        unittest.makeSuite(TestSymbolReferencesForNumFiles),
+        unittest.makeSuite(TestSymbolReferences),
 
         unittest.makeSuite(TestDifferentSourceVariants),
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgument),
@@ -77,7 +77,7 @@ class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFail
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
 
-class TestSymbolReferencesForNumFiles(unittest.TestCase):
+class TestSymbolReferences(unittest.TestCase):
     def test_file_matcher_reference_is_reported(self):
         name_of_file_matcher = 'a_file_matcher'
 
