@@ -12,11 +12,14 @@ from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.textformat.structure import structures as docs
 
 INTEGER_ARGUMENT = a.Named('INTEGER')
 OPERATOR_ARGUMENT = a.Named('OPERATOR')
+
+NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
 
 MANDATORY_OPERATOR_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
                                        OPERATOR_ARGUMENT)
@@ -58,7 +61,8 @@ def syntax_element_descriptions_with_negation_operator(
 
 def validator_for_non_negative(actual: int) -> str:
     if actual < 0:
-        return 'Argument must not be negative\n\nFound : ' + str(actual)
+        return expected_found.unexpected_lines(NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
+                                               str(actual))
     return None
 
 

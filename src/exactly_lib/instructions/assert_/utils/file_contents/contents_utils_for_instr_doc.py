@@ -8,12 +8,11 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names.formatting import InstructionName
-from exactly_lib.instructions.assert_.utils.expression import parse
+from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
-    EXPECTED_FILE_REL_OPT_ARG_CONFIG, \
-    INTEGER_ARGUMENT_DESCRIPTION
+    EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_file_structure import environment_variables
@@ -123,8 +122,8 @@ class FileContentsHelpParts:
         return InvokationVariant(self._cls([optional_transformation_option,
                                             optional_not_arg,
                                             num_lines_arg,
-                                            parse.MANDATORY_OPERATOR_ARGUMENT,
-                                            parse.MANDATORY_INTEGER_ARGUMENT,
+                                            parse_expr.MANDATORY_OPERATOR_ARGUMENT,
+                                            parse_expr.MANDATORY_INTEGER_ARGUMENT,
                                             ]),
                                  self._paragraphs(_DESCRIPTION_OF_NUM_LINES))
 
@@ -164,7 +163,7 @@ class FileContentsHelpParts:
                     dt.here_document_syntax_element_description(self.instruction_name,
                                                                 instruction_arguments.HERE_DOCUMENT),
                 ] +
-                parse.syntax_element_descriptions(INTEGER_ARGUMENT_DESCRIPTION)
+                parse_expr.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
                 )
 
     def see_also_items(self) -> list:

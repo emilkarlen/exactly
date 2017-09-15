@@ -2,6 +2,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCooperativeAssertionParts, \
     AssertionPart
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_cmp_op
+from exactly_lib.instructions.assert_.utils.expression.parse import validator_for_non_negative
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
@@ -12,7 +13,6 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import SourceType
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.messages import expected_found
 from exactly_lib.util.messages import grammar_options_syntax
 
 
@@ -27,8 +27,6 @@ def parse(token_parser: TokenParserPrime) -> AssertionPart:
     return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),
                                                 file_contents_assertion_part])
 
-
-INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
 
 _OPERATION = 'OPERATION'
 
@@ -97,7 +95,7 @@ class ParseFileContentsAssertionPart:
 
     def _parse_num_lines_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
-                                                                                _must_be_non_negative_integer)
+                                                                                validator_for_non_negative)
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
         from exactly_lib.instructions.assert_.utils.file_contents.parts.num_lines import \
@@ -117,10 +115,3 @@ class ParseFileContentsAssertionPart:
         token_parser.consume_current_line_as_plain_string()
 
         return reg_ex_arg, compile_regex(reg_ex_arg.string)
-
-
-def _must_be_non_negative_integer(actual: int) -> str:
-    if actual < 0:
-        return expected_found.unexpected_lines(INTEGER_ARGUMENT_DESCRIPTION,
-                                               str(actual))
-    return None
