@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.section_document.parse_source import ParseSource
@@ -17,6 +18,11 @@ from exactly_lib_test.test_case_utils.test_resources import svh_assertions as sv
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def int_condition(operator: comparators.ComparisonOperator,
+                  value: int) -> str:
+    return operator.name + ' ' + str(value)
+
+
 class InstructionArgumentsVariantConstructor:
     """
     Constructs the instruction argument for a given comparision condition string.
@@ -31,9 +37,11 @@ class InstructionArgumentsVariantConstructor:
 class Configuration:
     def __init__(self,
                  parser: InstructionParser,
-                 arguments_constructor: InstructionArgumentsVariantConstructor):
+                 arguments_constructor: InstructionArgumentsVariantConstructor,
+                 invalid_integers_according_to_custom_validation: list):
         self.parser = parser
         self.arguments_constructor = arguments_constructor
+        self.invalid_integers_according_to_custom_validation = invalid_integers_according_to_custom_validation
 
 
 class TestFailingValidationPreSdsAbstract(unittest.TestCase):
@@ -50,6 +58,21 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                                 source,
                                 arrangement,
                                 expectation)
+
+    def test_invalid_integer_argument_according_to_custom_validation(self):
+        for invalid_integer_value in self._conf().invalid_integers_according_to_custom_validation:
+            with self.subTest(invalid_integer_value=str(invalid_integer_value)):
+                condition_str = int_condition(comparators.EQ, invalid_integer_value)
+                instr_arg = self._conf().arguments_constructor.apply(condition_str)
+                for source in equivalent_source_variants__with_source_check(self, instr_arg):
+                    self._check(
+                        source,
+                        ArrangementPostAct(),
+                        Expectation(
+                            validation_pre_sds=svh_asrt.is_validation_error(),
+                            symbol_usages=asrt.is_empty_list,
+                        ),
+                    )
 
     def test_invalid_arguments_without_symbol_references(self):
         test_cases = [

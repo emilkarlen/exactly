@@ -15,15 +15,13 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instru
     arguments_with_selection_options, \
     CompleteArgumentsConstructor, NumFilesAssertionVariant, AssertionVariantArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression
+from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.instructions.assert_.test_resources.instruction_check import TestCaseBase, Expectation
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import selection_arguments
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.file_structure import Dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -39,14 +37,13 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestDifferentSourceVariants),
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgument),
-        unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidation),
     ])
 
 
 class TestWithAssertionVariantForNumFiles(tr.TestWithAssertionVariantBase):
     @property
     def arbitrary_assertion_variant(self) -> AssertionVariantArgumentsConstructor:
-        return NumFilesAssertionVariant(_int_condition(comparators.EQ, 0))
+        return NumFilesAssertionVariant(int_condition(comparators.EQ, 0))
 
 
 class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(
@@ -76,30 +73,8 @@ class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
 class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
         return expression.Configuration(sut.Parser(),
-                                        TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck())
-
-
-class TestFailingValidationPreSdsCausedByCustomValidation(TestCaseBase):
-    def test_fail_WHEN_integer_operand_is_negative(self):
-        cases = [
-            -1,
-            -2,
-        ]
-        for invalid_value in cases:
-            arguments = 'ignored-file-name {num_files} {invalid_condition}'.format(
-                num_files=sut.NUM_FILES_CHECK_ARGUMENT,
-                invalid_condition=_int_condition(comparators.EQ, invalid_value))
-
-            with self.subTest(invalid_value=invalid_value):
-                self._check(
-                    sut.Parser(),
-                    remaining_source(arguments,
-                                     ['following line']),
-                    ArrangementPostAct(),
-                    Expectation(
-                        validation_pre_sds=svh_assertions.is_validation_error(),
-                    ),
-                )
+                                        TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(),
+                                        invalid_integers_according_to_custom_validation=[-1, -2])
 
 
 class TestSymbolReferencesForNumFiles(unittest.TestCase):
@@ -167,7 +142,7 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
 
         instruction_argument_constructor = argument_constructor_for_num_files_check(
             directory_with_one_file.name,
-            _int_condition(comparators.EQ, 1))
+            int_condition(comparators.EQ, 1))
 
         contents_of_relativity_option_root = DirContents([directory_with_one_file])
 
@@ -185,7 +160,7 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
 
         instruction_argument_constructor = argument_constructor_for_num_files_check(
             directory_with_one_file.name,
-            _int_condition(comparators.EQ, 2))
+            int_condition(comparators.EQ, 2))
 
         contents_of_relativity_option_root = DirContents([directory_with_one_file])
 
@@ -211,7 +186,7 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
 
         instruction_argument_constructor = argument_constructor_for_num_files_check(
             dir_with_two_files.name,
-            _int_condition(comparators.EQ, 1),
+            int_condition(comparators.EQ, 1),
             name_option_pattern=pattern_that_matches_exactly_one_file)
 
         self.checker.check_parsing_with_different_source_variants(
@@ -236,11 +211,6 @@ def argument_constructor_for_num_files_check(file_name: str,
         type_matcher=type_matcher,
         named_matcher=named_matcher,
     )
-
-
-def _int_condition(operator: comparators.ComparisonOperator,
-                   value: int) -> str:
-    return operator.name + ' ' + str(value)
 
 
 if __name__ == '__main__':
