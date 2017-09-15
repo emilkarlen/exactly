@@ -33,11 +33,11 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
 
-        unittest.makeSuite(TestTestCommonFailureConditionsForNumFiles),
+        unittest.makeSuite(TestTestCommonFailureConditions),
 
-        unittest.makeSuite(TestDifferentSourceVariantsForNumFiles),
-        unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles),
-        unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidationForNumFiles),
+        unittest.makeSuite(TestDifferentSourceVariants),
+        unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgument),
+        unittest.makeSuite(TestFailingValidationPreSdsCausedByCustomValidation),
     ])
 
 
@@ -66,18 +66,18 @@ class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
     pass
 
 
-class TestTestCommonFailureConditionsForNumFiles(tr.TestCommonFailureConditionsBase,
-                                                 TestWithAssertionVariantForEmpty):
+class TestTestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
+                                      TestWithAssertionVariantForEmpty):
     pass
 
 
-class TestFailingValidationPreSdsDueToInvalidIntegerArgumentForNumFiles(expression.TestFailingValidationPreSdsAbstract):
+class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
         return expression.Configuration(sut.Parser(),
                                         TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck())
 
 
-class TestFailingValidationPreSdsCausedByCustomValidationForNumFiles(TestCaseBase):
+class TestFailingValidationPreSdsCausedByCustomValidation(TestCaseBase):
     def test_fail_WHEN_integer_operand_is_negative(self):
         cases = [
             -1,
@@ -159,7 +159,7 @@ class TestSymbolReferencesForNumFiles(unittest.TestCase):
         assertion.apply_without_message(self, actual_symbol_references)
 
 
-class TestDifferentSourceVariantsForNumFiles(tr.TestCaseBaseForParser):
+class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
     def test_file_is_directory_that_has_expected_number_of_files(self):
         directory_with_one_file = Dir('name-of-dir', [empty_file('a-file-in-checked-dir')])
 

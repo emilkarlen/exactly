@@ -22,11 +22,11 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
 
-        unittest.makeSuite(TestTestCommonFailureConditionsForEmpty),
+        unittest.makeSuite(TestTestCommonFailureConditions),
 
-        unittest.makeSuite(TestEmpty),
-        unittest.makeSuite(TestDifferentSourceVariantsForEmpty),
-        unittest.makeSuite(TestEmptyWithFileSelection),
+        unittest.makeSuite(TestPassingAndFailingScenarios),
+        unittest.makeSuite(TestDifferentSourceVariants),
+        unittest.makeSuite(TestWithFileSelection),
     ])
 
 
@@ -41,12 +41,12 @@ class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
     pass
 
 
-class TestTestCommonFailureConditionsForEmpty(tr.TestCommonFailureConditionsBase,
-                                              TestWithAssertionVariantForEmpty):
+class TestTestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
+                                      TestWithAssertionVariantForEmpty):
     pass
 
 
-class TestDifferentSourceVariantsForEmpty(tr.TestCaseBaseForParser):
+class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
         empty_directory = empty_dir('name-of-empty-dir')
 
@@ -96,7 +96,7 @@ class TestDifferentSourceVariantsForEmpty(tr.TestCaseBaseForParser):
         )
 
 
-class TestEmpty(tr.TestCaseBaseForParser):
+class TestPassingAndFailingScenarios(tr.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
         name_of_empty_directory = 'name-of-empty_directory'
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_of_empty_directory)
@@ -137,7 +137,7 @@ class TestEmpty(tr.TestCaseBaseForParser):
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
 
-class TestEmptyWithFileSelection(tr.TestCaseBaseForParser):
+class TestWithFileSelection(tr.TestCaseBaseForParser):
     def test_file_matcher_reference_is_reported(self):
         name_of_file_matcher = 'a_file_matcher'
 
