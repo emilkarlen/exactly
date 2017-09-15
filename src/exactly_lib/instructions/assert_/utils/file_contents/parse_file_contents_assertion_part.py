@@ -49,8 +49,8 @@ class ParseFileContentsAssertionPart:
         self.parsers = {
             instruction_options.EMPTY_ARGUMENT: self._parse_emptiness_checker,
             instruction_options.EQUALS_ARGUMENT: self._parse_equals_checker,
-            instruction_options.ANY_LINE_ARGUMENT: self._parse_any_line_matches_checker,
-            instruction_options.EVERY_LINE_ARGUMENT: self._parse_every_line_matches_checker,
+            instruction_options.EXISTS_QUANTIFIER_ARGUMENT: self._parse_any_line_matches_checker,
+            instruction_options.ALL_QUANTIFIER_ARGUMENT: self._parse_every_line_matches_checker,
             instruction_options.NUM_LINES_ARGUMENT: self._parse_num_lines_checker,
         }
 

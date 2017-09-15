@@ -40,7 +40,7 @@ class _NoLineMatchesRegEx(TestCaseBase):
         self._check_variants_with_expectation_type(
             InstructionArgumentsVariantConstructor(regex_arg_str=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.FAIL,
-            any_or_every_keyword=instruction_options.EVERY_LINE_ARGUMENT,
+            any_or_every_keyword=instruction_options.ALL_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_contents,
         )
 
@@ -54,7 +54,7 @@ class _ALineMatchesRegEx(TestCaseBase):
         self._check_variants_with_expectation_type(
             InstructionArgumentsVariantConstructor(regex_arg_str=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.FAIL,
-            any_or_every_keyword=instruction_options.EVERY_LINE_ARGUMENT,
+            any_or_every_keyword=instruction_options.ALL_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_contents,
         )
 
@@ -68,7 +68,7 @@ class _EveryLineMatchesRegEx(TestCaseBase):
         self._check_variants_with_expectation_type(
             InstructionArgumentsVariantConstructor(regex_arg_str=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.PASS,
-            any_or_every_keyword=instruction_options.EVERY_LINE_ARGUMENT,
+            any_or_every_keyword=instruction_options.ALL_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_contents,
         )
 
@@ -101,7 +101,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
                 regex_arg_str=reg_ex_that_matches_uppercase_character,
                 transformer=named_transformer.name),
             expected_result_of_positive_test=PassOrFail.PASS,
-            any_or_every_keyword=instruction_options.EVERY_LINE_ARGUMENT,
+            any_or_every_keyword=instruction_options.ALL_QUANTIFIER_ARGUMENT,
             actual_file_contents=actual_original_contents,
             symbols=symbol_table_with_transformer,
             expected_symbol_usages=expected_symbol_usages,

@@ -102,8 +102,8 @@ def args(arg_str: str, **kwargs) -> str:
 
 
 _FORMAT_MAP = {
-    'any': instruction_options.ANY_LINE_ARGUMENT,
-    'every': instruction_options.EVERY_LINE_ARGUMENT,
+    'any': instruction_options.EXISTS_QUANTIFIER_ARGUMENT,
+    'every': instruction_options.ALL_QUANTIFIER_ARGUMENT,
     'line_matches': instruction_options.LINE_ARGUMENT + ' ' + instruction_options.MATCHES_ARGUMENT,
     'empty': instruction_options.EMPTY_ARGUMENT,
     'equals': instruction_options.EQUALS_ARGUMENT,
