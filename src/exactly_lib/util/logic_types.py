@@ -12,3 +12,9 @@ class ExpectationType(Enum):
 
 def from_is_negated(is_negated: bool) -> ExpectationType:
     return ExpectationType.NEGATIVE if is_negated else ExpectationType.POSITIVE
+
+
+class Quantifier(Enum):
+    """A logic quantifier"""
+    ALL = 1
+    EXISTS = 2
