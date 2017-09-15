@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
-from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \

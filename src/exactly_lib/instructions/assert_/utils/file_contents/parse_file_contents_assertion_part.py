@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.lines_transformer import parse_lines_transforme
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import SourceType
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
-from exactly_lib.util.expectation_type import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.messages import grammar_options_syntax
 

@@ -19,8 +19,8 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import StringR
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.util import file_utils
-from exactly_lib.util.expectation_type import ExpectationType
 from exactly_lib.util.file_utils import tmp_text_file_containing
+from exactly_lib.util.logic_types import ExpectationType
 
 _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 
