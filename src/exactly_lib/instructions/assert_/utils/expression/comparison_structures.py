@@ -1,6 +1,7 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
+from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -18,7 +19,7 @@ class OperandResolver:
     def references(self) -> list:
         return []
 
-    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
+    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
@@ -68,8 +69,8 @@ class ComparisonHandler:
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
-        self.actual_value_lhs.validate_pre_sds(environment)
-        self.integer_resolver.validate_pre_sds(environment)
+        self.actual_value_lhs.validate_pre_sds(environment.path_resolving_environment)
+        self.integer_resolver.validate_pre_sds(environment.path_resolving_environment)
 
     def execute(self, environment: InstructionEnvironmentForPostSdsStep):
         """

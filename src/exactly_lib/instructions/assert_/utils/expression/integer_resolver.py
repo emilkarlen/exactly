@@ -5,8 +5,7 @@ from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.named_element.symbol.string_resolver import StringResolver
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
 
 class _IntResolver:
@@ -82,8 +81,8 @@ class IntegerResolver(OperandResolver):
     def validator(self) -> SvhPreSdsValidatorViaExceptions:
         return self._validator
 
-    def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
-        self._validator.validate_pre_sds(environment.path_resolving_environment)
+    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
+        self._validator.validate_pre_sds(environment)
 
     def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
         try:
