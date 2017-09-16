@@ -5,6 +5,7 @@ from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 PATH_ARGUMENT = a.Named('PATH')
+
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
         rel_opts_configuration.PathRelativityVariants({
@@ -18,7 +19,7 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
     PATH_ARGUMENT.name,
     True)
 
-FILE_ARGUMENT = 'file'
+QUANTIFICATION_OVER_FILE_ARGUMENT = 'file'
 
 NUM_FILES_CHECK_ARGUMENT = 'num-files'
 

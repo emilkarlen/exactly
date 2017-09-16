@@ -28,12 +28,8 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.messages import grammar_options_syntax
 from . import config
-
-_CHECKERS = [
-    config.NUM_FILES_CHECK_ARGUMENT,
-    config.EMPTINESS_CHECK_ARGUMENT,
-]
 
 
 class Parser(InstructionParser):
@@ -74,16 +70,14 @@ class _Settings:
 
 
 class _CheckInstructionParser:
-    missing_check_description = 'Missing arguments for check (one of {})'.format(
-        ', '.join(map(lambda x: '"' + x + '"', _CHECKERS))
-    )
-
     def __init__(self, settings: _Settings):
         self.settings = settings
         self.command_parsers = {
             config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
             config.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
         }
+        self.missing_check_description = 'Missing argument for check :' + grammar_options_syntax.alternatives_list(
+            self.command_parsers)
 
     def parse(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
         return parser.parse_mandatory_command(self.command_parsers,
