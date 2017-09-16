@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import Settings, \
-    AssertionPartThatOperatesOnSettings
+    DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -111,19 +111,31 @@ class _EmptinessChecker:
 
 
 class InstructionForEmptiness(common._InstructionBase):
+    def __init__(self, settings: Settings):
+        super().__init__(settings)
+        self._assertion = EmptinessAssertion(settings)
+
     def symbol_usages(self) -> list:
-        return self.settings.path_to_check.references + self.settings.file_matcher.references
+        return self._assertion.references
+        # return self.settings.path_to_check.references + self.settings.file_matcher.references
 
-    def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
-        checker = _EmptinessChecker(self.settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME),
-                                    environment,
-                                    self.settings)
-        checker.main()
+    def _main_after_checking_existence_of_dir(self,
+                                              environment: InstructionEnvironmentForPostSdsStep,
+                                              os_services: OsServices):
+        self._assertion.check(environment, os_services, self.settings)
 
 
-class EmptinessAssertion(AssertionPartThatOperatesOnSettings):
+class EmptinessAssertion(DirContentsAssertionPart):
+    @property
+    def references(self) -> list:
+        return self._settings.path_to_check.references + self._settings.file_matcher.references
+
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               settings: Settings) -> Settings:
-        pass
+        checker = _EmptinessChecker(self._settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME),
+                                    environment,
+                                    self._settings)
+        checker.main()
+        return self._settings

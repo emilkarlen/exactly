@@ -6,11 +6,12 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils import file_properties, pre_or_post_validation
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -43,17 +44,24 @@ class _InstructionBase(AssertPhaseInstruction):
         return pfh_ex_method.translate_pfh_exception_to_pfh(self.__main_that_reports_result_via_exceptions,
                                                             environment, os_services)
 
-    def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
+    def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep,
+                                              os_services: OsServices):
         raise NotImplementedError('abstract method')
 
     def __main_that_reports_result_via_exceptions(self, environment: InstructionEnvironmentForPostSdsStep,
                                                   os_services: OsServices):
-        assertion = AssertPathIsExistingDirectory()
+        assertion = AssertPathIsExistingDirectory(self.settings)
         assertion.check(environment, os_services, self.settings)
-        self._main_after_checking_existence_of_dir(environment)
+        self._main_after_checking_existence_of_dir(environment, os_services)
 
 
-class AssertionPartThatOperatesOnSettings(AssertionPart):
+class DirContentsAssertionPart(AssertionPart):
+    def __init__(self,
+                 settings: Settings,
+                 validator: PreOrPostSdsValidator = pre_or_post_validation.ConstantSuccessValidator()):
+        super().__init__(validator)
+        self._settings = settings
+
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -61,7 +69,7 @@ class AssertionPartThatOperatesOnSettings(AssertionPart):
         raise NotImplementedError('abstract method')
 
 
-class AssertPathIsExistingDirectory(AssertionPartThatOperatesOnSettings):
+class AssertPathIsExistingDirectory(DirContentsAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
