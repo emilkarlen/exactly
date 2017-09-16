@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
@@ -27,7 +28,7 @@ from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartCo
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
-from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.messages import grammar_options_syntax
 from . import config
 
@@ -75,6 +76,8 @@ class _CheckInstructionParser:
         self.command_parsers = {
             config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
             config.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
+            instruction_arguments.ALL_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__all,
+            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT: self.parse_file_quantified_assertion__exists,
         }
         self.missing_check_description = 'Missing argument for check :' + grammar_options_syntax.alternatives_list(
             self.command_parsers)
@@ -92,6 +95,15 @@ class _CheckInstructionParser:
             expression_parse.validator_for_non_negative)
 
         return _InstructionForNumFiles(self.settings, cmp_op_and_rhs)
+
+    def parse_file_quantified_assertion__all(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+        return self._file_quantified_assertion(Quantifier.ALL)
+
+    def parse_file_quantified_assertion__exists(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+        return self._file_quantified_assertion(Quantifier.EXISTS)
+
+    def _file_quantified_assertion(self, quantifier: Quantifier) -> AssertPhaseInstruction:
+        return _InstructionForQuantifiedAssertion(quantifier, self.settings)
 
 
 class _InstructionBase(AssertPhaseInstruction):
@@ -156,6 +168,25 @@ class _InstructionForNumFiles(_InstructionBase):
 
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
         self.comparison_handler.execute(environment)
+
+
+class _InstructionForQuantifiedAssertion(_InstructionBase):
+    def __init__(self,
+                 quantifier: Quantifier,
+                 settings: _Settings):
+        super().__init__(settings)
+        self.quantifier = quantifier
+        self._symbol_usages = settings.path_to_check.references + settings.file_matcher.references
+
+    def symbol_usages(self) -> list:
+        return self._symbol_usages
+
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+    def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
+        pass
 
 
 class _InstructionForEmptiness(_InstructionBase):
