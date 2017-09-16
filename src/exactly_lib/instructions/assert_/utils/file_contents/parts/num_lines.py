@@ -32,7 +32,7 @@ class FileAssertionPart(ActualFileAssertionPart):
               os_services: OsServices,
               file_to_check: FileToCheck) -> FileToCheck:
         comparison_handler = comparison_structures.ComparisonHandler(
-            file_to_check.checked_file_describer.construct_for_contents_attribute(
+            file_to_check.describer.construct_for_contents_attribute(
                 instruction_options.NUM_LINES_DESCRIPTION),
             self.expectation_type,
             NumLinesResolver(file_to_check),

@@ -11,34 +11,8 @@ from exactly_lib.named_element.path_resolving_environment import PathResolvingEn
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
-
-
-class InstructionForNumFiles(common._InstructionBase):
-    def __init__(self,
-                 settings: common.Settings,
-                 operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
-        super().__init__(settings)
-        self._assertion_part = NumFilesAssertion(settings, operator_and_r_operand)
-
-    def symbol_usages(self) -> list:
-        return self._assertion_part.references
-
-    def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        err_msg = self._assertion_part.validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
-        if err_msg:
-            return svh.new_svh_validation_error(err_msg)
-        else:
-            return svh.new_svh_success()
-
-    def _main_after_checking_existence_of_dir(self,
-                                              environment: InstructionEnvironmentForPostSdsStep,
-                                              os_services: OsServices):
-        self._assertion_part.check(environment, os_services, self.settings)
 
 
 class NumFilesResolver(comparison_structures.OperandResolver):
@@ -48,10 +22,6 @@ class NumFilesResolver(comparison_structures.OperandResolver):
         super().__init__(config.NUM_FILES_PROPERTY_NAME)
         self.path_to_check = path_to_check
         self.file_matcher = file_matcher
-
-    @property
-    def references(self) -> list:
-        return self.path_to_check.references
 
     def resolve(self, environment: InstructionEnvironmentForPostSdsStep) -> int:
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds

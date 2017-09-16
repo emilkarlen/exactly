@@ -29,12 +29,12 @@ class EmptinessAssertionPart(ActualFileAssertionPart):
         if self.expectation_type is ExpectationType.POSITIVE:
             if first_line != '':
                 return self._raise_fail(environment,
-                                        file_to_check.checked_file_describer,
+                                        file_to_check.describer,
                                         repr(first_line) + '...')
         else:
             if first_line == '':
                 return self._raise_fail(environment,
-                                        file_to_check.checked_file_describer,
+                                        file_to_check.describer,
                                         EMPTINESS_CHECK_EXPECTED_VALUE)
         return file_to_check
 

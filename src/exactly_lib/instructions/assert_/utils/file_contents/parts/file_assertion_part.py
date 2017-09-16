@@ -45,7 +45,7 @@ class FileToCheck:
         self._destination_file_path_getter = destination_file_path_getter
 
     @property
-    def checked_file_describer(self) -> FilePropertyDescriptorConstructor:
+    def describer(self) -> FilePropertyDescriptorConstructor:
         return self._checked_file_describer
 
     @property
