@@ -1,4 +1,5 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
+from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
@@ -31,7 +32,7 @@ class _InstructionBase(AssertPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return pfh_ex_method.translate_pfh_exception_to_pfh(self.__main_that_reports_result_via_exceptions,
-                                                            environment)
+                                                            environment, os_services)
 
     def _property_descriptor(self, property_name: str) -> property_description.PropertyDescriptor:
         return property_description.PropertyDescriptorWithConstantPropertyName(
@@ -45,18 +46,27 @@ class _InstructionBase(AssertPhaseInstruction):
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
         raise NotImplementedError('abstract method')
 
-    def __main_that_reports_result_via_exceptions(self, environment: InstructionEnvironmentForPostSdsStep):
-        self.__assert_path_is_existing_directory(environment)
+    def __main_that_reports_result_via_exceptions(self, environment: InstructionEnvironmentForPostSdsStep,
+                                                  os_services: OsServices):
+        assertion = AssertPathIsExistingDirectory()
+        assertion.check(environment, os_services, self.settings)
         self._main_after_checking_existence_of_dir(environment)
 
-    def __assert_path_is_existing_directory(self, environment: InstructionEnvironmentForPostSdsStep):
+
+class AssertPathIsExistingDirectory(AssertionPart):
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              settings: Settings) -> Settings:
         expect_existing_dir = file_properties.must_exist_as(file_properties.FileType.DIRECTORY,
                                                             True)
 
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         failure_message = file_ref_check.pre_or_post_sds_failure_message_or_none(
-            file_ref_check.FileRefCheck(self.settings.path_to_check,
+            file_ref_check.FileRefCheck(settings.path_to_check,
                                         expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
             raise pfh_ex_method.PfhFailException(failure_message)
+        else:
+            return settings
