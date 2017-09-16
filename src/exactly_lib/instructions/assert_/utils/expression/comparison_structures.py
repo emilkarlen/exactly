@@ -1,6 +1,7 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.comparators import ComparisonOperator
+from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
@@ -65,12 +66,15 @@ class ComparisonHandler:
     def references(self) -> list:
         return self.actual_value_lhs.references + self.integer_resolver.references
 
+    @property
+    def validator(self) -> SvhPreSdsValidatorViaExceptions:
+        return Validator(self.actual_value_lhs, self.integer_resolver)
+
     def validate_pre_sds(self, environment: InstructionEnvironmentForPreSdsStep):
         """
         Validates by raising exceptions from `return_svh_via_exceptions`
         """
-        self.actual_value_lhs.validate_pre_sds(environment.path_resolving_environment)
-        self.integer_resolver.validate_pre_sds(environment.path_resolving_environment)
+        self.validator.validate_pre_sds(environment.path_resolving_environment)
 
     def execute(self, environment: InstructionEnvironmentForPostSdsStep):
         """
@@ -151,3 +155,15 @@ class _ComparisonExecutor:
     def _raise_fail_exception(self):
         err_msg = self.failure_reporter.unexpected_value_message()
         raise return_pfh_via_exceptions.PfhFailException(err_msg)
+
+
+class Validator(SvhPreSdsValidatorViaExceptions):
+    def __init__(self,
+                 actual_value_lhs: OperandResolver,
+                 expected_value_rhs: OperandResolver):
+        self.actual_value_lhs = actual_value_lhs
+        self.integer_resolver = expected_value_rhs
+
+    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
+        self.actual_value_lhs.validate_pre_sds(environment)
+        self.integer_resolver.validate_pre_sds(environment)
