@@ -18,19 +18,19 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseInvalidSyntax),
 
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('the-instruction-name')),
+        suite_for_instruction_documentation(sut.setup('the-instruction-name').documentation),
     ])
 
 
 class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
     def test_raise_exception_WHEN_no_arguments(self):
-        parser = sut.Parser()
+        parser = sut.parser.Parser()
         for source in equivalent_source_variants(self, ''):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
                 parser.parse(source)
 
     def test_raise_exception_WHEN_invalid_assertion_variant(self):
-        parser = sut.Parser()
+        parser = sut.parser.Parser()
         cases = [
             NameAndValue(
                 'valid file argument, but no operator',

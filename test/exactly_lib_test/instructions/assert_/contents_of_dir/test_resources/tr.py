@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
+from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -34,7 +35,7 @@ class TestCaseBaseForParser(unittest.TestCase):
     def checker(self) -> InstructionChecker:
         return InstructionChecker(
             self,
-            sut.Parser(),
+            sut.parser.Parser(),
             ACCEPTED_REL_OPT_CONFIGURATIONS)
 
 
@@ -49,7 +50,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
         instruction_args_without_valid_file_matcher = CompleteArgumentsConstructor(
             CommonArgumentsConstructor('file-name', file_matcher=' '),
             self.assertion_variant_without_symbol_references)
-        parser = sut.Parser()
+        parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
             for expectation_type in ExpectationType:
@@ -66,7 +67,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_there_are_superfluous_arguments(self):
         valid_instruction_arguments_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
                                                                        self.assertion_variant_without_symbol_references)
-        parser = sut.Parser()
+        parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
             for expectation_type in ExpectationType:
@@ -84,7 +85,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_there_is_an_initial_illegal_option(self):
         valid_instruction_arguments_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
                                                                        self.assertion_variant_without_symbol_references)
-        parser = sut.Parser()
+        parser = sut.parser.Parser()
         for rel_opt_config in [DEFAULT_REL_OPT_CONFIG,
                                ARBITRARY_ACCEPTED_REL_OPT_CONFIG]:
             for expectation_type in ExpectationType:
@@ -103,7 +104,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
     def test_raise_exception_WHEN_relativity_is_unaccepted(self):
         valid_instruction_argument_syntax_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
                                                                              self.assertion_variant_without_symbol_references)
-        parser = sut.Parser()
+        parser = sut.parser.Parser()
         for rel_opt_config in UNACCEPTED_REL_OPT_CONFIGURATIONS:
             for expectation_type in ExpectationType:
                 etc = ExpectationTypeConfig(expectation_type)
@@ -120,7 +121,7 @@ class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
     def _checker(self) -> InstructionChecker:
         return InstructionChecker(
             self,
-            sut.Parser(),
+            sut.parser.Parser(),
             ACCEPTED_REL_OPT_CONFIGURATIONS,
         )
 
@@ -176,7 +177,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         # ACT #
 
-        instruction = sut.Parser().parse(source)
+        instruction = sut.parser.Parser().parse(source)
         assert isinstance(instruction, AssertPhaseInstruction)
         actual = instruction.symbol_usages()
 
@@ -193,7 +194,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
         path_sym_ref = NamedElementReference(
             'path_symbol_name',
             parse_relativity.reference_restrictions_for_path_symbol(
-                sut.ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants))
+                config.ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants))
 
         arguments_constructor = CompleteArgumentsConstructor(
             CommonArgumentsConstructor('ignored-dir-path'),
@@ -210,7 +211,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         # ACT #
 
-        actual_instruction = sut.Parser().parse(source)
+        actual_instruction = sut.parser.Parser().parse(source)
 
         assert isinstance(actual_instruction, AssertPhaseInstruction)
 

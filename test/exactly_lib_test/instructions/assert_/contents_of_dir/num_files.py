@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
+from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
@@ -53,7 +54,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
               condition_str: str,
               ) -> str:
         return 'ignored-name-of-dir-to-check {num_files} {condition}'.format(
-            num_files=sut.NUM_FILES_CHECK_ARGUMENT,
+            num_files=config.NUM_FILES_CHECK_ARGUMENT,
             condition=condition_str)
 
 
@@ -69,7 +70,7 @@ class TestCommonFailureConditions(tr.TestCommonFailureConditionsBase,
 
 class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
-        return expression.Configuration(sut.Parser(),
+        return expression.Configuration(sut.parser.Parser(),
                                         TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(),
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
@@ -97,7 +98,7 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
 
         # ACT #
 
-        actual_instruction = sut.Parser().parse(source)
+        actual_instruction = sut.parser.Parser().parse(source)
 
         assert isinstance(actual_instruction, AssertPhaseInstruction)
 
