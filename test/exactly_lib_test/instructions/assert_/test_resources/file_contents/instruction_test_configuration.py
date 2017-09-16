@@ -95,6 +95,17 @@ class NumLinesAssertionArgumentsConstructor(AssertionVariantArgumentsConstructor
         return instruction_options.NUM_LINES_ARGUMENT + ' ' + self._condition
 
 
+class EqualsStringAssertionArgumentsConstructor(AssertionVariantArgumentsConstructor):
+    def __init__(self, string_argument: str):
+        """
+        :param string_argument: Must be a single token.
+        """
+        self._string_argument = string_argument
+
+    def __str__(self):
+        return instruction_options.EQUALS_ARGUMENT + ' ' + self._string_argument
+
+
 class InstructionTestConfiguration:
     def new_parser(self) -> InstructionParser:
         raise NotImplementedError()
