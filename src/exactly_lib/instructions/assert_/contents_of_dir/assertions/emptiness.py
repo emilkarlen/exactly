@@ -2,10 +2,13 @@ import pathlib
 
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import Settings, \
+    AssertionPartThatOperatesOnSettings
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import property_description, diff_msg
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
@@ -112,7 +115,15 @@ class InstructionForEmptiness(common._InstructionBase):
         return self.settings.path_to_check.references + self.settings.file_matcher.references
 
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
-        checker = _EmptinessChecker(self._property_descriptor(config.EMPTINESS_PROPERTY_NAME),
+        checker = _EmptinessChecker(self.settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME),
                                     environment,
                                     self.settings)
         checker.main()
+
+
+class EmptinessAssertion(AssertionPartThatOperatesOnSettings):
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              settings: Settings) -> Settings:
+        pass

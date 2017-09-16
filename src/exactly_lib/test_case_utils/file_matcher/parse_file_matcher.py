@@ -48,7 +48,7 @@ def matcher_syntax_element_description() -> SyntaxElementDescription:
     return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
 
 
-class SelectorsDescriptor(property_description.ErrorMessagePartConstructor):
+class FileSelectionDescriptor(property_description.ErrorMessagePartConstructor):
     def __init__(self, resolver: FileMatcherResolver):
         self.resolver = resolver
 
