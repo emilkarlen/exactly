@@ -3,9 +3,7 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_utils import file_properties, pre_or_post_validation
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg import property_description
@@ -34,27 +32,6 @@ class Settings:
         )
 
 
-class _InstructionBase(AssertPhaseInstruction):
-    def __init__(self, settings: Settings):
-        self.settings = settings
-
-    def main(self,
-             environment: InstructionEnvironmentForPostSdsStep,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return pfh_ex_method.translate_pfh_exception_to_pfh(self.__main_that_reports_result_via_exceptions,
-                                                            environment, os_services)
-
-    def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep,
-                                              os_services: OsServices):
-        raise NotImplementedError('abstract method')
-
-    def __main_that_reports_result_via_exceptions(self, environment: InstructionEnvironmentForPostSdsStep,
-                                                  os_services: OsServices):
-        assertion = AssertPathIsExistingDirectory(self.settings)
-        assertion.check(environment, os_services, self.settings)
-        self._main_after_checking_existence_of_dir(environment, os_services)
-
-
 class DirContentsAssertionPart(AssertionPart):
     def __init__(self,
                  settings: Settings,
@@ -70,6 +47,10 @@ class DirContentsAssertionPart(AssertionPart):
 
 
 class AssertPathIsExistingDirectory(DirContentsAssertionPart):
+    @property
+    def references(self) -> list:
+        return self._settings.path_to_check.references
+
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,

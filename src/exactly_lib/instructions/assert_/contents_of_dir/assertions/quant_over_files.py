@@ -1,33 +1,26 @@
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.logic_types import Quantifier
 
 
-class InstructionForQuantifiedAssertion(common._InstructionBase):
+class QuantifiedAssertion(DirContentsAssertionPart):
     def __init__(self,
                  settings: common.Settings,
                  quantifier: Quantifier,
-                 actual_file_assertion_part: AssertionPart,
-                 ):
-        """
-        :param actual_file_assertion_part: An assertion part on a :class:`FileToCheck`
-        """
+                 actual_file_assertion_part: AssertionPart):
         super().__init__(settings)
         self.quantifier = quantifier
-        self._actual_file_assertion_part = actual_file_assertion_part
-        self._symbol_usages = (settings.path_to_check.references +
-                               settings.file_matcher.references +
-                               self._actual_file_assertion_part.references)
+        self.actual_file_assertion_part = actual_file_assertion_part
 
-    def symbol_usages(self) -> list:
-        return self._symbol_usages
+    @property
+    def references(self) -> list:
+        return self._settings.path_to_check.references + self._settings.file_matcher.references
 
-    def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
-        pass
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              settings: common.Settings) -> common.Settings:
+        return settings

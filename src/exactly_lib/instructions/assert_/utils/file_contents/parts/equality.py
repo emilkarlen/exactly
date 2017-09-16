@@ -56,7 +56,7 @@ class EqualityAssertionPart(ActualFileAssertionPart):
                                          files_are_equal,
                                          expected_file_path,
                                          transformed_file_path,
-                                         file_to_check.checked_file_describer)
+                                         file_to_check.describer)
         return file_to_check
 
     def _do_check_comparison_result(self,

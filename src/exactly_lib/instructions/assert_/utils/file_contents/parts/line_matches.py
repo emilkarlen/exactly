@@ -117,7 +117,7 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
                 if self._expected_reg_ex.search(line.rstrip('\n')):
                     return file_to_check
         self._report_fail(environment,
-                          file_to_check.checked_file_describer,
+                          file_to_check.describer,
                           'no line matches')
 
 
@@ -132,7 +132,7 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
                 plain_line = line.rstrip('\n')
                 if self._expected_reg_ex.search(plain_line):
                     self._report_fail_with_line(environment,
-                                                file_to_check.checked_file_describer,
+                                                file_to_check.describer,
                                                 line_num,
                                                 'matches',
                                                 line)
@@ -150,7 +150,7 @@ class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
             for line in lines:
                 if not self._expected_reg_ex.search(line.rstrip('\n')):
                     self._report_fail_with_line(environment,
-                                                file_to_check.checked_file_describer,
+                                                file_to_check.describer,
                                                 line_num,
                                                 'does not match',
                                                 line)
@@ -171,5 +171,5 @@ class _EveryLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
                     return file_to_check
                 line_num += 1
         self._report_fail(environment,
-                          file_to_check.checked_file_describer,
+                          file_to_check.describer,
                           'every line matches')

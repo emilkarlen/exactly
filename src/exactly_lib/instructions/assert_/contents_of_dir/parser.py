@@ -1,6 +1,8 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
+from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
+from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
 from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 from exactly_lib.section_document.parse_source import ParseSource
@@ -55,29 +57,35 @@ class _CheckInstructionParser:
             self.command_parsers)
 
     def parse(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
-        return parser.parse_mandatory_command(self.command_parsers,
-                                              self.missing_check_description)
+        assertion_variant = parser.parse_mandatory_command(self.command_parsers,
+                                                           self.missing_check_description)
+        assertions = assertion_part.SequenceOfCooperativeAssertionParts([
+            common.AssertPathIsExistingDirectory(self.settings),
+            assertion_variant,
+        ])
+        return assertion_part.AssertionInstructionFromAssertionPart(assertions,
+                                                                    lambda x: self.settings)
 
-    def parse_empty_check(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
-        return emptiness.InstructionForEmptiness(self.settings)
+    def parse_empty_check(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
+        return emptiness.EmptinessAssertion(self.settings)
 
-    def parse_num_files_check(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+    def parse_num_files_check(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
         cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(
             parser,
             expression_parse.validator_for_non_negative)
 
-        return num_files.InstructionForNumFiles(self.settings, cmp_op_and_rhs)
+        return num_files.NumFilesAssertion(self.settings, cmp_op_and_rhs)
 
-    def parse_file_quantified_assertion__all(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+    def parse_file_quantified_assertion__all(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
 
-    def parse_file_quantified_assertion__exists(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+    def parse_file_quantified_assertion__exists(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
         return self._file_quantified_assertion(Quantifier.EXISTS, parser)
 
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
-                                   parser: TokenParserPrime) -> AssertPhaseInstruction:
+                                   parser: TokenParserPrime) -> DirContentsAssertionPart:
         parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
                                                           must_be_on_current_line=True)
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
-        return quant_over_files.InstructionForQuantifiedAssertion(self.settings, quantifier, actual_file_assertion_part)
+        return quant_over_files.QuantifiedAssertion(self.settings, quantifier, actual_file_assertion_part)

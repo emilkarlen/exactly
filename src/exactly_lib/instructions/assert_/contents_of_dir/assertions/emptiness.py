@@ -110,25 +110,10 @@ class _EmptinessChecker:
         raise pfh_ex_method.PfhFailException(msg)
 
 
-class InstructionForEmptiness(common._InstructionBase):
-    def __init__(self, settings: Settings):
-        super().__init__(settings)
-        self._assertion = EmptinessAssertion(settings)
-
-    def symbol_usages(self) -> list:
-        return self._assertion.references
-        # return self.settings.path_to_check.references + self.settings.file_matcher.references
-
-    def _main_after_checking_existence_of_dir(self,
-                                              environment: InstructionEnvironmentForPostSdsStep,
-                                              os_services: OsServices):
-        self._assertion.check(environment, os_services, self.settings)
-
-
 class EmptinessAssertion(DirContentsAssertionPart):
     @property
     def references(self) -> list:
-        return self._settings.path_to_check.references + self._settings.file_matcher.references
+        return self._settings.file_matcher.references
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
