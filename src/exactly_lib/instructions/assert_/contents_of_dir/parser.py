@@ -7,12 +7,12 @@ from exactly_lib.instructions.assert_.utils.expression import parse as expressio
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils import return_svh_via_exceptions
-from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.section_document.parser_implementations.instruction_parsers import \
-    InstructionParserThatConsumesCurrentLine
+from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
+from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -25,6 +25,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import ExpectationType
 from . import config
@@ -35,25 +36,31 @@ _CHECKERS = [
 ]
 
 
-class Parser(InstructionParserThatConsumesCurrentLine):
+class Parser(InstructionParser):
     def __init__(self):
         self.format_map = {
             'PATH': PATH_ARGUMENT.name,
         }
 
-    def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
-        tokens = new_token_parser(rest_of_line,
-                                  self.format_map)
-        path_to_check = tokens.consume_file_ref(ACTUAL_RELATIVITY_CONFIGURATION)
-        file_selection = parse_file_matcher.parse_optional_selection_resolver(tokens)
-        expectation_type = tokens.consume_optional_negation_operator()
-        instructions_parser = _CheckInstructionParser(_Settings(expectation_type,
-                                                                path_to_check,
-                                                                file_selection))
+    def parse(self, source: ParseSource) -> AssertPhaseInstruction:
+        with token_stream_parse_prime.from_parse_source(
+                source,
+                consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
+            assert isinstance(token_parser,
+                              token_stream_parse_prime.TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
 
-        instruction = instructions_parser.parse(tokens)
-        tokens.report_superfluous_arguments_if_not_at_eol()
-        return instruction
+            path_to_check = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
+                                                                            token_parser)
+            file_selection = parse_file_matcher.parse_optional_selection_resolver(token_parser)
+            expectation_type = token_parser.consume_optional_negation_operator()
+            instructions_parser = _CheckInstructionParser(_Settings(expectation_type,
+                                                                    path_to_check,
+                                                                    file_selection))
+
+            instruction = instructions_parser.parse(token_parser)
+            token_parser.report_superfluous_arguments_if_not_at_eol()
+            token_parser.consume_current_line_as_plain_string()
+            return instruction
 
 
 class _Settings:
