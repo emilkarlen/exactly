@@ -13,14 +13,14 @@ def is_pass() -> asrt.ValueAssertion:
     return status_is(pfh.PassOrFailOrHardErrorEnum.PASS)
 
 
-def is_fail(assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
+def is_fail(assertion_on_error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
     return asrt.And([
         status_is(pfh.PassOrFailOrHardErrorEnum.FAIL),
         failure_message_is(assertion_on_error_message)
     ])
 
 
-def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
+def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
     return asrt.And([
         status_is(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR),
         failure_message_is(assertion_on_error_message)
@@ -29,5 +29,5 @@ def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.anythin
 
 def failure_message_is(assertion_on_error_message: asrt.ValueAssertion) -> asrt.ValueAssertion:
     return asrt.sub_component('failure message',
-                            pfh.PassOrFailOrHardError.failure_message.fget,
-                            assertion_on_error_message)
+                              pfh.PassOrFailOrHardError.failure_message.fget,
+                              assertion_on_error_message)
