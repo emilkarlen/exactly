@@ -23,6 +23,15 @@ class Settings:
         self.path_to_check = path_to_check
         self.file_matcher = file_matcher
 
+    def property_descriptor(self, property_name: str) -> property_description.PropertyDescriptor:
+        return property_description.PropertyDescriptorWithConstantPropertyName(
+            property_name,
+            property_description.multiple_object_descriptors([
+                PathValuePartConstructor(self.path_to_check),
+                parse_file_matcher.FileSelectionDescriptor(self.file_matcher),
+            ])
+        )
+
 
 class _InstructionBase(AssertPhaseInstruction):
     def __init__(self, settings: Settings):
@@ -34,15 +43,6 @@ class _InstructionBase(AssertPhaseInstruction):
         return pfh_ex_method.translate_pfh_exception_to_pfh(self.__main_that_reports_result_via_exceptions,
                                                             environment, os_services)
 
-    def _property_descriptor(self, property_name: str) -> property_description.PropertyDescriptor:
-        return property_description.PropertyDescriptorWithConstantPropertyName(
-            property_name,
-            property_description.multiple_object_descriptors([
-                PathValuePartConstructor(self.settings.path_to_check),
-                parse_file_matcher.SelectorsDescriptor(self.settings.file_matcher),
-            ])
-        )
-
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
         raise NotImplementedError('abstract method')
 
@@ -53,7 +53,15 @@ class _InstructionBase(AssertPhaseInstruction):
         self._main_after_checking_existence_of_dir(environment)
 
 
-class AssertPathIsExistingDirectory(AssertionPart):
+class AssertionPartThatOperatesOnSettings(AssertionPart):
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              settings: Settings) -> Settings:
+        raise NotImplementedError('abstract method')
+
+
+class AssertPathIsExistingDirectory(AssertionPartThatOperatesOnSettings):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,

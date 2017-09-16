@@ -19,7 +19,7 @@ class InstructionForNumFiles(common._InstructionBase):
                  operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
         super().__init__(settings)
         self.comparison_handler = comparison_structures.ComparisonHandler(
-            self._property_descriptor(config.NUM_FILES_PROPERTY_NAME),
+            settings.property_descriptor(config.NUM_FILES_PROPERTY_NAME),
             settings.expectation_type,
             NumFilesResolver(settings.path_to_check,
                              settings.file_matcher),
