@@ -18,7 +18,9 @@ class InstructionForQuantifiedAssertion(common._InstructionBase):
         super().__init__(settings)
         self.quantifier = quantifier
         self._actual_file_assertion_part = actual_file_assertion_part
-        self._symbol_usages = settings.path_to_check.references + settings.file_matcher.references
+        self._symbol_usages = (settings.path_to_check.references +
+                               settings.file_matcher.references +
+                               self._actual_file_assertion_part.references)
 
     def symbol_usages(self) -> list:
         return self._symbol_usages
