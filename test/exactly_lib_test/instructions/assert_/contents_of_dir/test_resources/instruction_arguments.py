@@ -1,5 +1,5 @@
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.instructions.assert_ import contents_of_dir as sut
+from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
@@ -91,7 +91,7 @@ class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
 
     def __str__(self):
         return '{num_files} {condition}'.format(
-            num_files=sut.NUM_FILES_CHECK_ARGUMENT,
+            num_files=config.NUM_FILES_CHECK_ARGUMENT,
             condition=self._condition)
 
 
@@ -105,7 +105,7 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
     def __str__(self):
         return '{quantifier} {file} {contents_assertion}'.format(
             quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
-            file=sut.FILE_ARGUMENT,
+            file=config.FILE_ARGUMENT,
             contents_assertion=str(self._file_contents_assertion))
 
 

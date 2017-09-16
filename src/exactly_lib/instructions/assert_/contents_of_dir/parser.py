@@ -1,21 +1,12 @@
 import pathlib
 
-from exactly_lib.common.help.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
+from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
-from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT, \
-    EMPTY_ARGUMENT_CONSTANT, EMPTINESS_CHECK_EXPECTED_VALUE
+from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.utils import return_svh_via_exceptions
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import new_token_parser
 from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
@@ -28,142 +19,26 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh, svh
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils import file_properties, negation_of_predicate
+from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils import file_ref_check
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import property_description
 from exactly_lib.test_case_utils.err_msg.path_description import PathValuePartConstructor
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
-from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
-
-
-def setup(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(Parser(),
-                                  TheInstructionDocumentation(instruction_name))
-
-
-_NUM_FILES_PROPERTY_NAME = 'number of files in dir'
-
-_EMPTINESS_PROPERTY_NAME = 'contents of dir'
-
-NEGATION_OPERATOR = instruction_arguments.NEGATION_ARGUMENT_STR
-
-SELECTION_OPTION = instruction_arguments.SELECTION_OPTION
-
-FILE_ARGUMENT = 'file'
-
-NUM_FILES_CHECK_ARGUMENT = 'num-files'
-
-NUM_FILES_ARGUMENT_CONSTANT = a.Constant(NUM_FILES_CHECK_ARGUMENT)
+from . import config
 
 _CHECKERS = [
-    NUM_FILES_CHECK_ARGUMENT,
-    EMPTINESS_CHECK_ARGUMENT,
+    config.NUM_FILES_CHECK_ARGUMENT,
+    config.EMPTINESS_CHECK_ARGUMENT,
 ]
-
-
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    def __init__(self, name: str):
-        super().__init__(name, {
-            'checked_file': _PATH_ARGUMENT.name,
-            'selection': instruction_arguments.SELECTION.name,
-        })
-        self.actual_file = a.Single(a.Multiplicity.MANDATORY,
-                                    _PATH_ARGUMENT)
-        self.relativity_of_actual_arg = a.Named('RELATIVITY')
-        self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
-                                               self.relativity_of_actual_arg)
-
-    def single_line_description(self) -> str:
-        return _SINGLE_LINE_DESCRIPTION
-
-    def main_description_rest(self) -> list:
-        return self._paragraphs(_MAIN_DESCRIPTION_REST)
-
-    def invokation_variants(self) -> list:
-        negation_argument = negation_of_predicate.optional_negation_argument_usage()
-        selection_arg = a.Single(a.Multiplicity.OPTIONAL,
-                                 instruction_arguments.SELECTION)
-        mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
-                                       EMPTY_ARGUMENT_CONSTANT)
-
-        mandatory_num_files_arg = a.Single(a.Multiplicity.MANDATORY,
-                                           NUM_FILES_ARGUMENT_CONSTANT)
-
-        arguments_for_empty_check = [self.actual_file,
-                                     selection_arg,
-                                     negation_argument,
-                                     mandatory_empty_arg]
-
-        arguments_for_num_files_check = [self.actual_file,
-                                         selection_arg,
-                                         negation_argument,
-                                         mandatory_num_files_arg,
-                                         ] + parse_expr.ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
-
-        return [
-            InvokationVariant(self._cl_syntax_for_args(arguments_for_empty_check),
-                              self._paragraphs(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)),
-
-            InvokationVariant(self._cl_syntax_for_args(arguments_for_num_files_check),
-                              self._paragraphs(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)),
-        ]
-
-    def syntax_element_descriptions(self) -> list:
-        negation = negation_of_predicate.syntax_element_description(_ADDITIONAL_TEXT_OF_NEGATION_SED)
-
-        selection = parse_file_matcher.selection_syntax_element_description()
-
-        mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
-                                                                     instruction_arguments.PATH_ARGUMENT)
-        actual_file_arg_sed = SyntaxElementDescription(
-            _PATH_ARGUMENT.name,
-            self._paragraphs(
-                _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT),
-            [InvokationVariant(
-                self._cl_syntax_for_args(
-                    [self.actual_file_relativity,
-                     mandatory_actual_path]
-                ),
-                rel_opts.default_relativity_for_rel_opt_type(
-                    instruction_arguments.PATH_ARGUMENT.name,
-                    ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
-        )
-
-        relativity_of_actual_file_sed = rel_opts.relativity_syntax_element_description(
-            instruction_arguments.PATH_ARGUMENT,
-            ACTUAL_RELATIVITY_CONFIGURATION.options,
-            self.relativity_of_actual_arg)
-
-        return ([negation,
-                 selection,
-                 ] +
-                expression_parse.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION) +
-                [actual_file_arg_sed,
-                 relativity_of_actual_file_sed,
-                 ])
-
-    def _see_also_cross_refs(self) -> list:
-        from exactly_lib.help_texts.entity import types
-        types = [types.FILE_MATCHER_CONCEPT_INFO.cross_reference_target]
-        concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
-        refs = rel_path_doc.cross_refs_for_concepts(concepts)
-        refs.extend(types)
-        refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
-        return refs
-
-    def _cls(self, additional_argument_usages: list) -> str:
-        return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def __init__(self):
         self.format_map = {
-            'PATH': _PATH_ARGUMENT.name,
+            'PATH': PATH_ARGUMENT.name,
         }
 
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
@@ -199,8 +74,8 @@ class _CheckInstructionParser:
     def __init__(self, settings: _Settings):
         self.settings = settings
         self.command_parsers = {
-            NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
-            EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
+            config.NUM_FILES_CHECK_ARGUMENT: self.parse_num_files_check,
+            config.EMPTINESS_CHECK_ARGUMENT: self.parse_empty_check,
         }
 
     def parse(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
@@ -263,7 +138,7 @@ class _InstructionForNumFiles(_InstructionBase):
                  operator_and_r_operand: parse_expr.IntegerComparisonOperatorAndRightOperand):
         super().__init__(settings)
         self.comparison_handler = comparison_structures.ComparisonHandler(
-            self._property_descriptor(_NUM_FILES_PROPERTY_NAME),
+            self._property_descriptor(config.NUM_FILES_PROPERTY_NAME),
             settings.expectation_type,
             NumFilesResolver(settings.path_to_check,
                              settings.file_matcher),
@@ -287,7 +162,7 @@ class _InstructionForEmptiness(_InstructionBase):
         return self.settings.path_to_check.references + self.settings.file_matcher.references
 
     def _main_after_checking_existence_of_dir(self, environment: InstructionEnvironmentForPostSdsStep):
-        checker = _EmptinessChecker(self._property_descriptor(_EMPTINESS_PROPERTY_NAME),
+        checker = _EmptinessChecker(self._property_descriptor(config.EMPTINESS_PROPERTY_NAME),
                                     environment,
                                     self.settings)
         checker.main()
@@ -392,7 +267,7 @@ class NumFilesResolver(comparison_structures.OperandResolver):
     def __init__(self,
                  path_to_check: FileRefResolver,
                  file_matcher: FileMatcherResolver):
-        super().__init__(_NUM_FILES_PROPERTY_NAME)
+        super().__init__(config.NUM_FILES_PROPERTY_NAME)
         self.path_to_check = path_to_check
         self.file_matcher = file_matcher
 
@@ -407,44 +282,3 @@ class NumFilesResolver(comparison_structures.OperandResolver):
         file_matcher = self.file_matcher.resolve(environment.symbols)
         selected_files = file_matcher_type.matching_files_in_dir(file_matcher, path_to_check)
         return len(list(selected_files))
-
-
-_PATH_ARGUMENT = a.Named('PATH')
-
-ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
-    rel_opts_configuration.RelOptionsConfiguration(
-        rel_opts_configuration.PathRelativityVariants({
-            RelOptionType.REL_CWD,
-            RelOptionType.REL_HOME_ACT,
-            RelOptionType.REL_TMP,
-            RelOptionType.REL_ACT,
-        },
-            True),
-        RelOptionType.REL_CWD),
-    _PATH_ARGUMENT.name,
-    True)
-
-_SINGLE_LINE_DESCRIPTION = 'Tests the contents of a directory'
-
-_MAIN_DESCRIPTION_REST = """\
-FAIL if {checked_file} is not an existing directory
-(even when the assertion is negated).
-
-
-If {selection} is given, then the test applies to the selected files from the directory.
-
-
-Symbolic links are followed.
-"""
-
-_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\
-Tests that {checked_file} is an empty directory, or that the set of selected files is empty.
-"""
-
-_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES = """\
-Tests that {checked_file} is a directory that contains the specified number of files.
-"""
-
-_PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT = "The directory who's contents is checked."
-
-_ADDITIONAL_TEXT_OF_NEGATION_SED = ' (Except for the test of the existence of the checked directory.)'
