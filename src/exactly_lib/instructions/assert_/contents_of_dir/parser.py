@@ -2,6 +2,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, emptiness, num_files, quant_over_files
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
+from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
@@ -68,10 +69,15 @@ class _CheckInstructionParser:
         return num_files.InstructionForNumFiles(self.settings, cmp_op_and_rhs)
 
     def parse_file_quantified_assertion__all(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
-        return self._file_quantified_assertion(Quantifier.ALL)
+        return self._file_quantified_assertion(Quantifier.ALL, parser)
 
     def parse_file_quantified_assertion__exists(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
-        return self._file_quantified_assertion(Quantifier.EXISTS)
+        return self._file_quantified_assertion(Quantifier.EXISTS, parser)
 
-    def _file_quantified_assertion(self, quantifier: Quantifier) -> AssertPhaseInstruction:
-        return quant_over_files.InstructionForQuantifiedAssertion(quantifier, self.settings)
+    def _file_quantified_assertion(self,
+                                   quantifier: Quantifier,
+                                   parser: TokenParserPrime) -> AssertPhaseInstruction:
+        parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
+                                                          must_be_on_current_line=True)
+        actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
+        return quant_over_files.InstructionForQuantifiedAssertion(self.settings, quantifier, actual_file_assertion_part)
