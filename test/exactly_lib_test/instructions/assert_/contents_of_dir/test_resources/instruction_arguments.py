@@ -98,16 +98,18 @@ class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
 class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
     def __init__(self,
                  quantifier: Quantifier,
-                 file_contents_assertion: file_contents_tr.AssertionVariantArgumentsConstructor):
+                 file_contents_assertion: file_contents_tr.ContentsArgumentsConstructor,
+                 contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
         self._quantifier = quantifier
         self._file_contents_assertion = file_contents_assertion
+        self._contents_argument_expectation_type = ExpectationTypeConfig(contents_argument_expectation_type)
 
     def __str__(self):
         return '{quantifier} {file} {separator} {contents_assertion}'.format(
             quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
             file=config.QUANTIFICATION_OVER_FILE_ARGUMENT,
             separator=config.QUANTIFICATION_SEPARATOR_ARGUMENT,
-            contents_assertion=str(self._file_contents_assertion))
+            contents_assertion=self._file_contents_assertion.apply(self._contents_argument_expectation_type))
 
 
 def replace_not_op(etc: ExpectationTypeConfig, s: str) -> str:

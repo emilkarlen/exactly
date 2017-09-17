@@ -8,6 +8,7 @@ from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
+from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -18,8 +19,13 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instru
     CommonArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression, instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import \
+    instruction_test_configuration as file_contents_tr
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.contents_transformation import \
+    ToUppercaseLinesTransformer
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, EqualsStringAssertionArgumentsConstructor
+    EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, \
+    EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -29,6 +35,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
+from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link
@@ -55,15 +62,26 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked),
 
-        unittest.makeSuite(TestAssertionVariantThatNeedsToCreateIntermediateFiles),
+        unittest.makeSuite(TestAssertionVariantThatTransformersMultipleFiles),
     ])
 
 
 class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
     @property
     def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
-        return FilesContentsAssertionVariant(Quantifier.ALL,
-                                             EmptyAssertionArgumentsConstructor())
+        return FilesContentsAssertionVariant(
+            Quantifier.ALL,
+            file_contents_arg(EmptyAssertionArgumentsConstructor()),
+        )
+
+
+def file_contents_arg(
+        contents_variant: file_contents_tr.AssertionVariantArgumentsConstructor,
+        common: file_contents_tr.CommonArgumentsConstructor = file_contents_tr.CommonArgumentsConstructor()
+) -> file_contents_tr.ContentsArgumentsConstructor:
+    return file_contents_tr.ContentsArgumentsConstructor(
+        common,
+        contents_variant)
 
 
 class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
@@ -92,8 +110,9 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
     def apply(self, condition_str: str) -> str:
         arguments_constructor = CompleteArgumentsConstructor(
             CommonArgumentsConstructor('ignored-dir-path'),
-            FilesContentsAssertionVariant(Quantifier.ALL,
-                                          NumLinesAssertionArgumentsConstructor(condition_str)))
+            FilesContentsAssertionVariant(
+                Quantifier.ALL,
+                file_contents_arg(NumLinesAssertionArgumentsConstructor(condition_str))))
         return arguments_constructor.apply(ExpectationTypeConfig(ExpectationType.POSITIVE),
                                            tr.DEFAULT_REL_OPT_CONFIG)
 
@@ -112,8 +131,9 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
         )
         arguments_constructor = CompleteArgumentsConstructor(
             CommonArgumentsConstructor('ignored-dir-path'),
-            FilesContentsAssertionVariant(Quantifier.ALL,
-                                          NumLinesAssertionArgumentsConstructor(condition_str)))
+            FilesContentsAssertionVariant(
+                Quantifier.ALL,
+                file_contents_arg(NumLinesAssertionArgumentsConstructor(condition_str))))
 
         argument = arguments_constructor.apply(ExpectationTypeConfig(ExpectationType.NEGATIVE),
                                                tr.DEFAULT_REL_OPT_CONFIG)
@@ -142,8 +162,9 @@ class TestRelativityVariantsOfCheckedDir(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     arguments_constructor_for_emptiness = CompleteArgumentsConstructor(
         CommonArgumentsConstructor(name_of_checked_dir),
-        FilesContentsAssertionVariant(Quantifier.ALL,
-                                      EmptyAssertionArgumentsConstructor()))
+        FilesContentsAssertionVariant(
+            Quantifier.ALL,
+            file_contents_arg(EmptyAssertionArgumentsConstructor())))
 
     @property
     def instruction_checker(self) -> InstructionChecker:
@@ -193,8 +214,9 @@ class TestHardErrorWhenAFileThatIsNotARegularFileIsTested(unittest.TestCase):
             for quantifier in Quantifier:
                 arguments_constructor = CompleteArgumentsConstructor(
                     CommonArgumentsConstructor(name_of_checked_dir),
-                    FilesContentsAssertionVariant(quantifier,
-                                                  file_contents_assertion))
+                    FilesContentsAssertionVariant(
+                        quantifier,
+                        file_contents_arg(file_contents_assertion)))
                 for expectation_type in ExpectationType:
                     arguments = arguments_constructor.apply(ExpectationTypeConfig(expectation_type),
                                                             relativity_root_conf)
@@ -229,8 +251,9 @@ class TestExistsEmptyFile(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     exists__empty__arguments = CompleteArgumentsConstructor(
         CommonArgumentsConstructor(name_of_checked_dir),
-        FilesContentsAssertionVariant(Quantifier.EXISTS,
-                                      EmptyAssertionArgumentsConstructor()))
+        FilesContentsAssertionVariant(
+            Quantifier.EXISTS,
+            file_contents_arg(EmptyAssertionArgumentsConstructor())))
 
     @property
     def instruction_checker(self) -> InstructionChecker:
@@ -288,8 +311,9 @@ class TestForAllEmptyFile(unittest.TestCase):
     name_of_checked_dir = 'checked-dir'
     for_all__empty__arguments = CompleteArgumentsConstructor(
         CommonArgumentsConstructor(name_of_checked_dir),
-        FilesContentsAssertionVariant(Quantifier.ALL,
-                                      EmptyAssertionArgumentsConstructor()))
+        FilesContentsAssertionVariant(
+            Quantifier.ALL,
+            file_contents_arg(EmptyAssertionArgumentsConstructor())))
 
     @property
     def instruction_checker(self) -> InstructionChecker:
@@ -387,8 +411,9 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
             arguments_constructor = CompleteArgumentsConstructor(
                 CommonArgumentsConstructor(name_of_checked_dir,
                                            file_matcher=name_starts_with_selected.name),
-                FilesContentsAssertionVariant(Quantifier.ALL,
-                                              file_is_empty_assertion))
+                FilesContentsAssertionVariant(
+                    Quantifier.ALL,
+                    file_contents_arg(file_is_empty_assertion)))
             for expectation_type in ExpectationType:
                 etc = ExpectationTypeConfig(expectation_type)
                 arguments = arguments_constructor.apply(etc,
@@ -453,8 +478,9 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
             arguments_constructor = CompleteArgumentsConstructor(
                 CommonArgumentsConstructor(name_of_checked_dir,
                                            file_matcher=name_starts_with_selected.name),
-                FilesContentsAssertionVariant(Quantifier.EXISTS,
-                                              file_is_empty_assertion))
+                FilesContentsAssertionVariant(
+                    Quantifier.EXISTS,
+                    file_contents_arg(file_is_empty_assertion)))
             for expectation_type in ExpectationType:
                 etc = ExpectationTypeConfig(expectation_type)
                 arguments = arguments_constructor.apply(etc,
@@ -483,7 +509,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                     )
 
 
-class TestAssertionVariantThatNeedsToCreateIntermediateFiles(unittest.TestCase):
+class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
     """
     The "equals" assertion variant needs to create intermediate files (as of 2017-09-17).
     This means that the integration of the file contents assertion ("equals") must provide
@@ -499,21 +525,54 @@ class TestAssertionVariantThatNeedsToCreateIntermediateFiles(unittest.TestCase):
         return InstructionChecker(self, sut.parser.Parser(), tr.ACCEPTED_REL_OPT_CONFIGURATIONS)
 
     def test_it_SHOULD_be_possible_to_create_multiple_intermediate_files(self):
-        asserted_file_contents = 'asserted_file_contents'
+        original_file_contents = 'original_file_contents'
+        expected_transformer_contents = original_file_contents.upper()
+
+        transform_to_uppercase = NameAndValue(
+            'to_uppercase_lines_transformer',
+            ToUppercaseLinesTransformer())
+
+        symbol_table_with_lines_transformer = SymbolTable({
+            transform_to_uppercase.name: container(LinesTransformerConstant(transform_to_uppercase.value))
+        })
+        expected_symbol_references = asrt.matches_sequence([
+            is_lines_transformer_reference_to(transform_to_uppercase.name)
+        ])
+
         for_all__equals__arguments = CompleteArgumentsConstructor(
             CommonArgumentsConstructor(self.name_of_checked_dir),
-            FilesContentsAssertionVariant(Quantifier.ALL,
-                                          EqualsStringAssertionArgumentsConstructor(asserted_file_contents)))
-        self.instruction_checker.check_expectation_type_variants(
-            for_all__equals__arguments,
-            main_result_for_positive_expectation=PassOrFail.PASS,
-            rel_opt_config=tr.DEFAULT_REL_OPT_CONFIG,
-            contents_of_relativity_option_root=DirContents([
-                Dir(self.name_of_checked_dir, [
-                    File('1.txt', asserted_file_contents),
-                    File('2.txt', asserted_file_contents),
-                ]),
-            ]),
+            FilesContentsAssertionVariant(
+                Quantifier.ALL,
+                file_contents_tr.ContentsArgumentsConstructor(
+                    file_contents_tr.CommonArgumentsConstructor(
+                        file_transformer=transform_to_uppercase.name),
+                    EqualsStringAssertionArgumentsConstructor(expected_transformer_contents)),
+            ))
+        relativity_root_conf = tr.DEFAULT_REL_OPT_CONFIG
+        etc = ExpectationTypeConfig(ExpectationType.POSITIVE)
+        arguments = for_all__equals__arguments.apply(
+            etc,
+            relativity_root_conf,
+        )
+        instruction_check.check(
+            self,
+            sut.parser.Parser(),
+            remaining_source(arguments),
+            arrangement=
+            ArrangementPostAct(
+                home_or_sds_contents=relativity_root_conf.populator_for_relativity_option_root(
+                    DirContents([
+                        File('1.txt', original_file_contents),
+                        File('2.txt', original_file_contents),
+                    ])
+                ),
+                symbols=symbol_table_with_lines_transformer
+            ),
+            expectation=
+            Expectation(
+                main_result=etc.fail__if_positive__pass_if_negative,
+                symbol_usages=expected_symbol_references
+            )
         )
 
 
