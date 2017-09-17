@@ -13,10 +13,16 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 
 CONTENTS_ATTRIBUTE = 'contents'
 
+PLAIN_FILE_OBJECT_NAME = 'file'
+
 
 class FilePropertyDescriptorConstructor:
     def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        raise NotImplementedError('todo')
+        raise NotImplementedError('abstract method')
+
+
+def file_property_name(contents_attribute: str, object_name: str) -> str:
+    return contents_attribute + ' of ' + object_name
 
 
 class ComparisonActualFile:
@@ -54,11 +60,8 @@ class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDesc
         self._object_name = object_name
 
     def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:
-        return path_value_description(self._property_name(contents_attribute),
+        return path_value_description(file_property_name(contents_attribute, self._object_name),
                                       self._file_ref)
-
-    def _property_name(self, contents_attribute: str) -> str:
-        return contents_attribute + ' of ' + self._object_name
 
 
 class ActComparisonActualFileForFileRef(ComparisonActualFile):
@@ -67,7 +70,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
         self._file_ref_resolver = file_ref_resolver
 
     def object_name(self) -> str:
-        return 'file'
+        return PLAIN_FILE_OBJECT_NAME
 
     @property
     def references(self) -> list:

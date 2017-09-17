@@ -14,4 +14,7 @@ class FileMatcher(Matcher):
 
 
 def matching_files_in_dir(matcher: FileMatcher, dir_path: pathlib.Path) -> iter:
+    """
+    :return: Iterator of :class:`pathlib.Path`
+    """
     return filter(matcher.matches, dir_path.iterdir())
