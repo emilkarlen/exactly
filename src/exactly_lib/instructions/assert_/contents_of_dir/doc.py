@@ -15,6 +15,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from . import config
@@ -91,11 +92,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             ACTUAL_RELATIVITY_CONFIGURATION.options,
             self.relativity_of_actual_arg)
 
-        return ([negation,
-                 selection,
-                 self._files_assertion_sed(),
+        return ([self._files_assertion_sed(),
                  self.file_contents_assertion_help.file_contents_assertion_sed(),
-
+                 selection,
+                 parse_lines_transformer.selection_syntax_element_description(),
+                 negation,
                  ] +
                 expression_parse.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION) +
                 [actual_file_arg_sed,
@@ -149,7 +150,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _see_also_cross_refs(self) -> list:
         from exactly_lib.help_texts.entity import types
-        types = [types.FILE_MATCHER_CONCEPT_INFO.cross_reference_target]
+        types = [types.FILE_MATCHER_CONCEPT_INFO.cross_reference_target,
+                 types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target]
         concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
         refs = rel_path_doc.cross_refs_for_concepts(concepts)
         refs.extend(types)
