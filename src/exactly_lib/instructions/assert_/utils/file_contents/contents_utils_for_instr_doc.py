@@ -1,18 +1,14 @@
 from exactly_lib import program_info
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
+from exactly_lib.instructions.assert_.utils.file_contents.parts import cl_syntax as parts_cl_syntax
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_file_structure import environment_variables
@@ -20,14 +16,13 @@ from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 
-EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
-
 
 class FileContentsHelpParts:
     def __init__(self,
                  instruction_name: str,
                  checked_file: str,
                  initial_args_of_invokation_variants: list):
+        self.file_contents_assertion_help = parts_cl_syntax.FileContentsAssertionHelp(checked_file)
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self.expected_file_arg = a.Named('EXPECTED-PATH')
@@ -42,6 +37,7 @@ class FileContentsHelpParts:
             'transformation': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
+            'file_contents_assertion': parts_cl_syntax.FILE_CONTENTS_ASSERTION.name,
         }
         self._parser = TextParser(format_map)
 
@@ -49,87 +45,14 @@ class FileContentsHelpParts:
         return cl_syntax.cl_syntax_for_args(self.initial_args_of_invokation_variants + additional_argument_usages)
 
     def invokation_variants(self) -> list:
-        mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
-                                       EMPTY_ARGUMENT_CONSTANT)
-
-        optional_not_arg = negation_of_predicate.optional_negation_argument_usage()
-
-        equals_arg = a.Single(a.Multiplicity.MANDATORY,
-                              a.Constant(
-                                  instruction_options.EQUALS_ARGUMENT))
-        expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
-                                     self.expected_file_arg)
-        optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
-                                                  instruction_arguments.LINES_TRANSFORMATION_ARGUMENT)
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
-                                instruction_arguments.HERE_DOCUMENT)
         return [
-            InvokationVariant(self._cls([optional_transformation_option,
-                                         optional_not_arg,
-                                         mandatory_empty_arg]),
-                              self._paragraphs(_DESCRIPTION_OF_EMPTY)),
-            InvokationVariant(self._cls([optional_transformation_option,
-                                         optional_not_arg,
-                                         equals_arg,
-                                         here_doc_arg,
-                                         ]),
-                              self._paragraphs(_DESCRIPTION_OF_EQUALS_HERE_DOC)),
-            InvokationVariant(self._cls([optional_transformation_option,
-                                         optional_not_arg,
-                                         equals_arg,
-                                         expected_file_arg,
-                                         ]),
-                              self._paragraphs(_DESCRIPTION_OF_EQUALS_FILE)),
-            self._line_matches_invokation_variant(optional_transformation_option,
-                                                  optional_not_arg),
-            self._num_lines_invokation_variant(optional_transformation_option,
-                                               optional_not_arg),
+            InvokationVariant(self._cls(parts_cl_syntax.file_contents_assertion_arguments()),
+                              self._paragraphs(_MAIN_INVOKATION_SYNTAX_DESCRIPTION)),
         ]
 
-    def _line_matches_invokation_variant(self,
-                                         optional_transformation_option: a.ArgumentUsage,
-                                         optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
-        any_or_every_arg = a.Choice(a.Multiplicity.MANDATORY,
-                                    [
-                                        a.Constant(
-                                            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT),
-                                        a.Constant(
-                                            instruction_arguments.ALL_QUANTIFIER_ARGUMENT),
-                                    ])
-
-        line_arg = a.Single(a.Multiplicity.MANDATORY,
-                            a.Constant(instruction_options.LINE_ARGUMENT))
-
-        matches_arg = a.Single(a.Multiplicity.MANDATORY,
-                               a.Constant(instruction_options.MATCHES_ARGUMENT))
-
-        reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
-                              instruction_arguments.REG_EX)
-        return InvokationVariant(self._cls([optional_transformation_option,
-                                            optional_not_arg,
-                                            any_or_every_arg,
-                                            line_arg,
-                                            matches_arg,
-                                            reg_ex_arg,
-                                            ]),
-                                 self._paragraphs(_DESCRIPTION_OF_LINE_MATCHES))
-
-    def _num_lines_invokation_variant(self,
-                                      optional_transformation_option: a.ArgumentUsage,
-                                      optional_not_arg: a.ArgumentUsage) -> InvokationVariant:
-        num_lines_arg = a.Single(a.Multiplicity.MANDATORY,
-                                 a.Constant(instruction_options.NUM_LINES_ARGUMENT))
-        return InvokationVariant(self._cls([optional_transformation_option,
-                                            optional_not_arg,
-                                            num_lines_arg,
-                                            parse_expr.MANDATORY_OPERATOR_ARGUMENT,
-                                            parse_expr.MANDATORY_INTEGER_ARGUMENT,
-                                            ]),
-                                 self._paragraphs(_DESCRIPTION_OF_NUM_LINES))
-
-    @staticmethod
-    def syntax_element_descriptions_at_top() -> list:
-        return [negation_of_predicate.syntax_element_description()]
+    def syntax_element_descriptions_at_top(self) -> list:
+        return [negation_of_predicate.syntax_element_description(),
+                self.file_contents_assertion_help.file_contents_assertion_sed()]
 
     def syntax_element_descriptions_at_bottom(self) -> list:
         transformation = parse_lines_transformer.selection_syntax_element_description()
@@ -167,19 +90,7 @@ class FileContentsHelpParts:
                 )
 
     def see_also_items(self) -> list:
-        cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
-        reg_ex_url = see_also_url('Python regular expressions',
-                                  'https://docs.python.org/3/library/re.html#regular-expression-syntax')
-        from exactly_lib.help_texts.entity import types
-        types = [CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target)]
-        return cross_refs + types + [reg_ex_url]
-
-    @staticmethod
-    def _see_also_cross_refs() -> list:
-        concepts = rel_opts.see_also_concepts(EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
-        if ENVIRONMENT_VARIABLE_CONCEPT_INFO not in concepts:
-            concepts.append(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
-        return list(map(SingularAndPluralNameAndCrossReferenceId.cross_reference_target.fget, concepts))
+        return self.file_contents_assertion_help.see_also_items()
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:
         """
@@ -188,22 +99,6 @@ class FileContentsHelpParts:
         return self._parser.fnap(s, extra)
 
 
-_DESCRIPTION_OF_EMPTY = """\
-Asserts that {checked_file} is empty.
-"""
-
-_DESCRIPTION_OF_EQUALS_HERE_DOC = """\
-Asserts that the contents of {checked_file} is equal to the contents of a "here document".
-"""
-
-_DESCRIPTION_OF_EQUALS_FILE = """\
-Asserts that the contents of {checked_file} is equal to the contents of file {expected_file_arg}.
-"""
-
-_DESCRIPTION_OF_LINE_MATCHES = """\
-Asserts that {any}/{every} line of {checked_file} matches a regular expression.
-"""
-
-_DESCRIPTION_OF_NUM_LINES = """\
-Asserts that the number of lines of {checked_file} matches a given comparison expression.
+_MAIN_INVOKATION_SYNTAX_DESCRIPTION = """\
+Asserts that the contents of {checked_file} satisfies {file_contents_assertion}.
 """

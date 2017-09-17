@@ -33,13 +33,14 @@ def invokation_variants_content(instruction_name_or_none: str,
             assert isinstance(x, SyntaxElementDescription)
             variants_list_paragraphs = []
             if x.invokation_variants:
-                variants_list_paragraphs = [para('Forms:'),
-                                            variants_list(None,
+                variants_list_paragraphs = [variants_list(None,
                                                           x.invokation_variants,
                                                           True,
                                                           custom_separations=BLANK_LINE_BETWEEN_ELEMENTS)]
+            separator_paras = [_FORMS_PARA] if x.invokation_variants and x.description_rest else []
             items.append(lists.HeaderContentListItem(text(x.element_name),
                                                      x.description_rest +
+                                                     separator_paras +
                                                      variants_list_paragraphs))
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
@@ -49,7 +50,7 @@ def invokation_variants_content(instruction_name_or_none: str,
     def syntax_element_description_paragraph_items() -> list:
         if not syntax_element_descriptions:
             return []
-        return [para('where'),
+        return [_WHERE_PARA,
                 syntax_element_description_list()
                 ]
 
@@ -58,6 +59,10 @@ def invokation_variants_content(instruction_name_or_none: str,
                                               custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)] +
                                syntax_element_description_paragraph_items(),
                                [])
+
+
+_WHERE_PARA = para('where')
+_FORMS_PARA = para('Forms:')
 
 
 def _custom_list_indent(indented: bool) -> int:
