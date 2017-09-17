@@ -15,6 +15,8 @@ CONTENTS_ATTRIBUTE = 'contents'
 
 PLAIN_FILE_OBJECT_NAME = 'file'
 
+PLAIN_DIR_OBJECT_NAME = 'directory'
+
 
 class FilePropertyDescriptorConstructor:
     def construct_for_contents_attribute(self, contents_attribute: str) -> PropertyDescriptor:

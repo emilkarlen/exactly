@@ -8,9 +8,9 @@ from exactly_lib.util.string import line_separated
 class ActualInfo:
     def __init__(self,
                  single_line_value: str,
-                 description_lines: list):
+                 description_lines: list = ()):
         self.single_line_value = single_line_value
-        self.description_lines = description_lines
+        self.description_lines = list(description_lines)
 
     def has_single_line_value_str(self) -> bool:
         return self.single_line_value is not None

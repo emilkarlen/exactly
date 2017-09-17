@@ -32,6 +32,16 @@ TYPE_INFO = {
 SYNTAX_TOKEN_2_FILE_TYPE = dict([(info.type_argument, ft) for ft, info in TYPE_INFO.items()])
 
 
+def lookup_file_type(stat_result) -> FileType:
+    """
+    :return: None iff the type is an unknown type
+    """
+    for file_type in TYPE_INFO:
+        if TYPE_INFO[file_type].stat_mode_predicate(stat_result.st_mode):
+            return file_type
+    return None
+
+
 def stat_results_is_of(file_type: FileType,
                        stat_result) -> bool:
     try:
@@ -65,6 +75,11 @@ class Properties(tuple):
 
     @property
     def type_of_existing_file(self) -> FileType:
+        """
+        If is_type_of_existing_file gives True,
+        then this method gives the related type of file,
+        or None if the type is an unknown type
+        """
         return self[2]
 
 
@@ -138,24 +153,42 @@ def negation_of(check: FilePropertiesCheck) -> FilePropertiesCheck:
     return _NegationOf(check)
 
 
-def render_failure(properties_with_neg: PropertiesWithNegation.properties,
+def render_failure(properties_with_neg: PropertiesWithNegation,
                    file_path: pathlib.Path) -> str:
+    failing_property_str = render_failing_property(properties_with_neg)
+    return failing_property_str + ': ' + str(file_path)
+
+
+def render_failing_property(properties_with_neg: PropertiesWithNegation) -> str:
     is_follow_symlinks = properties_with_neg.properties.is_follow_symlinks
     sym_links = 'symbolic links followed' if is_follow_symlinks else 'symbolic links not followed'
     negation = '' if properties_with_neg.is_negated else 'not '
 
     properties = properties_with_neg.properties
     if properties.is_existence:
-        return 'File does {negation}exist ({sym_links}): {path}'.format(
+        return 'File does {negation}exist ({sym_links})'.format(
             negation=negation,
-            sym_links=sym_links,
-            path=str(file_path))
+            sym_links=sym_links)
     else:
-        return os.linesep.join(['File is {negation}a {file_type} ({sym_links}):'.format(
+        return os.linesep.join(['File is {negation}a {file_type} ({sym_links})'.format(
             negation=negation,
             file_type=TYPE_INFO[properties.type_of_existing_file].description,
-            sym_links=sym_links),
-            str(file_path)])
+            sym_links=sym_links)])
+
+
+def render_property(properties: Properties) -> str:
+    is_follow_symlinks = properties.is_follow_symlinks
+    symlink_info = 'symlinks followed' if is_follow_symlinks else 'symlinks not followed'
+    if properties.is_existence:
+        return 'file does not exist ({symlink_info})'.format(
+            symlink_info=symlink_info
+        )
+    else:
+        file_type = properties.type_of_existing_file
+        return 'file type is {file_type} ({symlink_info})'.format(
+            file_type=file_type.name if file_type else 'unknown',
+            symlink_info=symlink_info
+        )
 
 
 class _NegationOf(FilePropertiesCheck):
@@ -210,3 +243,28 @@ class _MustExistAs(_MustExistBase):
                            PropertiesWithNegation(False,
                                                   new_properties_for_type_of_existing_file(self._follow_symlinks,
                                                                                            self._expected_file_type)))
+
+
+class ActualFilePropertiesResolver:
+    def __init__(self,
+                 expected_file_type: FileType,
+                 follow_symlinks: bool = True):
+        self._expected_file_type = expected_file_type
+        self._follow_symlinks = follow_symlinks
+
+    def resolve_failure_info(self, path: pathlib.Path) -> Properties:
+        """
+        :return: None iff file has expected properties
+        """
+        try:
+            stat_results = os.stat(str(path),
+                                   follow_symlinks=self._follow_symlinks)
+            has_expected_type = stat_results_is_of(self._expected_file_type, stat_results)
+            if has_expected_type:
+                return None
+            else:
+                return new_properties_for_type_of_existing_file(self._follow_symlinks,
+                                                                lookup_file_type(stat_results))
+        except FileNotFoundError:
+            return new_properties_for_existence(self._follow_symlinks,
+                                                False)
