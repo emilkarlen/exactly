@@ -18,7 +18,7 @@ from exactly_lib.util.messages import grammar_options_syntax
 
 def parse(token_parser: TokenParserPrime) -> AssertionPart:
     """
-    :return: A :class:`AssertionPart` that takes an FileToCheck as (last) argument.
+    :return: A :class:`AssertionPart` that takes an ResolvedComparisonActualFile as (last) argument.
     """
     actual_lines_transformer = parse_lines_transformer.parse_optional_transformer_resolver(token_parser)
     expectation_type = token_parser.consume_optional_negation_operator()
