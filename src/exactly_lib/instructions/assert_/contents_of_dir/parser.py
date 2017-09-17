@@ -4,7 +4,6 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import D
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
-from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
@@ -39,8 +38,6 @@ class Parser(InstructionParser):
                                                                           file_selection))
 
             instruction = instructions_parser.parse(token_parser)
-            token_parser.report_superfluous_arguments_if_not_at_eol()
-            token_parser.consume_current_line_as_plain_string()
             return instruction
 
 
@@ -67,12 +64,15 @@ class _CheckInstructionParser:
                                                                     lambda x: self.settings)
 
     def parse_empty_check(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
+        self._expect_no_more_args_and_consume_current_line(parser)
         return emptiness.EmptinessAssertion(self.settings)
 
     def parse_num_files_check(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
         cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(
             parser,
             expression_parse.validator_for_non_negative)
+
+        self._expect_no_more_args_and_consume_current_line(parser)
 
         return num_files.NumFilesAssertion(self.settings, cmp_op_and_rhs)
 
@@ -87,5 +87,11 @@ class _CheckInstructionParser:
                                    parser: TokenParserPrime) -> DirContentsAssertionPart:
         parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
                                                           must_be_on_current_line=True)
+        from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
         return quant_over_files.QuantifiedAssertion(self.settings, quantifier, actual_file_assertion_part)
+
+    @staticmethod
+    def _expect_no_more_args_and_consume_current_line(parser: TokenParserPrime):
+        parser.report_superfluous_arguments_if_not_at_eol()
+        parser.consume_current_line_as_plain_string()

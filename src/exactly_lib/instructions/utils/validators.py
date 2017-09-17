@@ -46,6 +46,23 @@ class SvhValidatorViaExceptions(SvhPreSdsValidatorViaExceptions,
         pass
 
 
+class SvhValidatorViaExceptionsFromPreAndPostSdsValidators(SvhValidatorViaExceptions):
+    def __init__(self,
+                 pre_sds: SvhPreSdsValidatorViaExceptions = None,
+                 post_setup: SvhPostSetupValidatorViaExceptions = None,
+                 ):
+        self._pre_sds = pre_sds
+        self._post_setup = post_setup
+
+    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
+        if self._pre_sds:
+            self._pre_sds.validate_pre_sds(environment)
+
+    def validate_post_setup(self, environment: PathResolvingEnvironmentPostSds):
+        if self._post_setup:
+            self._post_setup.validate_post_setup(environment)
+
+
 class PreOrPostSdsValidatorFromValidatorViaExceptions(PreOrPostSdsValidator):
     def __init__(self, adapted: SvhValidatorViaExceptions):
         self._adapted = adapted
