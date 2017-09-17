@@ -9,11 +9,6 @@ file my-dir/file-B.txt
 def file-matcher MY_SELECTION = type file && name '*A.txt'
 
 
-[act]
-
-
-bin/do-something-with-dir my-dir
-
 
 [assert]
 

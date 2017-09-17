@@ -185,10 +185,6 @@ files = itertools.chain.from_iterable([
                      'my-helper-program',
                      ]),
 
-    do_nothing_list(dir_contents_dir / 'bin',
-                    ['do-something-with-dir',
-                     ]),
-
     do_nothing_list(external_programs_dir,
                     ['my-assert-helper-program',
                      'my-setup-helper-program',
