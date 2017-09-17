@@ -5,9 +5,8 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
-from exactly_lib.instructions.utils.validators import SvhValidatorViaExceptions, SvhPreSdsValidatorViaExceptions, \
-    PreOrPostSdsValidatorFromValidatorViaExceptions
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.instructions.utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
+    SvhValidatorViaExceptionsFromPreAndPostSdsValidators
 from exactly_lib.named_element.resolver_structure import FileMatcherResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
@@ -45,7 +44,8 @@ class NumFilesAssertion(DirContentsAssertionPart):
             operator_and_r_operand.right_operand)
         super().__init__(settings,
                          PreOrPostSdsValidatorFromValidatorViaExceptions(
-                             _Validator(self._comparison_handler.validator)))
+                             SvhValidatorViaExceptionsFromPreAndPostSdsValidators(
+                                 pre_sds=self._comparison_handler.validator)))
 
     @property
     def references(self) -> list:
@@ -57,11 +57,3 @@ class NumFilesAssertion(DirContentsAssertionPart):
               settings: common.Settings) -> common.Settings:
         self._comparison_handler.execute(environment)
         return self._settings
-
-
-class _Validator(SvhValidatorViaExceptions):
-    def __init__(self, validator: SvhPreSdsValidatorViaExceptions):
-        self.validator = validator
-
-    def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
-        self.validator.validate_pre_sds(environment)

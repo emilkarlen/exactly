@@ -11,13 +11,13 @@ class QuantifiedAssertion(DirContentsAssertionPart):
                  settings: common.Settings,
                  quantifier: Quantifier,
                  actual_file_assertion_part: AssertionPart):
-        super().__init__(settings)
+        super().__init__(settings, actual_file_assertion_part.validator)
         self.quantifier = quantifier
         self.actual_file_assertion_part = actual_file_assertion_part
 
     @property
     def references(self) -> list:
-        return self._settings.path_to_check.references + self._settings.file_matcher.references
+        return self._settings.file_matcher.references + self.actual_file_assertion_part.references
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
