@@ -2,10 +2,6 @@
 
 dir my-dir
 
-[act]
-
-bin/do-something-with-dir my-dir
-
 [assert]
 
 dir-contents my-dir empty
