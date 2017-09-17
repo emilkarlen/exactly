@@ -72,6 +72,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
     def __init__(self, lines_transformer_resolver: LinesTransformerResolver):
         super().__init__()
         self._lines_transformer_resolver = lines_transformer_resolver
+        self._destination_file_path_getter = DestinationFilePathGetter()
 
     @property
     def references(self) -> list:
@@ -95,4 +96,4 @@ class FileTransformerAsAssertionPart(AssertionPart):
                            file_to_transform.checked_file_describer,
                            environment,
                            lines_transformer,
-                           DestinationFilePathGetter())
+                           self._destination_file_path_getter)

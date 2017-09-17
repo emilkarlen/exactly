@@ -14,15 +14,19 @@ class DestinationFilePathGetter:
     Gets a file name that can be used for storing intermediate file contents.
     """
 
+    def __init__(self):
+        self._existing_unique_instruction_dir = None
+
     def get(self,
             environment: InstructionEnvironmentForPostSdsStep,
             src_file_path: pathlib.Path) -> pathlib.Path:
         """
         :return: Path of a non-existing file.
         """
-        instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
+        if not self._existing_unique_instruction_dir:
+            self._existing_unique_instruction_dir = environment.phase_logging.unique_instruction_file_as_existing_dir()
         dst_file_base_name = src_file_path.name
-        return instruction_dir / dst_file_base_name
+        return self._existing_unique_instruction_dir / dst_file_base_name
 
 
 class FileToCheck:
