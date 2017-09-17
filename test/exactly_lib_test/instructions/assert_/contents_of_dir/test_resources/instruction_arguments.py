@@ -103,9 +103,10 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
         self._file_contents_assertion = file_contents_assertion
 
     def __str__(self):
-        return '{quantifier} {file} {contents_assertion}'.format(
+        return '{quantifier} {file} {separator} {contents_assertion}'.format(
             quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
             file=config.QUANTIFICATION_OVER_FILE_ARGUMENT,
+            separator=config.QUANTIFICATION_SEPARATOR_ARGUMENT,
             contents_assertion=str(self._file_contents_assertion))
 
 

@@ -77,7 +77,7 @@ class InstructionChecker:
             test_case_name: str = ''):
 
         with self.put.subTest(case_name=test_case_name,
-                              expectation_type=str(etc.expectation_type),
+                              expectation_type=etc.expectation_type.name,
                               arguments=instruction_source.source_string):
             instruction_check.check(
                 self.put,
@@ -168,7 +168,7 @@ class InstructionChecker:
                 instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
                 instruction_source = remaining_source(instruction_arguments)
 
-                with self.put.subTest(expectation_type=str(etc.expectation_type),
+                with self.put.subTest(expectation_type=etc.expectation_type.name,
                                       arguments=instruction_arguments):
                     instruction_check.check(
                         self.put,
