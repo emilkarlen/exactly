@@ -1,5 +1,7 @@
 import pathlib
 
+from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
@@ -11,6 +13,8 @@ from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import 
 from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
+from exactly_lib.test_case_utils.err_msg import path_description
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
@@ -58,9 +62,6 @@ class _Checker:
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices
                  ):
-        """
-        :param assertion_on_file_to_check: An :class:`AssertionPart` that operates on a `ResolvedComparisonActualFile`
-        """
         self.settings = settings
         self.quantifier = quantifier
         self._assertion_on_file_to_check = assertion_on_file_to_check
@@ -68,6 +69,7 @@ class _Checker:
         self.os_services = os_services
         self._destination_file_path_getter = file_assertion_part.DestinationFilePathGetter()
         self._dir_to_check = settings.path_to_check.resolve(environment.symbols)
+        self.error_reporting = _ErrorReportingHelper(settings, quantifier, environment)
 
     def check(self) -> str:
         if self.quantifier is Quantifier.ALL:
@@ -92,7 +94,7 @@ class _Checker:
                 self.check_file(actual_file)
             except PfhFailException:
                 return None
-        raise PfhFailException('All files satisfies the contents assertion (TODO improve err msg)')
+        raise PfhFailException(self.error_reporting.err_msg_for_dir__all_satisfies())
 
     def check__exists__positive(self) -> str:
         for actual_file in self.resolved_actual_file_iter():
@@ -101,13 +103,14 @@ class _Checker:
                 return None
             except PfhFailException:
                 pass
-        raise PfhFailException('No file satisfies the contents assertion (TODO improve err msg)')
+        raise PfhFailException(self.error_reporting.err_msg_for_dir('no file satisfy'))
 
     def check__exists__negative(self) -> str:
         for actual_file in self.resolved_actual_file_iter():
             try:
                 self.check_file(actual_file)
-                return 'A file does satisfy the contents assertion (TODO improve err msg)'
+                err_msg = self.error_reporting.err_msg_for_file_in_dir('one file satisfies', actual_file)
+                return err_msg
             except PfhFailException:
                 pass
         return None
@@ -128,8 +131,56 @@ class _Checker:
     def new_resolved_actual_file(self, path: pathlib.Path) -> ResolvedComparisonActualFile:
         return ResolvedComparisonActualFile(
             path,
+            _path_value_for_file_in_checked_dir(self._dir_to_check, path),
             _FilePropertyDescriptorConstructorForFileInDir(self._dir_to_check,
                                                            path))
+
+
+class _ErrorReportingHelper:
+    def __init__(self,
+                 settings: common.Settings,
+                 quantifier: Quantifier,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 ):
+        self.settings = settings
+        self.quantifier = quantifier
+        self.environment = environment
+        self._destination_file_path_getter = file_assertion_part.DestinationFilePathGetter()
+        self._dir_to_check = settings.path_to_check.resolve(environment.symbols)
+
+    def err_msg_for_dir__all_satisfies(self) -> str:
+        single_line_value = instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier] + ' file satisfies'
+        return self.err_msg_for_dir(single_line_value)
+
+    def err_msg_for_dir(self, single_line_value: str) -> str:
+        return self._diff_failure_info_for_dir().resolve(self.environment,
+                                                         diff_msg.ActualInfo(single_line_value)).render()
+
+    def err_msg_for_file_in_dir(self,
+                                single_line_value: str,
+                                actual_file: ResolvedComparisonActualFile) -> str:
+        failing_file_description_lines = path_description.lines_for_path_value(
+            _path_value_for_file_in_checked_dir(self._dir_to_check, actual_file.actual_file_path),
+            self.environment.home_and_sds,
+        )
+        actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
+        return self._diff_failure_info_for_dir().resolve(self.environment,
+                                                         actual_info).render()
+
+    def _diff_failure_info_for_dir(self) -> diff_msg_utils.DiffFailureInfoResolver:
+        property_descriptor = path_description.path_value_description(
+            actual_files.file_property_name(actual_files.CONTENTS_ATTRIBUTE, actual_files.PLAIN_DIR_OBJECT_NAME),
+            self.settings.path_to_check)
+        return diff_msg_utils.DiffFailureInfoResolver(
+            property_descriptor,
+            self.settings.expectation_type,
+            diff_msg_utils.ConstantExpectedValueResolver(self._description_of_expected()),
+        )
+
+    def _description_of_expected(self):
+        return ' '.join([instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
+                         config.QUANTIFICATION_OVER_FILE_ARGUMENT,
+                         'satisfies FILE-CONTENTS-ASSERTION'])
 
 
 class _FilePropertyDescriptorConstructorForFileInDir(actual_files.FilePropertyDescriptorConstructor):
@@ -141,9 +192,13 @@ class _FilePropertyDescriptorConstructorForFileInDir(actual_files.FilePropertyDe
 
     def construct_for_contents_attribute(self, contents_attribute: str) -> actual_files.PropertyDescriptor:
         path_resolver = FileRefConstant(
-            StackedFileRef(self._dir_to_check, PathPartAsFixedPath(self._path.name))
+            _path_value_for_file_in_checked_dir(self._dir_to_check, self._path)
         )
-        return actual_files.path_value_description(
+        return path_description.path_value_description(
             actual_files.file_property_name(contents_attribute,
                                             actual_files.PLAIN_FILE_OBJECT_NAME),
             path_resolver)
+
+
+def _path_value_for_file_in_checked_dir(dir_to_check: FileRef, file_in_dir: pathlib.Path) -> FileRef:
+    return StackedFileRef(dir_to_check, PathPartAsFixedPath(file_in_dir.name))

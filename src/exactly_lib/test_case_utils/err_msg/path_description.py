@@ -16,29 +16,32 @@ class PathValuePartConstructor(property_description.ErrorMessagePartConstructor)
         self.path_resolver = path_resolver
 
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
-
-        the_cwd = pathlib.Path.cwd()
-
         path_resolve_env = environment.path_resolving_environment_pre_or_post_sds
         path_value = self.path_resolver.resolve(path_resolve_env.symbols)
 
-        presentation_str = path_value_with_relativity_name_prefix(path_value,
-                                                                  path_resolve_env.home_and_sds,
-                                                                  the_cwd)
+        return lines_for_path_value(path_value, environment.home_and_sds)
 
-        ret_val = [presentation_str]
 
-        def path_is_rel_home() -> bool:
-            if path_value.relativity().is_relative:
-                relativity_type = path_value.relativity().relativity_type
-                return pr.rel_home_from_rel_any(relativity_type) is not None
-            else:
-                return False
+def lines_for_path_value(path_value: FileRef, tcds: HomeAndSds) -> list:
+    the_cwd = pathlib.Path.cwd()
 
-        if path_is_rel_home():
-            abs_path_str = str(path_value.value_of_any_dependency(path_resolve_env.home_and_sds))
-            ret_val.append(abs_path_str)
-        return ret_val
+    presentation_str = path_value_with_relativity_name_prefix(path_value,
+                                                              tcds,
+                                                              the_cwd)
+
+    ret_val = [presentation_str]
+
+    def path_is_rel_home() -> bool:
+        if path_value.relativity().is_relative:
+            relativity_type = path_value.relativity().relativity_type
+            return pr.rel_home_from_rel_any(relativity_type) is not None
+        else:
+            return False
+
+    if path_is_rel_home():
+        abs_path_str = str(path_value.value_of_any_dependency(tcds))
+        ret_val.append(abs_path_str)
+    return ret_val
 
 
 def path_value_with_relativity_name_prefix(path_value: FileRef,
@@ -54,8 +57,7 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
         return with_prefix(rpo.REL_SDS_OPTIONS_MAP[relativity].directory_name)
 
     def absolute() -> str:
-        path_lib_path = path_value.value_of_any_dependency(home_and_sds)
-        return str(path_lib_path)
+        return str(path_value.value_of_any_dependency(home_and_sds))
 
     def rel_cwd() -> str:
         def value_if_cwd_is_relative_root_dir(rel_root_dir_path: pathlib.Path,
@@ -86,7 +88,7 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
                 home_and_sds.sds.root_dir,
                 EXACTLY_SANDBOX_ROOT_DIR_NAME)
         except ValueError:
-            return str(path_lib_path)
+            return str(path_value.value_of_any_dependency(home_and_sds))
 
     relativity = path_value.relativity()
 

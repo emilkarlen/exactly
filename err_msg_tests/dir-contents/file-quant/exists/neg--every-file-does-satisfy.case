@@ -1,0 +1,11 @@
+[setup]
+
+
+file a-dir/1-empty.txt
+file a-dir/2-empty.txt
+
+
+[assert]
+
+
+dir-contents a-dir ! any file : num-lines = 0

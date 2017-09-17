@@ -1,0 +1,10 @@
+[setup]
+
+
+dir a-dir/file-to-check-that-is-a-dir
+
+
+[assert]
+
+
+dir-contents a-dir every file : empty

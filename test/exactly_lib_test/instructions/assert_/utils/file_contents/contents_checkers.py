@@ -11,6 +11,8 @@ from exactly_lib.test_case_utils.err_msg.property_description import PropertyDes
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
+from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -56,9 +58,11 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
         assertion_part = sut.FileTransformerAsAssertionPart(transformer_resolver)
         # ACT & ASSERT #
         with self.assertRaises(PfhHardErrorException):
+            file_name = 'a file that does not exist'
             assertion_part.check(self.environment, self.the_os_services,
                                  sut.ResolvedComparisonActualFile(
-                                     pathlib.Path('a file that does not exist'),
+                                     pathlib.Path(file_name),
+                                     file_refs.rel_cwd(PathPartAsFixedPath(file_name)),
                                      FilePropertyDescriptorConstructorTestImpl(),
                                  ))
 
@@ -72,6 +76,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
                 assertion_part.check(self.environment, self.the_os_services,
                                      sut.ResolvedComparisonActualFile(
                                          path_of_existing_directory,
+                                         file_refs.absolute_file_name(str(path_of_existing_directory)),
                                          FilePropertyDescriptorConstructorTestImpl(),
                                      )
                                      )

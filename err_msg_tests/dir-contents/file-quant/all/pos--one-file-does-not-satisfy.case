@@ -1,0 +1,16 @@
+[setup]
+
+
+file a-dir/1-empty.txt
+
+file a-dir/2-non-empty.txt <<EOF
+contents
+EOF
+
+file a-dir/3-empty.txt
+
+
+[assert]
+
+
+dir-contents a-dir every file : empty
