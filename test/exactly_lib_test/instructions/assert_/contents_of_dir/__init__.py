@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_.contents_of_dir import common, empty, num_files
+from exactly_lib_test.instructions.assert_.contents_of_dir import common, empty, num_files, quant_over_files
 
 
 def suite() -> unittest.TestSuite:
@@ -8,6 +8,7 @@ def suite() -> unittest.TestSuite:
         common.suite(),
         empty.suite(),
         num_files.suite(),
+        quant_over_files.suite(),
     ])
 
 
