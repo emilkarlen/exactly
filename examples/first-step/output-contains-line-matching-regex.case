@@ -12,6 +12,6 @@ hello-world
 
 [assert]
 
-stdout any line matches H.*W
+stdout any line matches regex H.*W
 
-contents output.txt ! every line matches 'kiwi'
+contents output.txt ! every line matches regex 'kiwi'
