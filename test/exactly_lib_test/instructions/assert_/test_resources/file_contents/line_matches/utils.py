@@ -1,10 +1,8 @@
 import unittest
 
-from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.util.cli_syntax.option_syntax import option_syntax
-from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_construction
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
@@ -18,37 +16,67 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-class InstructionArgumentsVariantConstructor:
+class InstructionArgumentsConstructorForExpTypeAndQuantifier:
     """"Constructs instruction arguments for a variant of (expectation type, any-or-every, transformer)."""
-
-    def __init__(self,
-                 regex_arg_str: str,
-                 superfluous_args_str: str = '',
-                 transformer: str = ''):
-        self.transformer = transformer
-        self.regex_arg_str = regex_arg_str
-        self.superfluous_args_str = superfluous_args_str
 
     def construct(self,
                   expectation_type: ExpectationType,
-                  any_or_every_keyword: str,
+                  quantifier: Quantifier,
                   ) -> str:
-        transformation = ''
-        if self.transformer:
-            transformation = option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME) + ' ' + self.transformer
+        raise NotImplementedError('abstract method')
+
+
+class ArgumentsConstructorForPossiblyInvalidSyntax(InstructionArgumentsConstructorForExpTypeAndQuantifier):
+    def __init__(self,
+                 line_matcher: str,
+                 superfluous_args_str: str = '',
+                 transformer: str = ''):
+        self.transformer = transformer
+        self.line_matcher = line_matcher
+        self.superfluous_args_str = superfluous_args_str
+        self._common_arguments = arguments_construction.CommonArgumentsConstructor(transformer)
+
+    def construct(self,
+                  expectation_type: ExpectationType,
+                  quantifier: Quantifier,
+                  ) -> str:
+        arguments_constructor = arguments_construction.ImplicitActualFileArgumentsConstructor(
+            self._common_arguments,
+            arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
+        )
+        etc = ExpectationTypeConfig(expectation_type)
 
         superfluous_args_str = self.superfluous_args_str
         if superfluous_args_str:
             superfluous_args_str = ' ' + superfluous_args_str
+        return arguments_constructor.apply(etc) + superfluous_args_str
 
-        return '{transformation} {maybe_not} {any_or_every} {line_matches} {regex}{superfluous_args_str}'.format(
-            transformation=transformation,
-            maybe_not=ExpectationTypeConfig(expectation_type).nothing__if_positive__not_option__if_negative,
-            any_or_every=any_or_every_keyword,
-            line_matches=instruction_options.LINE_ARGUMENT + ' ' + instruction_options.MATCHES_ARGUMENT,
-            regex=self.regex_arg_str,
-            superfluous_args_str=superfluous_args_str,
+
+class InstructionArgumentsConstructorForValidSyntax(InstructionArgumentsConstructorForExpTypeAndQuantifier):
+    def __init__(self,
+                 common_arguments: arguments_construction.CommonArgumentsConstructor,
+                 line_matcher: str):
+        self.common_arguments = common_arguments
+        self.line_matcher = line_matcher
+        self._common_arguments = common_arguments
+
+    def construct(self,
+                  expectation_type: ExpectationType,
+                  quantifier: Quantifier,
+                  ) -> str:
+        arguments_constructor = arguments_construction.ImplicitActualFileArgumentsConstructor(
+            self._common_arguments,
+            arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
         )
+        etc = ExpectationTypeConfig(expectation_type)
+        return arguments_constructor.apply(etc)
+
+
+def args_constructor_for(line_matcher: str,
+                         transformer: str = '') -> InstructionArgumentsConstructorForExpTypeAndQuantifier:
+    return InstructionArgumentsConstructorForValidSyntax(
+        arguments_construction.CommonArgumentsConstructor(transformer),
+        line_matcher)
 
 
 class TestCaseBase(unittest.TestCase):
@@ -61,19 +89,19 @@ class TestCaseBase(unittest.TestCase):
 
     def _check_variants_with_expectation_type(
             self,
-            args_variant_constructor: InstructionArgumentsVariantConstructor,
+            args_variant_constructor: InstructionArgumentsConstructorForExpTypeAndQuantifier,
             expected_result_of_positive_test: PassOrFail,
-            any_or_every_keyword: str,
+            quantifier: Quantifier,
             actual_file_contents: str,
             symbols: SymbolTable = None,
             expected_symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
         for expectation_type in ExpectationType:
             etc = ExpectationTypeConfig(expectation_type)
             with self.subTest(expectation_type=expectation_type,
-                              any_or_every_keyword=any_or_every_keyword):
+                              quantifier=quantifier.name):
 
                 args_variant = args_variant_constructor.construct(expectation_type,
-                                                                  any_or_every_keyword)
+                                                                  quantifier)
                 complete_instruction_arguments = self.configuration.first_line_argument(args_variant)
 
                 for source in equivalent_source_variants__with_source_check(self, complete_instruction_arguments):
