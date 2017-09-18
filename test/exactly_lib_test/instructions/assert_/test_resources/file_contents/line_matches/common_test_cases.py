@@ -1,13 +1,11 @@
 import unittest
 
-from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches.utils import \
-    InstructionArgumentsVariantConstructor
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
@@ -22,10 +20,6 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     ])
 
 
-QUANTIFIER_KEYWORDS = (instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
-                       instruction_arguments.ALL_QUANTIFIER_ARGUMENT)
-
-
 class _TestCaseBase(unittest.TestCase):
     def __init__(self,
                  configuration: InstructionTestConfigurationForContentsOrEquals):
@@ -34,13 +28,13 @@ class _TestCaseBase(unittest.TestCase):
 
     def _check_variants_with_expectation_type_and_any_or_every(
             self,
-            args_variant_constructor: InstructionArgumentsVariantConstructor):
+            args_variant_constructor: utils.InstructionArgumentsConstructorForExpTypeAndQuantifier):
         for expectation_type in ExpectationType:
-            for quantifier_keyword in QUANTIFIER_KEYWORDS:
+            for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
-                                  any_or_every_keyword=quantifier_keyword):
+                                  any_or_every_keyword=quantifier):
                     args_variant = args_variant_constructor.construct(expectation_type,
-                                                                      quantifier_keyword)
+                                                                      quantifier)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         self.configuration.new_parser().parse(
                             self.configuration.source_for(args_variant))
@@ -49,19 +43,17 @@ class _TestCaseBase(unittest.TestCase):
 class _ParseWithMissingRegExArgument(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            InstructionArgumentsVariantConstructor(regex_arg_str='',
-                                                   superfluous_args_str=''))
+            utils.args_constructor_for(line_matcher=''))
 
 
 class _ParseWithSuperfluousArgument(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            InstructionArgumentsVariantConstructor(regex_arg_str='regex',
-                                                   superfluous_args_str='superfluous'))
+            utils.ArgumentsConstructorForPossiblyInvalidSyntax(line_matcher='regex',
+                                                               superfluous_args_str='superfluous'))
 
 
 class _ParseWithInvalidRegEx(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            InstructionArgumentsVariantConstructor(regex_arg_str='**',
-                                                   superfluous_args_str=''))
+            utils.args_constructor_for(line_matcher='**'))
