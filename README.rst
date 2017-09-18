@@ -355,7 +355,7 @@ it just displays some of Exactly's features.)
 
     contents another-file.txt --transformation EXACTLY_TEST_CASE_DIRS_REPLACEMENT equals --file expected-content.txt
 
-    contents file.txt contains 'my .* reg ex'
+    contents file.txt any line matches regex 'my .* reg ex'
 
     exists actual-file
 
