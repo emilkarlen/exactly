@@ -42,6 +42,7 @@ class FileContentsAssertionHelp:
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'file_contents_assertion': FILE_CONTENTS_ASSERTION.name,
+            'line_matcher': instruction_arguments.LINE_MATCHER.name,
         }
         self._parser = TextParser(format_map)
 
@@ -73,8 +74,8 @@ class FileContentsAssertionHelp:
 
         matches_arg = a.Single(a.Multiplicity.MANDATORY,
                                a.Constant(instruction_options.MATCHES_ARGUMENT))
-        reg_ex_arg = a.Single(a.Multiplicity.MANDATORY,
-                              instruction_arguments.REG_EX)
+        line_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
+                                    instruction_arguments.LINE_MATCHER)
         num_lines_arg = a.Single(a.Multiplicity.MANDATORY,
                                  a.Constant(instruction_options.NUM_LINES_ARGUMENT))
 
@@ -97,7 +98,7 @@ class FileContentsAssertionHelp:
                 InvokationVariant(_cls([quantifier_arg,
                                         line_arg,
                                         matches_arg,
-                                        reg_ex_arg,
+                                        line_matcher_arg,
                                         ]),
                                   self._paragraphs(_DESCRIPTION_OF_LINE_MATCHES)),
             ]
@@ -108,7 +109,8 @@ class FileContentsAssertionHelp:
         reg_ex_url = see_also_url('Python regular expressions',
                                   'https://docs.python.org/3/library/re.html#regular-expression-syntax')
         from exactly_lib.help_texts.entity import types
-        types = [CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target)]
+        types = [CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target),
+                 CrossReferenceIdSeeAlsoItem(types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target)]
         return cross_refs + types + [reg_ex_url]
 
     @staticmethod
@@ -126,7 +128,7 @@ class FileContentsAssertionHelp:
 
 
 _DESCRIPTION_OF_EMPTY = """\
-Asserts that {checked_file} is empty.
+Asserts that {checked_file} is an empty file.
 """
 
 _DESCRIPTION_OF_EQUALS_STRING = """\
@@ -135,7 +137,7 @@ string, "here document" or file.
 """
 
 _DESCRIPTION_OF_LINE_MATCHES = """\
-Asserts that {any}/{every} line of {checked_file} matches a regular expression.
+Asserts that {any}/{every} line of {checked_file} matches a {line_matcher}.
 """
 
 _DESCRIPTION_OF_NUM_LINES = """\
