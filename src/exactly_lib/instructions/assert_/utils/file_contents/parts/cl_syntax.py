@@ -12,11 +12,14 @@ from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_as
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_utils import negation_of_predicate
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 
 FILE_CONTENTS_ASSERTION = a.Named('FILE-CONTENTS-ASSERTION')
+
+EXPECTED_PATH_NAME = 'EXPECTED-PATH'
 
 
 def file_contents_assertion_arguments() -> list:
@@ -35,10 +38,12 @@ def file_contents_assertion_arguments() -> list:
 class FileContentsAssertionHelp:
     def __init__(self,
                  checked_file: str):
-        self.expected_file_arg = a.Named('EXPECTED-PATH')
+        self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
+                                          EXPECTED_PATH_NAME)
+
         format_map = {
             'checked_file': checked_file,
-            'expected_file_arg': self.expected_file_arg.name,
+            'expected_file_arg': EXPECTED_PATH_NAME,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'file_contents_assertion': FILE_CONTENTS_ASSERTION.name,
