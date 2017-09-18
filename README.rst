@@ -345,7 +345,7 @@ it just displays some of Exactly's features.)
     This is the expected output from the-system-under-test
     EOF
 
-    stdout --with-replaced-env-vars contains 'EXACTLY_ACT:[0-9]+'
+    stdout --transformation EXACTLY_TEST_CASE_DIRS_REPLACEMENT any line matches regex 'EXACTLY_ACT:[0-9]+'
 
     stderr empty
 
@@ -353,7 +353,7 @@ it just displays some of Exactly's features.)
 
     contents a-second-file.txt ! empty
 
-    contents another-file.txt --with-replaced-env-vars equals expected-content.txt
+    contents another-file.txt --transformation EXACTLY_TEST_CASE_DIRS_REPLACEMENT equals expected-content.txt
 
     contents file.txt contains 'my .* reg ex'
 
