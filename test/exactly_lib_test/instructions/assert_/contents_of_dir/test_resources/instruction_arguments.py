@@ -4,8 +4,7 @@ from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTI
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import \
-    instruction_test_configuration as file_contents_tr
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_construction
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -98,7 +97,7 @@ class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
 class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
     def __init__(self,
                  quantifier: Quantifier,
-                 file_contents_assertion: file_contents_tr.ContentsArgumentsConstructor,
+                 file_contents_assertion: arguments_construction.ImplicitActualFileArgumentsConstructor,
                  contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
         self._quantifier = quantifier
         self._file_contents_assertion = file_contents_assertion

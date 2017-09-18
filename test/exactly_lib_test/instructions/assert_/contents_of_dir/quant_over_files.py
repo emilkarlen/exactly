@@ -17,15 +17,13 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
     AssertionVariantArgumentsConstructor, FilesContentsAssertionVariant, CompleteArgumentsConstructor, \
     CommonArgumentsConstructor
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_construction
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import \
+    EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression, instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import \
-    instruction_test_configuration as file_contents_tr
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.contents_transformation import \
     ToUppercaseLinesTransformer
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, \
-    EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -76,10 +74,10 @@ class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
 
 
 def file_contents_arg(
-        contents_variant: file_contents_tr.AssertionVariantArgumentsConstructor,
-        common: file_contents_tr.CommonArgumentsConstructor = file_contents_tr.CommonArgumentsConstructor()
-) -> file_contents_tr.ContentsArgumentsConstructor:
-    return file_contents_tr.ContentsArgumentsConstructor(
+        contents_variant: arguments_construction.FileContentsArgumentsConstructor,
+        common: arguments_construction.CommonArgumentsConstructor = arguments_construction.CommonArgumentsConstructor()
+) -> arguments_construction.ImplicitActualFileArgumentsConstructor:
+    return arguments_construction.ImplicitActualFileArgumentsConstructor(
         common,
         contents_variant)
 
@@ -543,8 +541,8 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             CommonArgumentsConstructor(self.name_of_checked_dir),
             FilesContentsAssertionVariant(
                 Quantifier.ALL,
-                file_contents_tr.ContentsArgumentsConstructor(
-                    file_contents_tr.CommonArgumentsConstructor(
+                arguments_construction.ImplicitActualFileArgumentsConstructor(
+                    arguments_construction.CommonArgumentsConstructor(
                         file_transformer=transform_to_uppercase.name),
                     EqualsStringAssertionArgumentsConstructor(expected_transformer_contents)),
             ))

@@ -6,8 +6,9 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    args, InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
+    InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY

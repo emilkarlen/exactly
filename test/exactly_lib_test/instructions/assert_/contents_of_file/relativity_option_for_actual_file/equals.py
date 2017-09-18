@@ -11,10 +11,11 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
-    args, InstructionTestConfiguration
+    InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     suite_for__conf__rel_opts__negations, TestWithConfigurationAndRelativityOptionAndNegationBase, \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
