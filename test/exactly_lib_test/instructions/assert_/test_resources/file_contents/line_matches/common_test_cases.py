@@ -10,8 +10,10 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
+from exactly_lib_test.named_element.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -22,6 +24,7 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
         _ParseWithInvalidLineMatcher,
 
         _TestSymbolReferenceForLinesTransformerIsReported,
+        _TestSymbolReferenceForLineMatcherIsReported,
     ]
     return unittest.TestSuite([
         test_case_constructor(configuration)
@@ -58,14 +61,14 @@ class _ParseWithMissingLineMatcherArgument(_TestCaseBase):
 class _ParseWithSuperfluousArgument(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            utils.ArgumentsConstructorForPossiblyInvalidSyntax(line_matcher='regex',
+            utils.ArgumentsConstructorForPossiblyInvalidSyntax(line_matcher=syntax_for_regex_matcher('regex'),
                                                                superfluous_args_str='superfluous'))
 
 
 class _ParseWithInvalidLineMatcher(_TestCaseBase):
     def runTest(self):
         self._check_variants_with_expectation_type_and_any_or_every(
-            utils.args_constructor_for(line_matcher='**'))
+            utils.args_constructor_for(line_matcher=syntax_for_regex_matcher('**')))
 
 
 class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
@@ -90,7 +93,39 @@ class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
                     arguments_for_implicit_file = arguments_construction.ImplicitActualFileArgumentsConstructor(
                         common_arguments,
                         arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier,
-                                                                                        'regex')
+                                                                                        syntax_for_regex_matcher(
+                                                                                            'regex'))
+                    ).apply(etc)
+                    arguments = self.configuration.first_line_argument(arguments_for_implicit_file)
+                    source = remaining_source(arguments)
+                    instruction = parser.parse(source)
+                    assert isinstance(instruction, AssertPhaseInstruction)  # Sanity check
+                    expected_symbol_usages.apply_without_message(self, instruction.symbol_usages())
+
+
+class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
+    def runTest(self):
+        # ARRANGE #
+        parser = self.configuration.new_parser()
+
+        line_matcher_name = 'the_line_matcher'
+
+        common_arguments = arguments_construction.CommonArgumentsConstructor()
+        expected_symbol_reference_to_transformer = is_line_matcher_reference_to(line_matcher_name)
+
+        expected_symbol_usages = asrt.matches_sequence([
+            expected_symbol_reference_to_transformer
+        ])
+
+        for expectation_type in ExpectationType:
+            etc = ExpectationTypeConfig(expectation_type)
+            for quantifier in Quantifier:
+                with self.subTest(expectation_type=expectation_type,
+                                  quantifier=quantifier.name):
+                    arguments_for_implicit_file = arguments_construction.ImplicitActualFileArgumentsConstructor(
+                        common_arguments,
+                        arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier,
+                                                                                        line_matcher_name)
                     ).apply(etc)
                     arguments = self.configuration.first_line_argument(arguments_for_implicit_file)
                     source = remaining_source(arguments)
