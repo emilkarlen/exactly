@@ -353,7 +353,7 @@ it just displays some of Exactly's features.)
 
     contents a-second-file.txt ! empty
 
-    contents another-file.txt --transformation EXACTLY_TEST_CASE_DIRS_REPLACEMENT equals expected-content.txt
+    contents another-file.txt --transformation EXACTLY_TEST_CASE_DIRS_REPLACEMENT equals --file expected-content.txt
 
     contents file.txt contains 'my .* reg ex'
 
