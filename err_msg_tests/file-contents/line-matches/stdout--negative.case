@@ -7,4 +7,4 @@ $ echo 'expected line'
 [assert]
 
 
-stdout ! any line matches 'expected line'
+stdout ! any line matches regex 'expected line'
