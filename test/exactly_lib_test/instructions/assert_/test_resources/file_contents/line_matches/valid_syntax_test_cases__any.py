@@ -13,6 +13,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     PassOrFail
 from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.named_element.test_resources.named_elem_utils import container
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -36,7 +37,7 @@ class _NoLineMatchesRegEx(TestCaseBase):
         actual_contents = lines_content(['no match',
                                          'NO MATCH',
                                          'not match'])
-        regex_arg_str = '123'
+        regex_arg_str = syntax_for_regex_matcher('123')
         self._check_variants_with_expectation_type(
             args_constructor_for(line_matcher=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.FAIL,
@@ -50,7 +51,7 @@ class _ALineMatchesRegEx(TestCaseBase):
         actual_contents = lines_content(['no match',
                                          'MATCH',
                                          'not match'])
-        regex_arg_str = 'MATCH'
+        regex_arg_str = syntax_for_regex_matcher('MATCH')
         self._check_variants_with_expectation_type(
             args_constructor_for(line_matcher=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.PASS,
@@ -64,7 +65,7 @@ class _AWholeLineMatchesRegEx(TestCaseBase):
         actual_contents = lines_content(['no match',
                                          'MATCH',
                                          'not match'])
-        regex_arg_str = '^MATCH$'
+        regex_arg_str = syntax_for_regex_matcher('^MATCH$')
         self._check_variants_with_expectation_type(
             args_constructor_for(line_matcher=regex_arg_str),
             expected_result_of_positive_test=PassOrFail.PASS,
@@ -98,7 +99,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
 
         self._check_variants_with_expectation_type(
             args_constructor_for(
-                line_matcher=reg_ex_that_matches_uppercase_character,
+                line_matcher=syntax_for_regex_matcher(reg_ex_that_matches_uppercase_character),
                 transformer=named_transformer.name),
             expected_result_of_positive_test=PassOrFail.PASS,
             quantifier=Quantifier.EXISTS,

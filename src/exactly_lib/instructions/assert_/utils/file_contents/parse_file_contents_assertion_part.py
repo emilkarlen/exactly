@@ -6,12 +6,13 @@ from exactly_lib.instructions.assert_.utils.expression.parse import validator_fo
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
+from exactly_lib.named_element.resolver_structure import LineMatcherResolver
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
+from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import SourceType
-from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax
 
@@ -35,7 +36,7 @@ EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_file_ref.CONFIGURATION
 COMPARISON_OPERATOR = 'COMPARISON OPERATOR'
 
 _FORMAT_MAP = {
-    '_REGEX_': instruction_arguments.REG_EX.name,
+    '_MATCHER_': instruction_arguments.LINE_MATCHER.name,
     '_CHECK_': '{} ({})'.format(COMPARISON_OPERATOR,
                                 grammar_options_syntax.alternatives_list(instruction_options.ALL_CHECKS)),
 }
@@ -78,20 +79,18 @@ class ParseFileContentsAssertionPart:
         )
 
     def _parse_any_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
-        reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
+        line_matcher_resolver = self._parse_line_matches_tokens_and_line_matcher(token_parser)
 
         from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
         return line_matches.assertion_part_for_any_line_matches(self.expectation_type,
-                                                                reg_ex,
-                                                                reg_ex_arg.source_string)
+                                                                line_matcher_resolver)
 
     def _parse_every_line_matches_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
-        reg_ex_arg, reg_ex = self._parse_line_matches_tokens_and_regex(token_parser)
+        line_matcher_resolver = self._parse_line_matches_tokens_and_line_matcher(token_parser)
 
         from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches
         return line_matches.assertion_part_for_every_line_matches(self.expectation_type,
-                                                                  reg_ex,
-                                                                  reg_ex_arg.source_string)
+                                                                  line_matcher_resolver)
 
     def _parse_num_lines_checker(self, token_parser: TokenParserPrime) -> ActualFileAssertionPart:
         cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
@@ -104,14 +103,14 @@ class ParseFileContentsAssertionPart:
                                             cmp_op_and_rhs)
 
     @staticmethod
-    def _parse_line_matches_tokens_and_regex(token_parser: TokenParserPrime):
+    def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParserPrime) -> LineMatcherResolver:
         token_parser.consume_mandatory_constant_unquoted_string(instruction_options.LINE_ARGUMENT,
                                                                 must_be_on_current_line=True)
         token_parser.consume_mandatory_constant_unquoted_string(instruction_options.MATCHES_ARGUMENT,
                                                                 must_be_on_current_line=True)
-        token_parser.require_is_not_at_eol('Missing {_REGEX_}')
-        reg_ex_arg = token_parser.consume_mandatory_token('Missing {_REGEX_}')
+        token_parser.require_is_not_at_eol('Missing {_MATCHER_}')
+        line_matcher_resolver = parse_line_matcher_from_token_parser(token_parser)
         token_parser.report_superfluous_arguments_if_not_at_eol()
         token_parser.consume_current_line_as_plain_string()
 
-        return reg_ex_arg, compile_regex(reg_ex_arg.string)
+        return line_matcher_resolver
