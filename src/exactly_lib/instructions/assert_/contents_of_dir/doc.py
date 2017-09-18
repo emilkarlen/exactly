@@ -151,6 +151,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _see_also_cross_refs(self) -> list:
         from exactly_lib.help_texts.entity import types
         types = [types.FILE_MATCHER_CONCEPT_INFO.cross_reference_target,
+                 types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target,
                  types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target]
         concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
         refs = rel_path_doc.cross_refs_for_concepts(concepts)
