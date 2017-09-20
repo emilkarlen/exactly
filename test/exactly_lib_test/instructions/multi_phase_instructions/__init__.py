@@ -4,7 +4,7 @@ from exactly_lib_test.instructions.multi_phase_instructions import \
     test_resources_test, utils, \
     new_dir, change_dir, \
     run, run_tests_of_instruction_embryo, \
-    new_file, env, shell, define_named_elem
+    new_file, env, shell, define_named_elem, transform
 
 
 def suite() -> unittest.TestSuite:
@@ -19,6 +19,7 @@ def suite() -> unittest.TestSuite:
         env.suite(),
         shell.suite(),
         define_named_elem.suite(),
+        transform.suite(),
     ])
 
 
