@@ -12,7 +12,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import h
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction, \
+    MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -57,3 +58,7 @@ def home_and_sds_with_act_as_curr_dir(
                 non_home_contents.populate_non_home(sds)
                 home_or_sds_contents.populate_home_or_sds(home_and_sds)
                 yield ret_val
+
+
+SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR = HomeAndSdsActionFromSdsAction(
+    MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs())
