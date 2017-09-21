@@ -23,12 +23,12 @@ def is_success() -> asrt.ValueAssertion:
     return status_is(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS)
 
 
-def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
+def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
     return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
                                  assertion_on_error_message)
 
 
-def is_validation_error(assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
+def is_validation_error(assertion_on_error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
     return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                                  assertion_on_error_message)
 
