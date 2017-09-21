@@ -30,9 +30,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsActionFromSdsAction
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import \
-    MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs
+    SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -165,7 +163,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         relativity_option=rel_opt_conf.option_string,
                         file_name=file_name)),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
                     Expectation(
                         main_result=is_success(),
@@ -186,7 +184,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         sub_dir=sub_dir_name,
                         file_name=expected_file.file_name)),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
                     Expectation(
                         main_result=is_success(),
@@ -209,7 +207,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         sub_dir=sub_dir_name,
                         file_name=expected_file.file_name)),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                         non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
                             fs.DirContents([fs.empty_dir(sub_dir_name)])
                         )
@@ -239,7 +237,7 @@ class TestSuccessfulScenariosWithContents(TestCaseBase):
                         [here_doc_line,
                          'THE_MARKER']),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
                     Expectation(
                         main_result=is_success(),
@@ -274,7 +272,7 @@ class TestSymbolReferences(TestCaseBase):
                 [here_doc_line,
                  'THE_MARKER']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_ACTION,
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                 symbols=symbol_utils.symbol_table_with_single_file_ref_value(
                     symbol.name,
                     symbol.value),
@@ -329,7 +327,7 @@ class TestSymbolReferences(TestCaseBase):
                     symbol=symbol_reference_syntax_for_name(here_doc_symbol.name)),
                     'THE_MARKER']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_ACTION,
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                 symbols=symbol_table,
             ),
             Expectation(
@@ -350,7 +348,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 '{file_name}'.format(file_name=expected_file.file_name),
             ),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_ACTION,
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
                 main_result=is_success(),
@@ -365,7 +363,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 '{file_name}'.format(file_name=expected_file.file_name),
                 ['following line']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_ACTION,
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
                 main_result=is_success(),
@@ -380,7 +378,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 '{file_name} <<MARKER'.format(file_name=expected_file.file_name),
                 ['MARKER']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_ACTION,
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
                 main_result=is_success(),
@@ -396,7 +394,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 ['MARKER',
                  'following line']),
             ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_ACTION,
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
                 main_result=is_success(),
@@ -418,7 +416,7 @@ class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
                         relativity_option=rel_opt_conf.option_string
                     )),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                         non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
                             fs.DirContents([
                                 fs.empty_file('existing-file')
@@ -435,7 +433,7 @@ class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
                         relativity_option=rel_opt_conf.option_string
                     )),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                         non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
                             fs.DirContents([
                                 fs.empty_dir('existing-dir')
@@ -452,7 +450,7 @@ class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
                         rel_opt=rel_opt_conf.option_string
                     )),
                     ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_ACTION,
+                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                         non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
                             fs.DirContents([
                                 fs.Dir('existing-directory', [
@@ -463,9 +461,6 @@ class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
                         main_result=is_failure(),
                     ))
 
-
-SETUP_CWD_ACTION = HomeAndSdsActionFromSdsAction(
-    MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
