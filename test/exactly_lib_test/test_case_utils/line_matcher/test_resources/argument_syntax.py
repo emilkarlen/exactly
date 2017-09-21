@@ -11,3 +11,7 @@ def syntax_for_regex_matcher(regex_token_str: str) -> str:
 
 def syntax_for_and(matchers: list) -> str:
     return (' ' + expression.AND_OPERATOR_NAME + ' ').join(matchers)
+
+
+def syntax_for_arbitrary_line_matcher_without_symbol_references() -> str:
+    return syntax_for_regex_matcher('regex')

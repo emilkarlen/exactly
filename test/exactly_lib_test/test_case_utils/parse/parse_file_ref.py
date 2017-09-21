@@ -4,7 +4,7 @@ from pathlib import Path
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION
 from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.named_element.resolver_structure import NamedElementContainer
-from exactly_lib.named_element.restriction import ReferenceRestrictions
+from exactly_lib.named_element.restriction import ReferenceRestrictions, SymbolReferenceRestrictions
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -1215,7 +1215,7 @@ def path_part_string_reference_restrictions() -> ReferenceRestrictionsOnDirectAn
 
 
 def file_ref_reference_restrictions(accepted_relativities: PathRelativityVariants
-                                    ) -> ReferenceRestrictions:
+                                    ) -> SymbolReferenceRestrictions:
     return ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))
 
 
