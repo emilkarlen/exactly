@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
+from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResult
@@ -20,7 +21,6 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -122,21 +122,14 @@ def create_file(file_info: FileInfo,
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.file_ref.resolve(environment.symbols).value_post_sds(environment.sds)
-    try:
-        if file_path.exists():
-            return 'File does already exist: {}'.format(file_path)
-    except NotADirectoryError:
-        return 'Part of path exists, but perhaps one in-the-middle-component is not a directory: %s' % str(file_path)
-    failure_message = ensure_parent_directory_does_exist_and_is_a_directory(file_path)
-    if failure_message is not None:
-        return failure_message
-    contents_str = file_info.contents.resolve_value_of_any_dependency(environment)
-    try:
-        write_new_text_file(file_path, contents_str)
-    except IOError:
-        return 'Cannot create file: {}'.format(file_path)
-    return None
+
+    def write_file(f):
+        contents_str = file_info.contents.resolve_value_of_any_dependency(environment)
+        f.write(contents_str)
+
+    return file_creation.create_file(file_info.file_ref,
+                                     environment,
+                                     write_file)
 
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
