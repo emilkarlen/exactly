@@ -26,7 +26,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.argument_syntax import \
     syntax_for_arbitrary_lines_transformer_without_symbol_references
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_reference_restrictions
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_home, conf_rel_any, \
     conf_rel_non_home, symbol_conf_rel_home, symbol_conf_rel_sds
@@ -105,11 +104,11 @@ class TestFailingScenarios(unittest.TestCase):
                                   symbols=symbols,
                               ),
                               Expectation(
-                                  validation_pre_sds=asrt_svh.is_validation_error(),
+                                  validation_pre_sds=IS_FAILURE_OF_VALIDATION,
                                   symbol_usages=asrt.anything_goes(),
                               ))
 
-    def test_main_result_SHOULD_be_hard_error_WHEN_source_is_not_an_existing_file_rel_non_home(self):
+    def test_main_result_SHOULD_be_failure_WHEN_source_is_not_an_existing_file_rel_non_home(self):
         name_of_transformer_symbol = A_VALID_SYMBOL_NAME
         transformer_argument_variants = [
             '',
@@ -139,11 +138,11 @@ class TestFailingScenarios(unittest.TestCase):
                                   symbols=symbols,
                               ),
                               Expectation(
-                                  main_result=asrt_svh.is_hard_error(),
+                                  main_result=IS_FAILURE_OF_MAIN,
                                   symbol_usages=asrt.anything_goes(),
                               ))
 
-    def test_main_result_SHOULD_be_hard_error_WHEN_destination_file_exists(self):
+    def test_main_result_SHOULD_be_failure_WHEN_destination_file_exists(self):
         name_of_transformer_symbol = A_VALID_SYMBOL_NAME
         transformer_argument_variants = [
             '',
@@ -185,7 +184,7 @@ class TestFailingScenarios(unittest.TestCase):
                               symbols=symbols,
                           ),
                           Expectation(
-                              main_result=asrt_svh.is_hard_error(),
+                              main_result=IS_FAILURE_OF_MAIN,
                               symbol_usages=asrt.anything_goes(),
                           ))
 
@@ -281,9 +280,10 @@ class TestConsumptionOfSource(unittest.TestCase):
         dst_file_arg = PathArgumentWithRelativity('dst-file',
                                                   conf_rel_any(RelOptionType.REL_TMP))
         argument_str = ArgumentsConstructor(src_file_arg, dst_file_arg).construct()
-        with equivalent_source_variants__with_source_check(self, argument_str) as source:
-            # ACT & ASSERT #
-            parser.parse(source)
+        for source in equivalent_source_variants__with_source_check(self, argument_str):
+            with self.subTest(source=source.remaining_source):
+                # ACT & ASSERT #
+                parser.parse(source)
 
     def test_with_transformer(self):
         # ARRANGE #
@@ -297,9 +297,10 @@ class TestConsumptionOfSource(unittest.TestCase):
             src_file_arg,
             dst_file_arg,
             syntax_for_arbitrary_lines_transformer_without_symbol_references()).construct()
-        with equivalent_source_variants__with_source_check(self, argument_str) as source:
-            # ACT & ASSERT #
-            parser.parse(source)
+        for source in equivalent_source_variants__with_source_check(self, argument_str):
+            with self.subTest(source=source.remaining_source):
+                # ACT & ASSERT #
+                parser.parse(source)
 
 
 class TestSuccessfulScenarios(unittest.TestCase):
@@ -313,12 +314,16 @@ class TestSuccessfulScenarios(unittest.TestCase):
         for src_file_relativity in SRC_PATH_RELATIVITY_VARIANTS.rel_option_types:
             src_file_arg = PathArgumentWithRelativity('src-file.txt',
                                                       conf_rel_any(src_file_relativity))
+            src_file = File(src_file_arg.file_name, source_file_contents)
             for dst_file_relativity in DST_PATH_RELATIVITY_VARIANTS.rel_option_types:
                 dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
                                                           conf_rel_any(dst_file_relativity))
-                expected_dst_dir_contents = DirContents([
+                expected_files_in_dst_dir = [
                     File(dst_file_arg.file_name, expected_destination_file_contents)
-                ])
+                ]
+                if dst_file_relativity == src_file_relativity:
+                    expected_files_in_dst_dir.append(src_file)
+                expected_dst_dir_contents = DirContents(expected_files_in_dst_dir)
                 source = remaining_source(ArgumentsConstructor(src_file_arg,
                                                                dst_file_arg,
                                                                transformer_argument).construct())
@@ -333,11 +338,12 @@ class TestSuccessfulScenarios(unittest.TestCase):
                               pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                               home_or_sds_contents=src_file_arg.relativity.populator_for_relativity_option_root(
                                   DirContents([
-                                      File(src_file_arg.file_name, source_file_contents),
+                                      src_file,
                                   ])),
                               symbols=symbols,
                           ),
                           Expectation(
+                              main_result=IS_SUCCESS_OF_MAIN,
                               main_side_effects_on_sds=dir_contains_exactly(dst_file_relativity,
                                                                             expected_dst_dir_contents),
                               symbol_usages=expected_symbol_references,
@@ -402,6 +408,11 @@ class ArgumentsConstructor:
         )
 
 
+IS_FAILURE_OF_VALIDATION = asrt.is_instance(str)
+
+IS_FAILURE_OF_MAIN = asrt.is_instance(str)
+IS_SUCCESS_OF_MAIN = asrt.is_none
+
 SRC_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     {
         RelOptionType.REL_CWD,
@@ -419,4 +430,4 @@ DST_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
         RelOptionType.REL_ACT,
         RelOptionType.REL_TMP,
     },
-    True)
+    False)
