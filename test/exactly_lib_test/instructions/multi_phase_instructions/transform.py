@@ -40,9 +40,9 @@ from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTr
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParse),
-        unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestSymbolUsages),
         unittest.makeSuite(TestConsumptionOfSource),
+        unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestSuccessfulScenarios),
     ])
 
@@ -164,8 +164,7 @@ class TestFailingScenarios(unittest.TestCase):
         for dst_file in dst_file_variants:
             for transformer in transformer_argument_variants:
                 source = remaining_source(ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
-                with self.subTest(relativity_of_src_path=src_file_arg.relativity.option_string,
-                                  transformer=transformer,
+                with self.subTest(transformer=transformer,
                                   dst_file=str(type(dst_file))):
                     check(self,
                           sut.EmbryoParser(),
@@ -187,6 +186,47 @@ class TestFailingScenarios(unittest.TestCase):
                               main_result=IS_FAILURE_OF_MAIN,
                               symbol_usages=asrt.anything_goes(),
                           ))
+
+    def test_main_result_SHOULD_be_failure_WHEN_destination_file_is_in_dir_that_is_not_a_real_dir(self):
+        name_of_transformer_symbol = A_VALID_SYMBOL_NAME
+        transformer_argument_variants = [
+            '',
+            name_of_transformer_symbol,
+        ]
+        symbols = singleton_symbol_table_3(name_of_transformer_symbol,
+                                           LinesTransformerConstant(
+                                               FakeLinesTransformer()))
+        src_file_arg = PathArgumentWithRelativity('src-file',
+                                                  conf_rel_home(RelHomeOptionType.REL_HOME_CASE))
+
+        regular_file_tried_to_be_used_as_dir = 'a-regular-file'
+        dst_file_arg = PathArgumentWithRelativity('{dir}/dst-file'.format(
+            dir=regular_file_tried_to_be_used_as_dir,
+        ),
+            conf_rel_any(RelOptionType.REL_TMP))
+        for transformer in transformer_argument_variants:
+            source = remaining_source(ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
+            with self.subTest(transformer=transformer):
+                check(self,
+                      sut.EmbryoParser(),
+                      source,
+                      ArrangementWithSds(
+                          pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                          home_or_sds_contents=home_and_sds_populators.multiple([
+                              src_file_arg.relativity.populator_for_relativity_option_root(
+                                  DirContents([
+                                      empty_file(src_file_arg.file_name)
+                                  ])),
+                              dst_file_arg.relativity.populator_for_relativity_option_root(
+                                  DirContents([
+                                      empty_file(regular_file_tried_to_be_used_as_dir)
+                                  ]))]),
+                          symbols=symbols,
+                      ),
+                      Expectation(
+                          main_result=IS_FAILURE_OF_MAIN,
+                          symbol_usages=asrt.anything_goes(),
+                      ))
 
 
 class TestSymbolUsages(unittest.TestCase):
