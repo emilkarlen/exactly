@@ -29,7 +29,7 @@ from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_refer
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_home, conf_rel_any, \
     conf_rel_non_home, symbol_conf_rel_home, symbol_conf_rel_sds
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, sym_link, File
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, sym_link, File, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
@@ -344,13 +344,13 @@ class TestConsumptionOfSource(unittest.TestCase):
 
 
 class TestSuccessfulScenarios(unittest.TestCase):
-    def _check(self,
-               source_file_contents: str,
-               expected_destination_file_contents: str,
-               transformer_argument: str,
-               expected_symbol_references: asrt.ValueAssertion,
-               symbols: SymbolTable = None,
-               ):
+    def _check_create_file_in_existing_dir(self,
+                                           source_file_contents: str,
+                                           expected_destination_file_contents: str,
+                                           transformer_argument: str,
+                                           expected_symbol_references: asrt.ValueAssertion,
+                                           symbols: SymbolTable = None,
+                                           ):
         for src_file_relativity in SRC_PATH_RELATIVITY_VARIANTS.rel_option_types:
             src_file_arg = PathArgumentWithRelativity('src-file.txt',
                                                       conf_rel_any(src_file_relativity))
@@ -389,16 +389,60 @@ class TestSuccessfulScenarios(unittest.TestCase):
                               symbol_usages=expected_symbol_references,
                           ))
 
-    def test_sans_transformer(self):
+    def _check_create_file_in_non_existing_dir(self,
+                                               source_file_contents: str,
+                                               expected_destination_file_contents: str,
+                                               transformer_argument: str,
+                                               expected_symbol_references: asrt.ValueAssertion,
+                                               symbols: SymbolTable = None,
+                                               ):
+        src_file_relativity = RelOptionType.REL_HOME_CASE
+        src_file_arg = PathArgumentWithRelativity('src-file.txt',
+                                                  conf_rel_any(src_file_relativity))
+        src_file = File(src_file_arg.file_name, source_file_contents)
+        dst_file_relativity = RelOptionType.REL_ACT
+        dst_file_name = 'dst-file.txt'
+        dst_sub_dir_name = 'non-existing-sub-dir'
+        dst_file_arg = PathArgumentWithRelativity('{dir}/{file}'.format(
+            dir=dst_sub_dir_name,
+            file=dst_file_name),
+            conf_rel_any(dst_file_relativity))
+        expected_dst_dir_contents = DirContents([
+            Dir(dst_sub_dir_name, [
+                File(dst_file_name, expected_destination_file_contents)
+            ])
+        ])
+        source = remaining_source(ArgumentsConstructor(src_file_arg,
+                                                       dst_file_arg,
+                                                       transformer_argument).construct())
+        check(self,
+              sut.EmbryoParser(),
+              source,
+              ArrangementWithSds(
+                  pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                  home_or_sds_contents=src_file_arg.relativity.populator_for_relativity_option_root(
+                      DirContents([
+                          src_file,
+                      ])),
+                  symbols=symbols,
+              ),
+              Expectation(
+                  main_result=IS_SUCCESS_OF_MAIN,
+                  main_side_effects_on_sds=dir_contains_exactly(dst_file_relativity,
+                                                                expected_dst_dir_contents),
+                  symbol_usages=expected_symbol_references,
+              ))
+
+    def test_create_file_in_existing_dir__sans_transformer(self):
         file_contents = 'source file contents'
-        self._check(
+        self._check_create_file_in_existing_dir(
             source_file_contents=file_contents,
             expected_destination_file_contents=file_contents,
             transformer_argument='',
             expected_symbol_references=asrt.is_empty_list,
         )
 
-    def test_with_transformer(self):
+    def test_create_file_in_existing_dir__with_transformer(self):
         src_file_contents = 'source file contents'
         expected_dst_file_contents = src_file_contents.upper()
 
@@ -413,7 +457,39 @@ class TestSuccessfulScenarios(unittest.TestCase):
             is_lines_transformer_reference_to(transform_to_uppercase.name)
         ])
 
-        self._check(
+        self._check_create_file_in_existing_dir(
+            source_file_contents=src_file_contents,
+            expected_destination_file_contents=expected_dst_file_contents,
+            transformer_argument=transform_to_uppercase.name,
+            symbols=symbol_table_with_lines_transformer,
+            expected_symbol_references=expected_symbol_references,
+        )
+
+    def test_create_file_in_non_existing_dir__sans_transformer(self):
+        file_contents = 'source file contents'
+        self._check_create_file_in_non_existing_dir(
+            source_file_contents=file_contents,
+            expected_destination_file_contents=file_contents,
+            transformer_argument='',
+            expected_symbol_references=asrt.is_empty_list,
+        )
+
+    def test_create_file_in_non_existing_dir__with_transformer(self):
+        src_file_contents = 'source file contents'
+        expected_dst_file_contents = src_file_contents.upper()
+
+        transform_to_uppercase = NameAndValue(
+            'to_uppercase_lines_transformer',
+            ToUppercaseLinesTransformer())
+
+        symbol_table_with_lines_transformer = SymbolTable({
+            transform_to_uppercase.name: container(LinesTransformerConstant(transform_to_uppercase.value))
+        })
+        expected_symbol_references = asrt.matches_sequence([
+            is_lines_transformer_reference_to(transform_to_uppercase.name)
+        ])
+
+        self._check_create_file_in_non_existing_dir(
             source_file_contents=src_file_contents,
             expected_destination_file_contents=expected_dst_file_contents,
             transformer_argument=transform_to_uppercase.name,
