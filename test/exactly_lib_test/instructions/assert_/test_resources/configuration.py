@@ -11,6 +11,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
     ConfigurationBase
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
@@ -56,6 +57,7 @@ class AssertConfigurationBase(ConfigurationBase):
 
     def arrangement(self,
                     pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
+                    hds_contents: home_populators.HomePopulator = home_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                     environ: dict = None,
@@ -63,6 +65,7 @@ class AssertConfigurationBase(ConfigurationBase):
                     symbols: SymbolTable = None):
         return ArrangementPostAct(
             pre_contents_population_action=pre_contents_population_action,
+            hds_contents=hds_contents,
             sds_contents=sds_contents_before_main,
             home_or_sds_contents=home_or_sds_contents,
             process_execution_settings=with_environ(environ),
