@@ -29,7 +29,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     common_test_cases = [
-        TestCreateFileInExistingDirectory,
+        TestSuccessfullyCreateFileInExistingDirectory,
+        TestFailingValidationPreSds,
     ]
     suites = [tc(conf)
               for tc in common_test_cases]
@@ -84,7 +85,7 @@ class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(TestCaseBase):
         self.conf.parser().parse(source)
 
 
-class TestCreateFileInExistingDirectory(TestCaseBase):
+class TestSuccessfullyCreateFileInExistingDirectory(TestCaseBase):
     def runTest(self):
         # ARRANGE #
         src_file_contents = 'source file contents'
@@ -133,3 +134,20 @@ class TestCreateFileInExistingDirectory(TestCaseBase):
                     symbol_usages=expected_symbol_references,
                 )
             )
+
+
+class TestFailingValidationPreSds(TestCaseBase):
+    def runTest(self):
+        non_existing_src_file = PathArgumentWithRelativity('src-file',
+                                                           conf_rel_any(RelOptionType.REL_HOME_CASE))
+        dst_file = PathArgumentWithRelativity('dst-file',
+                                              conf_rel_any(RelOptionType.REL_TMP))
+        source = remaining_source(transform.ArgumentsConstructor(non_existing_src_file, dst_file).construct())
+        self.conf.run_test(
+            self,
+            source,
+            arrangement=
+            self.conf.arrangement(),
+            expectation=
+            self.conf.expect_failing_validation_pre_sds()
+        )
