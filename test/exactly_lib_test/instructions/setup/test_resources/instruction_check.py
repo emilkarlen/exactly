@@ -87,18 +87,18 @@ class Expectation:
                  main_result: asrt.ValueAssertion = sh_assertions.is_success(),
                  post_validation_result: asrt.ValueAssertion = svh_assertions.is_success(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
-                 main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
-                 side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  settings_builder: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result
-        self.main_side_effects_on_files = main_side_effects_on_files
+        self.main_side_effects_on_sds = main_side_effects_on_sds
         self.post_validation_result = post_validation_result
         self.settings_builder = settings_builder
-        self.side_effects_check = side_effects_check
+        self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
         self.source = source
         self.symbol_usages = symbol_usages
         self.symbols_after_main = symbols_after_main
@@ -193,7 +193,8 @@ class Executor:
                         instruction_environment.symbols,
                         'symbols_after_main')
                     self._execute_post_validate(instruction_environment, instruction)
-                    self.expectation.side_effects_check.apply(self.put, instruction_environment.home_and_sds)
+                    self.expectation.main_side_effects_on_home_and_sds.apply(self.put,
+                                                                             instruction_environment.home_and_sds)
                     self.expectation.symbol_usages.apply_with_message(self.put,
                                                                       instruction.symbol_usages(),
                                                                       'symbol-usages after ' +
@@ -231,7 +232,7 @@ class Executor:
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
-        self.expectation.main_side_effects_on_files.apply(self.put, sds)
+        self.expectation.main_side_effects_on_sds.apply(self.put, sds)
         return main_result
 
     def _execute_post_validate(self,

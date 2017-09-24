@@ -63,7 +63,7 @@ class TestPopulate(TestCaseBase):
                     non_home_populator.RelNonHomeOptionType.REL_TMP,
                     populated_dir_contents)),
             sut.Expectation(
-                main_side_effects_on_files=tmp_user_dir_contains_exactly(
+                main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
         )
 
@@ -77,7 +77,7 @@ class TestPopulate(TestCaseBase):
                     sds_populator.RelSdsOptionType.REL_TMP,
                     populated_dir_contents)),
             sut.Expectation(
-                main_side_effects_on_files=tmp_user_dir_contains_exactly(
+                main_side_effects_on_sds=tmp_user_dir_contains_exactly(
                     populated_dir_contents)),
         )
 
@@ -187,7 +187,7 @@ class TestMiscCases(TestCaseBase):
                 utils.single_line_source(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_side_effects_on_files=act_dir_contains_exactly(
+                    main_side_effects_on_sds=act_dir_contains_exactly(
                         DirContents([empty_file('non-existing-file.txt')]))),
             )
 
@@ -205,7 +205,7 @@ class TestMiscCases(TestCaseBase):
                 utils.single_line_source(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    side_effects_check=sds_2_home_and_sds_assertion(
+                    main_side_effects_on_home_and_sds=sds_2_home_and_sds_assertion(
                         act_dir_contains_exactly(
                             DirContents([empty_file('non-existing-file.txt')])))),
             )

@@ -33,15 +33,15 @@ class InstructionExecutionBase:
                                  self.expectation.validation_pre_sds,
                                  actual)
 
-    def _check_main_side_effects_on_files(self, home_and_sds: HomeAndSds):
-        self.expectation.main_side_effects_on_files.apply(self.put,
-                                                          home_and_sds.sds,
-                                                          asrt.MessageBuilder('main side effects on SDS'))
+    def _check_main_side_effects_on_sds(self, home_and_sds: HomeAndSds):
+        self.expectation.main_side_effects_on_sds.apply(self.put,
+                                                        home_and_sds.sds,
+                                                        asrt.MessageBuilder('main side effects on SDS'))
 
     def _check_side_effects_on_home_and_sds(self, home_and_sds: HomeAndSds):
-        self.expectation.side_effects_check.apply(self.put,
-                                                  home_and_sds,
-                                                  asrt.MessageBuilder('side effects on HomeAndSds'))
+        self.expectation.main_side_effects_on_home_and_sds.apply(self.put,
+                                                                 home_and_sds,
+                                                                 asrt.MessageBuilder('side effects on HomeAndSds'))
 
     def _check_instance_and(self,
                             object_name: str,

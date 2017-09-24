@@ -54,7 +54,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
                                                                            empty_dir('existing-directory')
                                                                        ]))
                                   ),
-                      Expectation(main_side_effects_on_files=act_dir_contains_exactly(DirContents([
+                      Expectation(main_side_effects_on_sds=act_dir_contains_exactly(DirContents([
                           Dir('existing-directory', [
                               empty_file('file-name.txt')])
                       ])))
@@ -65,7 +65,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
                                        ['single line',
                                         'MARKER']),
                   Arrangement(),
-                  Expectation(main_side_effects_on_files=act_dir_contains_exactly(DirContents([
+                  Expectation(main_side_effects_on_sds=act_dir_contains_exactly(DirContents([
                       File('file name',
                            lines_content(['single line']))
                   ])),
@@ -97,7 +97,7 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                                                          PathPartAsFixedPath('symbol-def-path-arg'))))])
                       ),
                       Expectation(
-                          main_side_effects_on_files=tmp_user_dir_contains_exactly(DirContents([
+                          main_side_effects_on_sds=tmp_user_dir_contains_exactly(DirContents([
                               Dir('symbol-def-path-arg',
                                   [empty_file('file-name.txt')])
                           ])),

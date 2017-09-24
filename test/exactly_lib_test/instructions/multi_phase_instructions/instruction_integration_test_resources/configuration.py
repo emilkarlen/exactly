@@ -66,7 +66,7 @@ class ConfigurationBase:
         raise NotImplementedError()
 
     def expect_success(self,
-                       main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
+                       main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                        symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
         raise NotImplementedError()
 

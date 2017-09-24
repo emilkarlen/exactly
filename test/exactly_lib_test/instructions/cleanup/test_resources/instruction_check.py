@@ -57,20 +57,17 @@ class Expectation(ExpectationBase):
                  validate_pre_sds_result: asrt.ValueAssertion = svh_assertions.is_success(),
                  main_result: asrt.ValueAssertion = sh_assertions.is_success(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
-                 main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
-                 side_effects_check: asrt.ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
         super().__init__(validate_pre_sds_result,
-                         main_side_effects_on_files,
-                         side_effects_check)
+                         main_side_effects_on_sds,
+                         main_side_effects_on_home_and_sds,
+                         symbol_usages)
         self.act_result = act_result
-        self.validate_pre_sds_result = validate_pre_sds_result
         self.main_result = main_result
-        self.main_side_effects_on_files = main_side_effects_on_files
-        self.side_effects_check = side_effects_check
         self.source = source
-        self.symbol_usages = symbol_usages
 
 
 is_success = Expectation
@@ -139,8 +136,8 @@ class Executor(InstructionExecutionBase):
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
                 symbols=self.arrangement.symbols)
             self._execute_main(environment, instruction)
-            self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
-            self.expectation.side_effects_check.apply(self.put, home_and_sds)
+            self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
+            self.expectation.main_side_effects_on_home_and_sds.apply(self.put, home_and_sds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages(),
                                                               'symbol-usages after ' +
@@ -151,7 +148,7 @@ class Executor(InstructionExecutionBase):
                               instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_pre_sds(environment)
         self._check_result_of_validate_pre_sds(result)
-        self.expectation.validate_pre_sds_result.apply(self.put, result)
+        self.expectation.validation_pre_sds.apply(self.put, result)
         return result
 
     def _execute_main(self,
@@ -162,5 +159,5 @@ class Executor(InstructionExecutionBase):
                                   self.arrangement.previous_phase)
         self._check_result_of_main__sh(result)
         self.expectation.main_result.apply(self.put, result)
-        self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
+        self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
         return result

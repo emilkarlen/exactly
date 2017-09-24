@@ -120,7 +120,7 @@ class TestSuccessfulScenariosWithoutExplicitDestination(TestCaseBaseForParser):
                               symbols=relativity_option.symbols.in_arrangement(),
                           ),
                           Expectation(
-                              main_side_effects_on_files=sds_contents_check.cwd_contains_exactly(file_to_install),
+                              main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(file_to_install),
                               symbol_usages=relativity_option.symbols.usages_expectation(),
                           )
                           )
@@ -138,7 +138,7 @@ class TestSuccessfulScenariosWithoutExplicitDestination(TestCaseBaseForParser):
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
                       hds_contents=case_home_dir_contents(files_to_install),
                   ),
-                  Expectation(main_side_effects_on_files=sds_contents_check.cwd_contains_exactly(
+                  Expectation(main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(
                       files_to_install))
                   )
 
@@ -256,7 +256,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                             symbols=symbols_in_arrangement,
                         ),
                         Expectation(
-                            main_side_effects_on_files=sds_contents_check.non_home_dir_contains_exactly(
+                            main_side_effects_on_sds=sds_contents_check.non_home_dir_contains_exactly(
                                 dst_rel_option.root_dir__non_home,
                                 expected_destination_dir_contents),
                             symbol_usages=expected_symbol_usages,
@@ -278,7 +278,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                                                                                       DirContents(act_dir_contents)),
                   ),
                   Expectation(
-                      main_side_effects_on_files=sds_contents_check.cwd_contains_exactly(
+                      main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(
                           DirContents(act_dir_contents_after)))
                   )
 
@@ -301,7 +301,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                                                                                       cwd_dir_contents_before),
                   ),
                   Expectation(
-                      main_side_effects_on_files=sds_contents_check.cwd_contains_exactly(
+                      main_side_effects_on_sds=sds_contents_check.cwd_contains_exactly(
                           cwd_dir_contents_after))
                   )
 
