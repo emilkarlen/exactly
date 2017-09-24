@@ -54,12 +54,14 @@ class TestFailingParse(unittest.TestCase):
             'file1',
             'file1 file2 transformer superfluous',
         ]
-        parser = sut.EmbryoParser()
-        for argument_str in cases:
-            source = remaining_source(argument_str)
-            with self.subTest(argument_str=argument_str):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(source)
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            for argument_str in cases:
+                source = remaining_source(argument_str)
+                with self.subTest(phase_is_before_act=phase_is_before_act,
+                                  argument_str=argument_str):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        parser.parse(source)
 
 
 class TestFailingScenarios(unittest.TestCase):
@@ -85,28 +87,30 @@ class TestFailingScenarios(unittest.TestCase):
                                                FakeLinesTransformer()))
         dst_file = PathArgumentWithRelativity('dst-file',
                                               conf_rel_any(RelOptionType.REL_TMP))
-        for rel_home_relativity in RelHomeOptionType:
-            src_file = PathArgumentWithRelativity(self.src_file_name,
-                                                  conf_rel_home(rel_home_relativity))
-            for source_file_variant in self.source_file_variants:
-                for transformer in transformer_argument_variants:
-                    source = remaining_source(ArgumentsConstructor(src_file, dst_file).construct())
-                    with self.subTest(relativity_of_src_path=src_file.relativity.option_string,
-                                      transformer=transformer,
-                                      source_file_variant=source_file_variant.name):
-                        check(self,
-                              sut.EmbryoParser(),
-                              source,
-                              ArrangementWithSds(
-                                  pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                                  home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
-                                      source_file_variant.value),
-                                  symbols=symbols,
-                              ),
-                              Expectation(
-                                  validation_pre_sds=IS_FAILURE_OF_VALIDATION,
-                                  symbol_usages=asrt.anything_goes(),
-                              ))
+        for phase_is_before_act in [False, True]:
+            for rel_home_relativity in RelHomeOptionType:
+                src_file = PathArgumentWithRelativity(self.src_file_name,
+                                                      conf_rel_home(rel_home_relativity))
+                for source_file_variant in self.source_file_variants:
+                    for transformer in transformer_argument_variants:
+                        source = remaining_source(ArgumentsConstructor(src_file, dst_file).construct())
+                        with self.subTest(phase_is_before_act=phase_is_before_act,
+                                          relativity_of_src_path=src_file.relativity.option_string,
+                                          transformer=transformer,
+                                          source_file_variant=source_file_variant.name):
+                            check(self,
+                                  sut.embryo_parser(phase_is_before_act),
+                                  source,
+                                  ArrangementWithSds(
+                                      pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                      home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
+                                          source_file_variant.value),
+                                      symbols=symbols,
+                                  ),
+                                  Expectation(
+                                      validation_pre_sds=IS_FAILURE_OF_VALIDATION,
+                                      symbol_usages=asrt.anything_goes(),
+                                  ))
 
     def test_main_result_SHOULD_be_failure_WHEN_source_is_not_an_existing_file_rel_non_home(self):
         name_of_transformer_symbol = A_VALID_SYMBOL_NAME
@@ -119,28 +123,31 @@ class TestFailingScenarios(unittest.TestCase):
                                                FakeLinesTransformer()))
         dst_file = PathArgumentWithRelativity('dst-file',
                                               conf_rel_any(RelOptionType.REL_TMP))
-        for rel_non_home_relativity in RelNonHomeOptionType:
-            src_file = PathArgumentWithRelativity('src-file',
-                                                  conf_rel_non_home(rel_non_home_relativity))
-            for transformer in transformer_argument_variants:
-                for source_file_variant in self.source_file_variants:
-                    source = remaining_source(ArgumentsConstructor(src_file, dst_file).construct())
-                    with self.subTest(relativity_of_src_path=src_file.relativity.option_string,
-                                      transformer=transformer,
-                                      source_file_variant=source_file_variant.name):
-                        check(self,
-                              sut.EmbryoParser(),
-                              source,
-                              ArrangementWithSds(
-                                  pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                                  home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
-                                      source_file_variant.value),
-                                  symbols=symbols,
-                              ),
-                              Expectation(
-                                  main_result=IS_FAILURE_OF_MAIN,
-                                  symbol_usages=asrt.anything_goes(),
-                              ))
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            for rel_non_home_relativity in accepted_non_home_source_relativities(phase_is_before_act):
+                src_file = PathArgumentWithRelativity('src-file',
+                                                      conf_rel_non_home(rel_non_home_relativity))
+                for transformer in transformer_argument_variants:
+                    for source_file_variant in self.source_file_variants:
+                        source = remaining_source(ArgumentsConstructor(src_file, dst_file).construct())
+                        with self.subTest(phase_is_before_act=phase_is_before_act,
+                                          relativity_of_src_path=src_file.relativity.option_string,
+                                          transformer=transformer,
+                                          source_file_variant=source_file_variant.name):
+                            check(self,
+                                  parser,
+                                  source,
+                                  ArrangementWithSds(
+                                      pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                      home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
+                                          source_file_variant.value),
+                                      symbols=symbols,
+                                  ),
+                                  Expectation(
+                                      main_result=IS_FAILURE_OF_MAIN,
+                                      symbol_usages=asrt.anything_goes(),
+                                  ))
 
     def test_main_result_SHOULD_be_failure_WHEN_destination_file_exists(self):
         name_of_transformer_symbol = A_VALID_SYMBOL_NAME
@@ -161,31 +168,34 @@ class TestFailingScenarios(unittest.TestCase):
             empty_dir(dst_file_arg.file_name),
             sym_link(dst_file_arg.file_name, 'non-existing-target'),
         ]
-        for dst_file in dst_file_variants:
-            for transformer in transformer_argument_variants:
-                source = remaining_source(ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
-                with self.subTest(transformer=transformer,
-                                  dst_file=str(type(dst_file))):
-                    check(self,
-                          sut.EmbryoParser(),
-                          source,
-                          ArrangementWithSds(
-                              pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                              home_or_sds_contents=home_and_sds_populators.multiple([
-                                  src_file_arg.relativity.populator_for_relativity_option_root(
-                                      DirContents([
-                                          empty_file(src_file_arg.file_name)
-                                      ])),
-                                  dst_file_arg.relativity.populator_for_relativity_option_root(
-                                      DirContents([
-                                          dst_file
-                                      ]))]),
-                              symbols=symbols,
-                          ),
-                          Expectation(
-                              main_result=IS_FAILURE_OF_MAIN,
-                              symbol_usages=asrt.anything_goes(),
-                          ))
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            for dst_file in dst_file_variants:
+                for transformer in transformer_argument_variants:
+                    source = remaining_source(ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
+                    with self.subTest(phase_is_before_act=phase_is_before_act,
+                                      transformer=transformer,
+                                      dst_file=str(type(dst_file))):
+                        check(self,
+                              parser,
+                              source,
+                              ArrangementWithSds(
+                                  pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                  home_or_sds_contents=home_and_sds_populators.multiple([
+                                      src_file_arg.relativity.populator_for_relativity_option_root(
+                                          DirContents([
+                                              empty_file(src_file_arg.file_name)
+                                          ])),
+                                      dst_file_arg.relativity.populator_for_relativity_option_root(
+                                          DirContents([
+                                              dst_file
+                                          ]))]),
+                                  symbols=symbols,
+                              ),
+                              Expectation(
+                                  main_result=IS_FAILURE_OF_MAIN,
+                                  symbol_usages=asrt.anything_goes(),
+                              ))
 
     def test_main_result_SHOULD_be_failure_WHEN_destination_file_is_in_dir_that_is_not_a_real_dir(self):
         name_of_transformer_symbol = A_VALID_SYMBOL_NAME
@@ -204,29 +214,30 @@ class TestFailingScenarios(unittest.TestCase):
             dir=regular_file_tried_to_be_used_as_dir,
         ),
             conf_rel_any(RelOptionType.REL_TMP))
-        for transformer in transformer_argument_variants:
-            source = remaining_source(ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
-            with self.subTest(transformer=transformer):
-                check(self,
-                      sut.EmbryoParser(),
-                      source,
-                      ArrangementWithSds(
-                          pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                          home_or_sds_contents=home_and_sds_populators.multiple([
-                              src_file_arg.relativity.populator_for_relativity_option_root(
-                                  DirContents([
-                                      empty_file(src_file_arg.file_name)
-                                  ])),
-                              dst_file_arg.relativity.populator_for_relativity_option_root(
-                                  DirContents([
-                                      empty_file(regular_file_tried_to_be_used_as_dir)
-                                  ]))]),
-                          symbols=symbols,
-                      ),
-                      Expectation(
-                          main_result=IS_FAILURE_OF_MAIN,
-                          symbol_usages=asrt.anything_goes(),
-                      ))
+        for phase_is_before_act in [False, True]:
+            for transformer in transformer_argument_variants:
+                source = remaining_source(ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
+                with self.subTest(transformer=transformer):
+                    check(self,
+                          sut.embryo_parser(phase_is_before_act),
+                          source,
+                          ArrangementWithSds(
+                              pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                              home_or_sds_contents=home_and_sds_populators.multiple([
+                                  src_file_arg.relativity.populator_for_relativity_option_root(
+                                      DirContents([
+                                          empty_file(src_file_arg.file_name)
+                                      ])),
+                                  dst_file_arg.relativity.populator_for_relativity_option_root(
+                                      DirContents([
+                                          empty_file(regular_file_tried_to_be_used_as_dir)
+                                      ]))]),
+                              symbols=symbols,
+                          ),
+                          Expectation(
+                              main_result=IS_FAILURE_OF_MAIN,
+                              symbol_usages=asrt.anything_goes(),
+                          ))
 
 
 class TestSymbolUsages(unittest.TestCase):
@@ -237,28 +248,31 @@ class TestSymbolUsages(unittest.TestCase):
             syntax_for_arbitrary_lines_transformer_without_symbol_references(),
         ]
         symbol_name = 'path_symbol'
-        src_file_arg = PathArgumentWithRelativity('src-file',
-                                                  symbol_conf_rel_home(RelHomeOptionType.REL_HOME_CASE,
-                                                                       symbol_name,
-                                                                       SRC_PATH_RELATIVITY_VARIANTS))
 
         dst_file_arg = PathArgumentWithRelativity('dst-file',
                                                   conf_rel_any(RelOptionType.REL_TMP))
-        for line_transformer in line_transformer_variants:
-            with self.subTest(line_transformer=line_transformer):
-                source = remaining_source(ArgumentsConstructor(src_file_arg,
-                                                               dst_file_arg,
-                                                               line_transformer).construct())
-                # ACT #
-                instruction = sut.EmbryoParser().parse(source)
-                # ASSERT #
-                expected_symbol_references = asrt.matches_sequence([
-                    matches_reference(asrt.equals(symbol_name),
-                                      equals_symbol_reference_restrictions(
-                                          file_ref_reference_restrictions(SRC_PATH_RELATIVITY_VARIANTS)))
-                ])
-                expected_symbol_references.apply_without_message(self,
-                                                                 instruction.symbol_usages)
+        for phase_is_before_act in [False, True]:
+            src_path_rel_variants = src_path_relativity_variants(phase_is_before_act)
+            src_file_arg = PathArgumentWithRelativity('src-file',
+                                                      symbol_conf_rel_home(RelHomeOptionType.REL_HOME_CASE,
+                                                                           symbol_name,
+                                                                           src_path_rel_variants))
+            for line_transformer in line_transformer_variants:
+                with self.subTest(phase_is_before_act=phase_is_before_act,
+                                  line_transformer=line_transformer):
+                    source = remaining_source(ArgumentsConstructor(src_file_arg,
+                                                                   dst_file_arg,
+                                                                   line_transformer).construct())
+                    # ACT #
+                    instruction = sut.embryo_parser(phase_is_before_act).parse(source)
+                    # ASSERT #
+                    expected_symbol_references = asrt.matches_sequence([
+                        matches_reference(asrt.equals(symbol_name),
+                                          equals_symbol_reference_restrictions(
+                                              file_ref_reference_restrictions(src_path_rel_variants)))
+                    ])
+                    expected_symbol_references.apply_without_message(self,
+                                                                     instruction.symbol_usages)
 
     def test_symbols_in_dst_file_SHOULD_be_reported(self):
         # ARRANGE #
@@ -274,21 +288,23 @@ class TestSymbolUsages(unittest.TestCase):
                                                   symbol_conf_rel_sds(RelSdsOptionType.REL_TMP,
                                                                       symbol_name,
                                                                       DST_PATH_RELATIVITY_VARIANTS))
-        for line_transformer in line_transformer_variants:
-            with self.subTest(line_transformer=line_transformer):
-                source = remaining_source(ArgumentsConstructor(src_file_arg,
-                                                               dst_file_arg,
-                                                               line_transformer).construct())
-                # ACT #
-                instruction = sut.EmbryoParser().parse(source)
-                # ASSERT #
-                expected_symbol_references = asrt.matches_sequence([
-                    matches_reference(asrt.equals(symbol_name),
-                                      equals_symbol_reference_restrictions(
-                                          file_ref_reference_restrictions(DST_PATH_RELATIVITY_VARIANTS)))
-                ])
-                expected_symbol_references.apply_without_message(self,
-                                                                 instruction.symbol_usages)
+        for phase_is_before_act in [False, True]:
+            for line_transformer in line_transformer_variants:
+                with self.subTest(phase_is_before_act=phase_is_before_act,
+                                  line_transformer=line_transformer):
+                    source = remaining_source(ArgumentsConstructor(src_file_arg,
+                                                                   dst_file_arg,
+                                                                   line_transformer).construct())
+                    # ACT #
+                    instruction = sut.embryo_parser(phase_is_before_act).parse(source)
+                    # ASSERT #
+                    expected_symbol_references = asrt.matches_sequence([
+                        matches_reference(asrt.equals(symbol_name),
+                                          equals_symbol_reference_restrictions(
+                                              file_ref_reference_restrictions(DST_PATH_RELATIVITY_VARIANTS)))
+                    ])
+                    expected_symbol_references.apply_without_message(self,
+                                                                     instruction.symbol_usages)
 
     def test_symbols_in_transformer_SHOULD_be_reported(self):
         # ARRANGE #
@@ -298,36 +314,40 @@ class TestSymbolUsages(unittest.TestCase):
 
         dst_file_arg = PathArgumentWithRelativity('dst-file',
                                                   conf_rel_any(RelOptionType.REL_TMP))
-        source = remaining_source(ArgumentsConstructor(src_file_arg,
-                                                       dst_file_arg,
-                                                       symbol_name).construct())
-        # ACT #
-        instruction = sut.EmbryoParser().parse(source)
-        # ASSERT #
-        expected_symbol_references = asrt.matches_sequence([
-            is_lines_transformer_reference_to(symbol_name)])
-        expected_symbol_references.apply_without_message(self,
-                                                         instruction.symbol_usages)
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            source = remaining_source(ArgumentsConstructor(src_file_arg,
+                                                           dst_file_arg,
+                                                           symbol_name).construct())
+            with self.subTest(phase_is_before_act=phase_is_before_act):
+                # ACT #
+                instruction = parser.parse(source)
+                # ASSERT #
+                expected_symbol_references = asrt.matches_sequence([
+                    is_lines_transformer_reference_to(symbol_name)])
+                expected_symbol_references.apply_without_message(self,
+                                                                 instruction.symbol_usages)
 
 
 class TestConsumptionOfSource(unittest.TestCase):
     def test_sans_transformer(self):
         # ARRANGE #
-        parser = sut.EmbryoParser()
-        src_file_arg = PathArgumentWithRelativity('src-file',
-                                                  conf_rel_any(RelOptionType.REL_TMP))
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            src_file_arg = PathArgumentWithRelativity('src-file',
+                                                      conf_rel_any(RelOptionType.REL_TMP))
 
-        dst_file_arg = PathArgumentWithRelativity('dst-file',
-                                                  conf_rel_any(RelOptionType.REL_TMP))
-        argument_str = ArgumentsConstructor(src_file_arg, dst_file_arg).construct()
-        for source in equivalent_source_variants__with_source_check(self, argument_str):
-            with self.subTest(source=source.remaining_source):
-                # ACT & ASSERT #
-                parser.parse(source)
+            dst_file_arg = PathArgumentWithRelativity('dst-file',
+                                                      conf_rel_any(RelOptionType.REL_TMP))
+            argument_str = ArgumentsConstructor(src_file_arg, dst_file_arg).construct()
+            for source in equivalent_source_variants__with_source_check(self, argument_str):
+                with self.subTest(phase_is_before_act=phase_is_before_act,
+                                  source=source.remaining_source):
+                    # ACT & ASSERT #
+                    parser.parse(source)
 
     def test_with_transformer(self):
         # ARRANGE #
-        parser = sut.EmbryoParser()
         src_file_arg = PathArgumentWithRelativity('src-file',
                                                   conf_rel_any(RelOptionType.REL_TMP))
 
@@ -337,10 +357,13 @@ class TestConsumptionOfSource(unittest.TestCase):
             src_file_arg,
             dst_file_arg,
             syntax_for_arbitrary_lines_transformer_without_symbol_references()).construct()
-        for source in equivalent_source_variants__with_source_check(self, argument_str):
-            with self.subTest(source=source.remaining_source):
-                # ACT & ASSERT #
-                parser.parse(source)
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            for source in equivalent_source_variants__with_source_check(self, argument_str):
+                with self.subTest(phase_is_before_act=phase_is_before_act,
+                                  source=source.remaining_source):
+                    # ACT & ASSERT #
+                    parser.parse(source)
 
 
 class TestSuccessfulScenarios(unittest.TestCase):
@@ -351,43 +374,46 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                            expected_symbol_references: asrt.ValueAssertion,
                                            symbols: SymbolTable = None,
                                            ):
-        for src_file_relativity in SRC_PATH_RELATIVITY_VARIANTS.rel_option_types:
-            src_file_arg = PathArgumentWithRelativity('src-file.txt',
-                                                      conf_rel_any(src_file_relativity))
-            src_file = File(src_file_arg.file_name, source_file_contents)
-            for dst_file_relativity in DST_PATH_RELATIVITY_VARIANTS.rel_option_types:
-                dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
-                                                          conf_rel_any(dst_file_relativity))
-                expected_files_in_dst_dir = [
-                    File(dst_file_arg.file_name, expected_destination_file_contents)
-                ]
-                if dst_file_relativity == src_file_relativity:
-                    expected_files_in_dst_dir.append(src_file)
-                expected_dst_dir_contents = DirContents(expected_files_in_dst_dir)
-                source = remaining_source(ArgumentsConstructor(src_file_arg,
-                                                               dst_file_arg,
-                                                               transformer_argument).construct())
-                with self.subTest(relativity_of_src_path=src_file_arg.relativity.option_string,
-                                  src_file=src_file_relativity.name,
-                                  dst_file=dst_file_relativity.name,
-                                  ):
-                    check(self,
-                          sut.EmbryoParser(),
-                          source,
-                          ArrangementWithSds(
-                              pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                              home_or_sds_contents=src_file_arg.relativity.populator_for_relativity_option_root(
-                                  DirContents([
-                                      src_file,
-                                  ])),
-                              symbols=symbols,
-                          ),
-                          Expectation(
-                              main_result=IS_SUCCESS_OF_MAIN,
-                              main_side_effects_on_sds=dir_contains_exactly(dst_file_relativity,
-                                                                            expected_dst_dir_contents),
-                              symbol_usages=expected_symbol_references,
-                          ))
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            for src_file_relativity in accepted_source_relativities(phase_is_before_act):
+                src_file_arg = PathArgumentWithRelativity('src-file.txt',
+                                                          conf_rel_any(src_file_relativity))
+                src_file = File(src_file_arg.file_name, source_file_contents)
+                for dst_file_relativity in DST_PATH_RELATIVITY_VARIANTS.rel_option_types:
+                    dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
+                                                              conf_rel_any(dst_file_relativity))
+                    expected_files_in_dst_dir = [
+                        File(dst_file_arg.file_name, expected_destination_file_contents)
+                    ]
+                    if dst_file_relativity == src_file_relativity:
+                        expected_files_in_dst_dir.append(src_file)
+                    expected_dst_dir_contents = DirContents(expected_files_in_dst_dir)
+                    source = remaining_source(ArgumentsConstructor(src_file_arg,
+                                                                   dst_file_arg,
+                                                                   transformer_argument).construct())
+                    with self.subTest(phase_is_before_act=phase_is_before_act,
+                                      relativity_of_src_path=src_file_arg.relativity.option_string,
+                                      src_file=src_file_relativity.name,
+                                      dst_file=dst_file_relativity.name,
+                                      ):
+                        check(self,
+                              parser,
+                              source,
+                              ArrangementWithSds(
+                                  pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                  home_or_sds_contents=src_file_arg.relativity.populator_for_relativity_option_root(
+                                      DirContents([
+                                          src_file,
+                                      ])),
+                                  symbols=symbols,
+                              ),
+                              Expectation(
+                                  main_result=IS_SUCCESS_OF_MAIN,
+                                  main_side_effects_on_sds=dir_contains_exactly(dst_file_relativity,
+                                                                                expected_dst_dir_contents),
+                                  symbol_usages=expected_symbol_references,
+                              ))
 
     def _check_create_file_in_non_existing_dir(self,
                                                source_file_contents: str,
@@ -412,26 +438,29 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 File(dst_file_name, expected_destination_file_contents)
             ])
         ])
-        source = remaining_source(ArgumentsConstructor(src_file_arg,
-                                                       dst_file_arg,
-                                                       transformer_argument).construct())
-        check(self,
-              sut.EmbryoParser(),
-              source,
-              ArrangementWithSds(
-                  pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                  home_or_sds_contents=src_file_arg.relativity.populator_for_relativity_option_root(
-                      DirContents([
-                          src_file,
-                      ])),
-                  symbols=symbols,
-              ),
-              Expectation(
-                  main_result=IS_SUCCESS_OF_MAIN,
-                  main_side_effects_on_sds=dir_contains_exactly(dst_file_relativity,
-                                                                expected_dst_dir_contents),
-                  symbol_usages=expected_symbol_references,
-              ))
+        for phase_is_before_act in [False, True]:
+            parser = sut.embryo_parser(phase_is_before_act)
+            source = remaining_source(ArgumentsConstructor(src_file_arg,
+                                                           dst_file_arg,
+                                                           transformer_argument).construct())
+            with self.subTest(phase_is_before_act=phase_is_before_act):
+                check(self,
+                      parser,
+                      source,
+                      ArrangementWithSds(
+                          pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                          home_or_sds_contents=src_file_arg.relativity.populator_for_relativity_option_root(
+                              DirContents([
+                                  src_file,
+                              ])),
+                          symbols=symbols,
+                      ),
+                      Expectation(
+                          main_result=IS_SUCCESS_OF_MAIN,
+                          main_side_effects_on_sds=dir_contains_exactly(dst_file_relativity,
+                                                                        expected_dst_dir_contents),
+                          symbol_usages=expected_symbol_references,
+                      ))
 
     def test_create_file_in_existing_dir__sans_transformer(self):
         file_contents = 'source file contents'
@@ -529,16 +558,12 @@ IS_FAILURE_OF_VALIDATION = asrt.is_instance(str)
 IS_FAILURE_OF_MAIN = asrt.is_instance(str)
 IS_SUCCESS_OF_MAIN = asrt.is_none
 
-SRC_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
-    {
-        RelOptionType.REL_CWD,
-        RelOptionType.REL_HOME_CASE,
-        RelOptionType.REL_HOME_ACT,
-        RelOptionType.REL_ACT,
-        RelOptionType.REL_TMP,
-        RelOptionType.REL_RESULT,
-    },
-    True)
+
+def src_path_relativity_variants(phase_is_before_act: bool) -> PathRelativityVariants:
+    return PathRelativityVariants(
+        accepted_source_relativities(phase_is_before_act),
+        True)
+
 
 DST_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     {
@@ -547,3 +572,17 @@ DST_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
         RelOptionType.REL_TMP,
     },
     False)
+
+
+def accepted_source_relativities(phase_is_before_act: bool) -> set:
+    if phase_is_before_act:
+        return set(RelOptionType).difference({RelOptionType.REL_RESULT})
+    else:
+        return set(RelOptionType)
+
+
+def accepted_non_home_source_relativities(phase_is_before_act: bool) -> set:
+    if phase_is_before_act:
+        return set(RelNonHomeOptionType).difference({RelNonHomeOptionType.REL_RESULT})
+    else:
+        return set(RelNonHomeOptionType)

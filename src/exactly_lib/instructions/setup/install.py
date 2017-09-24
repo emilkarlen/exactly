@@ -39,17 +39,13 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-OPTION_ARGUMENT_FOR_DESTINATION = a.Named('DESTINATION')
-
-OPTION_ARGUMENT_FOR_SOURCE = a.Named('SOURCE')
-
 REL_OPTION_ARG_CONF_FOR_SOURCE = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
         path_relativity.PathRelativityVariants({RelOptionType.REL_HOME_CASE,
                                                 RelOptionType.REL_HOME_ACT},
                                                True),
         RelOptionType.REL_HOME_CASE),
-    OPTION_ARGUMENT_FOR_SOURCE.name,
+    instruction_arguments.SOURCE_PATH_ARGUMENT.name,
     path_suffix_is_required=True)
 
 REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentConfiguration(
@@ -59,7 +55,7 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
                                                 RelOptionType.REL_TMP},
                                                True),
         RelOptionType.REL_CWD),
-    OPTION_ARGUMENT_FOR_DESTINATION.name,
+    instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
     path_suffix_is_required=False)
 
 
@@ -69,8 +65,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'home_dir': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'current_dir': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
-            'SOURCE': OPTION_ARGUMENT_FOR_SOURCE.name,
-            'DESTINATION': OPTION_ARGUMENT_FOR_DESTINATION.name,
+            'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
+            'DESTINATION': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
         })
 
     def single_line_description(self) -> str:
@@ -80,10 +76,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._paragraphs(_MAIN_DESCRIPTION_REST) + dt.paths_uses_posix_syntax()
 
     def invokation_variants(self) -> list:
-        dst_arg_usage = a.Single(a.Multiplicity.OPTIONAL, OPTION_ARGUMENT_FOR_DESTINATION)
+        dst_arg_usage = a.Single(a.Multiplicity.OPTIONAL, instruction_arguments.DESTINATION_PATH_ARGUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY, OPTION_ARGUMENT_FOR_SOURCE),
+                a.Single(a.Multiplicity.MANDATORY, instruction_arguments.SOURCE_PATH_ARGUMENT),
                 dst_arg_usage]
             )),
         ]
@@ -94,11 +90,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _syntax_element_descriptions_for_src(self) -> list:
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
                                                               instruction_arguments.PATH_ARGUMENT)
-        relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(OPTION_ARGUMENT_FOR_SOURCE.name))
+        relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(
+            instruction_arguments.SOURCE_PATH_ARGUMENT.name))
         optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                        relativity_of_arg)
         file_arg_sed = SyntaxElementDescription(
-            OPTION_ARGUMENT_FOR_SOURCE.name,
+            instruction_arguments.SOURCE_PATH_ARGUMENT.name,
             self._paragraphs(
                 "An existing file or directory."),
             [InvokationVariant(
@@ -120,11 +117,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def _syntax_element_descriptions_for_dst(self) -> list:
         mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.OPTIONAL,
                                                               instruction_arguments.PATH_ARGUMENT)
-        relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(OPTION_ARGUMENT_FOR_DESTINATION.name))
+        relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(
+            instruction_arguments.DESTINATION_PATH_ARGUMENT.name))
         optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                        relativity_of_arg)
         file_arg_sed = SyntaxElementDescription(
-            OPTION_ARGUMENT_FOR_DESTINATION.name,
+            instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
             self._paragraphs(
                 "An existing directory, or the path of an non-existing file."),
             [InvokationVariant(
@@ -244,7 +242,7 @@ class _MainWithExplicitDestination:
                                         self.dst_path)
             else:
                 err_msg = '{} file already exists but is not a directory: {}'.format(
-                    OPTION_ARGUMENT_FOR_DESTINATION.name,
+                    instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
                     self.dst_path)
                 raise exception_detection.DetectedException(
                     new_failure_details_from_message(err_msg))
@@ -263,8 +261,9 @@ def _install_into_directory(os_services: OsServices,
     target = dst_container_path / dst_file_name
     if target.exists():
         raise exception_detection.DetectedException(
-            new_failure_details_from_message('{} already exists: {}'.format(OPTION_ARGUMENT_FOR_DESTINATION.name,
-                                                                            target)))
+            new_failure_details_from_message('{} already exists: {}'.format(
+                instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
+                target)))
     src = str(src_file_path)
     dst = str(target)
     if src_file_path.is_dir():

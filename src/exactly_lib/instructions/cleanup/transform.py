@@ -5,5 +5,5 @@ from exactly_lib.instructions.multi_phase_instructions import transform
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        instruction_from_parts.Parser(transform.PARTS_PARSER),
+        instruction_from_parts.Parser(transform.parts_parser(False)),
         transform.TheInstructionDocumentation(instruction_name))

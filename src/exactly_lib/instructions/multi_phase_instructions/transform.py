@@ -103,10 +103,13 @@ class TheInstruction(embryo.InstructionEmbryo):
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
+    def __init__(self, src_rel_opt_arg_conf: RelOptionArgumentConfiguration):
+        self._src_rel_opt_arg_conf = src_rel_opt_arg_conf
+
     def parse(self, source: ParseSource) -> TheInstruction:
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser, TokenParserPrime)  # Type info for IDE
-            src_file = parse_file_ref_from_token_parser(SRC_REL_OPT_ARG_CONF, token_parser)
+            src_file = parse_file_ref_from_token_parser(self._src_rel_opt_arg_conf, token_parser)
             dst_file = parse_file_ref_from_token_parser(DST_REL_OPT_ARG_CONF, token_parser)
             lines_transformer = self._parse_transformer(token_parser)
             token_parser.report_superfluous_arguments_if_not_at_eol()
@@ -121,18 +124,33 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
             return parse_lines_transformer_from_token_parser(token_parser)
 
 
-PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
-                                           MainStepResultTranslatorForErrorMessageStringResult())
+def embryo_parser(phase_is_before_act: bool) -> embryo.InstructionEmbryoParser:
+    rel_option_types = _SRC_REL_OPTIONS__BEFORE_ACT if phase_is_before_act else _SRC_REL_OPTIONS__AFTER_ACT
+    return EmbryoParser(_src_rel_opt_arg_conf(rel_option_types))
 
-SRC_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
-DST_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
-SRC_REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(
-    RelOptionsConfiguration(PathRelativityVariants(
-        set(RelOptionType),
-        True),
-        RelOptionType.REL_CWD),
-    SRC_PATH_ARGUMENT.name,
-    True)
+def parts_parser(phase_is_before_act: bool) -> PartsParserFromEmbryoParser:
+    return PartsParserFromEmbryoParser(
+        embryo_parser(phase_is_before_act),
+        MainStepResultTranslatorForErrorMessageStringResult())
+
+
+SRC_PATH_ARGUMENT = instruction_arguments.SOURCE_PATH_ARGUMENT
+DST_PATH_ARGUMENT = instruction_arguments.DESTINATION_PATH_ARGUMENT
+
+
+def _src_rel_opt_arg_conf(rel_option_types: set) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(
+        RelOptionsConfiguration(PathRelativityVariants(
+            rel_option_types,
+            True),
+            RelOptionType.REL_CWD),
+        SRC_PATH_ARGUMENT.name,
+        True)
+
 
 DST_REL_OPT_ARG_CONF = argument_configuration_for_file_creation(DST_PATH_ARGUMENT.name)
+
+_SRC_REL_OPTIONS__BEFORE_ACT = set(RelOptionType).difference({RelOptionType.REL_RESULT})
+
+_SRC_REL_OPTIONS__AFTER_ACT = set(RelOptionType)
