@@ -171,3 +171,21 @@ get some file inclusion mechanism.
 <2016-12-22 tor>
 Any instruction in the test case "conf" phase could be possible to use in test
 suites, and would provide defaults to test cases.
+* non-assertions in [assert]
+<2017-09-24 Sun>
+shall they be specified using a special instruction "do" to make
+it clear that they are not assertions?
+----------------------------------------
+do transform src dst T
+do def string x = y
+do cd D
+
+do dir my-dir
+do file my-file.txt
+
+exitcode 0
+----------------------------------------
+Maybe this would make the integration into [assert]
+easer - would only need to transform non-assertion result
+to assertion result in a single place
+
