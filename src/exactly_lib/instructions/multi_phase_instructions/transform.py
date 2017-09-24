@@ -8,6 +8,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils import file_creatio
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
+from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -31,8 +32,17 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    def __init__(self, name: str):
+    def __init__(self,
+                 name: str,
+                 phase_is_before_act: bool):
         super().__init__(name, {})
+        self._doc_elements = src_dst.DocumentationElements(
+            {},
+            _src_rel_opt_arg_conf_for_phase(phase_is_before_act),
+            'An existing file.',
+            DST_REL_OPT_ARG_CONF,
+            'The path of a non-existing file.'
+        )
 
     def single_line_description(self) -> str:
         return 'Transforms an existing file into a new file'
@@ -54,7 +64,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return []
+        return self._doc_elements.syntax_element_descriptions()
 
     def _see_also_cross_refs(self) -> list:
         from exactly_lib.help_texts.entity import types
@@ -140,8 +150,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
 
 
 def embryo_parser(phase_is_before_act: bool) -> embryo.InstructionEmbryoParser:
-    rel_option_types = _SRC_REL_OPTIONS__BEFORE_ACT if phase_is_before_act else _SRC_REL_OPTIONS__AFTER_ACT
-    return EmbryoParser(_src_rel_opt_arg_conf(rel_option_types))
+    return EmbryoParser(_src_rel_opt_arg_conf_for_phase(phase_is_before_act))
 
 
 def parts_parser(phase_is_before_act: bool) -> PartsParserFromEmbryoParser:
@@ -152,6 +161,11 @@ def parts_parser(phase_is_before_act: bool) -> PartsParserFromEmbryoParser:
 
 SRC_PATH_ARGUMENT = instruction_arguments.SOURCE_PATH_ARGUMENT
 DST_PATH_ARGUMENT = instruction_arguments.DESTINATION_PATH_ARGUMENT
+
+
+def _src_rel_opt_arg_conf_for_phase(phase_is_before_act: bool) -> RelOptionArgumentConfiguration:
+    rel_option_types = _SRC_REL_OPTIONS__BEFORE_ACT if phase_is_before_act else _SRC_REL_OPTIONS__AFTER_ACT
+    return _src_rel_opt_arg_conf(rel_option_types)
 
 
 def _src_rel_opt_arg_conf(rel_option_types: set) -> RelOptionArgumentConfiguration:

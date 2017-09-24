@@ -2,18 +2,18 @@ import pathlib
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -61,13 +61,21 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
-        super().__init__(name, {
+        format_map = {
             'home_dir': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'current_dir': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
             'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
             'DESTINATION': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
-        })
+        }
+        super().__init__(name, format_map)
+        self._doc_elements = src_dst.DocumentationElements(
+            format_map,
+            REL_OPTION_ARG_CONF_FOR_SOURCE,
+            'An existing file or directory.',
+            REL_OPTION_ARG_CONF_FOR_DESTINATION,
+            'An existing directory, or the path of a non-existing file.'
+        )
 
     def single_line_description(self) -> str:
         return self._format('Installs files and directories from the {home_dir} into the {sandbox}')
@@ -76,70 +84,17 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._paragraphs(_MAIN_DESCRIPTION_REST) + dt.paths_uses_posix_syntax()
 
     def invokation_variants(self) -> list:
-        dst_arg_usage = a.Single(a.Multiplicity.OPTIONAL, instruction_arguments.DESTINATION_PATH_ARGUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY, instruction_arguments.SOURCE_PATH_ARGUMENT),
-                dst_arg_usage]
+                a.Single(a.Multiplicity.MANDATORY,
+                         instruction_arguments.SOURCE_PATH_ARGUMENT),
+                a.Single(a.Multiplicity.OPTIONAL,
+                         instruction_arguments.DESTINATION_PATH_ARGUMENT)]
             )),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return self._syntax_element_descriptions_for_src() + self._syntax_element_descriptions_for_dst()
-
-    def _syntax_element_descriptions_for_src(self) -> list:
-        mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
-                                                              instruction_arguments.PATH_ARGUMENT)
-        relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(
-            instruction_arguments.SOURCE_PATH_ARGUMENT.name))
-        optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
-                                       relativity_of_arg)
-        file_arg_sed = SyntaxElementDescription(
-            instruction_arguments.SOURCE_PATH_ARGUMENT.name,
-            self._paragraphs(
-                "An existing file or directory."),
-            [InvokationVariant(
-                self._cl_syntax_for_args(
-                    [optional_relativity,
-                     mandatory_path]),
-                rel_opts.default_relativity_for_rel_opt_type(
-                    instruction_arguments.PATH_ARGUMENT.name,
-                    REL_OPTION_ARG_CONF_FOR_SOURCE.options.default_option))]
-        )
-
-        relativity_of_file_seds = rel_opts.relativity_syntax_element_descriptions(
-            instruction_arguments.PATH_ARGUMENT,
-            REL_OPTION_ARG_CONF_FOR_SOURCE.options,
-            relativity_of_arg)
-
-        return [file_arg_sed] + relativity_of_file_seds
-
-    def _syntax_element_descriptions_for_dst(self) -> list:
-        mandatory_path = path_syntax.path_or_symbol_reference(a.Multiplicity.OPTIONAL,
-                                                              instruction_arguments.PATH_ARGUMENT)
-        relativity_of_arg = a.Named('RELATIVITY-OF-{}-PATH'.format(
-            instruction_arguments.DESTINATION_PATH_ARGUMENT.name))
-        optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
-                                       relativity_of_arg)
-        file_arg_sed = SyntaxElementDescription(
-            instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
-            self._paragraphs(
-                "An existing directory, or the path of an non-existing file."),
-            [InvokationVariant(
-                self._cl_syntax_for_args(
-                    [optional_relativity,
-                     mandatory_path]),
-                rel_opts.default_relativity_for_rel_opt_type(
-                    instruction_arguments.PATH_ARGUMENT.name,
-                    REL_OPTION_ARG_CONF_FOR_DESTINATION.options.default_option))]
-        )
-
-        relativity_of_file_seds = rel_opts.relativity_syntax_element_descriptions(
-            instruction_arguments.PATH_ARGUMENT,
-            REL_OPTION_ARG_CONF_FOR_DESTINATION.options,
-            relativity_of_arg)
-
-        return [file_arg_sed] + relativity_of_file_seds
+        return self._doc_elements.syntax_element_descriptions()
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_DESTINATION.options)
