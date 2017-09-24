@@ -5,6 +5,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
+    MainStepResultTranslatorForErrorMessageStringResult
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -118,6 +120,9 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         else:
             return parse_lines_transformer_from_token_parser(token_parser)
 
+
+PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
+                                           MainStepResultTranslatorForErrorMessageStringResult())
 
 SRC_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 DST_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
