@@ -27,7 +27,8 @@ class ConsoleHelpRequestHandler(RequestHandler):
     def handle(self, output: StdOutputFiles):
         page_width = shutil.get_terminal_size().columns
         formatter = _formatter(page_width)
-        environment = RenderingEnvironment(_cross_ref_text_constructor())
+        environment = RenderingEnvironment(_cross_ref_text_constructor(),
+                                           render_simple_header_value_lists_as_tables=True)
         lines = formatter.format_section_contents(self.section_contents_renderer.apply(environment))
         file = output.out
         for line in lines:
