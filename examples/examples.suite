@@ -1,62 +1,56 @@
 [suites]
 
-#
+######################################################################
 # Basic examples.
 #
 
 first-step/package.suite
 
-#
+######################################################################
 # Examples that utilize the "sandbox directory structure"
 #
 
 sandbox-directories/package.suite
 
-#
+######################################################################
 # Examples that utilize the "home directory structure"
 #
 
 home-directories/package.suite
 
-#
+######################################################################
 # Examples with "symbols"
 #
 
 symbols/package.suite
 
-#
-# Checking the contents of a directory
-#
-
-dir-contents/package.suite
-
-#
-# Transforming the contents of a checked file, before comparing it.
-#
-
-file-transformations/package.suite
-
-#
-# Shell examples.
-#
-
-shell/package.suite
-
-#
+######################################################################
 # Setup using the "setup" phase.
 #
 
 setup/package.suite
 
-#
+######################################################################
 # Cleanup using the "cleanup" phase.
 #
 
 cleanup/package.suite
 
-#
+######################################################################
 # Implementing custom behaviour using external programs
 # and the OS shell.
 #
 
 external-programs/package.suite
+
+######################################################################
+# Transforming the contents of a checked file, before comparing it.
+#
+
+file-transformations/package.suite
+
+######################################################################
+# Miscellaneous instructions
+#
+
+misc-instructions/package.suite
