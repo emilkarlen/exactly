@@ -10,6 +10,7 @@ from exactly_lib_test.instructions.assert_ import \
     shell, \
     existence_of_file, \
     env, \
+    transform, \
     utils
 from exactly_lib_test.instructions.assert_ import stdout, stderr
 from exactly_lib_test.instructions.assert_ import test_resources
@@ -30,6 +31,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(run.suite())
     ret_val.addTest(shell.suite())
     ret_val.addTest(env.suite())
+    ret_val.addTest(transform.suite())
     return ret_val
 
 
