@@ -6,9 +6,9 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTyp
     StringRestriction, \
     FileRefRelativityRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
-from exactly_lib.symbol.restriction import ReferenceRestrictions, ElementTypeRestriction
+from exactly_lib.symbol.restriction import ReferenceRestrictions, TypeCategoryRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.type_system.value_type import SymbolValueType, ElementType
+from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -387,7 +387,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
     def test_fail__direct_and_indirect__non_symbol_restriction(self):
         expected = r.ReferenceRestrictionsOnDirectAndIndirect(
             vr.StringRestriction())
-        actual = ElementTypeRestriction(ElementType.LOGIC)
+        actual = TypeCategoryRestriction(TypeCategory.LOGIC)
         self._fail(expected, actual)
 
     def test_fail__or__non_symbol_restriction(self):
@@ -396,7 +396,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))
         ])
-        actual = ElementTypeRestriction(ElementType.LOGIC)
+        actual = TypeCategoryRestriction(TypeCategory.LOGIC)
         self._fail(expected, actual)
 
     def _fail(self, expected: r.DataTypeReferenceRestrictions, actual: ReferenceRestrictions):

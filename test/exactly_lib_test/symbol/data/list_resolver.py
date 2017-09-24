@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import OrRefere
 from exactly_lib.type_system.data import list_value as lv
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string, \
     string_value_of_single_file_ref
-from exactly_lib.type_system.value_type import SymbolValueType, ElementType, ValueType
+from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver_element
@@ -25,8 +25,8 @@ class ListResolverTest(unittest.TestCase):
         # ARRANGE #
         resolver = sut.ListResolver([])
         # ACT & ASSERT #
-        self.assertIs(ElementType.SYMBOL,
-                      resolver.element_type)
+        self.assertIs(TypeCategory.DATA,
+                      resolver.type_category)
         self.assertIs(SymbolValueType.LIST,
                       resolver.data_value_type)
         self.assertIs(ValueType.LIST,

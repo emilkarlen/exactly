@@ -9,24 +9,24 @@ from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
-from exactly_lib.type_system.value_type import ElementType
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-def _type_docs_of_type_category(element_type: ElementType, type_doc_list: list) -> list:
-    return list(filter(lambda type_doc: type_doc.element_type is element_type,
+def _type_docs_of_type_category(element_type: TypeCategory, type_doc_list: list) -> list:
+    return list(filter(lambda type_doc: type_doc.type_category is element_type,
                        type_doc_list))
 
 
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(pes.PartitionNamesSetup('data-type',
                                                'Data types'),
-                       functools.partial(_type_docs_of_type_category, ElementType.SYMBOL)
+                       functools.partial(_type_docs_of_type_category, TypeCategory.DATA)
                        ),
     pes.PartitionSetup(pes.PartitionNamesSetup('logic-type',
                                                'Logic types'),
-                       functools.partial(_type_docs_of_type_category, ElementType.LOGIC)
+                       functools.partial(_type_docs_of_type_category, TypeCategory.LOGIC)
                        ),
 ]
 

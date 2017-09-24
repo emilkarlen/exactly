@@ -27,7 +27,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestAnySymbolTypeRestriction(unittest.TestCase):
-    def test_pass_WHEN_element_type_is_data(self):
+    def test_pass_WHEN_type_category_is_data(self):
         # ARRANGE #
         test_cases = [
             string_constant('string'),
@@ -44,7 +44,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
                 # ASSERT #
                 self.assertIsNone(actual)
 
-    def test_fail_WHEN_element_type_is_not_data(self):
+    def test_fail_WHEN_type_category_is_not_data(self):
         # ARRANGE #
         test_cases = [
             FileMatcherResolverConstantTestImpl(FileMatcherTestImpl()),

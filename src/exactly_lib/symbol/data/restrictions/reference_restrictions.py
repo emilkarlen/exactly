@@ -6,7 +6,7 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueRe
     DataValueResolver
 from exactly_lib.symbol.restriction import FailureInfo, \
     DataTypeReferenceRestrictions
-from exactly_lib.type_system.value_type import SymbolValueType, ElementType
+from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory
 from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -164,7 +164,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                         container: SymbolContainer) -> FailureInfo:
         resolver = container.resolver
         assert isinstance(resolver, SymbolValueResolver)  # Type info for IDE
-        if resolver.element_type is not ElementType.SYMBOL:
+        if resolver.type_category is not TypeCategory.DATA:
             return self._no_satisfied_restriction(symbol_name, resolver, container)
         assert isinstance(resolver, DataValueResolver)  # Type info for IDE
         for part in self._parts:
