@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -26,6 +27,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_co
     RelOptionArgumentConfiguration, RelOptionsConfiguration
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, SingleStepValidator, \
     ValidationStep
+from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -33,19 +35,32 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {})
 
     def single_line_description(self) -> str:
-        return 'Transforms a file'
+        return 'Transforms an existing file into a new file'
 
     def main_description_rest(self) -> list:
         return []
 
     def invokation_variants(self) -> list:
-        return []
+        return [
+            InvokationVariant(self._cl_syntax_for_args([
+                a.Single(a.Multiplicity.MANDATORY,
+                         instruction_arguments.SOURCE_PATH_ARGUMENT),
+                a.Single(a.Multiplicity.MANDATORY,
+                         instruction_arguments.DESTINATION_PATH_ARGUMENT),
+                a.Single(a.Multiplicity.OPTIONAL,
+                         instruction_arguments.LINES_TRANSFORMER_ARGUMENT),
+            ]
+            )),
+        ]
 
     def syntax_element_descriptions(self) -> list:
         return []
 
     def _see_also_cross_refs(self) -> list:
-        return []
+        from exactly_lib.help_texts.entity import types
+        return [
+            types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target
+        ]
 
 
 class TheInstruction(embryo.InstructionEmbryo):
