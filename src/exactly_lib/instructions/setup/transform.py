@@ -6,4 +6,4 @@ from exactly_lib.instructions.setup.utils import instruction_from_parts
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         instruction_from_parts.Parser(transform.parts_parser(True)),
-        transform.TheInstructionDocumentation(instruction_name))
+        transform.TheInstructionDocumentation(instruction_name, True))
