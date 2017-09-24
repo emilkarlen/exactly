@@ -74,7 +74,18 @@ class ConfigurationBase:
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
+        """
+        Expectation that the result should be HARD_ERROR for non-assertions and FAIL for assertions.
+        """
         raise NotImplementedError()
+
+    def expect_hard_error_of_main(self,
+                                  assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
+        """
+        Expectation that the result should be HARD_ERROR,
+        both for assert- and non-assert phase instructions.
+        """
+        return self.expect_failure_of_main(assertion_on_error_message)
 
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):

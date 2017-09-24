@@ -25,7 +25,11 @@ class MainStepResultTranslator:
         raise NotImplementedError()
 
 
-class MainStepResultTranslatorForErrorMessageStringResult(MainStepResultTranslator):
+class MainStepResultTranslatorForErrorMessageStringResultAsHardError(MainStepResultTranslator):
+    """
+    Translates a str to HARD_ERROR, and None to success.
+    """
+
     def translate_for_non_assertion(self, error_message) -> sh.SuccessOrHardError:
         return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 

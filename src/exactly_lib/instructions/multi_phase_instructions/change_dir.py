@@ -8,7 +8,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
-    MainStepResultTranslatorForErrorMessageStringResult
+    MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -120,7 +120,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
 
 def parts_parser(is_after_act_phase: bool) -> InstructionPartsParser:
     return PartsParserFromEmbryoParser(EmbryoParser(is_after_act_phase),
-                                       MainStepResultTranslatorForErrorMessageStringResult())
+                                       MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
 _DIR_ARGUMENT = instruction_arguments.PATH_ARGUMENT
