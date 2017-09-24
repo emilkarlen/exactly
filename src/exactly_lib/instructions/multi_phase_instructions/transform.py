@@ -1,9 +1,9 @@
-import pathlib
-
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_CONCEPT_INFO
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -35,20 +35,25 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self,
                  name: str,
                  phase_is_before_act: bool):
-        super().__init__(name, {})
+        format_map = {
+            'LINES_TRANSFORMER': formatting.concept(LINES_TRANSFORMER_CONCEPT_INFO.name.singular),
+            'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
+            'DESTINATION': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
+        }
+        super().__init__(name, format_map)
         self._doc_elements = src_dst.DocumentationElements(
-            {},
+            format_map,
             _src_rel_opt_arg_conf_for_phase(phase_is_before_act),
-            'An existing file.',
+            _DESCRIPTION_OF_SRC,
             DST_REL_OPT_ARG_CONF,
-            'The path of a non-existing file.'
+            _DESCRIPTION_OF_DST
         )
 
     def single_line_description(self) -> str:
-        return 'Transforms an existing file into a new file'
+        return _SINGLE_LINE_DESCRIPTION
 
     def main_description_rest(self) -> list:
-        return []
+        return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
         return [
@@ -118,14 +123,6 @@ class TheInstruction(embryo.InstructionEmbryo):
                                          path_resolving_env,
                                          write_file)
 
-    def _main_with_valid_paths(self,
-                               src_path: pathlib.Path,
-                               dst_path: pathlib.Path,
-                               environment: InstructionEnvironmentForPostSdsStep,
-                               logging_paths: PhaseLoggingPaths,
-                               os_services: OsServices):
-        raise NotImplementedError('abstract method')
-
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
     def __init__(self, src_rel_opt_arg_conf: RelOptionArgumentConfiguration):
@@ -183,3 +180,14 @@ DST_REL_OPT_ARG_CONF = argument_configuration_for_file_creation(DST_PATH_ARGUMEN
 _SRC_REL_OPTIONS__BEFORE_ACT = set(RelOptionType).difference({RelOptionType.REL_RESULT})
 
 _SRC_REL_OPTIONS__AFTER_ACT = set(RelOptionType)
+
+_SINGLE_LINE_DESCRIPTION = 'Transforms an existing file into a new file'
+
+_DESCRIPTION_OF_DST = 'The path of a non-existing file.'
+
+_DESCRIPTION_OF_SRC = 'An existing file.'
+
+_MAIN_DESCRIPTION_REST = """\
+If a {LINES_TRANSFORMER} is not given, then {DESTINATION}
+will be identical to {SOURCE}.
+"""
