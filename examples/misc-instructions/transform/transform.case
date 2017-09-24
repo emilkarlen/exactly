@@ -1,0 +1,20 @@
+[setup]
+
+
+file bike-ratings.txt <<EOF
+ok    Bianchi
+good  BMC
+ok    Cannondale
+great de Rosa
+good  Cube
+great Lapierre
+EOF
+
+
+[assert]
+
+
+transform  bike-ratings.txt  great-bikes.txt  select regex 'great'
+
+
+contents  great-bikes.txt  num-lines = 2
